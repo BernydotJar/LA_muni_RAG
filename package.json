@@ -1,0 +1,33 @@
+{
+  "name": "la_muni_rag",
+  "version": "1.0.0",
+  "description": "Production-grade RAG agent foundation for La Antigua Guatemala municipal documents.",
+  "main": "dist/index.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "dev:api": "tsx watch src/server.ts",
+    "dev:start": "node scripts/dev-start.mjs",
+    "ports:kill": "node scripts/kill-ports.mjs",
+    "search": "tsx src/cli/search.ts",
+    "start": "node dist/server.js",
+    "test": "node --import tsx --test src/__tests__/*.test.ts",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "UNLICENSED",
+  "type": "module",
+  "dependencies": {
+    "dotenv": "^17.4.2",
+    "pg": "^8.22.0"
+  },
+  "devDependencies": {
+    "@types/node": "^26.0.0",
+    "@types/pg": "^8.20.0",
+    "tsx": "^4.22.4",
+    "typescript": "^6.0.3"
+  }
+}
