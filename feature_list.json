@@ -68,9 +68,9 @@
     },
     {
       "id": "014-runtime-vector-wiring",
-      "status": "review",
+      "status": "done",
       "mode": "SHIP",
-      "active": true,
+      "active": false,
       "summary": "Added runtime evidence dependency factory and wired server evidence, agent, answer, and chat routes through dependency-aware retrieval with safe fallback."
     }
   ]
