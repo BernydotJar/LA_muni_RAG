@@ -1,5 +1,16 @@
 # Progress History
 
+## 011-production-vector-store
+
+State: spec_ready  
+Mode: SHIP
+
+Opened Feature 011 as a specification-only SHIP feature.
+
+The feature will define a production vector storage and retrieval design for persisted embedding chunks behind the existing retrieval boundary.
+
+No runtime code was changed in this step.
+
 ## 010-hybrid-retrieval-integration
 
 State: done  
