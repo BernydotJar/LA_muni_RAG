@@ -29,6 +29,8 @@ export interface EvidenceResponse {
 export interface EvidenceDependencies {
   queryEmbeddingProvider?: QueryEmbeddingProvider;
   vectorRepository?: VectorRetrievalRepository;
+  keywordSearch?: typeof keywordSearch;
+  phraseSearch?: typeof phraseSearch;
 }
 
 export const stripHeadlineTags = (value: string): string =>
@@ -113,6 +115,12 @@ const responseForEvidence = (
   evidence,
 });
 
+const resolveKeywordSearch = (dependencies: EvidenceDependencies): typeof keywordSearch =>
+  dependencies.keywordSearch ?? keywordSearch;
+
+const resolvePhraseSearch = (dependencies: EvidenceDependencies): typeof phraseSearch =>
+  dependencies.phraseSearch ?? phraseSearch;
+
 const resolveVectorCandidates = async (
   query: string,
   limit: number,
@@ -135,15 +143,18 @@ export const findEvidenceWithDependencies = async (
   limit = 5,
   dependencies: EvidenceDependencies = {}
 ): Promise<EvidenceResponse> => {
+  const keywordSearchFn = resolveKeywordSearch(dependencies);
+  const phraseSearchFn = resolvePhraseSearch(dependencies);
+
   if (mode === "phrase") {
-    const results = await phraseSearch(query, limit);
+    const results = await phraseSearchFn(query, limit);
     return responseForEvidence(query, mode, results.map((result) => mapPhraseResultToEvidence(result)));
   }
 
   if (mode === "hybrid") {
     const [phraseResults, keywordResults, vectorCandidates] = await Promise.all([
-      phraseSearch(query, limit),
-      keywordSearch(query, limit),
+      phraseSearchFn(query, limit),
+      keywordSearchFn(query, limit),
       resolveVectorCandidates(query, limit, dependencies),
     ]);
 
@@ -157,7 +168,7 @@ export const findEvidenceWithDependencies = async (
     return responseForEvidence(query, mode, hybrid.candidates.map(hybridCandidateToEvidence));
   }
 
-  const results = await keywordSearch(query, limit);
+  const results = await keywordSearchFn(query, limit);
   return responseForEvidence(query, mode, results.map((result) => mapKeywordResultToEvidence(result)));
 };
 
