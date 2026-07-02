@@ -1,5 +1,16 @@
 # Progress History
 
+## 012-vector-query-integration
+
+State: spec_ready  
+Mode: SHIP
+
+Opened Feature 012 as a specification-only SHIP feature.
+
+The feature will define how hybrid retrieval obtains query embeddings and retrieves persisted vector candidates without weakening deterministic evidence-first answer behavior.
+
+No runtime code was changed in this step.
+
 ## 011-production-vector-store
 
 State: done  
