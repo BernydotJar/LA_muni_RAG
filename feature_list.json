@@ -58,6 +58,13 @@
       "mode": "SHIP",
       "active": false,
       "summary": "Added query embedding boundary and optional vector repository wiring for hybrid evidence with graceful degradation and offline tests."
+    },
+    {
+      "id": "013-production-query-embedding-provider",
+      "status": "spec_ready",
+      "mode": "SHIP",
+      "active": true,
+      "summary": "Define a production query embedding provider behind the QueryEmbeddingProvider boundary without adding secrets, provider calls in tests, or answer-policy drift."
     }
   ]
 }
