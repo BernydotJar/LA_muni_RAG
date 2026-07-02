@@ -1,5 +1,16 @@
 # Progress History
 
+## 013-production-query-embedding-provider
+
+State: spec_ready  
+Mode: SHIP
+
+Opened Feature 013 as a specification-only SHIP feature.
+
+The feature will define a production query embedding provider behind the existing `QueryEmbeddingProvider` boundary without adding secrets, external calls in tests, or answer-policy drift.
+
+No runtime code was changed in this step.
+
 ## 012-vector-query-integration
 
 State: done  
