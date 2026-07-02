@@ -6,41 +6,32 @@
 
 ## State
 
-spec_ready
+review
 
 ## Summary
 
-Feature 013 has been opened in SHIP mode as a specification-only change.
+Feature 013 has been implemented in SHIP mode.
 
-The goal is to define a production query embedding provider behind the existing `QueryEmbeddingProvider` boundary without adding secrets, external calls in tests, or answer-policy drift.
+The implementation adds an HTTP query embedding provider behind the existing `QueryEmbeddingProvider` boundary, plus a configuration-safe factory and offline tests using injected transport.
 
-## Repository State
+## Completed Implementation
 
-Local and GitHub were synchronized after 012 completion before opening this feature.
+013 added:
 
-## Completed Features
-
-- 007-docx-extractor-mammoth: done
-- 008-embedding-indexing-pipeline: done
-- 009-hybrid-retrieval-ranking: done
-- 010-hybrid-retrieval-integration: done
-- 011-production-vector-store: done
-- 012-vector-query-integration: done
-
-## Current Feature Scope
-
-013 must define:
-
-- production query embedding provider adapter
-- configuration-safe provider factory
-- transport injection for deterministic tests
+- `HttpQueryEmbeddingProvider`
+- fetch-compatible transport boundary
+- provider response mapping
 - stable provider error mapping
-- dimension validation through the existing boundary
-- no external provider calls in tests
+- query embedding dimension validation through the existing boundary
+- `loadQueryEmbeddingProviderConfig()`
+- `createQueryEmbeddingProvider()`
+- configuration-safe provider construction
+- offline tests for provider behavior
+- offline tests for factory behavior
 
-## Non-Goals
+## Preserved Non-Goals
 
-013 must not introduce:
+013 did not introduce:
 
 - LLM answer generation
 - LLM reranking
@@ -48,13 +39,32 @@ Local and GitHub were synchronized after 012 completion before opening this feat
 - auth changes
 - unrelated ingestion changes
 - env or secret files
+- external API calls in tests
 - migrations
-- package changes unless separately approved
+- package changes
+- evidence policy changes
+
+## Verification
+
+GitHub file edits were applied directly through the repository API, so local verification is required before marking this feature done.
+
+Required local verification:
+
+- npm run typecheck
+- npm run build
+- npm run test
+
+## Review Focus
+
+Review should confirm:
+
+- provider construction returns null when configuration is missing
+- tests do not call hosted providers
+- no secrets were committed
+- `evidence.ts` remains vendor-agnostic
+- provider failures use stable `QueryEmbeddingError` values
+- dimension mismatch is still rejected
 
 ## Next Gate
 
-Human approval is required before implementation.
-
-Approval phrase:
-
-`Approved: 013-production-query-embedding-provider for implementation in SHIP mode.`
+Run local verification and review the implementation before moving 013 to done.
