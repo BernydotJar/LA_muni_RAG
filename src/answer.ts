@@ -1,4 +1,11 @@
-import { findEvidence, type EvidenceItem, type EvidenceMode } from "./evidence.js";
+import {
+  findEvidence,
+  findEvidenceWithDependencies,
+  type EvidenceDependencies,
+  type EvidenceItem,
+  type EvidenceMode,
+  type EvidenceResponse,
+} from "./evidence.js";
 
 export type DeterministicAnswerStatus = "draft_grounded" | "not_found";
 
@@ -40,12 +47,8 @@ const buildDraftAnswer = (query: string, evidence: EvidenceItem[]): string => {
   ].join(" ");
 };
 
-export const buildDeterministicAnswer = async (
-  query: string,
-  mode: EvidenceMode = "keyword",
-  limit = 5
-): Promise<DeterministicAnswerResponse> => {
-  const evidenceResponse = await findEvidence(query, mode, limit);
+const buildAnswerFromEvidence = (evidenceResponse: EvidenceResponse): DeterministicAnswerResponse => {
+  const { query, mode, evidence } = evidenceResponse;
 
   if (evidenceResponse.answerStatus === "not_found") {
     return {
@@ -66,13 +69,32 @@ export const buildDeterministicAnswer = async (
     mode,
     answerStatus: "draft_grounded",
     answerLabel: "draft",
-    answer: buildDraftAnswer(query, evidenceResponse.evidence),
-    citations: evidenceResponse.evidence.map((item) => ({
+    answer: buildDraftAnswer(query, evidence),
+    citations: evidence.map((item) => ({
       citationLabel: item.citationLabel,
       documentTitle: item.documentTitle,
       sourceType: item.sourceType,
       pageStart: item.pageStart,
     })),
-    evidence: evidenceResponse.evidence,
+    evidence,
   };
+};
+
+export const buildDeterministicAnswerWithDependencies = async (
+  query: string,
+  mode: EvidenceMode = "keyword",
+  limit = 5,
+  dependencies: EvidenceDependencies = {}
+): Promise<DeterministicAnswerResponse> => {
+  const evidenceResponse = await findEvidenceWithDependencies(query, mode, limit, dependencies);
+  return buildAnswerFromEvidence(evidenceResponse);
+};
+
+export const buildDeterministicAnswer = async (
+  query: string,
+  mode: EvidenceMode = "keyword",
+  limit = 5
+): Promise<DeterministicAnswerResponse> => {
+  const evidenceResponse = await findEvidence(query, mode, limit);
+  return buildAnswerFromEvidence(evidenceResponse);
 };
