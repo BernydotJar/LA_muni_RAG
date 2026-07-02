@@ -1,5 +1,16 @@
 # Progress History
 
+## 015-runtime-vector-observability
+
+State: spec_ready  
+Mode: SHIP
+
+Opened Feature 015 as a specification-only SHIP feature.
+
+The feature will define safe runtime vector observability for enabled, disabled, and degraded states without exposing secrets or changing answer policy.
+
+No runtime code was changed in this step.
+
 ## 014-runtime-vector-wiring
 
 State: done  
