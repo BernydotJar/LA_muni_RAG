@@ -37,6 +37,13 @@
       "mode": "SHIP",
       "active": false,
       "summary": "Implemented deterministic hybrid retrieval ranking across phrase, keyword, and vector candidates while preserving evidence-first answer behavior."
+    },
+    {
+      "id": "010-hybrid-retrieval-integration",
+      "status": "spec_ready",
+      "mode": "SHIP",
+      "active": true,
+      "summary": "Define controlled integration of the hybrid retrieval layer into evidence/search flows while preserving deterministic answer policy."
     }
   ]
 }
