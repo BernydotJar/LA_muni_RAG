@@ -47,10 +47,10 @@
     },
     {
       "id": "011-production-vector-store",
-      "status": "spec_ready",
+      "status": "review",
       "mode": "SHIP",
       "active": true,
-      "summary": "Define a production vector storage and retrieval design for persisted embedding chunks behind the existing retrieval boundary."
+      "summary": "Added pgvector schema, production repository adapter, vector candidate mapping, dimension validation, and offline tests."
     }
   ]
 }
