@@ -2,15 +2,19 @@
 
 ## Active Feature
 
+None.
+
+## Last Completed Feature
+
 010-hybrid-retrieval-integration
 
 ## State
 
-review
+done
 
 ## Summary
 
-Feature 010 has been implemented in SHIP mode.
+Feature 010 has been completed in SHIP mode.
 
 The implementation integrates the hybrid retrieval layer into the evidence and API flows while preserving deterministic evidence-first answer behavior.
 
@@ -42,24 +46,30 @@ The implementation integrates the hybrid retrieval layer into the evidence and A
 
 ## Verification
 
-GitHub file edits were applied directly through the repository API, so local verification is required before marking this feature done.
-
-Required local verification:
+Local verification passed:
 
 - npm run typecheck
 - npm run build
 - npm run test
 
-## Review Focus
+Test result:
 
-Review should confirm:
+- 88 tests
+- 88 passing
+- 0 failing
+- 0 cancelled
+- 0 skipped
+- 0 todo
 
-- keyword and phrase modes remain backward compatible
-- hybrid mode returns only citable evidence
-- `/api/answer` still returns not_found with no citations when no evidence exists
-- invalid mode still returns 400
-- no LLM behavior was introduced
+## Completed Features
 
-## Next Gate
+- 007-docx-extractor-mammoth: done
+- 008-embedding-indexing-pipeline: done
+- 009-hybrid-retrieval-ranking: done
+- 010-hybrid-retrieval-integration: done
 
-Run local verification and review the implementation before moving 010 to done.
+## Next Recommended Feature
+
+011-production-vector-store
+
+Status: not started
