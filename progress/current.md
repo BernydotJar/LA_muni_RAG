@@ -2,63 +2,21 @@
 
 ## Active Feature
 
-None.
-
-## Last Completed Feature
-
-011-production-vector-store
+012-vector-query-integration
 
 ## State
 
-done
+spec_ready
 
 ## Summary
 
-Feature 011 has been completed in SHIP mode.
+Feature 012 has been opened in SHIP mode as a specification-only change.
 
-The implementation adds a production pgvector storage schema, a repository adapter behind the existing embedding/vector retrieval boundaries, deterministic vector mapping helpers, dimension validation, and offline tests.
+The goal is to define how hybrid retrieval obtains query embeddings and retrieves persisted vector candidates without weakening deterministic evidence-first answer behavior.
 
-## Completed Implementation
+## Repository State
 
-011 added:
-
-- production pgvector migration for `rag.embedding_vectors`
-- `PgVectorEmbeddingRepository`
-- mapping from `EmbeddingVectorRecord` to pgvector upsert values
-- mapping from pgvector result rows to `VectorCandidateInput`
-- vector literal formatting
-- vector dimension validation
-- citation-label rejection at write/search mapping boundaries
-- offline unit tests for mapping and validation
-
-## Preserved Non-Goals
-
-011 did not introduce:
-
-- LLM answer generation
-- LLM reranking
-- UI changes
-- auth changes
-- unrelated ingestion changes
-- env or secret changes
-- external API calls in tests
-
-## Verification
-
-Local verification passed:
-
-- npm run typecheck
-- npm run build
-- npm run test
-
-Test result:
-
-- 94 tests
-- 94 passing
-- 0 failing
-- 0 cancelled
-- 0 skipped
-- 0 todo
+Local and GitHub were synchronized after 011 completion before opening this feature.
 
 ## Completed Features
 
@@ -68,8 +26,34 @@ Test result:
 - 010-hybrid-retrieval-integration: done
 - 011-production-vector-store: done
 
-## Next Recommended Feature
+## Current Feature Scope
 
-012-vector-query-integration
+012 must define:
 
-Status: not started
+- query embedding provider boundary
+- vector repository dependency wiring
+- graceful degradation when vector dependencies are unavailable
+- deterministic fake-provider tests
+- vector candidate participation in hybrid ranking
+- preservation of keyword, phrase, hybrid, answer, chat, and server behavior
+
+## Non-Goals
+
+012 must not introduce:
+
+- LLM answer generation
+- LLM reranking
+- UI changes
+- auth changes
+- unrelated ingestion changes
+- env or secret changes
+- external API calls in tests
+- migrations unless separately approved
+
+## Next Gate
+
+Human approval is required before implementation.
+
+Approval phrase:
+
+`Approved: 012-vector-query-integration for implementation in SHIP mode.`
