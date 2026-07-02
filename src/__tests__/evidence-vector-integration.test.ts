@@ -2,6 +2,7 @@ import { describe, it } from "node:test";
 import assert from "node:assert/strict";
 import { findEvidenceWithDependencies, type EvidenceDependencies } from "../evidence.js";
 import type { QueryEmbeddingProvider } from "../embeddings/queryEmbedding.js";
+import type { KeywordSearchResult, PhraseSearchResult } from "../search.js";
 import type { VectorCandidateInput, VectorRetrievalRepository } from "../retrieval/vectorRetriever.js";
 
 class StaticQueryEmbeddingProvider implements QueryEmbeddingProvider {
@@ -33,7 +34,16 @@ class FailingQueryEmbeddingProvider implements QueryEmbeddingProvider {
   }
 }
 
+const emptyKeywordSearch = async (): Promise<KeywordSearchResult[]> => [];
+const emptyPhraseSearch = async (): Promise<PhraseSearchResult[]> => [];
+
+const offlineSearchDependencies = {
+  keywordSearch: emptyKeywordSearch,
+  phraseSearch: emptyPhraseSearch,
+};
+
 const vectorOnlyDependencies = (results: VectorCandidateInput[]): EvidenceDependencies => ({
+  ...offlineSearchDependencies,
   queryEmbeddingProvider: new StaticQueryEmbeddingProvider(),
   vectorRepository: new StaticVectorRepository(results),
 });
@@ -41,7 +51,7 @@ const vectorOnlyDependencies = (results: VectorCandidateInput[]): EvidenceDepend
 describe("vector query integration in hybrid evidence", () => {
   it("includes citable vector candidates in hybrid evidence", async () => {
     const response = await findEvidenceWithDependencies(
-      "semantic-only-query-zzzx",
+      "semantic vector query",
       "hybrid",
       5,
       vectorOnlyDependencies([
@@ -66,7 +76,7 @@ describe("vector query integration in hybrid evidence", () => {
 
   it("filters uncitable vector candidates before evidence mapping", async () => {
     const response = await findEvidenceWithDependencies(
-      "semantic-only-query-uncitable-zzzx",
+      "uncitable vector query",
       "hybrid",
       5,
       vectorOnlyDependencies([
@@ -85,7 +95,7 @@ describe("vector query integration in hybrid evidence", () => {
   });
 
   it("degrades to phrase and keyword candidates when vector dependencies are missing", async () => {
-    const response = await findEvidenceWithDependencies("zzzinexistente-vectorless", "hybrid", 5, {});
+    const response = await findEvidenceWithDependencies("vectorless query", "hybrid", 5, offlineSearchDependencies);
 
     assert.equal(response.mode, "hybrid");
     assert.equal(response.answerStatus, "not_found");
@@ -93,7 +103,8 @@ describe("vector query integration in hybrid evidence", () => {
   });
 
   it("degrades safely when the query embedding provider fails", async () => {
-    const response = await findEvidenceWithDependencies("zzzinexistente-provider-failure", "hybrid", 5, {
+    const response = await findEvidenceWithDependencies("provider failure query", "hybrid", 5, {
+      ...offlineSearchDependencies,
       queryEmbeddingProvider: new FailingQueryEmbeddingProvider(),
       vectorRepository: new StaticVectorRepository([
         {
@@ -119,8 +130,8 @@ describe("vector query integration in hybrid evidence", () => {
       },
     ]);
 
-    const keyword = await findEvidenceWithDependencies("zzzinexistente-keyword", "keyword", 5, dependencies);
-    const phrase = await findEvidenceWithDependencies("zzzinexistente-phrase", "phrase", 5, dependencies);
+    const keyword = await findEvidenceWithDependencies("keyword only query", "keyword", 5, dependencies);
+    const phrase = await findEvidenceWithDependencies("phrase only query", "phrase", 5, dependencies);
 
     assert.equal(keyword.mode, "keyword");
     assert.equal(phrase.mode, "phrase");
