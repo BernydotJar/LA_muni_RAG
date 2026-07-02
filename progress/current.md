@@ -2,21 +2,23 @@
 
 ## Active Feature
 
+None.
+
+## Last Completed Feature
+
 013-production-query-embedding-provider
 
 ## State
 
-review
+done
 
 ## Summary
 
-Feature 013 has been implemented in SHIP mode.
+Feature 013 has been completed in SHIP mode.
 
 The implementation adds an HTTP query embedding provider behind the existing `QueryEmbeddingProvider` boundary, plus a configuration-safe factory and offline tests using injected transport.
 
 ## Completed Implementation
-
-013 added:
 
 - `HttpQueryEmbeddingProvider`
 - fetch-compatible transport boundary
@@ -31,40 +33,46 @@ The implementation adds an HTTP query embedding provider behind the existing `Qu
 
 ## Preserved Non-Goals
 
-013 did not introduce:
-
-- LLM answer generation
-- LLM reranking
-- UI changes
-- auth changes
-- unrelated ingestion changes
-- env or secret files
-- external API calls in tests
-- migrations
-- package changes
-- evidence policy changes
+- no LLM answer generation
+- no LLM reranking
+- no UI changes
+- no auth changes
+- no unrelated ingestion changes
+- no env or secret files
+- no external API calls in tests
+- no migrations
+- no package changes
+- no evidence policy changes
 
 ## Verification
 
-GitHub file edits were applied directly through the repository API, so local verification is required before marking this feature done.
-
-Required local verification:
+Local verification passed:
 
 - npm run typecheck
 - npm run build
 - npm run test
 
-## Review Focus
+Test result:
 
-Review should confirm:
+- 111 tests
+- 111 passing
+- 0 failing
+- 0 cancelled
+- 0 skipped
+- 0 todo
 
-- provider construction returns null when configuration is missing
-- tests do not call hosted providers
-- no secrets were committed
-- `evidence.ts` remains vendor-agnostic
-- provider failures use stable `QueryEmbeddingError` values
-- dimension mismatch is still rejected
+## Completed Features
 
-## Next Gate
+- 007-docx-extractor-mammoth: done
+- 008-embedding-indexing-pipeline: done
+- 009-hybrid-retrieval-ranking: done
+- 010-hybrid-retrieval-integration: done
+- 011-production-vector-store: done
+- 012-vector-query-integration: done
+- 013-production-query-embedding-provider: done
 
-Run local verification and review the implementation before moving 013 to done.
+## Next Recommended Feature
+
+014-runtime-vector-wiring
+
+Status: not started
