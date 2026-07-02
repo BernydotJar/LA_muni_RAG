@@ -1,4 +1,6 @@
+import { embedQuery, type QueryEmbeddingProvider } from "./embeddings/queryEmbedding.js";
 import { buildHybridRetrievalResult } from "./retrieval/hybridRetriever.js";
+import { retrieveVectorCandidates, type VectorRetrievalRepository } from "./retrieval/vectorRetriever.js";
 import type { HybridCandidate } from "./retrieval/types.js";
 import { keywordSearch, type KeywordSearchResult, phraseSearch, type PhraseSearchResult } from "./search.js";
 
@@ -22,6 +24,11 @@ export interface EvidenceResponse {
   answerStatus: EvidenceStatus;
   evidenceCount: number;
   evidence: EvidenceItem[];
+}
+
+export interface EvidenceDependencies {
+  queryEmbeddingProvider?: QueryEmbeddingProvider;
+  vectorRepository?: VectorRetrievalRepository;
 }
 
 export const stripHeadlineTags = (value: string): string =>
@@ -106,10 +113,27 @@ const responseForEvidence = (
   evidence,
 });
 
-export const findEvidence = async (
+const resolveVectorCandidates = async (
+  query: string,
+  limit: number,
+  dependencies: EvidenceDependencies
+): Promise<HybridCandidate[]> => {
+  const { queryEmbeddingProvider, vectorRepository } = dependencies;
+  if (!queryEmbeddingProvider || !vectorRepository) return [];
+
+  try {
+    const queryVector = await embedQuery(queryEmbeddingProvider, query);
+    return await retrieveVectorCandidates(vectorRepository, queryVector, limit);
+  } catch {
+    return [];
+  }
+};
+
+export const findEvidenceWithDependencies = async (
   query: string,
   mode: EvidenceMode,
-  limit = 5
+  limit = 5,
+  dependencies: EvidenceDependencies = {}
 ): Promise<EvidenceResponse> => {
   if (mode === "phrase") {
     const results = await phraseSearch(query, limit);
@@ -117,15 +141,16 @@ export const findEvidence = async (
   }
 
   if (mode === "hybrid") {
-    const [phraseResults, keywordResults] = await Promise.all([
+    const [phraseResults, keywordResults, vectorCandidates] = await Promise.all([
       phraseSearch(query, limit),
       keywordSearch(query, limit),
+      resolveVectorCandidates(query, limit, dependencies),
     ]);
 
     const hybrid = buildHybridRetrievalResult({
       phraseCandidates: phraseResults.map(phraseResultToHybridCandidate),
       keywordCandidates: keywordResults.map(keywordResultToHybridCandidate),
-      vectorCandidates: [],
+      vectorCandidates,
       limit,
     });
 
@@ -135,3 +160,9 @@ export const findEvidence = async (
   const results = await keywordSearch(query, limit);
   return responseForEvidence(query, mode, results.map((result) => mapKeywordResultToEvidence(result)));
 };
+
+export const findEvidence = async (
+  query: string,
+  mode: EvidenceMode,
+  limit = 5
+): Promise<EvidenceResponse> => findEvidenceWithDependencies(query, mode, limit);
