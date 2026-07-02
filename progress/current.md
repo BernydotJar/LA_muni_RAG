@@ -2,21 +2,23 @@
 
 ## Active Feature
 
+None.
+
+## Last Completed Feature
+
 014-runtime-vector-wiring
 
 ## State
 
-review
+done
 
 ## Summary
 
-Feature 014 has been implemented in SHIP mode.
+Feature 014 has been completed in SHIP mode.
 
 The implementation adds runtime composition for query embedding provider, pgvector repository, and hybrid evidence dependencies. Server evidence, search, agent, answer, and chat routes now use dependency-aware retrieval while preserving safe fallback when vector configuration is missing.
 
 ## Completed Implementation
-
-014 added:
 
 - `createRuntimeEvidenceDependencies()`
 - safe query embedding provider construction at runtime
@@ -29,40 +31,47 @@ The implementation adds runtime composition for query embedding provider, pgvect
 
 ## Preserved Non-Goals
 
-014 did not introduce:
-
-- LLM answer generation
-- LLM reranking
-- UI changes
-- auth changes
-- unrelated ingestion changes
-- env or secret files
-- external provider calls in tests
-- migrations
-- package changes
-- evidence policy changes
+- no LLM answer generation
+- no LLM reranking
+- no UI changes
+- no auth changes
+- no unrelated ingestion changes
+- no env or secret files
+- no external provider calls in tests
+- no migrations
+- no package changes
+- no evidence policy changes
 
 ## Verification
 
-GitHub file edits were applied directly through the repository API, so local verification is required before marking this feature done.
-
-Required local verification:
+Local verification passed:
 
 - npm run typecheck
 - npm run build
 - npm run test
 
-## Review Focus
+Test result:
 
-Review should confirm:
+- 114 tests
+- 114 passing
+- 0 failing
+- 0 cancelled
+- 0 skipped
+- 0 todo
 
-- missing query embedding config returns empty runtime dependencies
-- missing database config returns empty runtime dependencies
-- server routes remain stable without vector config
-- hybrid routes can receive runtime vector dependencies when config is complete
-- no secrets were committed
-- tests do not call hosted providers
+## Completed Features
 
-## Next Gate
+- 007-docx-extractor-mammoth: done
+- 008-embedding-indexing-pipeline: done
+- 009-hybrid-retrieval-ranking: done
+- 010-hybrid-retrieval-integration: done
+- 011-production-vector-store: done
+- 012-vector-query-integration: done
+- 013-production-query-embedding-provider: done
+- 014-runtime-vector-wiring: done
 
-Run local verification and review the implementation before moving 014 to done.
+## Next Recommended Feature
+
+015-runtime-vector-observability
+
+Status: not started
