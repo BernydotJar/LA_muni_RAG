@@ -6,42 +6,30 @@
 
 ## State
 
-spec_ready
+review
 
 ## Summary
 
-Feature 014 has been opened in SHIP mode as a specification-only change.
+Feature 014 has been implemented in SHIP mode.
 
-The goal is to define runtime composition for the query embedding provider, pgvector repository, and hybrid evidence dependencies with safe fallback.
+The implementation adds runtime composition for query embedding provider, pgvector repository, and hybrid evidence dependencies. Server evidence, search, agent, answer, and chat routes now use dependency-aware retrieval while preserving safe fallback when vector configuration is missing.
 
-## Repository State
+## Completed Implementation
 
-Local and GitHub were synchronized after 013 completion before opening this feature.
+014 added:
 
-## Completed Features
+- `createRuntimeEvidenceDependencies()`
+- safe query embedding provider construction at runtime
+- safe pgvector repository construction at runtime
+- server wiring through `findEvidenceWithDependencies()`
+- dependency-aware agent evaluation
+- dependency-aware deterministic answer generation
+- dependency-aware chat processing
+- offline tests for runtime dependency construction
 
-- 007-docx-extractor-mammoth: done
-- 008-embedding-indexing-pipeline: done
-- 009-hybrid-retrieval-ranking: done
-- 010-hybrid-retrieval-integration: done
-- 011-production-vector-store: done
-- 012-vector-query-integration: done
-- 013-production-query-embedding-provider: done
+## Preserved Non-Goals
 
-## Current Feature Scope
-
-014 must define:
-
-- runtime evidence dependency factory
-- safe query embedding provider construction
-- safe vector repository construction
-- server wiring through dependency-aware evidence retrieval
-- fallback behavior when vector config is missing
-- offline tests without hosted provider calls
-
-## Non-Goals
-
-014 must not introduce:
+014 did not introduce:
 
 - LLM answer generation
 - LLM reranking
@@ -49,13 +37,32 @@ Local and GitHub were synchronized after 013 completion before opening this feat
 - auth changes
 - unrelated ingestion changes
 - env or secret files
+- external provider calls in tests
 - migrations
-- package changes unless separately approved
+- package changes
+- evidence policy changes
+
+## Verification
+
+GitHub file edits were applied directly through the repository API, so local verification is required before marking this feature done.
+
+Required local verification:
+
+- npm run typecheck
+- npm run build
+- npm run test
+
+## Review Focus
+
+Review should confirm:
+
+- missing query embedding config returns empty runtime dependencies
+- missing database config returns empty runtime dependencies
+- server routes remain stable without vector config
+- hybrid routes can receive runtime vector dependencies when config is complete
+- no secrets were committed
+- tests do not call hosted providers
 
 ## Next Gate
 
-Human approval is required before implementation.
-
-Approval phrase:
-
-`Approved: 014-runtime-vector-wiring for implementation in SHIP mode.`
+Run local verification and review the implementation before moving 014 to done.
