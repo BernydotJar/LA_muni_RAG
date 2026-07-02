@@ -1,52 +1,54 @@
 # Current Progress
 
+## Active Feature
+
+009-hybrid-retrieval-ranking
+
+## State
+
+spec_ready
+
+## Summary
+
+Feature 009 has been opened in SHIP mode as a specification-only change.
+
+The goal is to define hybrid retrieval ranking for LA_muni_RAG by combining phrase, keyword, and vector candidates while preserving the deterministic evidence-first answer policy.
+
 ## Repository Sync
 
-Local repository and GitHub are mirrored.
-
-Local source of truth:
-
-`/Users/eduardosacahui/Github-Repos/LA_muni_RAG`
-
-Remote:
-
-`origin/main`
+Local repository and GitHub were mirrored through Feature 008 before opening this feature.
 
 ## Completed Features
 
 - 007-docx-extractor-mammoth: done
 - 008-embedding-indexing-pipeline: done
 
-## Verification
+## Current Feature Scope
 
-Passed:
+009 must define:
 
-- npm run typecheck
-- npm run build
-- npm run test
+- hybrid candidate types
+- phrase/keyword/vector score composition
+- deterministic deduplication
+- phrase priority
+- vector retrieval boundary
+- evidence compatibility
 
-Test result:
+## Non-Goals
 
-- 74 tests
-- 74 passing
-- 0 failing
+009 must not introduce:
 
-Local `HEAD` and `origin/main` were synchronized before this progress update.
+- LLM answer generation
+- UI changes
+- auth changes
+- ingestion extractor changes
+- external API calls in tests
+- unsupported legal conclusions
 
-Previous synchronized commit:
+## Next Gate
 
-`890e120eec5790036bccba201dc4c6d87e064485`
+Human approval is required before implementation.
 
-## Current State
+Approval phrase:
 
-The repository is synchronized through Feature 008.
-
-No runtime changes are pending.
-
-009-hybrid-retrieval-ranking has not been started.
-
-## Next Recommended Feature
-
-009-hybrid-retrieval-ranking
-
-Status: not started
+`Approved: 009-hybrid-retrieval-ranking for implementation in SHIP mode.`
