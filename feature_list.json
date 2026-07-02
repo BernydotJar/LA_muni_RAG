@@ -40,10 +40,10 @@
     },
     {
       "id": "010-hybrid-retrieval-integration",
-      "status": "spec_ready",
+      "status": "review",
       "mode": "SHIP",
       "active": true,
-      "summary": "Define controlled integration of the hybrid retrieval layer into evidence/search flows while preserving deterministic answer policy."
+      "summary": "Integrated hybrid retrieval into evidence and API flows while preserving keyword, phrase, and deterministic answer behavior."
     }
   ]
 }
