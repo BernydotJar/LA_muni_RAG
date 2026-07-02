@@ -2,66 +2,74 @@
 
 ## Active Feature
 
+None.
+
+## Last Completed Feature
+
 012-vector-query-integration
 
 ## State
 
-review
+done
 
 ## Summary
 
-Feature 012 has been implemented in SHIP mode.
+Feature 012 has been completed in SHIP mode.
 
-The implementation adds a query embedding boundary and optional vector repository wiring so hybrid evidence can include semantic vector candidates when dependencies are provided, while degrading safely to phrase and keyword retrieval when vector dependencies are absent or fail.
+012 added a query embedding boundary and optional vector repository wiring for hybrid evidence. Hybrid evidence can now include semantic vector candidates when dependencies are provided, while preserving safe fallback to phrase and keyword retrieval when vector dependencies are absent or fail.
 
 ## Completed Implementation
-
-012 added:
 
 - `QueryEmbeddingProvider` boundary
 - query embedding dimension validation
 - `findEvidenceWithDependencies()` for explicit dependency injection
 - optional vector candidate retrieval in hybrid mode
-- graceful degradation when vector dependencies are missing
-- graceful degradation when query embedding fails
+- optional keyword and phrase search injection for offline tests
+- safe fallback when vector dependencies are missing
+- safe fallback when query embedding fails
 - offline tests for query embedding boundary
-- offline tests for hybrid vector integration with deterministic fakes
+- offline tests for hybrid vector integration
 
 ## Preserved Non-Goals
 
-012 did not introduce:
-
-- LLM answer generation
-- LLM reranking
-- UI changes
-- auth changes
-- unrelated ingestion changes
-- env or secret changes
-- external API calls in tests
-- migrations
-- package changes
+- no LLM answer generation
+- no LLM reranking
+- no UI changes
+- no auth changes
+- no unrelated ingestion changes
+- no env or secret changes
+- no external API calls in tests
+- no migrations
+- no package changes
 
 ## Verification
 
-GitHub file edits were applied directly through the repository API, so local verification is required before marking this feature done.
-
-Required local verification:
+Local verification passed:
 
 - npm run typecheck
 - npm run build
 - npm run test
 
-## Review Focus
+Test result:
 
-Review should confirm:
+- 102 tests
+- 102 passing
+- 0 failing
+- 0 cancelled
+- 0 skipped
+- 0 todo
 
-- keyword and phrase modes remain independent from vector dependencies
-- hybrid mode can include vector candidates when dependencies are provided
-- hybrid mode degrades safely without vector dependencies
-- vector candidates still require citation labels
-- no external provider calls are used in tests
-- deterministic answer policy remains unchanged
+## Completed Features
 
-## Next Gate
+- 007-docx-extractor-mammoth: done
+- 008-embedding-indexing-pipeline: done
+- 009-hybrid-retrieval-ranking: done
+- 010-hybrid-retrieval-integration: done
+- 011-production-vector-store: done
+- 012-vector-query-integration: done
 
-Run local verification and review the implementation before moving 012 to done.
+## Next Recommended Feature
+
+013-production-query-embedding-provider
+
+Status: not started
