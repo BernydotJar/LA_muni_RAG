@@ -54,10 +54,10 @@
     },
     {
       "id": "012-vector-query-integration",
-      "status": "spec_ready",
+      "status": "review",
       "mode": "SHIP",
       "active": true,
-      "summary": "Define how hybrid retrieval obtains query embeddings and retrieves persisted vector candidates without weakening deterministic evidence policy."
+      "summary": "Added query embedding boundary and optional vector repository wiring for hybrid evidence with graceful degradation and offline tests."
     }
   ]
 }
