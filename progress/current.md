@@ -6,53 +6,60 @@
 
 ## State
 
-spec_ready
+review
 
 ## Summary
 
-Feature 010 has been opened in SHIP mode as a specification-only change.
+Feature 010 has been implemented in SHIP mode.
 
-The goal is to define controlled integration of the hybrid retrieval layer into the evidence/search flow while preserving deterministic evidence-first answer behavior.
+The implementation integrates the hybrid retrieval layer into the evidence and API flows while preserving deterministic evidence-first answer behavior.
 
-## Repository State
+## Completed Implementation
 
-Local and GitHub were synchronized after 009 completion before opening this feature.
+010 added:
 
-## Completed Features
+- `hybrid` as an evidence mode
+- mapping from keyword search results into hybrid candidates
+- mapping from phrase search results into hybrid candidates
+- mapping from hybrid candidates back into citable evidence items
+- API validation support for keyword, phrase, and hybrid modes
+- `/api/search?mode=hybrid` support through the evidence integration
+- offline unit tests for hybrid evidence mapping
 
-- 007-docx-extractor-mammoth: done
-- 008-embedding-indexing-pipeline: done
-- 009-hybrid-retrieval-ranking: done
+## Preserved Non-Goals
 
-## Current Feature Scope
-
-010 must define:
-
-- hybrid evidence mode or approved integration boundary
-- mapping from keyword and phrase search results into hybrid candidates
-- citation-preserving evidence mapping
-- API mode validation if hybrid becomes public
-- tests proving existing keyword and phrase behavior remain unchanged
-- tests proving deterministic answer policy remains unchanged
-
-## Non-Goals
-
-010 must not introduce:
+010 did not introduce:
 
 - LLM answer generation
 - LLM reranking
 - UI changes
 - auth changes
 - ingestion extractor changes
+- migrations
 - package changes
 - env or secret changes
-- migrations without separate approval
 - external API calls in tests
+
+## Verification
+
+GitHub file edits were applied directly through the repository API, so local verification is required before marking this feature done.
+
+Required local verification:
+
+- npm run typecheck
+- npm run build
+- npm run test
+
+## Review Focus
+
+Review should confirm:
+
+- keyword and phrase modes remain backward compatible
+- hybrid mode returns only citable evidence
+- `/api/answer` still returns not_found with no citations when no evidence exists
+- invalid mode still returns 400
+- no LLM behavior was introduced
 
 ## Next Gate
 
-Human approval is required before implementation.
-
-Approval phrase:
-
-`Approved: 010-hybrid-retrieval-integration for implementation in SHIP mode.`
+Run local verification and review the implementation before moving 010 to done.
