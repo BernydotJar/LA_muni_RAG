@@ -36,6 +36,14 @@ const requireDatabaseUrl = (): void => {
   }
 };
 
+const parseEvidenceMode = (value: string | null | undefined): EvidenceMode => {
+  const mode = (value?.trim() || "keyword") as EvidenceMode;
+  if (mode !== "keyword" && mode !== "phrase" && mode !== "hybrid") {
+    throw new HttpError(400, "invalid_mode", "mode must be keyword, phrase, or hybrid");
+  }
+  return mode;
+};
+
 export const createRequestHandler = (options: ServerOptions = {}): RequestListener => {
   const publicDir = options.publicDir ?? defaultPublicDir;
 
@@ -57,7 +65,7 @@ export const createRequestHandler = (options: ServerOptions = {}): RequestListen
 
       // ----- Search -----
       if (req.method === "GET" && url.pathname === "/api/search") {
-        const mode = url.searchParams.get("mode")?.trim() ?? "keyword";
+        const mode = parseEvidenceMode(url.searchParams.get("mode"));
         const query = requireQueryParam(url, "q");
         const limit = parseLimit(url.searchParams.get("limit"));
 
@@ -83,18 +91,21 @@ export const createRequestHandler = (options: ServerOptions = {}): RequestListen
           return;
         }
 
-        throw new HttpError(400, "invalid_mode", "mode must be keyword or phrase");
+        const evidence = await findEvidence(query, mode, limit);
+        sendJson(res, 200, {
+          mode,
+          query,
+          resultCount: evidence.evidenceCount,
+          results: evidence.evidence,
+        });
+        return;
       }
 
       // ----- Evidence -----
       if (req.method === "GET" && url.pathname === "/api/evidence") {
-        const mode = (url.searchParams.get("mode")?.trim() ?? "keyword") as EvidenceMode;
+        const mode = parseEvidenceMode(url.searchParams.get("mode"));
         const query = requireQueryParam(url, "q");
         const limit = parseLimit(url.searchParams.get("limit"));
-
-        if (mode !== "keyword" && mode !== "phrase") {
-          throw new HttpError(400, "invalid_mode", "mode must be keyword or phrase");
-        }
 
         const evidence = await findEvidence(query, mode, limit);
         sendJson(res, 200, evidence);
@@ -103,13 +114,9 @@ export const createRequestHandler = (options: ServerOptions = {}): RequestListen
 
       // ----- Agent -----
       if (req.method === "GET" && url.pathname === "/api/agent") {
-        const mode = (url.searchParams.get("mode")?.trim() ?? "keyword") as EvidenceMode;
+        const mode = parseEvidenceMode(url.searchParams.get("mode"));
         const query = requireQueryParam(url, "q");
         const limit = parseLimit(url.searchParams.get("limit"));
-
-        if (mode !== "keyword" && mode !== "phrase") {
-          throw new HttpError(400, "invalid_mode", "mode must be keyword or phrase");
-        }
 
         const agentResponse = await evaluateQuery(query, mode, limit);
         sendJson(res, 200, agentResponse);
@@ -118,13 +125,9 @@ export const createRequestHandler = (options: ServerOptions = {}): RequestListen
 
       // ----- Deterministic Answer -----
       if (req.method === "GET" && url.pathname === "/api/answer") {
-        const mode = (url.searchParams.get("mode")?.trim() ?? "keyword") as EvidenceMode;
+        const mode = parseEvidenceMode(url.searchParams.get("mode"));
         const query = requireQueryParam(url, "q");
         const limit = parseLimit(url.searchParams.get("limit"));
-
-        if (mode !== "keyword" && mode !== "phrase") {
-          throw new HttpError(400, "invalid_mode", "mode must be keyword or phrase");
-        }
 
         const answer = await buildDeterministicAnswer(query, mode, limit);
         sendJson(res, 200, answer);
@@ -140,11 +143,7 @@ export const createRequestHandler = (options: ServerOptions = {}): RequestListen
           throw new HttpError(400, "missing_message", "message is required");
         }
 
-        const mode = ((body.mode ?? "keyword") as EvidenceMode);
-        if (mode !== "keyword" && mode !== "phrase") {
-          throw new HttpError(400, "invalid_mode", "mode must be keyword or phrase");
-        }
-
+        const mode = parseEvidenceMode(body.mode);
         const limit = body.limit ?? 5;
         if (!Number.isInteger(limit) || limit < 1 || limit > 50) {
           throw new HttpError(400, "invalid_limit", "limit must be an integer between 1 and 50");
