@@ -1,54 +1,52 @@
 # Current Progress
 
-## Active Feature
+## Repository Sync
 
-008-embedding-indexing-pipeline
+Local repository and GitHub are mirrored.
 
-## State
+Local source of truth:
 
-review
+`/Users/eduardosacahui/Github-Repos/LA_muni_RAG`
 
-## Summary
+Remote:
 
-Implemented the embedding indexing foundation for LA_muni_RAG.
+`origin/main`
 
-The feature adds embedding chunk planning, deterministic chunk identity,
-provider abstraction, deterministic local provider, repository boundary,
-validation, and idempotent indexing orchestration.
+## Completed Features
 
-The implementation does not change retrieval, evidence, answer, chat, ingestion
-extractor behavior, package dependencies, migrations, env, or secrets.
+- 007-docx-extractor-mammoth: done
+- 008-embedding-indexing-pipeline: done
 
-Review changes addressed:
-
-- Chunk identity now includes `sectionType` and `citationLabel`.
-- Provider vector count must exactly match planned chunk count before any write.
-- Planned chunk metadata now carries selected document-level provenance,
-  including `documentMetadata`, `sourcePath`, and `sourceFormat`.
-
-## Validation
+## Verification
 
 Passed:
 
-- `npm run typecheck`
-- `npm run build`
-- `npm run test`
+- npm run typecheck
+- npm run build
+- npm run test
 
-Result:
+Test result:
 
 - 74 tests
 - 74 passing
 - 0 failing
 
-## Review Focus
+Local `HEAD` and `origin/main` were synchronized before this progress update.
 
-- chunk identity stability
-- idempotency
-- vector dimension validation
-- provider failure handling
-- provenance metadata completeness
-- no behavior drift in search/evidence/answer/chat
+Previous synchronized commit:
+
+`890e120eec5790036bccba201dc4c6d87e064485`
+
+## Current State
+
+The repository is synchronized through Feature 008.
+
+No runtime changes are pending.
+
+009-hybrid-retrieval-ranking has not been started.
 
 ## Next Recommended Feature
 
 009-hybrid-retrieval-ranking
+
+Status: not started
