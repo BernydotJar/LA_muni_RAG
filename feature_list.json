@@ -68,10 +68,10 @@
     },
     {
       "id": "014-runtime-vector-wiring",
-      "status": "spec_ready",
+      "status": "review",
       "mode": "SHIP",
       "active": true,
-      "summary": "Define runtime composition for query embedding provider, pgvector repository, and hybrid evidence dependencies with safe fallback."
+      "summary": "Added runtime evidence dependency factory and wired server evidence, agent, answer, and chat routes through dependency-aware retrieval with safe fallback."
     }
   ]
 }
