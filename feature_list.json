@@ -72,6 +72,13 @@
       "mode": "SHIP",
       "active": false,
       "summary": "Added runtime evidence dependency factory and wired server evidence, agent, answer, and chat routes through dependency-aware retrieval with safe fallback."
+    },
+    {
+      "id": "015-runtime-vector-observability",
+      "status": "spec_ready",
+      "mode": "SHIP",
+      "active": true,
+      "summary": "Define safe runtime vector observability for enabled, disabled, and degraded states without exposing secrets or changing answer policy."
     }
   ]
 }
