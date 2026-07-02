@@ -2,62 +2,21 @@
 
 ## Active Feature
 
-None.
-
-## Last Completed Feature
-
-014-runtime-vector-wiring
+015-runtime-vector-observability
 
 ## State
 
-done
+spec_ready
 
 ## Summary
 
-Feature 014 has been completed in SHIP mode.
+Feature 015 has been opened in SHIP mode as a specification-only change.
 
-The implementation adds runtime composition for query embedding provider, pgvector repository, and hybrid evidence dependencies. Server evidence, search, agent, answer, and chat routes now use dependency-aware retrieval while preserving safe fallback when vector configuration is missing.
+The goal is to define safe runtime vector observability for enabled, disabled, and degraded states without exposing secrets or changing answer policy.
 
-## Completed Implementation
+## Repository State
 
-- `createRuntimeEvidenceDependencies()`
-- safe query embedding provider construction at runtime
-- safe pgvector repository construction at runtime
-- server wiring through `findEvidenceWithDependencies()`
-- dependency-aware agent evaluation
-- dependency-aware deterministic answer generation
-- dependency-aware chat processing
-- offline tests for runtime dependency construction
-
-## Preserved Non-Goals
-
-- no LLM answer generation
-- no LLM reranking
-- no UI changes
-- no auth changes
-- no unrelated ingestion changes
-- no env or secret files
-- no external provider calls in tests
-- no migrations
-- no package changes
-- no evidence policy changes
-
-## Verification
-
-Local verification passed:
-
-- npm run typecheck
-- npm run build
-- npm run test
-
-Test result:
-
-- 114 tests
-- 114 passing
-- 0 failing
-- 0 cancelled
-- 0 skipped
-- 0 todo
+Local and GitHub were synchronized after 014 completion before opening this feature.
 
 ## Completed Features
 
@@ -70,8 +29,35 @@ Test result:
 - 013-production-query-embedding-provider: done
 - 014-runtime-vector-wiring: done
 
-## Next Recommended Feature
+## Current Feature Scope
 
-015-runtime-vector-observability
+015 must define:
 
-Status: not started
+- runtime vector status model
+- safe reason codes
+- context factory with dependencies and status
+- sanitized server exposure
+- secret leakage prevention tests
+- offline tests without hosted provider calls
+
+## Non-Goals
+
+015 must not introduce:
+
+- LLM answer generation
+- LLM reranking
+- UI changes
+- auth changes
+- unrelated ingestion changes
+- env or secret files
+- migrations
+- package changes unless separately approved
+- hosted provider health checks
+
+## Next Gate
+
+Human approval is required before implementation.
+
+Approval phrase:
+
+`Approved: 015-runtime-vector-observability for implementation in SHIP mode.`
