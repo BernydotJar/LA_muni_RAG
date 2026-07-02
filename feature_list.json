@@ -65,6 +65,13 @@
       "mode": "SHIP",
       "active": false,
       "summary": "Added HTTP query embedding provider, configuration-safe factory, transport injection, stable error mapping, and offline tests."
+    },
+    {
+      "id": "014-runtime-vector-wiring",
+      "status": "spec_ready",
+      "mode": "SHIP",
+      "active": true,
+      "summary": "Define runtime composition for query embedding provider, pgvector repository, and hybrid evidence dependencies with safe fallback."
     }
   ]
 }
