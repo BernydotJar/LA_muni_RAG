@@ -2,14 +2,40 @@
 
 ## 010-hybrid-retrieval-integration
 
-State: spec_ready  
+State: done  
 Mode: SHIP
 
-Opened Feature 010 as a specification-only SHIP feature.
+Implemented controlled integration of the hybrid retrieval layer into the evidence and API flows.
 
-The feature will define controlled integration of the hybrid retrieval layer into the evidence/search flow while preserving deterministic evidence-first answer behavior.
+Completed:
 
-No runtime code was changed in this step.
+- Added `hybrid` as an evidence mode.
+- Added mapping from keyword search results into hybrid candidates.
+- Added mapping from phrase search results into hybrid candidates.
+- Added mapping from hybrid candidates back into citable evidence items.
+- Added API validation support for keyword, phrase, and hybrid modes.
+- Added `/api/search?mode=hybrid` support through the evidence integration.
+- Added offline unit tests for hybrid evidence mapping.
+
+Preserved non-goals:
+
+- No LLM answer generation.
+- No LLM reranking.
+- No UI changes.
+- No auth changes.
+- No ingestion extractor changes.
+- No migrations.
+- No package changes.
+- No env or secret changes.
+- No external API calls in tests.
+
+Local verification passed:
+
+- `npm run typecheck`
+- `npm run build`
+- `npm run test`
+
+Full suite result after 010: 88 passing, 0 failing.
 
 ## 009-hybrid-retrieval-ranking
 
