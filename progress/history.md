@@ -2,14 +2,42 @@
 
 ## 014-runtime-vector-wiring
 
-State: spec_ready  
+State: done  
 Mode: SHIP
 
-Opened Feature 014 as a specification-only SHIP feature.
+Implemented runtime composition for the query embedding provider, pgvector repository, and hybrid evidence dependencies with safe fallback.
 
-The feature will define runtime composition for the query embedding provider, pgvector repository, and hybrid evidence dependencies with safe fallback.
+Completed:
 
-No runtime code was changed in this step.
+- Added `createRuntimeEvidenceDependencies()`.
+- Added safe query embedding provider construction at runtime.
+- Added safe pgvector repository construction at runtime.
+- Wired server hybrid retrieval through `findEvidenceWithDependencies()`.
+- Added dependency-aware agent evaluation.
+- Added dependency-aware deterministic answer generation.
+- Added dependency-aware chat processing.
+- Added offline tests for runtime dependency construction.
+
+Preserved non-goals:
+
+- No LLM answer generation.
+- No LLM reranking.
+- No UI changes.
+- No auth changes.
+- No unrelated ingestion changes.
+- No env or secret files.
+- No external provider calls in tests.
+- No migrations.
+- No package changes.
+- No evidence policy changes.
+
+Local verification passed:
+
+- `npm run typecheck`
+- `npm run build`
+- `npm run test`
+
+Full suite result after 014: 114 passing, 0 failing.
 
 ## 013-production-query-embedding-provider
 
