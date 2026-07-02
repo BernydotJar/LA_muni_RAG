@@ -2,14 +2,42 @@
 
 ## 012-vector-query-integration
 
-State: spec_ready  
+State: done  
 Mode: SHIP
 
-Opened Feature 012 as a specification-only SHIP feature.
+Implemented query-time vector integration for hybrid evidence.
 
-The feature will define how hybrid retrieval obtains query embeddings and retrieves persisted vector candidates without weakening deterministic evidence-first answer behavior.
+Completed:
 
-No runtime code was changed in this step.
+- Added `QueryEmbeddingProvider` boundary.
+- Added query embedding dimension validation.
+- Added `findEvidenceWithDependencies()` for explicit dependency injection.
+- Added optional vector candidate retrieval in hybrid mode.
+- Added optional keyword and phrase search injection for offline tests.
+- Added safe fallback when vector dependencies are missing.
+- Added safe fallback when query embedding fails.
+- Added offline tests for query embedding boundary.
+- Added offline tests for hybrid vector integration.
+
+Preserved non-goals:
+
+- No LLM answer generation.
+- No LLM reranking.
+- No UI changes.
+- No auth changes.
+- No unrelated ingestion changes.
+- No env or secret changes.
+- No external API calls in tests.
+- No migrations.
+- No package changes.
+
+Local verification passed:
+
+- `npm run typecheck`
+- `npm run build`
+- `npm run test`
+
+Full suite result after 012: 102 passing, 0 failing.
 
 ## 011-production-vector-store
 
