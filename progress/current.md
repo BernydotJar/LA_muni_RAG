@@ -2,15 +2,19 @@
 
 ## Active Feature
 
+None.
+
+## Last Completed Feature
+
 011-production-vector-store
 
 ## State
 
-review
+done
 
 ## Summary
 
-Feature 011 has been implemented in SHIP mode.
+Feature 011 has been completed in SHIP mode.
 
 The implementation adds a production pgvector storage schema, a repository adapter behind the existing embedding/vector retrieval boundaries, deterministic vector mapping helpers, dimension validation, and offline tests.
 
@@ -41,25 +45,31 @@ The implementation adds a production pgvector storage schema, a repository adapt
 
 ## Verification
 
-GitHub file edits were applied directly through the repository API, so local verification is required before marking this feature done.
-
-Required local verification:
+Local verification passed:
 
 - npm run typecheck
 - npm run build
 - npm run test
 
-## Review Focus
+Test result:
 
-Review should confirm:
+- 94 tests
+- 94 passing
+- 0 failing
+- 0 cancelled
+- 0 skipped
+- 0 todo
 
-- migration is acceptable for the target PostgreSQL/pgvector environment
-- fixed vector dimension is correct for the selected production embedding model
-- repository adapter remains behind boundaries
-- citation labels are required
-- dimension mismatch fails predictably
-- no external provider calls are used in tests
+## Completed Features
 
-## Next Gate
+- 007-docx-extractor-mammoth: done
+- 008-embedding-indexing-pipeline: done
+- 009-hybrid-retrieval-ranking: done
+- 010-hybrid-retrieval-integration: done
+- 011-production-vector-store: done
 
-Run local verification and review the implementation before moving 011 to done.
+## Next Recommended Feature
+
+012-vector-query-integration
+
+Status: not started
