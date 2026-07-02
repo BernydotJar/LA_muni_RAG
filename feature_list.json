@@ -44,6 +44,13 @@
       "mode": "SHIP",
       "active": false,
       "summary": "Integrated hybrid retrieval into evidence and API flows while preserving keyword, phrase, and deterministic answer behavior."
+    },
+    {
+      "id": "011-production-vector-store",
+      "status": "spec_ready",
+      "mode": "SHIP",
+      "active": true,
+      "summary": "Define a production vector storage and retrieval design for persisted embedding chunks behind the existing retrieval boundary."
     }
   ]
 }
