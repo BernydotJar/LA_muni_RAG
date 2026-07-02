@@ -1,5 +1,16 @@
 # Progress History
 
+## 010-hybrid-retrieval-integration
+
+State: spec_ready  
+Mode: SHIP
+
+Opened Feature 010 as a specification-only SHIP feature.
+
+The feature will define controlled integration of the hybrid retrieval layer into the evidence/search flow while preserving deterministic evidence-first answer behavior.
+
+No runtime code was changed in this step.
+
 ## 009-hybrid-retrieval-ranking
 
 State: done  
