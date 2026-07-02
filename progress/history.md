@@ -1,8 +1,19 @@
 # Progress History
 
+## 009-hybrid-retrieval-ranking
+
+State: spec_ready  
+Mode: SHIP
+
+Opened Feature 009 as a specification-only SHIP feature.
+
+The feature will define hybrid retrieval ranking across phrase, keyword, and vector candidates while preserving deterministic, evidence-first answer behavior.
+
+No runtime code was changed in this step.
+
 ## 008-embedding-indexing-pipeline
 
-State: review  
+State: done  
 Mode: SHIP
 
 Implemented the embedding indexing pipeline foundation.
