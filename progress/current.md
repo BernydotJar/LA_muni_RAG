@@ -2,62 +2,21 @@
 
 ## Active Feature
 
-None.
-
-## Last Completed Feature
-
-012-vector-query-integration
+013-production-query-embedding-provider
 
 ## State
 
-done
+spec_ready
 
 ## Summary
 
-Feature 012 has been completed in SHIP mode.
+Feature 013 has been opened in SHIP mode as a specification-only change.
 
-012 added a query embedding boundary and optional vector repository wiring for hybrid evidence. Hybrid evidence can now include semantic vector candidates when dependencies are provided, while preserving safe fallback to phrase and keyword retrieval when vector dependencies are absent or fail.
+The goal is to define a production query embedding provider behind the existing `QueryEmbeddingProvider` boundary without adding secrets, external calls in tests, or answer-policy drift.
 
-## Completed Implementation
+## Repository State
 
-- `QueryEmbeddingProvider` boundary
-- query embedding dimension validation
-- `findEvidenceWithDependencies()` for explicit dependency injection
-- optional vector candidate retrieval in hybrid mode
-- optional keyword and phrase search injection for offline tests
-- safe fallback when vector dependencies are missing
-- safe fallback when query embedding fails
-- offline tests for query embedding boundary
-- offline tests for hybrid vector integration
-
-## Preserved Non-Goals
-
-- no LLM answer generation
-- no LLM reranking
-- no UI changes
-- no auth changes
-- no unrelated ingestion changes
-- no env or secret changes
-- no external API calls in tests
-- no migrations
-- no package changes
-
-## Verification
-
-Local verification passed:
-
-- npm run typecheck
-- npm run build
-- npm run test
-
-Test result:
-
-- 102 tests
-- 102 passing
-- 0 failing
-- 0 cancelled
-- 0 skipped
-- 0 todo
+Local and GitHub were synchronized after 012 completion before opening this feature.
 
 ## Completed Features
 
@@ -68,8 +27,34 @@ Test result:
 - 011-production-vector-store: done
 - 012-vector-query-integration: done
 
-## Next Recommended Feature
+## Current Feature Scope
 
-013-production-query-embedding-provider
+013 must define:
 
-Status: not started
+- production query embedding provider adapter
+- configuration-safe provider factory
+- transport injection for deterministic tests
+- stable provider error mapping
+- dimension validation through the existing boundary
+- no external provider calls in tests
+
+## Non-Goals
+
+013 must not introduce:
+
+- LLM answer generation
+- LLM reranking
+- UI changes
+- auth changes
+- unrelated ingestion changes
+- env or secret files
+- migrations
+- package changes unless separately approved
+
+## Next Gate
+
+Human approval is required before implementation.
+
+Approval phrase:
+
+`Approved: 013-production-query-embedding-provider for implementation in SHIP mode.`
