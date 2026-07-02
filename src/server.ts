@@ -2,11 +2,11 @@ import "dotenv/config";
 import { createServer, type RequestListener, type Server } from "node:http";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
-import { evaluateQuery } from "./agent.js";
-import { buildDeterministicAnswer } from "./answer.js";
-import { processChat } from "./chat.js";
+import { evaluateQueryWithDependencies } from "./agent.js";
+import { buildDeterministicAnswerWithDependencies } from "./answer.js";
+import { processChatWithDependencies } from "./chat.js";
 import { closeDb } from "./db.js";
-import { type EvidenceMode, findEvidence } from "./evidence.js";
+import { type EvidenceDependencies, type EvidenceMode, findEvidenceWithDependencies } from "./evidence.js";
 import {
   HttpError,
   handleCors,
@@ -19,6 +19,7 @@ import {
   serveStatic,
 } from "./http.js";
 import { keywordSearch, phraseSearch } from "./search.js";
+import { createRuntimeEvidenceDependencies } from "./runtime/evidenceDependencies.js";
 
 // Resolve public directory relative to the project root.
 // In dev (tsx): src/server.ts → ../public
@@ -28,6 +29,7 @@ const defaultPublicDir = join(__dirname, "..", "public");
 
 export interface ServerOptions {
   publicDir?: string;
+  evidenceDependencies?: EvidenceDependencies;
 }
 
 const requireDatabaseUrl = (): void => {
@@ -46,6 +48,7 @@ const parseEvidenceMode = (value: string | null | undefined): EvidenceMode => {
 
 export const createRequestHandler = (options: ServerOptions = {}): RequestListener => {
   const publicDir = options.publicDir ?? defaultPublicDir;
+  const evidenceDependencies = options.evidenceDependencies ?? createRuntimeEvidenceDependencies();
 
   return async (req, res) => {
     try {
@@ -91,7 +94,7 @@ export const createRequestHandler = (options: ServerOptions = {}): RequestListen
           return;
         }
 
-        const evidence = await findEvidence(query, mode, limit);
+        const evidence = await findEvidenceWithDependencies(query, mode, limit, evidenceDependencies);
         sendJson(res, 200, {
           mode,
           query,
@@ -107,7 +110,7 @@ export const createRequestHandler = (options: ServerOptions = {}): RequestListen
         const query = requireQueryParam(url, "q");
         const limit = parseLimit(url.searchParams.get("limit"));
 
-        const evidence = await findEvidence(query, mode, limit);
+        const evidence = await findEvidenceWithDependencies(query, mode, limit, evidenceDependencies);
         sendJson(res, 200, evidence);
         return;
       }
@@ -118,7 +121,7 @@ export const createRequestHandler = (options: ServerOptions = {}): RequestListen
         const query = requireQueryParam(url, "q");
         const limit = parseLimit(url.searchParams.get("limit"));
 
-        const agentResponse = await evaluateQuery(query, mode, limit);
+        const agentResponse = await evaluateQueryWithDependencies(query, mode, limit, evidenceDependencies);
         sendJson(res, 200, agentResponse);
         return;
       }
@@ -129,7 +132,7 @@ export const createRequestHandler = (options: ServerOptions = {}): RequestListen
         const query = requireQueryParam(url, "q");
         const limit = parseLimit(url.searchParams.get("limit"));
 
-        const answer = await buildDeterministicAnswer(query, mode, limit);
+        const answer = await buildDeterministicAnswerWithDependencies(query, mode, limit, evidenceDependencies);
         sendJson(res, 200, answer);
         return;
       }
@@ -149,7 +152,7 @@ export const createRequestHandler = (options: ServerOptions = {}): RequestListen
           throw new HttpError(400, "invalid_limit", "limit must be an integer between 1 and 50");
         }
 
-        const chatResponse = await processChat(message, mode, limit);
+        const chatResponse = await processChatWithDependencies(message, mode, limit, evidenceDependencies);
         sendJson(res, 200, chatResponse);
         return;
       }
