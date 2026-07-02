@@ -51,6 +51,13 @@
       "mode": "SHIP",
       "active": false,
       "summary": "Added pgvector schema, production repository adapter, vector candidate mapping, dimension validation, and offline tests."
+    },
+    {
+      "id": "012-vector-query-integration",
+      "status": "spec_ready",
+      "mode": "SHIP",
+      "active": true,
+      "summary": "Define how hybrid retrieval obtains query embeddings and retrieves persisted vector candidates without weakening deterministic evidence policy."
     }
   ]
 }
