@@ -2,14 +2,40 @@
 
 ## 009-hybrid-retrieval-ranking
 
-State: spec_ready  
+State: review  
 Mode: SHIP
 
-Opened Feature 009 as a specification-only SHIP feature.
+Implemented deterministic hybrid retrieval ranking.
 
-The feature will define hybrid retrieval ranking across phrase, keyword, and vector candidates while preserving deterministic, evidence-first answer behavior.
+Completed:
 
-No runtime code was changed in this step.
+- Added normalized hybrid retrieval candidate types.
+- Added deterministic hybrid score composition.
+- Added deterministic deduplication across phrase, keyword, and vector candidates.
+- Added phrase-priority ranking behavior.
+- Added vector retrieval boundary through an interface.
+- Added hybrid retrieval orchestration.
+- Added offline tests for scoring, dedupe, vector boundary, and orchestration.
+
+Preserved non-goals:
+
+- No LLM answer generation.
+- No UI changes.
+- No auth changes.
+- No ingestion extractor changes.
+- No migrations.
+- No package changes.
+- No env or secret changes.
+- No external API calls in tests.
+- No `/api/answer` policy change.
+
+GitHub file edits were applied directly through the repository API, so local verification is required before moving this feature to done.
+
+Required verification:
+
+- `npm run typecheck`
+- `npm run build`
+- `npm run test`
 
 ## 008-embedding-indexing-pipeline
 
