@@ -47,9 +47,9 @@
     },
     {
       "id": "011-production-vector-store",
-      "status": "review",
+      "status": "done",
       "mode": "SHIP",
-      "active": true,
+      "active": false,
       "summary": "Added pgvector schema, production repository adapter, vector candidate mapping, dimension validation, and offline tests."
     }
   ]
