@@ -26,9 +26,17 @@
     },
     {
       "id": "008-embedding-indexing-pipeline",
-      "status": "review",
+      "status": "done",
       "mode": "SHIP",
-      "summary": "Implemented provider-agnostic embedding chunk planning, deterministic identity, repository boundary, and idempotent indexing tests."
+      "active": false,
+      "summary": "Implemented provider-agnostic embedding chunk planning, deterministic identity, repository boundary, idempotent indexing, vector validation, failure handling, and provenance preservation."
+    },
+    {
+      "id": "009-hybrid-retrieval-ranking",
+      "status": "spec_ready",
+      "mode": "SHIP",
+      "active": true,
+      "summary": "Define hybrid retrieval ranking across phrase, keyword, and vector candidates while preserving deterministic evidence-first answer behavior."
     }
   ]
 }
