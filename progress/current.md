@@ -6,40 +6,30 @@
 
 ## State
 
-spec_ready
+review
 
 ## Summary
 
-Feature 012 has been opened in SHIP mode as a specification-only change.
+Feature 012 has been implemented in SHIP mode.
 
-The goal is to define how hybrid retrieval obtains query embeddings and retrieves persisted vector candidates without weakening deterministic evidence-first answer behavior.
+The implementation adds a query embedding boundary and optional vector repository wiring so hybrid evidence can include semantic vector candidates when dependencies are provided, while degrading safely to phrase and keyword retrieval when vector dependencies are absent or fail.
 
-## Repository State
+## Completed Implementation
 
-Local and GitHub were synchronized after 011 completion before opening this feature.
+012 added:
 
-## Completed Features
+- `QueryEmbeddingProvider` boundary
+- query embedding dimension validation
+- `findEvidenceWithDependencies()` for explicit dependency injection
+- optional vector candidate retrieval in hybrid mode
+- graceful degradation when vector dependencies are missing
+- graceful degradation when query embedding fails
+- offline tests for query embedding boundary
+- offline tests for hybrid vector integration with deterministic fakes
 
-- 007-docx-extractor-mammoth: done
-- 008-embedding-indexing-pipeline: done
-- 009-hybrid-retrieval-ranking: done
-- 010-hybrid-retrieval-integration: done
-- 011-production-vector-store: done
+## Preserved Non-Goals
 
-## Current Feature Scope
-
-012 must define:
-
-- query embedding provider boundary
-- vector repository dependency wiring
-- graceful degradation when vector dependencies are unavailable
-- deterministic fake-provider tests
-- vector candidate participation in hybrid ranking
-- preservation of keyword, phrase, hybrid, answer, chat, and server behavior
-
-## Non-Goals
-
-012 must not introduce:
+012 did not introduce:
 
 - LLM answer generation
 - LLM reranking
@@ -48,12 +38,30 @@ Local and GitHub were synchronized after 011 completion before opening this feat
 - unrelated ingestion changes
 - env or secret changes
 - external API calls in tests
-- migrations unless separately approved
+- migrations
+- package changes
+
+## Verification
+
+GitHub file edits were applied directly through the repository API, so local verification is required before marking this feature done.
+
+Required local verification:
+
+- npm run typecheck
+- npm run build
+- npm run test
+
+## Review Focus
+
+Review should confirm:
+
+- keyword and phrase modes remain independent from vector dependencies
+- hybrid mode can include vector candidates when dependencies are provided
+- hybrid mode degrades safely without vector dependencies
+- vector candidates still require citation labels
+- no external provider calls are used in tests
+- deterministic answer policy remains unchanged
 
 ## Next Gate
 
-Human approval is required before implementation.
-
-Approval phrase:
-
-`Approved: 012-vector-query-integration for implementation in SHIP mode.`
+Run local verification and review the implementation before moving 012 to done.
