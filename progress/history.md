@@ -1,5 +1,16 @@
 # Progress History
 
+## 014-runtime-vector-wiring
+
+State: spec_ready  
+Mode: SHIP
+
+Opened Feature 014 as a specification-only SHIP feature.
+
+The feature will define runtime composition for the query embedding provider, pgvector repository, and hybrid evidence dependencies with safe fallback.
+
+No runtime code was changed in this step.
+
 ## 013-production-query-embedding-provider
 
 State: done  
