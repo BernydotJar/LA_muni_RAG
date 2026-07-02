@@ -1,0 +1,20 @@
+{
+  "features": [
+    {
+      "id": "008-embedding-indexing-pipeline",
+      "title": "Embedding Indexing Pipeline",
+      "mode": "SHIP",
+      "status": "done",
+      "active": false,
+      "summary": "Implemented the embedding indexing foundation with chunk planning, deterministic identity, provider abstraction, idempotent indexing, vector validation, failure handling, and provenance preservation."
+    },
+    {
+      "id": "009-hybrid-retrieval-ranking",
+      "title": "Hybrid Retrieval Ranking",
+      "mode": "SHIP",
+      "status": "pending",
+      "active": false,
+      "summary": "Next recommended feature: combine keyword, phrase, and vector similarity retrieval while preserving evidence-first answer behavior."
+    }
+  ]
+}
