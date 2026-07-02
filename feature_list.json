@@ -40,9 +40,9 @@
     },
     {
       "id": "010-hybrid-retrieval-integration",
-      "status": "review",
+      "status": "done",
       "mode": "SHIP",
-      "active": true,
+      "active": false,
       "summary": "Integrated hybrid retrieval into evidence and API flows while preserving keyword, phrase, and deterministic answer behavior."
     }
   ]
