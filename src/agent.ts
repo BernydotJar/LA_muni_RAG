@@ -4,6 +4,7 @@ import {
   type EvidenceDependencies,
   type EvidenceItem,
   type EvidenceMode,
+  type EvidenceResponse,
 } from "./evidence.js";
 
 // ---------------------------------------------------------------------------
@@ -175,6 +176,32 @@ export const buildSummary = (
   return parts.join(". ") + ".";
 };
 
+const buildAgentResponse = (evidenceResponse: EvidenceResponse): AgentResponse => {
+  const { query, mode, evidence } = evidenceResponse;
+  const responseLabel = assessSufficiency(evidence, mode);
+  const confidence = assessConfidence(responseLabel, evidence);
+  const scores = evidence
+    .map((e) => e.score)
+    .filter((s): s is number => s !== null);
+  const sourceTypes = unique(evidence.map((e) => e.sourceType));
+
+  return {
+    query,
+    responseLabel,
+    confidence,
+    evidenceSummary: buildSummary(query, responseLabel, evidence, sourceTypes),
+    evidence,
+    context: {
+      retrievalMode: mode,
+      evidenceCount: evidence.length,
+      averageScore: scores.length > 0 ? average(scores) : null,
+      topScore: scores.length > 0 ? Math.max(...scores) : null,
+      sourceTypes,
+      suggestedAction: actionForLabel(responseLabel),
+    },
+  };
+};
+
 // ---------------------------------------------------------------------------
 // Public API
 // ---------------------------------------------------------------------------
@@ -194,34 +221,7 @@ export const evaluateQueryWithDependencies = async (
   dependencies: EvidenceDependencies = {}
 ): Promise<AgentResponse> => {
   const evidenceResponse = await findEvidenceWithDependencies(query, mode, limit, dependencies);
-  const { evidence } = evidenceResponse;
-
-  const responseLabel = assessSufficiency(evidence, mode);
-  const confidence = assessConfidence(responseLabel, evidence);
-
-  const scores = evidence
-    .map((e) => e.score)
-    .filter((s): s is number => s !== null);
-
-  const sourceTypes = unique(evidence.map((e) => e.sourceType));
-
-  const context: AgentContext = {
-    retrievalMode: mode,
-    evidenceCount: evidence.length,
-    averageScore: scores.length > 0 ? average(scores) : null,
-    topScore: scores.length > 0 ? Math.max(...scores) : null,
-    sourceTypes,
-    suggestedAction: actionForLabel(responseLabel),
-  };
-
-  return {
-    query,
-    responseLabel,
-    confidence,
-    evidenceSummary: buildSummary(query, responseLabel, evidence, sourceTypes),
-    evidence,
-    context,
-  };
+  return buildAgentResponse(evidenceResponse);
 };
 
 export const evaluateQuery = async (
@@ -230,30 +230,5 @@ export const evaluateQuery = async (
   limit = 5
 ): Promise<AgentResponse> => {
   const evidenceResponse = await findEvidence(query, mode, limit);
-  return evaluateQueryWithDependencies(query, mode, limit, {
-    keywordSearch: async () => [],
-    phraseSearch: async () => [],
-  }).then(async () => {
-    const { evidence } = evidenceResponse;
-    const responseLabel = assessSufficiency(evidence, mode);
-    const confidence = assessConfidence(responseLabel, evidence);
-    const scores = evidence.map((e) => e.score).filter((s): s is number => s !== null);
-    const sourceTypes = unique(evidence.map((e) => e.sourceType));
-
-    return {
-      query,
-      responseLabel,
-      confidence,
-      evidenceSummary: buildSummary(query, responseLabel, evidence, sourceTypes),
-      evidence,
-      context: {
-        retrievalMode: mode,
-        evidenceCount: evidence.length,
-        averageScore: scores.length > 0 ? average(scores) : null,
-        topScore: scores.length > 0 ? Math.max(...scores) : null,
-        sourceTypes,
-        suggestedAction: actionForLabel(responseLabel),
-      },
-    };
-  });
+  return buildAgentResponse(evidenceResponse);
 };
