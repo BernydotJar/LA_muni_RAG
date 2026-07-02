@@ -61,9 +61,9 @@
     },
     {
       "id": "013-production-query-embedding-provider",
-      "status": "review",
+      "status": "done",
       "mode": "SHIP",
-      "active": true,
+      "active": false,
       "summary": "Added HTTP query embedding provider, configuration-safe factory, transport injection, stable error mapping, and offline tests."
     }
   ]
