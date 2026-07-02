@@ -2,64 +2,21 @@
 
 ## Active Feature
 
-None.
-
-## Last Completed Feature
-
-013-production-query-embedding-provider
+014-runtime-vector-wiring
 
 ## State
 
-done
+spec_ready
 
 ## Summary
 
-Feature 013 has been completed in SHIP mode.
+Feature 014 has been opened in SHIP mode as a specification-only change.
 
-The implementation adds an HTTP query embedding provider behind the existing `QueryEmbeddingProvider` boundary, plus a configuration-safe factory and offline tests using injected transport.
+The goal is to define runtime composition for the query embedding provider, pgvector repository, and hybrid evidence dependencies with safe fallback.
 
-## Completed Implementation
+## Repository State
 
-- `HttpQueryEmbeddingProvider`
-- fetch-compatible transport boundary
-- provider response mapping
-- stable provider error mapping
-- query embedding dimension validation through the existing boundary
-- `loadQueryEmbeddingProviderConfig()`
-- `createQueryEmbeddingProvider()`
-- configuration-safe provider construction
-- offline tests for provider behavior
-- offline tests for factory behavior
-
-## Preserved Non-Goals
-
-- no LLM answer generation
-- no LLM reranking
-- no UI changes
-- no auth changes
-- no unrelated ingestion changes
-- no env or secret files
-- no external API calls in tests
-- no migrations
-- no package changes
-- no evidence policy changes
-
-## Verification
-
-Local verification passed:
-
-- npm run typecheck
-- npm run build
-- npm run test
-
-Test result:
-
-- 111 tests
-- 111 passing
-- 0 failing
-- 0 cancelled
-- 0 skipped
-- 0 todo
+Local and GitHub were synchronized after 013 completion before opening this feature.
 
 ## Completed Features
 
@@ -71,8 +28,34 @@ Test result:
 - 012-vector-query-integration: done
 - 013-production-query-embedding-provider: done
 
-## Next Recommended Feature
+## Current Feature Scope
 
-014-runtime-vector-wiring
+014 must define:
 
-Status: not started
+- runtime evidence dependency factory
+- safe query embedding provider construction
+- safe vector repository construction
+- server wiring through dependency-aware evidence retrieval
+- fallback behavior when vector config is missing
+- offline tests without hosted provider calls
+
+## Non-Goals
+
+014 must not introduce:
+
+- LLM answer generation
+- LLM reranking
+- UI changes
+- auth changes
+- unrelated ingestion changes
+- env or secret files
+- migrations
+- package changes unless separately approved
+
+## Next Gate
+
+Human approval is required before implementation.
+
+Approval phrase:
+
+`Approved: 014-runtime-vector-wiring for implementation in SHIP mode.`
