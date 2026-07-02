@@ -1,6 +1,8 @@
-import { keywordSearch, phraseSearch } from "./search.js";
+import { buildHybridRetrievalResult } from "./retrieval/hybridRetriever.js";
+import type { HybridCandidate } from "./retrieval/types.js";
+import { keywordSearch, type KeywordSearchResult, phraseSearch, type PhraseSearchResult } from "./search.js";
 
-export type EvidenceMode = "keyword" | "phrase";
+export type EvidenceMode = "keyword" | "phrase" | "hybrid";
 export type EvidenceStatus = "evidence_found" | "not_found";
 
 export interface EvidenceItem {
@@ -11,6 +13,7 @@ export interface EvidenceItem {
   excerpt: string;
   score: number | null;
   retrievalMode: EvidenceMode;
+  matchedModes?: string[];
 }
 
 export interface EvidenceResponse {
@@ -24,6 +27,85 @@ export interface EvidenceResponse {
 export const stripHeadlineTags = (value: string): string =>
   value.replaceAll("<mark>", "").replaceAll("</mark>", "");
 
+export const mapKeywordResultToEvidence = (
+  result: KeywordSearchResult,
+  mode: EvidenceMode = "keyword"
+): EvidenceItem => ({
+  documentTitle: result.documentTitle,
+  sourceType: result.documentType,
+  citationLabel: result.citationLabel,
+  pageStart: result.pageStart,
+  excerpt: stripHeadlineTags(result.snippet),
+  score: result.keywordScore,
+  retrievalMode: mode,
+});
+
+export const mapPhraseResultToEvidence = (
+  result: PhraseSearchResult,
+  mode: EvidenceMode = "phrase"
+): EvidenceItem => ({
+  documentTitle: result.documentTitle,
+  sourceType: result.documentType,
+  citationLabel: result.citationLabel,
+  pageStart: result.pageStart,
+  excerpt: result.preview,
+  score: null,
+  retrievalMode: mode,
+});
+
+export const keywordResultToHybridCandidate = (result: KeywordSearchResult): HybridCandidate => ({
+  id: `keyword:${result.citationLabel}:${result.pageStart ?? "unknown"}`,
+  mode: "keyword",
+  matchedModes: ["keyword"],
+  documentTitle: result.documentTitle,
+  citationLabel: result.citationLabel,
+  excerpt: stripHeadlineTags(result.snippet),
+  sourceType: result.documentType,
+  pageStart: result.pageStart,
+  scores: {
+    keyword: result.keywordScore,
+  },
+  hybridScore: 0,
+});
+
+export const phraseResultToHybridCandidate = (result: PhraseSearchResult): HybridCandidate => ({
+  id: `phrase:${result.citationLabel}:${result.pageStart ?? "unknown"}`,
+  mode: "phrase",
+  matchedModes: ["phrase"],
+  documentTitle: result.documentTitle,
+  citationLabel: result.citationLabel,
+  excerpt: result.preview,
+  sourceType: result.documentType,
+  pageStart: result.pageStart,
+  scores: {
+    phrase: 1,
+  },
+  hybridScore: 0,
+});
+
+export const hybridCandidateToEvidence = (candidate: HybridCandidate): EvidenceItem => ({
+  documentTitle: candidate.documentTitle ?? "Unknown document",
+  sourceType: candidate.sourceType ?? "other",
+  citationLabel: candidate.citationLabel,
+  pageStart: candidate.pageStart ?? null,
+  excerpt: candidate.excerpt,
+  score: candidate.hybridScore,
+  retrievalMode: "hybrid",
+  matchedModes: candidate.matchedModes,
+});
+
+const responseForEvidence = (
+  query: string,
+  mode: EvidenceMode,
+  evidence: EvidenceItem[]
+): EvidenceResponse => ({
+  query,
+  mode,
+  answerStatus: evidence.length > 0 ? "evidence_found" : "not_found",
+  evidenceCount: evidence.length,
+  evidence,
+});
+
 export const findEvidence = async (
   query: string,
   mode: EvidenceMode,
@@ -31,42 +113,25 @@ export const findEvidence = async (
 ): Promise<EvidenceResponse> => {
   if (mode === "phrase") {
     const results = await phraseSearch(query, limit);
-    const evidence = results.map((result) => ({
-      documentTitle: result.documentTitle,
-      sourceType: result.documentType,
-      citationLabel: result.citationLabel,
-      pageStart: result.pageStart,
-      excerpt: result.preview,
-      score: null,
-      retrievalMode: mode,
-    }));
+    return responseForEvidence(query, mode, results.map((result) => mapPhraseResultToEvidence(result)));
+  }
 
-    return {
-      query,
-      mode,
-      answerStatus: evidence.length > 0 ? "evidence_found" : "not_found",
-      evidenceCount: evidence.length,
-      evidence,
-    };
+  if (mode === "hybrid") {
+    const [phraseResults, keywordResults] = await Promise.all([
+      phraseSearch(query, limit),
+      keywordSearch(query, limit),
+    ]);
+
+    const hybrid = buildHybridRetrievalResult({
+      phraseCandidates: phraseResults.map(phraseResultToHybridCandidate),
+      keywordCandidates: keywordResults.map(keywordResultToHybridCandidate),
+      vectorCandidates: [],
+      limit,
+    });
+
+    return responseForEvidence(query, mode, hybrid.candidates.map(hybridCandidateToEvidence));
   }
 
   const results = await keywordSearch(query, limit);
-  const evidence = results.map((result) => ({
-    documentTitle: result.documentTitle,
-    sourceType: result.documentType,
-    citationLabel: result.citationLabel,
-    pageStart: result.pageStart,
-    excerpt: stripHeadlineTags(result.snippet),
-    score: result.keywordScore,
-    retrievalMode: mode,
-  }));
-
-  return {
-    query,
-    mode,
-    answerStatus: evidence.length > 0 ? "evidence_found" : "not_found",
-    evidenceCount: evidence.length,
-    evidence,
-  };
+  return responseForEvidence(query, mode, results.map((result) => mapKeywordResultToEvidence(result)));
 };
-
