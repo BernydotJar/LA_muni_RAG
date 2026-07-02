@@ -1,0 +1,34 @@
+{
+  "features": [
+    {
+      "id": "004-deterministic-answer-endpoint",
+      "status": "review",
+      "mode": "SHIP",
+      "summary": "Added deterministic GET /api/answer endpoint with grounded draft and not_found responses."
+    },
+    {
+      "id": "005-server-test-hang-fix",
+      "status": "review",
+      "mode": "SHIP",
+      "summary": "Fixed server integration test lifecycle so the full test suite completes cleanly."
+    },
+    {
+      "id": "006-document-ingestion-multiformat",
+      "status": "review",
+      "mode": "SHIP",
+      "summary": "Added normalized ingestion for Markdown and TXT, preserved PDF via adapter, and documented DOCX dependency requirement."
+    },
+    {
+      "id": "007-docx-extractor-mammoth",
+      "status": "done",
+      "mode": "SHIP",
+      "summary": "Replaced DOCX ingestion stub with mammoth-based plain-text extraction into normalized sections."
+    },
+    {
+      "id": "008-embedding-indexing-pipeline",
+      "status": "review",
+      "mode": "SHIP",
+      "summary": "Implemented provider-agnostic embedding chunk planning, deterministic identity, repository boundary, and idempotent indexing tests."
+    }
+  ]
+}

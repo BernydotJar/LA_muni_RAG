@@ -22,6 +22,7 @@
   "type": "module",
   "dependencies": {
     "dotenv": "^17.4.2",
+    "mammoth": "^1.12.0",
     "pg": "^8.22.0"
   },
   "devDependencies": {
