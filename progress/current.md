@@ -2,64 +2,21 @@
 
 ## Active Feature
 
-None.
-
-## Last Completed Feature
-
-010-hybrid-retrieval-integration
+011-production-vector-store
 
 ## State
 
-done
+spec_ready
 
 ## Summary
 
-Feature 010 has been completed in SHIP mode.
+Feature 011 has been opened in SHIP mode as a specification-only change.
 
-The implementation integrates the hybrid retrieval layer into the evidence and API flows while preserving deterministic evidence-first answer behavior.
+The goal is to define a production vector storage and retrieval design for persisted embedding chunks behind the existing retrieval boundary.
 
-## Completed Implementation
+## Repository State
 
-010 added:
-
-- `hybrid` as an evidence mode
-- mapping from keyword search results into hybrid candidates
-- mapping from phrase search results into hybrid candidates
-- mapping from hybrid candidates back into citable evidence items
-- API validation support for keyword, phrase, and hybrid modes
-- `/api/search?mode=hybrid` support through the evidence integration
-- offline unit tests for hybrid evidence mapping
-
-## Preserved Non-Goals
-
-010 did not introduce:
-
-- LLM answer generation
-- LLM reranking
-- UI changes
-- auth changes
-- ingestion extractor changes
-- migrations
-- package changes
-- env or secret changes
-- external API calls in tests
-
-## Verification
-
-Local verification passed:
-
-- npm run typecheck
-- npm run build
-- npm run test
-
-Test result:
-
-- 88 tests
-- 88 passing
-- 0 failing
-- 0 cancelled
-- 0 skipped
-- 0 todo
+Local and GitHub were synchronized after 010 completion before opening this feature.
 
 ## Completed Features
 
@@ -68,8 +25,35 @@ Test result:
 - 009-hybrid-retrieval-ranking: done
 - 010-hybrid-retrieval-integration: done
 
-## Next Recommended Feature
+## Current Feature Scope
 
-011-production-vector-store
+011 must define:
 
-Status: not started
+- production vector store schema or storage model
+- repository boundary for persisted vectors
+- vector similarity search behavior
+- mapping from persisted rows to vector candidates
+- idempotent vector upsert behavior
+- citation and provenance preservation
+- dimension validation
+- deterministic offline tests
+
+## Non-Goals
+
+011 must not introduce:
+
+- LLM answer generation
+- LLM reranking
+- UI changes
+- auth changes
+- unrelated ingestion changes
+- env or secret changes
+- external API calls in tests
+
+## Next Gate
+
+Human approval is required before implementation.
+
+Approval phrase:
+
+`Approved: 011-production-vector-store for implementation in SHIP mode.`
