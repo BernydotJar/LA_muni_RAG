@@ -1,5 +1,5 @@
-import { evaluateQuery, type AgentResponse } from "./agent.js";
-import type { EvidenceMode } from "./evidence.js";
+import { evaluateQuery, evaluateQueryWithDependencies, type AgentResponse } from "./agent.js";
+import type { EvidenceDependencies, EvidenceMode } from "./evidence.js";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -86,21 +86,7 @@ const formatInsufficientEvidence = (agentResponse: AgentResponse): string => {
 const formatNotFound = (query: string): string =>
   `No encontré evidencia sobre **"${query}"** en los documentos municipales disponibles.\n\nPuedes intentar con:\n- Palabras clave más generales\n- Nombres específicos de documentos o artículos\n- Temas como "ordenamiento territorial", "patrimonio", o "construcción"`;
 
-// ---------------------------------------------------------------------------
-// Public API
-// ---------------------------------------------------------------------------
-
-/**
- * Process a user chat message: run the agent, format a human-readable
- * response in Spanish with citations.
- */
-export const processChat = async (
-  message: string,
-  mode: EvidenceMode = "keyword",
-  limit = 5
-): Promise<ChatResponse> => {
-  const agentResponse = await evaluateQuery(message, mode, limit);
-
+const formatChatResponse = (message: string, agentResponse: AgentResponse): ChatResponse => {
   let content: string;
   switch (agentResponse.responseLabel) {
     case "evidence_found":
@@ -132,4 +118,31 @@ export const processChat = async (
       suggestedAction: agentResponse.context.suggestedAction,
     },
   };
+};
+
+// ---------------------------------------------------------------------------
+// Public API
+// ---------------------------------------------------------------------------
+
+/**
+ * Process a user chat message: run the agent, format a human-readable
+ * response in Spanish with citations.
+ */
+export const processChatWithDependencies = async (
+  message: string,
+  mode: EvidenceMode = "keyword",
+  limit = 5,
+  dependencies: EvidenceDependencies = {}
+): Promise<ChatResponse> => {
+  const agentResponse = await evaluateQueryWithDependencies(message, mode, limit, dependencies);
+  return formatChatResponse(message, agentResponse);
+};
+
+export const processChat = async (
+  message: string,
+  mode: EvidenceMode = "keyword",
+  limit = 5
+): Promise<ChatResponse> => {
+  const agentResponse = await evaluateQuery(message, mode, limit);
+  return formatChatResponse(message, agentResponse);
 };
