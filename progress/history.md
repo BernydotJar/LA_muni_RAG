@@ -2,14 +2,39 @@
 
 ## 011-production-vector-store
 
-State: spec_ready  
+State: done  
 Mode: SHIP
 
-Opened Feature 011 as a specification-only SHIP feature.
+Implemented production vector storage and retrieval foundations for persisted embedding chunks behind the existing retrieval boundary.
 
-The feature will define a production vector storage and retrieval design for persisted embedding chunks behind the existing retrieval boundary.
+Completed:
 
-No runtime code was changed in this step.
+- Added production pgvector migration for `rag.embedding_vectors`.
+- Added `PgVectorEmbeddingRepository`.
+- Added mapping from `EmbeddingVectorRecord` to pgvector upsert values.
+- Added mapping from pgvector result rows to `VectorCandidateInput`.
+- Added vector literal formatting.
+- Added vector dimension validation.
+- Added citation-label rejection at write/search mapping boundaries.
+- Added offline unit tests for mapping and validation.
+
+Preserved non-goals:
+
+- No LLM answer generation.
+- No LLM reranking.
+- No UI changes.
+- No auth changes.
+- No unrelated ingestion changes.
+- No env or secret changes.
+- No external API calls in tests.
+
+Local verification passed:
+
+- `npm run typecheck`
+- `npm run build`
+- `npm run test`
+
+Full suite result after 011: 94 passing, 0 failing.
 
 ## 010-hybrid-retrieval-integration
 
