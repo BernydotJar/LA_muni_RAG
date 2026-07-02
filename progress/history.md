@@ -2,14 +2,44 @@
 
 ## 013-production-query-embedding-provider
 
-State: spec_ready  
+State: done  
 Mode: SHIP
 
-Opened Feature 013 as a specification-only SHIP feature.
+Implemented a production query embedding provider behind the existing `QueryEmbeddingProvider` boundary.
 
-The feature will define a production query embedding provider behind the existing `QueryEmbeddingProvider` boundary without adding secrets, external calls in tests, or answer-policy drift.
+Completed:
 
-No runtime code was changed in this step.
+- Added `HttpQueryEmbeddingProvider`.
+- Added fetch-compatible transport boundary.
+- Added provider response mapping.
+- Added stable provider error mapping.
+- Added query embedding dimension validation through the existing boundary.
+- Added `loadQueryEmbeddingProviderConfig()`.
+- Added `createQueryEmbeddingProvider()`.
+- Added configuration-safe provider construction.
+- Added offline tests for provider behavior.
+- Added offline tests for factory behavior.
+
+Preserved non-goals:
+
+- No LLM answer generation.
+- No LLM reranking.
+- No UI changes.
+- No auth changes.
+- No unrelated ingestion changes.
+- No env or secret files.
+- No external API calls in tests.
+- No migrations.
+- No package changes.
+- No evidence policy changes.
+
+Local verification passed:
+
+- `npm run typecheck`
+- `npm run build`
+- `npm run test`
+
+Full suite result after 013: 111 passing, 0 failing.
 
 ## 012-vector-query-integration
 
