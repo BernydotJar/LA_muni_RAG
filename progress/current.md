@@ -2,15 +2,19 @@
 
 ## Active Feature
 
+None.
+
+## Last Completed Feature
+
 009-hybrid-retrieval-ranking
 
 ## State
 
-review
+done
 
 ## Summary
 
-Feature 009 has been implemented in SHIP mode.
+Feature 009 has been completed in SHIP mode.
 
 The implementation adds deterministic hybrid retrieval ranking for LA_muni_RAG by combining phrase, keyword, and vector candidates while preserving the deterministic evidence-first answer policy.
 
@@ -42,24 +46,26 @@ The implementation adds deterministic hybrid retrieval ranking for LA_muni_RAG b
 
 ## Verification
 
-GitHub file edits were applied directly through the repository API, so local verification is required before marking this feature done.
-
-Required local verification:
+Local verification passed:
 
 - npm run typecheck
 - npm run build
 - npm run test
 
-## Review Focus
+Test result:
 
-Review should confirm:
+- 83 tests
+- 83 passing
+- 0 failing
 
-- phrase matches remain prioritized above weaker semantic candidates
-- deduplication preserves contributing modes
-- uncitable candidates are filtered
-- vector retrieval is interface-bound and test-safe
-- evidence-first answer behavior remains unchanged
+## Completed Features
 
-## Next Gate
+- 007-docx-extractor-mammoth: done
+- 008-embedding-indexing-pipeline: done
+- 009-hybrid-retrieval-ranking: done
 
-Run local verification and review the implementation before moving 009 to done.
+## Next Recommended Feature
+
+010-hybrid-retrieval-integration
+
+Status: not started
