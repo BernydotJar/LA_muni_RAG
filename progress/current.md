@@ -2,61 +2,21 @@
 
 ## Active Feature
 
-None.
-
-## Last Completed Feature
-
-009-hybrid-retrieval-ranking
+010-hybrid-retrieval-integration
 
 ## State
 
-done
+spec_ready
 
 ## Summary
 
-Feature 009 has been completed in SHIP mode.
+Feature 010 has been opened in SHIP mode as a specification-only change.
 
-The implementation adds deterministic hybrid retrieval ranking for LA_muni_RAG by combining phrase, keyword, and vector candidates while preserving the deterministic evidence-first answer policy.
+The goal is to define controlled integration of the hybrid retrieval layer into the evidence/search flow while preserving deterministic evidence-first answer behavior.
 
-## Completed Implementation
+## Repository State
 
-009 added:
-
-- hybrid retrieval candidate types
-- deterministic hybrid score composition
-- deterministic candidate deduplication
-- phrase-priority ranking behavior
-- vector retrieval boundary
-- hybrid retrieval orchestration
-- offline unit tests for scoring, dedupe, vector boundary, and orchestration
-
-## Preserved Non-Goals
-
-009 did not introduce:
-
-- LLM answer generation
-- UI changes
-- auth changes
-- ingestion extractor changes
-- migrations
-- package changes
-- env or secret changes
-- external API calls in tests
-- changes to `/api/answer` policy
-
-## Verification
-
-Local verification passed:
-
-- npm run typecheck
-- npm run build
-- npm run test
-
-Test result:
-
-- 83 tests
-- 83 passing
-- 0 failing
+Local and GitHub were synchronized after 009 completion before opening this feature.
 
 ## Completed Features
 
@@ -64,8 +24,35 @@ Test result:
 - 008-embedding-indexing-pipeline: done
 - 009-hybrid-retrieval-ranking: done
 
-## Next Recommended Feature
+## Current Feature Scope
 
-010-hybrid-retrieval-integration
+010 must define:
 
-Status: not started
+- hybrid evidence mode or approved integration boundary
+- mapping from keyword and phrase search results into hybrid candidates
+- citation-preserving evidence mapping
+- API mode validation if hybrid becomes public
+- tests proving existing keyword and phrase behavior remain unchanged
+- tests proving deterministic answer policy remains unchanged
+
+## Non-Goals
+
+010 must not introduce:
+
+- LLM answer generation
+- LLM reranking
+- UI changes
+- auth changes
+- ingestion extractor changes
+- package changes
+- env or secret changes
+- migrations without separate approval
+- external API calls in tests
+
+## Next Gate
+
+Human approval is required before implementation.
+
+Approval phrase:
+
+`Approved: 010-hybrid-retrieval-integration for implementation in SHIP mode.`
