@@ -33,9 +33,9 @@
     },
     {
       "id": "009-hybrid-retrieval-ranking",
-      "status": "review",
+      "status": "done",
       "mode": "SHIP",
-      "active": true,
+      "active": false,
       "summary": "Implemented deterministic hybrid retrieval ranking across phrase, keyword, and vector candidates while preserving evidence-first answer behavior."
     }
   ]
