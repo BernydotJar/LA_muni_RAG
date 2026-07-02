@@ -1,4 +1,10 @@
-import { findEvidence, type EvidenceItem, type EvidenceMode } from "./evidence.js";
+import {
+  findEvidence,
+  findEvidenceWithDependencies,
+  type EvidenceDependencies,
+  type EvidenceItem,
+  type EvidenceMode,
+} from "./evidence.js";
 
 // ---------------------------------------------------------------------------
 // Sufficiency thresholds (promote to env vars when needed)
@@ -181,12 +187,13 @@ export const buildSummary = (
  * call. It never invents information — it only reasons about what the
  * retrieval layer found.
  */
-export const evaluateQuery = async (
+export const evaluateQueryWithDependencies = async (
   query: string,
   mode: EvidenceMode = "keyword",
-  limit = 5
+  limit = 5,
+  dependencies: EvidenceDependencies = {}
 ): Promise<AgentResponse> => {
-  const evidenceResponse = await findEvidence(query, mode, limit);
+  const evidenceResponse = await findEvidenceWithDependencies(query, mode, limit, dependencies);
   const { evidence } = evidenceResponse;
 
   const responseLabel = assessSufficiency(evidence, mode);
@@ -215,4 +222,38 @@ export const evaluateQuery = async (
     evidence,
     context,
   };
+};
+
+export const evaluateQuery = async (
+  query: string,
+  mode: EvidenceMode = "keyword",
+  limit = 5
+): Promise<AgentResponse> => {
+  const evidenceResponse = await findEvidence(query, mode, limit);
+  return evaluateQueryWithDependencies(query, mode, limit, {
+    keywordSearch: async () => [],
+    phraseSearch: async () => [],
+  }).then(async () => {
+    const { evidence } = evidenceResponse;
+    const responseLabel = assessSufficiency(evidence, mode);
+    const confidence = assessConfidence(responseLabel, evidence);
+    const scores = evidence.map((e) => e.score).filter((s): s is number => s !== null);
+    const sourceTypes = unique(evidence.map((e) => e.sourceType));
+
+    return {
+      query,
+      responseLabel,
+      confidence,
+      evidenceSummary: buildSummary(query, responseLabel, evidence, sourceTypes),
+      evidence,
+      context: {
+        retrievalMode: mode,
+        evidenceCount: evidence.length,
+        averageScore: scores.length > 0 ? average(scores) : null,
+        topScore: scores.length > 0 ? Math.max(...scores) : null,
+        sourceTypes,
+        suggestedAction: actionForLabel(responseLabel),
+      },
+    };
+  });
 };
