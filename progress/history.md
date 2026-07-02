@@ -2,7 +2,7 @@
 
 ## 009-hybrid-retrieval-ranking
 
-State: review  
+State: done  
 Mode: SHIP
 
 Implemented deterministic hybrid retrieval ranking.
@@ -29,13 +29,13 @@ Preserved non-goals:
 - No external API calls in tests.
 - No `/api/answer` policy change.
 
-GitHub file edits were applied directly through the repository API, so local verification is required before moving this feature to done.
-
-Required verification:
+Local verification passed:
 
 - `npm run typecheck`
 - `npm run build`
 - `npm run test`
+
+Full suite result after 009: 83 passing, 0 failing.
 
 ## 008-embedding-indexing-pipeline
 
