@@ -6,45 +6,31 @@
 
 ## State
 
-spec_ready
+review
 
 ## Summary
 
-Feature 016 has been opened in SHIP mode as a specification-only change.
+Feature 016 has been implemented in SHIP mode.
 
-The goal is to define an operational CLI path that can ingest supported source documents, plan deterministic chunks, generate embeddings through the configured provider, and persist vectors into pgvector with safe reporting.
+The implementation adds a CLI-ready vector indexing orchestrator, a direct CLI entry point, safe indexing result formatting, and offline tests for successful indexing and failure paths.
 
-## Repository State
+## Completed Implementation
 
-Local and GitHub were synchronized after 015 completion before opening this feature.
+016 added:
 
-## Completed Features
+- `indexVectorSource()` orchestration boundary
+- `VectorIndexingInput`
+- `VectorIndexingResult`
+- `VectorIndexingDependencies`
+- `queryProviderToEmbeddingProvider()` adapter
+- safe failure redaction for formatted output
+- direct CLI entry point at `src/cli/indexVector.ts`
+- offline success test for vector indexing
+- offline tests for missing input, missing provider config, missing vector store config, provider failure, write failure, and no secret leakage
 
-- 007-docx-extractor-mammoth: done
-- 008-embedding-indexing-pipeline: done
-- 009-hybrid-retrieval-ranking: done
-- 010-hybrid-retrieval-integration: done
-- 011-production-vector-store: done
-- 012-vector-query-integration: done
-- 013-production-query-embedding-provider: done
-- 014-runtime-vector-wiring: done
-- 015-runtime-vector-observability: done
+## Preserved Non-Goals
 
-## Current Feature Scope
-
-016 must define:
-
-- CLI-ready vector indexing path
-- reuse of existing source extraction and normalization
-- reuse of existing deterministic chunk planning
-- reuse of existing embedding provider boundary
-- reuse of existing pgvector repository boundary
-- safe operator reporting
-- offline tests without hosted provider calls
-
-## Non-Goals
-
-016 must not introduce:
+016 did not introduce:
 
 - LLM answer generation
 - LLM reranking
@@ -52,14 +38,42 @@ Local and GitHub were synchronized after 015 completion before opening this feat
 - auth changes
 - new source extractors
 - env or secret files
+- migrations
+- package changes
 - bulk production scheduling
 - full corpus management UI
 - evidence policy changes
 
+## CLI Usage
+
+Current direct command shape:
+
+```bash
+node --import tsx src/cli/indexVector.ts --input path/to/document.md --document-key document-key --document-version v1
+```
+
+## Verification
+
+GitHub file edits were applied directly through the repository API, so local verification is required before marking this feature done.
+
+Required local verification:
+
+- npm run typecheck
+- npm run build
+- npm run test
+
+## Review Focus
+
+Review should confirm:
+
+- the orchestrator reuses existing ingestion/extraction boundaries
+- chunk planning uses existing deterministic chunk planner through `indexDocument()`
+- production path can construct the configured query embedding provider
+- production path can construct the pgvector repository only when vector store config exists
+- CLI output does not leak sensitive config values
+- tests do not call hosted providers or a live database
+- server behavior remains unchanged
+
 ## Next Gate
 
-Human approval is required before implementation.
-
-Approval phrase:
-
-`Approved: 016-ingestion-cli-vector-indexing for implementation in SHIP mode.`
+Run local verification and review the implementation before moving 016 to done.
