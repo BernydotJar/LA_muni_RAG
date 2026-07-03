@@ -2,14 +2,52 @@
 
 ## 017-corpus-backfill-manifest
 
-State: spec_ready  
+State: done  
 Mode: SHIP
 
-Opened Feature 017 as a specification-only SHIP feature.
+Implemented a manifest-driven corpus backfill state model to track indexed documents, content hashes, document versions, embedding metadata, chunk counts, timestamps, statuses, and deterministic reindex decisions.
 
-The feature will define a manifest-driven corpus backfill state model to track indexed documents, content hashes, document versions, embedding metadata, chunk counts, timestamps, statuses, and deterministic reindex decisions.
+Completed:
 
-No runtime code was changed in this step.
+- Added `CorpusManifestRecord`.
+- Added `CorpusManifestStatus`.
+- Added `CorpusManifestStore`.
+- Added `InMemoryCorpusManifestStore`.
+- Added `CorpusBackfillDocumentInput`.
+- Added `CorpusBackfillResult`.
+- Added `CorpusBackfillDecision`.
+- Added `computeCorpusContentSha256()`.
+- Added `decideCorpusBackfill()`.
+- Added `backfillCorpusManifest()`.
+- Added offline tests for first-time indexing.
+- Added offline tests for unchanged skip.
+- Added offline tests for stale/reindex due to content hash.
+- Added offline tests for stale/reindex due to embedding metadata.
+- Added offline tests for retry after failed prior record.
+- Added offline tests for failed indexing manifest update.
+
+Preserved non-goals:
+
+- No LLM answer generation.
+- No LLM reranking.
+- No UI changes.
+- No auth changes.
+- No new source extractors.
+- No env or secret files.
+- No migrations.
+- No package changes.
+- No production scheduler.
+- No full corpus management UI.
+- No evidence policy changes.
+- No vector ranking changes.
+
+Local verification passed:
+
+- `npm run typecheck`
+- `npm run build`
+- `npm run test`
+
+Full suite result after 017: 135 passing, 0 failing.
 
 ## 016-ingestion-cli-vector-indexing
 
