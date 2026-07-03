@@ -2,14 +2,44 @@
 
 ## 016-ingestion-cli-vector-indexing
 
-State: spec_ready  
+State: done  
 Mode: SHIP
 
-Opened Feature 016 as a specification-only SHIP feature.
+Implemented an operational CLI-ready path to ingest supported source documents, plan deterministic chunks, generate embeddings through the configured provider, and persist vectors into pgvector with safe reporting.
 
-The feature will define an operational CLI path to ingest supported source documents, plan deterministic chunks, generate embeddings through the configured provider, and persist vectors into pgvector with safe reporting.
+Completed:
 
-No runtime code was changed in this step.
+- Added `indexVectorSource()` orchestration boundary.
+- Added `VectorIndexingInput`.
+- Added `VectorIndexingResult`.
+- Added `VectorIndexingDependencies`.
+- Added `queryProviderToEmbeddingProvider()` adapter.
+- Added safe failure redaction for formatted output.
+- Added direct CLI entry point at `src/cli/indexVector.ts`.
+- Added offline success test for vector indexing.
+- Added offline tests for missing input, missing provider config, missing vector store config, provider failure, write failure, and no secret leakage.
+
+Preserved non-goals:
+
+- No LLM answer generation.
+- No LLM reranking.
+- No UI changes.
+- No auth changes.
+- No new source extractors.
+- No env or secret files.
+- No migrations.
+- No package changes.
+- No bulk production scheduling.
+- No full corpus management UI.
+- No evidence policy changes.
+
+Local verification passed:
+
+- `npm run typecheck`
+- `npm run build`
+- `npm run test`
+
+Full suite result after 016: 125 passing, 0 failing.
 
 ## 015-runtime-vector-observability
 
