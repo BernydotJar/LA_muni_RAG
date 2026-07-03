@@ -89,9 +89,9 @@
     },
     {
       "id": "017-corpus-backfill-manifest",
-      "status": "review",
+      "status": "done",
       "mode": "SHIP",
-      "active": true,
+      "active": false,
       "summary": "Added manifest record model, in-memory manifest store, deterministic reindex decisions, explicit backfill orchestration, and offline tests."
     }
   ]
