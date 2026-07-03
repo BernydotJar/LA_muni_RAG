@@ -1,5 +1,16 @@
 # Progress History
 
+## 017-corpus-backfill-manifest
+
+State: spec_ready  
+Mode: SHIP
+
+Opened Feature 017 as a specification-only SHIP feature.
+
+The feature will define a manifest-driven corpus backfill state model to track indexed documents, content hashes, document versions, embedding metadata, chunk counts, timestamps, statuses, and deterministic reindex decisions.
+
+No runtime code was changed in this step.
+
 ## 016-ingestion-cli-vector-indexing
 
 State: done  
