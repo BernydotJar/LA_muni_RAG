@@ -6,46 +6,38 @@
 
 ## State
 
-spec_ready
+review
 
 ## Summary
 
-Feature 017 has been opened in SHIP mode as a specification-only change.
+Feature 017 has been implemented in SHIP mode.
 
-The goal is to define a manifest-driven corpus backfill state model that tracks indexed documents, content hashes, document versions, embedding metadata, chunk counts, timestamps, statuses, and reindex decisions.
+The implementation adds a manifest record model, manifest status values, an in-memory manifest store, deterministic reindex decision logic, explicit-document backfill orchestration, and offline tests for indexed, skipped, stale/reindex, retry, and failed paths.
 
-## Repository State
+## Completed Implementation
 
-Local and GitHub were synchronized after 016 completion before opening this feature.
+017 added:
 
-## Completed Features
+- `CorpusManifestRecord`
+- `CorpusManifestStatus`
+- `CorpusManifestStore`
+- `InMemoryCorpusManifestStore`
+- `CorpusBackfillDocumentInput`
+- `CorpusBackfillResult`
+- `CorpusBackfillDecision`
+- `computeCorpusContentSha256()`
+- `decideCorpusBackfill()`
+- `backfillCorpusManifest()`
+- offline tests for first-time indexing
+- offline tests for unchanged skip
+- offline tests for stale/reindex due to content hash
+- offline tests for stale/reindex due to embedding metadata
+- offline tests for retry after failed prior record
+- offline tests for failed indexing manifest update
 
-- 007-docx-extractor-mammoth: done
-- 008-embedding-indexing-pipeline: done
-- 009-hybrid-retrieval-ranking: done
-- 010-hybrid-retrieval-integration: done
-- 011-production-vector-store: done
-- 012-vector-query-integration: done
-- 013-production-query-embedding-provider: done
-- 014-runtime-vector-wiring: done
-- 015-runtime-vector-observability: done
-- 016-ingestion-cli-vector-indexing: done
+## Preserved Non-Goals
 
-## Current Feature Scope
-
-017 must define:
-
-- corpus manifest record model
-- manifest status values
-- manifest store boundary
-- deterministic reindex decision logic
-- explicit-document backfill orchestration
-- safe backfill summary
-- offline tests without hosted provider calls or live database dependencies
-
-## Non-Goals
-
-017 must not introduce:
+017 did not introduce:
 
 - LLM answer generation
 - LLM reranking
@@ -53,17 +45,36 @@ Local and GitHub were synchronized after 016 completion before opening this feat
 - auth changes
 - new source extractors
 - env or secret files
-- migrations unless separately approved
-- package changes unless separately approved
+- migrations
+- package changes
 - production scheduler
 - full corpus management UI
 - evidence policy changes
 - vector ranking changes
 
+## Verification
+
+GitHub file edits were applied directly through the repository API, so local verification is required before marking this feature done.
+
+Required local verification:
+
+- npm run typecheck
+- npm run build
+- npm run test
+
+## Review Focus
+
+Review should confirm:
+
+- manifest records capture document and embedding metadata needed for reindex decisions
+- unchanged indexed records are skipped without calling the indexer
+- changed content hash triggers reindex
+- changed embedding model/provider/dimension triggers reindex
+- failed prior records trigger retry
+- failed indexing writes failed manifest state safely
+- tests do not call hosted providers or a live database
+- existing server/vector indexing behavior remains unchanged
+
 ## Next Gate
 
-Human approval is required before implementation.
-
-Approval phrase:
-
-`Approved: 017-corpus-backfill-manifest for implementation in SHIP mode.`
+Run local verification and review the implementation before moving 017 to done.
