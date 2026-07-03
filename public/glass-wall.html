@@ -13,7 +13,6 @@
         --node: #191620;
         --node-border: rgba(255, 255, 255, 0.28);
         --hot: #ff2d9d;
-        --hot-soft: rgba(255, 45, 157, 0.18);
         --warn: #f6c453;
         --error: #ff6b6b;
         --ok: #86efac;
@@ -37,14 +36,13 @@
       }
 
       main {
-        width: min(1220px, calc(100vw - 28px));
+        width: min(1280px, calc(100vw - 28px));
         margin: 0 auto;
         padding: 28px 0 46px;
       }
 
       .hero {
         display: grid;
-        grid-template-columns: 1fr;
         gap: 10px;
         margin-bottom: 18px;
       }
@@ -65,7 +63,7 @@
       }
 
       .subtitle {
-        max-width: 820px;
+        max-width: 850px;
         margin: 0;
         color: #c9bfd2;
         font-size: 15px;
@@ -105,7 +103,7 @@
 
       .dashboard {
         display: grid;
-        grid-template-columns: minmax(0, 1.55fr) minmax(320px, 0.85fr);
+        grid-template-columns: minmax(0, 1.65fr) minmax(320px, 0.8fr);
         gap: 16px;
         align-items: start;
       }
@@ -166,49 +164,38 @@
 
       .graph-board {
         position: relative;
-        width: 920px;
-        height: 620px;
+        width: 1080px;
+        height: 720px;
         margin: 0 auto;
       }
 
       svg.edges {
         position: absolute;
         inset: 0;
-        width: 920px;
-        height: 620px;
+        width: 1080px;
+        height: 720px;
         pointer-events: none;
       }
 
-      .edge {
-        stroke: var(--line);
-        stroke-width: 1.1;
-      }
-
-      .edge.active {
-        stroke: var(--line-hot);
-        stroke-width: 2.2;
-        filter: drop-shadow(0 0 7px rgba(255, 45, 157, 0.9));
-      }
-
-      .edge.warn {
-        stroke: rgba(246, 196, 83, 0.82);
-        stroke-width: 1.9;
-      }
+      .edge { stroke: var(--line); stroke-width: 1.05; }
+      .edge.active { stroke: var(--line-hot); stroke-width: 2.1; filter: drop-shadow(0 0 7px rgba(255, 45, 157, 0.9)); }
+      .edge.warn { stroke: rgba(246, 196, 83, 0.82); stroke-width: 1.8; }
+      .edge.error { stroke: rgba(255, 107, 107, 0.9); stroke-width: 1.8; }
 
       .node {
         position: absolute;
-        width: 104px;
+        width: 112px;
         transform: translate(-50%, -50%);
         display: grid;
         justify-items: center;
-        gap: 7px;
+        gap: 6px;
         color: #d9cede;
         text-align: center;
       }
 
       .node-core {
-        width: 22px;
-        height: 22px;
+        width: 19px;
+        height: 19px;
         border-radius: 50%;
         border: 2px solid var(--node-border);
         background: var(--node);
@@ -233,22 +220,29 @@
         box-shadow: 0 0 0 7px rgba(255, 107, 107, 0.08), 0 0 18px rgba(255, 107, 107, 0.55);
       }
 
+      .node.ok .node-core {
+        border-color: var(--ok);
+        background: rgba(134, 239, 172, 0.12);
+        box-shadow: 0 0 0 7px rgba(134, 239, 172, 0.08), 0 0 18px rgba(134, 239, 172, 0.5);
+      }
+
       .node-label {
         display: block;
         color: inherit;
-        font: 800 12px/1 var(--mono);
+        font: 800 11px/1 var(--mono);
         text-shadow: 0 1px 8px #000;
       }
 
       .node.active .node-label { color: var(--hot); }
       .node.warn .node-label { color: var(--warn); }
       .node.error .node-label { color: var(--error); }
+      .node.ok .node-label { color: var(--ok); }
 
       .node-value {
         display: block;
-        max-width: 148px;
+        max-width: 152px;
         color: var(--muted);
-        font: 600 10px/1.35 var(--mono);
+        font: 600 9px/1.3 var(--mono);
         overflow-wrap: anywhere;
         text-shadow: 0 1px 8px #000;
       }
@@ -266,7 +260,7 @@
       .sense-level {
         position: absolute;
         left: 50%;
-        bottom: 24px;
+        bottom: 26px;
         transform: translateX(-50%);
         color: #fff;
         font: 900 18px/1 var(--sans);
@@ -283,65 +277,55 @@
         text-transform: uppercase;
       }
 
-      .side-stack { display: grid; gap: 16px; }
-
-      #glass-wall-results, #glass-wall-runtime, #glass-wall-safety { padding: 15px; }
-
-      .metric-grid {
+      .graph-legend {
+        position: absolute;
+        right: 24px;
+        top: 20px;
         display: grid;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 10px;
-      }
-
-      .metric {
-        padding: 12px;
-        border: 1px solid rgba(255, 255, 255, 0.08);
+        grid-template-columns: repeat(2, auto);
+        gap: 8px 14px;
+        padding: 11px 12px;
+        border: 1px solid rgba(255, 255, 255, 0.09);
         border-radius: 16px;
-        background: rgba(255, 255, 255, 0.045);
+        background: rgba(0, 0, 0, 0.22);
+        backdrop-filter: blur(10px);
       }
 
-      .metric strong {
-        display: block;
-        font-size: 24px;
-        letter-spacing: -0.04em;
-      }
-
-      .metric span {
-        display: block;
-        margin-top: 4px;
-        color: var(--muted);
+      .legend-item {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        color: #c9bfd2;
         font: 700 10px/1 var(--mono);
-        text-transform: uppercase;
+        white-space: nowrap;
       }
+
+      .legend-dot {
+        width: 9px;
+        height: 9px;
+        border-radius: 50%;
+        background: var(--muted);
+        box-shadow: 0 0 10px rgba(255,255,255,0.1);
+      }
+
+      .legend-dot.hot { background: var(--hot); box-shadow: 0 0 14px var(--hot); }
+      .legend-dot.warn { background: var(--warn); box-shadow: 0 0 14px var(--warn); }
+      .legend-dot.ok { background: var(--ok); box-shadow: 0 0 14px var(--ok); }
+      .legend-dot.dim { background: rgba(185, 176, 204, 0.35); }
+
+      .side-stack { display: grid; gap: 16px; }
+      #glass-wall-results, #glass-wall-runtime, #glass-wall-safety, #glass-wall-legend { padding: 15px; }
+
+      .metric-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+      .metric { padding: 12px; border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 16px; background: rgba(255, 255, 255, 0.045); }
+      .metric strong { display: block; font-size: 24px; letter-spacing: -0.04em; }
+      .metric span { display: block; margin-top: 4px; color: var(--muted); font: 700 10px/1 var(--mono); text-transform: uppercase; }
 
       .evidence-list { display: grid; gap: 9px; margin-top: 12px; }
-
-      .evidence-item {
-        padding: 10px;
-        border: 1px solid rgba(255, 255, 255, 0.09);
-        border-radius: 14px;
-        background: rgba(255, 255, 255, 0.035);
-      }
-
-      .evidence-item b {
-        display: block;
-        margin-bottom: 6px;
-        color: #f5eafa;
-        font: 800 11px/1.2 var(--mono);
-      }
-
-      .evidence-item p, .safe-copy {
-        margin: 0;
-        color: #bbb0c7;
-        font-size: 12px;
-        line-height: 1.45;
-      }
-
-      .footer-note {
-        margin-top: 12px;
-        color: var(--muted);
-        font: 700 10px/1.45 var(--mono);
-      }
+      .evidence-item { padding: 10px; border: 1px solid rgba(255, 255, 255, 0.09); border-radius: 14px; background: rgba(255, 255, 255, 0.035); }
+      .evidence-item b { display: block; margin-bottom: 6px; color: #f5eafa; font: 800 11px/1.2 var(--mono); }
+      .evidence-item p, .safe-copy { margin: 0; color: #bbb0c7; font-size: 12px; line-height: 1.45; }
+      .footer-note { margin-top: 12px; color: var(--muted); font: 700 10px/1.45 var(--mono); }
 
       @media (max-width: 920px) {
         main { width: min(100vw - 12px, 720px); padding-top: 18px; }
@@ -382,29 +366,43 @@
           <div id="glass-wall-graph" data-testid="glass-wall-graph">
             <div class="graph-board" id="glass-wall-board">
               <div class="graph-title">observable signal path</div>
-              <div class="axis-label" style="left: 68px; top: 570px">input</div>
-              <div class="axis-label" style="left: 300px; top: 570px">retrieval</div>
-              <div class="axis-label" style="left: 554px; top: 570px">evidence</div>
-              <div class="axis-label" style="left: 790px; top: 570px">final</div>
-              <svg class="edges" id="glass-wall-edges" viewBox="0 0 920 620" aria-hidden="true"></svg>
+              <div class="graph-legend" id="glass-wall-legend" data-testid="glass-wall-legend">
+                <div class="legend-item"><span class="legend-dot hot"></span>active path</div>
+                <div class="legend-item"><span class="legend-dot warn"></span>degraded</div>
+                <div class="legend-item"><span class="legend-dot ok"></span>safe contract</div>
+                <div class="legend-item"><span class="legend-dot dim"></span>inactive</div>
+              </div>
+              <div class="axis-label" style="left: 70px; top: 655px">input</div>
+              <div class="axis-label" style="left: 300px; top: 655px">retrieval</div>
+              <div class="axis-label" style="left: 565px; top: 655px">evidence</div>
+              <div class="axis-label" style="left: 835px; top: 655px">final</div>
+              <svg class="edges" id="glass-wall-edges" viewBox="0 0 1080 720" aria-hidden="true"></svg>
 
-              <div class="node active" id="node-query" data-node="query" data-x="95" data-y="155"><span class="node-core"></span><span class="node-label">query</span><span class="node-value">waiting</span></div>
-              <div class="node" id="node-mode" data-node="mode" data-x="95" data-y="275"><span class="node-core"></span><span class="node-label">mode</span><span class="node-value">hybrid</span></div>
-              <div class="node" id="node-corpus" data-node="corpus" data-x="95" data-y="395"><span class="node-core"></span><span class="node-label">corpus</span><span class="node-value">safe API</span></div>
+              <div class="node active" id="node-query" data-node="query" data-x="95" data-y="125"><span class="node-core"></span><span class="node-label">query</span><span class="node-value">waiting</span></div>
+              <div class="node" id="node-mode" data-node="mode" data-x="95" data-y="235"><span class="node-core"></span><span class="node-label">mode</span><span class="node-value">hybrid</span></div>
+              <div class="node" id="node-limit" data-node="limit" data-x="95" data-y="345"><span class="node-core"></span><span class="node-label">limit</span><span class="node-value">5</span></div>
+              <div class="node" id="node-corpus" data-node="corpus" data-x="95" data-y="455"><span class="node-core"></span><span class="node-label">corpus</span><span class="node-value">safe API</span></div>
+              <div class="node ok" id="node-safety" data-node="safety" data-x="95" data-y="565"><span class="node-core"></span><span class="node-label">safety</span><span class="node-value">no secrets</span></div>
 
-              <div class="node" id="node-phrase" data-node="phrase" data-x="325" data-y="125"><span class="node-core"></span><span class="node-label">phrase</span><span class="node-value">exact</span></div>
-              <div class="node" id="node-keyword" data-node="keyword" data-x="325" data-y="225"><span class="node-core"></span><span class="node-label">keyword</span><span class="node-value">lexical</span></div>
-              <div class="node" id="node-vector" data-node="vector" data-x="325" data-y="325"><span class="node-core"></span><span class="node-label">vector</span><span class="node-value">semantic</span></div>
-              <div class="node" id="node-runtime" data-node="runtime" data-x="325" data-y="425"><span class="node-core"></span><span class="node-label">runtime</span><span class="node-value">unknown</span></div>
+              <div class="node" id="node-phrase" data-node="phrase" data-x="325" data-y="95"><span class="node-core"></span><span class="node-label">phrase</span><span class="node-value">exact</span></div>
+              <div class="node" id="node-keyword" data-node="keyword" data-x="325" data-y="185"><span class="node-core"></span><span class="node-label">keyword</span><span class="node-value">lexical</span></div>
+              <div class="node" id="node-vector" data-node="vector" data-x="325" data-y="275"><span class="node-core"></span><span class="node-label">vector</span><span class="node-value">semantic</span></div>
+              <div class="node" id="node-embedding" data-node="embedding" data-x="325" data-y="365"><span class="node-core"></span><span class="node-label">embedding</span><span class="node-value">query</span></div>
+              <div class="node" id="node-db" data-node="db" data-x="325" data-y="455"><span class="node-core"></span><span class="node-label">pgvector</span><span class="node-value">store</span></div>
+              <div class="node" id="node-runtime" data-node="runtime" data-x="325" data-y="545"><span class="node-core"></span><span class="node-label">runtime</span><span class="node-value">unknown</span></div>
 
-              <div class="node" id="node-evidence-1" data-node="evidence" data-x="575" data-y="110"><span class="node-core"></span><span class="node-label">evidence 1</span><span class="node-value">none</span></div>
-              <div class="node" id="node-evidence-2" data-node="evidence" data-x="575" data-y="205"><span class="node-core"></span><span class="node-label">evidence 2</span><span class="node-value">none</span></div>
-              <div class="node" id="node-evidence-3" data-node="evidence" data-x="575" data-y="300"><span class="node-core"></span><span class="node-label">evidence 3</span><span class="node-value">none</span></div>
-              <div class="node" id="node-citation" data-node="citation" data-x="575" data-y="420"><span class="node-core"></span><span class="node-label">citation</span><span class="node-value">not ready</span></div>
+              <div class="node" id="node-evidence-1" data-node="evidence" data-x="585" data-y="80"><span class="node-core"></span><span class="node-label">evidence 1</span><span class="node-value">none</span></div>
+              <div class="node" id="node-evidence-2" data-node="evidence" data-x="585" data-y="165"><span class="node-core"></span><span class="node-label">evidence 2</span><span class="node-value">none</span></div>
+              <div class="node" id="node-evidence-3" data-node="evidence" data-x="585" data-y="250"><span class="node-core"></span><span class="node-label">evidence 3</span><span class="node-value">none</span></div>
+              <div class="node" id="node-evidence-4" data-node="evidence" data-x="585" data-y="335"><span class="node-core"></span><span class="node-label">evidence 4</span><span class="node-value">none</span></div>
+              <div class="node" id="node-evidence-5" data-node="evidence" data-x="585" data-y="420"><span class="node-core"></span><span class="node-label">evidence 5</span><span class="node-value">none</span></div>
+              <div class="node" id="node-citation" data-node="citation" data-x="585" data-y="515"><span class="node-core"></span><span class="node-label">citation</span><span class="node-value">not ready</span></div>
+              <div class="node" id="node-score" data-node="score" data-x="585" data-y="600"><span class="node-core"></span><span class="node-label">score</span><span class="node-value">ranked</span></div>
 
-              <div class="node" id="node-answer" data-node="answer" data-x="815" data-y="175"><span class="node-core"></span><span class="node-label">answer</span><span class="node-value">idle</span></div>
-              <div class="node" id="node-not-found" data-node="not_found" data-x="815" data-y="310"><span class="node-core"></span><span class="node-label">not_found</span><span class="node-value">inactive</span></div>
-              <div class="node" id="node-degraded" data-node="degraded" data-x="815" data-y="445"><span class="node-core"></span><span class="node-label">degraded</span><span class="node-value">inactive</span></div>
+              <div class="node" id="node-answer" data-node="answer" data-x="870" data-y="145"><span class="node-core"></span><span class="node-label">answer</span><span class="node-value">idle</span></div>
+              <div class="node" id="node-not-found" data-node="not_found" data-x="870" data-y="285"><span class="node-core"></span><span class="node-label">not_found</span><span class="node-value">inactive</span></div>
+              <div class="node" id="node-degraded" data-node="degraded" data-x="870" data-y="425"><span class="node-core"></span><span class="node-label">degraded</span><span class="node-value">inactive</span></div>
+              <div class="node ok" id="node-audit" data-node="audit" data-x="870" data-y="565"><span class="node-core"></span><span class="node-label">audit</span><span class="node-value">safe trace</span></div>
 
               <div class="sense-level" id="sense-level"><b>Level 1</b> / 6 · blind</div>
             </div>
@@ -431,6 +429,17 @@
           </article>
 
           <article class="side-card">
+            <div class="card-header">legend</div>
+            <div id="glass-wall-legend-panel" data-testid="glass-wall-legend-panel">
+              <p class="safe-copy">
+                Magenta means an active signal path contributed to the current retrieval result.
+                Yellow means degraded or partially configured runtime. Green means safety/audit guardrail.
+                Gray means inactive path.
+              </p>
+            </div>
+          </article>
+
+          <article class="side-card">
             <div class="card-header">safety contract</div>
             <div id="glass-wall-safety" data-testid="glass-wall-safety">
               <p class="safe-copy">
@@ -453,24 +462,34 @@
         ["node-query", "node-phrase", "signal"],
         ["node-query", "node-keyword", "signal"],
         ["node-query", "node-vector", "vector"],
-        ["node-query", "node-runtime", "runtime"],
+        ["node-query", "node-embedding", "vector"],
         ["node-mode", "node-phrase", "mode"],
         ["node-mode", "node-keyword", "mode"],
         ["node-mode", "node-vector", "vector"],
+        ["node-limit", "node-score", "score"],
         ["node-corpus", "node-keyword", "signal"],
-        ["node-corpus", "node-vector", "vector"],
+        ["node-corpus", "node-db", "vector"],
+        ["node-safety", "node-audit", "audit"],
+        ["node-embedding", "node-vector", "vector"],
+        ["node-db", "node-vector", "vector"],
+        ["node-runtime", "node-vector", "vector"],
+        ["node-runtime", "node-degraded", "degraded"],
         ["node-phrase", "node-evidence-1", "evidence1"],
         ["node-keyword", "node-evidence-1", "evidence1"],
         ["node-keyword", "node-evidence-2", "evidence2"],
         ["node-vector", "node-evidence-2", "evidence2"],
         ["node-vector", "node-evidence-3", "evidence3"],
-        ["node-runtime", "node-vector", "vector"],
-        ["node-runtime", "node-degraded", "degraded"],
+        ["node-db", "node-evidence-4", "evidence4"],
+        ["node-phrase", "node-evidence-5", "evidence5"],
         ["node-evidence-1", "node-citation", "citation"],
         ["node-evidence-2", "node-citation", "citation"],
         ["node-evidence-3", "node-citation", "citation"],
-        ["node-citation", "node-answer", "answer"],
+        ["node-evidence-4", "node-citation", "citation"],
+        ["node-evidence-5", "node-citation", "citation"],
+        ["node-citation", "node-score", "score"],
+        ["node-score", "node-answer", "answer"],
         ["node-citation", "node-not-found", "not_found"],
+        ["node-audit", "node-answer", "audit"],
       ];
 
       const state = {
@@ -532,14 +551,17 @@
         if (kind === "signal") return hasEvidence || state.mode === "hybrid" ? "active" : "";
         if (kind === "mode") return state.mode === "hybrid" || state.mode === "keyword" || state.mode === "phrase" ? "active" : "";
         if (kind === "vector") return vectorActive ? "active" : degraded ? "warn" : "";
-        if (kind === "runtime") return runtimeState !== "unknown" ? "active" : "";
         if (kind === "evidence1") return count >= 1 ? "active" : "";
         if (kind === "evidence2") return count >= 2 ? "active" : "";
         if (kind === "evidence3") return count >= 3 ? "active" : "";
+        if (kind === "evidence4") return count >= 4 ? "active" : "";
+        if (kind === "evidence5") return count >= 5 ? "active" : "";
         if (kind === "citation") return hasEvidence ? "active" : "";
+        if (kind === "score") return hasEvidence ? "active" : "";
         if (kind === "answer") return hasEvidence ? "active" : "";
         if (kind === "not_found") return hasEvidence ? "" : "warn";
         if (kind === "degraded") return degraded ? "warn" : "";
+        if (kind === "audit") return "active";
         return "";
       };
 
@@ -580,21 +602,27 @@
 
         setNode("node-query", state.query, "active");
         setNode("node-mode", state.mode, state.mode === "hybrid" ? "active" : "");
+        setNode("node-limit", "limit 5", "");
         setNode("node-corpus", "safe existing endpoints", "");
+        setNode("node-safety", "safe output only", "ok");
         setNode("node-phrase", "exact phrase path", state.mode === "phrase" || state.mode === "hybrid" ? "active" : "");
         setNode("node-keyword", "lexical path", state.mode === "keyword" || state.mode === "hybrid" ? "active" : "");
         setNode("node-vector", runtimeState, runtimeState === "enabled" && state.mode === "hybrid" ? "active" : degraded ? "warn" : "");
+        setNode("node-embedding", runtimeState === "enabled" ? "query embedding" : "partial", runtimeState === "enabled" ? "active" : degraded ? "warn" : "");
+        setNode("node-db", runtimeState === "enabled" ? "pgvector ready" : "partial", runtimeState === "enabled" ? "active" : degraded ? "warn" : "");
         setNode("node-runtime", runtimeState, runtimeState === "enabled" ? "active" : degraded ? "warn" : "");
 
-        [0, 1, 2].forEach((index) => {
+        [0, 1, 2, 3, 4].forEach((index) => {
           const item = items[index];
           setNode(`node-evidence-${index + 1}`, item ? safeText(getCitationLabel(item)) : "none", item ? "active" : "");
         });
 
         setNode("node-citation", hasCitation ? "citation-ready" : "not ready", hasCitation ? "active" : "");
+        setNode("node-score", hasEvidence ? "ranked candidates" : "waiting", hasEvidence ? "active" : "");
         setNode("node-answer", status, hasEvidence ? "active" : "");
         setNode("node-not-found", hasEvidence ? "inactive" : "no evidence", hasEvidence ? "" : "warn");
         setNode("node-degraded", runtimeState, degraded ? "warn" : "");
+        setNode("node-audit", "safe trace", "ok");
 
         const list = $("evidence-list");
         list.innerHTML = "";
