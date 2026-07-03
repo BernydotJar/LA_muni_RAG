@@ -82,9 +82,9 @@
     },
     {
       "id": "016-ingestion-cli-vector-indexing",
-      "status": "review",
+      "status": "done",
       "mode": "SHIP",
-      "active": true,
+      "active": false,
       "summary": "Added a CLI-ready vector indexing orchestrator, direct CLI entry point, safe reporting, and offline success/failure tests."
     }
   ]
