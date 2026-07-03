@@ -12,7 +12,7 @@ review
 
 Feature 019 has been implemented in SHIP mode and received visual review fixes.
 
-The implementation adds a static CTO/operator-facing RAG Glass Wall page served from `public/glass-wall.html`, using existing safe endpoints only. Review fixes changed the view from a stacked dashboard/card layout into a true neural-style graph and then expanded it with more nodes, visible legends, explicit signal semantics, and test coverage for the expanded visual contract.
+The implementation adds a static CTO/operator-facing RAG Glass Wall page served from `public/glass-wall.html`, using existing safe endpoints only. Review fixes changed the view from a stacked dashboard/card layout into a true neural-style graph, expanded it with more nodes and legends, and corrected node positioning/scaling so labels no longer collapse into the top-left corner and the graph no longer relies on a visible bottom scrollbar.
 
 ## Completed Implementation
 
@@ -28,7 +28,9 @@ The implementation adds a static CTO/operator-facing RAG Glass Wall page served 
 - active/warn/ok/muted path highlighting
 - visible in-graph legend
 - side-panel legend explaining active path, degraded state, safety/audit, and inactive paths
-- mobile horizontal graph scroll instead of stacked card collapse
+- node coordinate application from `data-x` and `data-y`
+- graph auto-scaling to the available viewport width
+- hidden graph overflow instead of visible bottom scrollbar
 - safe calls to `/health`, `/api/evidence`, and `/api/answer`
 - degraded/not_found/error rendering states
 - safety contract panel
@@ -39,6 +41,8 @@ The implementation adds a static CTO/operator-facing RAG Glass Wall page served 
 The first implementation rendered correctly but looked too much like a stacked dashboard on mobile. The first review fix corrected this by preserving the graph as the primary visual artifact across viewport sizes.
 
 The second review fix added more nodes and legends so the view reads as a richer neural wall rather than a sparse line graph.
+
+The third review fix corrected node positioning and graph scaling so labels are placed on their intended nodes and the bottom scrollbar is no longer the primary navigation mechanism.
 
 ## Preserved Non-Goals
 
@@ -74,7 +78,8 @@ Manual verification recommended:
 - start the server
 - open `/glass-wall.html`
 - submit a query
-- confirm the graph remains a node/edge visualization on mobile and desktop
+- confirm nodes and labels appear at their intended coordinates
+- confirm the graph scales to the card without a visible bottom scrollbar
 - confirm visible legends explain active, degraded, safe/audit, and inactive paths
 - confirm the page renders safe result state without exposing secrets, prompts, or hidden reasoning
 
@@ -89,6 +94,8 @@ Review should confirm:
 - not_found/degraded/error states are safe
 - the visual center is a neural-style graph, not stacked cards
 - legends and expanded nodes are present
+- labels do not collapse into the top-left corner
+- the bottom scrollbar is not used as the primary graph navigation mechanism
 - test suite remains green
 
 ## Next Gate
