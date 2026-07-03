@@ -2,21 +2,23 @@
 
 ## Active Feature
 
+None.
+
+## Last Completed Feature
+
 015-runtime-vector-observability
 
 ## State
 
-review
+done
 
 ## Summary
 
-Feature 015 has been implemented in SHIP mode.
+Feature 015 has been completed in SHIP mode.
 
 The implementation adds a sanitized runtime vector status model, a dependency context factory that returns both dependencies and vector status, and `/health` exposure for the vector runtime state.
 
 ## Completed Implementation
-
-015 added:
 
 - `RuntimeVectorStatus`
 - `RuntimeVectorState`
@@ -30,41 +32,49 @@ The implementation adds a sanitized runtime vector status model, a dependency co
 
 ## Preserved Non-Goals
 
-015 did not introduce:
-
-- LLM answer generation
-- LLM reranking
-- UI changes
-- auth changes
-- unrelated ingestion changes
-- env or secret files
-- hosted provider health checks
-- external provider calls in tests
-- migrations
-- package changes
-- evidence policy changes
+- no LLM answer generation
+- no LLM reranking
+- no UI changes
+- no auth changes
+- no unrelated ingestion changes
+- no env or secret files
+- no hosted provider health checks
+- no external provider calls in tests
+- no migrations
+- no package changes
+- no evidence policy changes
 
 ## Verification
 
-GitHub file edits were applied directly through the repository API, so local verification is required before marking this feature done.
-
-Required local verification:
+Local verification passed:
 
 - npm run typecheck
 - npm run build
 - npm run test
 
-## Review Focus
+Test result:
 
-Review should confirm:
+- 118 tests
+- 118 passing
+- 0 failing
+- 0 cancelled
+- 0 skipped
+- 0 todo
 
-- `/health.vectorRuntime` exposes only sanitized metadata
-- no API keys, endpoint URLs, or database URLs leak through status
-- missing query embedding config reports disabled/degraded safely
-- missing database config reports degraded safely
-- complete vector config reports enabled safely
-- no hosted provider calls occur for health/status
+## Completed Features
 
-## Next Gate
+- 007-docx-extractor-mammoth: done
+- 008-embedding-indexing-pipeline: done
+- 009-hybrid-retrieval-ranking: done
+- 010-hybrid-retrieval-integration: done
+- 011-production-vector-store: done
+- 012-vector-query-integration: done
+- 013-production-query-embedding-provider: done
+- 014-runtime-vector-wiring: done
+- 015-runtime-vector-observability: done
 
-Run local verification and review the implementation before moving 015 to done.
+## Next Recommended Feature
+
+016-ingestion-cli-vector-indexing
+
+Status: not started
