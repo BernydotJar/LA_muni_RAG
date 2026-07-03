@@ -96,9 +96,9 @@
     },
     {
       "id": "018-file-backed-corpus-manifest",
-      "status": "review",
+      "status": "done",
       "mode": "SHIP",
-      "active": true,
+      "active": false,
       "summary": "Added JSON file-backed manifest store with missing-file behavior, deterministic ordering, validation, atomic-ish writes, and offline tests."
     }
   ]
