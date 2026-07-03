@@ -86,6 +86,13 @@
       "mode": "SHIP",
       "active": false,
       "summary": "Added a CLI-ready vector indexing orchestrator, direct CLI entry point, safe reporting, and offline success/failure tests."
+    },
+    {
+      "id": "017-corpus-backfill-manifest",
+      "status": "spec_ready",
+      "mode": "SHIP",
+      "active": true,
+      "summary": "Define a manifest-driven corpus backfill state model to track indexed documents, hashes, versions, embedding metadata, chunk counts, and reindex decisions."
     }
   ]
 }
