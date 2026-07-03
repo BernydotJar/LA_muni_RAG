@@ -10,9 +10,9 @@ review
 
 ## Summary
 
-Feature 019 has been implemented in SHIP mode.
+Feature 019 has been implemented in SHIP mode and received a visual review fix.
 
-The implementation adds a static CTO/operator-facing RAG Glass Wall page served from `public/glass-wall.html`, using existing safe endpoints only. It renders a neural-signal-inspired transparency view for query input, retrieval paths, evidence candidates, citation readiness, answer status, and sanitized runtime state.
+The implementation adds a static CTO/operator-facing RAG Glass Wall page served from `public/glass-wall.html`, using existing safe endpoints only. The review fix changed the view from a stacked dashboard/card layout into a true neural-style graph: circular nodes, SVG edges, fixed graph board, active path highlighting, and horizontal scroll on mobile so the graph remains visually coherent.
 
 ## Completed Implementation
 
@@ -22,13 +22,19 @@ The implementation adds a static CTO/operator-facing RAG Glass Wall page served 
 - direct URL easter egg at `/glass-wall.html`
 - query input
 - retrieval mode selector
-- signal graph layers for input, retrieval, evidence, and final answer state
-- active/muted node styling
-- active edge highlighting
+- neural-style graph board
+- circular nodes for query, retrieval, evidence, citation, answer, not_found, and degraded states
+- SVG edges between nodes
+- active/warn/muted path highlighting
+- mobile horizontal graph scroll instead of stacked card collapse
 - safe calls to `/health`, `/api/evidence`, and `/api/answer`
 - degraded/not_found/error rendering states
 - safety contract panel
 - static safety test at `src/__tests__/glass-wall-static.test.ts`
+
+## Review Fix
+
+The first implementation rendered correctly but looked too much like a stacked dashboard on mobile. The review fix corrected this by preserving the graph as the primary visual artifact across viewport sizes.
 
 ## Preserved Non-Goals
 
@@ -64,6 +70,7 @@ Manual verification recommended:
 - start the server
 - open `/glass-wall.html`
 - submit a query
+- confirm the graph remains a node/edge visualization on mobile and desktop
 - confirm the page renders safe result state without exposing secrets, prompts, or hidden reasoning
 
 ## Review Focus
@@ -75,6 +82,7 @@ Review should confirm:
 - the view only calls existing safe endpoints
 - no secrets, prompts, or chain-of-thought are rendered
 - not_found/degraded/error states are safe
+- the visual center is a neural-style graph, not stacked cards
 - test suite remains green
 
 ## Next Gate
