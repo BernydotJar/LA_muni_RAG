@@ -136,6 +136,25 @@ if (!process.env.DATABASE_URL) {
       assert.equal(body.service, "la-muni-rag-api");
     });
 
+    it("GET /health exposes sanitized vector runtime status", async () => {
+      const { status, body } = await get("/health");
+      assert.equal(status, 200);
+      assert.ok("vectorRuntime" in body);
+
+      const vectorRuntime = body.vectorRuntime as Record<string, unknown>;
+      assert.ok(["enabled", "disabled", "degraded"].includes(vectorRuntime.state as string));
+      assert.ok(Array.isArray(vectorRuntime.reasons));
+      assert.equal(typeof vectorRuntime.queryEmbeddingProviderConfigured, "boolean");
+      assert.equal(typeof vectorRuntime.vectorRepositoryConfigured, "boolean");
+
+      const serialized = JSON.stringify(vectorRuntime);
+      assert.ok(!serialized.includes("DATABASE_URL"));
+      assert.ok(!serialized.includes("postgresql://"));
+      assert.ok(!serialized.includes("authorization"));
+      assert.ok(!serialized.includes("apiKey"));
+      assert.ok(!serialized.includes("endpoint"));
+    });
+
     // -----------------------------------------------------------------------
     // Search
     // -----------------------------------------------------------------------
