@@ -2,21 +2,23 @@
 
 ## Active Feature
 
+None.
+
+## Last Completed Feature
+
 018-file-backed-corpus-manifest
 
 ## State
 
-review
+done
 
 ## Summary
 
-Feature 018 has been implemented in SHIP mode.
+Feature 018 has been completed in SHIP mode.
 
 The implementation adds a JSON file-backed `CorpusManifestStore`, stable manifest JSON shape, missing-file behavior as empty manifest, persistent `put()` writes, deterministic `list()` order, invalid file handling, temp-file-and-rename style write safety, and offline tests using temp directories.
 
 ## Completed Implementation
-
-018 added:
 
 - `CorpusManifestFile`
 - `CorpusManifestFileError`
@@ -37,46 +39,54 @@ The implementation adds a JSON file-backed `CorpusManifestStore`, stable manifes
 
 ## Preserved Non-Goals
 
-018 did not introduce:
-
-- LLM answer generation
-- LLM reranking
-- UI changes
-- auth changes
-- new source extractors
-- env or secret files
-- migrations
-- package changes
-- production scheduler
-- full corpus management UI
-- evidence policy changes
-- vector ranking changes
-- server routes
+- no LLM answer generation
+- no LLM reranking
+- no UI changes
+- no auth changes
+- no new source extractors
+- no env or secret files
+- no migrations
+- no package changes
+- no production scheduler
+- no full corpus management UI
+- no evidence policy changes
+- no vector ranking changes
+- no server routes
 
 ## Verification
 
-GitHub file edits were applied directly through the repository API, so local verification is required before marking this feature done.
-
-Required local verification:
+Local verification passed:
 
 - npm run typecheck
 - npm run build
 - npm run test
 
-## Review Focus
+Test result:
 
-Review should confirm:
+- 144 tests
+- 144 passing
+- 0 failing
+- 0 cancelled
+- 0 skipped
+- 0 todo
 
-- missing manifest files behave as empty stores
-- existing records can be read from disk
-- `put()` persists records across store instances
-- replacing a document key does not duplicate records
-- `list()` returns deterministic `documentKey` order
-- invalid JSON and invalid manifest shape fail clearly
-- write path uses temp file plus rename
-- existing in-memory manifest tests still pass
-- existing server/vector indexing behavior remains unchanged
+## Completed Features
 
-## Next Gate
+- 007-docx-extractor-mammoth: done
+- 008-embedding-indexing-pipeline: done
+- 009-hybrid-retrieval-ranking: done
+- 010-hybrid-retrieval-integration: done
+- 011-production-vector-store: done
+- 012-vector-query-integration: done
+- 013-production-query-embedding-provider: done
+- 014-runtime-vector-wiring: done
+- 015-runtime-vector-observability: done
+- 016-ingestion-cli-vector-indexing: done
+- 017-corpus-backfill-manifest: done
+- 018-file-backed-corpus-manifest: done
 
-Run local verification and review the implementation before moving 018 to done.
+## Next Recommended Feature
+
+019-corpus-backfill-cli
+
+Status: not started
