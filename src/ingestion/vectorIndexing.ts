@@ -63,9 +63,47 @@ const safeFailure = (code: string, message: string, retryable = false): Embeddin
   retryable,
 });
 
+const sensitiveValuesFromDependencies = (dependencies: VectorIndexingDependencies): string[] => {
+  const env = dependencies.env ?? process.env;
+  return [
+    env.DATABASE_URL,
+    env.QUERY_EMBEDDING_API_KEY,
+    env.QUERY_EMBEDDING_ENDPOINT,
+    dependencies.queryEmbeddingConfig?.apiKey,
+    dependencies.queryEmbeddingConfig?.endpoint,
+  ].filter((value): value is string => typeof value === "string" && value.length > 0);
+};
+
+const redactSensitive = (value: string, dependencies: VectorIndexingDependencies): string => {
+  let redacted = value
+    .replace(/postgres(?:ql)?:\/\/\S+/gi, "[redacted]")
+    .replace(/https?:\/\/\S+/gi, "[redacted]")
+    .replace(/Bearer\s+\S+/gi, "Bearer [redacted]");
+
+  for (const sensitiveValue of sensitiveValuesFromDependencies(dependencies)) {
+    redacted = redacted.split(sensitiveValue).join("[redacted]");
+  }
+
+  return redacted;
+};
+
+const sanitizeFailure = (
+  failure: EmbeddingFailure,
+  dependencies: VectorIndexingDependencies
+): EmbeddingFailure => ({
+  ...failure,
+  message: redactSensitive(failure.message, dependencies),
+});
+
+const sanitizeFailures = (
+  failures: EmbeddingFailure[],
+  dependencies: VectorIndexingDependencies
+): EmbeddingFailure[] => failures.map((failure) => sanitizeFailure(failure, dependencies));
+
 const emptyResult = (
   input: Partial<VectorIndexingInput>,
-  failure: EmbeddingFailure
+  failure: EmbeddingFailure,
+  dependencies: VectorIndexingDependencies = {}
 ): VectorIndexingResult => ({
   status: "failed",
   inputPath: input.inputPath ?? "",
@@ -79,7 +117,7 @@ const emptyResult = (
   recordsUpdated: 0,
   recordsUnchanged: 0,
   recordsWritten: 0,
-  failures: [failure],
+  failures: [sanitizeFailure(failure, dependencies)],
 });
 
 export const queryProviderToEmbeddingProvider = (
@@ -123,7 +161,8 @@ const resultStatusFromIndexResult = (result: IndexDocumentResult): VectorIndexin
 const toVectorIndexingResult = (
   input: VectorIndexingInput,
   document: NormalizedDocument,
-  indexResult: IndexDocumentResult
+  indexResult: IndexDocumentResult,
+  dependencies: VectorIndexingDependencies
 ): VectorIndexingResult => {
   const recordsWritten = indexResult.insertedCount + indexResult.updatedCount + indexResult.unchangedCount;
 
@@ -140,7 +179,7 @@ const toVectorIndexingResult = (
     recordsUpdated: indexResult.updatedCount,
     recordsUnchanged: indexResult.unchangedCount,
     recordsWritten,
-    failures: indexResult.failures,
+    failures: sanitizeFailures(indexResult.failures, dependencies),
   };
 };
 
@@ -149,14 +188,15 @@ export const indexVectorSource = async (
   dependencies: VectorIndexingDependencies = {}
 ): Promise<VectorIndexingResult> => {
   if (!input.inputPath?.trim()) {
-    return emptyResult(input, safeFailure("missing_input", "--input is required."));
+    return emptyResult(input, safeFailure("missing_input", "--input is required."), dependencies);
   }
 
   const provider = dependencies.embeddingProvider ?? createDefaultEmbeddingProvider(dependencies);
   if (!provider) {
     return emptyResult(
       input,
-      safeFailure("missing_embedding_provider_config", "Embedding provider configuration is incomplete.")
+      safeFailure("missing_embedding_provider_config", "Embedding provider configuration is incomplete."),
+      dependencies
     );
   }
 
@@ -164,7 +204,8 @@ export const indexVectorSource = async (
   if (!repository) {
     return emptyResult(
       input,
-      safeFailure("missing_vector_store_config", "Vector store configuration is incomplete.")
+      safeFailure("missing_vector_store_config", "Vector store configuration is incomplete."),
+      dependencies
     );
   }
 
@@ -195,7 +236,7 @@ export const indexVectorSource = async (
       }
     );
 
-    return toVectorIndexingResult(input, document, indexResult);
+    return toVectorIndexingResult(input, document, indexResult, dependencies);
   } catch (error) {
     return emptyResult(
       input,
@@ -203,7 +244,8 @@ export const indexVectorSource = async (
         "vector_indexing_failed",
         error instanceof Error ? error.message : String(error),
         true
-      )
+      ),
+      dependencies
     );
   }
 };
