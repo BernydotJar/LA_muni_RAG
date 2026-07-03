@@ -41,34 +41,10 @@
         padding: 28px 0 46px;
       }
 
-      .hero {
-        display: grid;
-        gap: 10px;
-        margin-bottom: 18px;
-      }
-
-      .eyebrow {
-        color: var(--hot);
-        font: 700 11px/1.2 var(--mono);
-        letter-spacing: 0.16em;
-        text-transform: uppercase;
-      }
-
-      h1 {
-        margin: 0;
-        max-width: 900px;
-        font-size: clamp(32px, 6vw, 78px);
-        line-height: 0.9;
-        letter-spacing: -0.075em;
-      }
-
-      .subtitle {
-        max-width: 850px;
-        margin: 0;
-        color: #c9bfd2;
-        font-size: 15px;
-        line-height: 1.55;
-      }
+      .hero { display: grid; gap: 10px; margin-bottom: 18px; }
+      .eyebrow { color: var(--hot); font: 700 11px/1.2 var(--mono); letter-spacing: 0.16em; text-transform: uppercase; }
+      h1 { margin: 0; max-width: 900px; font-size: clamp(32px, 6vw, 78px); line-height: 0.9; letter-spacing: -0.075em; }
+      .subtitle { max-width: 850px; margin: 0; color: #c9bfd2; font-size: 15px; line-height: 1.55; }
 
       .controls {
         display: grid;
@@ -128,33 +104,16 @@
         text-transform: uppercase;
       }
 
-      .status-pill {
-        display: inline-flex;
-        align-items: center;
-        gap: 7px;
-        padding: 7px 10px;
-        border-radius: 999px;
-        color: var(--muted);
-        background: rgba(255, 255, 255, 0.055);
-        font: 700 11px/1 var(--mono);
-        letter-spacing: 0;
-      }
-
-      .status-dot {
-        width: 8px;
-        height: 8px;
-        border-radius: 50%;
-        background: var(--muted);
-      }
-
+      .status-pill { display: inline-flex; align-items: center; gap: 7px; padding: 7px 10px; border-radius: 999px; color: var(--muted); background: rgba(255, 255, 255, 0.055); font: 700 11px/1 var(--mono); letter-spacing: 0; }
+      .status-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--muted); }
       .status-pill.active .status-dot { background: var(--hot); box-shadow: 0 0 18px var(--hot); }
       .status-pill.warn .status-dot { background: var(--warn); box-shadow: 0 0 18px var(--warn); }
       .status-pill.error .status-dot { background: var(--error); box-shadow: 0 0 18px var(--error); }
 
       #glass-wall-graph {
         position: relative;
-        overflow-x: auto;
-        overflow-y: hidden;
+        overflow: hidden;
+        min-height: 320px;
         background:
           linear-gradient(rgba(255, 255, 255, 0.025) 1px, transparent 1px),
           linear-gradient(90deg, rgba(255, 255, 255, 0.025) 1px, transparent 1px),
@@ -166,17 +125,10 @@
         position: relative;
         width: 1080px;
         height: 720px;
-        margin: 0 auto;
+        transform-origin: 0 0;
       }
 
-      svg.edges {
-        position: absolute;
-        inset: 0;
-        width: 1080px;
-        height: 720px;
-        pointer-events: none;
-      }
-
+      svg.edges { position: absolute; inset: 0; width: 1080px; height: 720px; pointer-events: none; }
       .edge { stroke: var(--line); stroke-width: 1.05; }
       .edge.active { stroke: var(--line-hot); stroke-width: 2.1; filter: drop-shadow(0 0 7px rgba(255, 45, 157, 0.9)); }
       .edge.warn { stroke: rgba(246, 196, 83, 0.82); stroke-width: 1.8; }
@@ -193,89 +145,22 @@
         text-align: center;
       }
 
-      .node-core {
-        width: 19px;
-        height: 19px;
-        border-radius: 50%;
-        border: 2px solid var(--node-border);
-        background: var(--node);
-        box-shadow: 0 0 0 5px rgba(255, 255, 255, 0.018);
-      }
-
-      .node.active .node-core {
-        border-color: var(--hot);
-        background: rgba(255, 45, 157, 0.22);
-        box-shadow: 0 0 0 7px rgba(255, 45, 157, 0.12), 0 0 22px rgba(255, 45, 157, 0.8);
-      }
-
-      .node.warn .node-core {
-        border-color: var(--warn);
-        background: rgba(246, 196, 83, 0.12);
-        box-shadow: 0 0 0 7px rgba(246, 196, 83, 0.08), 0 0 18px rgba(246, 196, 83, 0.55);
-      }
-
-      .node.error .node-core {
-        border-color: var(--error);
-        background: rgba(255, 107, 107, 0.12);
-        box-shadow: 0 0 0 7px rgba(255, 107, 107, 0.08), 0 0 18px rgba(255, 107, 107, 0.55);
-      }
-
-      .node.ok .node-core {
-        border-color: var(--ok);
-        background: rgba(134, 239, 172, 0.12);
-        box-shadow: 0 0 0 7px rgba(134, 239, 172, 0.08), 0 0 18px rgba(134, 239, 172, 0.5);
-      }
-
-      .node-label {
-        display: block;
-        color: inherit;
-        font: 800 11px/1 var(--mono);
-        text-shadow: 0 1px 8px #000;
-      }
-
+      .node-core { width: 19px; height: 19px; border-radius: 50%; border: 2px solid var(--node-border); background: var(--node); box-shadow: 0 0 0 5px rgba(255, 255, 255, 0.018); }
+      .node.active .node-core { border-color: var(--hot); background: rgba(255, 45, 157, 0.22); box-shadow: 0 0 0 7px rgba(255, 45, 157, 0.12), 0 0 22px rgba(255, 45, 157, 0.8); }
+      .node.warn .node-core { border-color: var(--warn); background: rgba(246, 196, 83, 0.12); box-shadow: 0 0 0 7px rgba(246, 196, 83, 0.08), 0 0 18px rgba(246, 196, 83, 0.55); }
+      .node.error .node-core { border-color: var(--error); background: rgba(255, 107, 107, 0.12); box-shadow: 0 0 0 7px rgba(255, 107, 107, 0.08), 0 0 18px rgba(255, 107, 107, 0.55); }
+      .node.ok .node-core { border-color: var(--ok); background: rgba(134, 239, 172, 0.12); box-shadow: 0 0 0 7px rgba(134, 239, 172, 0.08), 0 0 18px rgba(134, 239, 172, 0.5); }
+      .node-label { display: block; color: inherit; font: 800 11px/1 var(--mono); text-shadow: 0 1px 8px #000; }
       .node.active .node-label { color: var(--hot); }
       .node.warn .node-label { color: var(--warn); }
       .node.error .node-label { color: var(--error); }
       .node.ok .node-label { color: var(--ok); }
+      .node-value { display: block; max-width: 152px; color: var(--muted); font: 600 9px/1.3 var(--mono); overflow-wrap: anywhere; text-shadow: 0 1px 8px #000; }
 
-      .node-value {
-        display: block;
-        max-width: 152px;
-        color: var(--muted);
-        font: 600 9px/1.3 var(--mono);
-        overflow-wrap: anywhere;
-        text-shadow: 0 1px 8px #000;
-      }
-
-      .graph-title {
-        position: absolute;
-        left: 26px;
-        top: 22px;
-        color: var(--muted);
-        font: 800 11px/1 var(--mono);
-        letter-spacing: 0.12em;
-        text-transform: uppercase;
-      }
-
-      .sense-level {
-        position: absolute;
-        left: 50%;
-        bottom: 26px;
-        transform: translateX(-50%);
-        color: #fff;
-        font: 900 18px/1 var(--sans);
-        letter-spacing: -0.04em;
-      }
-
+      .graph-title { position: absolute; left: 26px; top: 22px; color: var(--muted); font: 800 11px/1 var(--mono); letter-spacing: 0.12em; text-transform: uppercase; }
+      .sense-level { position: absolute; left: 50%; bottom: 26px; transform: translateX(-50%); color: #fff; font: 900 18px/1 var(--sans); letter-spacing: -0.04em; }
       .sense-level b { color: var(--hot); }
-
-      .axis-label {
-        position: absolute;
-        color: rgba(255, 255, 255, 0.42);
-        font: 700 10px/1 var(--mono);
-        letter-spacing: 0.14em;
-        text-transform: uppercase;
-      }
+      .axis-label { position: absolute; color: rgba(255, 255, 255, 0.42); font: 700 10px/1 var(--mono); letter-spacing: 0.14em; text-transform: uppercase; }
 
       .graph-legend {
         position: absolute;
@@ -291,23 +176,8 @@
         backdrop-filter: blur(10px);
       }
 
-      .legend-item {
-        display: inline-flex;
-        align-items: center;
-        gap: 7px;
-        color: #c9bfd2;
-        font: 700 10px/1 var(--mono);
-        white-space: nowrap;
-      }
-
-      .legend-dot {
-        width: 9px;
-        height: 9px;
-        border-radius: 50%;
-        background: var(--muted);
-        box-shadow: 0 0 10px rgba(255,255,255,0.1);
-      }
-
+      .legend-item { display: inline-flex; align-items: center; gap: 7px; color: #c9bfd2; font: 700 10px/1 var(--mono); white-space: nowrap; }
+      .legend-dot { width: 9px; height: 9px; border-radius: 50%; background: var(--muted); box-shadow: 0 0 10px rgba(255,255,255,0.1); }
       .legend-dot.hot { background: var(--hot); box-shadow: 0 0 14px var(--hot); }
       .legend-dot.warn { background: var(--warn); box-shadow: 0 0 14px var(--warn); }
       .legend-dot.ok { background: var(--ok); box-shadow: 0 0 14px var(--ok); }
@@ -315,12 +185,10 @@
 
       .side-stack { display: grid; gap: 16px; }
       #glass-wall-results, #glass-wall-runtime, #glass-wall-safety, #glass-wall-legend { padding: 15px; }
-
       .metric-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
       .metric { padding: 12px; border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 16px; background: rgba(255, 255, 255, 0.045); }
       .metric strong { display: block; font-size: 24px; letter-spacing: -0.04em; }
       .metric span { display: block; margin-top: 4px; color: var(--muted); font: 700 10px/1 var(--mono); text-transform: uppercase; }
-
       .evidence-list { display: grid; gap: 9px; margin-top: 12px; }
       .evidence-item { padding: 10px; border: 1px solid rgba(255, 255, 255, 0.09); border-radius: 14px; background: rgba(255, 255, 255, 0.035); }
       .evidence-item b { display: block; margin-bottom: 6px; color: #f5eafa; font: 800 11px/1.2 var(--mono); }
@@ -331,8 +199,6 @@
         main { width: min(100vw - 12px, 720px); padding-top: 18px; }
         .controls { grid-template-columns: 1fr; }
         .dashboard { grid-template-columns: 1fr; }
-        .graph-board { margin-left: 0; }
-        #glass-wall-graph { border-radius: 0; }
       }
     </style>
   </head>
@@ -457,6 +323,7 @@
     <script>
       const $ = (id) => document.getElementById(id);
       const approvedEndpointPaths = ["/health", "/api/evidence", "/api/answer"];
+      const graphSize = { width: 1080, height: 720 };
 
       const graphEdges = [
         ["node-query", "node-phrase", "signal"],
@@ -492,14 +359,7 @@
         ["node-audit", "node-answer", "audit"],
       ];
 
-      const state = {
-        query: "municipalidad",
-        mode: "hybrid",
-        evidence: null,
-        answer: null,
-        health: null,
-        error: null,
-      };
+      const state = { query: "municipalidad", mode: "hybrid", evidence: null, answer: null, health: null, error: null };
 
       const safeText = (value, fallback = "unknown") => {
         if (value === null || value === undefined || value === "") return fallback;
@@ -516,6 +376,22 @@
         const node = $(id);
         node.className = `node ${className}`.trim();
         node.querySelector(".node-value").textContent = safeText(value);
+      };
+
+      const positionNodes = () => {
+        document.querySelectorAll(".node[data-x][data-y]").forEach((node) => {
+          node.style.left = `${node.dataset.x}px`;
+          node.style.top = `${node.dataset.y}px`;
+        });
+      };
+
+      const fitGraphToViewport = () => {
+        const graph = $("glass-wall-graph");
+        const board = $("glass-wall-board");
+        const availableWidth = Math.max(320, graph.clientWidth);
+        const scale = Math.min(1, availableWidth / graphSize.width);
+        board.style.transform = `scale(${scale})`;
+        graph.style.height = `${Math.ceil(graphSize.height * scale)}px`;
       };
 
       const getEvidenceItems = () => {
@@ -688,6 +564,13 @@
         void inspect();
       });
 
+      window.addEventListener("resize", () => {
+        fitGraphToViewport();
+        renderEdges();
+      });
+
+      positionNodes();
+      fitGraphToViewport();
       render();
     </script>
   </body>
