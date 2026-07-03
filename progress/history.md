@@ -1,5 +1,18 @@
 # Progress History
 
+## 019-rag-glass-wall-easter-egg
+
+State: spec_ready  
+Mode: SHIP
+
+Opened Feature 019 as a specification-only SHIP feature.
+
+The feature will define a CTO/operator-facing RAG Glass Wall easter egg: a safe visual transparency surface for query flow, retrieval paths, evidence candidates, citation readiness, answer status, and sanitized runtime state.
+
+The visual direction is inspired by neural-network signal diagrams, but the functional goal is operational observability, not hidden reasoning exposure.
+
+No runtime code was changed in this step.
+
 ## 018-file-backed-corpus-manifest
 
 State: done  
