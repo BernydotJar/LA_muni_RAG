@@ -100,6 +100,13 @@
       "mode": "SHIP",
       "active": false,
       "summary": "Added JSON file-backed manifest store with missing-file behavior, deterministic ordering, validation, atomic-ish writes, and offline tests."
+    },
+    {
+      "id": "019-rag-glass-wall-easter-egg",
+      "status": "spec_ready",
+      "mode": "SHIP",
+      "active": true,
+      "summary": "Define a CTO-facing RAG glass wall visualization easter egg for transparent retrieval/debug insight without exposing secrets or chain-of-thought."
     }
   ]
 }
