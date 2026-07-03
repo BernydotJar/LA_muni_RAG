@@ -75,9 +75,9 @@
     },
     {
       "id": "015-runtime-vector-observability",
-      "status": "review",
+      "status": "done",
       "mode": "SHIP",
-      "active": true,
+      "active": false,
       "summary": "Added sanitized runtime vector status model, dependency context, health exposure, and offline no-secret-leakage tests."
     }
   ]
