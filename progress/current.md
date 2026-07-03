@@ -2,73 +2,23 @@
 
 ## Active Feature
 
-None.
-
-## Last Completed Feature
-
-018-file-backed-corpus-manifest
+019-rag-glass-wall-easter-egg
 
 ## State
 
-done
+spec_ready
 
 ## Summary
 
-Feature 018 has been completed in SHIP mode.
+Feature 019 has been opened in SHIP mode as a specification-only change.
 
-The implementation adds a JSON file-backed `CorpusManifestStore`, stable manifest JSON shape, missing-file behavior as empty manifest, persistent `put()` writes, deterministic `list()` order, invalid file handling, temp-file-and-rename style write safety, and offline tests using temp directories.
+The goal is to define a CTO/operator-facing RAG Glass Wall easter egg: a safe visual transparency surface for query flow, retrieval paths, evidence candidates, citation readiness, answer status, and sanitized runtime state.
 
-## Completed Implementation
+## Product Direction
 
-- `CorpusManifestFile`
-- `CorpusManifestFileError`
-- `JsonFileCorpusManifestStore`
-- missing file handling as empty manifest
-- JSON shape validation for top-level object, `schemaVersion`, `records`, and record `documentKey`
-- deterministic record sorting by `documentKey`
-- temp-file-and-rename writes
-- offline tests for missing file behavior
-- offline tests for reading existing manifest records
-- offline tests for persisted writes across store instances
-- offline tests for replacing existing document keys
-- offline tests for deterministic list order
-- offline tests for stable JSON shape
-- offline tests for invalid JSON
-- offline tests for invalid manifest shape
-- offline tests for invalid record document keys
+This feature should feel like a glass wall into the RAG system: visually inspired by a neural-network signal graph, but grounded in observable system behavior rather than hidden model reasoning.
 
-## Preserved Non-Goals
-
-- no LLM answer generation
-- no LLM reranking
-- no UI changes
-- no auth changes
-- no new source extractors
-- no env or secret files
-- no migrations
-- no package changes
-- no production scheduler
-- no full corpus management UI
-- no evidence policy changes
-- no vector ranking changes
-- no server routes
-
-## Verification
-
-Local verification passed:
-
-- npm run typecheck
-- npm run build
-- npm run test
-
-Test result:
-
-- 144 tests
-- 144 passing
-- 0 failing
-- 0 cancelled
-- 0 skipped
-- 0 todo
+It must not expose secrets, prompts, provider keys, database URLs, chain-of-thought, or raw hidden model messages.
 
 ## Completed Features
 
@@ -85,8 +35,39 @@ Test result:
 - 017-corpus-backfill-manifest: done
 - 018-file-backed-corpus-manifest: done
 
-## Next Recommended Feature
+## Current Feature Scope
 
-019-corpus-backfill-cli
+019 must define:
 
-Status: not started
+- direct-url glass wall view
+- query input
+- visual layers for query, retrieval modes, evidence candidates, and final answer state
+- active/muted path highlighting
+- integration with existing safe endpoints only
+- degraded/not_found/error states
+- static safety validation if implemented
+
+## Non-Goals
+
+019 must not introduce:
+
+- chain-of-thought exposure
+- prompt leakage
+- secrets display
+- provider key display
+- database URL display
+- LLM answer generation changes
+- LLM reranking
+- retrieval ranking changes
+- auth changes
+- migrations
+- package changes
+- server routes unless separately approved
+
+## Next Gate
+
+Human approval is required before implementation.
+
+Approval phrase:
+
+`Approved: 019-rag-glass-wall-easter-egg for implementation in SHIP mode.`
