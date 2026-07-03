@@ -79,6 +79,13 @@
       "mode": "SHIP",
       "active": false,
       "summary": "Added sanitized runtime vector status model, dependency context, health exposure, and offline no-secret-leakage tests."
+    },
+    {
+      "id": "016-ingestion-cli-vector-indexing",
+      "status": "spec_ready",
+      "mode": "SHIP",
+      "active": true,
+      "summary": "Define an operational CLI path to ingest documents, plan chunks, generate embeddings, and persist vectors into pgvector with safe reporting."
     }
   ]
 }
