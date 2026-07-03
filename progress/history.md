@@ -1,5 +1,16 @@
 # Progress History
 
+## 016-ingestion-cli-vector-indexing
+
+State: spec_ready  
+Mode: SHIP
+
+Opened Feature 016 as a specification-only SHIP feature.
+
+The feature will define an operational CLI path to ingest supported source documents, plan deterministic chunks, generate embeddings through the configured provider, and persist vectors into pgvector with safe reporting.
+
+No runtime code was changed in this step.
+
 ## 015-runtime-vector-observability
 
 State: done  
