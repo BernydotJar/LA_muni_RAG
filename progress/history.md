@@ -2,14 +2,53 @@
 
 ## 018-file-backed-corpus-manifest
 
-State: spec_ready  
+State: done  
 Mode: SHIP
 
-Opened Feature 018 as a specification-only SHIP feature.
+Implemented a JSON file-backed corpus manifest store for persistent backfill state across local/operator runs without adding migrations, scheduler, UI, package changes, or runtime answer changes.
 
-The feature will define a JSON file-backed corpus manifest store for persistent backfill state across local/operator runs without adding migrations, scheduler, UI, package changes, or runtime answer changes.
+Completed:
 
-No runtime code was changed in this step.
+- Added `CorpusManifestFile`.
+- Added `CorpusManifestFileError`.
+- Added `JsonFileCorpusManifestStore`.
+- Added missing file handling as empty manifest.
+- Added JSON shape validation for top-level object, `schemaVersion`, `records`, and record `documentKey`.
+- Added deterministic record sorting by `documentKey`.
+- Added temp-file-and-rename writes.
+- Added offline tests for missing file behavior.
+- Added offline tests for reading existing manifest records.
+- Added offline tests for persisted writes across store instances.
+- Added offline tests for replacing existing document keys.
+- Added offline tests for deterministic list order.
+- Added offline tests for stable JSON shape.
+- Added offline tests for invalid JSON.
+- Added offline tests for invalid manifest shape.
+- Added offline tests for invalid record document keys.
+
+Preserved non-goals:
+
+- No LLM answer generation.
+- No LLM reranking.
+- No UI changes.
+- No auth changes.
+- No new source extractors.
+- No env or secret files.
+- No migrations.
+- No package changes.
+- No production scheduler.
+- No full corpus management UI.
+- No evidence policy changes.
+- No vector ranking changes.
+- No server routes.
+
+Local verification passed:
+
+- `npm run typecheck`
+- `npm run build`
+- `npm run test`
+
+Full suite result after 018: 144 passing, 0 failing.
 
 ## 017-corpus-backfill-manifest
 
