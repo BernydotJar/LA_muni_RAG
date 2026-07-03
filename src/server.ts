@@ -19,7 +19,10 @@ import {
   serveStatic,
 } from "./http.js";
 import { keywordSearch, phraseSearch } from "./search.js";
-import { createRuntimeEvidenceDependencies } from "./runtime/evidenceDependencies.js";
+import {
+  createRuntimeEvidenceDependencyContext,
+  type RuntimeVectorStatus,
+} from "./runtime/evidenceDependencies.js";
 
 // Resolve public directory relative to the project root.
 // In dev (tsx): src/server.ts → ../public
@@ -30,6 +33,7 @@ const defaultPublicDir = join(__dirname, "..", "public");
 export interface ServerOptions {
   publicDir?: string;
   evidenceDependencies?: EvidenceDependencies;
+  vectorRuntimeStatus?: RuntimeVectorStatus;
 }
 
 const requireDatabaseUrl = (): void => {
@@ -48,7 +52,20 @@ const parseEvidenceMode = (value: string | null | undefined): EvidenceMode => {
 
 export const createRequestHandler = (options: ServerOptions = {}): RequestListener => {
   const publicDir = options.publicDir ?? defaultPublicDir;
-  const evidenceDependencies = options.evidenceDependencies ?? createRuntimeEvidenceDependencies();
+  const runtimeContext = options.evidenceDependencies
+    ? {
+        dependencies: options.evidenceDependencies,
+        vectorStatus:
+          options.vectorRuntimeStatus ?? {
+            state: "enabled" as const,
+            reasons: ["runtime_dependencies_ready" as const],
+            queryEmbeddingProviderConfigured: Boolean(options.evidenceDependencies.queryEmbeddingProvider),
+            vectorRepositoryConfigured: Boolean(options.evidenceDependencies.vectorRepository),
+          },
+      }
+    : createRuntimeEvidenceDependencyContext();
+  const evidenceDependencies = runtimeContext.dependencies;
+  const vectorRuntimeStatus = options.vectorRuntimeStatus ?? runtimeContext.vectorStatus;
 
   return async (req, res) => {
     try {
@@ -62,6 +79,7 @@ export const createRequestHandler = (options: ServerOptions = {}): RequestListen
         sendJson(res, 200, {
           status: "ok",
           service: "la-muni-rag-api",
+          vectorRuntime: vectorRuntimeStatus,
         });
         return;
       }
