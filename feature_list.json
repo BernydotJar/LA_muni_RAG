@@ -89,10 +89,10 @@
     },
     {
       "id": "017-corpus-backfill-manifest",
-      "status": "spec_ready",
+      "status": "review",
       "mode": "SHIP",
       "active": true,
-      "summary": "Define a manifest-driven corpus backfill state model to track indexed documents, hashes, versions, embedding metadata, chunk counts, and reindex decisions."
+      "summary": "Added manifest record model, in-memory manifest store, deterministic reindex decisions, explicit backfill orchestration, and offline tests."
     }
   ]
 }
