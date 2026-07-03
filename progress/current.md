@@ -6,50 +6,33 @@
 
 ## State
 
-spec_ready
+review
 
 ## Summary
 
-Feature 019 has been opened in SHIP mode as a specification-only change.
+Feature 019 has been implemented in SHIP mode.
 
-The goal is to define a CTO/operator-facing RAG Glass Wall easter egg: a safe visual transparency surface for query flow, retrieval paths, evidence candidates, citation readiness, answer status, and sanitized runtime state.
+The implementation adds a static CTO/operator-facing RAG Glass Wall page served from `public/glass-wall.html`, using existing safe endpoints only. It renders a neural-signal-inspired transparency view for query input, retrieval paths, evidence candidates, citation readiness, answer status, and sanitized runtime state.
 
-## Product Direction
+## Completed Implementation
 
-This feature should feel like a glass wall into the RAG system: visually inspired by a neural-network signal graph, but grounded in observable system behavior rather than hidden model reasoning.
+019 added:
 
-It must not expose secrets, prompts, provider keys, database URLs, chain-of-thought, or raw hidden model messages.
-
-## Completed Features
-
-- 007-docx-extractor-mammoth: done
-- 008-embedding-indexing-pipeline: done
-- 009-hybrid-retrieval-ranking: done
-- 010-hybrid-retrieval-integration: done
-- 011-production-vector-store: done
-- 012-vector-query-integration: done
-- 013-production-query-embedding-provider: done
-- 014-runtime-vector-wiring: done
-- 015-runtime-vector-observability: done
-- 016-ingestion-cli-vector-indexing: done
-- 017-corpus-backfill-manifest: done
-- 018-file-backed-corpus-manifest: done
-
-## Current Feature Scope
-
-019 must define:
-
-- direct-url glass wall view
+- `public/glass-wall.html`
+- direct URL easter egg at `/glass-wall.html`
 - query input
-- visual layers for query, retrieval modes, evidence candidates, and final answer state
-- active/muted path highlighting
-- integration with existing safe endpoints only
-- degraded/not_found/error states
-- static safety validation if implemented
+- retrieval mode selector
+- signal graph layers for input, retrieval, evidence, and final answer state
+- active/muted node styling
+- active edge highlighting
+- safe calls to `/health`, `/api/evidence`, and `/api/answer`
+- degraded/not_found/error rendering states
+- safety contract panel
+- static safety test at `src/__tests__/glass-wall-static.test.ts`
 
-## Non-Goals
+## Preserved Non-Goals
 
-019 must not introduce:
+019 did not introduce:
 
 - chain-of-thought exposure
 - prompt leakage
@@ -62,12 +45,38 @@ It must not expose secrets, prompts, provider keys, database URLs, chain-of-thou
 - auth changes
 - migrations
 - package changes
-- server routes unless separately approved
+- server routes
+- corpus management changes
+- ingestion changes
+
+## Verification
+
+GitHub file edits were applied directly through the repository API, so local verification is required before marking this feature done.
+
+Required local verification:
+
+- npm run typecheck
+- npm run build
+- npm run test
+
+Manual verification recommended:
+
+- start the server
+- open `/glass-wall.html`
+- submit a query
+- confirm the page renders safe result state without exposing secrets, prompts, or hidden reasoning
+
+## Review Focus
+
+Review should confirm:
+
+- `public/glass-wall.html` is served by existing static file handling
+- no new server route is required
+- the view only calls existing safe endpoints
+- no secrets, prompts, or chain-of-thought are rendered
+- not_found/degraded/error states are safe
+- test suite remains green
 
 ## Next Gate
 
-Human approval is required before implementation.
-
-Approval phrase:
-
-`Approved: 019-rag-glass-wall-easter-egg for implementation in SHIP mode.`
+Run local verification and review the implementation before moving 019 to done.
