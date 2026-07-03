@@ -2,14 +2,44 @@
 
 ## 015-runtime-vector-observability
 
-State: spec_ready  
+State: done  
 Mode: SHIP
 
-Opened Feature 015 as a specification-only SHIP feature.
+Implemented safe runtime vector observability for enabled, disabled, and degraded states without exposing secrets or changing answer policy.
 
-The feature will define safe runtime vector observability for enabled, disabled, and degraded states without exposing secrets or changing answer policy.
+Completed:
 
-No runtime code was changed in this step.
+- Added `RuntimeVectorStatus`.
+- Added `RuntimeVectorState`.
+- Added safe runtime vector reason codes.
+- Added `createRuntimeEvidenceDependencyContext()`.
+- Preserved backward-compatible `createRuntimeEvidenceDependencies()`.
+- Added sanitized `/health.vectorRuntime` status.
+- Added offline tests for disabled, degraded, and enabled states.
+- Added offline tests for secret leakage prevention.
+- Added server integration test for health status shape.
+
+Preserved non-goals:
+
+- No LLM answer generation.
+- No LLM reranking.
+- No UI changes.
+- No auth changes.
+- No unrelated ingestion changes.
+- No env or secret files.
+- No hosted provider health checks.
+- No external provider calls in tests.
+- No migrations.
+- No package changes.
+- No evidence policy changes.
+
+Local verification passed:
+
+- `npm run typecheck`
+- `npm run build`
+- `npm run test`
+
+Full suite result after 015: 118 passing, 0 failing.
 
 ## 014-runtime-vector-wiring
 
