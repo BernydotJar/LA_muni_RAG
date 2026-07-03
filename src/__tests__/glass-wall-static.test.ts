@@ -18,6 +18,40 @@ describe("RAG glass wall static page", () => {
     assert.match(html, /id="glass-wall-results"/);
     assert.match(html, /id="glass-wall-runtime"/);
     assert.match(html, /id="glass-wall-safety"/);
+    assert.match(html, /id="glass-wall-legend"/);
+    assert.match(html, /id="glass-wall-legend-panel"/);
+  });
+
+  it("contains expanded graph nodes for the CTO glass wall", async () => {
+    const html = await readGlassWall();
+    const expectedNodes = [
+      "node-query",
+      "node-mode",
+      "node-limit",
+      "node-corpus",
+      "node-safety",
+      "node-phrase",
+      "node-keyword",
+      "node-vector",
+      "node-embedding",
+      "node-db",
+      "node-runtime",
+      "node-evidence-1",
+      "node-evidence-2",
+      "node-evidence-3",
+      "node-evidence-4",
+      "node-evidence-5",
+      "node-citation",
+      "node-score",
+      "node-answer",
+      "node-not-found",
+      "node-degraded",
+      "node-audit",
+    ];
+
+    for (const nodeId of expectedNodes) {
+      assert.match(html, new RegExp(`id="${nodeId}"`));
+    }
   });
 
   it("references only approved application endpoints", async () => {
@@ -52,11 +86,14 @@ describe("RAG glass wall static page", () => {
     }
   });
 
-  it("declares the safe glass-wall contract", async () => {
+  it("declares the safe glass-wall contract and visible legend", async () => {
     const html = await readGlassWall();
 
     assert.match(html, /RAG Glass Wall/);
     assert.match(html, /safe API output/);
     assert.match(html, /sanitized runtime state/);
+    assert.match(html, /active path/);
+    assert.match(html, /degraded/);
+    assert.match(html, /inactive/);
   });
 });
