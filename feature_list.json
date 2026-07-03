@@ -96,10 +96,10 @@
     },
     {
       "id": "018-file-backed-corpus-manifest",
-      "status": "spec_ready",
+      "status": "review",
       "mode": "SHIP",
       "active": true,
-      "summary": "Define a JSON file-backed corpus manifest store for persistent backfill state without migrations, scheduler, UI, or runtime answer changes."
+      "summary": "Added JSON file-backed manifest store with missing-file behavior, deterministic ordering, validation, atomic-ish writes, and offline tests."
     }
   ]
 }
