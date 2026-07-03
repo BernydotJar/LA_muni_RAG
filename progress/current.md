@@ -2,21 +2,23 @@
 
 ## Active Feature
 
+None.
+
+## Last Completed Feature
+
 017-corpus-backfill-manifest
 
 ## State
 
-review
+done
 
 ## Summary
 
-Feature 017 has been implemented in SHIP mode.
+Feature 017 has been completed in SHIP mode.
 
 The implementation adds a manifest record model, manifest status values, an in-memory manifest store, deterministic reindex decision logic, explicit-document backfill orchestration, and offline tests for indexed, skipped, stale/reindex, retry, and failed paths.
 
 ## Completed Implementation
-
-017 added:
 
 - `CorpusManifestRecord`
 - `CorpusManifestStatus`
@@ -37,44 +39,52 @@ The implementation adds a manifest record model, manifest status values, an in-m
 
 ## Preserved Non-Goals
 
-017 did not introduce:
-
-- LLM answer generation
-- LLM reranking
-- UI changes
-- auth changes
-- new source extractors
-- env or secret files
-- migrations
-- package changes
-- production scheduler
-- full corpus management UI
-- evidence policy changes
-- vector ranking changes
+- no LLM answer generation
+- no LLM reranking
+- no UI changes
+- no auth changes
+- no new source extractors
+- no env or secret files
+- no migrations
+- no package changes
+- no production scheduler
+- no full corpus management UI
+- no evidence policy changes
+- no vector ranking changes
 
 ## Verification
 
-GitHub file edits were applied directly through the repository API, so local verification is required before marking this feature done.
-
-Required local verification:
+Local verification passed:
 
 - npm run typecheck
 - npm run build
 - npm run test
 
-## Review Focus
+Test result:
 
-Review should confirm:
+- 135 tests
+- 135 passing
+- 0 failing
+- 0 cancelled
+- 0 skipped
+- 0 todo
 
-- manifest records capture document and embedding metadata needed for reindex decisions
-- unchanged indexed records are skipped without calling the indexer
-- changed content hash triggers reindex
-- changed embedding model/provider/dimension triggers reindex
-- failed prior records trigger retry
-- failed indexing writes failed manifest state safely
-- tests do not call hosted providers or a live database
-- existing server/vector indexing behavior remains unchanged
+## Completed Features
 
-## Next Gate
+- 007-docx-extractor-mammoth: done
+- 008-embedding-indexing-pipeline: done
+- 009-hybrid-retrieval-ranking: done
+- 010-hybrid-retrieval-integration: done
+- 011-production-vector-store: done
+- 012-vector-query-integration: done
+- 013-production-query-embedding-provider: done
+- 014-runtime-vector-wiring: done
+- 015-runtime-vector-observability: done
+- 016-ingestion-cli-vector-indexing: done
+- 017-corpus-backfill-manifest: done
 
-Run local verification and review the implementation before moving 017 to done.
+## Next Recommended Feature
+
+018-file-backed-corpus-manifest
+
+Status: not started
