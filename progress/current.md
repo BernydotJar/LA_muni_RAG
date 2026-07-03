@@ -2,72 +2,21 @@
 
 ## Active Feature
 
-None.
-
-## Last Completed Feature
-
-017-corpus-backfill-manifest
+018-file-backed-corpus-manifest
 
 ## State
 
-done
+spec_ready
 
 ## Summary
 
-Feature 017 has been completed in SHIP mode.
+Feature 018 has been opened in SHIP mode as a specification-only change.
 
-The implementation adds a manifest record model, manifest status values, an in-memory manifest store, deterministic reindex decision logic, explicit-document backfill orchestration, and offline tests for indexed, skipped, stale/reindex, retry, and failed paths.
+The goal is to define a JSON file-backed corpus manifest store that persists backfill state across local/operator runs without introducing database migrations, scheduler, UI, package changes, or runtime answer changes.
 
-## Completed Implementation
+## Repository State
 
-- `CorpusManifestRecord`
-- `CorpusManifestStatus`
-- `CorpusManifestStore`
-- `InMemoryCorpusManifestStore`
-- `CorpusBackfillDocumentInput`
-- `CorpusBackfillResult`
-- `CorpusBackfillDecision`
-- `computeCorpusContentSha256()`
-- `decideCorpusBackfill()`
-- `backfillCorpusManifest()`
-- offline tests for first-time indexing
-- offline tests for unchanged skip
-- offline tests for stale/reindex due to content hash
-- offline tests for stale/reindex due to embedding metadata
-- offline tests for retry after failed prior record
-- offline tests for failed indexing manifest update
-
-## Preserved Non-Goals
-
-- no LLM answer generation
-- no LLM reranking
-- no UI changes
-- no auth changes
-- no new source extractors
-- no env or secret files
-- no migrations
-- no package changes
-- no production scheduler
-- no full corpus management UI
-- no evidence policy changes
-- no vector ranking changes
-
-## Verification
-
-Local verification passed:
-
-- npm run typecheck
-- npm run build
-- npm run test
-
-Test result:
-
-- 135 tests
-- 135 passing
-- 0 failing
-- 0 cancelled
-- 0 skipped
-- 0 todo
+Local and GitHub were synchronized after 017 completion before opening this feature.
 
 ## Completed Features
 
@@ -83,8 +32,41 @@ Test result:
 - 016-ingestion-cli-vector-indexing: done
 - 017-corpus-backfill-manifest: done
 
-## Next Recommended Feature
+## Current Feature Scope
 
-018-file-backed-corpus-manifest
+018 must define:
 
-Status: not started
+- JSON file-backed `CorpusManifestStore`
+- stable manifest JSON shape
+- missing-file behavior as empty manifest
+- persistent `put()` writes
+- deterministic `list()` order
+- invalid file handling
+- temp-file-and-rename style write safety
+- offline tests using temp directories
+
+## Non-Goals
+
+018 must not introduce:
+
+- LLM answer generation
+- LLM reranking
+- UI changes
+- auth changes
+- new source extractors
+- env or secret files
+- migrations
+- package changes
+- production scheduler
+- full corpus management UI
+- evidence policy changes
+- vector ranking changes
+- server routes
+
+## Next Gate
+
+Human approval is required before implementation.
+
+Approval phrase:
+
+`Approved: 018-file-backed-corpus-manifest for implementation in SHIP mode.`
