@@ -1,3 +1,5 @@
+import { mkdir, readFile, rename, writeFile } from "node:fs/promises";
+import { dirname } from "node:path";
 import { sha256Hex } from "../embeddings/chunkIdentity.js";
 import type { SourceFormat } from "./types.js";
 import type { VectorIndexingInput, VectorIndexingResult } from "./vectorIndexing.js";
@@ -48,6 +50,116 @@ export class InMemoryCorpusManifestStore implements CorpusManifestStore {
 
   async list(): Promise<CorpusManifestRecord[]> {
     return [...this.records.values()];
+  }
+}
+
+export interface CorpusManifestFile {
+  schemaVersion: 1;
+  records: CorpusManifestRecord[];
+}
+
+export class CorpusManifestFileError extends Error {
+  readonly code = "corpus_manifest_file_invalid";
+
+  constructor(message: string) {
+    super(message);
+    this.name = "CorpusManifestFileError";
+  }
+}
+
+const emptyCorpusManifestFile = (): CorpusManifestFile => ({
+  schemaVersion: 1,
+  records: [],
+});
+
+const isRecordObject = (value: unknown): value is Record<string, unknown> =>
+  typeof value === "object" && value !== null && !Array.isArray(value);
+
+const sortManifestRecords = (records: CorpusManifestRecord[]): CorpusManifestRecord[] =>
+  [...records].sort((left, right) => left.documentKey.localeCompare(right.documentKey));
+
+const validateCorpusManifestRecord = (value: unknown): CorpusManifestRecord => {
+  if (!isRecordObject(value)) {
+    throw new CorpusManifestFileError("Corpus manifest record must be an object.");
+  }
+
+  if (typeof value.documentKey !== "string" || value.documentKey.trim().length === 0) {
+    throw new CorpusManifestFileError("Corpus manifest record documentKey must be a non-empty string.");
+  }
+
+  return value as unknown as CorpusManifestRecord;
+};
+
+const parseCorpusManifestFile = (content: string): CorpusManifestFile => {
+  let parsed: unknown;
+  try {
+    parsed = JSON.parse(content) as unknown;
+  } catch {
+    throw new CorpusManifestFileError("Corpus manifest file contains invalid JSON.");
+  }
+
+  if (!isRecordObject(parsed)) {
+    throw new CorpusManifestFileError("Corpus manifest file must contain a JSON object.");
+  }
+
+  if (parsed.schemaVersion !== 1) {
+    throw new CorpusManifestFileError("Corpus manifest file schemaVersion must be 1.");
+  }
+
+  if (!Array.isArray(parsed.records)) {
+    throw new CorpusManifestFileError("Corpus manifest file records must be an array.");
+  }
+
+  return {
+    schemaVersion: 1,
+    records: sortManifestRecords(parsed.records.map(validateCorpusManifestRecord)),
+  };
+};
+
+const isMissingFileError = (error: unknown): boolean =>
+  isRecordObject(error) && error.code === "ENOENT";
+
+export class JsonFileCorpusManifestStore implements CorpusManifestStore {
+  constructor(private readonly manifestPath: string) {}
+
+  async get(documentKey: string): Promise<CorpusManifestRecord | null> {
+    const manifest = await this.readManifestFile();
+    return manifest.records.find((record) => record.documentKey === documentKey) ?? null;
+  }
+
+  async put(record: CorpusManifestRecord): Promise<void> {
+    const manifest = await this.readManifestFile();
+    const records = manifest.records.filter((existingRecord) => existingRecord.documentKey !== record.documentKey);
+    records.push(record);
+    await this.writeManifestFile({
+      schemaVersion: 1,
+      records: sortManifestRecords(records),
+    });
+  }
+
+  async list(): Promise<CorpusManifestRecord[]> {
+    const manifest = await this.readManifestFile();
+    return sortManifestRecords(manifest.records);
+  }
+
+  private async readManifestFile(): Promise<CorpusManifestFile> {
+    try {
+      return parseCorpusManifestFile(await readFile(this.manifestPath, "utf-8"));
+    } catch (error) {
+      if (isMissingFileError(error)) return emptyCorpusManifestFile();
+      throw error;
+    }
+  }
+
+  private async writeManifestFile(manifest: CorpusManifestFile): Promise<void> {
+    const sortedManifest: CorpusManifestFile = {
+      schemaVersion: 1,
+      records: sortManifestRecords(manifest.records),
+    };
+    const tempPath = `${this.manifestPath}.tmp`;
+    await mkdir(dirname(this.manifestPath), { recursive: true });
+    await writeFile(tempPath, `${JSON.stringify(sortedManifest, null, 2)}\n`, "utf-8");
+    await rename(tempPath, this.manifestPath);
   }
 }
 
