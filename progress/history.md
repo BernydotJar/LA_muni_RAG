@@ -1,5 +1,16 @@
 # Progress History
 
+## 018-file-backed-corpus-manifest
+
+State: spec_ready  
+Mode: SHIP
+
+Opened Feature 018 as a specification-only SHIP feature.
+
+The feature will define a JSON file-backed corpus manifest store for persistent backfill state across local/operator runs without adding migrations, scheduler, UI, package changes, or runtime answer changes.
+
+No runtime code was changed in this step.
+
 ## 017-corpus-backfill-manifest
 
 State: done  
