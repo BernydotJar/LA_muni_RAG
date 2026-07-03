@@ -2,21 +2,23 @@
 
 ## Active Feature
 
+None.
+
+## Last Completed Feature
+
 016-ingestion-cli-vector-indexing
 
 ## State
 
-review
+done
 
 ## Summary
 
-Feature 016 has been implemented in SHIP mode.
+Feature 016 has been completed in SHIP mode.
 
 The implementation adds a CLI-ready vector indexing orchestrator, a direct CLI entry point, safe indexing result formatting, and offline tests for successful indexing and failure paths.
 
 ## Completed Implementation
-
-016 added:
 
 - `indexVectorSource()` orchestration boundary
 - `VectorIndexingInput`
@@ -30,19 +32,17 @@ The implementation adds a CLI-ready vector indexing orchestrator, a direct CLI e
 
 ## Preserved Non-Goals
 
-016 did not introduce:
-
-- LLM answer generation
-- LLM reranking
-- UI changes
-- auth changes
-- new source extractors
-- env or secret files
-- migrations
-- package changes
-- bulk production scheduling
-- full corpus management UI
-- evidence policy changes
+- no LLM answer generation
+- no LLM reranking
+- no UI changes
+- no auth changes
+- no new source extractors
+- no env or secret files
+- no migrations
+- no package changes
+- no bulk production scheduling
+- no full corpus management UI
+- no evidence policy changes
 
 ## CLI Usage
 
@@ -54,26 +54,36 @@ node --import tsx src/cli/indexVector.ts --input path/to/document.md --document-
 
 ## Verification
 
-GitHub file edits were applied directly through the repository API, so local verification is required before marking this feature done.
-
-Required local verification:
+Local verification passed:
 
 - npm run typecheck
 - npm run build
 - npm run test
 
-## Review Focus
+Test result:
 
-Review should confirm:
+- 125 tests
+- 125 passing
+- 0 failing
+- 0 cancelled
+- 0 skipped
+- 0 todo
 
-- the orchestrator reuses existing ingestion/extraction boundaries
-- chunk planning uses existing deterministic chunk planner through `indexDocument()`
-- production path can construct the configured query embedding provider
-- production path can construct the pgvector repository only when vector store config exists
-- CLI output does not leak sensitive config values
-- tests do not call hosted providers or a live database
-- server behavior remains unchanged
+## Completed Features
 
-## Next Gate
+- 007-docx-extractor-mammoth: done
+- 008-embedding-indexing-pipeline: done
+- 009-hybrid-retrieval-ranking: done
+- 010-hybrid-retrieval-integration: done
+- 011-production-vector-store: done
+- 012-vector-query-integration: done
+- 013-production-query-embedding-provider: done
+- 014-runtime-vector-wiring: done
+- 015-runtime-vector-observability: done
+- 016-ingestion-cli-vector-indexing: done
 
-Run local verification and review the implementation before moving 016 to done.
+## Next Recommended Feature
+
+017-corpus-backfill-manifest
+
+Status: not started
