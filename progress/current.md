@@ -6,43 +6,31 @@
 
 ## State
 
-spec_ready
+review
 
 ## Summary
 
-Feature 015 has been opened in SHIP mode as a specification-only change.
+Feature 015 has been implemented in SHIP mode.
 
-The goal is to define safe runtime vector observability for enabled, disabled, and degraded states without exposing secrets or changing answer policy.
+The implementation adds a sanitized runtime vector status model, a dependency context factory that returns both dependencies and vector status, and `/health` exposure for the vector runtime state.
 
-## Repository State
+## Completed Implementation
 
-Local and GitHub were synchronized after 014 completion before opening this feature.
+015 added:
 
-## Completed Features
+- `RuntimeVectorStatus`
+- `RuntimeVectorState`
+- safe runtime vector reason codes
+- `createRuntimeEvidenceDependencyContext()`
+- backward-compatible `createRuntimeEvidenceDependencies()`
+- sanitized `/health.vectorRuntime` status
+- offline tests for disabled, degraded, and enabled states
+- offline tests for secret leakage prevention
+- server integration test for health status shape
 
-- 007-docx-extractor-mammoth: done
-- 008-embedding-indexing-pipeline: done
-- 009-hybrid-retrieval-ranking: done
-- 010-hybrid-retrieval-integration: done
-- 011-production-vector-store: done
-- 012-vector-query-integration: done
-- 013-production-query-embedding-provider: done
-- 014-runtime-vector-wiring: done
+## Preserved Non-Goals
 
-## Current Feature Scope
-
-015 must define:
-
-- runtime vector status model
-- safe reason codes
-- context factory with dependencies and status
-- sanitized server exposure
-- secret leakage prevention tests
-- offline tests without hosted provider calls
-
-## Non-Goals
-
-015 must not introduce:
+015 did not introduce:
 
 - LLM answer generation
 - LLM reranking
@@ -50,14 +38,33 @@ Local and GitHub were synchronized after 014 completion before opening this feat
 - auth changes
 - unrelated ingestion changes
 - env or secret files
-- migrations
-- package changes unless separately approved
 - hosted provider health checks
+- external provider calls in tests
+- migrations
+- package changes
+- evidence policy changes
+
+## Verification
+
+GitHub file edits were applied directly through the repository API, so local verification is required before marking this feature done.
+
+Required local verification:
+
+- npm run typecheck
+- npm run build
+- npm run test
+
+## Review Focus
+
+Review should confirm:
+
+- `/health.vectorRuntime` exposes only sanitized metadata
+- no API keys, endpoint URLs, or database URLs leak through status
+- missing query embedding config reports disabled/degraded safely
+- missing database config reports degraded safely
+- complete vector config reports enabled safely
+- no hosted provider calls occur for health/status
 
 ## Next Gate
 
-Human approval is required before implementation.
-
-Approval phrase:
-
-`Approved: 015-runtime-vector-observability for implementation in SHIP mode.`
+Run local verification and review the implementation before moving 015 to done.
