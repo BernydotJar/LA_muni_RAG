@@ -54,6 +54,17 @@ describe("RAG glass wall static page", () => {
     }
   });
 
+  it("keeps graph nodes positioned and scaled instead of collapsing into the top-left corner", async () => {
+    const html = await readGlassWall();
+
+    assert.match(html, /const positionNodes = \(\) =>/);
+    assert.match(html, /node\.style\.left = `\$\{node\.dataset\.x\}px`/);
+    assert.match(html, /node\.style\.top = `\$\{node\.dataset\.y\}px`/);
+    assert.match(html, /const fitGraphToViewport = \(\) =>/);
+    assert.match(html, /board\.style\.transform = `scale\(\$\{scale\}\)`/);
+    assert.match(html, /overflow: hidden;/);
+  });
+
   it("references only approved application endpoints", async () => {
     const html = await readGlassWall();
     const endpointMatches = [...html.matchAll(/["'`]\/(?:api\/[a-z]+|health)[^"'`]*/g)].map((match) =>
