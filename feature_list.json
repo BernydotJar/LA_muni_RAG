@@ -93,6 +93,13 @@
       "mode": "SHIP",
       "active": false,
       "summary": "Added manifest record model, in-memory manifest store, deterministic reindex decisions, explicit backfill orchestration, and offline tests."
+    },
+    {
+      "id": "018-file-backed-corpus-manifest",
+      "status": "spec_ready",
+      "mode": "SHIP",
+      "active": true,
+      "summary": "Define a JSON file-backed corpus manifest store for persistent backfill state without migrations, scheduler, UI, or runtime answer changes."
     }
   ]
 }
