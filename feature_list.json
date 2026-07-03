@@ -103,10 +103,10 @@
     },
     {
       "id": "019-rag-glass-wall-easter-egg",
-      "status": "spec_ready",
+      "status": "review",
       "mode": "SHIP",
       "active": true,
-      "summary": "Define a CTO-facing RAG glass wall visualization easter egg for transparent retrieval/debug insight without exposing secrets or chain-of-thought."
+      "summary": "Added static RAG Glass Wall view and safety test for CTO-facing transparent retrieval inspection without exposing secrets or chain-of-thought."
     }
   ]
 }
