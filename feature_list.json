@@ -103,10 +103,10 @@
     },
     {
       "id": "019-rag-glass-wall-easter-egg",
-      "status": "review",
+      "status": "done",
       "mode": "SHIP",
-      "active": true,
-      "summary": "Added static RAG Glass Wall view and safety test for CTO-facing transparent retrieval inspection without exposing secrets or chain-of-thought."
+      "active": false,
+      "summary": "Added static RAG Glass Wall CTO/operator view, homepage neon entry point, safety/visual tests, and transparent retrieval visualization without exposing secrets or chain-of-thought."
     }
   ]
 }
