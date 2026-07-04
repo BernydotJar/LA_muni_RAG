@@ -117,10 +117,10 @@
     },
     {
       "id": "021-retrieval-eval-harness",
-      "status": "spec_ready",
+      "status": "review",
       "mode": "SHIP",
       "active": true,
-      "summary": "Define an offline retrieval evaluation harness with golden cases, expected evidence checks, not_found checks, metrics, and stable regression reports."
+      "summary": "Added offline retrieval eval harness with expected evidence matching, not_found checks, stable metrics, report formatting, synthetic cases, and tests."
     }
   ]
 }
