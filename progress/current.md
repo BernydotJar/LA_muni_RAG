@@ -6,27 +6,80 @@
 
 ## State
 
-spec_ready
+review
 
 ## Summary
 
-Feature 021 has been opened in SHIP mode as a specification-only change.
+Feature 021 has been implemented in SHIP mode.
 
-The goal is to add an offline retrieval evaluation harness that makes retrieval quality measurable and repeatable without requiring a database, hosted provider, network, secrets, LLM judge, or production corpus.
+The implementation adds an offline retrieval evaluation harness that makes retrieval quality measurable and repeatable without requiring a database, hosted provider, network, secrets, LLM judge, or production corpus.
 
-## Product Direction
+## Completed Implementation
 
-The harness should evaluate retrieval output, not answer generation.
+021 added:
 
-It should support:
-
-- golden query cases
-- expected evidence checks
+- `src/evals/retrievalEval.ts`
+- `src/evals/retrievalEvalCases.ts`
+- `src/__tests__/retrieval-eval.test.ts`
+- typed retrieval eval case model
+- typed retrieval evidence model compatible with current evidence fields
+- expected evidence matcher for citation label, source type, document title, and text/excerpt inclusion
 - expected `not_found` checks
-- stable failure reasons
+- retrieval error failure handling
+- invalid eval case handling
+- stable failure reason codes
 - aggregate metrics
 - deterministic text report formatting
-- offline tests
+- minimal synthetic eval cases
+- offline tests using injected retrieval fixtures
+
+## Preserved Non-Goals
+
+021 did not introduce:
+
+- LLM judge
+- hosted provider calls
+- database calls in tests
+- new package dependency
+- new server route
+- UI changes
+- production scheduler
+- corpus backfill changes
+- retrieval ranking changes
+- evidence policy changes
+- answer generation changes
+- auth changes
+- CI threshold gate
+- large benchmark corpus
+
+## Verification
+
+GitHub file edits were applied directly through the repository API, so local verification is required before marking this feature done.
+
+Required local verification:
+
+- npm run typecheck
+- npm run build
+- npm run test
+
+## Review Focus
+
+Review should confirm:
+
+- eval case types exist
+- eval runner exists
+- expected evidence matcher exists
+- not_found checks exist
+- failure reasons are stable
+- metrics are deterministic
+- report formatting is stable
+- tests run offline
+- no database/provider/network/secrets are required
+- no retrieval ranking changed
+- no evidence policy changed
+- no answer generation changed
+- no server route was added
+- no package file was changed
 
 ## Completed Features
 
@@ -45,42 +98,6 @@ It should support:
 - 019-rag-glass-wall-easter-egg: done
 - 020-corpus-backfill-cli: done
 
-## Current Feature Scope
-
-021 must define and then implement, after approval:
-
-- retrieval eval case model
-- expected evidence matcher
-- expected not_found checks
-- eval runner
-- metrics aggregation
-- stable text report formatter
-- minimal synthetic eval cases
-- offline tests
-
-## Non-Goals
-
-021 must not introduce:
-
-- LLM judge
-- hosted provider calls
-- database calls in tests
-- new package dependency
-- new server route
-- UI changes
-- production scheduler
-- corpus backfill changes
-- retrieval ranking changes
-- evidence policy changes
-- answer generation changes
-- auth changes
-- CI threshold gate unless separately approved
-- large benchmark corpus
-
 ## Next Gate
 
-Human approval is required before implementation.
-
-Approval phrase:
-
-`Approved: 021-retrieval-eval-harness for implementation in SHIP mode.`
+Run local verification and review the implementation before moving 021 to done.
