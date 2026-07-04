@@ -12,7 +12,7 @@ review
 
 Feature 022 is in review after a second frontend pass based on the attached motion-site inspiration notes.
 
-The refresh moves the static RAG homepage toward a premium cinematic experience: animated background, scroll-reactive visual system, sticky storytelling section, stronger evidence-first narrative, glass cards, improved CTA/footer presence, and static regression tests.
+The refresh moves the static RAG homepage and Glass Wall technical view toward a coherent premium cinematic experience: animated background, scroll-reactive visual system, sticky storytelling section, stronger evidence-first narrative, glass cards, improved CTA/footer presence, technical-room Glass Wall chrome, and static regression tests.
 
 ## Completed Implementation
 
@@ -34,8 +34,13 @@ The refresh moves the static RAG homepage toward a premium cinematic experience:
 - embed widget section preserved
 - CTA/footer with stronger visual treatment
 - RAG Glass Wall entry point preserved
-- reduced-motion CSS guardrail
+- `public/glass-wall.html` visually aligned as a premium technical room
+- Glass Wall back link to `/`
+- Glass Wall hero, technical-room pill, ambient orb/background, and polished cards
+- Glass Wall graph behavior, endpoints, safety contract, and JS behavior preserved
+- reduced-motion CSS guardrails
 - `src/__tests__/premium-frontend-refresh.test.ts`
+- `src/__tests__/glass-wall-premium-room.test.ts`
 
 ## Preserved Non-Goals
 
@@ -52,6 +57,9 @@ The refresh moves the static RAG homepage toward a premium cinematic experience:
 - auth
 - environment files
 - secrets
+- Glass Wall approved endpoint list
+- Glass Wall graph behavior
+- Glass Wall safety contract behavior
 
 ## Verification
 
@@ -69,6 +77,8 @@ Manual frontend review recommended:
 - confirm hero renders on desktop and mobile
 - confirm scroll story works
 - confirm Glass Wall link opens `/glass-wall.html`
+- confirm Glass Wall back link returns to `/`
+- confirm Glass Wall graph still inspects retrieval
 - confirm widget opens from both CTA buttons
 - confirm embed copy button still works
 
