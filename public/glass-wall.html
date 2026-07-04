@@ -6,18 +6,20 @@
     <title>RAG Glass Wall</title>
     <style>
       :root {
-        --bg: #111018;
-        --panel: rgba(20, 17, 28, 0.88);
+        --bg: #070712;
+        --panel: rgba(12, 12, 28, 0.78);
         --line: rgba(185, 176, 204, 0.16);
         --line-hot: rgba(255, 45, 157, 0.92);
-        --node: #191620;
+        --node: #141423;
         --node-border: rgba(255, 255, 255, 0.28);
         --hot: #ff2d9d;
+        --cyan: #22d3ee;
+        --violet: #6366f1;
         --warn: #f6c453;
         --error: #ff6b6b;
         --ok: #86efac;
         --text: #f7f1fb;
-        --muted: #9d92aa;
+        --muted: #a8b3c7;
         --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
         --sans: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       }
@@ -30,21 +32,123 @@
         color: var(--text);
         font-family: var(--sans);
         background:
+          radial-gradient(circle at 50% 4%, rgba(99, 102, 241, 0.24), transparent 34rem),
+          radial-gradient(circle at 84% 26%, rgba(34, 211, 238, 0.12), transparent 26rem),
           radial-gradient(circle at 70% 18%, rgba(255, 45, 157, 0.16), transparent 34%),
-          radial-gradient(circle at 12% 88%, rgba(94, 63, 228, 0.15), transparent 34%),
-          var(--bg);
+          linear-gradient(180deg, #070711 0%, #090918 42%, #070712 100%);
+        overflow-x: hidden;
       }
 
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        opacity: 0.34;
+        background-image:
+          linear-gradient(rgba(255,255,255,0.018) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(255,255,255,0.018) 1px, transparent 1px);
+        background-size: 64px 64px;
+        mask-image: linear-gradient(to bottom, black 0%, transparent 92%);
+        z-index: -3;
+      }
+
+      body::after {
+        content: "";
+        position: fixed;
+        width: min(58vw, 720px);
+        aspect-ratio: 1;
+        right: -14vw;
+        top: -18vw;
+        border-radius: 999px;
+        pointer-events: none;
+        z-index: -2;
+        background:
+          radial-gradient(circle at 42% 34%, rgba(255,255,255,0.7), transparent 8%),
+          radial-gradient(circle at 54% 44%, rgba(34,211,238,0.58), transparent 20%),
+          radial-gradient(circle at 36% 60%, rgba(139,92,246,0.68), transparent 32%),
+          radial-gradient(circle at 62% 62%, rgba(255,45,157,0.36), transparent 38%),
+          radial-gradient(circle at 50% 50%, rgba(15,23,42,0.86), rgba(8,8,18,0.82) 64%, transparent 70%);
+        box-shadow: 0 0 120px rgba(99,102,241,0.24), 0 0 190px rgba(34,211,238,0.1);
+        opacity: 0.82;
+        animation: glass-orb 18s linear infinite;
+      }
+
+      @keyframes glass-orb { to { transform: rotate(360deg); filter: hue-rotate(24deg); } }
+
       main {
+        position: relative;
         width: min(1400px, calc(100vw - 28px));
         margin: 0 auto;
         padding: 28px 0 46px;
       }
 
-      .hero { display: grid; gap: 10px; margin-bottom: 18px; }
-      .eyebrow { color: var(--hot); font: 700 11px/1.2 var(--mono); letter-spacing: 0.16em; text-transform: uppercase; }
-      h1 { margin: 0; max-width: 940px; font-size: clamp(36px, 6vw, 82px); line-height: 0.9; letter-spacing: -0.075em; }
-      .subtitle { max-width: 880px; margin: 0; color: #c9bfd2; font-size: 15px; line-height: 1.55; }
+      .topbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 16px;
+        margin-bottom: 22px;
+      }
+
+      .back-link,
+      .room-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        min-height: 38px;
+        padding: 0 13px;
+        border-radius: 999px;
+        color: var(--text);
+        text-decoration: none;
+        border: 1px solid rgba(255,255,255,0.1);
+        background: rgba(255,255,255,0.045);
+        backdrop-filter: blur(14px);
+        font: 800 11px/1 var(--mono);
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+      }
+
+      .room-pill { color: var(--cyan); }
+      .back-link:hover { border-color: rgba(34,211,238,0.38); box-shadow: 0 0 26px rgba(34,211,238,0.12); }
+
+      .hero {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(280px, 0.42fr);
+        gap: 26px;
+        align-items: end;
+        margin-bottom: 18px;
+        padding: 28px;
+        border: 1px solid rgba(255,255,255,0.08);
+        border-radius: 32px;
+        background:
+          radial-gradient(circle at 78% 18%, rgba(34,211,238,0.16), transparent 28rem),
+          linear-gradient(135deg, rgba(255,255,255,0.075), rgba(255,255,255,0.025));
+        box-shadow: 0 28px 90px rgba(0,0,0,0.28);
+        backdrop-filter: blur(18px);
+      }
+
+      .eyebrow { color: var(--hot); font: 800 11px/1.2 var(--mono); letter-spacing: 0.16em; text-transform: uppercase; }
+      h1 { margin: 10px 0 0; max-width: 940px; font-size: clamp(38px, 6vw, 84px); line-height: 0.9; letter-spacing: -0.075em; }
+      h1 span {
+        display: block;
+        background: linear-gradient(115deg, #fff 0%, #dbeafe 26%, #a78bfa 58%, #22d3ee 100%);
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+      .subtitle { max-width: 880px; margin: 16px 0 0; color: #c9bfd2; font-size: 15px; line-height: 1.65; }
+
+      .hero-note {
+        padding: 18px;
+        border: 1px solid rgba(255,255,255,0.08);
+        border-radius: 24px;
+        background: rgba(5,5,16,0.58);
+        color: var(--muted);
+        font-size: 13px;
+        line-height: 1.55;
+      }
+      .hero-note b { display: block; color: var(--cyan); margin-bottom: 8px; font: 900 11px/1 var(--mono); text-transform: uppercase; letter-spacing: 0.12em; }
 
       .controls {
         display: grid;
@@ -54,9 +158,10 @@
         padding: 12px;
         margin-bottom: 16px;
         border: 1px solid rgba(255, 255, 255, 0.12);
-        border-radius: 22px;
+        border-radius: 24px;
         background: var(--panel);
         box-shadow: 0 24px 70px rgba(0, 0, 0, 0.25);
+        backdrop-filter: blur(18px);
       }
 
       input, select, button {
@@ -86,10 +191,11 @@
 
       .glass-card, .side-card {
         border: 1px solid rgba(255, 255, 255, 0.1);
-        border-radius: 24px;
+        border-radius: 26px;
         overflow: hidden;
-        background: rgba(18, 15, 26, 0.82);
+        background: rgba(10, 10, 24, 0.78);
         box-shadow: 0 22px 70px rgba(0, 0, 0, 0.24);
+        backdrop-filter: blur(18px);
       }
 
       .card-header {
@@ -117,34 +223,19 @@
         background:
           linear-gradient(rgba(255, 255, 255, 0.022) 1px, transparent 1px),
           linear-gradient(90deg, rgba(255, 255, 255, 0.022) 1px, transparent 1px),
-          radial-gradient(circle at 50% 54%, rgba(255, 45, 157, 0.055), transparent 48%);
-        background-size: 28px 28px, 28px 28px, auto;
+          radial-gradient(circle at 50% 54%, rgba(255, 45, 157, 0.08), transparent 48%),
+          radial-gradient(circle at 70% 18%, rgba(34, 211, 238, 0.08), transparent 36%);
+        background-size: 28px 28px, 28px 28px, auto, auto;
       }
 
-      .graph-board {
-        position: relative;
-        width: 1120px;
-        height: 700px;
-        transform-origin: 0 0;
-      }
-
+      .graph-board { position: relative; width: 1120px; height: 700px; transform-origin: 0 0; }
       svg.edges { position: absolute; inset: 0; width: 1120px; height: 700px; pointer-events: none; }
       .edge { stroke: var(--line); stroke-width: 0.95; }
       .edge.active { stroke: var(--line-hot); stroke-width: 1.75; filter: drop-shadow(0 0 6px rgba(255, 45, 157, 0.78)); }
       .edge.warn { stroke: rgba(246, 196, 83, 0.76); stroke-width: 1.45; }
       .edge.error { stroke: rgba(255, 107, 107, 0.82); stroke-width: 1.45; }
 
-      .node {
-        position: absolute;
-        width: 128px;
-        transform: translate(-50%, -50%);
-        display: grid;
-        justify-items: center;
-        gap: 5px;
-        color: #ded5e7;
-        text-align: center;
-      }
-
+      .node { position: absolute; width: 128px; transform: translate(-50%, -50%); display: grid; justify-items: center; gap: 5px; color: #ded5e7; text-align: center; }
       .node-core { width: 20px; height: 20px; border-radius: 50%; border: 2px solid var(--node-border); background: var(--node); box-shadow: 0 0 0 5px rgba(255, 255, 255, 0.014); }
       .node.active .node-core { border-color: var(--hot); background: rgba(255, 45, 157, 0.22); box-shadow: 0 0 0 7px rgba(255, 45, 157, 0.1), 0 0 20px rgba(255, 45, 157, 0.72); }
       .node.warn .node-core { border-color: var(--warn); background: rgba(246, 196, 83, 0.12); box-shadow: 0 0 0 7px rgba(246, 196, 83, 0.07), 0 0 16px rgba(246, 196, 83, 0.48); }
@@ -162,21 +253,7 @@
       .sense-level b { color: var(--hot); }
       .axis-label { position: absolute; color: rgba(255, 255, 255, 0.46); font: 800 10px/1 var(--mono); letter-spacing: 0.16em; text-transform: uppercase; }
 
-      .graph-legend {
-        position: absolute;
-        right: 26px;
-        top: 24px;
-        display: grid;
-        grid-template-columns: repeat(2, auto);
-        gap: 8px 14px;
-        padding: 11px 12px;
-        border: 1px solid rgba(255, 255, 255, 0.09);
-        border-radius: 16px;
-        background: rgba(0, 0, 0, 0.3);
-        backdrop-filter: blur(12px);
-        z-index: 3;
-      }
-
+      .graph-legend { position: absolute; right: 26px; top: 24px; display: grid; grid-template-columns: repeat(2, auto); gap: 8px 14px; padding: 11px 12px; border: 1px solid rgba(255, 255, 255, 0.09); border-radius: 16px; background: rgba(0, 0, 0, 0.3); backdrop-filter: blur(12px); z-index: 3; }
       .legend-item { display: inline-flex; align-items: center; gap: 7px; color: #c9bfd2; font: 800 10px/1 var(--mono); white-space: nowrap; }
       .legend-dot { width: 9px; height: 9px; border-radius: 50%; background: var(--muted); box-shadow: 0 0 10px rgba(255,255,255,0.1); }
       .legend-dot.hot { background: var(--hot); box-shadow: 0 0 14px var(--hot); }
@@ -198,20 +275,36 @@
 
       @media (max-width: 920px) {
         main { width: min(100vw - 12px, 720px); padding-top: 18px; }
+        .topbar, .hero { grid-template-columns: 1fr; flex-direction: column; align-items: flex-start; }
         .controls { grid-template-columns: 1fr; }
         .dashboard { grid-template-columns: 1fr; }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        *, *::before, *::after { animation: none !important; }
       }
     </style>
   </head>
   <body>
     <main>
+      <div class="topbar">
+        <a class="back-link" href="/">← Back to LA Muni RAG</a>
+        <span class="room-pill">Technical room · safe observable output</span>
+      </div>
+
       <section class="hero">
-        <div class="eyebrow">RAG Glass Wall · CTO view</div>
-        <h1>Glass wall into retrieval.</h1>
-        <p class="subtitle">
-          A neural-style graph for observable RAG behavior: query signal, retrieval paths,
-          evidence candidates, citation readiness, answer state, and sanitized runtime health.
-        </p>
+        <div>
+          <div class="eyebrow">RAG Glass Wall · CTO view</div>
+          <h1>Glass wall into <span>retrieval.</span></h1>
+          <p class="subtitle">
+            A premium technical room for observable RAG behavior: query signal, retrieval paths,
+            evidence candidates, citation readiness, answer state, and sanitized runtime health.
+          </p>
+        </div>
+        <aside class="hero-note">
+          <b>No black box</b>
+          This page keeps the neon CTO graph, but now sits inside the same cinematic product system as the homepage.
+        </aside>
       </section>
 
       <form class="controls" id="glass-wall-form">
