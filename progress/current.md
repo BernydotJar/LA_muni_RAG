@@ -2,15 +2,19 @@
 
 ## Active Feature
 
+None.
+
+## Last Completed Feature
+
 020-corpus-backfill-cli
 
 ## State
 
-review
+done
 
 ## Summary
 
-Feature 020 has been implemented in SHIP mode.
+Feature 020 has been completed in SHIP mode.
 
 The implementation adds an operator-facing corpus backfill CLI that composes existing foundations:
 
@@ -58,50 +62,42 @@ This turns the manifest-aware indexing flow into a repeatable local command for 
 
 ## Verification
 
-GitHub file edits were applied directly through the repository API, so local verification is required before marking this feature done.
-
-Required local verification:
+Local verification passed:
 
 - npm run typecheck
 - npm run build
 - npm run test
 
-Manual CLI smoke tests recommended:
+Full suite result after 020:
 
-```bash
-node --import tsx src/cli/backfillCorpus.ts \
-  --manifest .rag/corpus-manifest.json \
-  --input corpus/document.md \
-  --document-key document-key \
-  --document-version v1 \
-  --dry-run
-```
+- tests: 160
+- suites: 32
+- pass: 160
+- fail: 0
+- cancelled: 0
+- skipped: 0
+- todo: 0
+- duration_ms: 860.864166
 
-Normal mode should only be used when provider and vector store config are available:
+## Completed Features
 
-```bash
-node --import tsx src/cli/backfillCorpus.ts \
-  --manifest .rag/corpus-manifest.json \
-  --input corpus/document.md \
-  --document-key document-key \
-  --document-version v1
-```
+- 007-docx-extractor-mammoth: done
+- 008-embedding-indexing-pipeline: done
+- 009-hybrid-retrieval-ranking: done
+- 010-hybrid-retrieval-integration: done
+- 011-production-vector-store: done
+- 012-vector-query-integration: done
+- 013-production-query-embedding-provider: done
+- 014-runtime-vector-wiring: done
+- 015-runtime-vector-observability: done
+- 016-ingestion-cli-vector-indexing: done
+- 017-corpus-backfill-manifest: done
+- 018-file-backed-corpus-manifest: done
+- 019-rag-glass-wall-easter-egg: done
+- 020-corpus-backfill-cli: done
 
-## Review Focus
+## Next Recommended Feature
 
-Review should confirm:
+021-retrieval-eval-harness
 
-- CLI entry point exists
-- required args are supported
-- missing and unknown args fail safely
-- dry-run does not write manifest or vectors
-- normal mode uses existing backfill/indexing orchestration
-- safe output does not leak secrets
-- no server route was added
-- no package file was changed
-- no retrieval/answer/evidence policy was changed
-- test suite remains green
-
-## Next Gate
-
-Run local verification and review the implementation before moving 020 to done.
+Status: not started
