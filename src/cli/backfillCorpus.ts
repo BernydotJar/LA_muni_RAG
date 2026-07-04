@@ -71,6 +71,10 @@ const parseSourceFormat = (value: string): SourceFormat => {
   throw new Error(`Unsupported source format: ${value}`);
 };
 
+export const isBackfillCorpusDryRunResult = (
+  result: CorpusBackfillResult | BackfillCorpusDryRunResult
+): result is BackfillCorpusDryRunResult => "dryRun" in result;
+
 export const parseBackfillCorpusArgs = (args: string[]): BackfillCorpusArgs => {
   const parsed: BackfillCorpusArgs = { dryRun: false, help: false };
 
@@ -275,9 +279,9 @@ const main = async (): Promise<void> => {
   }
 
   const result = await runBackfillCorpus(args);
-  console.log(result.dryRun ? formatBackfillCorpusDryRunResult(result) : formatBackfillCorpusResult(result));
+  console.log(isBackfillCorpusDryRunResult(result) ? formatBackfillCorpusDryRunResult(result) : formatBackfillCorpusResult(result));
 
-  if (!result.dryRun && result.documentsFailed > 0) {
+  if (!isBackfillCorpusDryRunResult(result) && result.documentsFailed > 0) {
     process.exitCode = 1;
   }
 };
