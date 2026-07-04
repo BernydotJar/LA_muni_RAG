@@ -6,72 +6,41 @@
 
 ## State
 
-spec_ready
+review
 
 ## Summary
 
-Feature 020 has been opened in SHIP mode as a specification-only change.
+Feature 020 has been implemented in SHIP mode.
 
-The goal is to add an operator-facing corpus backfill CLI that composes existing foundations:
+The implementation adds an operator-facing corpus backfill CLI that composes existing foundations:
 
 - `JsonFileCorpusManifestStore`
 - `backfillCorpusManifest()`
 - `indexVectorSource()`
 
-This will turn the manifest-aware indexing flow into a repeatable local command for explicit source documents.
+This turns the manifest-aware indexing flow into a repeatable local command for explicit source documents.
 
-## Product Direction
+## Completed Implementation
 
-The CLI should support a command shape like:
-
-```bash
-node --import tsx src/cli/backfillCorpus.ts \
-  --manifest .rag/corpus-manifest.json \
-  --input corpus/document.md \
-  --document-key document-key \
-  --document-version v1
-```
-
-Optional support may include:
-
-```text
---title
---source-format
---dry-run
-```
-
-## Completed Features
-
-- 007-docx-extractor-mammoth: done
-- 008-embedding-indexing-pipeline: done
-- 009-hybrid-retrieval-ranking: done
-- 010-hybrid-retrieval-integration: done
-- 011-production-vector-store: done
-- 012-vector-query-integration: done
-- 013-production-query-embedding-provider: done
-- 014-runtime-vector-wiring: done
-- 015-runtime-vector-observability: done
-- 016-ingestion-cli-vector-indexing: done
-- 017-corpus-backfill-manifest: done
-- 018-file-backed-corpus-manifest: done
-- 019-rag-glass-wall-easter-egg: done
-
-## Current Feature Scope
-
-020 must define and then implement, after approval:
+020 added:
 
 - `src/cli/backfillCorpus.ts`
-- required argument parsing
-- missing/unknown argument validation
-- manifest file path support
-- single-document backfill from explicit input path
-- persistent manifest integration
-- safe result formatting
-- offline tests for CLI helpers
+- `src/__tests__/backfill-corpus-cli.test.ts`
+- required argument parsing for `--manifest`, `--input`, `--document-key`, and `--document-version`
+- optional support for `--title`, `--source-format`, and `--dry-run`
+- unknown argument validation
+- missing argument validation
+- runtime embedding metadata resolution from existing query embedding config
+- persistent manifest integration through `JsonFileCorpusManifestStore`
+- normal-mode execution through `backfillCorpusManifest()` and `indexVectorSource()`
+- dry-run decision flow through `computeCorpusContentSha256()` and `decideCorpusBackfill()`
+- stable human-readable output formatting
+- CLI error formatting with redaction for database URLs, HTTP URLs, bearer tokens, and obvious key/value secrets
+- offline tests for parsing, validation, formatting, redaction, dry-run behavior, and no manifest write on invalid args
 
-## Non-Goals
+## Preserved Non-Goals
 
-020 must not introduce:
+020 did not introduce:
 
 - production scheduler
 - admin UI
@@ -84,13 +53,55 @@ Optional support may include:
 - evidence policy changes
 - auth changes
 - remote document fetching
-- directory crawling unless separately approved
+- directory crawling
 - parallel backfills
+
+## Verification
+
+GitHub file edits were applied directly through the repository API, so local verification is required before marking this feature done.
+
+Required local verification:
+
+- npm run typecheck
+- npm run build
+- npm run test
+
+Manual CLI smoke tests recommended:
+
+```bash
+node --import tsx src/cli/backfillCorpus.ts \
+  --manifest .rag/corpus-manifest.json \
+  --input corpus/document.md \
+  --document-key document-key \
+  --document-version v1 \
+  --dry-run
+```
+
+Normal mode should only be used when provider and vector store config are available:
+
+```bash
+node --import tsx src/cli/backfillCorpus.ts \
+  --manifest .rag/corpus-manifest.json \
+  --input corpus/document.md \
+  --document-key document-key \
+  --document-version v1
+```
+
+## Review Focus
+
+Review should confirm:
+
+- CLI entry point exists
+- required args are supported
+- missing and unknown args fail safely
+- dry-run does not write manifest or vectors
+- normal mode uses existing backfill/indexing orchestration
+- safe output does not leak secrets
+- no server route was added
+- no package file was changed
+- no retrieval/answer/evidence policy was changed
+- test suite remains green
 
 ## Next Gate
 
-Human approval is required before implementation.
-
-Approval phrase:
-
-`Approved: 020-corpus-backfill-cli for implementation in SHIP mode.`
+Run local verification and review the implementation before moving 020 to done.
