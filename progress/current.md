@@ -2,67 +2,75 @@
 
 ## Active Feature
 
-None.
-
-## Last Completed Feature
-
-021-retrieval-eval-harness
+022-premium-rag-frontend-refresh
 
 ## State
 
-done
+review
 
 ## Summary
 
-Feature 021 has been completed in SHIP mode.
+Feature 022 is in review after a second frontend pass based on the attached motion-site inspiration notes.
 
-The implementation adds an offline retrieval evaluation harness that makes retrieval quality measurable and repeatable without requiring a database, hosted provider, network, secrets, LLM judge, or production corpus.
+The refresh moves the static RAG homepage toward a premium cinematic experience: animated background, scroll-reactive visual system, sticky storytelling section, stronger evidence-first narrative, glass cards, improved CTA/footer presence, and static regression tests.
 
 ## Completed Implementation
 
-021 added:
+022 currently includes:
 
-- `src/evals/retrievalEval.ts`
-- `src/evals/retrievalEvalCases.ts`
-- `src/__tests__/retrieval-eval.test.ts`
-- typed retrieval eval case model
-- typed retrieval evidence model compatible with current evidence fields
-- expected evidence matcher for citation label, source type, document title, and text/excerpt inclusion
-- expected `not_found` checks
-- retrieval error failure handling
-- invalid eval case handling
-- stable failure reason codes
-- aggregate metrics
-- deterministic text report formatting
-- minimal synthetic eval cases
-- offline tests using injected retrieval fixtures
+- refreshed `public/index.html`
+- premium dark visual language
+- scroll-reactive CSS variable `--scroll`
+- animated ambient orb and aurora background
+- hero visual with floating RAG flow chips
+- `#scroll-story` cinematic sticky section
+- central animated stage visual
+- four story cards around the visual focus
+- gradient transitions between sections
+- evidence-first proof cards
+- quote/motion narrative section
+- visual pipeline section
+- operating-system feature mosaic
+- embed widget section preserved
+- CTA/footer with stronger visual treatment
+- RAG Glass Wall entry point preserved
+- reduced-motion CSS guardrail
+- `src/__tests__/premium-frontend-refresh.test.ts`
 
 ## Preserved Non-Goals
 
-021 did not introduce:
+022 did not modify:
 
-- LLM judge
-- hosted provider calls
-- database calls in tests
-- new package dependency
-- new server route
-- UI changes
-- production scheduler
-- corpus backfill changes
-- retrieval ranking changes
-- evidence policy changes
-- answer generation changes
-- auth changes
-- CI threshold gate
-- large benchmark corpus
+- backend APIs
+- retrieval ranking
+- evidence policy
+- answer generation
+- eval harness logic
+- corpus backfill logic
+- package files
+- migrations
+- auth
+- environment files
+- secrets
 
 ## Verification
 
-Local verification passed:
+GitHub file edits were applied directly through the repository API, so local verification is required before marking this feature done.
+
+Required local verification:
 
 - npm run typecheck
 - npm run build
 - npm run test
+
+Manual frontend review recommended:
+
+- open `/`
+- confirm hero renders on desktop and mobile
+- confirm scroll story works
+- confirm Glass Wall link opens `/glass-wall.html`
+- confirm widget opens from both CTA buttons
+- confirm embed copy button still works
 
 ## Completed Features
 
@@ -82,8 +90,6 @@ Local verification passed:
 - 020-corpus-backfill-cli: done
 - 021-retrieval-eval-harness: done
 
-## Next Recommended Feature
+## Next Gate
 
-022-premium-rag-frontend-refresh
-
-Status: not started
+Run local verification and review the frontend before moving 022 to done.
