@@ -2,68 +2,43 @@
 
 ## Active Feature
 
-None.
-
-## Last Completed Feature
-
-019-rag-glass-wall-easter-egg
+020-corpus-backfill-cli
 
 ## State
 
-done
+spec_ready
 
 ## Summary
 
-Feature 019 has been completed in SHIP mode.
+Feature 020 has been opened in SHIP mode as a specification-only change.
 
-The implementation adds a static CTO/operator-facing RAG Glass Wall page served from `public/glass-wall.html`, using existing safe endpoints only. Review fixes changed the view from a stacked dashboard/card layout into a true neural-style graph, expanded it with more nodes and legends, corrected node positioning/scaling, removed visible bottom-scrollbar dependency, applied a final readability polish pass, and added a 90s/neon homepage entry point.
+The goal is to add an operator-facing corpus backfill CLI that composes existing foundations:
 
-## Completed Implementation
+- `JsonFileCorpusManifestStore`
+- `backfillCorpusManifest()`
+- `indexVectorSource()`
 
-- `public/glass-wall.html`
-- direct URL easter egg at `/glass-wall.html`
-- query input
-- retrieval mode selector
-- neural-style graph board
-- circular nodes for query, mode, limit, corpus, safety, phrase, keyword, vector, embedding, pgvector, runtime, evidence 1-5, citation, score, answer, not_found, degraded, and audit states
-- SVG edges between nodes
-- active/warn/ok/muted path highlighting
-- visible in-graph legend
-- side-panel legend explaining active path, degraded state, safety/audit, and inactive paths
-- node coordinate application from `data-x` and `data-y`
-- graph auto-scaling to the available viewport width
-- hidden graph overflow instead of visible bottom scrollbar
-- final spacing, contrast, and line-intensity polish
-- homepage link to `/glass-wall.html`
-- 90s/neon CSS animated invite card on the homepage
-- static safety and visual-contract test at `src/__tests__/glass-wall-static.test.ts`
+This will turn the manifest-aware indexing flow into a repeatable local command for explicit source documents.
 
-## Preserved Non-Goals
+## Product Direction
 
-- no chain-of-thought exposure
-- no prompt leakage
-- no secrets display
-- no provider key display
-- no database URL display
-- no LLM answer generation changes
-- no LLM reranking
-- no retrieval ranking changes
-- no auth changes
-- no migrations
-- no package changes
-- no server routes
-- no corpus management changes
-- no ingestion changes
+The CLI should support a command shape like:
 
-## Verification
+```bash
+node --import tsx src/cli/backfillCorpus.ts \
+  --manifest .rag/corpus-manifest.json \
+  --input corpus/document.md \
+  --document-key document-key \
+  --document-version v1
+```
 
-Manual visual review was accepted by the project owner/CTO for the glass wall experience.
+Optional support may include:
 
-Required local verification after sync:
-
-- npm run typecheck
-- npm run build
-- npm run test
+```text
+--title
+--source-format
+--dry-run
+```
 
 ## Completed Features
 
@@ -81,8 +56,41 @@ Required local verification after sync:
 - 018-file-backed-corpus-manifest: done
 - 019-rag-glass-wall-easter-egg: done
 
-## Next Recommended Feature
+## Current Feature Scope
 
-020-corpus-backfill-cli
+020 must define and then implement, after approval:
 
-Status: not started
+- `src/cli/backfillCorpus.ts`
+- required argument parsing
+- missing/unknown argument validation
+- manifest file path support
+- single-document backfill from explicit input path
+- persistent manifest integration
+- safe result formatting
+- offline tests for CLI helpers
+
+## Non-Goals
+
+020 must not introduce:
+
+- production scheduler
+- admin UI
+- new server routes
+- package changes
+- migrations
+- LLM answer generation changes
+- LLM reranking
+- retrieval ranking changes
+- evidence policy changes
+- auth changes
+- remote document fetching
+- directory crawling unless separately approved
+- parallel backfills
+
+## Next Gate
+
+Human approval is required before implementation.
+
+Approval phrase:
+
+`Approved: 020-corpus-backfill-cli for implementation in SHIP mode.`
