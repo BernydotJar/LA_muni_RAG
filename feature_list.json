@@ -114,6 +114,13 @@
       "mode": "SHIP",
       "active": false,
       "summary": "Added operator-facing corpus backfill CLI with persistent manifest support, dry-run decisions, safe output formatting, and offline tests."
+    },
+    {
+      "id": "021-retrieval-eval-harness",
+      "status": "spec_ready",
+      "mode": "SHIP",
+      "active": true,
+      "summary": "Define an offline retrieval evaluation harness with golden cases, expected evidence checks, not_found checks, metrics, and stable regression reports."
     }
   ]
 }
