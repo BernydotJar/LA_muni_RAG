@@ -3,6 +3,7 @@ import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 
 const readHomepage = async (): Promise<string> => readFile("public/index.html", "utf-8");
+const readGlassWall = async (): Promise<string> => readFile("public/glass-wall.html", "utf-8");
 
 describe("premium RAG frontend refresh", () => {
   it("keeps the evidence-first municipal RAG narrative", async () => {
@@ -48,5 +49,24 @@ describe("premium RAG frontend refresh", () => {
     assert.match(html, /--scroll/);
     assert.match(html, /updateScrollProgress/);
     assert.match(html, /prefers-reduced-motion/);
+  });
+
+  it("aligns the Glass Wall technical room with the premium frontend", async () => {
+    const html = await readGlassWall();
+
+    assert.match(html, /Back to LA Muni RAG/);
+    assert.match(html, /Technical room/);
+    assert.match(html, /premium technical room/);
+    assert.match(html, /No black box/);
+    assert.match(html, /prefers-reduced-motion/);
+  });
+
+  it("keeps Glass Wall safe endpoints and safety copy", async () => {
+    const html = await readGlassWall();
+
+    assert.match(html, /approvedEndpointPaths = \["\/health", "\/api\/evidence", "\/api\/answer"\]/);
+    assert.match(html, /It does not render prompts, credentials/);
+    assert.match(html, /database URLs/);
+    assert.match(html, /chain-of-thought/);
   });
 });
