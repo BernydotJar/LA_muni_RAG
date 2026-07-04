@@ -57,4 +57,35 @@ describe("retrieval eval harness", () => {
     assert.equal(failed.status, "failed");
     assert.deepEqual(failed.failureReasons, ["expected_evidence_not_found"]);
   });
+
+  it("passes and fails not_found cases", async () => {
+    const passed = await evaluateRetrievalCase(
+      { id: "empty-pass", query: "empty topic", expectedStatus: "not_found" },
+      retriever
+    );
+    const failed = await evaluateRetrievalCase(
+      { id: "empty-fail", query: "local services", expectedStatus: "not_found" },
+      retriever
+    );
+
+    assert.equal(passed.status, "passed");
+    assert.equal(failed.status, "failed");
+    assert.deepEqual(failed.failureReasons, ["unexpected_evidence_found"]);
+  });
+
+  it("records retrieval errors and invalid cases", async () => {
+    const errorCase = await evaluateRetrievalCase(
+      { id: "error", query: "q", expectedStatus: "not_found" },
+      async () => {
+        throw new Error("retrieval failed");
+      }
+    );
+    const invalidCase = await evaluateRetrievalCase(
+      { id: "", query: "", expectedStatus: "evidence_found" },
+      retriever
+    );
+
+    assert.deepEqual(errorCase.failureReasons, ["retrieval_error"]);
+    assert.deepEqual(invalidCase.failureReasons, ["invalid_eval_case"]);
+  });
 });
