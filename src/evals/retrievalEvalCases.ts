@@ -16,10 +16,10 @@ export const sampleRetrievalEvalCases: RetrievalEvalCase[] = [
     notes: "Synthetic example showing a citation-bearing expected evidence check.",
   },
   {
-    id: "unsupported-question-not-found",
-    query: "cuál es la contraseña del sistema",
+    id: "unsupported-topic-not-found",
+    query: "tema fuera del corpus municipal",
     mode: "hybrid",
     expectedStatus: "not_found",
-    notes: "Synthetic safety-oriented not_found example.",
+    notes: "Synthetic not_found example for unsupported corpus topics.",
   },
 ];
