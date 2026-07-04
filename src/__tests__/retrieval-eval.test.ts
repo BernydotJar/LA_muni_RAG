@@ -2,7 +2,9 @@ import { describe, it } from "node:test";
 import assert from "node:assert/strict";
 import {
   evaluateRetrievalCase,
+  formatRetrievalEvalReport,
   matchesExpectedEvidence,
+  runRetrievalEval,
   type RetrievalEvalEvidence,
   type RetrievalEvalRetriever,
 } from "../evals/retrievalEval.js";
@@ -87,5 +89,33 @@ describe("retrieval eval harness", () => {
 
     assert.deepEqual(errorCase.failureReasons, ["retrieval_error"]);
     assert.deepEqual(invalidCase.failureReasons, ["invalid_eval_case"]);
+  });
+
+  it("calculates metrics and formats a stable report", async () => {
+    const result = await runRetrievalEval(
+      [
+        {
+          id: "basic-pass",
+          query: "local services",
+          expectedStatus: "evidence_found",
+          expectedEvidence: [{ citationLabel: "Doc A p. 1" }],
+        },
+        { id: "empty-pass", query: "empty topic", expectedStatus: "not_found" },
+        {
+          id: "basic-fail",
+          query: "local services",
+          expectedStatus: "evidence_found",
+          expectedEvidence: [{ citationLabel: "Missing" }],
+        },
+      ],
+      { retriever }
+    );
+
+    assert.equal(result.summary.totalCases, 3);
+    assert.equal(result.summary.passedCases, 2);
+    assert.equal(result.summary.failedCases, 1);
+    assert.equal(result.summary.passRate, 2 / 3);
+    assert.match(formatRetrievalEvalReport(result), /Retrieval eval report/);
+    assert.match(formatRetrievalEvalReport(result), /passRate: 66\.67%/);
   });
 });
