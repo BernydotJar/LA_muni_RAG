@@ -121,6 +121,13 @@
       "mode": "SHIP",
       "active": false,
       "summary": "Added offline retrieval eval harness with expected evidence matching, not_found checks, stable metrics, report formatting, synthetic cases, and tests."
+    },
+    {
+      "id": "022-premium-rag-frontend-refresh",
+      "status": "review",
+      "mode": "SHIP",
+      "active": true,
+      "summary": "Refresh the static RAG homepage with premium dark visual language, animated CSS background, stronger product narrative, glass cards, CTA sections, and responsive layout."
     }
   ]
 }
