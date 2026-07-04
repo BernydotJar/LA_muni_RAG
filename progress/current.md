@@ -2,21 +2,23 @@
 
 ## Active Feature
 
+None.
+
+## Last Completed Feature
+
 019-rag-glass-wall-easter-egg
 
 ## State
 
-review
+done
 
 ## Summary
 
-Feature 019 has been implemented in SHIP mode and received final visual review fixes.
+Feature 019 has been completed in SHIP mode.
 
-The implementation adds a static CTO/operator-facing RAG Glass Wall page served from `public/glass-wall.html`, using existing safe endpoints only. Review fixes changed the view from a stacked dashboard/card layout into a true neural-style graph, expanded it with more nodes and legends, corrected node positioning/scaling, removed visible bottom-scrollbar dependency, and applied a final readability polish pass for balance, contrast, spacing, and reduced visual noise.
+The implementation adds a static CTO/operator-facing RAG Glass Wall page served from `public/glass-wall.html`, using existing safe endpoints only. Review fixes changed the view from a stacked dashboard/card layout into a true neural-style graph, expanded it with more nodes and legends, corrected node positioning/scaling, removed visible bottom-scrollbar dependency, applied a final readability polish pass, and added a 90s/neon homepage entry point.
 
 ## Completed Implementation
-
-019 added:
 
 - `public/glass-wall.html`
 - direct URL easter egg at `/glass-wall.html`
@@ -32,77 +34,55 @@ The implementation adds a static CTO/operator-facing RAG Glass Wall page served 
 - graph auto-scaling to the available viewport width
 - hidden graph overflow instead of visible bottom scrollbar
 - final spacing, contrast, and line-intensity polish
-- safe calls to `/health`, `/api/evidence`, and `/api/answer`
-- degraded/not_found/error rendering states
-- safety contract panel
+- homepage link to `/glass-wall.html`
+- 90s/neon CSS animated invite card on the homepage
 - static safety and visual-contract test at `src/__tests__/glass-wall-static.test.ts`
-
-## Review Fixes
-
-The first implementation rendered correctly but looked too much like a stacked dashboard on mobile. The first review fix corrected this by preserving the graph as the primary visual artifact across viewport sizes.
-
-The second review fix added more nodes and legends so the view reads as a richer neural wall rather than a sparse line graph.
-
-The third review fix corrected node positioning and graph scaling so labels are placed on their intended nodes and the bottom scrollbar is no longer the primary navigation mechanism.
-
-The final visual polish pass adjusted graph width, graph spacing, node label contrast, edge intensity, and column balance without changing backend behavior or API contracts.
 
 ## Preserved Non-Goals
 
-019 did not introduce:
-
-- chain-of-thought exposure
-- prompt leakage
-- secrets display
-- provider key display
-- database URL display
-- LLM answer generation changes
-- LLM reranking
-- retrieval ranking changes
-- auth changes
-- migrations
-- package changes
-- server routes
-- corpus management changes
-- ingestion changes
+- no chain-of-thought exposure
+- no prompt leakage
+- no secrets display
+- no provider key display
+- no database URL display
+- no LLM answer generation changes
+- no LLM reranking
+- no retrieval ranking changes
+- no auth changes
+- no migrations
+- no package changes
+- no server routes
+- no corpus management changes
+- no ingestion changes
 
 ## Verification
 
-GitHub file edits were applied directly through the repository API, so local verification is required before marking this feature done.
+Manual visual review was accepted by the project owner/CTO for the glass wall experience.
 
-Required local verification:
+Required local verification after sync:
 
 - npm run typecheck
 - npm run build
 - npm run test
 
-Manual verification recommended:
+## Completed Features
 
-- start the server
-- open `/glass-wall.html`
-- submit a query
-- confirm nodes and labels appear at their intended coordinates
-- confirm the graph scales to the card without a visible bottom scrollbar
-- confirm visible legends explain active, degraded, safe/audit, and inactive paths
-- confirm the graph feels balanced and readable at desktop width
-- confirm the page renders safe result state without exposing secrets, prompts, or hidden reasoning
+- 007-docx-extractor-mammoth: done
+- 008-embedding-indexing-pipeline: done
+- 009-hybrid-retrieval-ranking: done
+- 010-hybrid-retrieval-integration: done
+- 011-production-vector-store: done
+- 012-vector-query-integration: done
+- 013-production-query-embedding-provider: done
+- 014-runtime-vector-wiring: done
+- 015-runtime-vector-observability: done
+- 016-ingestion-cli-vector-indexing: done
+- 017-corpus-backfill-manifest: done
+- 018-file-backed-corpus-manifest: done
+- 019-rag-glass-wall-easter-egg: done
 
-## Review Focus
+## Next Recommended Feature
 
-Review should confirm:
+020-corpus-backfill-cli
 
-- `public/glass-wall.html` is served by existing static file handling
-- no new server route is required
-- the view only calls existing safe endpoints
-- no secrets, prompts, or chain-of-thought are rendered
-- not_found/degraded/error states are safe
-- the visual center is a neural-style graph, not stacked cards
-- legends and expanded nodes are present
-- labels do not collapse into the top-left corner
-- the bottom scrollbar is not used as the primary graph navigation mechanism
-- the visual pass improves readability without adding scope
-- test suite remains green
-
-## Next Gate
-
-Run local verification and review the implementation before moving 019 to done.
+Status: not started
