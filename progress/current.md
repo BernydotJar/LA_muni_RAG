@@ -2,82 +2,31 @@
 
 ## Active Feature
 
-None.
-
-## Last Completed Feature
-
-020-corpus-backfill-cli
+021-retrieval-eval-harness
 
 ## State
 
-done
+spec_ready
 
 ## Summary
 
-Feature 020 has been completed in SHIP mode.
+Feature 021 has been opened in SHIP mode as a specification-only change.
 
-The implementation adds an operator-facing corpus backfill CLI that composes existing foundations:
+The goal is to add an offline retrieval evaluation harness that makes retrieval quality measurable and repeatable without requiring a database, hosted provider, network, secrets, LLM judge, or production corpus.
 
-- `JsonFileCorpusManifestStore`
-- `backfillCorpusManifest()`
-- `indexVectorSource()`
+## Product Direction
 
-This turns the manifest-aware indexing flow into a repeatable local command for explicit source documents.
+The harness should evaluate retrieval output, not answer generation.
 
-## Completed Implementation
+It should support:
 
-020 added:
-
-- `src/cli/backfillCorpus.ts`
-- `src/__tests__/backfill-corpus-cli.test.ts`
-- required argument parsing for `--manifest`, `--input`, `--document-key`, and `--document-version`
-- optional support for `--title`, `--source-format`, and `--dry-run`
-- unknown argument validation
-- missing argument validation
-- runtime embedding metadata resolution from existing query embedding config
-- persistent manifest integration through `JsonFileCorpusManifestStore`
-- normal-mode execution through `backfillCorpusManifest()` and `indexVectorSource()`
-- dry-run decision flow through `computeCorpusContentSha256()` and `decideCorpusBackfill()`
-- stable human-readable output formatting
-- CLI error formatting with redaction for database URLs, HTTP URLs, bearer tokens, and obvious key/value secrets
-- offline tests for parsing, validation, formatting, redaction, dry-run behavior, and no manifest write on invalid args
-
-## Preserved Non-Goals
-
-020 did not introduce:
-
-- production scheduler
-- admin UI
-- new server routes
-- package changes
-- migrations
-- LLM answer generation changes
-- LLM reranking
-- retrieval ranking changes
-- evidence policy changes
-- auth changes
-- remote document fetching
-- directory crawling
-- parallel backfills
-
-## Verification
-
-Local verification passed:
-
-- npm run typecheck
-- npm run build
-- npm run test
-
-Full suite result after 020:
-
-- tests: 160
-- suites: 32
-- pass: 160
-- fail: 0
-- cancelled: 0
-- skipped: 0
-- todo: 0
-- duration_ms: 860.864166
+- golden query cases
+- expected evidence checks
+- expected `not_found` checks
+- stable failure reasons
+- aggregate metrics
+- deterministic text report formatting
+- offline tests
 
 ## Completed Features
 
@@ -96,8 +45,42 @@ Full suite result after 020:
 - 019-rag-glass-wall-easter-egg: done
 - 020-corpus-backfill-cli: done
 
-## Next Recommended Feature
+## Current Feature Scope
 
-021-retrieval-eval-harness
+021 must define and then implement, after approval:
 
-Status: not started
+- retrieval eval case model
+- expected evidence matcher
+- expected not_found checks
+- eval runner
+- metrics aggregation
+- stable text report formatter
+- minimal synthetic eval cases
+- offline tests
+
+## Non-Goals
+
+021 must not introduce:
+
+- LLM judge
+- hosted provider calls
+- database calls in tests
+- new package dependency
+- new server route
+- UI changes
+- production scheduler
+- corpus backfill changes
+- retrieval ranking changes
+- evidence policy changes
+- answer generation changes
+- auth changes
+- CI threshold gate unless separately approved
+- large benchmark corpus
+
+## Next Gate
+
+Human approval is required before implementation.
+
+Approval phrase:
+
+`Approved: 021-retrieval-eval-harness for implementation in SHIP mode.`
