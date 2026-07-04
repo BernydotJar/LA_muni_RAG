@@ -117,9 +117,9 @@
     },
     {
       "id": "021-retrieval-eval-harness",
-      "status": "review",
+      "status": "done",
       "mode": "SHIP",
-      "active": true,
+      "active": false,
       "summary": "Added offline retrieval eval harness with expected evidence matching, not_found checks, stable metrics, report formatting, synthetic cases, and tests."
     }
   ]
