@@ -107,6 +107,13 @@
       "mode": "SHIP",
       "active": false,
       "summary": "Added static RAG Glass Wall CTO/operator view, homepage neon entry point, safety/visual tests, and transparent retrieval visualization without exposing secrets or chain-of-thought."
+    },
+    {
+      "id": "020-corpus-backfill-cli",
+      "status": "spec_ready",
+      "mode": "SHIP",
+      "active": true,
+      "summary": "Define an operator-facing corpus backfill CLI that uses the persistent manifest store and vector indexing orchestration for skip/reindex/retry decisions."
     }
   ]
 }
