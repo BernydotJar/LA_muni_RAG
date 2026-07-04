@@ -4,8 +4,10 @@ import { readFile } from "node:fs/promises";
 import { join } from "node:path";
 
 const glassWallPath = join(process.cwd(), "public", "glass-wall.html");
+const homePath = join(process.cwd(), "public", "index.html");
 
 const readGlassWall = async (): Promise<string> => readFile(glassWallPath, "utf-8");
+const readHome = async (): Promise<string> => readFile(homePath, "utf-8");
 
 describe("RAG glass wall static page", () => {
   it("contains stable DOM anchors for the operator view", async () => {
@@ -63,6 +65,15 @@ describe("RAG glass wall static page", () => {
     assert.match(html, /const fitGraphToViewport = \(\) =>/);
     assert.match(html, /board\.style\.transform = `scale\(\$\{scale\}\)`/);
     assert.match(html, /overflow: hidden;/);
+  });
+
+  it("is intentionally discoverable from the homepage", async () => {
+    const html = await readHome();
+
+    assert.match(html, /href="\/glass-wall\.html"/);
+    assert.match(html, /glass-wall-invite/);
+    assert.match(html, /¿Quieres saber cómo se construye técnicamente\?/);
+    assert.match(html, /modo CTO 90s neon/);
   });
 
   it("references only approved application endpoints", async () => {
