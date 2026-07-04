@@ -110,10 +110,10 @@
     },
     {
       "id": "020-corpus-backfill-cli",
-      "status": "spec_ready",
+      "status": "review",
       "mode": "SHIP",
       "active": true,
-      "summary": "Define an operator-facing corpus backfill CLI that uses the persistent manifest store and vector indexing orchestration for skip/reindex/retry decisions."
+      "summary": "Added operator-facing corpus backfill CLI with persistent manifest support, dry-run decisions, safe output formatting, and offline tests."
     }
   ]
 }
