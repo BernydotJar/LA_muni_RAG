@@ -8,8 +8,8 @@
       :root {
         --bg: #111018;
         --panel: rgba(20, 17, 28, 0.88);
-        --line: rgba(185, 176, 204, 0.22);
-        --line-hot: rgba(255, 45, 157, 0.96);
+        --line: rgba(185, 176, 204, 0.16);
+        --line-hot: rgba(255, 45, 157, 0.92);
         --node: #191620;
         --node-border: rgba(255, 255, 255, 0.28);
         --hot: #ff2d9d;
@@ -36,15 +36,15 @@
       }
 
       main {
-        width: min(1280px, calc(100vw - 28px));
+        width: min(1400px, calc(100vw - 28px));
         margin: 0 auto;
         padding: 28px 0 46px;
       }
 
       .hero { display: grid; gap: 10px; margin-bottom: 18px; }
       .eyebrow { color: var(--hot); font: 700 11px/1.2 var(--mono); letter-spacing: 0.16em; text-transform: uppercase; }
-      h1 { margin: 0; max-width: 900px; font-size: clamp(32px, 6vw, 78px); line-height: 0.9; letter-spacing: -0.075em; }
-      .subtitle { max-width: 850px; margin: 0; color: #c9bfd2; font-size: 15px; line-height: 1.55; }
+      h1 { margin: 0; max-width: 940px; font-size: clamp(36px, 6vw, 82px); line-height: 0.9; letter-spacing: -0.075em; }
+      .subtitle { max-width: 880px; margin: 0; color: #c9bfd2; font-size: 15px; line-height: 1.55; }
 
       .controls {
         display: grid;
@@ -79,7 +79,7 @@
 
       .dashboard {
         display: grid;
-        grid-template-columns: minmax(0, 1.65fr) minmax(320px, 0.8fr);
+        grid-template-columns: minmax(0, 1.95fr) minmax(330px, 0.8fr);
         gap: 16px;
         align-items: start;
       }
@@ -115,68 +115,69 @@
         overflow: hidden;
         min-height: 320px;
         background:
-          linear-gradient(rgba(255, 255, 255, 0.025) 1px, transparent 1px),
-          linear-gradient(90deg, rgba(255, 255, 255, 0.025) 1px, transparent 1px),
-          radial-gradient(circle at 50% 50%, rgba(255, 45, 157, 0.06), transparent 48%);
+          linear-gradient(rgba(255, 255, 255, 0.022) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(255, 255, 255, 0.022) 1px, transparent 1px),
+          radial-gradient(circle at 50% 54%, rgba(255, 45, 157, 0.055), transparent 48%);
         background-size: 28px 28px, 28px 28px, auto;
       }
 
       .graph-board {
         position: relative;
-        width: 1080px;
-        height: 720px;
+        width: 1120px;
+        height: 700px;
         transform-origin: 0 0;
       }
 
-      svg.edges { position: absolute; inset: 0; width: 1080px; height: 720px; pointer-events: none; }
-      .edge { stroke: var(--line); stroke-width: 1.05; }
-      .edge.active { stroke: var(--line-hot); stroke-width: 2.1; filter: drop-shadow(0 0 7px rgba(255, 45, 157, 0.9)); }
-      .edge.warn { stroke: rgba(246, 196, 83, 0.82); stroke-width: 1.8; }
-      .edge.error { stroke: rgba(255, 107, 107, 0.9); stroke-width: 1.8; }
+      svg.edges { position: absolute; inset: 0; width: 1120px; height: 700px; pointer-events: none; }
+      .edge { stroke: var(--line); stroke-width: 0.95; }
+      .edge.active { stroke: var(--line-hot); stroke-width: 1.75; filter: drop-shadow(0 0 6px rgba(255, 45, 157, 0.78)); }
+      .edge.warn { stroke: rgba(246, 196, 83, 0.76); stroke-width: 1.45; }
+      .edge.error { stroke: rgba(255, 107, 107, 0.82); stroke-width: 1.45; }
 
       .node {
         position: absolute;
-        width: 112px;
+        width: 128px;
         transform: translate(-50%, -50%);
         display: grid;
         justify-items: center;
-        gap: 6px;
-        color: #d9cede;
+        gap: 5px;
+        color: #ded5e7;
         text-align: center;
       }
 
-      .node-core { width: 19px; height: 19px; border-radius: 50%; border: 2px solid var(--node-border); background: var(--node); box-shadow: 0 0 0 5px rgba(255, 255, 255, 0.018); }
-      .node.active .node-core { border-color: var(--hot); background: rgba(255, 45, 157, 0.22); box-shadow: 0 0 0 7px rgba(255, 45, 157, 0.12), 0 0 22px rgba(255, 45, 157, 0.8); }
-      .node.warn .node-core { border-color: var(--warn); background: rgba(246, 196, 83, 0.12); box-shadow: 0 0 0 7px rgba(246, 196, 83, 0.08), 0 0 18px rgba(246, 196, 83, 0.55); }
+      .node-core { width: 20px; height: 20px; border-radius: 50%; border: 2px solid var(--node-border); background: var(--node); box-shadow: 0 0 0 5px rgba(255, 255, 255, 0.014); }
+      .node.active .node-core { border-color: var(--hot); background: rgba(255, 45, 157, 0.22); box-shadow: 0 0 0 7px rgba(255, 45, 157, 0.1), 0 0 20px rgba(255, 45, 157, 0.72); }
+      .node.warn .node-core { border-color: var(--warn); background: rgba(246, 196, 83, 0.12); box-shadow: 0 0 0 7px rgba(246, 196, 83, 0.07), 0 0 16px rgba(246, 196, 83, 0.48); }
       .node.error .node-core { border-color: var(--error); background: rgba(255, 107, 107, 0.12); box-shadow: 0 0 0 7px rgba(255, 107, 107, 0.08), 0 0 18px rgba(255, 107, 107, 0.55); }
-      .node.ok .node-core { border-color: var(--ok); background: rgba(134, 239, 172, 0.12); box-shadow: 0 0 0 7px rgba(134, 239, 172, 0.08), 0 0 18px rgba(134, 239, 172, 0.5); }
-      .node-label { display: block; color: inherit; font: 800 11px/1 var(--mono); text-shadow: 0 1px 8px #000; }
+      .node.ok .node-core { border-color: var(--ok); background: rgba(134, 239, 172, 0.12); box-shadow: 0 0 0 7px rgba(134, 239, 172, 0.07), 0 0 16px rgba(134, 239, 172, 0.42); }
+      .node-label { display: inline-block; color: inherit; font: 900 10px/1 var(--mono); padding: 2px 5px; border-radius: 999px; background: rgba(13, 11, 18, 0.72); text-shadow: 0 1px 8px #000; }
       .node.active .node-label { color: var(--hot); }
       .node.warn .node-label { color: var(--warn); }
       .node.error .node-label { color: var(--error); }
       .node.ok .node-label { color: var(--ok); }
-      .node-value { display: block; max-width: 152px; color: var(--muted); font: 600 9px/1.3 var(--mono); overflow-wrap: anywhere; text-shadow: 0 1px 8px #000; }
+      .node-value { display: block; max-width: 116px; color: rgba(201, 191, 210, 0.72); font: 600 8px/1.25 var(--mono); overflow-wrap: anywhere; text-shadow: 0 1px 8px #000; }
 
       .graph-title { position: absolute; left: 26px; top: 22px; color: var(--muted); font: 800 11px/1 var(--mono); letter-spacing: 0.12em; text-transform: uppercase; }
       .sense-level { position: absolute; left: 50%; bottom: 26px; transform: translateX(-50%); color: #fff; font: 900 18px/1 var(--sans); letter-spacing: -0.04em; }
       .sense-level b { color: var(--hot); }
-      .axis-label { position: absolute; color: rgba(255, 255, 255, 0.42); font: 700 10px/1 var(--mono); letter-spacing: 0.14em; text-transform: uppercase; }
+      .axis-label { position: absolute; color: rgba(255, 255, 255, 0.46); font: 800 10px/1 var(--mono); letter-spacing: 0.16em; text-transform: uppercase; }
 
       .graph-legend {
         position: absolute;
-        right: 24px;
-        top: 20px;
+        right: 26px;
+        top: 24px;
         display: grid;
         grid-template-columns: repeat(2, auto);
         gap: 8px 14px;
         padding: 11px 12px;
         border: 1px solid rgba(255, 255, 255, 0.09);
         border-radius: 16px;
-        background: rgba(0, 0, 0, 0.22);
-        backdrop-filter: blur(10px);
+        background: rgba(0, 0, 0, 0.3);
+        backdrop-filter: blur(12px);
+        z-index: 3;
       }
 
-      .legend-item { display: inline-flex; align-items: center; gap: 7px; color: #c9bfd2; font: 700 10px/1 var(--mono); white-space: nowrap; }
+      .legend-item { display: inline-flex; align-items: center; gap: 7px; color: #c9bfd2; font: 800 10px/1 var(--mono); white-space: nowrap; }
       .legend-dot { width: 9px; height: 9px; border-radius: 50%; background: var(--muted); box-shadow: 0 0 10px rgba(255,255,255,0.1); }
       .legend-dot.hot { background: var(--hot); box-shadow: 0 0 14px var(--hot); }
       .legend-dot.warn { background: var(--warn); box-shadow: 0 0 14px var(--warn); }
@@ -238,37 +239,37 @@
                 <div class="legend-item"><span class="legend-dot ok"></span>safe contract</div>
                 <div class="legend-item"><span class="legend-dot dim"></span>inactive</div>
               </div>
-              <div class="axis-label" style="left: 70px; top: 655px">input</div>
-              <div class="axis-label" style="left: 300px; top: 655px">retrieval</div>
-              <div class="axis-label" style="left: 565px; top: 655px">evidence</div>
-              <div class="axis-label" style="left: 835px; top: 655px">final</div>
-              <svg class="edges" id="glass-wall-edges" viewBox="0 0 1080 720" aria-hidden="true"></svg>
+              <div class="axis-label" style="left: 105px; top: 635px">input</div>
+              <div class="axis-label" style="left: 350px; top: 635px">retrieval</div>
+              <div class="axis-label" style="left: 635px; top: 635px">evidence</div>
+              <div class="axis-label" style="left: 910px; top: 635px">final</div>
+              <svg class="edges" id="glass-wall-edges" viewBox="0 0 1120 700" aria-hidden="true"></svg>
 
-              <div class="node active" id="node-query" data-node="query" data-x="95" data-y="125"><span class="node-core"></span><span class="node-label">query</span><span class="node-value">waiting</span></div>
-              <div class="node" id="node-mode" data-node="mode" data-x="95" data-y="235"><span class="node-core"></span><span class="node-label">mode</span><span class="node-value">hybrid</span></div>
-              <div class="node" id="node-limit" data-node="limit" data-x="95" data-y="345"><span class="node-core"></span><span class="node-label">limit</span><span class="node-value">5</span></div>
-              <div class="node" id="node-corpus" data-node="corpus" data-x="95" data-y="455"><span class="node-core"></span><span class="node-label">corpus</span><span class="node-value">safe API</span></div>
-              <div class="node ok" id="node-safety" data-node="safety" data-x="95" data-y="565"><span class="node-core"></span><span class="node-label">safety</span><span class="node-value">no secrets</span></div>
+              <div class="node active" id="node-query" data-node="query" data-x="105" data-y="130"><span class="node-core"></span><span class="node-label">query</span><span class="node-value">waiting</span></div>
+              <div class="node" id="node-mode" data-node="mode" data-x="105" data-y="240"><span class="node-core"></span><span class="node-label">mode</span><span class="node-value">hybrid</span></div>
+              <div class="node" id="node-limit" data-node="limit" data-x="105" data-y="350"><span class="node-core"></span><span class="node-label">limit</span><span class="node-value">5</span></div>
+              <div class="node" id="node-corpus" data-node="corpus" data-x="105" data-y="460"><span class="node-core"></span><span class="node-label">corpus</span><span class="node-value">safe API</span></div>
+              <div class="node ok" id="node-safety" data-node="safety" data-x="105" data-y="570"><span class="node-core"></span><span class="node-label">safety</span><span class="node-value">no secrets</span></div>
 
-              <div class="node" id="node-phrase" data-node="phrase" data-x="325" data-y="95"><span class="node-core"></span><span class="node-label">phrase</span><span class="node-value">exact</span></div>
-              <div class="node" id="node-keyword" data-node="keyword" data-x="325" data-y="185"><span class="node-core"></span><span class="node-label">keyword</span><span class="node-value">lexical</span></div>
-              <div class="node" id="node-vector" data-node="vector" data-x="325" data-y="275"><span class="node-core"></span><span class="node-label">vector</span><span class="node-value">semantic</span></div>
-              <div class="node" id="node-embedding" data-node="embedding" data-x="325" data-y="365"><span class="node-core"></span><span class="node-label">embedding</span><span class="node-value">query</span></div>
-              <div class="node" id="node-db" data-node="db" data-x="325" data-y="455"><span class="node-core"></span><span class="node-label">pgvector</span><span class="node-value">store</span></div>
-              <div class="node" id="node-runtime" data-node="runtime" data-x="325" data-y="545"><span class="node-core"></span><span class="node-label">runtime</span><span class="node-value">unknown</span></div>
+              <div class="node" id="node-phrase" data-node="phrase" data-x="365" data-y="105"><span class="node-core"></span><span class="node-label">phrase</span><span class="node-value">exact</span></div>
+              <div class="node" id="node-keyword" data-node="keyword" data-x="365" data-y="195"><span class="node-core"></span><span class="node-label">keyword</span><span class="node-value">lexical</span></div>
+              <div class="node" id="node-vector" data-node="vector" data-x="365" data-y="285"><span class="node-core"></span><span class="node-label">vector</span><span class="node-value">semantic</span></div>
+              <div class="node" id="node-embedding" data-node="embedding" data-x="365" data-y="375"><span class="node-core"></span><span class="node-label">embedding</span><span class="node-value">query</span></div>
+              <div class="node" id="node-db" data-node="db" data-x="365" data-y="465"><span class="node-core"></span><span class="node-label">pgvector</span><span class="node-value">store</span></div>
+              <div class="node" id="node-runtime" data-node="runtime" data-x="365" data-y="555"><span class="node-core"></span><span class="node-label">runtime</span><span class="node-value">unknown</span></div>
 
-              <div class="node" id="node-evidence-1" data-node="evidence" data-x="585" data-y="80"><span class="node-core"></span><span class="node-label">evidence 1</span><span class="node-value">none</span></div>
-              <div class="node" id="node-evidence-2" data-node="evidence" data-x="585" data-y="165"><span class="node-core"></span><span class="node-label">evidence 2</span><span class="node-value">none</span></div>
-              <div class="node" id="node-evidence-3" data-node="evidence" data-x="585" data-y="250"><span class="node-core"></span><span class="node-label">evidence 3</span><span class="node-value">none</span></div>
-              <div class="node" id="node-evidence-4" data-node="evidence" data-x="585" data-y="335"><span class="node-core"></span><span class="node-label">evidence 4</span><span class="node-value">none</span></div>
-              <div class="node" id="node-evidence-5" data-node="evidence" data-x="585" data-y="420"><span class="node-core"></span><span class="node-label">evidence 5</span><span class="node-value">none</span></div>
-              <div class="node" id="node-citation" data-node="citation" data-x="585" data-y="515"><span class="node-core"></span><span class="node-label">citation</span><span class="node-value">not ready</span></div>
-              <div class="node" id="node-score" data-node="score" data-x="585" data-y="600"><span class="node-core"></span><span class="node-label">score</span><span class="node-value">ranked</span></div>
+              <div class="node" id="node-evidence-1" data-node="evidence" data-x="650" data-y="80"><span class="node-core"></span><span class="node-label">evidence 1</span><span class="node-value">none</span></div>
+              <div class="node" id="node-evidence-2" data-node="evidence" data-x="650" data-y="165"><span class="node-core"></span><span class="node-label">evidence 2</span><span class="node-value">none</span></div>
+              <div class="node" id="node-evidence-3" data-node="evidence" data-x="650" data-y="250"><span class="node-core"></span><span class="node-label">evidence 3</span><span class="node-value">none</span></div>
+              <div class="node" id="node-evidence-4" data-node="evidence" data-x="650" data-y="335"><span class="node-core"></span><span class="node-label">evidence 4</span><span class="node-value">none</span></div>
+              <div class="node" id="node-evidence-5" data-node="evidence" data-x="650" data-y="420"><span class="node-core"></span><span class="node-label">evidence 5</span><span class="node-value">none</span></div>
+              <div class="node" id="node-citation" data-node="citation" data-x="650" data-y="515"><span class="node-core"></span><span class="node-label">citation</span><span class="node-value">not ready</span></div>
+              <div class="node" id="node-score" data-node="score" data-x="650" data-y="610"><span class="node-core"></span><span class="node-label">score</span><span class="node-value">ranked</span></div>
 
-              <div class="node" id="node-answer" data-node="answer" data-x="870" data-y="145"><span class="node-core"></span><span class="node-label">answer</span><span class="node-value">idle</span></div>
-              <div class="node" id="node-not-found" data-node="not_found" data-x="870" data-y="285"><span class="node-core"></span><span class="node-label">not_found</span><span class="node-value">inactive</span></div>
-              <div class="node" id="node-degraded" data-node="degraded" data-x="870" data-y="425"><span class="node-core"></span><span class="node-label">degraded</span><span class="node-value">inactive</span></div>
-              <div class="node ok" id="node-audit" data-node="audit" data-x="870" data-y="565"><span class="node-core"></span><span class="node-label">audit</span><span class="node-value">safe trace</span></div>
+              <div class="node" id="node-answer" data-node="answer" data-x="930" data-y="160"><span class="node-core"></span><span class="node-label">answer</span><span class="node-value">idle</span></div>
+              <div class="node" id="node-not-found" data-node="not_found" data-x="930" data-y="305"><span class="node-core"></span><span class="node-label">not_found</span><span class="node-value">inactive</span></div>
+              <div class="node" id="node-degraded" data-node="degraded" data-x="930" data-y="450"><span class="node-core"></span><span class="node-label">degraded</span><span class="node-value">inactive</span></div>
+              <div class="node ok" id="node-audit" data-node="audit" data-x="930" data-y="585"><span class="node-core"></span><span class="node-label">audit</span><span class="node-value">safe trace</span></div>
 
               <div class="sense-level" id="sense-level"><b>Level 1</b> / 6 · blind</div>
             </div>
@@ -323,7 +324,7 @@
     <script>
       const $ = (id) => document.getElementById(id);
       const approvedEndpointPaths = ["/health", "/api/evidence", "/api/answer"];
-      const graphSize = { width: 1080, height: 720 };
+      const graphSize = { width: 1120, height: 700 };
 
       const graphEdges = [
         ["node-query", "node-phrase", "signal"],
