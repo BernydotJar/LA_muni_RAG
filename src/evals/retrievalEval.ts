@@ -30,9 +30,14 @@ export interface RetrievalEvalEvidence {
   excerpt?: string | null;
 }
 
+export interface RetrievalEvalRetrieverOptions {
+  mode?: string;
+  limit?: number;
+}
+
 export type RetrievalEvalRetriever = (
   query: string,
-  options: { mode?: string; limit?: number }
+  options: RetrievalEvalRetrieverOptions
 ) => Promise<RetrievalEvalEvidence[]>;
 
 export interface RetrievalEvalCaseResult {
@@ -109,6 +114,12 @@ const caseResult = (
   failureReasons: unique(reasons),
 });
 
+const retrievalOptionsForCase = (testCase: RetrievalEvalCase, limit: number): RetrievalEvalRetrieverOptions => {
+  const options: RetrievalEvalRetrieverOptions = { limit };
+  if (testCase.mode !== undefined) options.mode = testCase.mode;
+  return options;
+};
+
 export const evaluateRetrievalCase = async (
   testCase: RetrievalEvalCase,
   retriever: RetrievalEvalRetriever,
@@ -119,7 +130,7 @@ export const evaluateRetrievalCase = async (
 
   let evidence: RetrievalEvalEvidence[];
   try {
-    evidence = await retriever(testCase.query, { mode: testCase.mode, limit });
+    evidence = await retriever(testCase.query, retrievalOptionsForCase(testCase, limit));
   } catch {
     return caseResult(testCase, "failed", 0, 0, ["retrieval_error"]);
   }
