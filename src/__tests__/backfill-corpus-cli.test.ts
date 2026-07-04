@@ -7,6 +7,7 @@ import {
   formatBackfillCorpusDryRunResult,
   formatBackfillCorpusError,
   formatBackfillCorpusResult,
+  isBackfillCorpusDryRunResult,
   parseBackfillCorpusArgs,
   resolveBackfillRuntimeMetadata,
   runBackfillCorpus,
@@ -165,7 +166,8 @@ describe("corpus backfill CLI helpers", () => {
       runtimeMetadata
     );
 
-    assert.equal(result.dryRun, true);
+    assert.equal(isBackfillCorpusDryRunResult(result), true);
+    if (!isBackfillCorpusDryRunResult(result)) throw new Error("Expected dry-run result.");
     assert.equal(result.documentKey, "doc-key");
     assert.equal(result.decision, "index");
     await assert.rejects(() => readFile(manifestPath, "utf-8"), /ENOENT/);
