@@ -110,9 +110,9 @@
     },
     {
       "id": "020-corpus-backfill-cli",
-      "status": "review",
+      "status": "done",
       "mode": "SHIP",
-      "active": true,
+      "active": false,
       "summary": "Added operator-facing corpus backfill CLI with persistent manifest support, dry-run decisions, safe output formatting, and offline tests."
     }
   ]
