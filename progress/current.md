@@ -2,15 +2,19 @@
 
 ## Active Feature
 
+None.
+
+## Last Completed Feature
+
 021-retrieval-eval-harness
 
 ## State
 
-review
+done
 
 ## Summary
 
-Feature 021 has been implemented in SHIP mode.
+Feature 021 has been completed in SHIP mode.
 
 The implementation adds an offline retrieval evaluation harness that makes retrieval quality measurable and repeatable without requiring a database, hosted provider, network, secrets, LLM judge, or production corpus.
 
@@ -54,32 +58,11 @@ The implementation adds an offline retrieval evaluation harness that makes retri
 
 ## Verification
 
-GitHub file edits were applied directly through the repository API, so local verification is required before marking this feature done.
-
-Required local verification:
+Local verification passed:
 
 - npm run typecheck
 - npm run build
 - npm run test
-
-## Review Focus
-
-Review should confirm:
-
-- eval case types exist
-- eval runner exists
-- expected evidence matcher exists
-- not_found checks exist
-- failure reasons are stable
-- metrics are deterministic
-- report formatting is stable
-- tests run offline
-- no database/provider/network/secrets are required
-- no retrieval ranking changed
-- no evidence policy changed
-- no answer generation changed
-- no server route was added
-- no package file was changed
 
 ## Completed Features
 
@@ -97,7 +80,10 @@ Review should confirm:
 - 018-file-backed-corpus-manifest: done
 - 019-rag-glass-wall-easter-egg: done
 - 020-corpus-backfill-cli: done
+- 021-retrieval-eval-harness: done
 
-## Next Gate
+## Next Recommended Feature
 
-Run local verification and review the implementation before moving 021 to done.
+022-premium-rag-frontend-refresh
+
+Status: not started
