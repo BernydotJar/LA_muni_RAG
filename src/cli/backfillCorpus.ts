@@ -195,14 +195,22 @@ export const formatBackfillCorpusDryRunResult = (result: BackfillCorpusDryRunRes
     `- embedding-dimension: ${result.embeddingDimension}`,
   ].join("\n");
 
-export const formatBackfillCorpusError = (error: unknown): string =>
-  JSON.stringify(
+const redactBackfillCliMessage = (message: string): string =>
+  message
+    .replace(/postgres(?:ql)?:\/\/\S+/gi, "[redacted]")
+    .replace(/https?:\/\/\S+/gi, "[redacted]")
+    .replace(/Bearer\s+\S+/gi, "Bearer [redacted]")
+    .replace(/(?:api[_-]?key|token|password|secret)=\S+/gi, "[redacted]");
+
+export const formatBackfillCorpusError = (error: unknown): string => {
+  const message = error instanceof Error ? error.message : String(error);
+  return JSON.stringify(
     {
       status: "failed",
       failures: [
         {
           code: "corpus_backfill_cli_failed",
-          message: error instanceof Error ? error.message : String(error),
+          message: redactBackfillCliMessage(message),
           retryable: false,
         },
       ],
@@ -210,6 +218,7 @@ export const formatBackfillCorpusError = (error: unknown): string =>
     null,
     2
   );
+};
 
 export const runBackfillCorpusDryRun = async (
   args: BackfillCorpusArgs & {
