@@ -128,6 +128,13 @@
       "mode": "SHIP",
       "active": false,
       "summary": "Refreshed the static RAG homepage and Glass Wall with premium cinematic visual language, scroll storytelling, technical-room coherence, preserved widget behavior, and static frontend regression tests."
+    },
+    {
+      "id": "023-frontend-localization-and-graph-polish",
+      "status": "review",
+      "mode": "SHIP",
+      "active": true,
+      "summary": "Localize the public frontend to Spanish, add Antigua-inspired institutional visual identity, replace circular graph nodes with premium panel nodes, and preserve RAG/widget/Glass Wall behavior."
     }
   ]
 }
