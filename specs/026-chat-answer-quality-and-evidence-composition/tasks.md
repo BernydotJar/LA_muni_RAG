@@ -7,7 +7,8 @@
 - [x] Add synthesis-first response composition in `public/widget.js`.
 - [x] Add raw retrieval-dump detection.
 - [x] Add theme extraction from citations.
-- [x] Add collapsible evidence section.
+- [x] Show verified evidence expanded by default.
+- [x] Preserve hide/show evidence toggle for compact reading.
 - [x] Add follow-up chips for broad queries.
 - [x] Preserve `/api/chat` request behavior.
 - [x] Preserve mode switching.
@@ -25,7 +26,8 @@
 ## Manual Review
 
 - [ ] Query `agua` shows synthesis before evidence.
-- [ ] Evidence is collapsed by default.
+- [ ] Evidence is visible by default under `Fuentes verificadas`.
+- [ ] The evidence toggle starts as `Ocultar evidencia`.
 - [ ] Citation cards expand when clicked or keyboard activated.
 - [ ] Follow-up chips appear for broad queries.
 - [ ] The answer no longer reads like a raw numbered retrieval dump.
