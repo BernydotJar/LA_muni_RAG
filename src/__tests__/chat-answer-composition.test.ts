@@ -20,7 +20,8 @@ describe("chat answer quality and evidence composition", () => {
     const widget = await readWidget();
 
     assert.match(widget, /muni-answer-summary/);
-    assert.match(widget, /Hallazgos clave/);
+    assert.match(widget, /Respuesta breve/);
+    assert.match(widget, /Hallazgos principales/);
     assert.match(widget, /muni-key-findings/);
     assert.match(widget, /No la presentaría como una respuesta única cerrada/);
     assert.match(widget, /Te dejo una síntesis primero y las fuentes verificadas aparte/);
