@@ -2,7 +2,7 @@
 
 ## Active Feature
 
-026-chat-answer-quality-and-evidence-composition
+027-glass-wall-vector-runtime-insights
 
 ## Last Completed Feature
 
@@ -14,39 +14,40 @@ review
 
 ## Summary
 
-Feature 026 is implemented in SHIP mode and remains in review pending local command verification. This cycle improves the conversational layer of the embeddable chat widget: responses now render as synthesis-first municipal answers, evidence is separated from the answer but visible by default, raw retrieval-style dumps are suppressed from the primary answer, citation cards remain expandable, and broad queries receive guided follow-up chips.
+Feature 027 is implemented in SHIP mode and remains in review pending local command verification. This cycle enhances the Glass Wall technical room with safe vector-runtime explanation, richer node copy for `Búsqueda vectorial`, `Embedding`, and `Almacén vectorial`, a dedicated `Vector / Embedding` side panel, and CSS-only motion for graph scan, vector pulse, vector rings, and active/degraded edge flow.
 
-Features 024 and 025 remain implemented but not locally closed because command verification was not run in this environment. To respect the harness one-active-feature rule, 026 is now the active review feature.
+Features 024, 025, and 026 remain implemented but not locally closed because command verification was not run in this environment. To respect the harness one-active-feature rule, 027 is now the active review feature.
 
 ## Completed Implementation
 
-026 updated:
+027 updated:
 
-- `public/widget.js`
-- `src/__tests__/chat-answer-composition.test.ts`
-- `specs/026-chat-answer-quality-and-evidence-composition/requirements.md`
-- `specs/026-chat-answer-quality-and-evidence-composition/design.md`
-- `specs/026-chat-answer-quality-and-evidence-composition/tasks.md`
+- `public/glass-wall.html`
+- `src/__tests__/glass-wall-premium-room.test.ts`
+- `specs/027-glass-wall-vector-runtime-insights/requirements.md`
+- `specs/027-glass-wall-vector-runtime-insights/design.md`
+- `specs/027-glass-wall-vector-runtime-insights/tasks.md`
 - `feature_list.json`
 - `progress/current.md`
 
 ## Acceptance Focus
 
-- Assistant responses show a short synthesis before evidence.
-- Retrieval-style answer content is detected and not rendered as the primary response when citations exist.
-- Evidence is visible by default under `Fuentes verificadas`.
-- The evidence toggle starts as `Ocultar evidencia`, not `Ver evidencia`.
-- Users can still hide the evidence panel for compact reading.
-- Citation cards remain expandable by click and keyboard.
-- Broad queries such as `agua` produce guided follow-up chips.
-- Theme extraction detects topics such as agua potable, aguas residuales, aguas pluviales, acueducto/abastecimiento, necesidades locales, and prioridades municipales.
-- `/api/chat` request shape remains unchanged: `message`, `mode`, `limit`.
-- `Palabras clave` and `Frase exacta` modes remain available.
-- Shadow DOM, mobile layout, widget open/close, Enter send, Escape close, and reduced-motion protections remain preserved.
+- Glass Wall includes a dedicated `Vector / Embedding` side panel.
+- Vector side panel shows sanitized runtime vectorial state.
+- Vector side panel explains relationship with hybrid mode.
+- Vector side panel shows query embedding state as `query → vector`.
+- Vector side panel shows vector store state without exposing database URLs or credentials.
+- Graph nodes for `Búsqueda vectorial`, `Embedding`, and `Almacén vectorial` use richer explanatory values.
+- Active and degraded edges have CSS-only flow animation.
+- Graph includes scan and vector pulse motion.
+- Vector nodes include `vector-focus` ring animation.
+- Approved endpoint allowlist remains unchanged: `/health`, `/api/evidence`, `/api/answer`.
+- Safety contract remains preserved and does not expose prompts, credentials, provider keys, database URLs, internal model messages, or hidden reasoning.
+- Reduced motion disables decorative animation.
 
 ## Preserved Non-Goals
 
-026 did not modify:
+027 did not modify:
 
 - backend APIs
 - retrieval ranking
@@ -58,13 +59,13 @@ Features 024 and 025 remain implemented but not locally closed because command v
 - auth
 - environment files
 - secrets
-- Glass Wall endpoint allowlist
 - homepage hero asset
+- widget behavior
 - database or embedding behavior
 
 ## Harness Note
 
-This follows the harness-sdlc control model: the requested conversational engineering improvement was promoted into Feature 026 with requirements, design, task checklist, bounded file scope, implementation, tests, and review status.
+This follows the harness-sdlc control model: the requested Glass Wall/vector observability improvement was promoted into Feature 027 with requirements, design, task checklist, bounded file scope, implementation, tests, and review status.
 
 ## Verification Required
 
@@ -76,19 +77,15 @@ Run locally before closing the feature:
 
 Manual frontend review required:
 
-- Open `/` and launch the widget.
-- Ask `agua`.
-- Confirm the assistant starts with a synthesis, not a numbered retrieval dump.
-- Confirm `Hallazgos clave` appears before evidence.
-- Confirm `Fuentes verificadas` is visible by default.
-- Confirm the evidence toggle starts as `Ocultar evidencia`.
-- Hide/show the evidence panel.
-- Expand/collapse individual citation cards.
-- Click a follow-up chip such as `Aguas residuales` or `Agua potable y saneamiento`.
-- Switch between `Palabras clave` and `Frase exacta`.
-- Test mobile width below 480px.
-- Confirm the widget still sends requests to `/api/chat`.
+- Open `/glass-wall.html`.
+- Run `municipalidad` in `híbrido` mode.
+- Confirm the graph still shows active evidence routing.
+- Confirm `Vector / Embedding` panel appears in the right rail.
+- Confirm vector runtime, hybrid mode, embedding state, store state, and safe observation are visible.
+- Confirm `Búsqueda vectorial`, `Embedding`, and `Almacén vectorial` nodes are more descriptive.
+- Confirm active/degraded edges have subtle motion.
 - Confirm reduced-motion preference disables decorative animation.
+- Confirm no secrets, DB URLs, prompts, or hidden reasoning are visible.
 
 ## Completed Features
 
@@ -114,10 +111,11 @@ Manual frontend review required:
 
 - 024-frontend-responsive-layout-stabilization: inactive review, pending local command verification
 - 025-query-experience-and-evidence-panel: inactive review, pending local command verification
-- 026-chat-answer-quality-and-evidence-composition: active review, pending local command verification
+- 026-chat-answer-quality-and-evidence-composition: inactive review, pending local command verification
+- 027-glass-wall-vector-runtime-insights: active review, pending local command verification
 
 ## Next Recommended Feature
 
-027-chat-empty-state-and-answer-policy-refinement
+028-glass-wall-evidence-drilldown-panel
 
 Status: not started
