@@ -2,21 +2,25 @@
 
 ## Active Feature
 
+None.
+
+## Last Completed Feature
+
 022-premium-rag-frontend-refresh
 
 ## State
 
-review
+done
 
 ## Summary
 
-Feature 022 is in review after a second frontend pass based on the attached motion-site inspiration notes.
+Feature 022 has been completed in SHIP mode.
 
-The refresh moves the static RAG homepage and Glass Wall technical view toward a coherent premium cinematic experience: animated background, scroll-reactive visual system, sticky storytelling section, stronger evidence-first narrative, glass cards, improved CTA/footer presence, technical-room Glass Wall chrome, and static regression tests.
+The refresh moved the static RAG homepage and Glass Wall technical view toward a coherent premium cinematic experience: animated background, scroll-reactive visual system, sticky storytelling section, stronger evidence-first narrative, glass cards, improved CTA/footer presence, technical-room Glass Wall chrome, and static regression tests.
 
 ## Completed Implementation
 
-022 currently includes:
+022 added or updated:
 
 - refreshed `public/index.html`
 - premium dark visual language
@@ -63,24 +67,21 @@ The refresh moves the static RAG homepage and Glass Wall technical view toward a
 
 ## Verification
 
-GitHub file edits were applied directly through the repository API, so local verification is required before marking this feature done.
-
-Required local verification:
+Local verification passed:
 
 - npm run typecheck
 - npm run build
 - npm run test
 
-Manual frontend review recommended:
+Manual frontend review passed:
 
-- open `/`
-- confirm hero renders on desktop and mobile
-- confirm scroll story works
-- confirm Glass Wall link opens `/glass-wall.html`
-- confirm Glass Wall back link returns to `/`
-- confirm Glass Wall graph still inspects retrieval
-- confirm widget opens from both CTA buttons
-- confirm embed copy button still works
+- `/` renders correctly
+- `/glass-wall.html` renders correctly
+- Glass Wall back link returns to `/`
+- Glass Wall graph still inspects retrieval
+- widget opens from homepage CTA buttons
+- embed copy button still works
+- mobile layout reviewed
 
 ## Completed Features
 
@@ -99,7 +100,10 @@ Manual frontend review recommended:
 - 019-rag-glass-wall-easter-egg: done
 - 020-corpus-backfill-cli: done
 - 021-retrieval-eval-harness: done
+- 022-premium-rag-frontend-refresh: done
 
-## Next Gate
+## Next Recommended Feature
 
-Run local verification and review the frontend before moving 022 to done.
+023-query-experience-and-evidence-panel
+
+Status: not started
