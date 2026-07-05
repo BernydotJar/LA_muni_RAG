@@ -14,7 +14,7 @@ review
 
 ## Summary
 
-Feature 024 is implemented in SHIP mode and remains in review pending local command verification. This cycle stabilizes the public homepage layout across laptop, tablet, and mobile viewports, then refines the premium shell after visual review: the navigation now behaves like a cinematic app rail, the hero returns to a readable side-by-side composition on laptop widths, and CSS-only motion adds polish without adding dependencies.
+Feature 024 is implemented in SHIP mode and remains in review pending local command verification. This cycle stabilizes the public homepage layout across laptop, tablet, and mobile viewports, refines the premium shell into a cinematic app rail, restores the hero to a readable side-by-side composition on laptop widths, and brings back stronger CSS-only orbital motion with a primary orb, secondary orb, orbital rings, aurora drift, and reduced-motion guardrails.
 
 ## Completed Implementation
 
@@ -31,12 +31,13 @@ Feature 024 is implemented in SHIP mode and remains in review pending local comm
 - Navigation feels like a premium cinematic app rail rather than a flat web header.
 - Hero content remains readable and side-by-side on laptop widths.
 - Antigua observation card remains bounded and does not clip panel nodes.
+- Orbital background motion is visible again: primary orb, secondary orb, rings, aurora drift, and gentle glow.
 - Floating panel cards use clamp/max-width constraints and CSS-only motion.
 - Cinematic story section flattens only at tablet/mobile widths.
 - Mobile layout turns absolute cards into readable stacked panels.
 - Anchor navigation uses scroll offsets so sticky nav does not obscure section headers.
 - Floating widget has safe-area offsets and should not cover critical copy/cards.
-- Spanish public UI, Antigua visual identity, Glass Wall link, `/widget.js`, copy snippet, and reduced-motion guardrails remain preserved.
+- Spanish public UI, Antigua visual identity, Glass Wall link, `/widget.js`, embed code display, and reduced-motion guardrails remain preserved.
 
 ## Preserved Non-Goals
 
@@ -69,13 +70,14 @@ Manual frontend review required:
 - `/` renders with the floating cinematic app rail, not a full-width flat header.
 - `/` keeps hero text readable before the visual system dominates the viewport.
 - `/` renders hero copy and Antigua observation card side-by-side at laptop width.
+- `/` shows stronger orbital motion behind the shell without covering the content.
 - `/` keeps story cards readable around the Relato section.
 - `/` keeps the Flujo section visible below sticky navigation when reached from the nav.
 - `/` keeps widget bubble away from critical text/card content.
-- `/` works at mobile widths with stacked panel cards.
+- `/` works at mobile widths with stacked panel cards and reduced orb intensity.
 - `/glass-wall.html` still renders as the Spanish technical room.
 - Widget opens from homepage CTA buttons.
-- Embed copy button still copies the `/widget.js` snippet.
+- Embed code still renders the `/widget.js` snippet; copy interaction should be manually verified.
 - Reduced motion remains protected.
 
 ## Completed Features
