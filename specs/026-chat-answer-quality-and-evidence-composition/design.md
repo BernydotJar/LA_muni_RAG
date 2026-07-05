@@ -8,7 +8,7 @@ The interaction pattern should be:
 
 1. Answer or synthesis first.
 2. Key findings second.
-3. Evidence progressively disclosed.
+3. Verified evidence visible by default.
 4. Follow-up chips for refinement.
 
 ## Files Allowed to Change
@@ -53,14 +53,17 @@ When `data.content` already contains a numbered source dump and `data.citations`
 - Short synthesis paragraph.
 - `Hallazgos clave` list with 2–4 bullets.
 - `Fuentes verificadas` summary row.
-- Collapsible evidence panel.
+- Evidence panel expanded by default.
+- Optional hide control for compact reading.
 - Follow-up chips.
 
 ### Evidence Panel
 
-Default state: collapsed.
+Default state: expanded.
 
-When expanded:
+Rationale: evidence is the core trust surface of the municipal assistant, so requiring an extra click adds friction. The toggle exists only to let users hide evidence after they have seen it.
+
+When visible:
 
 - show citation cards;
 - keep source badge;
@@ -81,9 +84,9 @@ Generate chips from detected themes:
 
 Fallback chips:
 
-- Ver fuentes
 - Buscar frase exacta
-- Reformular pregunta
+- Ver necesidades locales
+- Ver prioridades municipales
 
 ## No Backend Contract Change
 
