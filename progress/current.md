@@ -14,13 +14,16 @@ review
 
 ## Summary
 
-Feature 024 is implemented in SHIP mode and remains in review pending local command verification. This cycle stabilizes the public homepage layout across laptop, tablet, and mobile viewports, refines the premium shell into a cinematic app rail, restores the hero to a readable side-by-side composition on laptop widths, and brings back stronger CSS-only orbital motion with a primary orb, secondary orb, orbital rings, aurora drift, and reduced-motion guardrails.
+Feature 024 is implemented in SHIP mode and remains in review pending local command verification. This cycle stabilizes the public homepage layout across laptop, tablet, and mobile viewports, refines the premium shell into a cinematic app rail, restores the hero to a readable side-by-side composition on laptop widths, and converts the generated civic-building art direction into a production-safe SVG asset used by the homepage hero.
+
+The generated image was treated as approved visual direction, not as an untracked throwaway artifact. Because binary image upload is not part of the current connector workflow, the implementation translates that direction into `public/assets/civic-institutional-hero.svg`: a text-based, versioned, animated civic-palace visual with municipal/congress architecture, dome, arches, columns, plaza grid, orbital rings, aurora motion, and reduced-motion support.
 
 ## Completed Implementation
 
 024 updated:
 
 - `public/index.html`
+- `public/assets/civic-institutional-hero.svg`
 - `src/__tests__/frontend-responsive-layout.test.ts`
 - `feature_list.json`
 - `progress/current.md`
@@ -30,6 +33,8 @@ Feature 024 is implemented in SHIP mode and remains in review pending local comm
 - Homepage hero fits below the sticky navigation on common laptop viewports.
 - Navigation feels like a premium cinematic app rail rather than a flat web header.
 - Hero content remains readable and side-by-side on laptop widths.
+- Hero visual now reads as a municipal/congress civic institution, not an abstract line drawing.
+- Civic visual includes palace/municipality cues: façade, columns, arcos coloniales, campanario, cúpula, plaza, and orbital motion.
 - Antigua observation card remains bounded and does not clip panel nodes.
 - Orbital background motion is visible again: primary orb, secondary orb, rings, aurora drift, and gentle glow.
 - Floating panel cards use clamp/max-width constraints and CSS-only motion.
@@ -57,6 +62,10 @@ Feature 024 is implemented in SHIP mode and remains in review pending local comm
 - Glass Wall inspection behavior
 - widget implementation internals
 
+## Harness Note
+
+This follows the harness-sdlc principle that product increments should move through controlled feature scope, file boundaries, verification, and review rather than random visual edits. The generated image is now encoded as a versioned frontend asset and protected by a regression test.
+
 ## Verification Required
 
 Run locally before closing the feature:
@@ -69,8 +78,9 @@ Manual frontend review required:
 
 - `/` renders with the floating cinematic app rail, not a full-width flat header.
 - `/` keeps hero text readable before the visual system dominates the viewport.
-- `/` renders hero copy and Antigua observation card side-by-side at laptop width.
-- `/` shows stronger orbital motion behind the shell without covering the content.
+- `/` renders hero copy and civic palace visual side-by-side at laptop width.
+- `/` clearly reads as municipal/congress architecture, not abstract geometry.
+- `/` shows stronger orbital motion behind and inside the shell without covering the content.
 - `/` keeps story cards readable around the Relato section.
 - `/` keeps the Flujo section visible below sticky navigation when reached from the nav.
 - `/` keeps widget bubble away from critical text/card content.
