@@ -26,7 +26,6 @@
       }
 
       * { box-sizing: border-box; }
-
       body {
         margin: 0;
         min-height: 100vh;
@@ -39,7 +38,6 @@
           linear-gradient(180deg, #070711 0%, #090918 42%, #070712 100%);
         overflow-x: hidden;
       }
-
       body::before {
         content: "";
         position: fixed;
@@ -53,7 +51,6 @@
         mask-image: linear-gradient(to bottom, black 0%, transparent 92%);
         z-index: -3;
       }
-
       body::after {
         content: "";
         position: fixed;
@@ -74,662 +71,167 @@
         opacity: 0.82;
         animation: glass-orb 18s linear infinite;
       }
-
       @keyframes glass-orb { to { transform: rotate(360deg); filter: hue-rotate(24deg); } }
 
-      main {
-        position: relative;
-        width: min(1400px, calc(100vw - 28px));
-        margin: 0 auto;
-        padding: 28px 0 46px;
-      }
-
-      .topbar {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        gap: 16px;
-        margin-bottom: 22px;
-      }
-
-      .back-link,
-      .room-pill {
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        min-height: 38px;
-        padding: 0 13px;
-        border-radius: 999px;
-        color: var(--text);
-        text-decoration: none;
-        border: 1px solid rgba(255,255,255,0.1);
-        background: rgba(255,255,255,0.045);
-        backdrop-filter: blur(14px);
-        font: 800 11px/1 var(--mono);
-        letter-spacing: 0.05em;
-        text-transform: uppercase;
-      }
-
+      main { position: relative; width: min(1400px, calc(100vw - 28px)); margin: 0 auto; padding: 28px 0 46px; }
+      .topbar { display: flex; justify-content: space-between; align-items: center; gap: 16px; margin-bottom: 22px; }
+      .back-link, .room-pill { display: inline-flex; align-items: center; gap: 8px; min-height: 38px; padding: 0 13px; border-radius: 999px; color: var(--text); text-decoration: none; border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.045); backdrop-filter: blur(14px); font: 800 11px/1 var(--mono); letter-spacing: 0.05em; text-transform: uppercase; }
       .room-pill { color: var(--cyan); }
       .back-link:hover { border-color: rgba(34,211,238,0.38); box-shadow: 0 0 26px rgba(34,211,238,0.12); }
 
-      .hero {
-        display: grid;
-        grid-template-columns: minmax(0, 1fr) minmax(280px, 0.44fr);
-        gap: 26px;
-        align-items: end;
-        margin-bottom: 18px;
-        padding: 28px;
-        border: 1px solid rgba(255,255,255,0.08);
-        border-radius: 32px;
-        background:
-          radial-gradient(circle at 78% 18%, rgba(34,211,238,0.16), transparent 28rem),
-          linear-gradient(135deg, rgba(255,255,255,0.075), rgba(255,255,255,0.025));
-        box-shadow: 0 28px 90px rgba(0,0,0,0.28);
-        backdrop-filter: blur(18px);
-      }
-
+      .hero { display: grid; grid-template-columns: minmax(0, 1fr) minmax(280px, 0.44fr); gap: 26px; align-items: end; margin-bottom: 18px; padding: 28px; border: 1px solid rgba(255,255,255,0.08); border-radius: 32px; background: radial-gradient(circle at 78% 18%, rgba(34,211,238,0.16), transparent 28rem), linear-gradient(135deg, rgba(255,255,255,0.075), rgba(255,255,255,0.025)); box-shadow: 0 28px 90px rgba(0,0,0,0.28); backdrop-filter: blur(18px); }
       .eyebrow { color: var(--hot); font: 800 11px/1.2 var(--mono); letter-spacing: 0.16em; text-transform: uppercase; }
       h1 { margin: 10px 0 0; max-width: 940px; font-size: clamp(38px, 6vw, 84px); line-height: 0.9; letter-spacing: -0.075em; }
-      h1 span {
-        display: block;
-        background: linear-gradient(115deg, #fff 0%, #dbeafe 26%, #a78bfa 58%, #22d3ee 100%);
-        -webkit-background-clip: text;
-        background-clip: text;
-        -webkit-text-fill-color: transparent;
-      }
+      h1 span { display: block; background: linear-gradient(115deg, #fff 0%, #dbeafe 26%, #a78bfa 58%, #22d3ee 100%); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
       .subtitle { max-width: 880px; margin: 16px 0 0; color: #c9bfd2; font-size: 15px; line-height: 1.65; }
-
-      .hero-note {
-        padding: 18px;
-        border: 1px solid rgba(255,255,255,0.08);
-        border-radius: 24px;
-        background: rgba(5,5,16,0.58);
-        color: var(--muted);
-        font-size: 13px;
-        line-height: 1.55;
-      }
+      .hero-note { padding: 18px; border: 1px solid rgba(255,255,255,0.08); border-radius: 24px; background: rgba(5,5,16,0.58); color: var(--muted); font-size: 13px; line-height: 1.55; }
       .hero-note b { display: block; color: var(--cyan); margin-bottom: 8px; font: 900 11px/1 var(--mono); text-transform: uppercase; letter-spacing: 0.12em; }
-
-      .heritage-mark {
-        display: block;
-        width: 100%;
-        margin-top: 12px;
-        opacity: 0.8;
-        filter: drop-shadow(0 0 20px rgba(34,211,238,0.16));
-      }
+      .heritage-mark { display: block; width: 100%; margin-top: 12px; opacity: 0.8; filter: drop-shadow(0 0 20px rgba(34,211,238,0.16)); }
       .heritage-mark path, .heritage-mark line { fill: none; stroke: rgba(226,232,240,0.82); stroke-linecap: round; stroke-linejoin: round; stroke-width: 1.4; }
       .heritage-mark .accent { stroke: rgba(34,211,238,0.82); }
       .heritage-mark .warm { stroke: rgba(245,196,83,0.68); }
 
-      .controls {
-        display: grid;
-        grid-template-columns: 1fr 170px 142px;
-        gap: 10px;
-        align-items: center;
-        padding: 12px;
-        margin-bottom: 16px;
-        border: 1px solid rgba(255, 255, 255, 0.12);
-        border-radius: 24px;
-        background: var(--panel);
-        box-shadow: 0 24px 70px rgba(0, 0, 0, 0.25);
-        backdrop-filter: blur(18px);
-      }
-
-      input, select, button {
-        height: 46px;
-        border: 1px solid rgba(255, 255, 255, 0.14);
-        border-radius: 14px;
-        background: rgba(255, 255, 255, 0.04);
-        color: var(--text);
-        font: 600 14px/1 var(--sans);
-      }
-
+      .controls { display: grid; grid-template-columns: 1fr 170px 142px; gap: 10px; align-items: center; padding: 12px; margin-bottom: 16px; border: 1px solid rgba(255,255,255,0.12); border-radius: 24px; background: var(--panel); box-shadow: 0 24px 70px rgba(0,0,0,0.25); backdrop-filter: blur(18px); }
+      input, select, button { height: 46px; border: 1px solid rgba(255,255,255,0.14); border-radius: 14px; background: rgba(255,255,255,0.04); color: var(--text); font: 600 14px/1 var(--sans); }
       input { padding: 0 14px; outline: none; }
       select { padding: 0 12px; }
-      button {
-        cursor: pointer;
-        border-color: rgba(255, 45, 157, 0.7);
-        background: linear-gradient(135deg, rgba(255, 45, 157, 0.95), rgba(124, 58, 237, 0.82));
-        font-weight: 800;
-      }
+      button { cursor: pointer; border-color: rgba(255,45,157,0.7); background: linear-gradient(135deg, rgba(255,45,157,0.95), rgba(124,58,237,0.82)); font-weight: 800; }
 
-      .dashboard {
-        display: grid;
-        grid-template-columns: minmax(0, 1.95fr) minmax(330px, 0.8fr);
-        gap: 16px;
-        align-items: start;
-      }
-
-      .glass-card, .side-card {
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        border-radius: 26px;
-        overflow: hidden;
-        background: rgba(10, 10, 24, 0.78);
-        box-shadow: 0 22px 70px rgba(0, 0, 0, 0.24);
-        backdrop-filter: blur(18px);
-      }
-
-      .card-header {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding: 14px 16px;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-        color: #dfd6e8;
-        font: 700 11px/1 var(--mono);
-        letter-spacing: 0.12em;
-        text-transform: uppercase;
-      }
-
-      .status-pill { display: inline-flex; align-items: center; gap: 7px; padding: 7px 10px; border-radius: 999px; color: var(--muted); background: rgba(255, 255, 255, 0.055); font: 700 11px/1 var(--mono); letter-spacing: 0; }
+      .dashboard { display: grid; grid-template-columns: minmax(0, 1.95fr) minmax(330px, 0.8fr); gap: 16px; align-items: start; }
+      .glass-card, .side-card { border: 1px solid rgba(255,255,255,0.1); border-radius: 26px; overflow: hidden; background: rgba(10,10,24,0.78); box-shadow: 0 22px 70px rgba(0,0,0,0.24); backdrop-filter: blur(18px); }
+      .card-header { display: flex; align-items: center; justify-content: space-between; padding: 14px 16px; border-bottom: 1px solid rgba(255,255,255,0.08); color: #dfd6e8; font: 700 11px/1 var(--mono); letter-spacing: 0.12em; text-transform: uppercase; }
+      .status-pill { display: inline-flex; align-items: center; gap: 7px; padding: 7px 10px; border-radius: 999px; color: var(--muted); background: rgba(255,255,255,0.055); font: 700 11px/1 var(--mono); letter-spacing: 0; }
       .status-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--muted); }
       .status-pill.active .status-dot { background: var(--hot); box-shadow: 0 0 18px var(--hot); }
       .status-pill.warn .status-dot { background: var(--warn); box-shadow: 0 0 18px var(--warn); }
       .status-pill.error .status-dot { background: var(--error); box-shadow: 0 0 18px var(--error); }
 
-      #glass-wall-graph {
-        position: relative;
-        overflow: hidden;
-        min-height: 320px;
-        background:
-          linear-gradient(rgba(255, 255, 255, 0.022) 1px, transparent 1px),
-          linear-gradient(90deg, rgba(255, 255, 255, 0.022) 1px, transparent 1px),
-          radial-gradient(circle at 50% 54%, rgba(255, 45, 157, 0.08), transparent 48%),
-          radial-gradient(circle at 70% 18%, rgba(34, 211, 238, 0.08), transparent 36%);
-        background-size: 28px 28px, 28px 28px, auto, auto;
-      }
-
-      .graph-board { position: relative; width: 1120px; height: 700px; transform-origin: 0 0; }
+      #glass-wall-graph { position: relative; overflow: hidden; min-height: 320px; background: linear-gradient(rgba(255,255,255,0.022) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.022) 1px, transparent 1px), radial-gradient(circle at 50% 54%, rgba(255,45,157,0.08), transparent 48%), radial-gradient(circle at 70% 18%, rgba(34,211,238,0.08), transparent 36%); background-size: 28px 28px, 28px 28px, auto, auto; }
+      #glass-wall-graph::before { content: ""; position: absolute; inset: 0; pointer-events: none; background: linear-gradient(110deg, transparent 0 42%, rgba(34,211,238,0.08) 48%, rgba(255,45,157,0.10) 52%, transparent 60% 100%); transform: translateX(-65%); animation: graph-scan 7s ease-in-out infinite; z-index: 1; }
+      #glass-wall-graph::after { content: ""; position: absolute; left: 260px; top: 58px; width: 320px; height: 520px; border-radius: 999px; pointer-events: none; background: radial-gradient(circle, rgba(34,211,238,0.16), transparent 64%); filter: blur(8px); opacity: 0.72; animation: vector-breathe 5s ease-in-out infinite alternate; z-index: 1; }
+      @keyframes graph-scan { 0%, 18% { transform: translateX(-70%); opacity: 0; } 42% { opacity: 0.9; } 100% { transform: translateX(72%); opacity: 0; } }
+      @keyframes vector-breathe { from { opacity: 0.36; transform: scale(0.96); } to { opacity: 0.86; transform: scale(1.05); } }
+      .graph-board { position: relative; width: 1120px; height: 700px; transform-origin: 0 0; z-index: 2; }
       svg.edges { position: absolute; inset: 0; width: 1120px; height: 700px; pointer-events: none; }
       .edge { stroke: var(--line); stroke-width: 0.95; }
-      .edge.active { stroke: var(--line-hot); stroke-width: 1.55; filter: drop-shadow(0 0 6px rgba(255, 45, 157, 0.72)); }
-      .edge.warn { stroke: rgba(246, 196, 83, 0.72); stroke-width: 1.35; }
-      .edge.error { stroke: rgba(255, 107, 107, 0.78); stroke-width: 1.35; }
+      .edge.active { stroke: var(--line-hot); stroke-width: 1.55; stroke-dasharray: 9 9; animation: edge-flow 1.6s linear infinite; filter: drop-shadow(0 0 6px rgba(255,45,157,0.72)); }
+      .edge.warn { stroke: rgba(246,196,83,0.72); stroke-width: 1.35; stroke-dasharray: 8 10; animation: edge-flow 2.8s linear infinite; }
+      .edge.error { stroke: rgba(255,107,107,0.78); stroke-width: 1.35; }
+      @keyframes edge-flow { to { stroke-dashoffset: -36; } }
 
-      .node {
-        position: absolute;
-        width: 166px;
-        min-height: 58px;
-        transform: translate(-50%, -50%);
-        display: grid;
-        grid-template-columns: auto 1fr;
-        grid-template-areas: "dot label" "dot value";
-        column-gap: 9px;
-        align-items: center;
-        padding: 10px 11px;
-        color: #ded5e7;
-        text-align: left;
-        border-radius: 16px;
-        border: 1px solid var(--node-border);
-        background:
-          linear-gradient(180deg, rgba(255,255,255,0.065), rgba(255,255,255,0.02)),
-          var(--node);
-        box-shadow: 0 16px 42px rgba(0,0,0,0.28), inset 0 1px 0 rgba(255,255,255,0.07);
-        backdrop-filter: blur(14px);
-      }
+      .node { position: absolute; width: 166px; min-height: 58px; transform: translate(-50%, -50%); display: grid; grid-template-columns: auto 1fr; grid-template-areas: "dot label" "dot value"; column-gap: 9px; align-items: center; padding: 10px 11px; color: #ded5e7; text-align: left; border-radius: 16px; border: 1px solid var(--node-border); background: linear-gradient(180deg, rgba(255,255,255,0.065), rgba(255,255,255,0.02)), var(--node); box-shadow: 0 16px 42px rgba(0,0,0,0.28), inset 0 1px 0 rgba(255,255,255,0.07); backdrop-filter: blur(14px); }
       .node-core { grid-area: dot; width: 9px; height: 9px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.34); background: rgba(185,176,204,0.32); box-shadow: 0 0 10px rgba(255,255,255,0.08); }
-      .node.active { border-color: rgba(255, 45, 157, 0.74); box-shadow: 0 16px 42px rgba(0,0,0,0.28), 0 0 20px rgba(255,45,157,0.24); }
-      .node.active .node-core { border-color: var(--hot); background: var(--hot); box-shadow: 0 0 14px rgba(255, 45, 157, 0.82); }
-      .node.warn { border-color: rgba(246, 196, 83, 0.72); box-shadow: 0 16px 42px rgba(0,0,0,0.28), 0 0 18px rgba(246,196,83,0.18); }
-      .node.warn .node-core { border-color: var(--warn); background: var(--warn); box-shadow: 0 0 14px rgba(246, 196, 83, 0.68); }
-      .node.error { border-color: rgba(255, 107, 107, 0.72); box-shadow: 0 16px 42px rgba(0,0,0,0.28), 0 0 18px rgba(255,107,107,0.2); }
-      .node.error .node-core { border-color: var(--error); background: var(--error); box-shadow: 0 0 14px rgba(255, 107, 107, 0.68); }
-      .node.ok { border-color: rgba(134, 239, 172, 0.64); box-shadow: 0 16px 42px rgba(0,0,0,0.28), 0 0 18px rgba(134,239,172,0.18); }
-      .node.ok .node-core { border-color: var(--ok); background: var(--ok); box-shadow: 0 0 14px rgba(134, 239, 172, 0.58); }
+      .node.active { border-color: rgba(255,45,157,0.74); box-shadow: 0 16px 42px rgba(0,0,0,0.28), 0 0 20px rgba(255,45,157,0.24); }
+      .node.active .node-core { border-color: var(--hot); background: var(--hot); box-shadow: 0 0 14px rgba(255,45,157,0.82); animation: node-pulse 1.9s ease-in-out infinite; }
+      .node.warn { border-color: rgba(246,196,83,0.72); box-shadow: 0 16px 42px rgba(0,0,0,0.28), 0 0 18px rgba(246,196,83,0.18); }
+      .node.warn .node-core { border-color: var(--warn); background: var(--warn); box-shadow: 0 0 14px rgba(246,196,83,0.68); animation: node-pulse 2.8s ease-in-out infinite; }
+      .node.error { border-color: rgba(255,107,107,0.72); }
+      .node.error .node-core { border-color: var(--error); background: var(--error); }
+      .node.ok { border-color: rgba(134,239,172,0.64); }
+      .node.ok .node-core { border-color: var(--ok); background: var(--ok); box-shadow: 0 0 14px rgba(134,239,172,0.58); }
+      .node.vector-focus { box-shadow: 0 16px 42px rgba(0,0,0,0.28), 0 0 24px rgba(34,211,238,0.20), inset 0 1px 0 rgba(255,255,255,0.08); }
+      .node.vector-focus::after { content: ""; position: absolute; inset: -8px; border-radius: 22px; border: 1px solid rgba(34,211,238,0.14); opacity: 0.7; animation: vector-ring 3.2s ease-in-out infinite; pointer-events: none; }
+      @keyframes node-pulse { 50% { transform: scale(1.35); } }
+      @keyframes vector-ring { 50% { transform: scale(1.08); opacity: 0.2; } }
       .node-label { grid-area: label; display: block; color: inherit; font: 900 10px/1 var(--mono); text-transform: uppercase; letter-spacing: 0.08em; text-shadow: 0 1px 8px #000; }
       .node.active .node-label { color: var(--hot); }
       .node.warn .node-label { color: var(--warn); }
       .node.error .node-label { color: var(--error); }
       .node.ok .node-label { color: var(--ok); }
-      .node-value { grid-area: value; display: block; color: rgba(201, 191, 210, 0.74); font: 600 9px/1.25 var(--mono); overflow-wrap: anywhere; text-shadow: 0 1px 8px #000; margin-top: 4px; }
+      .node-value { grid-area: value; display: block; color: rgba(201,191,210,0.74); font: 600 9px/1.25 var(--mono); overflow-wrap: anywhere; text-shadow: 0 1px 8px #000; margin-top: 4px; }
 
       .graph-title { position: absolute; left: 26px; top: 22px; color: var(--muted); font: 800 11px/1 var(--mono); letter-spacing: 0.12em; text-transform: uppercase; }
       .sense-level { position: absolute; left: 50%; bottom: 26px; transform: translateX(-50%); color: #fff; font: 900 18px/1 var(--sans); letter-spacing: -0.04em; }
       .sense-level b { color: var(--hot); }
-      .axis-label { position: absolute; color: rgba(255, 255, 255, 0.46); font: 800 10px/1 var(--mono); letter-spacing: 0.16em; text-transform: uppercase; }
-
-      .graph-legend { position: absolute; right: 26px; top: 24px; display: grid; grid-template-columns: repeat(2, auto); gap: 8px 14px; padding: 11px 12px; border: 1px solid rgba(255, 255, 255, 0.09); border-radius: 16px; background: rgba(0, 0, 0, 0.3); backdrop-filter: blur(12px); z-index: 3; }
+      .axis-label { position: absolute; color: rgba(255,255,255,0.46); font: 800 10px/1 var(--mono); letter-spacing: 0.16em; text-transform: uppercase; }
+      .graph-legend { position: absolute; right: 26px; top: 24px; display: grid; grid-template-columns: repeat(2, auto); gap: 8px 14px; padding: 11px 12px; border: 1px solid rgba(255,255,255,0.09); border-radius: 16px; background: rgba(0,0,0,0.3); backdrop-filter: blur(12px); z-index: 3; }
       .legend-item { display: inline-flex; align-items: center; gap: 7px; color: #c9bfd2; font: 800 10px/1 var(--mono); white-space: nowrap; }
       .legend-dot { width: 9px; height: 9px; border-radius: 50%; background: var(--muted); box-shadow: 0 0 10px rgba(255,255,255,0.1); }
       .legend-dot.hot { background: var(--hot); box-shadow: 0 0 14px var(--hot); }
       .legend-dot.warn { background: var(--warn); box-shadow: 0 0 14px var(--warn); }
       .legend-dot.ok { background: var(--ok); box-shadow: 0 0 14px var(--ok); }
-      .legend-dot.dim { background: rgba(185, 176, 204, 0.35); }
+      .legend-dot.dim { background: rgba(185,176,204,0.35); }
 
       .side-stack { display: grid; gap: 16px; }
-      #glass-wall-results, #glass-wall-runtime, #glass-wall-safety, #glass-wall-legend-panel { padding: 15px; }
+      #glass-wall-results, #glass-wall-runtime, #glass-wall-vector, #glass-wall-safety, #glass-wall-legend-panel { padding: 15px; }
       .metric-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
-      .metric { padding: 12px; border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 16px; background: rgba(255, 255, 255, 0.045); }
+      .metric, .vector-row { padding: 12px; border: 1px solid rgba(255,255,255,0.08); border-radius: 16px; background: rgba(255,255,255,0.045); }
       .metric strong { display: block; font-size: 24px; letter-spacing: -0.04em; }
-      .metric span { display: block; margin-top: 4px; color: var(--muted); font: 700 10px/1 var(--mono); text-transform: uppercase; }
+      .metric span, .vector-row span { display: block; margin-top: 4px; color: var(--muted); font: 700 10px/1.2 var(--mono); text-transform: uppercase; }
+      .vector-grid { display: grid; gap: 9px; }
+      .vector-row b { display: block; color: #f5eafa; font: 850 12px/1.25 var(--mono); }
+      .vector-row.warn { border-color: rgba(246,196,83,0.22); background: rgba(246,196,83,0.05); }
+      .vector-row.active { border-color: rgba(34,211,238,0.24); background: rgba(34,211,238,0.05); }
       .evidence-list { display: grid; gap: 9px; margin-top: 12px; }
-      .evidence-item { padding: 10px; border: 1px solid rgba(255, 255, 255, 0.09); border-radius: 14px; background: rgba(255, 255, 255, 0.035); }
+      .evidence-item { padding: 10px; border: 1px solid rgba(255,255,255,0.09); border-radius: 14px; background: rgba(255,255,255,0.035); }
       .evidence-item b { display: block; margin-bottom: 6px; color: #f5eafa; font: 800 11px/1.2 var(--mono); }
       .evidence-item p, .safe-copy { margin: 0; color: #bbb0c7; font-size: 12px; line-height: 1.45; }
       .footer-note { margin-top: 12px; color: var(--muted); font: 700 10px/1.45 var(--mono); }
 
-      @media (max-width: 920px) {
-        main { width: min(100vw - 12px, 720px); padding-top: 18px; }
-        .topbar, .hero { grid-template-columns: 1fr; flex-direction: column; align-items: flex-start; }
-        .controls { grid-template-columns: 1fr; }
-        .dashboard { grid-template-columns: 1fr; }
-      }
-
-      @media (prefers-reduced-motion: reduce) {
-        *, *::before, *::after { animation: none !important; }
-      }
+      @media (max-width: 920px) { main { width: min(100vw - 12px, 720px); padding-top: 18px; } .topbar, .hero { grid-template-columns: 1fr; flex-direction: column; align-items: flex-start; } .controls { grid-template-columns: 1fr; } .dashboard { grid-template-columns: 1fr; } }
+      @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition-duration: 0.01ms !important; } }
     </style>
   </head>
   <body>
     <main>
-      <div class="topbar">
-        <a class="back-link" href="/">← Volver al inicio</a>
-        <span class="room-pill">Sala técnica · salida segura observable</span>
-      </div>
-
-      <section class="hero">
-        <div>
-          <div class="eyebrow">RAG Glass Wall · Vista técnica</div>
-          <h1>Sala de observación para <span>recuperación documental.</span></h1>
-          <p class="subtitle">
-            Vista técnica en español para observar el comportamiento RAG: señal de consulta, rutas de recuperación,
-            evidencia candidata, preparación de citas, estado de respuesta y salud sanitizada del sistema.
-          </p>
-        </div>
-        <aside class="hero-note">
-          <b>Sin caja negra</b>
-          Esta sala mantiene la inspección técnica sin mostrar secretos, credenciales, prompts privados ni razonamiento oculto.
-          <svg class="heritage-mark" viewBox="0 0 260 90" aria-label="Línea arquitectónica abstracta con arcos coloniales de Antigua Guatemala">
-            <path class="warm" d="M18 76H242" />
-            <path d="M28 76V38h204v38" />
-            <path d="M40 38h180" />
-            <path class="accent" d="M68 76V58c0-13 10-23 23-23s23 10 23 23v18" />
-            <path d="M144 76V58c0-13 10-23 23-23s23 10 23 23v18" />
-            <path d="M52 38l8-16h28l8 16" />
-            <path class="accent" d="M184 31c8-20 34-22 45-6" />
-            <line x1="214" y1="24" x2="214" y2="10" />
-          </svg>
-        </aside>
-      </section>
-
-      <form class="controls" id="glass-wall-form">
-        <input id="glass-wall-query" name="q" autocomplete="off" placeholder="Escribe una consulta jurídico-municipal..." value="municipalidad" />
-        <select id="glass-wall-mode" name="mode" aria-label="Modo de recuperación">
-          <option value="hybrid">híbrido</option>
-          <option value="keyword">búsqueda léxica</option>
-          <option value="phrase">frase exacta</option>
-        </select>
-        <button type="submit">Inspeccionar</button>
-      </form>
-
+      <div class="topbar"><a class="back-link" href="/">← Volver al inicio</a><span class="room-pill">Sala técnica · salida segura observable</span></div>
+      <section class="hero"><div><div class="eyebrow">RAG Glass Wall · Vista técnica</div><h1>Sala de observación para <span>recuperación documental.</span></h1><p class="subtitle">Vista técnica en español para observar el comportamiento RAG: señal de consulta, rutas de recuperación, evidencia candidata, preparación de citas, estado de respuesta y salud sanitizada del sistema.</p></div><aside class="hero-note"><b>Sin caja negra</b>Esta sala mantiene la inspección técnica sin mostrar secretos, credenciales, prompts privados ni razonamiento oculto.<svg class="heritage-mark" viewBox="0 0 260 90" aria-label="Línea arquitectónica abstracta con arcos coloniales de Antigua Guatemala"><path class="warm" d="M18 76H242"/><path d="M28 76V38h204v38"/><path d="M40 38h180"/><path class="accent" d="M68 76V58c0-13 10-23 23-23s23 10 23 23v18"/><path d="M144 76V58c0-13 10-23 23-23s23 10 23 23v18"/><path d="M52 38l8-16h28l8 16"/><path class="accent" d="M184 31c8-20 34-22 45-6"/><line x1="214" y1="24" x2="214" y2="10"/></svg></aside></section>
+      <form class="controls" id="glass-wall-form"><input id="glass-wall-query" name="q" autocomplete="off" placeholder="Escribe una consulta jurídico-municipal..." value="municipalidad"/><select id="glass-wall-mode" name="mode" aria-label="Modo de recuperación"><option value="hybrid">híbrido</option><option value="keyword">búsqueda léxica</option><option value="phrase">frase exacta</option></select><button type="submit">Inspeccionar</button></form>
       <section class="dashboard">
-        <article class="glass-card">
-          <div class="card-header">
-            <span>Mapa de señales</span>
-            <span class="status-pill" id="glass-wall-status"><span class="status-dot"></span><span>inactivo</span></span>
-          </div>
-          <div id="glass-wall-graph">
-            <div class="graph-board" id="glass-wall-board">
-              <div class="graph-title">Ruta observable de consulta</div>
-              <div class="graph-legend" id="glass-wall-legend">
-                <div class="legend-item"><span class="legend-dot hot"></span>ruta activa</div>
-                <div class="legend-item"><span class="legend-dot warn"></span>degradado</div>
-                <div class="legend-item"><span class="legend-dot ok"></span>salida segura</div>
-                <div class="legend-item"><span class="legend-dot dim"></span>inactivo</div>
-              </div>
-              <div class="axis-label" style="left: 105px; top: 635px">entrada</div>
-              <div class="axis-label" style="left: 350px; top: 635px">recuperación</div>
-              <div class="axis-label" style="left: 635px; top: 635px">evidencia</div>
-              <div class="axis-label" style="left: 910px; top: 635px">salida</div>
-              <svg class="edges" id="glass-wall-edges" viewBox="0 0 1120 700" aria-hidden="true"></svg>
-
-              <div class="node active" id="node-query" data-node="query" data-x="105" data-y="130"><span class="node-core"></span><span class="node-label">consulta</span><span class="node-value">en espera</span></div>
-              <div class="node" id="node-mode" data-node="mode" data-x="105" data-y="240"><span class="node-core"></span><span class="node-label">modo</span><span class="node-value">híbrido</span></div>
-              <div class="node" id="node-limit" data-node="limit" data-x="105" data-y="350"><span class="node-core"></span><span class="node-label">límite</span><span class="node-value">5</span></div>
-              <div class="node" id="node-corpus" data-node="corpus" data-x="105" data-y="460"><span class="node-core"></span><span class="node-label">corpus</span><span class="node-value">API segura</span></div>
-              <div class="node ok" id="node-safety" data-node="safety" data-x="105" data-y="570"><span class="node-core"></span><span class="node-label">seguridad</span><span class="node-value">sin secretos</span></div>
-
-              <div class="node" id="node-phrase" data-node="phrase" data-x="365" data-y="105"><span class="node-core"></span><span class="node-label">frase exacta</span><span class="node-value">exacta</span></div>
-              <div class="node" id="node-keyword" data-node="keyword" data-x="365" data-y="195"><span class="node-core"></span><span class="node-label">búsqueda léxica</span><span class="node-value">texto</span></div>
-              <div class="node" id="node-vector" data-node="vector" data-x="365" data-y="285"><span class="node-core"></span><span class="node-label">búsqueda vectorial</span><span class="node-value">semántica</span></div>
-              <div class="node" id="node-embedding" data-node="embedding" data-x="365" data-y="375"><span class="node-core"></span><span class="node-label">embedding</span><span class="node-value">consulta</span></div>
-              <div class="node" id="node-db" data-node="db" data-x="365" data-y="465"><span class="node-core"></span><span class="node-label">almacén vectorial</span><span class="node-value">store</span></div>
-              <div class="node" id="node-runtime" data-node="runtime" data-x="365" data-y="555"><span class="node-core"></span><span class="node-label">sistema</span><span class="node-value">desconocido</span></div>
-
-              <div class="node" id="node-evidence-1" data-node="evidence" data-x="650" data-y="80"><span class="node-core"></span><span class="node-label">evidencia 1</span><span class="node-value">ninguna</span></div>
-              <div class="node" id="node-evidence-2" data-node="evidence" data-x="650" data-y="165"><span class="node-core"></span><span class="node-label">evidencia 2</span><span class="node-value">ninguna</span></div>
-              <div class="node" id="node-evidence-3" data-node="evidence" data-x="650" data-y="250"><span class="node-core"></span><span class="node-label">evidencia 3</span><span class="node-value">ninguna</span></div>
-              <div class="node" id="node-evidence-4" data-node="evidence" data-x="650" data-y="335"><span class="node-core"></span><span class="node-label">evidencia 4</span><span class="node-value">ninguna</span></div>
-              <div class="node" id="node-evidence-5" data-node="evidence" data-x="650" data-y="420"><span class="node-core"></span><span class="node-label">evidencia 5</span><span class="node-value">ninguna</span></div>
-              <div class="node" id="node-citation" data-node="citation" data-x="650" data-y="515"><span class="node-core"></span><span class="node-label">cita</span><span class="node-value">no lista</span></div>
-              <div class="node" id="node-score" data-node="score" data-x="650" data-y="610"><span class="node-core"></span><span class="node-label">ranking</span><span class="node-value">ordenado</span></div>
-
-              <div class="node" id="node-answer" data-node="answer" data-x="930" data-y="160"><span class="node-core"></span><span class="node-label">respuesta</span><span class="node-value">inactiva</span></div>
-              <div class="node" id="node-not-found" data-node="not_found" data-x="930" data-y="305"><span class="node-core"></span><span class="node-label">sin hallazgos</span><span class="node-value">inactivo</span></div>
-              <div class="node" id="node-degraded" data-node="degraded" data-x="930" data-y="450"><span class="node-core"></span><span class="node-label">degradado</span><span class="node-value">inactivo</span></div>
-              <div class="node ok" id="node-audit" data-node="audit" data-x="930" data-y="585"><span class="node-core"></span><span class="node-label">auditoría</span><span class="node-value">traza segura</span></div>
-
-              <div class="sense-level" id="sense-level"><b>Nivel 1</b> / 6 · sin señal</div>
-            </div>
-          </div>
-        </article>
-
-        <aside class="side-stack">
-          <article class="side-card">
-            <div class="card-header">Resultados</div>
-            <div id="glass-wall-results">
-              <div class="metric-grid">
-                <div class="metric"><strong id="metric-evidence-count">0</strong><span>evidencias</span></div>
-                <div class="metric"><strong id="metric-answer-status">inactivo</strong><span>estado de respuesta</span></div>
-              </div>
-              <div class="evidence-list" id="evidence-list"></div>
-            </div>
-          </article>
-
-          <article class="side-card">
-            <div class="card-header">Estado del sistema</div>
-            <div id="glass-wall-runtime">
-              <p class="safe-copy" id="runtime-copy">El estado del sistema todavía no ha sido cargado.</p>
-            </div>
-          </article>
-
-          <article class="side-card">
-            <div class="card-header">Leyenda</div>
-            <div id="glass-wall-legend-panel">
-              <p class="safe-copy">
-                Magenta indica que una ruta activa aportó al resultado actual. Amarillo indica estado degradado o configuración parcial. Verde indica seguridad y auditoría. Gris indica ruta inactiva.
-              </p>
-            </div>
-          </article>
-
-          <article class="side-card">
-            <div class="card-header">Contrato de seguridad</div>
-            <div id="glass-wall-safety">
-              <p class="safe-copy">
-                Esta vista muestra únicamente salida segura de la API: estado, conteos, tipos de fuente, citas,
-                fragmentos y salud sanitizada del sistema. No muestra prompts, credenciales, llaves de proveedor,
-                URLs de base de datos, mensajes internos del modelo ni razonamiento oculto.
-              </p>
-              <p class="footer-note">Ruta directa: /glass-wall.html</p>
-            </div>
-          </article>
-        </aside>
+        <article class="glass-card"><div class="card-header"><span>Mapa de señales</span><span class="status-pill" id="glass-wall-status"><span class="status-dot"></span><span>inactivo</span></span></div><div id="glass-wall-graph"><div class="graph-board" id="glass-wall-board"><div class="graph-title">Ruta observable de consulta</div><div class="graph-legend" id="glass-wall-legend"><div class="legend-item"><span class="legend-dot hot"></span>ruta activa</div><div class="legend-item"><span class="legend-dot warn"></span>degradado</div><div class="legend-item"><span class="legend-dot ok"></span>salida segura</div><div class="legend-item"><span class="legend-dot dim"></span>inactivo</div></div><div class="axis-label" style="left:105px;top:635px">entrada</div><div class="axis-label" style="left:350px;top:635px">recuperación</div><div class="axis-label" style="left:635px;top:635px">evidencia</div><div class="axis-label" style="left:910px;top:635px">salida</div><svg class="edges" id="glass-wall-edges" viewBox="0 0 1120 700" aria-hidden="true"></svg>
+          <div class="node active" id="node-query" data-node="query" data-x="105" data-y="130"><span class="node-core"></span><span class="node-label">consulta</span><span class="node-value">en espera</span></div><div class="node" id="node-mode" data-node="mode" data-x="105" data-y="240"><span class="node-core"></span><span class="node-label">modo</span><span class="node-value">híbrido</span></div><div class="node" id="node-limit" data-node="limit" data-x="105" data-y="350"><span class="node-core"></span><span class="node-label">límite</span><span class="node-value">5</span></div><div class="node" id="node-corpus" data-node="corpus" data-x="105" data-y="460"><span class="node-core"></span><span class="node-label">corpus</span><span class="node-value">API segura</span></div><div class="node ok" id="node-safety" data-node="safety" data-x="105" data-y="570"><span class="node-core"></span><span class="node-label">seguridad</span><span class="node-value">sin secretos</span></div>
+          <div class="node" id="node-phrase" data-node="phrase" data-x="365" data-y="105"><span class="node-core"></span><span class="node-label">frase exacta</span><span class="node-value">exacta</span></div><div class="node" id="node-keyword" data-node="keyword" data-x="365" data-y="195"><span class="node-core"></span><span class="node-label">búsqueda léxica</span><span class="node-value">texto</span></div><div class="node vector-focus" id="node-vector" data-node="vector" data-x="365" data-y="285"><span class="node-core"></span><span class="node-label">búsqueda vectorial</span><span class="node-value">semántica no reportada</span></div><div class="node vector-focus" id="node-embedding" data-node="embedding" data-x="365" data-y="375"><span class="node-core"></span><span class="node-label">embedding</span><span class="node-value">embedding pendiente</span></div><div class="node vector-focus" id="node-db" data-node="db" data-x="365" data-y="465"><span class="node-core"></span><span class="node-label">almacén vectorial</span><span class="node-value">store no reportado</span></div><div class="node" id="node-runtime" data-node="runtime" data-x="365" data-y="555"><span class="node-core"></span><span class="node-label">sistema</span><span class="node-value">desconocido</span></div>
+          <div class="node" id="node-evidence-1" data-node="evidence" data-x="650" data-y="80"><span class="node-core"></span><span class="node-label">evidencia 1</span><span class="node-value">ninguna</span></div><div class="node" id="node-evidence-2" data-node="evidence" data-x="650" data-y="165"><span class="node-core"></span><span class="node-label">evidencia 2</span><span class="node-value">ninguna</span></div><div class="node" id="node-evidence-3" data-node="evidence" data-x="650" data-y="250"><span class="node-core"></span><span class="node-label">evidencia 3</span><span class="node-value">ninguna</span></div><div class="node" id="node-evidence-4" data-node="evidence" data-x="650" data-y="335"><span class="node-core"></span><span class="node-label">evidencia 4</span><span class="node-value">ninguna</span></div><div class="node" id="node-evidence-5" data-node="evidence" data-x="650" data-y="420"><span class="node-core"></span><span class="node-label">evidencia 5</span><span class="node-value">ninguna</span></div><div class="node" id="node-citation" data-node="citation" data-x="650" data-y="515"><span class="node-core"></span><span class="node-label">cita</span><span class="node-value">no lista</span></div><div class="node" id="node-score" data-node="score" data-x="650" data-y="610"><span class="node-core"></span><span class="node-label">ranking</span><span class="node-value">ordenado</span></div>
+          <div class="node" id="node-answer" data-node="answer" data-x="930" data-y="160"><span class="node-core"></span><span class="node-label">respuesta</span><span class="node-value">inactiva</span></div><div class="node" id="node-not-found" data-node="not_found" data-x="930" data-y="305"><span class="node-core"></span><span class="node-label">sin hallazgos</span><span class="node-value">inactivo</span></div><div class="node" id="node-degraded" data-node="degraded" data-x="930" data-y="450"><span class="node-core"></span><span class="node-label">degradado</span><span class="node-value">inactivo</span></div><div class="node ok" id="node-audit" data-node="audit" data-x="930" data-y="585"><span class="node-core"></span><span class="node-label">auditoría</span><span class="node-value">traza segura</span></div><div class="sense-level" id="sense-level"><b>Nivel 1</b> / 6 · sin señal</div></div></div></article>
+        <aside class="side-stack"><article class="side-card"><div class="card-header">Resultados</div><div id="glass-wall-results"><div class="metric-grid"><div class="metric"><strong id="metric-evidence-count">0</strong><span>evidencias</span></div><div class="metric"><strong id="metric-answer-status">inactivo</strong><span>estado de respuesta</span></div></div><div class="evidence-list" id="evidence-list"></div></div></article><article class="side-card"><div class="card-header">Vector / Embedding</div><div id="glass-wall-vector" class="vector-grid"><div class="vector-row" id="vector-runtime-row"><b id="vector-runtime-state">no reportado</b><span>runtime vectorial</span></div><div class="vector-row" id="vector-mode-row"><b id="vector-mode-state">híbrido pendiente</b><span>relación con modo híbrido</span></div><div class="vector-row" id="vector-embedding-row"><b id="vector-embedding-state">embedding pendiente</b><span>query → vector</span></div><div class="vector-row" id="vector-store-row"><b id="vector-store-state">store no reportado</b><span>almacén vectorial</span></div><div class="vector-row" id="vector-reason-row"><b id="vector-reason-state">sin razones reportadas</b><span>observación segura</span></div></div></article><article class="side-card"><div class="card-header">Estado del sistema</div><div id="glass-wall-runtime"><p class="safe-copy" id="runtime-copy">El estado del sistema todavía no ha sido cargado.</p></div></article><article class="side-card"><div class="card-header">Leyenda</div><div id="glass-wall-legend-panel"><p class="safe-copy">Magenta indica que una ruta activa aportó al resultado actual. Amarillo indica estado degradado o configuración parcial. Verde indica seguridad y auditoría. Gris indica ruta inactiva.</p></div></article><article class="side-card"><div class="card-header">Contrato de seguridad</div><div id="glass-wall-safety"><p class="safe-copy">Esta vista muestra únicamente salida segura de la API: estado, conteos, tipos de fuente, citas, fragmentos y salud sanitizada del sistema. No muestra prompts, credenciales, llaves de proveedor, URLs de base de datos, mensajes internos del modelo ni razonamiento oculto.</p><p class="footer-note">Ruta directa: /glass-wall.html</p></div></article></aside>
       </section>
     </main>
-
     <script>
       const $ = (id) => document.getElementById(id);
       const approvedEndpointPaths = ["/health", "/api/evidence", "/api/answer"];
       const graphSize = { width: 1120, height: 700 };
-
-      const graphEdges = [
-        ["node-query", "node-phrase", "signal"],
-        ["node-query", "node-keyword", "signal"],
-        ["node-query", "node-vector", "vector"],
-        ["node-query", "node-embedding", "vector"],
-        ["node-mode", "node-phrase", "mode"],
-        ["node-mode", "node-keyword", "mode"],
-        ["node-mode", "node-vector", "vector"],
-        ["node-limit", "node-score", "score"],
-        ["node-corpus", "node-keyword", "signal"],
-        ["node-corpus", "node-db", "vector"],
-        ["node-safety", "node-audit", "audit"],
-        ["node-embedding", "node-vector", "vector"],
-        ["node-db", "node-vector", "vector"],
-        ["node-runtime", "node-vector", "vector"],
-        ["node-runtime", "node-degraded", "degraded"],
-        ["node-phrase", "node-evidence-1", "evidence1"],
-        ["node-keyword", "node-evidence-1", "evidence1"],
-        ["node-keyword", "node-evidence-2", "evidence2"],
-        ["node-vector", "node-evidence-2", "evidence2"],
-        ["node-vector", "node-evidence-3", "evidence3"],
-        ["node-db", "node-evidence-4", "evidence4"],
-        ["node-phrase", "node-evidence-5", "evidence5"],
-        ["node-evidence-1", "node-citation", "citation"],
-        ["node-evidence-2", "node-citation", "citation"],
-        ["node-evidence-3", "node-citation", "citation"],
-        ["node-evidence-4", "node-citation", "citation"],
-        ["node-evidence-5", "node-citation", "citation"],
-        ["node-citation", "node-score", "score"],
-        ["node-score", "node-answer", "answer"],
-        ["node-citation", "node-not-found", "not_found"],
-        ["node-audit", "node-answer", "audit"],
-      ];
-
+      const graphEdges = [["node-query","node-phrase","signal"],["node-query","node-keyword","signal"],["node-query","node-vector","vector"],["node-query","node-embedding","vector"],["node-mode","node-phrase","mode"],["node-mode","node-keyword","mode"],["node-mode","node-vector","vector"],["node-limit","node-score","score"],["node-corpus","node-keyword","signal"],["node-corpus","node-db","vector"],["node-safety","node-audit","audit"],["node-embedding","node-vector","vector"],["node-db","node-vector","vector"],["node-runtime","node-vector","vector"],["node-runtime","node-degraded","degraded"],["node-phrase","node-evidence-1","evidence1"],["node-keyword","node-evidence-1","evidence1"],["node-keyword","node-evidence-2","evidence2"],["node-vector","node-evidence-2","evidence2"],["node-vector","node-evidence-3","evidence3"],["node-db","node-evidence-4","evidence4"],["node-phrase","node-evidence-5","evidence5"],["node-evidence-1","node-citation","citation"],["node-evidence-2","node-citation","citation"],["node-evidence-3","node-citation","citation"],["node-evidence-4","node-citation","citation"],["node-evidence-5","node-citation","citation"],["node-citation","node-score","score"],["node-score","node-answer","answer"],["node-citation","node-not-found","not_found"],["node-audit","node-answer","audit"]];
       const state = { query: "municipalidad", mode: "hybrid", evidence: null, answer: null, health: null, error: null };
-
-      const safeText = (value, fallback = "desconocido") => {
-        if (value === null || value === undefined || value === "") return fallback;
-        return String(value).slice(0, 120);
-      };
-
-      const displayMode = (mode) => {
-        if (mode === "keyword") return "búsqueda léxica";
-        if (mode === "phrase") return "frase exacta";
-        return "híbrido";
-      };
-
-      const displayRuntime = (value) => {
-        if (value === "enabled") return "activo";
-        if (value === "degraded") return "degradado";
-        if (value === "disabled") return "deshabilitado";
-        return safeText(value, "desconocido");
-      };
-
-      const displayAnswerStatus = (value) => {
-        if (value === "not_found") return "sin hallazgos";
-        if (value === "error") return "error";
-        if (value === "grounded" || value === "answered") return "con evidencia";
-        return safeText(value, "inactivo");
-      };
-
-      const setStatus = (label, kind = "") => {
-        const pill = $("glass-wall-status");
-        pill.className = `status-pill ${kind}`.trim();
-        pill.querySelector("span:last-child").textContent = label;
-      };
-
-      const setNode = (id, value, className = "") => {
-        const node = $(id);
-        node.className = `node ${className}`.trim();
-        node.querySelector(".node-value").textContent = safeText(value);
-      };
-
-      const positionNodes = () => {
-        document.querySelectorAll(".node[data-x][data-y]").forEach((node) => {
-          node.style.left = `${node.dataset.x}px`;
-          node.style.top = `${node.dataset.y}px`;
-        });
-      };
-
-      const fitGraphToViewport = () => {
-        const graph = $("glass-wall-graph");
-        const board = $("glass-wall-board");
-        const availableWidth = Math.max(320, graph.clientWidth);
-        const scale = Math.min(1, availableWidth / graphSize.width);
-        board.style.transform = `scale(${scale})`;
-        graph.style.height = `${Math.ceil(graphSize.height * scale)}px`;
-      };
-
-      const getEvidenceItems = () => {
-        const evidence = state.evidence;
-        if (!evidence) return [];
-        if (Array.isArray(evidence.evidence)) return evidence.evidence;
-        if (Array.isArray(evidence.results)) return evidence.results;
-        return [];
-      };
-
-      const getAnswerStatus = () => {
-        const answer = state.answer || {};
-        return answer.answerStatus || answer.status || answer.type || "unknown";
-      };
-
-      const getEvidenceCount = () => {
-        const evidence = state.evidence || {};
-        if (Number.isInteger(evidence.evidenceCount)) return evidence.evidenceCount;
-        if (Number.isInteger(evidence.resultCount)) return evidence.resultCount;
-        return getEvidenceItems().length;
-      };
-
-      const getCitationLabel = (item) =>
-        item.citationLabel || item.citation || item.sourceLabel || item.documentTitle || item.sourceType || "cita pendiente";
-
-      const getEdgeState = (kind) => {
-        const count = getEvidenceCount();
-        const hasEvidence = count > 0;
-        const runtimeState = state.health?.vectorRuntime?.state || "unknown";
-        const vectorActive = runtimeState === "enabled" && state.mode === "hybrid";
+      const safeText = (value, fallback = "desconocido") => value === null || value === undefined || value === "" ? fallback : String(value).slice(0, 120);
+      const displayMode = (mode) => mode === "keyword" ? "búsqueda léxica" : mode === "phrase" ? "frase exacta" : "híbrido";
+      const displayRuntime = (value) => value === "enabled" ? "activo" : value === "degraded" ? "degradado" : value === "disabled" ? "deshabilitado" : safeText(value, "desconocido");
+      const displayAnswerStatus = (value) => value === "not_found" ? "sin hallazgos" : value === "error" ? "error" : value === "grounded" || value === "answered" || value === "draft_grounded" ? "con evidencia" : safeText(value, "inactivo");
+      const vectorDetails = () => {
+        const vectorRuntime = state.health?.vectorRuntime || {};
+        const runtimeState = vectorRuntime.state || "unknown";
+        const reasons = Array.isArray(vectorRuntime.reasons) ? vectorRuntime.reasons : [];
+        const hybrid = state.mode === "hybrid";
+        const enabled = runtimeState === "enabled";
         const degraded = runtimeState === "degraded" || runtimeState === "disabled";
-
-        if (kind === "signal") return hasEvidence || state.mode === "hybrid" ? "active" : "";
-        if (kind === "mode") return state.mode === "hybrid" || state.mode === "keyword" || state.mode === "phrase" ? "active" : "";
-        if (kind === "vector") return vectorActive ? "active" : degraded ? "warn" : "";
-        if (kind === "evidence1") return count >= 1 ? "active" : "";
-        if (kind === "evidence2") return count >= 2 ? "active" : "";
-        if (kind === "evidence3") return count >= 3 ? "active" : "";
-        if (kind === "evidence4") return count >= 4 ? "active" : "";
-        if (kind === "evidence5") return count >= 5 ? "active" : "";
-        if (kind === "citation") return hasEvidence ? "active" : "";
-        if (kind === "score") return hasEvidence ? "active" : "";
-        if (kind === "answer") return hasEvidence ? "active" : "";
-        if (kind === "not_found") return hasEvidence ? "" : "warn";
-        if (kind === "degraded") return degraded ? "warn" : "";
-        if (kind === "audit") return "active";
-        return "";
+        return {
+          runtimeState,
+          runtimeLabel: displayRuntime(runtimeState),
+          modeLabel: hybrid ? "modo híbrido consulta léxica + semántica" : "modo actual no prioriza vector",
+          embeddingLabel: enabled ? "query → vector activo" : degraded ? "embedding parcial/degradado" : "embedding no reportado",
+          storeLabel: enabled ? "store consultable" : degraded ? "store parcial" : "store no reportado",
+          reasonLabel: reasons.length ? reasons.join(", ") : "sin razones reportadas",
+          enabled,
+          degraded,
+          hybrid
+        };
       };
-
-      const renderEdges = () => {
-        const svg = $("glass-wall-edges");
-        svg.innerHTML = "";
-        for (const [fromId, toId, kind] of graphEdges) {
-          const from = $(fromId);
-          const to = $(toId);
-          const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
-          line.setAttribute("x1", from.dataset.x);
-          line.setAttribute("y1", from.dataset.y);
-          line.setAttribute("x2", to.dataset.x);
-          line.setAttribute("y2", to.dataset.y);
-          line.setAttribute("class", `edge ${getEdgeState(kind)}`.trim());
-          svg.appendChild(line);
-        }
-      };
-
-      const render = () => {
-        const items = getEvidenceItems();
-        const count = getEvidenceCount();
-        const status = getAnswerStatus();
-        const runtimeState = state.health?.vectorRuntime?.state || "unknown";
-        const runtimeReasons = state.health?.vectorRuntime?.reasons || [];
-        const hasEvidence = count > 0;
-        const hasCitation = items.some((item) => Boolean(getCitationLabel(item)));
-        const degraded = runtimeState === "degraded" || runtimeState === "disabled";
-
-        $("metric-evidence-count").textContent = String(count);
-        $("metric-answer-status").textContent = displayAnswerStatus(status);
-        $("runtime-copy").textContent = `estadoVectorial=${displayRuntime(runtimeState)}; razones=${runtimeReasons.join(", ") || "ninguna"}`;
-        $("sense-level").innerHTML = hasEvidence
-          ? "<b>Nivel 6</b> / 6 · evidencia encontrada"
-          : degraded
-            ? "<b>Nivel 3</b> / 6 · señal degradada"
-            : "<b>Nivel 1</b> / 6 · sin señal";
-
-        setNode("node-query", state.query, "active");
-        setNode("node-mode", displayMode(state.mode), state.mode === "hybrid" ? "active" : "");
-        setNode("node-limit", "límite 5", "");
-        setNode("node-corpus", "endpoints seguros", "");
-        setNode("node-safety", "salida segura", "ok");
-        setNode("node-phrase", "ruta de frase exacta", state.mode === "phrase" || state.mode === "hybrid" ? "active" : "");
-        setNode("node-keyword", "ruta léxica", state.mode === "keyword" || state.mode === "hybrid" ? "active" : "");
-        setNode("node-vector", displayRuntime(runtimeState), runtimeState === "enabled" && state.mode === "hybrid" ? "active" : degraded ? "warn" : "");
-        setNode("node-embedding", runtimeState === "enabled" ? "embedding de consulta" : "parcial", runtimeState === "enabled" ? "active" : degraded ? "warn" : "");
-        setNode("node-db", runtimeState === "enabled" ? "vector listo" : "parcial", runtimeState === "enabled" ? "active" : degraded ? "warn" : "");
-        setNode("node-runtime", displayRuntime(runtimeState), runtimeState === "enabled" ? "active" : degraded ? "warn" : "");
-
-        [0, 1, 2, 3, 4].forEach((index) => {
-          const item = items[index];
-          setNode(`node-evidence-${index + 1}`, item ? safeText(getCitationLabel(item)) : "ninguna", item ? "active" : "");
-        });
-
-        setNode("node-citation", hasCitation ? "cita lista" : "no lista", hasCitation ? "active" : "");
-        setNode("node-score", hasEvidence ? "candidatos ordenados" : "en espera", hasEvidence ? "active" : "");
-        setNode("node-answer", displayAnswerStatus(status), hasEvidence ? "active" : "");
-        setNode("node-not-found", hasEvidence ? "inactivo" : "sin evidencia", hasEvidence ? "" : "warn");
-        setNode("node-degraded", displayRuntime(runtimeState), degraded ? "warn" : "");
-        setNode("node-audit", "traza segura", "ok");
-
-        const list = $("evidence-list");
-        list.innerHTML = "";
-        if (items.length === 0) {
-          const empty = document.createElement("div");
-          empty.className = "evidence-item";
-          empty.innerHTML = "<b>sin evidencia</b><p>La llamada segura actual no devolvió evidencia citable.</p>";
-          list.appendChild(empty);
-        } else {
-          items.slice(0, 5).forEach((item) => {
-            const row = document.createElement("div");
-            row.className = "evidence-item";
-            const excerpt = item.excerpt || item.preview || item.text || item.content || "fragmento seguro no disponible";
-            row.innerHTML = `<b>${safeText(getCitationLabel(item))}</b><p>${safeText(excerpt, "fragmento seguro no disponible")}</p>`;
-            list.appendChild(row);
-          });
-        }
-
-        if (state.error) setStatus("error", "error");
-        else if (hasEvidence) setStatus("evidencia encontrada", "active");
-        else if (degraded) setStatus(displayRuntime(runtimeState), "warn");
-        else setStatus("sin hallazgos", "warn");
-
-        renderEdges();
-      };
-
-      const safeFetchJson = async (path) => {
-        if (!approvedEndpointPaths.some((approved) => path.startsWith(approved))) {
-          throw new Error("Endpoint no aprobado para Glass Wall.");
-        }
-        const response = await fetch(path, { headers: { accept: "application/json" } });
-        if (!response.ok) throw new Error(`HTTP ${response.status}`);
-        return response.json();
-      };
-
-      const inspect = async () => {
-        state.query = $("glass-wall-query").value.trim() || "municipalidad";
-        state.mode = $("glass-wall-mode").value || "hybrid";
-        state.error = null;
-        setStatus("cargando", "active");
-        render();
-
-        const params = new URLSearchParams({ q: state.query, mode: state.mode, limit: "5" });
-        try {
-          const [health, evidence, answer] = await Promise.all([
-            safeFetchJson("/health"),
-            safeFetchJson(`/api/evidence?${params.toString()}`),
-            safeFetchJson(`/api/answer?${params.toString()}`),
-          ]);
-          state.health = health;
-          state.evidence = evidence;
-          state.answer = answer;
-        } catch (error) {
-          state.error = error instanceof Error ? error.message : "error desconocido";
-          state.evidence = { evidence: [], evidenceCount: 0 };
-          state.answer = { answerStatus: "error" };
-        }
-        render();
-      };
-
-      $("glass-wall-form").addEventListener("submit", (event) => {
-        event.preventDefault();
-        void inspect();
-      });
-
-      window.addEventListener("resize", () => {
-        fitGraphToViewport();
-        renderEdges();
-      });
-
-      positionNodes();
-      fitGraphToViewport();
-      render();
+      const setStatus = (label, kind = "") => { const pill = $("glass-wall-status"); pill.className = `status-pill ${kind}`.trim(); pill.querySelector("span:last-child").textContent = label; };
+      const setNode = (id, value, className = "") => { const node = $(id); const keepVector = node.classList.contains("vector-focus") ? " vector-focus" : ""; node.className = `node ${className}${keepVector}`.trim(); node.querySelector(".node-value").textContent = safeText(value); };
+      const positionNodes = () => document.querySelectorAll(".node[data-x][data-y]").forEach((node) => { node.style.left = `${node.dataset.x}px`; node.style.top = `${node.dataset.y}px`; });
+      const fitGraphToViewport = () => { const graph = $("glass-wall-graph"); const board = $("glass-wall-board"); const scale = Math.min(1, Math.max(320, graph.clientWidth) / graphSize.width); board.style.transform = `scale(${scale})`; graph.style.height = `${Math.ceil(graphSize.height * scale)}px`; };
+      const getEvidenceItems = () => { const evidence = state.evidence; if (!evidence) return []; if (Array.isArray(evidence.evidence)) return evidence.evidence; if (Array.isArray(evidence.results)) return evidence.results; return []; };
+      const getAnswerStatus = () => { const answer = state.answer || {}; return answer.answerStatus || answer.status || answer.type || "unknown"; };
+      const getEvidenceCount = () => { const evidence = state.evidence || {}; if (Number.isInteger(evidence.evidenceCount)) return evidence.evidenceCount; if (Number.isInteger(evidence.resultCount)) return evidence.resultCount; return getEvidenceItems().length; };
+      const getCitationLabel = (item) => item.citationLabel || item.citation || item.sourceLabel || item.documentTitle || item.sourceType || "cita pendiente";
+      const getEdgeState = (kind) => { const count = getEvidenceCount(); const hasEvidence = count > 0; const vector = vectorDetails(); if (kind === "signal") return hasEvidence || state.mode === "hybrid" ? "active" : ""; if (kind === "mode") return state.mode === "hybrid" || state.mode === "keyword" || state.mode === "phrase" ? "active" : ""; if (kind === "vector") return vector.enabled && vector.hybrid ? "active" : vector.degraded ? "warn" : ""; if (kind.startsWith("evidence")) return count >= Number(kind.replace("evidence", "")) ? "active" : ""; if (kind === "citation") return hasEvidence ? "active" : ""; if (kind === "score") return hasEvidence ? "active" : ""; if (kind === "answer") return hasEvidence ? "active" : ""; if (kind === "not_found") return hasEvidence ? "" : "warn"; if (kind === "degraded") return vector.degraded ? "warn" : ""; if (kind === "audit") return "active"; return ""; };
+      const renderEdges = () => { const svg = $("glass-wall-edges"); svg.innerHTML = ""; for (const [fromId, toId, kind] of graphEdges) { const from = $(fromId); const to = $(toId); const line = document.createElementNS("http://www.w3.org/2000/svg", "line"); line.setAttribute("x1", from.dataset.x); line.setAttribute("y1", from.dataset.y); line.setAttribute("x2", to.dataset.x); line.setAttribute("y2", to.dataset.y); line.setAttribute("class", `edge ${getEdgeState(kind)}`.trim()); svg.appendChild(line); } };
+      const renderVectorPanel = () => { const vector = vectorDetails(); const rowClass = vector.enabled ? "active" : vector.degraded ? "warn" : ""; $("vector-runtime-row").className = `vector-row ${rowClass}`.trim(); $("vector-mode-row").className = `vector-row ${vector.hybrid ? "active" : ""}`.trim(); $("vector-embedding-row").className = `vector-row ${rowClass}`.trim(); $("vector-store-row").className = `vector-row ${rowClass}`.trim(); $("vector-reason-row").className = `vector-row ${vector.degraded ? "warn" : ""}`.trim(); $("vector-runtime-state").textContent = vector.runtimeLabel; $("vector-mode-state").textContent = vector.modeLabel; $("vector-embedding-state").textContent = vector.embeddingLabel; $("vector-store-state").textContent = vector.storeLabel; $("vector-reason-state").textContent = vector.reasonLabel; };
+      const render = () => { const items = getEvidenceItems(); const count = getEvidenceCount(); const status = getAnswerStatus(); const vector = vectorDetails(); const hasEvidence = count > 0; const hasCitation = items.some((item) => Boolean(getCitationLabel(item))); $("metric-evidence-count").textContent = String(count); $("metric-answer-status").textContent = displayAnswerStatus(status); $("runtime-copy").textContent = `estadoVectorial=${vector.runtimeLabel}; razones=${vector.reasonLabel}`; $("sense-level").innerHTML = hasEvidence ? "<b>Nivel 6</b> / 6 · evidencia encontrada" : vector.degraded ? "<b>Nivel 3</b> / 6 · señal degradada" : "<b>Nivel 1</b> / 6 · sin señal"; setNode("node-query", state.query, "active"); setNode("node-mode", displayMode(state.mode), state.mode === "hybrid" ? "active" : ""); setNode("node-limit", "límite 5", ""); setNode("node-corpus", "endpoints seguros", ""); setNode("node-safety", "salida segura", "ok"); setNode("node-phrase", "ruta de frase exacta", state.mode === "phrase" || state.mode === "hybrid" ? "active" : ""); setNode("node-keyword", "ruta léxica", state.mode === "keyword" || state.mode === "hybrid" ? "active" : ""); setNode("node-vector", vector.enabled && vector.hybrid ? "semántica activa" : vector.degraded ? "semántica degradada" : "semántica no reportada", vector.enabled && vector.hybrid ? "active" : vector.degraded ? "warn" : ""); setNode("node-embedding", vector.embeddingLabel, vector.enabled ? "active" : vector.degraded ? "warn" : ""); setNode("node-db", vector.storeLabel, vector.enabled ? "active" : vector.degraded ? "warn" : ""); setNode("node-runtime", vector.runtimeLabel, vector.enabled ? "active" : vector.degraded ? "warn" : ""); [0,1,2,3,4].forEach((index) => { const item = items[index]; setNode(`node-evidence-${index + 1}`, item ? safeText(getCitationLabel(item)) : "ninguna", item ? "active" : ""); }); setNode("node-citation", hasCitation ? "cita lista" : "no lista", hasCitation ? "active" : ""); setNode("node-score", hasEvidence ? "candidatos ordenados" : "en espera", hasEvidence ? "active" : ""); setNode("node-answer", displayAnswerStatus(status), hasEvidence ? "active" : ""); setNode("node-not-found", hasEvidence ? "inactivo" : "sin evidencia", hasEvidence ? "" : "warn"); setNode("node-degraded", vector.runtimeLabel, vector.degraded ? "warn" : ""); setNode("node-audit", "traza segura", "ok"); const list = $("evidence-list"); list.innerHTML = ""; if (items.length === 0) { const empty = document.createElement("div"); empty.className = "evidence-item"; empty.innerHTML = "<b>sin evidencia</b><p>La llamada segura actual no devolvió evidencia citable.</p>"; list.appendChild(empty); } else { items.slice(0, 5).forEach((item) => { const row = document.createElement("div"); row.className = "evidence-item"; const excerpt = item.excerpt || item.preview || item.text || item.content || "fragmento seguro no disponible"; row.innerHTML = `<b>${safeText(getCitationLabel(item))}</b><p>${safeText(excerpt, "fragmento seguro no disponible")}</p>`; list.appendChild(row); }); } renderVectorPanel(); if (state.error) setStatus("error", "error"); else if (hasEvidence) setStatus("evidencia encontrada", "active"); else if (vector.degraded) setStatus(vector.runtimeLabel, "warn"); else setStatus("sin hallazgos", "warn"); renderEdges(); };
+      const safeFetchJson = async (path) => { if (!approvedEndpointPaths.some((approved) => path.startsWith(approved))) throw new Error("Endpoint no aprobado para Glass Wall."); const response = await fetch(path, { headers: { accept: "application/json" } }); if (!response.ok) throw new Error(`HTTP ${response.status}`); return response.json(); };
+      const inspect = async () => { state.query = $("glass-wall-query").value.trim() || "municipalidad"; state.mode = $("glass-wall-mode").value || "hybrid"; state.error = null; setStatus("cargando", "active"); render(); const params = new URLSearchParams({ q: state.query, mode: state.mode, limit: "5" }); try { const [health, evidence, answer] = await Promise.all([safeFetchJson("/health"), safeFetchJson(`/api/evidence?${params.toString()}`), safeFetchJson(`/api/answer?${params.toString()}`)]); state.health = health; state.evidence = evidence; state.answer = answer; } catch (error) { state.error = error instanceof Error ? error.message : "error desconocido"; state.evidence = { evidence: [], evidenceCount: 0 }; state.answer = { answerStatus: "error" }; } render(); };
+      $("glass-wall-form").addEventListener("submit", (event) => { event.preventDefault(); void inspect(); });
+      window.addEventListener("resize", () => { fitGraphToViewport(); renderEdges(); });
+      positionNodes(); fitGraphToViewport(); render();
     </script>
   </body>
 </html>
