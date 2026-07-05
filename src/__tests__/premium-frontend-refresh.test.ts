@@ -6,13 +6,15 @@ const readHomepage = async (): Promise<string> => readFile("public/index.html", 
 const readGlassWall = async (): Promise<string> => readFile("public/glass-wall.html", "utf-8");
 
 describe("premium RAG frontend refresh", () => {
-  it("keeps the evidence-first municipal RAG narrative", async () => {
+  it("keeps the evidence-first municipal RAG narrative in Spanish", async () => {
     const html = await readHomepage();
 
+    assert.match(html, /lang="es"/);
     assert.match(html, /RAG municipal con evidencia verificable/);
     assert.match(html, /Consulta pública/);
     assert.match(html, /Sin caja negra/);
-    assert.match(html, /not_found/);
+    assert.match(html, /Si no existe evidencia suficiente, el sistema debe decirlo/);
+    assert.match(html, /sin hallazgos/i);
   });
 
   it("ships the cinematic scroll story section", async () => {
@@ -35,12 +37,13 @@ describe("premium RAG frontend refresh", () => {
     assert.match(html, /copy-btn/);
   });
 
-  it("keeps the RAG Glass Wall entry point", async () => {
+  it("keeps the RAG Glass Wall entry point with Spanish technical copy", async () => {
     const html = await readHomepage();
 
     assert.match(html, /glass-wall\.html/);
-    assert.match(html, /RAG Glass Wall/);
-    assert.match(html, /modo CTO 90s neon/);
+    assert.match(html, /Glass Wall/);
+    assert.match(html, /sala técnica/i);
+    assert.match(html, /ruta de consulta, evidencia y salida segura/i);
   });
 
   it("adds scroll-driven motion while respecting reduced motion", async () => {
@@ -51,22 +54,23 @@ describe("premium RAG frontend refresh", () => {
     assert.match(html, /prefers-reduced-motion/);
   });
 
-  it("aligns the Glass Wall technical room with the premium frontend", async () => {
+  it("aligns the Glass Wall technical room with the Spanish premium frontend", async () => {
     const html = await readGlassWall();
 
-    assert.match(html, /Back to LA Muni RAG/);
-    assert.match(html, /Technical room/);
-    assert.match(html, /premium technical room/);
-    assert.match(html, /No black box/);
+    assert.match(html, /lang="es"/);
+    assert.match(html, /Volver al inicio/);
+    assert.match(html, /Sala técnica/);
+    assert.match(html, /Sin caja negra/);
     assert.match(html, /prefers-reduced-motion/);
   });
 
-  it("keeps Glass Wall safe endpoints and safety copy", async () => {
+  it("keeps Glass Wall safe endpoints and Spanish safety copy", async () => {
     const html = await readGlassWall();
 
     assert.match(html, /approvedEndpointPaths = \["\/health", "\/api\/evidence", "\/api\/answer"\]/);
-    assert.match(html, /It does not render prompts, credentials/);
-    assert.match(html, /database URLs/);
-    assert.match(html, /chain-of-thought/);
+    assert.match(html, /Contrato de seguridad/);
+    assert.match(html, /No muestra prompts, credenciales/);
+    assert.match(html, /URLs de base de datos/);
+    assert.match(html, /razonamiento oculto/);
   });
 });
