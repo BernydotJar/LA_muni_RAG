@@ -14,7 +14,7 @@ review
 
 ## Summary
 
-Feature 026 is implemented in SHIP mode and remains in review pending local command verification. This cycle improves the conversational layer of the embeddable chat widget: responses now render as synthesis-first municipal answers, evidence is separated into progressive disclosure, raw retrieval-style dumps are suppressed from the primary answer, citation cards remain expandable, and broad queries receive guided follow-up chips.
+Feature 026 is implemented in SHIP mode and remains in review pending local command verification. This cycle improves the conversational layer of the embeddable chat widget: responses now render as synthesis-first municipal answers, evidence is separated from the answer but visible by default, raw retrieval-style dumps are suppressed from the primary answer, citation cards remain expandable, and broad queries receive guided follow-up chips.
 
 Features 024 and 025 remain implemented but not locally closed because command verification was not run in this environment. To respect the harness one-active-feature rule, 026 is now the active review feature.
 
@@ -34,7 +34,9 @@ Features 024 and 025 remain implemented but not locally closed because command v
 
 - Assistant responses show a short synthesis before evidence.
 - Retrieval-style answer content is detected and not rendered as the primary response when citations exist.
-- Evidence is collapsed by default under `Fuentes verificadas`.
+- Evidence is visible by default under `Fuentes verificadas`.
+- The evidence toggle starts as `Ocultar evidencia`, not `Ver evidencia`.
+- Users can still hide the evidence panel for compact reading.
 - Citation cards remain expandable by click and keyboard.
 - Broad queries such as `agua` produce guided follow-up chips.
 - Theme extraction detects topics such as agua potable, aguas residuales, aguas pluviales, acueducto/abastecimiento, necesidades locales, and prioridades municipales.
@@ -78,8 +80,9 @@ Manual frontend review required:
 - Ask `agua`.
 - Confirm the assistant starts with a synthesis, not a numbered retrieval dump.
 - Confirm `Hallazgos clave` appears before evidence.
-- Confirm `Fuentes verificadas` is collapsed by default.
-- Expand/collapse the evidence panel.
+- Confirm `Fuentes verificadas` is visible by default.
+- Confirm the evidence toggle starts as `Ocultar evidencia`.
+- Hide/show the evidence panel.
 - Expand/collapse individual citation cards.
 - Click a follow-up chip such as `Aguas residuales` or `Agua potable y saneamiento`.
 - Switch between `Palabras clave` and `Frase exacta`.
