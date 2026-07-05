@@ -26,14 +26,14 @@ describe("chat answer quality and evidence composition", () => {
     assert.match(widget, /Te dejo una síntesis primero y las fuentes verificadas aparte/);
   });
 
-  it("uses progressive disclosure for evidence instead of dumping citations inline", async () => {
+  it("shows verified evidence by default while still allowing users to hide it", async () => {
     const widget = await readWidget();
 
     assert.match(widget, /Fuentes verificadas · \$\{view\.citations\.length\}/);
-    assert.match(widget, /Ver evidencia/);
+    assert.match(widget, /aria-expanded="true"/);
     assert.match(widget, /Ocultar evidencia/);
-    assert.match(widget, /muni-citations collapsed/);
-    assert.match(widget, /aria-expanded/);
+    assert.match(widget, /Ver evidencia/);
+    assert.match(widget, /citationsDiv\.className = "muni-citations"/);
     assert.match(widget, /const isCollapsed = citations\.classList\.toggle\("collapsed"\)/);
   });
 
