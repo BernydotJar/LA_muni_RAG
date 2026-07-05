@@ -131,10 +131,17 @@
     },
     {
       "id": "023-frontend-localization-and-graph-polish",
+      "status": "done",
+      "mode": "SHIP",
+      "active": false,
+      "summary": "Localized the public frontend to Spanish, added Antigua-inspired institutional visual identity, replaced circular graph nodes with premium panel nodes, and preserved RAG/widget/Glass Wall behavior."
+    },
+    {
+      "id": "024-frontend-responsive-layout-stabilization",
       "status": "review",
       "mode": "SHIP",
       "active": true,
-      "summary": "Localize the public frontend to Spanish, add Antigua-inspired institutional visual identity, replace circular graph nodes with premium panel nodes, and preserve RAG/widget/Glass Wall behavior."
+      "summary": "Stabilize the public frontend across laptop, tablet, and mobile viewports with bounded hero cards, flattened cinematic story layout, sticky-nav offsets, widget safe area, and responsive regression tests."
     }
   ]
 }
