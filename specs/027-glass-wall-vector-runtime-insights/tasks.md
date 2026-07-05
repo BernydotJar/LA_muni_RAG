@@ -11,7 +11,7 @@
 - [x] Preserve safety contract.
 - [x] Preserve reduced-motion protection.
 - [x] Update regression tests.
-- [ ] Update `progress/current.md`.
+- [x] Update `progress/current.md`.
 
 ## Verification
 
