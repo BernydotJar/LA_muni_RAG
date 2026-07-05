@@ -2,7 +2,7 @@
 
 ## Active Feature
 
-027-glass-wall-vector-runtime-insights
+028-municipal-demo-readiness-and-evidence-copy-polish
 
 ## Last Completed Feature
 
@@ -14,40 +14,41 @@ review
 
 ## Summary
 
-Feature 027 is implemented in SHIP mode and remains in review pending local command verification. This cycle enhances the Glass Wall technical room with safe vector-runtime explanation, richer node copy for `Búsqueda vectorial`, `Embedding`, and `Almacén vectorial`, a dedicated `Vector / Embedding` side panel, and CSS-only motion for graph scan, vector pulse, vector rings, and active/degraded edge flow.
+Feature 028 is implemented in SHIP mode and remains in review pending local command verification. This cycle finishes the municipal-facing demo polish for the embeddable assistant: answers now use institutional sections, evidence labels avoid alarming raw confidence copy, citations include source metadata and relevance reasons, visible excerpts are cleaned for PDF extraction artifacts, the answer includes a traceability seal, and the welcome state includes demo-ready prompts for a municipal presentation.
 
-Features 024, 025, and 026 remain implemented but not locally closed because command verification was not run in this environment. To respect the harness one-active-feature rule, 027 is now the active review feature.
+Features 024, 025, 026, and 027 remain implemented but not locally closed because command verification was not run in this environment. To respect the harness one-active-feature rule, 028 is now the active review feature.
 
 ## Completed Implementation
 
-027 updated:
+028 updated:
 
-- `public/glass-wall.html`
-- `src/__tests__/glass-wall-premium-room.test.ts`
-- `specs/027-glass-wall-vector-runtime-insights/requirements.md`
-- `specs/027-glass-wall-vector-runtime-insights/design.md`
-- `specs/027-glass-wall-vector-runtime-insights/tasks.md`
+- `public/widget.js`
+- `src/__tests__/chat-answer-composition.test.ts`
+- `src/__tests__/municipal-demo-readiness.test.ts`
+- `specs/028-municipal-demo-readiness-and-evidence-copy-polish/requirements.md`
+- `specs/028-municipal-demo-readiness-and-evidence-copy-polish/design.md`
+- `specs/028-municipal-demo-readiness-and-evidence-copy-polish/tasks.md`
 - `feature_list.json`
 - `progress/current.md`
 
 ## Acceptance Focus
 
-- Glass Wall includes a dedicated `Vector / Embedding` side panel.
-- Vector side panel shows sanitized runtime vectorial state.
-- Vector side panel explains relationship with hybrid mode.
-- Vector side panel shows query embedding state as `query → vector`.
-- Vector side panel shows vector store state without exposing database URLs or credentials.
-- Graph nodes for `Búsqueda vectorial`, `Embedding`, and `Almacén vectorial` use richer explanatory values.
-- Active and degraded edges have CSS-only flow animation.
-- Graph includes scan and vector pulse motion.
-- Vector nodes include `vector-focus` ring animation.
-- Approved endpoint allowlist remains unchanged: `/health`, `/api/evidence`, `/api/answer`.
-- Safety contract remains preserved and does not expose prompts, credentials, provider keys, database URLs, internal model messages, or hidden reasoning.
-- Reduced motion disables decorative animation.
+- Widget welcome state includes stable municipal demo prompts.
+- Assistant responses use `Respuesta breve`, `Hallazgos principales`, and `Fuentes verificadas` hierarchy.
+- Raw confidence wording is replaced with institutional evidence-status labels: `Evidencia sólida`, `Evidencia suficiente`, and `Evidencia limitada`.
+- Citation excerpts are cleaned for common PDF hyphenation and spacing artifacts.
+- Citation cards include document, page, type, and evidence-use metadata.
+- Each source includes a short safe relevance reason.
+- Evidence remains visible by default and can still be hidden for compact reading.
+- Evidence cards remain expandable by click and keyboard.
+- Evidence-backed answers include a traceability seal.
+- `/api/chat` request shape remains unchanged: `message`, `mode`, `limit`.
+- `Palabras clave` and `Frase exacta` modes remain available.
+- Shadow DOM, mobile layout, widget open/close, Enter send, Escape close, and reduced-motion protections remain preserved.
 
 ## Preserved Non-Goals
 
-027 did not modify:
+028 did not modify:
 
 - backend APIs
 - retrieval ranking
@@ -59,13 +60,13 @@ Features 024, 025, and 026 remain implemented but not locally closed because com
 - auth
 - environment files
 - secrets
+- Glass Wall endpoint allowlist
 - homepage hero asset
-- widget behavior
 - database or embedding behavior
 
 ## Harness Note
 
-This follows the harness-sdlc control model: the requested Glass Wall/vector observability improvement was promoted into Feature 027 with requirements, design, task checklist, bounded file scope, implementation, tests, and review status.
+This follows the harness-sdlc control model: the requested municipal demo readiness improvement was promoted into Feature 028 with requirements, design, task checklist, bounded file scope, implementation, tests, and review status.
 
 ## Verification Required
 
@@ -77,15 +78,20 @@ Run locally before closing the feature:
 
 Manual frontend review required:
 
-- Open `/glass-wall.html`.
-- Run `municipalidad` in `híbrido` mode.
-- Confirm the graph still shows active evidence routing.
-- Confirm `Vector / Embedding` panel appears in the right rail.
-- Confirm vector runtime, hybrid mode, embedding state, store state, and safe observation are visible.
-- Confirm `Búsqueda vectorial`, `Embedding`, and `Almacén vectorial` nodes are more descriptive.
-- Confirm active/degraded edges have subtle motion.
+- Open `/` and launch the widget.
+- Confirm the welcome state shows municipal demo prompts.
+- Ask `necesidades más urgentes`.
+- Confirm the answer starts with `Respuesta breve`.
+- Confirm `Hallazgos principales` appears before `Fuentes verificadas`.
+- Confirm evidence labels use `Evidencia limitada`, `Evidencia suficiente`, or `Evidencia sólida`.
+- Confirm source cards include document, page, type, usage, excerpt, and relevance reason.
+- Confirm the traceability seal is visible.
+- Hide/show the evidence panel.
+- Expand/collapse individual citation cards.
+- Switch between `Palabras clave` and `Frase exacta`.
+- Test mobile width below 480px.
+- Confirm the widget still sends requests to `/api/chat`.
 - Confirm reduced-motion preference disables decorative animation.
-- Confirm no secrets, DB URLs, prompts, or hidden reasoning are visible.
 
 ## Completed Features
 
@@ -112,10 +118,11 @@ Manual frontend review required:
 - 024-frontend-responsive-layout-stabilization: inactive review, pending local command verification
 - 025-query-experience-and-evidence-panel: inactive review, pending local command verification
 - 026-chat-answer-quality-and-evidence-composition: inactive review, pending local command verification
-- 027-glass-wall-vector-runtime-insights: active review, pending local command verification
+- 027-glass-wall-vector-runtime-insights: inactive review, pending local command verification
+- 028-municipal-demo-readiness-and-evidence-copy-polish: active review, pending local command verification
 
 ## Next Recommended Feature
 
-028-glass-wall-evidence-drilldown-panel
+029-demo-script-and-governance-pack
 
 Status: not started
