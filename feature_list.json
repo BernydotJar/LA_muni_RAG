@@ -140,8 +140,15 @@
       "id": "024-frontend-responsive-layout-stabilization",
       "status": "review",
       "mode": "SHIP",
+      "active": false,
+      "summary": "Stabilized the public frontend across laptop, tablet, and mobile viewports with bounded hero cards, cinematic app rail, civic palace hero visual, orbital motion, sticky-nav offsets, widget safe area, and responsive regression tests."
+    },
+    {
+      "id": "025-query-experience-and-evidence-panel",
+      "status": "review",
+      "mode": "SHIP",
       "active": true,
-      "summary": "Stabilize the public frontend across laptop, tablet, and mobile viewports with bounded hero cards, flattened cinematic story layout, sticky-nav offsets, widget safe area, and responsive regression tests."
+      "summary": "Refine the embeddable chat widget into a premium municipal evidence panel while preserving /api/chat behavior, citation expansion, search modes, widget configuration, and reduced-motion support."
     }
   ]
 }
