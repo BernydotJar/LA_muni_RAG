@@ -147,8 +147,15 @@
       "id": "025-query-experience-and-evidence-panel",
       "status": "review",
       "mode": "SHIP",
+      "active": false,
+      "summary": "Refined the embeddable chat widget into a premium municipal evidence panel while preserving /api/chat behavior, citation expansion, search modes, widget configuration, and reduced-motion support."
+    },
+    {
+      "id": "026-chat-answer-quality-and-evidence-composition",
+      "status": "review",
+      "mode": "SHIP",
       "active": true,
-      "summary": "Refine the embeddable chat widget into a premium municipal evidence panel while preserving /api/chat behavior, citation expansion, search modes, widget configuration, and reduced-motion support."
+      "summary": "Compose chat answers as synthesis-first municipal responses with progressive evidence disclosure, raw retrieval-dump suppression, theme extraction, and guided follow-up chips while preserving the existing /api/chat contract."
     }
   ]
 }
