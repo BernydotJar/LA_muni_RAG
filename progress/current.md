@@ -2,11 +2,11 @@
 
 ## Active Feature
 
-023-frontend-localization-and-graph-polish
+024-frontend-responsive-layout-stabilization
 
 ## Last Completed Feature
 
-022-premium-rag-frontend-refresh
+023-frontend-localization-and-graph-polish
 
 ## State
 
@@ -14,34 +14,31 @@ review
 
 ## Summary
 
-Feature 023 is implemented in SHIP mode and remains in review pending local command verification. This cycle localized the public frontend to Spanish, removed implementation-internal public copy, introduced a La Antigua Guatemala inspired institutional visual identity, and replaced generic circular graph nodes with premium panel-style nodes while preserving existing RAG, widget, and Glass Wall behavior.
+Feature 024 is implemented in SHIP mode and remains in review pending local command verification. This cycle stabilizes the public homepage layout across laptop, tablet, and mobile viewports after visual review showed clipped/overlapping cards, oversized cinematic decoration, sticky-navigation crowding, and widget overlap risk.
 
 ## Completed Implementation
 
-023 updated:
+024 updated:
 
 - `public/index.html`
-- `public/glass-wall.html`
-- `src/__tests__/frontend-localization-polish.test.ts`
-- `src/__tests__/premium-frontend-refresh.test.ts`
-- `src/__tests__/glass-wall-premium-room.test.ts`
+- `src/__tests__/frontend-responsive-layout.test.ts`
+- `feature_list.json`
+- `progress/current.md`
 
 ## Acceptance Focus
 
-- Public UI is in Spanish.
-- Public copy does not expose harness, internal validation, or implementation-framework wording.
-- Homepage feels institutional, premium, cinematic, and local to La Antigua Guatemala.
-- Visual identity uses an original abstract line illustration with colonial arches, facade rhythm, a subtle bell tower, and a dome-like silhouette.
-- Glass Wall remains available at `/glass-wall.html` as a Spanish technical room.
-- Glass Wall graph uses panel or plaque nodes rather than circular nodes as the primary visual element.
-- `/widget.js` remains preserved.
-- Glass Wall approved endpoints remain `/health`, `/api/evidence`, and `/api/answer`.
-- Safety contract remains visible and sanitized.
-- Reduced motion guardrails remain present.
+- Homepage hero fits below the sticky navigation on common laptop viewports.
+- Antigua observation card remains bounded and does not clip panel nodes.
+- Floating panel cards use clamp/max-width constraints instead of fixed overflow-prone sizing.
+- Cinematic story section flattens before laptop/tablet overflow.
+- Mobile layout turns absolute cards into readable stacked panels.
+- Anchor navigation uses scroll offsets so sticky nav does not obscure section headers.
+- Floating widget has safe-area offsets and should not cover critical copy/cards.
+- Spanish public UI, Antigua visual identity, Glass Wall link, `/widget.js`, copy snippet, and reduced-motion guardrails remain preserved.
 
 ## Preserved Non-Goals
 
-023 did not modify:
+024 did not modify:
 
 - backend APIs
 - retrieval ranking
@@ -53,9 +50,8 @@ Feature 023 is implemented in SHIP mode and remains in review pending local comm
 - auth
 - environment files
 - secrets
-- `widget.js`
 - Glass Wall approved endpoint list
-- Glass Wall inspection behavior beyond safe visual and copy changes
+- Glass Wall inspection behavior
 
 ## Verification Required
 
@@ -67,12 +63,14 @@ Run locally before closing the feature:
 
 Manual frontend review required:
 
-- `/` renders in Spanish with premium institutional Antigua visual language.
-- `/glass-wall.html` renders as a Spanish technical room.
+- `/` renders without clipped hero cards at laptop width.
+- `/` keeps story cards readable around the Relato section.
+- `/` keeps the Flujo section visible below sticky navigation when reached from the nav.
+- `/` keeps widget bubble away from critical text/card content.
+- `/` works at mobile widths with stacked panel cards.
+- `/glass-wall.html` still renders as the Spanish technical room.
 - Widget opens from homepage CTA buttons.
 - Embed copy button still copies the `/widget.js` snippet.
-- Glass Wall still inspects a query using approved endpoints.
-- Mobile layout remains usable.
 - Reduced motion remains protected.
 
 ## Completed Features
@@ -93,9 +91,10 @@ Manual frontend review required:
 - 020-corpus-backfill-cli: done
 - 021-retrieval-eval-harness: done
 - 022-premium-rag-frontend-refresh: done
+- 023-frontend-localization-and-graph-polish: done
 
 ## Next Recommended Feature
 
-023-query-experience-and-evidence-panel
+025-query-experience-and-evidence-panel
 
 Status: not started
