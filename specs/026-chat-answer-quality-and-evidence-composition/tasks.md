@@ -14,7 +14,7 @@
 - [x] Preserve citation expansion.
 - [x] Preserve responsive and reduced-motion behavior.
 - [x] Add regression tests.
-- [ ] Update `progress/current.md`.
+- [x] Update `progress/current.md`.
 
 ## Verification
 
