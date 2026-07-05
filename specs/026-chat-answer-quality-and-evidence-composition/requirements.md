@@ -6,7 +6,7 @@ SHIP
 
 ## Goal
 
-Improve the conversational quality of the embeddable chat widget so answers no longer feel like raw retrieval dumps. The chat should present a short synthesis first, then progressive evidence, then guided follow-up chips.
+Improve the conversational quality of the embeddable chat widget so answers no longer feel like raw retrieval dumps. The chat should present a short synthesis first, then visible verified evidence, then guided follow-up chips.
 
 ## User Problem
 
@@ -18,7 +18,7 @@ The widget is visually more premium, but responses still read like a search resu
 
 - Frontend response composition in `public/widget.js`.
 - Compact synthesis-first assistant cards.
-- Collapsible evidence section.
+- Evidence section visible by default with optional hide control.
 - Evidence summary/source stack.
 - Guided follow-up chips for broad queries.
 - Tests protecting composition behavior and preserved API contract.
@@ -41,7 +41,8 @@ The widget is visually more premium, but responses still read like a search resu
 - Preserve bubble open/close, Enter send, and Escape close.
 - Detect raw retrieval-style answer content and avoid rendering it as the primary assistant response when citations are present.
 - Render a short synthesis before evidence.
-- Render citation evidence in a collapsible section by default.
+- Render citation evidence expanded by default to avoid an unnecessary extra click.
+- Allow users to hide evidence when they want a compact view.
 - Render follow-up chips based on the query/evidence themes.
 - Preserve reduced-motion support.
 
@@ -49,11 +50,12 @@ The widget is visually more premium, but responses still read like a search resu
 
 - Assistant response card includes a synthesis-first block.
 - Long citation lists are not duplicated in the main answer when `data.citations` exists.
-- Evidence is shown as a progressive disclosure section.
+- Evidence is visible by default under `Fuentes verificadas`.
+- The evidence section can still be hidden with `Ocultar evidencia`.
 - Source cards remain expandable and keyboard accessible.
 - Broad queries produce guided follow-up chips.
 - Existing widget API behavior remains unchanged.
-- Tests verify composition, evidence collapse, follow-up chips, and preserved contract.
+- Tests verify composition, expanded evidence default, follow-up chips, and preserved contract.
 
 ## Verification Commands
 
