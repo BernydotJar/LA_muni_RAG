@@ -14,11 +14,11 @@ review
 
 ## Summary
 
-Feature 023 is active in SHIP mode. This cycle localizes the public frontend to Spanish, removes implementation-internal public copy, introduces a La Antigua Guatemala inspired institutional visual identity, and replaces generic circular graph nodes with premium panel-style nodes while preserving existing RAG, widget, and Glass Wall behavior.
+Feature 023 is implemented in SHIP mode and remains in review pending local command verification. This cycle localized the public frontend to Spanish, removed implementation-internal public copy, introduced a La Antigua Guatemala inspired institutional visual identity, and replaced generic circular graph nodes with premium panel-style nodes while preserving existing RAG, widget, and Glass Wall behavior.
 
-## Planned Implementation
+## Completed Implementation
 
-023 updates:
+023 updated:
 
 - `public/index.html`
 - `public/glass-wall.html`
@@ -41,7 +41,7 @@ Feature 023 is active in SHIP mode. This cycle localizes the public frontend to 
 
 ## Preserved Non-Goals
 
-023 must not modify:
+023 did not modify:
 
 - backend APIs
 - retrieval ranking
