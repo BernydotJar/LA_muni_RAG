@@ -11,7 +11,7 @@
 - [x] Preserve open/close bubble behavior.
 - [x] Preserve responsive and reduced-motion behavior.
 - [x] Add regression tests for premium widget shell and preserved behavior.
-- [ ] Update `progress/current.md`.
+- [x] Update `progress/current.md`.
 
 ## Verification
 
