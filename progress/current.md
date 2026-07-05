@@ -2,7 +2,7 @@
 
 ## Active Feature
 
-025-query-experience-and-evidence-panel
+026-chat-answer-quality-and-evidence-composition
 
 ## Last Completed Feature
 
@@ -14,38 +14,37 @@ review
 
 ## Summary
 
-Feature 025 is implemented in SHIP mode and remains in review pending local command verification. This cycle upgrades the embeddable chat widget from a functional chat window into a premium municipal evidence panel aligned with the refreshed public homepage.
+Feature 026 is implemented in SHIP mode and remains in review pending local command verification. This cycle improves the conversational layer of the embeddable chat widget: responses now render as synthesis-first municipal answers, evidence is separated into progressive disclosure, raw retrieval-style dumps are suppressed from the primary answer, citation cards remain expandable, and broad queries receive guided follow-up chips.
 
-Feature 024 remains implemented but not locally closed because command verification was not run in this environment. To respect the harness one-active-feature rule, 024 is now inactive review in `feature_list.json`, and 025 is the active review feature for the chat/evidence surface.
+Features 024 and 025 remain implemented but not locally closed because command verification was not run in this environment. To respect the harness one-active-feature rule, 026 is now the active review feature.
 
 ## Completed Implementation
 
-025 updated:
+026 updated:
 
 - `public/widget.js`
-- `src/__tests__/premium-chat-widget.test.ts`
-- `specs/025-query-experience-and-evidence-panel/requirements.md`
-- `specs/025-query-experience-and-evidence-panel/design.md`
-- `specs/025-query-experience-and-evidence-panel/tasks.md`
+- `src/__tests__/chat-answer-composition.test.ts`
+- `specs/026-chat-answer-quality-and-evidence-composition/requirements.md`
+- `specs/026-chat-answer-quality-and-evidence-composition/design.md`
+- `specs/026-chat-answer-quality-and-evidence-composition/tasks.md`
 - `feature_list.json`
 - `progress/current.md`
 
 ## Acceptance Focus
 
-- Widget shell feels like a premium municipal evidence console, not a generic chat box.
-- Header uses civic status, evidence/citation rail, glass surface, and institutional hierarchy.
-- Floating bubble uses premium orbital gradient motion.
-- Assistant responses render as evidence panels with `Respuesta con evidencia` treatment.
-- Citation cards render as expandable evidence dossiers with source badge, evidence index, label, excerpt, hover, and keyboard interaction.
-- Search mode selector remains available for `Palabras clave` and `Frase exacta`.
-- Composer uses premium glass styling and preserves keyboard behavior.
-- Mobile layout remains usable below 480px.
-- Reduced-motion rules protect widget animations.
-- `/api/chat` behavior and request shape remain unchanged.
+- Assistant responses show a short synthesis before evidence.
+- Retrieval-style answer content is detected and not rendered as the primary response when citations exist.
+- Evidence is collapsed by default under `Fuentes verificadas`.
+- Citation cards remain expandable by click and keyboard.
+- Broad queries such as `agua` produce guided follow-up chips.
+- Theme extraction detects topics such as agua potable, aguas residuales, aguas pluviales, acueducto/abastecimiento, necesidades locales, and prioridades municipales.
+- `/api/chat` request shape remains unchanged: `message`, `mode`, `limit`.
+- `Palabras clave` and `Frase exacta` modes remain available.
+- Shadow DOM, mobile layout, widget open/close, Enter send, Escape close, and reduced-motion protections remain preserved.
 
 ## Preserved Non-Goals
 
-025 did not modify:
+026 did not modify:
 
 - backend APIs
 - retrieval ranking
@@ -63,7 +62,7 @@ Feature 024 remains implemented but not locally closed because command verificat
 
 ## Harness Note
 
-This follows the harness-sdlc control model: the requested chat refinement was promoted into Feature 025 with requirements, design, task checklist, bounded file scope, implementation, tests, and review status.
+This follows the harness-sdlc control model: the requested conversational engineering improvement was promoted into Feature 026 with requirements, design, task checklist, bounded file scope, implementation, tests, and review status.
 
 ## Verification Required
 
@@ -76,10 +75,13 @@ Run locally before closing the feature:
 Manual frontend review required:
 
 - Open `/` and launch the widget.
-- Confirm the bubble feels premium and not generic.
-- Confirm the header feels institutional and aligned with the homepage.
-- Ask a query that returns evidence and confirm the assistant card reads as an evidence panel.
-- Expand/collapse citation cards.
+- Ask `agua`.
+- Confirm the assistant starts with a synthesis, not a numbered retrieval dump.
+- Confirm `Hallazgos clave` appears before evidence.
+- Confirm `Fuentes verificadas` is collapsed by default.
+- Expand/collapse the evidence panel.
+- Expand/collapse individual citation cards.
+- Click a follow-up chip such as `Aguas residuales` or `Agua potable y saneamiento`.
 - Switch between `Palabras clave` and `Frase exacta`.
 - Test mobile width below 480px.
 - Confirm the widget still sends requests to `/api/chat`.
@@ -108,10 +110,11 @@ Manual frontend review required:
 ## Features In Review
 
 - 024-frontend-responsive-layout-stabilization: inactive review, pending local command verification
-- 025-query-experience-and-evidence-panel: active review, pending local command verification
+- 025-query-experience-and-evidence-panel: inactive review, pending local command verification
+- 026-chat-answer-quality-and-evidence-composition: active review, pending local command verification
 
 ## Next Recommended Feature
 
-026-chat-answer-quality-and-empty-state-copy
+027-chat-empty-state-and-answer-policy-refinement
 
 Status: not started
