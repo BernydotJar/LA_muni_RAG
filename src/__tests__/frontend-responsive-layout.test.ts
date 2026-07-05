@@ -3,6 +3,7 @@ import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 
 const readHomepage = async (): Promise<string> => readFile("public/index.html", "utf-8");
+const readCivicHero = async (): Promise<string> => readFile("public/assets/civic-institutional-hero.svg", "utf-8");
 
 describe("frontend responsive layout stabilization", () => {
   it("uses a cinematic sticky app rail instead of a flat header bar", async () => {
@@ -27,6 +28,22 @@ describe("frontend responsive layout stabilization", () => {
     assert.match(html, /orb-secondary-float/);
     assert.match(html, /ring-drift-a/);
     assert.match(html, /ring-drift-b/);
+  });
+
+  it("uses a civic palace asset instead of an abstract-only line drawing", async () => {
+    const html = await readHomepage();
+    const asset = await readCivicHero();
+
+    assert.match(html, /\/assets\/civic-institutional-hero\.svg/);
+    assert.match(html, /civic-palace-visual/);
+    assert.match(html, /municipalidad o congreso/i);
+    assert.match(asset, /Palacio municipal futurista/);
+    assert.match(asset, /municipalidad o congreso/i);
+    assert.match(asset, /arcos coloniales/);
+    assert.match(asset, /campanario/);
+    assert.match(asset, /cúpula/);
+    assert.match(asset, /ring-drift-a/);
+    assert.match(asset, /ring-drift-b/);
   });
 
   it("keeps the public hero side-by-side on laptop viewports", async () => {
