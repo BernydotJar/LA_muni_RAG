@@ -3,19 +3,19 @@
 ## Implementation
 
 - [x] Add requirements and design specs.
-- [ ] Register feature 028 in `feature_list.json`.
-- [ ] Polish widget copy into institutional answer sections.
-- [ ] Replace raw confidence labels with evidence-status labels.
-- [ ] Add source metadata rows.
-- [ ] Add source relevance reason.
-- [ ] Clean visible citation excerpts.
-- [ ] Add traceability seal.
-- [ ] Add demo-ready welcome prompts.
-- [ ] Preserve chat request behavior.
-- [ ] Preserve evidence visible by default.
-- [ ] Preserve citation expansion.
-- [ ] Preserve responsive and reduced-motion behavior.
-- [ ] Add regression tests.
+- [x] Register feature 028 in `feature_list.json`.
+- [x] Polish widget copy into institutional answer sections.
+- [x] Replace raw confidence labels with evidence-status labels.
+- [x] Add source metadata rows.
+- [x] Add source relevance reason.
+- [x] Clean visible citation excerpts.
+- [x] Add traceability seal.
+- [x] Add demo-ready welcome prompts.
+- [x] Preserve chat request behavior.
+- [x] Preserve evidence visible by default.
+- [x] Preserve citation expansion.
+- [x] Preserve responsive and reduced-motion behavior.
+- [x] Add regression tests.
 - [ ] Update `progress/current.md`.
 
 ## Verification
