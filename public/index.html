@@ -3,11 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>LA Muni RAG — Asistente Municipal de La Antigua Guatemala</title>
-  <meta name="description" content="Consulta documentos municipales de La Antigua Guatemala con evidencia citada, trazabilidad y respuestas verificables.">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <title>LA Muni RAG — Asistente Documental Municipal</title>
+  <meta name="description" content="Asistente documental para la Municipalidad de La Antigua Guatemala con evidencia citada, trazabilidad y respuestas verificables.">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -25,15 +22,17 @@
       --pink: #ff2d9d;
       --green: #22c55e;
       --amber: #f59e0b;
-      --line: rgba(148, 163, 184, 0.12);
+      --line: rgba(148, 163, 184, 0.14);
+      --glass: rgba(255, 255, 255, 0.055);
       --shadow: 0 28px 90px rgba(0, 0, 0, 0.38);
       --scroll: 0;
+      color-scheme: dark;
     }
 
     html { scroll-behavior: smooth; }
 
     body {
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       background:
         radial-gradient(circle at 50% 4%, rgba(99, 102, 241, 0.24), transparent 34rem),
         radial-gradient(circle at 84% 26%, rgba(34, 211, 238, 0.12), transparent 26rem),
@@ -56,7 +55,7 @@
       inset: 0;
       z-index: -4;
       pointer-events: none;
-      opacity: 0.36;
+      opacity: 0.34;
       background-image:
         linear-gradient(rgba(255,255,255,0.018) 1px, transparent 1px),
         linear-gradient(90deg, rgba(255,255,255,0.018) 1px, transparent 1px);
@@ -81,10 +80,10 @@
       top: 86px;
       transform: translateX(-50%) rotate(calc(var(--scroll) * 220deg));
       background:
-        radial-gradient(circle at 42% 34%, rgba(255,255,255,0.92), rgba(255,255,255,0.1) 11%, transparent 13%),
-        radial-gradient(circle at 54% 44%, rgba(34,211,238,0.72), transparent 18%),
-        radial-gradient(circle at 36% 60%, rgba(139,92,246,0.76), transparent 28%),
-        radial-gradient(circle at 62% 62%, rgba(255,45,157,0.46), transparent 32%),
+        radial-gradient(circle at 42% 34%, rgba(255,255,255,0.86), rgba(255,255,255,0.1) 10%, transparent 13%),
+        radial-gradient(circle at 54% 44%, rgba(34,211,238,0.62), transparent 18%),
+        radial-gradient(circle at 36% 60%, rgba(139,92,246,0.74), transparent 28%),
+        radial-gradient(circle at 62% 62%, rgba(255,45,157,0.44), transparent 32%),
         radial-gradient(circle at 50% 50%, rgba(15,23,42,0.92), rgba(8,8,18,0.96) 65%, transparent 70%);
       box-shadow:
         inset -34px -28px 70px rgba(0,0,0,0.46),
@@ -93,22 +92,6 @@
         0 0 180px rgba(34,211,238,0.12);
       opacity: calc(0.78 - (var(--scroll) * 0.25));
       animation: orb-breathe 8s ease-in-out infinite alternate;
-    }
-
-    .orb::before,
-    .orb::after {
-      content: "";
-      position: absolute;
-      inset: -7%;
-      border-radius: inherit;
-      border: 1px solid rgba(34, 211, 238, 0.24);
-      transform: rotateX(62deg) rotateZ(-18deg);
-    }
-
-    .orb::after {
-      inset: 13%;
-      border-color: rgba(255,45,157,0.22);
-      transform: rotateX(72deg) rotateZ(24deg);
     }
 
     .aurora {
@@ -123,7 +106,7 @@
 
     @keyframes orb-breathe {
       from { filter: hue-rotate(0deg) saturate(1); }
-      to { filter: hue-rotate(18deg) saturate(1.18); }
+      to { filter: hue-rotate(18deg) saturate(1.14); }
     }
 
     @keyframes aurora-drift {
@@ -147,59 +130,30 @@
     .nav-brand { display: flex; align-items: center; gap: 12px; }
 
     .nav-logo {
-      width: 40px;
-      height: 40px;
-      border-radius: 14px;
+      width: 42px;
+      height: 42px;
+      border-radius: 15px;
       display: grid;
       place-items: center;
-      background: linear-gradient(135deg, rgba(99,102,241,0.9), rgba(255,45,157,0.75));
-      box-shadow: 0 0 32px rgba(139,92,246,0.34);
+      background:
+        linear-gradient(135deg, rgba(34,211,238,0.18), rgba(255,45,157,0.1)),
+        rgba(255,255,255,0.055);
+      border: 1px solid rgba(255,255,255,0.14);
+      box-shadow: 0 0 32px rgba(34,211,238,0.14);
     }
 
-    .nav-logo svg { width: 22px; height: 22px; fill: white; }
-    .nav-title { font-size: 15px; font-weight: 800; letter-spacing: -0.02em; }
+    .nav-logo svg { width: 28px; height: 28px; fill: none; stroke: white; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+    .nav-title { font-size: 15px; font-weight: 850; letter-spacing: -0.02em; }
     .nav-title span { color: var(--cyan); }
 
-    .nav-links {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      font-size: 13px;
-      color: var(--muted);
-    }
-
-    .nav-links a,
-    .nav-tag {
-      text-decoration: none;
-      padding: 8px 12px;
-      border-radius: 999px;
-      border: 1px solid transparent;
-    }
-
-    .nav-links a:hover,
-    .nav-tag {
-      color: var(--text);
-      border-color: rgba(148,163,184,0.16);
-      background: rgba(255,255,255,0.04);
-    }
+    .nav-links { display: flex; align-items: center; gap: 10px; font-size: 13px; color: var(--muted); }
+    .nav-links a, .nav-tag { text-decoration: none; padding: 8px 12px; border-radius: 999px; border: 1px solid transparent; }
+    .nav-links a:hover, .nav-tag { color: var(--text); border-color: rgba(148,163,184,0.16); background: rgba(255,255,255,0.04); }
 
     main { position: relative; z-index: 5; }
 
-    .hero {
-      min-height: 94vh;
-      display: grid;
-      align-items: center;
-      padding: 112px clamp(20px, 5vw, 72px) 96px;
-    }
-
-    .hero-grid {
-      width: min(1180px, 100%);
-      margin: 0 auto;
-      display: grid;
-      grid-template-columns: minmax(0, 1.05fr) minmax(320px, 0.95fr);
-      gap: clamp(40px, 6vw, 84px);
-      align-items: center;
-    }
+    .hero { min-height: 94vh; display: grid; align-items: center; padding: 112px clamp(20px, 5vw, 72px) 96px; }
+    .hero-grid { width: min(1180px, 100%); margin: 0 auto; display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(320px, 0.95fr); gap: clamp(40px, 6vw, 84px); align-items: center; }
 
     .eyebrow {
       display: inline-flex;
@@ -211,48 +165,18 @@
       background: rgba(139,92,246,0.1);
       border: 1px solid rgba(196,181,253,0.14);
       font-size: 13px;
-      font-weight: 700;
+      font-weight: 780;
       letter-spacing: 0.02em;
       margin-bottom: 26px;
     }
 
-    .status-dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 999px;
-      background: var(--green);
-      box-shadow: 0 0 18px rgba(34,197,94,0.9);
-      animation: pulse 1.8s ease-in-out infinite;
-    }
-
+    .status-dot { width: 8px; height: 8px; border-radius: 999px; background: var(--green); box-shadow: 0 0 18px rgba(34,197,94,0.9); animation: pulse 1.8s ease-in-out infinite; }
     @keyframes pulse { 50% { opacity: 0.45; transform: scale(0.78); } }
 
-    h1 {
-      max-width: 820px;
-      font-size: clamp(44px, 8vw, 92px);
-      line-height: 0.94;
-      letter-spacing: -0.075em;
-      font-weight: 900;
-      margin-bottom: 26px;
-    }
+    h1 { max-width: 820px; font-size: clamp(44px, 8vw, 92px); line-height: 0.94; letter-spacing: -0.075em; font-weight: 900; margin-bottom: 26px; }
+    h1 span { display: block; background: linear-gradient(115deg, #fff 0%, #dbeafe 24%, #a78bfa 58%, #22d3ee 100%); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; text-shadow: 0 0 60px rgba(139,92,246,0.2); }
 
-    h1 span {
-      display: block;
-      background: linear-gradient(115deg, #fff 0%, #dbeafe 24%, #a78bfa 58%, #22d3ee 100%);
-      -webkit-background-clip: text;
-      background-clip: text;
-      -webkit-text-fill-color: transparent;
-      text-shadow: 0 0 60px rgba(139,92,246,0.2);
-    }
-
-    .hero-copy {
-      max-width: 650px;
-      color: #b6c2d4;
-      font-size: clamp(17px, 2vw, 21px);
-      line-height: 1.68;
-      margin-bottom: 34px;
-    }
-
+    .hero-copy { max-width: 650px; color: #b6c2d4; font-size: clamp(17px, 2vw, 21px); line-height: 1.68; margin-bottom: 34px; }
     .hero-actions { display: flex; flex-wrap: wrap; gap: 14px; align-items: center; }
 
     .button {
@@ -265,28 +189,39 @@
       border-radius: 16px;
       border: 1px solid rgba(255,255,255,0.1);
       font-size: 14px;
-      font-weight: 800;
+      font-weight: 820;
       text-decoration: none;
       cursor: pointer;
       transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
     }
-
-    .button-primary {
-      color: white;
-      background: linear-gradient(135deg, var(--violet), var(--purple), var(--pink));
-      box-shadow: 0 18px 50px rgba(139,92,246,0.32);
-    }
-
-    .button-secondary {
-      color: var(--text);
-      background: rgba(255,255,255,0.05);
-      backdrop-filter: blur(14px);
-    }
-
+    .button-primary { color: white; background: linear-gradient(135deg, var(--violet), var(--purple), var(--pink)); box-shadow: 0 18px 50px rgba(139,92,246,0.32); }
+    .button-secondary { color: var(--text); background: rgba(255,255,255,0.05); backdrop-filter: blur(14px); }
     .button:hover { transform: translateY(-3px); border-color: rgba(255,255,255,0.22); }
     .button svg { width: 18px; height: 18px; fill: currentColor; }
 
-    .hero-orbit-card {
+    .glass-wall-invite {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      gap: 14px;
+      align-items: center;
+      margin-top: 26px;
+      max-width: 560px;
+      padding: 14px 16px;
+      color: white;
+      text-decoration: none;
+      border: 1px solid rgba(34,211,238,0.18);
+      border-radius: 20px;
+      background: rgba(8, 8, 18, 0.62);
+      box-shadow: 0 18px 50px rgba(34,211,238,0.08);
+      backdrop-filter: blur(18px);
+    }
+    .glass-wall-copy { display: grid; gap: 4px; }
+    .glass-wall-copy strong { font-size: 13px; }
+    .glass-wall-copy span { color: var(--muted); font-size: 12px; line-height: 1.45; }
+    .pixel-gif { color: var(--cyan); filter: drop-shadow(0 0 12px var(--cyan)); }
+    .glass-wall-arrow { color: var(--cyan); }
+
+    .hero-observation-card {
       position: relative;
       min-height: 560px;
       border-radius: 40px;
@@ -298,476 +233,131 @@
       overflow: hidden;
       backdrop-filter: blur(18px);
     }
-
-    .hero-orbit-card::before {
+    .hero-observation-card::before {
       content: "";
       position: absolute;
-      width: 460px;
-      aspect-ratio: 1;
-      border-radius: 999px;
-      left: 50%;
-      top: 52%;
-      transform: translate(-50%, -50%) rotate(calc(var(--scroll) * 320deg));
+      inset: 18px;
+      border-radius: 32px;
+      border: 1px solid rgba(255,255,255,0.08);
       background:
-        radial-gradient(circle at 36% 28%, rgba(255,255,255,0.76), transparent 7%),
-        radial-gradient(circle at 54% 40%, rgba(34,211,238,0.62), transparent 23%),
-        radial-gradient(circle at 42% 60%, rgba(139,92,246,0.82), transparent 35%),
-        radial-gradient(circle at 55% 55%, rgba(255,45,157,0.42), transparent 43%),
-        #080812;
-      box-shadow:
-        inset -30px -24px 60px rgba(0,0,0,0.55),
-        0 0 100px rgba(99,102,241,0.28);
-      animation: card-planet 18s linear infinite;
+        linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+      background-size: 30px 30px;
+      mask-image: linear-gradient(to bottom, black, transparent 88%);
     }
-
-    .hero-orbit-card::after {
+    .hero-observation-card::after {
       content: "";
       position: absolute;
-      inset: 10%;
-      border-radius: 999px;
-      border: 1px solid rgba(34,211,238,0.18);
-      transform: rotateX(68deg) rotateZ(-18deg);
-      box-shadow: 0 0 40px rgba(34,211,238,0.1);
+      width: 520px;
+      height: 520px;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%) rotate(calc(var(--scroll) * 180deg));
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(34,211,238,0.12), rgba(139,92,246,0.1) 38%, transparent 70%);
+      filter: blur(8px);
     }
 
-    @keyframes card-planet { to { filter: hue-rotate(30deg); } }
+    .architectural-line {
+      position: absolute;
+      left: 50%;
+      top: 54%;
+      width: min(86%, 440px);
+      transform: translate(-50%, -50%);
+      z-index: 1;
+      opacity: 0.9;
+      filter: drop-shadow(0 0 30px rgba(34,211,238,0.22));
+    }
+    .architectural-line path, .architectural-line line, .architectural-line rect, .architectural-line circle { stroke: rgba(226, 232, 240, 0.86); stroke-width: 1.3; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+    .architectural-line .accent { stroke: rgba(34,211,238,0.78); }
+    .architectural-line .warm { stroke: rgba(245,158,11,0.68); }
 
-    .floating-chip {
+    .panel-node {
       position: absolute;
       z-index: 2;
-      width: min(230px, 45%);
-      padding: 16px;
-      border-radius: 22px;
-      background: rgba(11, 11, 24, 0.72);
-      border: 1px solid rgba(255,255,255,0.1);
-      box-shadow: 0 18px 48px rgba(0,0,0,0.28);
-      backdrop-filter: blur(20px);
-      animation: float-chip 5.5s ease-in-out infinite alternate;
-    }
-
-    .floating-chip strong { display: block; font-size: 14px; margin-bottom: 6px; }
-    .floating-chip span { display: block; color: var(--muted); font-size: 12px; line-height: 1.45; }
-    .chip-a { top: 38px; left: 34px; }
-    .chip-b { right: 34px; top: 150px; animation-delay: 0.8s; }
-    .chip-c { left: 48px; bottom: 44px; animation-delay: 1.2s; }
-    .chip-d { right: 34px; bottom: 90px; animation-delay: 0.4s; }
-
-    @keyframes float-chip { to { transform: translateY(-8px); } }
-
-    .glass-wall-invite {
-      position: relative;
-      display: grid;
-      grid-template-columns: auto 1fr auto;
-      align-items: center;
-      gap: 16px;
-      width: min(660px, 100%);
-      margin: 30px 0 0;
-      padding: 14px 16px;
-      border: 2px solid var(--pink);
-      border-radius: 20px;
-      background:
-        linear-gradient(135deg, rgba(255,45,157,0.16), rgba(34,211,238,0.08)),
-        repeating-linear-gradient(90deg, rgba(255,255,255,0.035) 0 1px, transparent 1px 8px);
-      box-shadow: 0 0 22px rgba(255,45,157,0.5), inset 0 0 24px rgba(34,211,238,0.08);
-      text-decoration: none;
-      color: #f8fafc;
-      overflow: hidden;
-      transition: transform 0.22s ease, box-shadow 0.22s ease;
-    }
-
-    .glass-wall-invite::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.22), transparent);
-      transform: translateX(-120%);
-      animation: neon-scan 3s linear infinite;
-      pointer-events: none;
-    }
-
-    @keyframes neon-scan {
-      0% { transform: translateX(-120%); }
-      55%, 100% { transform: translateX(120%); }
-    }
-
-    .pixel-gif {
-      width: 48px;
-      height: 48px;
-      border-radius: 14px;
-      display: grid;
-      place-items: center;
-      background: #090914;
-      border: 1px solid rgba(34,211,238,0.65);
-      box-shadow: 0 0 16px rgba(34,211,238,0.45);
-      font-size: 26px;
-      animation: pixel-bounce 0.9s steps(2, end) infinite;
-    }
-
-    @keyframes pixel-bounce {
-      0%, 100% { transform: translateY(0) rotate(-2deg); filter: hue-rotate(0deg); }
-      50% { transform: translateY(-3px) rotate(2deg); filter: hue-rotate(55deg); }
-    }
-
-    .glass-wall-copy { text-align: left; }
-    .glass-wall-copy strong {
-      display: block;
-      color: var(--cyan);
-      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-      font-size: 12px;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-      text-shadow: 0 0 12px rgba(34,211,238,0.75);
-    }
-    .glass-wall-copy span {
-      display: block;
-      margin-top: 4px;
-      color: #f0abfc;
-      font-size: 14px;
-      font-weight: 800;
-    }
-    .glass-wall-arrow {
-      color: var(--pink);
-      font-size: 26px;
-      font-weight: 900;
-      text-shadow: 0 0 14px rgba(255,45,157,0.85);
-      animation: arrow-blink 1s steps(2, end) infinite;
-    }
-    @keyframes arrow-blink { 50% { opacity: 0.45; } }
-    .glass-wall-invite:hover { transform: translateY(-3px); box-shadow: 0 0 30px rgba(255,45,157,0.72), 0 0 46px rgba(34,211,238,0.22); }
-
-    .section {
-      padding: clamp(76px, 10vw, 132px) clamp(20px, 5vw, 72px);
-      position: relative;
-    }
-
-    .section::before {
-      content: "";
-      position: absolute;
-      left: 0;
-      right: 0;
-      top: -110px;
-      height: 220px;
-      background: linear-gradient(180deg, transparent, rgba(7,7,18,0.92), transparent);
-      pointer-events: none;
-    }
-
-    .section-inner { width: min(1180px, 100%); margin: 0 auto; position: relative; z-index: 1; }
-    .section-kicker { color: var(--cyan); font-size: 13px; font-weight: 900; letter-spacing: 0.14em; text-transform: uppercase; margin-bottom: 16px; }
-    .section-title { font-size: clamp(34px, 5vw, 62px); line-height: 1; letter-spacing: -0.055em; font-weight: 900; margin-bottom: 22px; }
-    .section-lead { color: var(--muted); font-size: 18px; line-height: 1.7; max-width: 720px; }
-
-    .cinematic-strip {
-      position: relative;
-      padding: 0 clamp(20px, 5vw, 72px) clamp(82px, 10vw, 120px);
-      min-height: 150vh;
-    }
-
-    .cinematic-stage {
-      position: sticky;
-      top: 86px;
-      width: min(1180px, 100%);
-      margin: 0 auto;
-      min-height: calc(100vh - 110px);
-      display: grid;
-      place-items: center;
-    }
-
-    .stage-core {
-      position: relative;
-      width: min(620px, 78vw);
-      aspect-ratio: 1;
-      border-radius: 999px;
-      background:
-        radial-gradient(circle at 42% 30%, rgba(255,255,255,0.78), transparent 8%),
-        radial-gradient(circle at 54% 42%, rgba(34,211,238,0.68), transparent 21%),
-        radial-gradient(circle at 38% 62%, rgba(139,92,246,0.82), transparent 35%),
-        radial-gradient(circle at 62% 58%, rgba(255,45,157,0.44), transparent 42%),
-        radial-gradient(circle, rgba(13,16,35,0.96), rgba(6,6,16,0.82) 63%, transparent 70%);
-      box-shadow:
-        inset -38px -28px 80px rgba(0,0,0,0.5),
-        0 0 120px rgba(139,92,246,0.25),
-        0 0 190px rgba(34,211,238,0.1);
-      transform: rotate(calc(var(--scroll) * 420deg));
-      animation: stage-glow 10s ease-in-out infinite alternate;
-    }
-
-    .stage-core::before,
-    .stage-core::after {
-      content: "";
-      position: absolute;
-      inset: -8%;
-      border-radius: inherit;
-      border: 1px solid rgba(34,211,238,0.2);
-      transform: rotateX(70deg) rotateZ(-22deg);
-    }
-
-    .stage-core::after {
-      inset: 16%;
-      border-color: rgba(255,45,157,0.22);
-      transform: rotateX(74deg) rotateZ(24deg);
-    }
-
-    @keyframes stage-glow { to { filter: hue-rotate(18deg) saturate(1.12); } }
-
-    .story-card {
-      position: absolute;
-      width: min(280px, 34vw);
-      padding: 22px;
-      border-radius: 28px;
-      background: rgba(9, 9, 22, 0.74);
-      border: 1px solid rgba(255,255,255,0.1);
-      box-shadow: 0 26px 70px rgba(0,0,0,0.34);
-      backdrop-filter: blur(20px);
-    }
-
-    .story-card small { color: var(--cyan); font-size: 12px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.12em; }
-    .story-card h3 { margin-top: 12px; font-size: 24px; letter-spacing: -0.04em; }
-    .story-card p { margin-top: 10px; color: var(--muted); line-height: 1.55; font-size: 14px; }
-    .story-a { left: 0; top: 12%; }
-    .story-b { right: 0; top: 20%; }
-    .story-c { left: 8%; bottom: 14%; }
-    .story-d { right: 6%; bottom: 9%; }
-
-    .proof-grid {
-      display: grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
-      gap: 18px;
-      margin-top: 42px;
-    }
-
-    .proof-card,
-    .feature-card,
-    .embed-card,
-    .cta-card {
-      position: relative;
-      border-radius: 28px;
-      background: linear-gradient(180deg, rgba(255,255,255,0.07), rgba(255,255,255,0.025));
-      border: 1px solid rgba(255,255,255,0.08);
-      box-shadow: 0 18px 56px rgba(0,0,0,0.24);
-      overflow: hidden;
-      backdrop-filter: blur(18px);
-    }
-
-    .proof-card { padding: 26px; min-height: 190px; }
-    .proof-card::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background: radial-gradient(circle at top right, rgba(139,92,246,0.18), transparent 50%);
-      pointer-events: none;
-    }
-    .proof-card small { position: relative; color: var(--quiet); font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.1em; }
-    .proof-card strong { position: relative; display: block; margin-top: 26px; font-size: 28px; letter-spacing: -0.04em; }
-    .proof-card p { position: relative; margin-top: 10px; color: var(--muted); line-height: 1.5; font-size: 14px; }
-
-    .flow-section { padding-top: 40px; }
-    .flow-layout {
-      margin-top: 48px;
-      display: grid;
-      grid-template-columns: 0.9fr 1.1fr;
-      gap: 32px;
-      align-items: stretch;
-    }
-
-    .flow-steps { display: grid; gap: 14px; }
-    .flow-step {
-      padding: 20px;
-      border-radius: 22px;
-      background: rgba(255,255,255,0.045);
-      border: 1px solid rgba(255,255,255,0.07);
-    }
-    .flow-step b { color: var(--text); }
-    .flow-step p { color: var(--muted); margin-top: 8px; line-height: 1.55; }
-
-    .pipeline {
-      position: relative;
-      min-height: 520px;
-      border-radius: 34px;
-      background:
-        radial-gradient(circle at 50% 40%, rgba(34,211,238,0.14), transparent 38%),
-        rgba(255,255,255,0.035);
-      border: 1px solid rgba(255,255,255,0.08);
-      overflow: hidden;
-    }
-
-    .pipeline::after {
-      content: "";
-      position: absolute;
-      inset: 16%;
-      border-radius: 999px;
-      border: 1px dashed rgba(148,163,184,0.18);
-      animation: slow-spin 18s linear infinite;
-    }
-
-    .pipeline-node {
-      position: absolute;
-      width: 132px;
-      min-height: 92px;
-      display: grid;
-      place-items: center;
-      text-align: center;
+      width: 220px;
       padding: 14px;
-      border-radius: 24px;
-      background: rgba(8,8,18,0.74);
-      border: 1px solid rgba(34,211,238,0.18);
-      box-shadow: 0 0 28px rgba(34,211,238,0.08);
-      color: #dbeafe;
-      font-size: 13px;
-      font-weight: 800;
-      z-index: 1;
+      border-radius: 18px;
+      border: 1px solid rgba(255,255,255,0.12);
+      background: rgba(6, 8, 20, 0.78);
+      box-shadow: 0 18px 50px rgba(0,0,0,0.26), inset 0 1px 0 rgba(255,255,255,0.07);
+      backdrop-filter: blur(16px);
     }
-    .pipeline-node:nth-child(2) { left: 8%; top: 11%; }
-    .pipeline-node:nth-child(3) { right: 10%; top: 18%; }
-    .pipeline-node:nth-child(4) { left: 34%; top: 43%; }
-    .pipeline-node:nth-child(5) { left: 10%; bottom: 13%; }
-    .pipeline-node:nth-child(6) { right: 8%; bottom: 16%; }
+    .panel-node strong { display: block; color: white; margin-bottom: 6px; font-size: 13px; letter-spacing: 0.02em; }
+    .panel-node span { display: block; color: var(--muted); font-size: 12px; line-height: 1.4; }
+    .panel-node::before { content: ""; position: absolute; left: 13px; top: 13px; width: 7px; height: 7px; border-radius: 999px; background: var(--cyan); box-shadow: 0 0 14px rgba(34,211,238,0.9); }
+    .panel-node strong, .panel-node span { padding-left: 15px; }
+    .node-a { left: 28px; top: 42px; }
+    .node-b { right: 28px; top: 120px; border-color: rgba(139,92,246,0.22); }
+    .node-c { left: 38px; bottom: 118px; border-color: rgba(34,211,238,0.22); }
+    .node-d { right: 28px; bottom: 42px; border-color: rgba(245,158,11,0.22); }
 
-    .pipeline-line {
-      position: absolute;
-      left: 16%;
-      right: 16%;
-      top: 50%;
-      height: 2px;
-      background: linear-gradient(90deg, transparent, rgba(34,211,238,0.6), rgba(255,45,157,0.5), transparent);
-      transform: rotate(-12deg);
-      animation: line-pulse 2.8s ease-in-out infinite;
-    }
-    @keyframes line-pulse { 50% { opacity: 0.35; filter: blur(2px); } }
-    @keyframes slow-spin { to { transform: rotate(360deg); } }
+    .section { padding: 96px clamp(20px, 5vw, 72px); }
+    .section-inner { width: min(1180px, 100%); margin: 0 auto; }
+    .section-kicker { color: var(--cyan); font-size: 12px; font-weight: 850; letter-spacing: 0.14em; text-transform: uppercase; margin-bottom: 14px; }
+    .section-title { max-width: 920px; font-size: clamp(34px, 5vw, 64px); line-height: 1.02; letter-spacing: -0.055em; margin-bottom: 20px; }
+    .section-lead { max-width: 820px; color: var(--muted); font-size: 18px; line-height: 1.7; }
 
-    .features-mosaic {
-      display: grid;
-      grid-template-columns: 1.1fr 0.9fr;
-      gap: 22px;
-      margin-top: 46px;
-    }
-    .feature-card { padding: 30px; min-height: 260px; }
-    .feature-card h3 { font-size: 26px; letter-spacing: -0.04em; }
-    .feature-card p { color: var(--muted); margin-top: 12px; line-height: 1.6; }
-    .feature-card.large {
-      min-height: 542px;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      background:
-        radial-gradient(circle at 72% 18%, rgba(255,45,157,0.22), transparent 36%),
-        radial-gradient(circle at 18% 72%, rgba(34,211,238,0.16), transparent 36%),
-        linear-gradient(180deg, rgba(255,255,255,0.07), rgba(255,255,255,0.025));
-    }
-    .mini-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; }
-    .mini-grid .feature-card { min-height: 260px; }
+    .cinematic-strip { min-height: 112vh; padding: 96px clamp(20px, 5vw, 72px); }
+    .cinematic-stage { position: sticky; top: 110px; min-height: 650px; width: min(1180px, 100%); margin: 0 auto; display: grid; place-items: center; }
+    .stage-core { width: min(420px, 74vw); aspect-ratio: 1; border-radius: 40px; border: 1px solid rgba(255,255,255,0.14); background: radial-gradient(circle at 50% 42%, rgba(34,211,238,0.22), transparent 35%), linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.02)); box-shadow: 0 0 90px rgba(99,102,241,0.18); transform: rotate(calc(-7deg + (var(--scroll) * 14deg))); }
+    .stage-core::before { content: ""; display: block; width: 78%; height: 78%; margin: 11%; border-radius: 32px; border: 1px solid rgba(255,255,255,0.12); background: linear-gradient(135deg, rgba(34,211,238,0.12), rgba(255,45,157,0.08)); }
+    .story-card { position: absolute; width: min(320px, 86vw); padding: 20px; border: 1px solid rgba(255,255,255,0.1); border-radius: 22px; background: rgba(9,9,22,0.74); backdrop-filter: blur(18px); box-shadow: 0 22px 70px rgba(0,0,0,0.25); }
+    .story-card small { color: var(--cyan); font-size: 11px; font-weight: 850; letter-spacing: 0.1em; text-transform: uppercase; }
+    .story-card h3 { margin: 10px 0 8px; font-size: 21px; letter-spacing: -0.03em; }
+    .story-card p { color: var(--muted); line-height: 1.6; font-size: 14px; }
+    .story-a { left: 0; top: 54px; }
+    .story-b { right: 0; top: 136px; }
+    .story-c { left: 32px; bottom: 80px; }
+    .story-d { right: 38px; bottom: 28px; }
 
-    .quote-section {
-      position: relative;
-      overflow: hidden;
-      background:
-        radial-gradient(circle at 24% 10%, rgba(34,211,238,0.14), transparent 26rem),
-        radial-gradient(circle at 80% 60%, rgba(255,45,157,0.14), transparent 24rem);
-    }
+    .proof-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; margin-top: 34px; }
+    .proof-card { min-height: 230px; padding: 22px; border: 1px solid rgba(255,255,255,0.1); border-radius: 24px; background: rgba(255,255,255,0.045); box-shadow: 0 18px 60px rgba(0,0,0,0.18); }
+    .proof-card small { color: var(--quiet); font-weight: 850; }
+    .proof-card strong { display: block; margin: 44px 0 12px; font-size: 22px; }
+    .proof-card p { color: var(--muted); line-height: 1.6; font-size: 14px; }
 
-    .quote-card {
-      border-radius: 36px;
-      padding: clamp(34px, 7vw, 78px);
-      background:
-        linear-gradient(135deg, rgba(255,255,255,0.09), rgba(255,255,255,0.025)),
-        repeating-linear-gradient(135deg, rgba(255,255,255,0.025) 0 1px, transparent 1px 12px);
-      border: 1px solid rgba(255,255,255,0.1);
-      box-shadow: var(--shadow);
-    }
+    .quote-section { padding-top: 44px; }
+    .quote-card { padding: clamp(32px, 7vw, 74px); border-radius: 34px; border: 1px solid rgba(255,255,255,0.1); background: linear-gradient(135deg, rgba(34,211,238,0.12), rgba(139,92,246,0.09), rgba(255,45,157,0.08)); box-shadow: var(--shadow); }
+    blockquote { max-width: 980px; font-size: clamp(32px, 6vw, 72px); line-height: 1; letter-spacing: -0.065em; font-weight: 900; }
+    .quote-card p { max-width: 760px; margin-top: 22px; color: var(--muted); font-size: 17px; line-height: 1.7; }
 
-    .quote-card blockquote {
-      font-size: clamp(30px, 5vw, 66px);
-      line-height: 1.02;
-      letter-spacing: -0.055em;
-      font-weight: 900;
-      max-width: 980px;
-    }
+    .flow-layout { display: grid; grid-template-columns: minmax(0, 0.78fr) minmax(320px, 1fr); gap: 26px; margin-top: 34px; align-items: stretch; }
+    .flow-steps { display: grid; gap: 12px; }
+    .flow-step { padding: 18px; border: 1px solid rgba(255,255,255,0.1); border-radius: 20px; background: rgba(255,255,255,0.04); }
+    .flow-step b { display: block; margin-bottom: 8px; }
+    .flow-step p { color: var(--muted); line-height: 1.55; }
+    .pipeline { position: relative; min-height: 420px; border: 1px solid rgba(255,255,255,0.1); border-radius: 30px; background: rgba(7,7,18,0.66); overflow: hidden; display: grid; align-content: center; gap: 16px; padding: 32px; }
+    .pipeline-line { position: absolute; left: 50%; top: 42px; bottom: 42px; width: 1px; background: linear-gradient(to bottom, transparent, rgba(34,211,238,0.72), rgba(255,45,157,0.42), transparent); }
+    .pipeline-node { position: relative; z-index: 1; width: min(330px, 100%); margin: 0 auto; padding: 14px 16px; border-radius: 16px; border: 1px solid rgba(255,255,255,0.12); background: rgba(12,12,28,0.86); color: #e5e7eb; font-weight: 800; box-shadow: 0 18px 48px rgba(0,0,0,0.2); }
 
-    .quote-card p { margin-top: 24px; color: var(--muted); font-size: 18px; line-height: 1.7; max-width: 720px; }
+    .features-mosaic { display: grid; grid-template-columns: minmax(0, 1fr) minmax(280px, 0.82fr); gap: 16px; margin-top: 34px; }
+    .feature-card { padding: 24px; border: 1px solid rgba(255,255,255,0.1); border-radius: 26px; background: rgba(255,255,255,0.045); min-height: 190px; }
+    .feature-card.large { min-height: 396px; display: flex; flex-direction: column; justify-content: space-between; }
+    .feature-card h3 { font-size: 24px; letter-spacing: -0.04em; margin-bottom: 12px; }
+    .feature-card p { color: var(--muted); line-height: 1.65; }
+    .mini-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
 
-    .embed-card { padding: clamp(24px, 4vw, 42px); margin-top: 36px; }
-    .embed-card p { color: var(--muted); margin-bottom: 18px; }
-    code { color: #bfdbfe; }
-    .code-block {
-      position: relative;
-      border-radius: 22px;
-      padding: 24px;
-      overflow-x: auto;
-      background: #050510;
-      border: 1px solid rgba(148,163,184,0.14);
-      color: #e2e8f0;
-      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-      font-size: 13px;
-      line-height: 1.8;
-    }
+    .embed-card { margin-top: 28px; padding: 24px; border-radius: 28px; border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.045); }
+    .embed-card p { color: var(--muted); margin-bottom: 14px; }
+    .code-block { position: relative; padding: 48px 18px 18px; border-radius: 18px; background: #05070f; border: 1px solid rgba(255,255,255,0.1); color: #e2e8f0; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; font-size: 13px; line-height: 1.8; overflow-x: auto; }
     .comment { color: #64748b; }
     .tag { color: #f0abfc; }
     .attr { color: #67e8f9; }
     .value { color: #bef264; }
-    .copy-btn {
-      position: absolute;
-      top: 14px;
-      right: 14px;
-      padding: 8px 12px;
-      border: 0;
-      border-radius: 999px;
-      background: rgba(255,255,255,0.08);
-      color: white;
-      cursor: pointer;
-      font-weight: 800;
-    }
+    .copy-btn { position: absolute; top: 14px; right: 14px; padding: 8px 12px; border: 0; border-radius: 999px; background: rgba(255,255,255,0.08); color: white; cursor: pointer; font-weight: 820; }
 
     .cta-section { padding-bottom: 56px; }
-    .cta-card {
-      min-height: 520px;
-      padding: clamp(34px, 7vw, 78px);
-      display: flex;
-      flex-direction: column;
-      justify-content: flex-end;
-      background:
-        radial-gradient(circle at 72% 18%, rgba(34,211,238,0.32), transparent 30%),
-        radial-gradient(circle at 40% 52%, rgba(139,92,246,0.24), transparent 34%),
-        radial-gradient(circle at 88% 76%, rgba(255,45,157,0.22), transparent 28%),
-        linear-gradient(180deg, rgba(255,255,255,0.09), rgba(255,255,255,0.025));
-    }
-    .cta-card::before {
-      content: "";
-      position: absolute;
-      width: min(480px, 70vw);
-      aspect-ratio: 1;
-      right: -90px;
-      top: -120px;
-      border-radius: 999px;
-      background:
-        radial-gradient(circle at 40% 34%, rgba(255,255,255,0.72), transparent 7%),
-        radial-gradient(circle at 54% 40%, rgba(34,211,238,0.62), transparent 24%),
-        radial-gradient(circle at 50% 62%, rgba(139,92,246,0.72), transparent 40%),
-        rgba(7,7,18,0.82);
-      box-shadow: 0 0 110px rgba(34,211,238,0.18);
-      opacity: 0.72;
-      animation: slow-spin 30s linear infinite;
-    }
-    .cta-card > * { position: relative; z-index: 1; }
+    .cta-card { position: relative; min-height: 520px; padding: clamp(34px, 7vw, 78px); display: flex; flex-direction: column; justify-content: flex-end; overflow: hidden; border-radius: 34px; border: 1px solid rgba(255,255,255,0.1); background: radial-gradient(circle at 72% 18%, rgba(34,211,238,0.28), transparent 30%), radial-gradient(circle at 40% 52%, rgba(139,92,246,0.22), transparent 34%), radial-gradient(circle at 88% 76%, rgba(255,45,157,0.18), transparent 28%), linear-gradient(180deg, rgba(255,255,255,0.09), rgba(255,255,255,0.025)); }
     .cta-card h2 { font-size: clamp(36px, 6vw, 76px); line-height: 0.96; letter-spacing: -0.06em; max-width: 880px; }
     .cta-card p { color: var(--muted); margin: 20px 0 30px; font-size: 18px; line-height: 1.7; max-width: 720px; }
 
     footer { padding: 0 clamp(20px, 5vw, 72px) 42px; color: var(--muted); }
-    .footer-inner {
-      width: min(1180px, 100%);
-      margin: 0 auto;
-      display: flex;
-      justify-content: space-between;
-      gap: 20px;
-      padding-top: 22px;
-      border-top: 1px solid rgba(255,255,255,0.08);
-      font-size: 13px;
-    }
+    .footer-inner { width: min(1180px, 100%); margin: 0 auto; display: flex; justify-content: space-between; gap: 20px; padding-top: 22px; border-top: 1px solid rgba(255,255,255,0.08); font-size: 13px; }
 
     @media (max-width: 960px) {
-      .hero-grid,
-      .flow-layout,
-      .features-mosaic { grid-template-columns: 1fr; }
-      .hero-orbit-card { order: -1; }
+      .hero-grid, .flow-layout, .features-mosaic { grid-template-columns: 1fr; }
+      .hero-observation-card { order: -1; }
       .proof-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
       .story-card { position: relative; inset: auto; width: 100%; }
       .cinematic-stage { position: relative; top: auto; display: grid; gap: 16px; min-height: auto; }
@@ -779,10 +369,10 @@
       nav { align-items: flex-start; gap: 14px; flex-direction: column; }
       .nav-links { flex-wrap: wrap; }
       .hero { padding: 78px 18px 54px; }
-      .hero-orbit-card { min-height: 440px; border-radius: 28px; }
-      .floating-chip { width: 190px; }
-      .chip-b, .chip-d { right: 18px; }
-      .chip-a, .chip-c { left: 18px; }
+      .hero-observation-card { min-height: 520px; border-radius: 28px; }
+      .panel-node { width: 190px; padding: 12px; }
+      .node-b, .node-d { right: 14px; }
+      .node-a, .node-c { left: 14px; }
       .proof-grid, .mini-grid { grid-template-columns: 1fr; }
       .glass-wall-invite { grid-template-columns: auto 1fr; }
       .glass-wall-arrow { display: none; }
@@ -805,17 +395,17 @@
 
     <nav>
       <div class="nav-brand">
-        <div class="nav-logo">
-          <svg viewBox="0 0 24 24"><path d="M12 7V3H2v18h20V7H12zM6 19H4v-2h2v2zm0-4H4v-2h2v2zm0-4H4V9h2v2zm0-4H4V5h2v2zm4 12H8v-2h2v2zm0-4H8v-2h2v2zm0-4H8V9h2v2zm0-4H8V5h2v2zm10 12h-8v-2h2v-2h-2v-2h2v-2h-2V9h8v10zm-2-8h-2v2h2v-2zm0 4h-2v2h2v-2z"/></svg>
+        <div class="nav-logo" aria-hidden="true">
+          <svg viewBox="0 0 36 36"><path d="M5 29h26M7 29V17h22v12M10 17c0-5 4-9 8-9s8 4 8 9M13 29v-7M18 29v-8M23 29v-7M8 17h20M18 8V5M18 5h4"/></svg>
         </div>
         <span class="nav-title">LA Muni <span>RAG</span></span>
       </div>
       <div class="nav-links">
         <a href="#evidencia">Evidencia</a>
-        <a href="#scroll-story">Scroll story</a>
+        <a href="#scroll-story">Relato</a>
         <a href="#flujo">Flujo</a>
         <a href="#widget">Widget</a>
-        <span class="nav-tag">SHIP demo</span>
+        <span class="nav-tag">Vista pública</span>
       </div>
     </nav>
 
@@ -826,12 +416,12 @@
             <div class="eyebrow"><span class="status-dot"></span>RAG municipal con evidencia verificable</div>
             <h1>Consulta pública. <span>Sin caja negra.</span></h1>
             <p class="hero-copy">
-              Una interfaz para preguntar sobre documentos municipales de La Antigua Guatemala y recibir respuestas con citas, trazabilidad y estado de confianza. Diseñado para que un ciudadano, un analista o un CTO puedan auditar el resultado.
+              Asistente documental para la Municipalidad de La Antigua Guatemala. Permite hacer preguntas sobre documentos municipales con evidencia, citas y trazabilidad. Si no existe evidencia suficiente, el sistema debe decirlo.
             </p>
             <div class="hero-actions">
               <button class="button button-primary" id="open-chat-btn">
                 <svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H5.2L4 17.2V4h16v12z"/></svg>
-                Abrir Asistente
+                Abrir asistente
               </button>
               <a class="button button-secondary" href="#scroll-story">Ver experiencia</a>
             </div>
@@ -839,18 +429,33 @@
             <a class="glass-wall-invite" href="/glass-wall.html" aria-label="Abrir RAG Glass Wall técnico">
               <span class="pixel-gif" aria-hidden="true">◈</span>
               <span class="glass-wall-copy">
-                <strong>¿Quieres saber cómo se construye técnicamente?</strong>
-                <span>Entra al Glass Wall del RAG — modo CTO 90s neon</span>
+                <strong>¿Necesitas inspeccionar el flujo técnico?</strong>
+                <span>Abre Glass Wall: sala técnica con ruta de consulta, evidencia y salida segura.</span>
               </span>
               <span class="glass-wall-arrow" aria-hidden="true">➜</span>
             </a>
           </div>
 
-          <div class="hero-orbit-card" aria-label="Mapa visual del flujo RAG">
-            <div class="floating-chip chip-a"><strong>Consulta</strong><span>Pregunta en lenguaje natural, con contexto municipal.</span></div>
-            <div class="floating-chip chip-b"><strong>Retrieval</strong><span>Keyword, phrase, vector e híbrido según disponibilidad.</span></div>
-            <div class="floating-chip chip-c"><strong>Evidencia</strong><span>Citas, documento, página y fragmento auditable.</span></div>
-            <div class="floating-chip chip-d"><strong>Respuesta</strong><span>Si no hay base suficiente, el sistema responde not_found.</span></div>
+          <div class="hero-observation-card" aria-label="Sala de observación institucional con arquitectura colonial de Antigua Guatemala">
+            <svg class="architectural-line" viewBox="0 0 520 320" role="img" aria-label="Silueta abstracta de arcos coloniales, fachada municipal, campanario y cúpula inspirada en La Antigua Guatemala">
+              <path class="warm" d="M52 262H468" />
+              <path d="M72 262V140h376v122" />
+              <path d="M98 140h324" />
+              <path d="M118 140c0-30 24-54 54-54s54 24 54 54" />
+              <path d="M294 140c0-30 24-54 54-54s54 24 54 54" />
+              <path class="accent" d="M214 262v-78c0-26 21-47 47-47s47 21 47 47v78" />
+              <path d="M80 118h72l12-34h44l12 34h220" />
+              <path d="M326 86c8-27 36-42 62-31 20 9 32 29 30 51" />
+              <path class="accent" d="M384 54V30h26" />
+              <line x1="104" y1="166" x2="104" y2="236" />
+              <line x1="416" y1="166" x2="416" y2="236" />
+              <path d="M132 262v-46c0-19 15-34 34-34s34 15 34 34v46" />
+              <path d="M320 262v-46c0-19 15-34 34-34s34 15 34 34v46" />
+            </svg>
+            <div class="panel-node node-a"><strong>Consulta</strong><span>Pregunta ciudadana en lenguaje natural.</span></div>
+            <div class="panel-node node-b"><strong>Recuperación</strong><span>Búsqueda documental por texto, frase y señal semántica.</span></div>
+            <div class="panel-node node-c"><strong>Evidencia</strong><span>Fragmentos citables antes de redactar la respuesta.</span></div>
+            <div class="panel-node node-d"><strong>Salida segura</strong><span>Respuesta o aviso claro de sin hallazgos.</span></div>
           </div>
         </div>
       </section>
@@ -859,24 +464,24 @@
         <div class="cinematic-stage">
           <div class="stage-core" aria-hidden="true"></div>
           <article class="story-card story-a"><small>01 · Corpus</small><h3>Documentos primero.</h3><p>El sistema parte de textos municipales normalizados, versionados y preparados para búsqueda.</p></article>
-          <article class="story-card story-b"><small>02 · Retrieval</small><h3>La evidencia aparece antes.</h3><p>Keyword, phrase, vector e híbrido compiten para encontrar fragmentos citables.</p></article>
-          <article class="story-card story-c"><small>03 · Guardrails</small><h3>Si no hay base, no inventa.</h3><p>El estado not_found es parte del producto, no un error de diseño.</p></article>
-          <article class="story-card story-d"><small>04 · Eval</small><h3>La calidad se mide.</h3><p>Casos dorados validan que las citas correctas sigan apareciendo después de cada cambio.</p></article>
+          <article class="story-card story-b"><small>02 · Evidencia</small><h3>La base aparece antes.</h3><p>La búsqueda documental ubica fragmentos citables antes de construir una respuesta.</p></article>
+          <article class="story-card story-c"><small>03 · Seguridad</small><h3>Si no hay base, no inventa.</h3><p>El estado de sin hallazgos es parte del producto, no un error de diseño.</p></article>
+          <article class="story-card story-d"><small>04 · Trazabilidad</small><h3>La decisión queda visible.</h3><p>Cada respuesta debe poder rastrearse hasta documento, cita y fragmento disponible.</p></article>
         </div>
       </section>
 
       <section class="section" id="evidencia">
         <div class="section-inner">
-          <div class="section-kicker">Evidence-first UX</div>
-          <h2 class="section-title">El frontend ahora explica por qué confiar.</h2>
+          <div class="section-kicker">Experiencia con evidencia</div>
+          <h2 class="section-title">El frontend explica por qué confiar.</h2>
           <p class="section-lead">
-            La página deja de vender solo un chatbot. Ahora presenta el sistema como una capa de consulta pública con trazabilidad, recuperación híbrida, evaluación offline y transparencia operativa.
+            La página presenta el sistema como una capa de consulta pública con trazabilidad, recuperación documental y transparencia operativa. No vende magia: muestra evidencia, límites y ruta de inspección.
           </p>
           <div class="proof-grid">
             <article class="proof-card"><small>01</small><strong>Citas</strong><p>Documento, página y fragmento se muestran como evidencia, no como decoración.</p></article>
-            <article class="proof-card"><small>02</small><strong>RAG</strong><p>La narrativa separa consulta, recuperación, evidencia y respuesta.</p></article>
-            <article class="proof-card"><small>03</small><strong>Eval</strong><p>El nuevo harness permite proteger calidad de retrieval con casos dorados.</p></article>
-            <article class="proof-card"><small>04</small><strong>Glass Wall</strong><p>El CTO mode permite inspeccionar el flujo sin exponer secretos ni razonamiento interno.</p></article>
+            <article class="proof-card"><small>02</small><strong>Separación</strong><p>La narrativa distingue consulta, búsqueda, evidencia y respuesta.</p></article>
+            <article class="proof-card"><small>03</small><strong>Límites</strong><p>Cuando falta base documental, la interfaz debe reconocerlo con claridad.</p></article>
+            <article class="proof-card"><small>04</small><strong>Glass Wall</strong><p>La sala técnica permite inspeccionar el flujo sin exponer secretos ni razonamiento oculto.</p></article>
           </div>
         </div>
       </section>
@@ -884,31 +489,31 @@
       <section class="section quote-section">
         <div class="section-inner">
           <div class="quote-card">
-            <div class="section-kicker">Motion narrative</div>
-            <blockquote>Una experiencia RAG debe sentirse como un sistema vivo, pero comportarse como una auditoría.</blockquote>
-            <p>El visual principal se mantiene coherente mientras el usuario avanza: primero se entiende el producto, luego el flujo, después la evidencia y finalmente la instalación.</p>
+            <div class="section-kicker">Narrativa institucional</div>
+            <blockquote>Una experiencia RAG debe sentirse viva, pero comportarse como una auditoría.</blockquote>
+            <p>El visual principal usa una sala de observación sobria: arcos coloniales, fachada lineal, placas de vidrio y jerarquía clara para explicar cómo la consulta llega a evidencia verificable.</p>
           </div>
         </div>
       </section>
 
       <section class="section flow-section" id="flujo">
         <div class="section-inner">
-          <div class="section-kicker">Pipeline visual</div>
+          <div class="section-kicker">Flujo visual</div>
           <h2 class="section-title">Del documento municipal a una respuesta auditable.</h2>
           <div class="flow-layout">
             <div class="flow-steps">
               <div class="flow-step"><b>1. Corpus</b><p>Documentos normalizados, versionados y preparados para búsqueda.</p></div>
-              <div class="flow-step"><b>2. Retrieval</b><p>Recuperación híbrida con fallback seguro cuando no hay vector store.</p></div>
-              <div class="flow-step"><b>3. Evidencia</b><p>El sistema prioriza fragmentos citables antes de generar una respuesta.</p></div>
-              <div class="flow-step"><b>4. Evaluación</b><p>Casos offline validan que la evidencia esperada siga apareciendo.</p></div>
+              <div class="flow-step"><b>2. Recuperación documental</b><p>Rutas por frase exacta, búsqueda léxica y señal semántica cuando está disponible.</p></div>
+              <div class="flow-step"><b>3. Evidencia</b><p>El sistema prioriza fragmentos citables antes de redactar una respuesta.</p></div>
+              <div class="flow-step"><b>4. Respuesta</b><p>La salida distingue respuesta fundada, cita disponible o sin hallazgos suficientes.</p></div>
             </div>
             <div class="pipeline" aria-hidden="true">
               <div class="pipeline-line"></div>
-              <div class="pipeline-node">Corpus</div>
-              <div class="pipeline-node">Embedding</div>
-              <div class="pipeline-node">Hybrid rank</div>
-              <div class="pipeline-node">Evidence</div>
-              <div class="pipeline-node">Answer / not_found</div>
+              <div class="pipeline-node">Corpus municipal</div>
+              <div class="pipeline-node">Consulta ciudadana</div>
+              <div class="pipeline-node">Ranking documental</div>
+              <div class="pipeline-node">Evidencia citada</div>
+              <div class="pipeline-node">Respuesta segura</div>
             </div>
           </div>
         </div>
@@ -921,16 +526,16 @@
           <div class="features-mosaic">
             <article class="feature-card large">
               <div>
-                <h3>Backfill CLI + manifest persistente</h3>
-                <p>El operador puede reindexar documentos explícitos, revisar decisiones de skip/reindex/retry y mantener estado entre corridas.</p>
+                <h3>Consulta pública con trazabilidad</h3>
+                <p>El ciudadano puede preguntar; el equipo técnico puede inspeccionar; la institución conserva una salida sobria y verificable.</p>
               </div>
               <a class="button button-secondary" href="#widget">Instalar widget</a>
             </article>
             <div class="mini-grid">
-              <article class="feature-card"><h3>Offline tests</h3><p>Sin base de datos, provider ni red para validar lógica crítica.</p></article>
-              <article class="feature-card"><h3>Safe output</h3><p>Reportes y estado sanitizado, sin claves ni URLs sensibles.</p></article>
-              <article class="feature-card"><h3>not_found</h3><p>El sistema puede decir que no encontró evidencia suficiente.</p></article>
-              <article class="feature-card"><h3>Responsive</h3><p>Layout visual premium que se adapta a móvil sin overlays pesados.</p></article>
+              <article class="feature-card"><h3>Salida segura</h3><p>Estado y resultados sanitizados, sin claves ni URLs sensibles.</p></article>
+              <article class="feature-card"><h3>Sin hallazgos</h3><p>El sistema puede decir que no encontró evidencia suficiente.</p></article>
+              <article class="feature-card"><h3>Vista técnica</h3><p>Glass Wall muestra ruta activa, evidencia y estado del sistema.</p></article>
+              <article class="feature-card"><h3>Responsive</h3><p>Layout premium que se adapta a móvil sin overlays pesados.</p></article>
             </div>
           </div>
         </div>
@@ -938,7 +543,7 @@
 
       <section class="section" id="widget">
         <div class="section-inner">
-          <div class="section-kicker">Embed</div>
+          <div class="section-kicker">Integración</div>
           <h2 class="section-title">Un widget, una línea, mismo backend RAG.</h2>
           <p class="section-lead">Integra el asistente en cualquier sitio y conserva el flujo de evidencia, estado y trazabilidad.</p>
           <div class="embed-card">
@@ -957,7 +562,7 @@
           <div class="cta-card">
             <div class="section-kicker">RAG jurídico-municipal</div>
             <h2>Consulta documentos públicos con evidencia, no con fe.</h2>
-            <p>El siguiente paso es conectar más corpus municipal, correr evals de retrieval y publicar una experiencia ciudadana auditable.</p>
+            <p>El siguiente paso funcional es mejorar la experiencia de consulta y el panel de evidencia para una revisión ciudadana más clara.</p>
             <div class="hero-actions">
               <button class="button button-primary" id="open-chat-btn-cta">Probar asistente</button>
               <a class="button button-secondary" href="/glass-wall.html">Ver Glass Wall</a>
@@ -969,8 +574,8 @@
 
     <footer>
       <div class="footer-inner">
-        <span>LA Muni RAG · Antigua Guatemala</span>
-        <span>Evidence-first municipal AI · SHIP demo</span>
+        <span>LA Muni RAG · La Antigua Guatemala</span>
+        <span>Consulta municipal con evidencia verificable</span>
       </div>
     </footer>
   </div>
