@@ -3,14 +3,14 @@
 ## Implementation
 
 - [x] Add requirements and design specs.
-- [ ] Register feature 027 in `feature_list.json`.
-- [ ] Add vector insight side panel to `public/glass-wall.html`.
-- [ ] Enrich vector, embedding, and vector store node copy.
-- [ ] Add CSS-only graph scan, edge flow, and vector pulse animation.
-- [ ] Preserve endpoint allowlist.
-- [ ] Preserve safety contract.
-- [ ] Preserve reduced-motion protection.
-- [ ] Update regression tests.
+- [x] Register feature 027 in `feature_list.json`.
+- [x] Add vector insight side panel to `public/glass-wall.html`.
+- [x] Enrich vector, embedding, and vector store node copy.
+- [x] Add CSS-only graph scan, edge flow, and vector pulse animation.
+- [x] Preserve endpoint allowlist.
+- [x] Preserve safety contract.
+- [x] Preserve reduced-motion protection.
+- [x] Update regression tests.
 - [ ] Update `progress/current.md`.
 
 ## Verification
