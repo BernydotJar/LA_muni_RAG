@@ -106,7 +106,7 @@
       "status": "done",
       "mode": "SHIP",
       "active": false,
-      "summary": "Added static RAG Glass Wall CTO/operator view, homepage neon entry point, safety/visual tests, and transparent retrieval visualization without exposing secrets or chain-of-thought."
+      "summary": "Added static RAG Glass Wall CTO/operator view, homepage neon entry point, safety/visual tests, and transparent retrieval visualization without exposing secrets or hidden model reasoning."
     },
     {
       "id": "020-corpus-backfill-cli",
@@ -124,10 +124,10 @@
     },
     {
       "id": "022-premium-rag-frontend-refresh",
-      "status": "review",
+      "status": "done",
       "mode": "SHIP",
-      "active": true,
-      "summary": "Refresh the static RAG homepage with premium dark visual language, animated CSS background, stronger product narrative, glass cards, CTA sections, and responsive layout."
+      "active": false,
+      "summary": "Refreshed the static RAG homepage and Glass Wall with premium cinematic visual language, scroll storytelling, technical-room coherence, preserved widget behavior, and static frontend regression tests."
     }
   ]
 }
