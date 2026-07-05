@@ -4,13 +4,13 @@
 
 - [x] Register feature 025 in `feature_list.json` as SHIP/review/active.
 - [x] Add requirements, design, and tasks spec files.
-- [ ] Refresh `public/widget.js` visual system.
-- [ ] Preserve `/api/chat` request behavior.
-- [ ] Preserve search mode switching.
-- [ ] Preserve citation rendering and expand/collapse behavior.
-- [ ] Preserve open/close bubble behavior.
-- [ ] Preserve responsive and reduced-motion behavior.
-- [ ] Add regression tests for premium widget shell and preserved behavior.
+- [x] Refresh `public/widget.js` visual system.
+- [x] Preserve `/api/chat` request behavior.
+- [x] Preserve search mode switching.
+- [x] Preserve citation rendering and expand/collapse behavior.
+- [x] Preserve open/close bubble behavior.
+- [x] Preserve responsive and reduced-motion behavior.
+- [x] Add regression tests for premium widget shell and preserved behavior.
 - [ ] Update `progress/current.md`.
 
 ## Verification
