@@ -3,17 +3,17 @@
 ## Implementation
 
 - [x] Add requirements and design specs.
-- [ ] Register feature 026 in `feature_list.json`.
-- [ ] Add synthesis-first response composition in `public/widget.js`.
-- [ ] Add raw retrieval-dump detection.
-- [ ] Add theme extraction from citations.
-- [ ] Add collapsible evidence section.
-- [ ] Add follow-up chips for broad queries.
-- [ ] Preserve `/api/chat` request behavior.
-- [ ] Preserve mode switching.
-- [ ] Preserve citation expansion.
-- [ ] Preserve responsive and reduced-motion behavior.
-- [ ] Add regression tests.
+- [x] Register feature 026 in `feature_list.json`.
+- [x] Add synthesis-first response composition in `public/widget.js`.
+- [x] Add raw retrieval-dump detection.
+- [x] Add theme extraction from citations.
+- [x] Add collapsible evidence section.
+- [x] Add follow-up chips for broad queries.
+- [x] Preserve `/api/chat` request behavior.
+- [x] Preserve mode switching.
+- [x] Preserve citation expansion.
+- [x] Preserve responsive and reduced-motion behavior.
+- [x] Add regression tests.
 - [ ] Update `progress/current.md`.
 
 ## Verification
