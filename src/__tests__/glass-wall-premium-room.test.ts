@@ -38,6 +38,7 @@ describe("premium glass wall technical room", () => {
     assert.match(html, /No muestra prompts/);
     assert.match(html, /credenciales/);
     assert.match(html, /llaves de proveedor/);
+    assert.match(html, /URLs de base de datos/);
   });
 
   it("uses premium panel nodes instead of the old circular node visual", async () => {
@@ -50,9 +51,36 @@ describe("premium glass wall technical room", () => {
     assert.doesNotMatch(html, /\.node-core \{ width: 20px; height: 20px; border-radius: 50%/);
   });
 
+  it("adds safe vector runtime, embedding, and vector store insight copy", async () => {
+    const html = await readGlassWall();
+
+    assert.match(html, /Vector \/ Embedding/);
+    assert.match(html, /runtime vectorial/);
+    assert.match(html, /relación con modo híbrido/);
+    assert.match(html, /query → vector/);
+    assert.match(html, /almacén vectorial/);
+    assert.match(html, /observación segura/);
+    assert.match(html, /semántica activa/);
+    assert.match(html, /semántica degradada/);
+    assert.match(html, /store consultable/);
+    assert.match(html, /store no reportado/);
+  });
+
+  it("adds CSS-only graph scan, vector pulse, and edge flow animation", async () => {
+    const html = await readGlassWall();
+
+    assert.match(html, /graph-scan/);
+    assert.match(html, /vector-breathe/);
+    assert.match(html, /edge-flow/);
+    assert.match(html, /vector-ring/);
+    assert.match(html, /vector-focus/);
+    assert.match(html, /stroke-dasharray/);
+  });
+
   it("keeps reduced motion protection", async () => {
     const html = await readGlassWall();
 
     assert.match(html, /prefers-reduced-motion/);
+    assert.match(html, /animation: none !important/);
   });
 });
