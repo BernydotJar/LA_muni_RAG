@@ -155,14 +155,21 @@
       "status": "review",
       "mode": "SHIP",
       "active": false,
-      "summary": "Compose chat answers as synthesis-first municipal responses with progressive evidence disclosure, raw retrieval-dump suppression, theme extraction, and guided follow-up chips while preserving the existing /api/chat contract."
+      "summary": "Compose chat answers as synthesis-first municipal responses with visible evidence, raw retrieval-dump suppression, theme extraction, and guided follow-up chips while preserving the existing /api/chat contract."
     },
     {
       "id": "027-glass-wall-vector-runtime-insights",
       "status": "review",
       "mode": "SHIP",
-      "active": true,
+      "active": false,
       "summary": "Enhance the Glass Wall with safe vector runtime explanations, richer embedding/vector-store node copy, vector insight panel, and CSS-only motion while preserving approved endpoint boundaries."
+    },
+    {
+      "id": "028-municipal-demo-readiness-and-evidence-copy-polish",
+      "status": "review",
+      "mode": "SHIP",
+      "active": true,
+      "summary": "Polish the widget for municipal demos with institutional answer sections, evidence-status labels, cleaned excerpts, source metadata, relevance reasons, traceability seal, and demo-ready prompts while preserving chat behavior."
     }
   ]
 }
