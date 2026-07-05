@@ -14,7 +14,7 @@ review
 
 ## Summary
 
-Feature 024 is implemented in SHIP mode and remains in review pending local command verification. This cycle stabilizes the public homepage layout across laptop, tablet, and mobile viewports after visual review showed clipped/overlapping cards, oversized cinematic decoration, sticky-navigation crowding, and widget overlap risk.
+Feature 024 is implemented in SHIP mode and remains in review pending local command verification. This cycle stabilizes the public homepage layout across laptop, tablet, and mobile viewports, then refines the premium shell after visual review: the navigation now behaves like a cinematic app rail, the hero returns to a readable side-by-side composition on laptop widths, and CSS-only motion adds polish without adding dependencies.
 
 ## Completed Implementation
 
@@ -28,9 +28,11 @@ Feature 024 is implemented in SHIP mode and remains in review pending local comm
 ## Acceptance Focus
 
 - Homepage hero fits below the sticky navigation on common laptop viewports.
+- Navigation feels like a premium cinematic app rail rather than a flat web header.
+- Hero content remains readable and side-by-side on laptop widths.
 - Antigua observation card remains bounded and does not clip panel nodes.
-- Floating panel cards use clamp/max-width constraints instead of fixed overflow-prone sizing.
-- Cinematic story section flattens before laptop/tablet overflow.
+- Floating panel cards use clamp/max-width constraints and CSS-only motion.
+- Cinematic story section flattens only at tablet/mobile widths.
 - Mobile layout turns absolute cards into readable stacked panels.
 - Anchor navigation uses scroll offsets so sticky nav does not obscure section headers.
 - Floating widget has safe-area offsets and should not cover critical copy/cards.
@@ -52,6 +54,7 @@ Feature 024 is implemented in SHIP mode and remains in review pending local comm
 - secrets
 - Glass Wall approved endpoint list
 - Glass Wall inspection behavior
+- widget implementation internals
 
 ## Verification Required
 
@@ -63,7 +66,9 @@ Run locally before closing the feature:
 
 Manual frontend review required:
 
-- `/` renders without clipped hero cards at laptop width.
+- `/` renders with the floating cinematic app rail, not a full-width flat header.
+- `/` keeps hero text readable before the visual system dominates the viewport.
+- `/` renders hero copy and Antigua observation card side-by-side at laptop width.
 - `/` keeps story cards readable around the Relato section.
 - `/` keeps the Flujo section visible below sticky navigation when reached from the nav.
 - `/` keeps widget bubble away from critical text/card content.
