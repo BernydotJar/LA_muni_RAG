@@ -24,7 +24,7 @@ describe("RAG glass wall static page", () => {
     assert.match(html, /id="glass-wall-legend-panel"/);
   });
 
-  it("contains expanded graph nodes for the CTO glass wall", async () => {
+  it("contains expanded graph nodes for the Spanish Glass Wall", async () => {
     const html = await readGlassWall();
     const expectedNodes = [
       "node-query",
@@ -72,8 +72,8 @@ describe("RAG glass wall static page", () => {
 
     assert.match(html, /href="\/glass-wall\.html"/);
     assert.match(html, /glass-wall-invite/);
-    assert.match(html, /¿Quieres saber cómo se construye técnicamente\?/);
-    assert.match(html, /modo CTO 90s neon/);
+    assert.match(html, /¿Necesitas inspeccionar el flujo técnico\?/);
+    assert.match(html, /sala técnica con ruta de consulta, evidencia y salida segura/);
   });
 
   it("references only approved application endpoints", async () => {
@@ -108,14 +108,14 @@ describe("RAG glass wall static page", () => {
     }
   });
 
-  it("declares the safe glass-wall contract and visible legend", async () => {
+  it("declares the safe glass-wall contract and visible legend in Spanish", async () => {
     const html = await readGlassWall();
 
     assert.match(html, /RAG Glass Wall/);
-    assert.match(html, /safe API output/);
-    assert.match(html, /sanitized runtime state/);
-    assert.match(html, /active path/);
-    assert.match(html, /degraded/);
-    assert.match(html, /inactive/);
+    assert.match(html, /salida segura de la API/);
+    assert.match(html, /salud sanitizada del sistema/);
+    assert.match(html, /ruta activa/);
+    assert.match(html, /degradado/);
+    assert.match(html, /inactivo/);
   });
 });
