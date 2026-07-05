@@ -154,8 +154,15 @@
       "id": "026-chat-answer-quality-and-evidence-composition",
       "status": "review",
       "mode": "SHIP",
-      "active": true,
+      "active": false,
       "summary": "Compose chat answers as synthesis-first municipal responses with progressive evidence disclosure, raw retrieval-dump suppression, theme extraction, and guided follow-up chips while preserving the existing /api/chat contract."
+    },
+    {
+      "id": "027-glass-wall-vector-runtime-insights",
+      "status": "review",
+      "mode": "SHIP",
+      "active": true,
+      "summary": "Enhance the Glass Wall with safe vector runtime explanations, richer embedding/vector-store node copy, vector insight panel, and CSS-only motion while preserving approved endpoint boundaries."
     }
   ]
 }
