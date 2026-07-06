@@ -27,6 +27,13 @@ export interface BackfillCorpusArgs {
   help: boolean;
 }
 
+export type ValidBackfillCorpusArgs = BackfillCorpusArgs & {
+  manifestPath: string;
+  inputPath: string;
+  documentKey: string;
+  documentVersion: string;
+};
+
 export interface BackfillCorpusValidationResult {
   valid: boolean;
   failures: string[];
@@ -133,24 +140,23 @@ export const resolveBackfillRuntimeMetadata = (
   };
 };
 
-const requireValidBackfillArgs = (args: BackfillCorpusArgs): asserts args is BackfillCorpusArgs & {
-  manifestPath: string;
-  inputPath: string;
-  documentKey: string;
-  documentVersion: string;
-} => {
+const toValidBackfillCorpusArgs = (args: BackfillCorpusArgs): ValidBackfillCorpusArgs => {
   const validation = validateBackfillCorpusArgs(args);
   if (!validation.valid) {
     throw new Error(`Invalid corpus backfill arguments: ${validation.failures.join(", ")}.`);
   }
+
+  return {
+    ...args,
+    manifestPath: args.manifestPath as string,
+    inputPath: args.inputPath as string,
+    documentKey: args.documentKey as string,
+    documentVersion: args.documentVersion as string,
+  };
 };
 
 const buildDocumentInput = async (
-  args: BackfillCorpusArgs & {
-    inputPath: string;
-    documentKey: string;
-    documentVersion: string;
-  },
+  args: ValidBackfillCorpusArgs,
   runtimeMetadata: BackfillCorpusRuntimeMetadata
 ): Promise<CorpusBackfillDocumentInput> => {
   const content = await readFile(args.inputPath, "utf-8");
@@ -225,12 +231,7 @@ export const formatBackfillCorpusError = (error: unknown): string => {
 };
 
 export const runBackfillCorpusDryRun = async (
-  args: BackfillCorpusArgs & {
-    manifestPath: string;
-    inputPath: string;
-    documentKey: string;
-    documentVersion: string;
-  },
+  args: ValidBackfillCorpusArgs,
   runtimeMetadata: BackfillCorpusRuntimeMetadata = resolveBackfillRuntimeMetadata()
 ): Promise<BackfillCorpusDryRunResult> => {
   const manifestStore = new JsonFileCorpusManifestStore(args.manifestPath);
@@ -253,14 +254,14 @@ export const runBackfillCorpus = async (
   args: BackfillCorpusArgs,
   runtimeMetadata: BackfillCorpusRuntimeMetadata = resolveBackfillRuntimeMetadata()
 ): Promise<CorpusBackfillResult | BackfillCorpusDryRunResult> => {
-  requireValidBackfillArgs(args);
+  const validArgs = toValidBackfillCorpusArgs(args);
 
-  if (args.dryRun) {
-    return runBackfillCorpusDryRun(args, runtimeMetadata);
+  if (validArgs.dryRun) {
+    return runBackfillCorpusDryRun(validArgs, runtimeMetadata);
   }
 
-  const manifestStore = new JsonFileCorpusManifestStore(args.manifestPath);
-  const document = await buildDocumentInput(args, runtimeMetadata);
+  const manifestStore = new JsonFileCorpusManifestStore(validArgs.manifestPath);
+  const document = await buildDocumentInput(validArgs, runtimeMetadata);
   return backfillCorpusManifest(
     { documents: [document] },
     {
