@@ -10,6 +10,8 @@ export interface ChatCitation {
   sourceType: string;
   pageStart: number | null;
   excerpt: string;
+  /** Stable public source URL when available in corpus metadata. */
+  sourceUrl?: string | null;
 }
 
 export interface ChatResponse {
@@ -105,6 +107,7 @@ const formatChatResponse = (message: string, agentResponse: AgentResponse): Chat
     sourceType: e.sourceType,
     pageStart: e.pageStart,
     excerpt: e.excerpt.length > 300 ? e.excerpt.slice(0, 300) + "…" : e.excerpt,
+    sourceUrl: e.sourceUrl ?? null,
   }));
 
   return {
