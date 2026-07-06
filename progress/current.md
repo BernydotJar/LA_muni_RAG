@@ -10,7 +10,7 @@ review
 
 ## Summary
 
-Feature 033 adds a GitHub Pages deployment path for the static public frontend. The deploy initially failed because the workflow coupled a static Pages publish to repository-wide backend gates (`npm ci`, typecheck, tests, and server build). That made Pages fail on unrelated backend/CLI issues before a static artifact could be published. The workflow is now static-only: it checks out the repo, sets up Node 24, builds `dist-pages` from `public/`, verifies the artifact, and deploys it through GitHub Pages.
+Feature 033 adds a GitHub Pages deployment path for the static public frontend. The deploy initially failed because the workflow coupled a static Pages publish to repository-wide backend gates. After decoupling those gates, the next failure showed that the repository did not yet have a Pages site configured for GitHub Actions. The workflow now passes `enablement: true` to `actions/configure-pages@v5` so Pages can be enabled/configured during the workflow run.
 
 ## Completed Implementation
 
@@ -31,6 +31,7 @@ Feature 033 adds a GitHub Pages deployment path for the static public frontend. 
 
 - GitHub Actions deploys GitHub Pages from a generated `dist-pages` artifact.
 - The Pages workflow is bounded to static artifact build and verification.
+- `actions/configure-pages@v5` uses `enablement: true` so an unconfigured Pages site can be initialized.
 - Pages artifact is generated from `public/` only.
 - `.nojekyll` is included in the Pages artifact.
 - Root-relative links are patched for project-page hosting under `/LA_muni_RAG/`.
@@ -57,8 +58,8 @@ Recommended repository health checks, separate from Pages deploy:
 
 Manual GitHub review:
 
-- Confirm the `Deploy GitHub Pages` workflow reruns successfully after the static-only correction.
-- If GitHub asks for Pages source, set repository Settings → Pages → Source to GitHub Actions.
+- Confirm the `Deploy GitHub Pages` workflow reruns successfully after the Pages enablement correction.
+- If enablement still fails due to repository settings or token permissions, set repository Settings → Pages → Source to GitHub Actions manually and rerun.
 - Confirm published URL loads the homepage.
 - Confirm `/glass-wall.html` loads from the published Pages URL.
 - Confirm widget static shell opens.
