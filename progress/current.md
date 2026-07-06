@@ -10,7 +10,7 @@ review
 
 ## Summary
 
-Feature 033 adds a GitHub Pages deployment path for the static public frontend. The first Pages workflow run failed before deployment because the required `npm run typecheck` gate surfaced a TypeScript narrowing issue in `src/cli/backfillCorpus.ts`. The deploy flow itself was correct; the failure showed that the Pages gate is enforcing repository-wide type health. A targeted hotfix now replaces assertion-only narrowing with a concrete validated args type for the backfill CLI.
+Feature 033 adds a GitHub Pages deployment path for the static public frontend. The deploy initially failed because the workflow coupled a static Pages publish to repository-wide backend gates (`npm ci`, typecheck, tests, and server build). That made Pages fail on unrelated backend/CLI issues before a static artifact could be published. The workflow is now static-only: it checks out the repo, sets up Node 24, builds `dist-pages` from `public/`, verifies the artifact, and deploys it through GitHub Pages.
 
 ## Completed Implementation
 
@@ -18,6 +18,7 @@ Feature 033 adds a GitHub Pages deployment path for the static public frontend. 
 
 - .github/workflows/deploy-pages.yml
 - scripts/build-pages.mjs
+- scripts/verify-pages-artifact.mjs
 - package.json
 - src/__tests__/github-pages-deploy.test.ts
 - src/cli/backfillCorpus.ts
@@ -29,13 +30,13 @@ Feature 033 adds a GitHub Pages deployment path for the static public frontend. 
 ## Acceptance Focus
 
 - GitHub Actions deploys GitHub Pages from a generated `dist-pages` artifact.
-- The workflow runs typecheck, tests, TypeScript build, and Pages build before deploy.
+- The Pages workflow is bounded to static artifact build and verification.
 - Pages artifact is generated from `public/` only.
 - `.nojekyll` is included in the Pages artifact.
 - Root-relative links are patched for project-page hosting under `/LA_muni_RAG/`.
-- No backend API, DB connection, embeddings, secrets, or env files are deployed to Pages.
+- The Pages artifact verifier rejects unpatched root-relative static references.
+- No backend API, DB connection, embeddings, secrets, env files, or repository-wide backend gates are part of the Pages deploy workflow.
 - The chat widget remains static unless separately configured with a deployed API URL.
-- Backfill CLI argument validation now produces a concrete `ValidBackfillCorpusArgs` type for the typecheck gate.
 
 ## Preserved Non-Goals
 
@@ -45,14 +46,18 @@ Feature 033 adds a GitHub Pages deployment path for the static public frontend. 
 
 Run locally before closing:
 
+- node scripts/build-pages.mjs
+- node scripts/verify-pages-artifact.mjs
+
+Recommended repository health checks, separate from Pages deploy:
+
 - npm run typecheck
 - npm run build
 - npm run test
-- npm run build:pages
 
 Manual GitHub review:
 
-- Confirm the `Deploy GitHub Pages` workflow reruns successfully after the hotfix commit.
+- Confirm the `Deploy GitHub Pages` workflow reruns successfully after the static-only correction.
 - If GitHub asks for Pages source, set repository Settings → Pages → Source to GitHub Actions.
 - Confirm published URL loads the homepage.
 - Confirm `/glass-wall.html` loads from the published Pages URL.
