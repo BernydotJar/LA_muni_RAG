@@ -12,6 +12,7 @@ export interface VectorCandidateInput {
   pageStart?: number | null;
   pageEnd?: number | null;
   articleNumber?: string | null;
+  sourceUrl?: string | null;
   similarity: number;
   metadata?: Record<string, unknown>;
 }
@@ -35,6 +36,7 @@ export const vectorCandidateToHybridCandidate = (candidate: VectorCandidateInput
   pageStart: candidate.pageStart,
   pageEnd: candidate.pageEnd,
   articleNumber: candidate.articleNumber,
+  sourceUrl: candidate.sourceUrl ?? null,
   scores: {
     vector: candidate.similarity,
   },
