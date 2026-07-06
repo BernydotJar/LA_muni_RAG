@@ -2,7 +2,7 @@
 
 ## Active Feature
 
-031-corpus-document-links-and-pdf-page-viewer
+032-corpus-source-url-metadata-ingestion
 
 ## State
 
@@ -10,33 +10,37 @@ review
 
 ## Summary
 
-Feature 031 continues the harness workflow after the evidence-card critique pass. The next product gap is source opening: a municipal RAG citation should eventually let the reviewer open the underlying document or PDF page. The audit found that current search rows expose document title, type, citation label, page start, and excerpt, but not a stable source URL. This feature therefore adds the optional source-link contract through evidence, hybrid candidates, and chat citations without inventing fake links.
+Feature 032 continues the harness workflow after the source-link contract. The initial schema already includes source URL columns on `rag.documents` and `rag.document_versions`, so this slice connects those existing fields to retrieval instead of adding a migration. Keyword and phrase search now select `COALESCE(v.source_url, d.source_url) AS source_url`, and the optional URL is preserved through evidence, hybrid candidates, vector candidates, chat citations, and the existing widget source action.
 
 ## Completed Implementation
 
-031 updated or added:
+032 updated or added:
 
+- src/search.ts
 - src/evidence.ts
 - src/retrieval/types.ts
+- src/retrieval/vectorRetriever.ts
 - src/chat.ts
-- src/__tests__/source-link-contract.test.ts
-- specs/031-corpus-document-links-and-pdf-page-viewer/requirements.md
-- specs/031-corpus-document-links-and-pdf-page-viewer/design.md
-- specs/031-corpus-document-links-and-pdf-page-viewer/tasks.md
+- src/__tests__/source-url-metadata-ingestion.test.ts
+- specs/032-corpus-source-url-metadata-ingestion/requirements.md
+- specs/032-corpus-source-url-metadata-ingestion/design.md
+- specs/032-corpus-source-url-metadata-ingestion/tasks.md
 
 ## Acceptance Focus
 
-- Evidence items can carry optional sourceUrl.
-- Hybrid candidates can carry optional sourceUrl.
-- Chat citations pass through sourceUrl when available.
-- Widget source actions remain honest: Abrir fuente when URL exists, Fuente no enlazada when it does not.
-- The system does not derive or invent PDF links from document names.
-- PDF/page viewer remains gated until the corpus exposes stable document URLs.
-- Existing /api/chat request shape remains unchanged.
+- Keyword search returns optional sourceUrl from version-level URL first and document-level URL second.
+- Phrase search returns optional sourceUrl using the same precedence.
+- Evidence mappings preserve sourceUrl from search results.
+- Hybrid candidates preserve sourceUrl from keyword, phrase, and vector paths.
+- Chat citations pass through sourceUrl for widget rendering.
+- Widget continues to show Abrir fuente only when sourceUrl exists.
+- Widget continues to show Fuente no enlazada when sourceUrl is absent.
+- No fake PDF links are generated from document titles.
+- No PDF viewer is added before stable URL policy is validated.
 
 ## Preserved Non-Goals
 
-031 did not modify ranking, answer generation, corpus ingestion, database schema, embeddings, auth, environment files, homepage layout, Glass Wall runtime behavior, or widget visual styling.
+032 did not modify ranking weights, answer generation, database schema, embeddings, auth, environment files, homepage layout, Glass Wall runtime behavior, or widget visual styling.
 
 ## Verification Required
 
@@ -48,13 +52,13 @@ Run locally before closing:
 
 Manual review:
 
-- Open the homepage.
-- Launch the municipal assistant.
-- Ask necesidades mas urgentes.
-- Confirm citations still show Fuente no enlazada with the current corpus.
-- Test a mocked chat payload containing sourceUrl and confirm the widget shows Abrir fuente.
-- Confirm no fake PDF links appear when sourceUrl is absent.
+- Seed or update one document/version with a safe source_url.
+- Ask a query that retrieves that document.
+- Confirm the widget shows Abrir fuente.
+- Remove or omit source_url.
+- Confirm the widget shows Fuente no enlazada.
+- Confirm no storage_uri or internal path is exposed.
 
 ## Next Recommended Feature
 
-032-corpus-source-url-metadata-ingestion
+033-source-url-seed-and-demo-document-fixture
