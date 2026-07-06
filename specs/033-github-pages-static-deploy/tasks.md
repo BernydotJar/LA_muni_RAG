@@ -13,8 +13,9 @@
 - [x] Diagnose second workflow failure as Pages/backend gate coupling.
 - [x] Add Pages artifact verification script.
 - [x] Decouple Pages workflow from backend typecheck/test/build gates.
+- [x] Diagnose third workflow failure as Pages site not enabled.
+- [x] Add `enablement: true` to configure-pages.
 - [x] Update tests and docs for static-only Pages deployment.
 - [x] Track feature review in progress file.
 - [ ] Run local verification commands.
-- [ ] Enable GitHub Pages source as GitHub Actions in repository settings if required.
 - [ ] Confirm first Pages deployment URL.
