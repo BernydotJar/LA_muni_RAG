@@ -16,6 +16,11 @@ export interface EvidenceItem {
   score: number | null;
   retrievalMode: EvidenceMode;
   matchedModes?: string[];
+  /**
+   * Optional public document URL. Current corpus search rows do not expose this
+   * yet, so mappings return null until document metadata includes a stable link.
+   */
+  sourceUrl?: string | null;
 }
 
 export interface EvidenceResponse {
@@ -47,6 +52,7 @@ export const mapKeywordResultToEvidence = (
   excerpt: stripHeadlineTags(result.snippet),
   score: result.keywordScore,
   retrievalMode: mode,
+  sourceUrl: result.sourceUrl ?? null,
 });
 
 export const mapPhraseResultToEvidence = (
@@ -60,6 +66,7 @@ export const mapPhraseResultToEvidence = (
   excerpt: result.preview,
   score: null,
   retrievalMode: mode,
+  sourceUrl: result.sourceUrl ?? null,
 });
 
 export const keywordResultToHybridCandidate = (result: KeywordSearchResult): HybridCandidate => ({
@@ -71,6 +78,7 @@ export const keywordResultToHybridCandidate = (result: KeywordSearchResult): Hyb
   excerpt: stripHeadlineTags(result.snippet),
   sourceType: result.documentType,
   pageStart: result.pageStart,
+  sourceUrl: result.sourceUrl ?? null,
   scores: {
     keyword: result.keywordScore,
   },
@@ -86,6 +94,7 @@ export const phraseResultToHybridCandidate = (result: PhraseSearchResult): Hybri
   excerpt: result.preview,
   sourceType: result.documentType,
   pageStart: result.pageStart,
+  sourceUrl: result.sourceUrl ?? null,
   scores: {
     phrase: 1,
   },
@@ -101,6 +110,7 @@ export const hybridCandidateToEvidence = (candidate: HybridCandidate): EvidenceI
   score: candidate.hybridScore,
   retrievalMode: "hybrid",
   matchedModes: candidate.matchedModes,
+  sourceUrl: candidate.sourceUrl ?? null,
 });
 
 const responseForEvidence = (
