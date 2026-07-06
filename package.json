@@ -8,6 +8,7 @@
   },
   "scripts": {
     "build": "tsc -p tsconfig.json",
+    "build:pages": "node scripts/build-pages.mjs",
     "dev:api": "tsx watch src/server.ts",
     "dev:start": "node scripts/dev-start.mjs",
     "ports:kill": "node scripts/kill-ports.mjs",
