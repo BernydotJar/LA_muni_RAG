@@ -6,7 +6,7 @@ none
 
 ## Last Completed Feature
 
-033-github-pages-static-deploy
+034-pages-api-configuration-and-demo-mode
 
 ## State
 
@@ -14,35 +14,32 @@ done
 
 ## Summary
 
-Feature 033 is closed. The repository now has a static-only GitHub Pages deployment path for the public frontend. The workflow builds `dist-pages` from `public/`, verifies the artifact, configures GitHub Pages with `enablement: true`, uploads the artifact, and deploys the static site.
-
-The deploy was intentionally bounded to static frontend assets. Backend APIs, database logic, embeddings, secrets, environment files, retrieval ranking, answer generation, Glass Wall runtime behavior, and widget runtime behavior were not deployed or modified as part of the Pages feature.
+Feature 034 is closed. GitHub Pages now has a static demo/API bridge so the public frontend remains usable even when no backend API is deployed. The Pages artifact injects `pages-demo-api.js` before `widget.js`; on `*.github.io` without an API URL, the bridge returns static municipal evidence responses. When a deployed API exists, the same frontend can route `/api/chat` through `?apiUrl=https://...` or `data-api-url` on the bridge script.
 
 ## Completed Implementation
 
-033 added or updated:
+034 added or updated:
 
-- .github/workflows/deploy-pages.yml
+- public/pages-demo-api.js
 - scripts/build-pages.mjs
 - scripts/verify-pages-artifact.mjs
-- package.json
-- src/__tests__/github-pages-deploy.test.ts
-- src/cli/backfillCorpus.ts
-- src/__tests__/backfill-cli-type-narrowing.test.ts
-- specs/033-github-pages-static-deploy/requirements.md
-- specs/033-github-pages-static-deploy/design.md
-- specs/033-github-pages-static-deploy/tasks.md
+- src/__tests__/pages-api-demo-mode.test.ts
+- specs/034-pages-api-configuration-and-demo-mode/requirements.md
+- specs/034-pages-api-configuration-and-demo-mode/design.md
+- specs/034-pages-api-configuration-and-demo-mode/tasks.md
 
 ## Final Acceptance
 
-- GitHub Pages deploy workflow exists and runs from `main` or manual dispatch.
-- Pages artifact is generated from `public/` only.
-- `.nojekyll` is included in the artifact.
-- Root-relative static references are patched for project-page hosting under `/LA_muni_RAG/`.
-- Pages artifact verification checks required files and rejects unpatched root-relative references.
-- The workflow is static-only and does not include backend typecheck/test/build gates.
-- `actions/configure-pages@v5` uses `enablement: true` to handle repositories without an existing Pages site.
-- The widget remains a static shell unless configured with a deployed API URL.
+- GitHub Pages no longer depends on a live `/api/chat` backend for demo usability.
+- The bridge intercepts only `/api/chat` requests.
+- Auto demo mode activates on `*.github.io` when no API URL is configured.
+- `?apiUrl=https://...` routes chat requests to a deployed API.
+- `data-api-url` also supports explicit API routing.
+- `data-demo-mode="false"` disables the bridge.
+- Demo citations keep `sourceUrl: null` and do not invent PDF/source links.
+- Pages build injects the bridge before `widget.js`.
+- Pages artifact verification requires the bridge file and injected script tag.
+- No backend, database, embedding, ranking, or answer-generation behavior was changed.
 
 ## Closing Notes
 
@@ -50,6 +47,10 @@ Local Pages verification commands:
 
 - node scripts/build-pages.mjs
 - node scripts/verify-pages-artifact.mjs
+
+Optional API demo URL format:
+
+- https://bernydotjar.github.io/LA_muni_RAG/?apiUrl=https://your-api.example.com
 
 Repository health checks remain recommended separately:
 
@@ -59,4 +60,4 @@ Repository health checks remain recommended separately:
 
 ## Next Recommended Feature
 
-034-pages-api-configuration-and-demo-mode
+035-public-api-deployment-target
