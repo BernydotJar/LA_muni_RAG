@@ -5,15 +5,41 @@
  * - ?apiUrl=https://example.com routes /api/chat calls to that API.
  * - data-api-url on this script does the same.
  * - data-demo-mode="auto" returns static demo evidence on *.github.io when no API URL is configured.
+ *
+ * Security boundary:
+ * - only http(s) API base URLs are accepted;
+ * - public GitHub Pages proxy mode requires https, except localhost development;
+ * - cookies/credentials are never forwarded by the bridge;
+ * - static demo citations do not include source URLs.
  */
 (function () {
   "use strict";
 
   const scriptTag = document.currentScript;
   const params = new URLSearchParams(window.location.search);
-  const configuredApiUrl = params.get("apiUrl") || scriptTag?.getAttribute("data-api-url") || "";
+  const rawConfiguredApiUrl = params.get("apiUrl") || scriptTag?.getAttribute("data-api-url") || "";
   const demoMode = scriptTag?.getAttribute("data-demo-mode") || "auto";
   const isGithubPages = window.location.hostname.endsWith("github.io");
+  const isLocalhost = (hostname) => hostname === "localhost" || hostname === "127.0.0.1" || hostname === "::1";
+
+  const sanitizeApiBaseUrl = (value) => {
+    if (!value || !String(value).trim()) return "";
+
+    try {
+      const parsed = new URL(String(value).trim());
+      if (parsed.protocol !== "https:" && parsed.protocol !== "http:") return "";
+      if (parsed.protocol === "http:" && !isLocalhost(parsed.hostname)) return "";
+      parsed.username = "";
+      parsed.password = "";
+      parsed.hash = "";
+      parsed.search = "";
+      return parsed.href;
+    } catch {
+      return "";
+    }
+  };
+
+  const configuredApiUrl = sanitizeApiBaseUrl(rawConfiguredApiUrl);
   const shouldDemo = demoMode === "true" || (demoMode === "auto" && isGithubPages && !configuredApiUrl);
   const shouldProxy = Boolean(configuredApiUrl);
 
@@ -40,6 +66,14 @@
       return "consulta municipal";
     }
   };
+
+  const safeProxyInit = (init) => ({
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: typeof init?.body === "string" ? init.body : JSON.stringify({ message: "consulta municipal", mode: "keyword", limit: 5 }),
+    credentials: "omit",
+    redirect: "error",
+  });
 
   const citation = (citationLabel, excerpt, pageStart) => ({
     citationLabel,
@@ -133,7 +167,7 @@
 
     if (shouldProxy) {
       const targetUrl = new URL("/api/chat", configuredApiUrl).href;
-      return nativeFetch(targetUrl, init);
+      return nativeFetch(targetUrl, safeProxyInit(init));
     }
 
     const message = parseMessage(init);
