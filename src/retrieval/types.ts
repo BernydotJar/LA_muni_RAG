@@ -22,6 +22,8 @@ export interface HybridCandidate {
   pageStart?: number | null;
   pageEnd?: number | null;
   articleNumber?: string | null;
+  /** Stable public source URL when document metadata exposes one. */
+  sourceUrl?: string | null;
   scores: HybridScoreComponents;
   hybridScore: number;
   metadata?: Record<string, unknown>;
