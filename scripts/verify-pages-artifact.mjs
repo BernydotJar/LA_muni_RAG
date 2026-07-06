@@ -9,6 +9,7 @@ const requiredFiles = [
   "glass-wall.html",
   "widget.js",
   "pages-demo-api.js",
+  "pages-security-guard.js",
   ".nojekyll",
 ];
 
@@ -39,6 +40,10 @@ for (const pattern of forbiddenRootRelativePatterns) {
 
 if (!indexHtml.includes('src="./pages-demo-api.js" data-demo-mode="auto"')) {
   throw new Error("GitHub Pages artifact is missing the demo/API bridge before the widget.");
+}
+
+if (!indexHtml.includes('src="./pages-security-guard.js"')) {
+  throw new Error("GitHub Pages artifact is missing the source-link security guard.");
 }
 
 console.log("GitHub Pages artifact verified.");
