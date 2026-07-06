@@ -2,15 +2,21 @@
 
 ## Active Feature
 
+none
+
+## Last Completed Feature
+
 033-github-pages-static-deploy
 
 ## State
 
-review
+done
 
 ## Summary
 
-Feature 033 adds a GitHub Pages deployment path for the static public frontend. The deploy initially failed because the workflow coupled a static Pages publish to repository-wide backend gates. After decoupling those gates, the next failure showed that the repository did not yet have a Pages site configured for GitHub Actions. The workflow now passes `enablement: true` to `actions/configure-pages@v5` so Pages can be enabled/configured during the workflow run.
+Feature 033 is closed. The repository now has a static-only GitHub Pages deployment path for the public frontend. The workflow builds `dist-pages` from `public/`, verifies the artifact, configures GitHub Pages with `enablement: true`, uploads the artifact, and deploys the static site.
+
+The deploy was intentionally bounded to static frontend assets. Backend APIs, database logic, embeddings, secrets, environment files, retrieval ranking, answer generation, Glass Wall runtime behavior, and widget runtime behavior were not deployed or modified as part of the Pages feature.
 
 ## Completed Implementation
 
@@ -27,43 +33,29 @@ Feature 033 adds a GitHub Pages deployment path for the static public frontend. 
 - specs/033-github-pages-static-deploy/design.md
 - specs/033-github-pages-static-deploy/tasks.md
 
-## Acceptance Focus
+## Final Acceptance
 
-- GitHub Actions deploys GitHub Pages from a generated `dist-pages` artifact.
-- The Pages workflow is bounded to static artifact build and verification.
-- `actions/configure-pages@v5` uses `enablement: true` so an unconfigured Pages site can be initialized.
+- GitHub Pages deploy workflow exists and runs from `main` or manual dispatch.
 - Pages artifact is generated from `public/` only.
-- `.nojekyll` is included in the Pages artifact.
-- Root-relative links are patched for project-page hosting under `/LA_muni_RAG/`.
-- The Pages artifact verifier rejects unpatched root-relative static references.
-- No backend API, DB connection, embeddings, secrets, env files, or repository-wide backend gates are part of the Pages deploy workflow.
-- The chat widget remains static unless separately configured with a deployed API URL.
+- `.nojekyll` is included in the artifact.
+- Root-relative static references are patched for project-page hosting under `/LA_muni_RAG/`.
+- Pages artifact verification checks required files and rejects unpatched root-relative references.
+- The workflow is static-only and does not include backend typecheck/test/build gates.
+- `actions/configure-pages@v5` uses `enablement: true` to handle repositories without an existing Pages site.
+- The widget remains a static shell unless configured with a deployed API URL.
 
-## Preserved Non-Goals
+## Closing Notes
 
-033 did not modify backend APIs, retrieval ranking, answer generation, corpus logic, database schema, embeddings, auth, environment files, Glass Wall runtime behavior, or widget runtime behavior.
-
-## Verification Required
-
-Run locally before closing:
+Local Pages verification commands:
 
 - node scripts/build-pages.mjs
 - node scripts/verify-pages-artifact.mjs
 
-Recommended repository health checks, separate from Pages deploy:
+Repository health checks remain recommended separately:
 
 - npm run typecheck
 - npm run build
 - npm run test
-
-Manual GitHub review:
-
-- Confirm the `Deploy GitHub Pages` workflow reruns successfully after the Pages enablement correction.
-- If enablement still fails due to repository settings or token permissions, set repository Settings → Pages → Source to GitHub Actions manually and rerun.
-- Confirm published URL loads the homepage.
-- Confirm `/glass-wall.html` loads from the published Pages URL.
-- Confirm widget static shell opens.
-- Confirm chat API still requires separate API deployment or `data-api-url` configuration.
 
 ## Next Recommended Feature
 
