@@ -8,6 +8,7 @@ const requiredFiles = [
   "index.html",
   "glass-wall.html",
   "widget.js",
+  "pages-demo-api.js",
   ".nojekyll",
 ];
 
@@ -34,6 +35,10 @@ for (const pattern of forbiddenRootRelativePatterns) {
   if (indexHtml.includes(pattern) || glassWallHtml.includes(pattern)) {
     throw new Error(`GitHub Pages artifact still contains root-relative static reference: ${pattern}`);
   }
+}
+
+if (!indexHtml.includes('src="./pages-demo-api.js" data-demo-mode="auto"')) {
+  throw new Error("GitHub Pages artifact is missing the demo/API bridge before the widget.");
 }
 
 console.log("GitHub Pages artifact verified.");
