@@ -34,7 +34,7 @@ describe("chat answer quality and evidence composition", () => {
     assert.match(widget, /aria-expanded="true"/);
     assert.match(widget, /Ocultar evidencia/);
     assert.match(widget, /Ver evidencia/);
-    assert.match(widget, /citationsDiv\.className = "muni-citations"/);
+    assert.match(widget, /citationsDiv\.className\s*=\s*"muni-citations"/);
     assert.match(widget, /const isCollapsed = citations\.classList\.toggle\("collapsed"\)/);
   });
 
