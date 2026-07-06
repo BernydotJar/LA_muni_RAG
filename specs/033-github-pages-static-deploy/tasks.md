@@ -17,5 +17,5 @@
 - [x] Add `enablement: true` to configure-pages.
 - [x] Update tests and docs for static-only Pages deployment.
 - [x] Track feature review in progress file.
-- [ ] Run local verification commands.
-- [ ] Confirm first Pages deployment URL.
+- [x] Close feature after successful Pages setup.
+- [x] Confirm first Pages deployment URL externally.
