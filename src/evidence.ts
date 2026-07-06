@@ -41,6 +41,13 @@ export interface EvidenceDependencies {
 export const stripHeadlineTags = (value: string): string =>
   value.replaceAll("<mark>", "").replaceAll("</mark>", "");
 
+type MaybeSourceUrl = { sourceUrl?: unknown };
+
+const optionalSourceUrl = (value: MaybeSourceUrl): string | null =>
+  typeof value.sourceUrl === "string" && value.sourceUrl.trim().length > 0
+    ? value.sourceUrl
+    : null;
+
 export const mapKeywordResultToEvidence = (
   result: KeywordSearchResult,
   mode: EvidenceMode = "keyword"
@@ -52,7 +59,7 @@ export const mapKeywordResultToEvidence = (
   excerpt: stripHeadlineTags(result.snippet),
   score: result.keywordScore,
   retrievalMode: mode,
-  sourceUrl: result.sourceUrl ?? null,
+  sourceUrl: optionalSourceUrl(result),
 });
 
 export const mapPhraseResultToEvidence = (
@@ -66,7 +73,7 @@ export const mapPhraseResultToEvidence = (
   excerpt: result.preview,
   score: null,
   retrievalMode: mode,
-  sourceUrl: result.sourceUrl ?? null,
+  sourceUrl: optionalSourceUrl(result),
 });
 
 export const keywordResultToHybridCandidate = (result: KeywordSearchResult): HybridCandidate => ({
@@ -78,7 +85,7 @@ export const keywordResultToHybridCandidate = (result: KeywordSearchResult): Hyb
   excerpt: stripHeadlineTags(result.snippet),
   sourceType: result.documentType,
   pageStart: result.pageStart,
-  sourceUrl: result.sourceUrl ?? null,
+  sourceUrl: optionalSourceUrl(result),
   scores: {
     keyword: result.keywordScore,
   },
@@ -94,7 +101,7 @@ export const phraseResultToHybridCandidate = (result: PhraseSearchResult): Hybri
   excerpt: result.preview,
   sourceType: result.documentType,
   pageStart: result.pageStart,
-  sourceUrl: result.sourceUrl ?? null,
+  sourceUrl: optionalSourceUrl(result),
   scores: {
     phrase: 1,
   },
@@ -110,7 +117,7 @@ export const hybridCandidateToEvidence = (candidate: HybridCandidate): EvidenceI
   score: candidate.hybridScore,
   retrievalMode: "hybrid",
   matchedModes: candidate.matchedModes,
-  sourceUrl: candidate.sourceUrl ?? null,
+  sourceUrl: optionalSourceUrl(candidate),
 });
 
 const responseForEvidence = (
