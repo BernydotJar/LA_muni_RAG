@@ -7,6 +7,9 @@
 - [x] Add `build:pages` package script.
 - [x] Add GitHub Pages Actions workflow.
 - [x] Add static deployment tests.
+- [x] Diagnose first workflow failure.
+- [x] Fix backfill CLI type narrowing that blocked the Pages gate.
+- [x] Add regression test for backfill CLI type narrowing.
 - [x] Track feature review in progress file.
 - [ ] Run local verification commands.
 - [ ] Enable GitHub Pages source as GitHub Actions in repository settings if required.
