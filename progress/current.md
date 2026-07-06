@@ -6,7 +6,7 @@ none
 
 ## Last Completed Feature
 
-034-pages-api-configuration-and-demo-mode
+035-security-review-and-pages-hardening
 
 ## State
 
@@ -14,50 +14,55 @@ done
 
 ## Summary
 
-Feature 034 is closed. GitHub Pages now has a static demo/API bridge so the public frontend remains usable even when no backend API is deployed. The Pages artifact injects `pages-demo-api.js` before `widget.js`; on `*.github.io` without an API URL, the bridge returns static municipal evidence responses. When a deployed API exists, the same frontend can route `/api/chat` through `?apiUrl=https://...` or `data-api-url` on the bridge script.
+Feature 035 is closed. A final defensive security review was completed for the GitHub Pages deployment, Pages demo/API bridge, widget source-link behavior, artifact generation, and static/backend boundary. The review hardened configurable API routing, added a Pages source-link security guard, extended artifact verification, and documented residual risks.
 
 ## Completed Implementation
 
-034 added or updated:
+035 added or updated:
 
 - public/pages-demo-api.js
+- public/pages-security-guard.js
 - scripts/build-pages.mjs
 - scripts/verify-pages-artifact.mjs
 - src/__tests__/pages-api-demo-mode.test.ts
-- specs/034-pages-api-configuration-and-demo-mode/requirements.md
-- specs/034-pages-api-configuration-and-demo-mode/design.md
-- specs/034-pages-api-configuration-and-demo-mode/tasks.md
+- src/__tests__/security-review-pages-hardening.test.ts
+- docs/security-review.md
+- specs/035-security-review-and-pages-hardening/requirements.md
+- specs/035-security-review-and-pages-hardening/design.md
+- specs/035-security-review-and-pages-hardening/tasks.md
 
 ## Final Acceptance
 
-- GitHub Pages no longer depends on a live `/api/chat` backend for demo usability.
-- The bridge intercepts only `/api/chat` requests.
-- Auto demo mode activates on `*.github.io` when no API URL is configured.
-- `?apiUrl=https://...` routes chat requests to a deployed API.
-- `data-api-url` also supports explicit API routing.
-- `data-demo-mode="false"` disables the bridge.
-- Demo citations keep `sourceUrl: null` and do not invent PDF/source links.
-- Pages build injects the bridge before `widget.js`.
-- Pages artifact verification requires the bridge file and injected script tag.
-- No backend, database, embedding, ranking, or answer-generation behavior was changed.
+- `?apiUrl=` and `data-api-url` are sanitized before proxy mode is enabled.
+- Only `https:` API URLs are accepted publicly; `http:` is limited to localhost development.
+- Username, password, query, and hash are stripped from configured API base URLs.
+- The Pages bridge omits credentials and rejects redirects when forwarding `/api/chat`.
+- Static demo citations keep `sourceUrl: null` and do not invent PDF/source links.
+- Pages includes a source-link security guard for rendered widget citation links.
+- Unsafe rendered source links are converted to `Fuente no enlazada`.
+- Safe source links receive `target="_blank"` and `rel="noopener noreferrer"`.
+- Pages artifact verification requires the bridge and security guard.
+- Findings, mitigations, and residual risks are documented in `docs/security-review.md`.
 
 ## Closing Notes
 
-Local Pages verification commands:
+This was a defensive code review and hardening pass, not a formal penetration test.
+
+Local verification commands:
 
 - node scripts/build-pages.mjs
 - node scripts/verify-pages-artifact.mjs
-
-Optional API demo URL format:
-
-- https://bernydotjar.github.io/LA_muni_RAG/?apiUrl=https://your-api.example.com
-
-Repository health checks remain recommended separately:
-
-- npm run typecheck
-- npm run build
 - npm run test
+
+Recommended future security work before a production public API:
+
+- dependency audit workflow;
+- secret scanning workflow;
+- API rate limiting;
+- production CORS allowlist;
+- request logging and abuse monitoring;
+- platform/CDN security headers.
 
 ## Next Recommended Feature
 
-035-public-api-deployment-target
+none
