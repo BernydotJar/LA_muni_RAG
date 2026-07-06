@@ -5,18 +5,22 @@ import { readFile } from "node:fs/promises";
 const readSource = (path: string): Promise<string> => readFile(path, "utf-8");
 
 describe("GitHub Pages static deployment", () => {
-  it("adds a dedicated Pages build script", async () => {
+  it("adds dedicated Pages build and verification scripts", async () => {
     const packageJson = await readSource("package.json");
     const buildScript = await readSource("scripts/build-pages.mjs");
+    const verifyScript = await readSource("scripts/verify-pages-artifact.mjs");
 
     assert.match(packageJson, /"build:pages": "node scripts\/build-pages\.mjs"/);
     assert.match(buildScript, /const sourceDir = join\(repoRoot, "public"\)/);
     assert.match(buildScript, /const outputDir = join\(repoRoot, "dist-pages"\)/);
     assert.match(buildScript, /\.nojekyll/);
+    assert.match(verifyScript, /requiredFiles/);
+    assert.match(verifyScript, /GitHub Pages artifact verified/);
   });
 
   it("patches root-relative static links for project-page hosting", async () => {
     const buildScript = await readSource("scripts/build-pages.mjs");
+    const verifyScript = await readSource("scripts/verify-pages-artifact.mjs");
 
     assert.match(buildScript, /href=\"\/glass-wall\.html\"/);
     assert.match(buildScript, /href=\"\.\/glass-wall\.html\"/);
@@ -24,9 +28,10 @@ describe("GitHub Pages static deployment", () => {
     assert.match(buildScript, /src=\"\.\/assets\//);
     assert.match(buildScript, /src=\"\/widget\.js\"/);
     assert.match(buildScript, /src=\"\.\/widget\.js\"/);
+    assert.match(verifyScript, /forbiddenRootRelativePatterns/);
   });
 
-  it("uses the official GitHub Pages actions flow", async () => {
+  it("uses a static-only GitHub Pages actions flow", async () => {
     const workflow = await readSource(".github/workflows/deploy-pages.yml");
 
     assert.match(workflow, /actions\/configure-pages@v5/);
@@ -34,8 +39,12 @@ describe("GitHub Pages static deployment", () => {
     assert.match(workflow, /actions\/deploy-pages@v4/);
     assert.match(workflow, /pages: write/);
     assert.match(workflow, /id-token: write/);
-    assert.match(workflow, /npm run build:pages/);
+    assert.match(workflow, /node scripts\/build-pages\.mjs/);
+    assert.match(workflow, /node scripts\/verify-pages-artifact\.mjs/);
     assert.match(workflow, /path: dist-pages/);
+    assert.doesNotMatch(workflow, /npm run typecheck/);
+    assert.doesNotMatch(workflow, /npm run test/);
+    assert.doesNotMatch(workflow, /npm run build\n/);
   });
 
   it("documents the static-only boundary", async () => {
