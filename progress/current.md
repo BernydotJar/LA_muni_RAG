@@ -2,7 +2,7 @@
 
 ## Active Feature
 
-030-evidence-source-action-and-premium-citation-polish
+031-corpus-document-links-and-pdf-page-viewer
 
 ## State
 
@@ -10,29 +10,33 @@ review
 
 ## Summary
 
-Feature 030 applies a critique pass to the RAG chat evidence UI. The manual review found three issues: the answer header labels were visually colliding, evidence cards were too dense for a municipal demo, and the source action state needed to feel less like debug metadata.
+Feature 031 continues the harness workflow after the evidence-card critique pass. The next product gap is source opening: a municipal RAG citation should eventually let the reviewer open the underlying document or PDF page. The audit found that current search rows expose document title, type, citation label, page start, and excerpt, but not a stable source URL. This feature therefore adds the optional source-link contract through evidence, hybrid candidates, and chat citations without inventing fake links.
 
 ## Completed Implementation
 
-030 updated:
+031 updated or added:
 
-- public/widget.js
-- src/__tests__/chat-answer-composition.test.ts
-- src/__tests__/premium-chat-widget.test.ts
-- specs/030-evidence-source-action-and-premium-citation-polish/requirements.md
-- specs/030-evidence-source-action-and-premium-citation-polish/design.md
-- specs/030-evidence-source-action-and-premium-citation-polish/tasks.md
+- src/evidence.ts
+- src/retrieval/types.ts
+- src/chat.ts
+- src/__tests__/source-link-contract.test.ts
+- specs/031-corpus-document-links-and-pdf-page-viewer/requirements.md
+- specs/031-corpus-document-links-and-pdf-page-viewer/design.md
+- specs/031-corpus-document-links-and-pdf-page-viewer/tasks.md
 
 ## Acceptance Focus
 
-- Response labels no longer read as a single run-on phrase.
-- Citation excerpts no longer use a heavy decorative rail.
-- Citation metadata is less dense by default.
-- Source availability is explicit as Abrir fuente or Fuente no enlazada.
-- Source action does not toggle citation expansion.
-- Citation body still expands and collapses.
-- Evidence remains visible by default.
-- The existing chat API request shape remains unchanged.
+- Evidence items can carry optional sourceUrl.
+- Hybrid candidates can carry optional sourceUrl.
+- Chat citations pass through sourceUrl when available.
+- Widget source actions remain honest: Abrir fuente when URL exists, Fuente no enlazada when it does not.
+- The system does not derive or invent PDF links from document names.
+- PDF/page viewer remains gated until the corpus exposes stable document URLs.
+- Existing /api/chat request shape remains unchanged.
+
+## Preserved Non-Goals
+
+031 did not modify ranking, answer generation, corpus ingestion, database schema, embeddings, auth, environment files, homepage layout, Glass Wall runtime behavior, or widget visual styling.
 
 ## Verification Required
 
@@ -47,11 +51,10 @@ Manual review:
 - Open the homepage.
 - Launch the municipal assistant.
 - Ask necesidades mas urgentes.
-- Confirm the answer header has clean spacing.
-- Confirm evidence cards are less dense.
-- Confirm the source action is readable and not visually dominant.
-- Confirm citation body expansion still works.
+- Confirm citations still show Fuente no enlazada with the current corpus.
+- Test a mocked chat payload containing sourceUrl and confirm the widget shows Abrir fuente.
+- Confirm no fake PDF links appear when sourceUrl is absent.
 
 ## Next Recommended Feature
 
-031-corpus-document-links-and-pdf-page-viewer
+032-corpus-source-url-metadata-ingestion
