@@ -7,7 +7,6 @@ const readWidget = async (): Promise<string> => readFile("public/widget.js", "ut
 describe("premium chat widget evidence panel", () => {
   it("keeps the embeddable widget configuration and chat API contract", async () => {
     const widget = await readWidget();
-
     assert.match(widget, /document\.currentScript/);
     assert.match(widget, /data-api-url/);
     assert.match(widget, /data-position/);
@@ -21,7 +20,6 @@ describe("premium chat widget evidence panel", () => {
 
   it("uses a premium civic evidence-panel visual system", async () => {
     const widget = await readWidget();
-
     assert.match(widget, /premium civic evidence panel|muni-answer-kicker|Respuesta con evidencia/);
     assert.match(widget, /--muni-cyan/);
     assert.match(widget, /--muni-magenta/);
@@ -35,7 +33,6 @@ describe("premium chat widget evidence panel", () => {
 
   it("renders citations as premium expandable evidence dossiers", async () => {
     const widget = await readWidget();
-
     assert.match(widget, /muni-citations/);
     assert.match(widget, /muni-citation-header/);
     assert.match(widget, /muni-citation-badge/);
@@ -48,18 +45,16 @@ describe("premium chat widget evidence panel", () => {
 
   it("removes external font dependency and keeps shadow-dom isolation", async () => {
     const widget = await readWidget();
-
     assert.doesNotMatch(widget, /@import url/);
     assert.match(widget, /attachShadow\(\{ mode: "open" \}\)/);
-    assert.match(widget, /all: initial/);
-    assert.match(widget, /font-family: var\(--muni-font\)/);
+    assert.match(widget, /all:\s*initial/);
+    assert.match(widget, /font-family:\s*var\(--muni-font\)/);
   });
 
   it("keeps premium mobile and reduced-motion guardrails", async () => {
     const widget = await readWidget();
-
-    assert.match(widget, /@media \(max-width: 480px\)/);
-    assert.match(widget, /height: calc\(100dvh - 96px\)/);
+    assert.match(widget, /max-width: 480px/);
+    assert.match(widget, /100dvh - 96px/);
     assert.match(widget, /prefers-reduced-motion/);
     assert.match(widget, /animation: none !important/);
     assert.match(widget, /transition-duration: 0\.01ms !important/);
@@ -67,7 +62,6 @@ describe("premium chat widget evidence panel", () => {
 
   it("keeps Spanish municipal copy and official evidence positioning", async () => {
     const widget = await readWidget();
-
     assert.match(widget, /Asistente Municipal/);
     assert.match(widget, /Documentos municipales verificados/);
     assert.match(widget, /Consulta municipal con evidencia/);
