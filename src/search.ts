@@ -7,6 +7,7 @@ export interface KeywordSearchResult {
   pageStart: number | null;
   keywordScore: number;
   snippet: string;
+  sourceUrl?: string | null;
 }
 
 export interface PhraseSearchResult {
@@ -15,7 +16,13 @@ export interface PhraseSearchResult {
   citationLabel: string;
   pageStart: number | null;
   preview: string;
+  sourceUrl?: string | null;
 }
+
+const rowSourceUrl = (row: { source_url?: unknown }): string | null =>
+  typeof row.source_url === "string" && row.source_url.trim().length > 0
+    ? row.source_url
+    : null;
 
 export const keywordSearch = async (
   queryText: string,
@@ -31,6 +38,7 @@ export const keywordSearch = async (
         d.document_type,
         s.citation_label,
         s.page_start,
+        COALESCE(v.source_url, d.source_url) AS source_url,
         ts_rank_cd(s.content_tsv, search.ts_query) AS keyword_score,
         ts_headline(
           'spanish',
@@ -56,6 +64,7 @@ export const keywordSearch = async (
     pageStart: row.page_start,
     keywordScore: Number(row.keyword_score),
     snippet: row.snippet,
+    sourceUrl: rowSourceUrl(row),
   }));
 };
 
@@ -70,6 +79,7 @@ export const phraseSearch = async (
         d.document_type,
         s.citation_label,
         s.page_start,
+        COALESCE(v.source_url, d.source_url) AS source_url,
         left(s.content, 700) AS preview
       FROM rag.document_sections s
       JOIN rag.document_versions v ON v.id = s.document_version_id
@@ -87,6 +97,6 @@ export const phraseSearch = async (
     citationLabel: row.citation_label,
     pageStart: row.page_start,
     preview: row.preview,
+    sourceUrl: rowSourceUrl(row),
   }));
 };
-
