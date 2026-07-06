@@ -2,7 +2,7 @@
 
 ## Active Feature
 
-032-corpus-source-url-metadata-ingestion
+033-github-pages-static-deploy
 
 ## State
 
@@ -10,37 +10,33 @@ review
 
 ## Summary
 
-Feature 032 continues the harness workflow after the source-link contract. The initial schema already includes source URL columns on `rag.documents` and `rag.document_versions`, so this slice connects those existing fields to retrieval instead of adding a migration. Keyword and phrase search now select `COALESCE(v.source_url, d.source_url) AS source_url`, and the optional URL is preserved through evidence, hybrid candidates, vector candidates, chat citations, and the existing widget source action.
+Feature 033 adds a GitHub Pages deployment path for the static public frontend. The deployment is intentionally bounded to static files under `public/`: homepage, Glass Wall, widget script, and assets. The backend RAG API, PostgreSQL, embeddings, environment variables, and secrets remain outside the Pages artifact.
 
 ## Completed Implementation
 
-032 updated or added:
+033 added or updated:
 
-- src/search.ts
-- src/evidence.ts
-- src/retrieval/types.ts
-- src/retrieval/vectorRetriever.ts
-- src/chat.ts
-- src/__tests__/source-url-metadata-ingestion.test.ts
-- specs/032-corpus-source-url-metadata-ingestion/requirements.md
-- specs/032-corpus-source-url-metadata-ingestion/design.md
-- specs/032-corpus-source-url-metadata-ingestion/tasks.md
+- .github/workflows/deploy-pages.yml
+- scripts/build-pages.mjs
+- package.json
+- src/__tests__/github-pages-deploy.test.ts
+- specs/033-github-pages-static-deploy/requirements.md
+- specs/033-github-pages-static-deploy/design.md
+- specs/033-github-pages-static-deploy/tasks.md
 
 ## Acceptance Focus
 
-- Keyword search returns optional sourceUrl from version-level URL first and document-level URL second.
-- Phrase search returns optional sourceUrl using the same precedence.
-- Evidence mappings preserve sourceUrl from search results.
-- Hybrid candidates preserve sourceUrl from keyword, phrase, and vector paths.
-- Chat citations pass through sourceUrl for widget rendering.
-- Widget continues to show Abrir fuente only when sourceUrl exists.
-- Widget continues to show Fuente no enlazada when sourceUrl is absent.
-- No fake PDF links are generated from document titles.
-- No PDF viewer is added before stable URL policy is validated.
+- GitHub Actions deploys GitHub Pages from a generated `dist-pages` artifact.
+- The workflow runs typecheck, tests, TypeScript build, and Pages build before deploy.
+- Pages artifact is generated from `public/` only.
+- `.nojekyll` is included in the Pages artifact.
+- Root-relative links are patched for project-page hosting under `/LA_muni_RAG/`.
+- No backend API, DB connection, embeddings, secrets, or env files are deployed to Pages.
+- The chat widget remains static unless separately configured with a deployed API URL.
 
 ## Preserved Non-Goals
 
-032 did not modify ranking weights, answer generation, database schema, embeddings, auth, environment files, homepage layout, Glass Wall runtime behavior, or widget visual styling.
+033 did not modify backend APIs, retrieval ranking, answer generation, corpus logic, database schema, embeddings, auth, environment files, Glass Wall runtime behavior, or widget runtime behavior.
 
 ## Verification Required
 
@@ -49,16 +45,17 @@ Run locally before closing:
 - npm run typecheck
 - npm run build
 - npm run test
+- npm run build:pages
 
-Manual review:
+Manual GitHub review:
 
-- Seed or update one document/version with a safe source_url.
-- Ask a query that retrieves that document.
-- Confirm the widget shows Abrir fuente.
-- Remove or omit source_url.
-- Confirm the widget shows Fuente no enlazada.
-- Confirm no storage_uri or internal path is exposed.
+- Confirm the `Deploy GitHub Pages` workflow runs successfully after push to main.
+- If GitHub asks for Pages source, set repository Settings → Pages → Source to GitHub Actions.
+- Confirm published URL loads the homepage.
+- Confirm `/glass-wall.html` loads from the published Pages URL.
+- Confirm widget static shell opens.
+- Confirm chat API still requires separate API deployment or `data-api-url` configuration.
 
 ## Next Recommended Feature
 
-033-source-url-seed-and-demo-document-fixture
+034-pages-api-configuration-and-demo-mode
