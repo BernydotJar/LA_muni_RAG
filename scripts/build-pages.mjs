@@ -5,10 +5,15 @@ const repoRoot = process.cwd();
 const sourceDir = join(repoRoot, "public");
 const outputDir = join(repoRoot, "dist-pages");
 
-const injectPagesDemoBridge = (html) => {
+const injectPagesRuntimeScripts = (html) => {
   const bridgeTag = '<script src="./pages-demo-api.js" data-demo-mode="auto"></script>';
-  if (html.includes(bridgeTag)) return html;
-  return html.replaceAll('<script src="./widget.js"></script>', `${bridgeTag}<script src="./widget.js"></script>`);
+  const guardTag = '<script src="./pages-security-guard.js"></script>';
+  if (html.includes(bridgeTag) && html.includes(guardTag)) return html;
+
+  return html.replaceAll(
+    '<script src="./widget.js"></script>',
+    `${bridgeTag}${guardTag}<script src="./widget.js"></script>`
+  );
 };
 
 const patchHtmlForProjectPages = async (dir) => {
@@ -26,7 +31,7 @@ const patchHtmlForProjectPages = async (dir) => {
     if (!entry.endsWith(".html")) continue;
 
     const original = await readFile(path, "utf-8");
-    const patched = injectPagesDemoBridge(
+    const patched = injectPagesRuntimeScripts(
       original
         .replaceAll('href="/glass-wall.html"', 'href="./glass-wall.html"')
         .replaceAll('href="/index.html"', 'href="./index.html"')
