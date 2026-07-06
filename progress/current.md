@@ -2,7 +2,7 @@
 
 ## Active Feature
 
-028-municipal-demo-readiness-and-evidence-copy-polish
+029-demo-script-and-governance-pack
 
 ## Last Completed Feature
 
@@ -14,41 +14,34 @@ review
 
 ## Summary
 
-Feature 028 is implemented in SHIP mode and remains in review pending local command verification. This cycle finishes the municipal-facing demo polish for the embeddable assistant: answers now use institutional sections, evidence labels avoid alarming raw confidence copy, citations include source metadata and relevance reasons, visible excerpts are cleaned for PDF extraction artifacts, the answer includes a traceability seal, and the welcome state includes demo-ready prompts for a municipal presentation.
+Feature 029 adds a municipal presentation and governance pack for LA Muni RAG. The product was already visually and conversationally improved through Features 024 through 028; this cycle adds the missing readiness layer for a real municipal stakeholder presentation: a presenter script, approved demo questions, stakeholder talking points, governance boundaries, evidence interpretation guidance, and static tests.
 
-Features 024, 025, 026, and 027 remain implemented but not locally closed because command verification was not run in this environment. To respect the harness one-active-feature rule, 028 is now the active review feature.
+Feature 028 remains implemented but inactive review pending local command verification. Feature 029 is now the active review feature.
 
 ## Completed Implementation
 
-028 updated:
+029 added:
 
-- `public/widget.js`
-- `src/__tests__/chat-answer-composition.test.ts`
-- `src/__tests__/municipal-demo-readiness.test.ts`
-- `specs/028-municipal-demo-readiness-and-evidence-copy-polish/requirements.md`
-- `specs/028-municipal-demo-readiness-and-evidence-copy-polish/design.md`
-- `specs/028-municipal-demo-readiness-and-evidence-copy-polish/tasks.md`
-- `feature_list.json`
+- `docs/municipal-demo-script.md`
+- `docs/municipal-governance-readiness.md`
+- `src/__tests__/municipal-demo-governance-pack.test.ts`
+- `specs/029-demo-script-and-governance-pack/requirements.md`
+- `specs/029-demo-script-and-governance-pack/design.md`
+- `specs/029-demo-script-and-governance-pack/tasks.md`
 - `progress/current.md`
 
 ## Acceptance Focus
 
-- Widget welcome state includes stable municipal demo prompts.
-- Assistant responses use `Respuesta breve`, `Hallazgos principales`, and `Fuentes verificadas` hierarchy.
-- Raw confidence wording is replaced with institutional evidence-status labels: `Evidencia sólida`, `Evidencia suficiente`, and `Evidencia limitada`.
-- Citation excerpts are cleaned for common PDF hyphenation and spacing artifacts.
-- Citation cards include document, page, type, and evidence-use metadata.
-- Each source includes a short safe relevance reason.
-- Evidence remains visible by default and can still be hidden for compact reading.
-- Evidence cards remain expandable by click and keyboard.
-- Evidence-backed answers include a traceability seal.
-- `/api/chat` request shape remains unchanged: `message`, `mode`, `limit`.
-- `Palabras clave` and `Frase exacta` modes remain available.
-- Shadow DOM, mobile layout, widget open/close, Enter send, Escape close, and reduced-motion protections remain preserved.
+- Demo script is ready for a 7 to 10 minute municipal presentation.
+- Demo script includes approved queries: `necesidades más urgentes`, `agua`, use of sources, and Glass Wall inspection.
+- Governance guide explains acceptable claims and limits in Spanish.
+- Governance guide includes evidence policy, human review, corpus readiness, and stakeholder objection handling.
+- Static tests verify the pack exists and contains required municipal-readiness sections.
+- Runtime behavior remains unchanged.
 
 ## Preserved Non-Goals
 
-028 did not modify:
+029 did not modify:
 
 - backend APIs
 - retrieval ranking
@@ -59,14 +52,14 @@ Features 024, 025, 026, and 027 remain implemented but not locally closed becaus
 - migrations
 - auth
 - environment files
-- secrets
-- Glass Wall endpoint allowlist
-- homepage hero asset
 - database or embedding behavior
+- homepage layout
+- Glass Wall runtime behavior
+- widget runtime behavior
 
 ## Harness Note
 
-This follows the harness-sdlc control model: the requested municipal demo readiness improvement was promoted into Feature 028 with requirements, design, task checklist, bounded file scope, implementation, tests, and review status.
+This follows the harness-sdlc control model: the improvement was promoted into a bounded feature with requirements, design, task checklist, implementation, tests, and review status.
 
 ## Verification Required
 
@@ -76,22 +69,17 @@ Run locally before closing the feature:
 - npm run build
 - npm run test
 
-Manual frontend review required:
+Manual review required:
 
+- Read `docs/municipal-demo-script.md` from the perspective of a municipal presenter.
+- Read `docs/municipal-governance-readiness.md` from the perspective of legal, IT, communications, and council stakeholders.
 - Open `/` and launch the widget.
-- Confirm the welcome state shows municipal demo prompts.
 - Ask `necesidades más urgentes`.
-- Confirm the answer starts with `Respuesta breve`.
-- Confirm `Hallazgos principales` appears before `Fuentes verificadas`.
-- Confirm evidence labels use `Evidencia limitada`, `Evidencia suficiente`, or `Evidencia sólida`.
-- Confirm source cards include document, page, type, usage, excerpt, and relevance reason.
-- Confirm the traceability seal is visible.
-- Hide/show the evidence panel.
-- Expand/collapse individual citation cards.
-- Switch between `Palabras clave` and `Frase exacta`.
-- Test mobile width below 480px.
-- Confirm the widget still sends requests to `/api/chat`.
-- Confirm reduced-motion preference disables decorative animation.
+- Confirm the answer shows synthesis, findings, visible sources, and institutional evidence labels.
+- Ask `agua`.
+- Confirm evidence cards remain visible and readable.
+- Open `/glass-wall.html` and inspect a query.
+- Confirm the presenter can explain lexical, phrase, and vector routes using the governance language.
 
 ## Completed Features
 
@@ -119,10 +107,11 @@ Manual frontend review required:
 - 025-query-experience-and-evidence-panel: inactive review, pending local command verification
 - 026-chat-answer-quality-and-evidence-composition: inactive review, pending local command verification
 - 027-glass-wall-vector-runtime-insights: inactive review, pending local command verification
-- 028-municipal-demo-readiness-and-evidence-copy-polish: active review, pending local command verification
+- 028-municipal-demo-readiness-and-evidence-copy-polish: inactive review, pending local command verification
+- 029-demo-script-and-governance-pack: active review, pending local command verification
 
 ## Next Recommended Feature
 
-029-demo-script-and-governance-pack
+030-corpus-metadata-and-public-update-stamp
 
 Status: not started
