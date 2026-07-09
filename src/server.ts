@@ -1,6 +1,6 @@
 import "dotenv/config";
 import { createServer, type RequestListener, type Server } from "node:http";
-import { dirname, join, resolve } from "node:path";
+import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { evaluateQueryWithDependencies } from "./agent.js";
 import { buildDeterministicAnswerWithDependencies } from "./answer.js";
@@ -18,6 +18,7 @@ import {
   sendJson,
   serveStatic,
 } from "./http.js";
+import { buildProcedureWorkflowWithDependencies } from "./procedure/index.js";
 import { keywordSearch, phraseSearch } from "./search.js";
 import {
   createRuntimeEvidenceDependencyContext,
@@ -133,6 +134,17 @@ export const createRequestHandler = (options: ServerOptions = {}): RequestListen
         return;
       }
 
+      // ----- Procedure Workflow Advisor -----
+      if (req.method === "GET" && url.pathname === "/api/procedure") {
+        const mode = parseEvidenceMode(url.searchParams.get("mode"));
+        const query = requireQueryParam(url, "q");
+        const limit = parseLimit(url.searchParams.get("limit"));
+
+        const workflow = await buildProcedureWorkflowWithDependencies(query, mode, limit, evidenceDependencies);
+        sendJson(res, 200, workflow);
+        return;
+      }
+
       // ----- Agent -----
       if (req.method === "GET" && url.pathname === "/api/agent") {
         const mode = parseEvidenceMode(url.searchParams.get("mode"));
@@ -219,7 +231,6 @@ export const startServer = (port = Number(process.env.PORT ?? 4010)): Server => 
   process.on("SIGINT", () => {
     void shutdown(server).finally(() => process.exit(0));
   });
-
   process.on("SIGTERM", () => {
     void shutdown(server).finally(() => process.exit(0));
   });
@@ -231,10 +242,6 @@ export const startServer = (port = Number(process.env.PORT ?? 4010)): Server => 
   return server;
 };
 
-const isDirectRun = process.argv[1]
-  ? fileURLToPath(import.meta.url) === resolve(process.argv[1])
-  : false;
-
-if (isDirectRun) {
+if (process.argv[1]?.endsWith("server.js") || process.argv[1]?.endsWith("server.ts")) {
   startServer();
 }
