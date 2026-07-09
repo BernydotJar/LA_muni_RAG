@@ -8,11 +8,12 @@ const outputDir = join(repoRoot, "dist-pages");
 const injectPagesRuntimeScripts = (html) => {
   const bridgeTag = '<script src="./pages-demo-api.js" data-demo-mode="auto"></script>';
   const guardTag = '<script src="./pages-security-guard.js"></script>';
-  if (html.includes(bridgeTag) && html.includes(guardTag)) return html;
+  const procedureEntrypointTag = '<script src="./procedure-widget-entrypoint.js"></script>';
+  if (html.includes(bridgeTag) && html.includes(guardTag) && html.includes(procedureEntrypointTag)) return html;
 
   return html.replaceAll(
     '<script src="./widget.js"></script>',
-    `${bridgeTag}${guardTag}<script src="./widget.js"></script>`
+    `${bridgeTag}${guardTag}<script src="./widget.js"></script>${procedureEntrypointTag}`
   );
 };
 
@@ -38,6 +39,7 @@ const patchHtmlForProjectPages = async (dir) => {
         .replaceAll('href="/procedure-workflow.html"', 'href="./procedure-workflow.html"')
         .replaceAll('href="/index.html"', 'href="./index.html"')
         .replaceAll('src="/widget.js"', 'src="./widget.js"')
+        .replaceAll('src="/procedure-widget-entrypoint.js"', 'src="./procedure-widget-entrypoint.js"')
         .replaceAll('src="/assets/', 'src="./assets/')
         .replaceAll('href="/assets/', 'href="./assets/')
     );
