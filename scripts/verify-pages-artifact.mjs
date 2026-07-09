@@ -10,6 +10,7 @@ const requiredFiles = [
   "procedure-workflow.html",
   "widget.js",
   "procedure-widget-entrypoint.js",
+  "procedure-feedback.js",
   "pages-demo-api.js",
   "pages-security-guard.js",
   ".nojekyll",
@@ -34,6 +35,7 @@ const forbiddenRootRelativePatterns = [
   'href="/index.html"',
   'src="/widget.js"',
   'src="/procedure-widget-entrypoint.js"',
+  'src="/procedure-feedback.js"',
   'src="/assets/',
   'href="/assets/',
 ];
@@ -58,6 +60,10 @@ if (!indexHtml.includes('src="./procedure-widget-entrypoint.js"')) {
 
 if (!procedureWorkflowHtml.includes('src="./pages-demo-api.js" data-demo-mode="auto"')) {
   throw new Error("Procedure workflow page is missing the Pages demo/API bridge.");
+}
+
+if (!procedureWorkflowHtml.includes('src="./procedure-feedback.js"')) {
+  throw new Error("Procedure workflow page is missing the feedback loop script.");
 }
 
 console.log("GitHub Pages artifact verified.");
