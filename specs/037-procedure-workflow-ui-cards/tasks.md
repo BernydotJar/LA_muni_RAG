@@ -5,6 +5,8 @@
 - [x] Add `public/procedure-workflow.html`.
 - [x] Extend Pages demo bridge for `/api/procedure`.
 - [x] Add UI regression tests.
+- [x] Add documentation.
+- [x] Update Pages artifact patch/verification for the procedure workflow page.
 - [x] Update harness progress.
-- [ ] Run local typecheck/build/test.
-- [ ] Close feature after verification or note not run.
+- [x] Note local typecheck/build/test as not run in connector-only environment.
+- [x] Close feature with local verification required.
