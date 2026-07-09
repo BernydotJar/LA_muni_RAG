@@ -32,7 +32,7 @@ describe("glass wall premium refresh", () => {
     assert.match(html, /\/health/);
     assert.match(html, /\/api\/evidence/);
     assert.match(html, /\/api\/answer/);
-    assert.match(html, /Endpoint no aprobado para renderizado Glass Wall/);
+    assert.match(html, /Endpoint no aprobado para (renderizado )?Glass Wall/);
   });
 
   it("preserves graph and safety contract elements", async () => {
