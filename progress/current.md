@@ -2,15 +2,11 @@
 
 ## Active Feature
 
-none
-
-## Last Completed Feature
-
-037-procedure-workflow-ui-cards
+038-procedure-workflow-widget-entrypoint
 
 ## State
 
-done
+review
 
 ## Mode
 
@@ -18,53 +14,34 @@ MVP
 
 ## Summary
 
-Feature 037 is closed as an MVP. LA Muni RAG now has a dedicated Procedure Workflow UI page that calls `/api/procedure` and renders the response as workflow cards with steps, required documents, output documents, evidence chips, gaps, confidence, external-reference warning, and human validation warning.
+Feature 038 adds a lightweight entrypoint from the existing chat widget surface into the Procedure Workflow UI. It also integrates the attached AI-native transcript as product operating-model documentation for how this RAG should evolve: capture signal, govern access, expose safe APIs, optimize an outcome object, and use feedback loops.
 
 ## Baseline
 
-Before this feature, the user reported local verification green after frontend contract fixes:
+Before this feature, the user reported local verification green:
 
 - npm run typecheck: passed
 - npm run build: passed
 - npm run test: 246 passed, 0 failed
 
-`dist-pages/` remained untracked and out of scope.
+`dist-pages/` remains untracked and out of scope.
 
-## Completed Implementation
+## Acceptance Focus
 
-037 added or updated:
+- Add `public/procedure-widget-entrypoint.js` as a separate widget enhancement script.
+- Do not modify `public/widget.js` directly.
+- Add a visible procedure workflow entrypoint inside the widget Shadow DOM when available.
+- Default target: `/procedure-workflow.html`, configurable by `data-procedure-url`.
+- Avoid duplicates and stop observer/timer after bounded attempts.
+- Update Pages build/verify scripts for the entrypoint.
+- Add AI-native operating model documentation from the attached transcript.
+- Do not modify `src/procedure/*` backend logic.
+- Do not touch `dist-pages/`.
 
-- specs/037-procedure-workflow-ui-cards/requirements.md
-- specs/037-procedure-workflow-ui-cards/design.md
-- specs/037-procedure-workflow-ui-cards/tasks.md
-- public/procedure-workflow.html
-- public/pages-demo-api.js
-- scripts/build-pages.mjs
-- scripts/verify-pages-artifact.mjs
-- src/__tests__/procedure-workflow-ui-cards.test.ts
-- docs/procedure-workflow-ui-cards.md
-
-## Final Acceptance
-
-- Added a Spanish procedure workflow UI at `/procedure-workflow.html`.
-- The page calls `/api/procedure` with query, mode, and limit.
-- The UI renders summary, step cards, required documents, output documents, citations, gaps, validation warning, and copy-checklist affordance.
-- The UI escapes dynamic text before rendering.
-- GitHub Pages demo mode supports `/api/procedure` through `pages-demo-api.js`.
-- Pages artifact build/verification now includes `procedure-workflow.html`.
-- `src/procedure/*` backend logic was not modified.
-- `dist-pages/` was not touched.
-
-## Verification
-
-Local verification was not run in this connector-only environment.
+## Verification Required
 
 Run locally:
 
 - npm run typecheck
 - npm run build
 - npm run test
-
-## Next Recommended Feature
-
-038-procedure-workflow-widget-entrypoint
