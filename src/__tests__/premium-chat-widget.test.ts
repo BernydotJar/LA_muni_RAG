@@ -14,7 +14,7 @@ describe("premium chat widget evidence panel", () => {
     assert.match(widget, /data-title/);
     assert.match(widget, /\/api\/chat/);
     assert.match(widget, /JSON\.stringify\(\{ message, mode: this\.searchMode, limit: 5 \}\)/);
-    assert.match(widget, /this\.searchMode = "keyword"/);
+    assert.match(widget, /this\.searchMode\s*=\s*"keyword"/);
     assert.match(widget, /this\.setSearchMode\("phrase"\)/);
   });
 
