@@ -2,15 +2,11 @@
 
 ## Active Feature
 
-none
-
-## Last Completed Feature
-
-037A-frontend-widget-contract-regression-fix
+037-procedure-workflow-ui-cards
 
 ## State
 
-done
+review
 
 ## Mode
 
@@ -18,39 +14,32 @@ MVP
 
 ## Summary
 
-Feature 037A is closed as a focused frontend/widget test-contract stabilization slice. It preserves Feature 036 Procedure Workflow Advisor logic and updates brittle frontend assertions so compact/minified static assets are accepted where the contract remains the same.
+Feature 037 adds a dedicated frontend page for Procedure Workflow Advisor responses. It renders `/api/procedure` output as workflow cards with steps, documents, evidence, gaps, confidence, and validation warning.
 
-## Completed Implementation
+## Baseline
 
-037A added or updated:
+Before this feature, the user reported local verification green after frontend contract fixes:
 
-- specs/037A-frontend-widget-contract-regression-fix/requirements.md
-- specs/037A-frontend-widget-contract-regression-fix/design.md
-- specs/037A-frontend-widget-contract-regression-fix/tasks.md
-- src/__tests__/chat-answer-composition.test.ts
-- src/__tests__/premium-chat-widget.test.ts
-- src/__tests__/frontend-responsive-layout.test.ts
-- src/__tests__/glass-wall-premium-refresh.test.ts
+- npm run typecheck: passed
+- npm run build: passed
+- npm run test: 246 passed, 0 failed
 
-## Final Acceptance
+`dist-pages/` remains untracked and out of scope.
 
-- The widget `/api/chat` payload contract remains asserted.
-- The default widget mode assertion now accepts compact or formatted syntax for `this.searchMode = "keyword"`.
-- The civic hero asset assertion accepts the current SVG ring animation names while preserving the orbital/palace contract.
-- The Glass Wall allowlist assertion still requires approved endpoints and a clear blocked-endpoint message.
-- `src/procedure/*` was not modified.
-- `dist-pages/` was not touched.
+## Acceptance Focus
 
-## Verification
+- Add a Spanish procedure workflow UI.
+- Call `/api/procedure` with query, mode, and limit.
+- Render summary, step cards, required documents, output documents, citations, gaps, and validation warning.
+- Include copy-checklist affordance.
+- Support GitHub Pages static demo mode for `/api/procedure`.
+- Do not modify `src/procedure/*` backend logic.
+- Do not touch `dist-pages/`.
 
-Local verification was not run in this connector-only environment.
+## Verification Required
 
 Run locally:
 
 - npm run typecheck
 - npm run build
 - npm run test
-
-## Next Recommended Feature
-
-037-procedure-workflow-ui-cards
