@@ -33,7 +33,9 @@ const patchHtmlForProjectPages = async (dir) => {
     const original = await readFile(path, "utf-8");
     const patched = injectPagesRuntimeScripts(
       original
+        .replaceAll('href="/"', 'href="./index.html"')
         .replaceAll('href="/glass-wall.html"', 'href="./glass-wall.html"')
+        .replaceAll('href="/procedure-workflow.html"', 'href="./procedure-workflow.html"')
         .replaceAll('href="/index.html"', 'href="./index.html"')
         .replaceAll('src="/widget.js"', 'src="./widget.js"')
         .replaceAll('src="/assets/', 'src="./assets/')
