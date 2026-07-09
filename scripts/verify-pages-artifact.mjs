@@ -9,6 +9,7 @@ const requiredFiles = [
   "glass-wall.html",
   "procedure-workflow.html",
   "widget.js",
+  "procedure-widget-entrypoint.js",
   "pages-demo-api.js",
   "pages-security-guard.js",
   ".nojekyll",
@@ -32,6 +33,7 @@ const forbiddenRootRelativePatterns = [
   'href="/procedure-workflow.html"',
   'href="/index.html"',
   'src="/widget.js"',
+  'src="/procedure-widget-entrypoint.js"',
   'src="/assets/',
   'href="/assets/',
 ];
@@ -48,6 +50,10 @@ if (!indexHtml.includes('src="./pages-demo-api.js" data-demo-mode="auto"')) {
 
 if (!indexHtml.includes('src="./pages-security-guard.js"')) {
   throw new Error("GitHub Pages artifact is missing the source-link security guard.");
+}
+
+if (!indexHtml.includes('src="./procedure-widget-entrypoint.js"')) {
+  throw new Error("GitHub Pages artifact is missing the procedure workflow widget entrypoint.");
 }
 
 if (!procedureWorkflowHtml.includes('src="./pages-demo-api.js" data-demo-mode="auto"')) {
