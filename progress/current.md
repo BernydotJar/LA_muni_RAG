@@ -2,15 +2,11 @@
 
 ## Active Feature
 
-none
-
-## Last Completed Feature
-
-038-procedure-workflow-widget-entrypoint
+039-procedure-workflow-feedback-loop
 
 ## State
 
-done
+review
 
 ## Mode
 
@@ -18,55 +14,35 @@ MVP
 
 ## Summary
 
-Feature 038 is closed as an MVP. LA Muni RAG now has a lightweight widget entrypoint into the Procedure Workflow UI and an AI-native operating-model note derived from the attached transcript.
+Feature 039 adds a local/exportable feedback loop around the `ProcedureWorkflow` outcome object. The goal is to capture user signal about missing documents, unclear steps, missing legal basis, missing deadlines, or case evidence gaps without adding backend persistence yet.
 
 ## Baseline
 
-Before this feature, the user reported local verification green:
+Before this feature, the user reported local verification green before Feature 038:
 
 - npm run typecheck: passed
 - npm run build: passed
 - npm run test: 246 passed, 0 failed
 
-`dist-pages/` remained untracked and out of scope.
+`dist-pages/` remains untracked and out of scope.
 
-## Completed Implementation
+## Acceptance Focus
 
-038 added or updated:
+- Add a feedback module for `procedure-workflow.html`.
+- Dispatch a `procedure-workflow:rendered` event after workflow rendering.
+- Store feedback locally under a namespaced `localStorage` key.
+- Capture workflow metadata, selected step, feedback type, and free-text comment.
+- Provide copy/export JSON action.
+- Do not send feedback over the network in this MVP.
+- Update Pages build/verify scripts for the feedback script.
+- Document the AI-native feedback-loop pattern.
+- Do not modify `src/procedure/*` backend logic.
+- Do not touch `dist-pages/`.
 
-- specs/038-procedure-workflow-widget-entrypoint/requirements.md
-- specs/038-procedure-workflow-widget-entrypoint/design.md
-- specs/038-procedure-workflow-widget-entrypoint/tasks.md
-- public/procedure-widget-entrypoint.js
-- scripts/build-pages.mjs
-- scripts/verify-pages-artifact.mjs
-- docs/ai-native-operating-model.md
-- docs/procedure-workflow-widget-entrypoint.md
-- src/__tests__/procedure-workflow-widget-entrypoint.test.ts
-
-## Final Acceptance
-
-- Added a separate widget enhancement script: `public/procedure-widget-entrypoint.js`.
-- `public/widget.js` was not modified.
-- The script adds a `Flujos` rail pill and a `Generar flujo procedimental paso a paso` welcome suggestion when the widget Shadow DOM is available.
-- Default target is `./procedure-workflow.html`; it is configurable with `data-procedure-url`.
-- The script avoids duplicate entrypoints and stops after bounded observation.
-- GitHub Pages build injects the entrypoint after `widget.js`.
-- GitHub Pages artifact verification requires `procedure-widget-entrypoint.js`.
-- Added AI-native operating model documentation from the attached transcript.
-- `src/procedure/*` backend logic was not modified.
-- `dist-pages/` was not touched.
-
-## Verification
-
-Local verification was not run in this connector-only environment.
+## Verification Required
 
 Run locally:
 
 - npm run typecheck
 - npm run build
 - npm run test
-
-## Next Recommended Feature
-
-039-procedure-workflow-feedback-loop
