@@ -3,6 +3,7 @@ import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 
 const readGlassWall = async (): Promise<string> => readFile("public/glass-wall.html", "utf-8");
+const visibleText = (html: string): string => html.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim();
 
 describe("glass wall premium refresh", () => {
   it("keeps the Spanish Glass Wall identity", async () => {
@@ -11,8 +12,8 @@ describe("glass wall premium refresh", () => {
     assert.match(html, /<html lang="es">/);
     assert.match(html, /RAG Glass Wall/);
     assert.match(html, /Vista técnica/);
-    assert.match(html, /Sala de observación para recuperación documental/);
-    assert.match(html, /recuperación documental/);
+    assert.match(visibleText(html), /Sala de observación para recuperación documental\.?/);
+    assert.match(visibleText(html), /recuperación documental/);
   });
 
   it("adds lightweight premium homepage alignment", async () => {

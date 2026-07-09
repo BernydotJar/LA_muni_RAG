@@ -1,0 +1,108 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 900" role="img" aria-labelledby="title desc">
+  <title id="title">Palacio municipal futurista con cúpula y arcos de luz</title>
+  <desc id="desc">Escena hero institucional inspirada en una municipalidad o congreso latinoamericano con fachada, columnas, arcos coloniales, campanario, cúpula, plaza digital, anillos orbitales y luz cian-violeta.</desc>
+  <defs>
+    <radialGradient id="sky" cx="50%" cy="18%" r="72%">
+      <stop offset="0" stop-color="#243274"/>
+      <stop offset=".42" stop-color="#111633"/>
+      <stop offset="1" stop-color="#050711"/>
+    </radialGradient>
+    <radialGradient id="orbGlow" cx="50%" cy="48%" r="58%">
+      <stop offset="0" stop-color="#9adfff" stop-opacity=".50"/>
+      <stop offset=".36" stop-color="#6d5df6" stop-opacity=".25"/>
+      <stop offset=".70" stop-color="#1b1d39" stop-opacity=".28"/>
+      <stop offset="1" stop-color="#050711" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="stone" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#fff3df"/>
+      <stop offset=".42" stop-color="#b8c4f6"/>
+      <stop offset="1" stop-color="#624fb5"/>
+    </linearGradient>
+    <linearGradient id="glass" x1="0" x2="1">
+      <stop offset="0" stop-color="#19d3ff"/>
+      <stop offset="1" stop-color="#ff3aa7"/>
+    </linearGradient>
+    <linearGradient id="floor" x1="0" x2="1">
+      <stop offset="0" stop-color="#0ad7ff" stop-opacity=".10"/>
+      <stop offset=".5" stop-color="#8b5cf6" stop-opacity=".18"/>
+      <stop offset="1" stop-color="#ff3aa7" stop-opacity=".10"/>
+    </linearGradient>
+    <filter id="softGlow" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur stdDeviation="8" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="deepShadow" x="-20%" y="-20%" width="140%" height="150%">
+      <feDropShadow dx="0" dy="28" stdDeviation="24" flood-color="#000" flood-opacity=".42"/>
+    </filter>
+    <style>
+      .ring{fill:none;stroke-linecap:round;filter:url(#softGlow)}
+      .ring.a{stroke:#22d3ee;stroke-width:5;stroke-opacity:.72;stroke-dasharray:760 180;animation:spinA 16s ease-in-out infinite alternate;transform-origin:720px 430px}
+      .ring.b{stroke:#a855f7;stroke-width:3;stroke-opacity:.72;stroke-dasharray:480 260;animation:spinB 20s ease-in-out infinite alternate;transform-origin:720px 430px}
+      .ring.c{stroke:#38bdf8;stroke-width:1.5;stroke-opacity:.28;stroke-dasharray:8 18;animation:spinA 24s linear infinite;transform-origin:720px 430px}
+      .beam{stroke:url(#glass);stroke-linecap:round;filter:url(#softGlow);animation:pulse 6s ease-in-out infinite alternate}
+      .palace{filter:url(#deepShadow)}
+      .stone{fill:url(#stone);stroke:#f8fafc;stroke-opacity:.36;stroke-width:1.2}
+      .window{fill:#0b1228;stroke:#7dd3fc;stroke-opacity:.55;stroke-width:1.2;filter:url(#softGlow)}
+      .cyan{stroke:#22d3ee}.magenta{stroke:#e879f9}.amber{stroke:#f59e0b}
+      .node{fill:#7dd3fc;opacity:.75;filter:url(#softGlow);animation:pulse 4s ease-in-out infinite alternate}
+      @keyframes spinA{from{transform:rotate(-3deg) scale(.985)}to{transform:rotate(4deg) scale(1.02)}}
+      @keyframes spinB{from{transform:rotate(5deg) scale(1.01)}to{transform:rotate(-5deg) scale(1.04)}}
+      @keyframes pulse{from{opacity:.38}to{opacity:.94}}
+      @media (prefers-reduced-motion: reduce){*{animation:none!important}}
+    </style>
+  </defs>
+
+  <rect width="1440" height="900" fill="url(#sky)"/>
+  <circle cx="720" cy="430" r="440" fill="url(#orbGlow)" opacity=".95"/>
+  <path class="ring a" d="M230 418 C370 110 1070 104 1220 420"/>
+  <path class="ring b" d="M212 454 C390 208 1030 190 1240 466"/>
+  <ellipse class="ring c" cx="720" cy="430" rx="470" ry="246"/>
+  <path class="beam" d="M140 762 H1300" stroke-width="1.2" opacity=".4"/>
+  <path class="beam" d="M210 820 C500 760 935 760 1240 820" stroke-width="1" opacity=".35"/>
+
+  <g opacity=".28">
+    <path d="M180 760h1080" stroke="#22d3ee" stroke-width="1"/>
+    <path d="M250 800h940" stroke="#a855f7" stroke-width="1"/>
+    <path d="M330 840h780" stroke="#22d3ee" stroke-width="1"/>
+    <path d="M390 730v140M510 720v150M630 710v160M750 710v160M870 720v150M990 730v140" stroke="#38bdf8" stroke-width="1" opacity=".45"/>
+  </g>
+
+  <g class="palace">
+    <path class="stone" d="M216 690V488h1008v202z" opacity=".92"/>
+    <path class="stone" d="M302 488h836l-58-86H360z"/>
+    <path class="stone" d="M388 400h664v88H388z"/>
+    <path class="stone" d="M464 400 720 278 976 400z"/>
+    <path class="stone" d="M566 278h308v122H566z" opacity=".95"/>
+    <path class="stone" d="M604 278 C620 178 820 178 836 278z"/>
+    <path class="stone" d="M660 178 C680 108 760 108 780 178z"/>
+    <path class="stone" d="M686 108h68v70h-68z"/>
+    <path class="stone" d="M710 72h20v36h-20z"/>
+    <path class="stone" d="M704 72 720 44 736 72z"/>
+
+    <path class="window" d="M692 150h56v80h-56z" rx="24"/>
+    <path class="window" d="M690 312h60v74h-60z" rx="28"/>
+    <path class="window" d="M588 316h54v72h-54z" rx="25"/>
+    <path class="window" d="M798 316h54v72h-54z" rx="25"/>
+
+    <g class="columns">
+      <path class="stone" d="M500 488h42v202h-42z"/><path class="stone" d="M588 488h42v202h-42z"/><path class="stone" d="M676 488h42v202h-42z"/><path class="stone" d="M764 488h42v202h-42z"/><path class="stone" d="M852 488h42v202h-42z"/><path class="stone" d="M940 488h42v202h-42z"/>
+    </g>
+    <path class="window" d="M650 565 C650 514 790 514 790 565 V690 H650z"/>
+    <path class="window" d="M350 560 C350 520 450 520 450 560 V690 H350z" opacity=".85"/>
+    <path class="window" d="M990 560 C990 520 1090 520 1090 560 V690 H990z" opacity=".85"/>
+    <path class="stone" d="M304 690h832l70 56H234z"/>
+    <path class="stone" d="M250 746h940l62 48H188z" opacity=".88"/>
+
+    <path class="beam cyan" d="M254 488h932" stroke-width="2" opacity=".9"/>
+    <path class="beam amber" d="M320 690h800" stroke-width="2" opacity=".75"/>
+    <path class="beam magenta" d="M468 400h504" stroke-width="2" opacity=".7"/>
+  </g>
+
+  <g opacity=".85">
+    <circle class="node" cx="286" cy="790" r="4"/>
+    <circle class="node" cx="448" cy="780" r="3"/>
+    <circle class="node" cx="720" cy="806" r="4"/>
+    <circle class="node" cx="1010" cy="780" r="3"/>
+    <circle class="node" cx="1160" cy="790" r="4"/>
+  </g>
+</svg>
