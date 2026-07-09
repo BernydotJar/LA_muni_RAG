@@ -1,0 +1,260 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>LA Muni RAG — Flujo procedimental</title>
+    <meta name="description" content="Vista de flujos procedimentales municipales con pasos, documentos, brechas y evidencia citada." />
+    <style>
+      :root {
+        --bg: #070712;
+        --panel: rgba(12, 16, 36, 0.82);
+        --panel-strong: rgba(16, 24, 52, 0.94);
+        --line: rgba(148, 163, 184, 0.16);
+        --line-strong: rgba(125, 211, 252, 0.28);
+        --text: #f8fafc;
+        --muted: #a8b3c7;
+        --quiet: #718096;
+        --cyan: #22d3ee;
+        --violet: #8b5cf6;
+        --pink: #f472b6;
+        --green: #22c55e;
+        --amber: #f59e0b;
+        --red: #fb7185;
+        --shadow: 0 28px 90px rgba(0, 0, 0, 0.34);
+        color-scheme: dark;
+      }
+
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        min-height: 100vh;
+        font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        color: var(--text);
+        background:
+          radial-gradient(circle at 20% 0%, rgba(34, 211, 238, 0.16), transparent 28rem),
+          radial-gradient(circle at 84% 12%, rgba(139, 92, 246, 0.20), transparent 32rem),
+          linear-gradient(180deg, #070711 0%, #090918 42%, #070712 100%);
+      }
+
+      a { color: inherit; }
+      main { width: min(1180px, calc(100vw - 28px)); margin: 0 auto; padding: 28px 0 54px; }
+      .topbar { display: flex; justify-content: space-between; align-items: center; gap: 16px; margin-bottom: 22px; }
+      .back-link, .status-pill {
+        display: inline-flex; align-items: center; gap: 8px; min-height: 38px; padding: 0 13px;
+        border-radius: 999px; text-decoration: none; color: var(--text); border: 1px solid var(--line);
+        background: rgba(255,255,255,0.045); backdrop-filter: blur(14px); font-size: 12px; font-weight: 800;
+      }
+      .status-pill { color: var(--cyan); }
+
+      .hero {
+        display: grid; grid-template-columns: minmax(0, 1fr) minmax(280px, 0.38fr); gap: 22px;
+        padding: clamp(22px, 4vw, 38px); border: 1px solid var(--line); border-radius: 34px;
+        background: linear-gradient(135deg, rgba(255,255,255,.09), rgba(255,255,255,.025)), var(--panel);
+        box-shadow: var(--shadow); backdrop-filter: blur(20px); margin-bottom: 18px;
+      }
+      .eyebrow { color: var(--cyan); font-size: 12px; font-weight: 900; letter-spacing: .14em; text-transform: uppercase; }
+      h1 { margin: 10px 0 12px; font-size: clamp(40px, 7vw, 82px); line-height: .92; letter-spacing: -.07em; }
+      h1 span { display: block; background: linear-gradient(115deg, #fff, #c4b5fd 58%, #22d3ee); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+      .lead { max-width: 780px; margin: 0; color: var(--muted); font-size: 16px; line-height: 1.65; }
+      .hero-note { padding: 18px; border: 1px solid var(--line); border-radius: 24px; background: rgba(5, 8, 22, 0.6); color: var(--muted); font-size: 13px; line-height: 1.55; }
+      .hero-note b { display: block; color: var(--cyan); margin-bottom: 8px; text-transform: uppercase; letter-spacing: .10em; font-size: 11px; }
+
+      .query-card, .workflow-shell, .empty-state {
+        border: 1px solid var(--line); border-radius: 28px; background: var(--panel); box-shadow: 0 22px 70px rgba(0,0,0,.22);
+        backdrop-filter: blur(18px);
+      }
+      .query-card { padding: 14px; margin-bottom: 18px; }
+      .query-grid { display: grid; grid-template-columns: minmax(0, 1fr) 150px 110px auto; gap: 10px; }
+      input, select, button {
+        min-height: 46px; border-radius: 16px; border: 1px solid var(--line); color: var(--text);
+        background: rgba(255,255,255,0.045); font: 700 14px/1.2 inherit;
+      }
+      input { padding: 0 14px; outline: none; }
+      select { padding: 0 12px; }
+      button { cursor: pointer; border-color: rgba(34,211,238,.24); background: linear-gradient(135deg, rgba(139,92,246,.92), rgba(34,211,238,.72)); font-weight: 850; padding: 0 16px; }
+      button.secondary { background: rgba(255,255,255,.05); border-color: var(--line); }
+      button:disabled { opacity: .55; cursor: wait; }
+
+      .workflow-shell { display: none; overflow: hidden; }
+      .workflow-shell.visible { display: block; }
+      .workflow-header { padding: 22px; border-bottom: 1px solid var(--line); background: linear-gradient(135deg, rgba(34,211,238,.08), rgba(139,92,246,.08)); }
+      .workflow-meta { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+      .chip { display: inline-flex; align-items: center; gap: 6px; min-height: 28px; padding: 0 10px; border: 1px solid var(--line); border-radius: 999px; color: var(--muted); background: rgba(255,255,255,.04); font-size: 11px; font-weight: 850; text-transform: uppercase; letter-spacing: .04em; }
+      .chip.high { color: #86efac; border-color: rgba(34,197,94,.34); }
+      .chip.medium { color: #fde68a; border-color: rgba(245,158,11,.32); }
+      .chip.low { color: #fecdd3; border-color: rgba(251,113,133,.34); }
+      .external-warning { margin-top: 14px; padding: 12px; border: 1px solid rgba(245,158,11,.28); border-radius: 18px; color: #fde68a; background: rgba(245,158,11,.06); font-size: 13px; line-height: 1.5; }
+
+      .workflow-body { padding: 20px; display: grid; gap: 18px; }
+      .section-title { margin: 0 0 12px; color: var(--cyan); font-size: 12px; font-weight: 950; letter-spacing: .12em; text-transform: uppercase; }
+      .step-grid { display: grid; gap: 14px; }
+      .procedure-step-card {
+        position: relative; padding: 18px; border: 1px solid var(--line-strong); border-radius: 24px;
+        background: linear-gradient(180deg, rgba(255,255,255,.07), rgba(255,255,255,.022)), var(--panel-strong);
+      }
+      .procedure-step-card::before { content: ""; position: absolute; inset: 0 auto 0 0; width: 3px; border-radius: 24px 0 0 24px; background: linear-gradient(180deg, var(--cyan), var(--violet), var(--pink)); }
+      .step-head { display: grid; grid-template-columns: auto 1fr auto; gap: 12px; align-items: start; margin-bottom: 12px; }
+      .step-number { width: 42px; height: 42px; border-radius: 16px; display: grid; place-items: center; color: #00111d; background: linear-gradient(135deg, var(--cyan), #a5b4fc); font-weight: 950; }
+      .step-title { margin: 0; font-size: 18px; letter-spacing: -.02em; }
+      .step-action { margin: 6px 0 0; color: var(--muted); line-height: 1.55; }
+      .doc-columns { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin-top: 14px; }
+      .doc-box { padding: 12px; border: 1px solid rgba(255,255,255,.08); border-radius: 16px; background: rgba(255,255,255,.035); }
+      .doc-box b { display: block; margin-bottom: 8px; color: var(--text); font-size: 12px; text-transform: uppercase; letter-spacing: .07em; }
+      ul { margin: 0; padding-left: 18px; color: var(--muted); line-height: 1.55; }
+      .citation-strip { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+      .citation-chip { max-width: 100%; padding: 7px 9px; border: 1px solid rgba(34,211,238,.16); border-radius: 999px; color: #bae6fd; background: rgba(34,211,238,.055); font-size: 11px; font-weight: 760; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+      .step-note { margin: 12px 0 0; color: #fde68a; font-size: 12px; line-height: 1.5; }
+
+      .gap-grid { display: grid; gap: 10px; }
+      .procedure-gap-card { padding: 14px; border: 1px solid rgba(245,158,11,.22); border-radius: 18px; background: rgba(245,158,11,.055); }
+      .procedure-gap-card.blocking { border-color: rgba(251,113,133,.28); background: rgba(251,113,133,.055); }
+      .procedure-gap-card b { display: block; color: var(--text); margin-bottom: 5px; }
+      .procedure-gap-card p { margin: 0; color: var(--muted); font-size: 13px; line-height: 1.5; }
+
+      .validation-warning { padding: 15px; border: 1px solid rgba(34,197,94,.22); border-radius: 20px; background: rgba(34,197,94,.055); color: #bbf7d0; font-size: 13px; line-height: 1.55; }
+      .empty-state { padding: 28px; color: var(--muted); text-align: center; }
+      .error-box { display: none; margin: 14px 0; padding: 14px; border: 1px solid rgba(251,113,133,.32); border-radius: 18px; color: #fecdd3; background: rgba(251,113,133,.06); }
+      .error-box.visible { display: block; }
+
+      @media (max-width: 820px) { .hero, .query-grid, .doc-columns { grid-template-columns: 1fr; } .step-head { grid-template-columns: auto 1fr; } .step-head .chip { grid-column: 1 / -1; width: max-content; } }
+      @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; } }
+    </style>
+  </head>
+  <body>
+    <main>
+      <div class="topbar"><a class="back-link" href="/">← Volver al inicio</a><span class="status-pill">Procedure Workflow Advisor</span></div>
+      <section class="hero">
+        <div>
+          <div class="eyebrow">Flujos municipales con evidencia</div>
+          <h1>Del documento al <span>paso a paso.</span></h1>
+          <p class="lead">Consulta procedimientos municipales y revisa un flujo estructurado con responsables cuando estén citados, documentos requeridos, brechas, evidencia y validación humana requerida.</p>
+        </div>
+        <aside class="hero-note"><b>Antigua-first</b>La vista prioriza documentos oficiales de Antigua Guatemala. Si usa referencias externas, las marca como comparativas y exige validación contra normativa local y nacional.</aside>
+      </section>
+
+      <form class="query-card" id="procedure-workflow-form">
+        <div class="query-grid">
+          <input id="procedure-query" name="q" autocomplete="off" value="¿Qué hay que hacer para construir un estadio municipal?" />
+          <select id="procedure-mode" name="mode" aria-label="Modo de recuperación"><option value="keyword">palabras clave</option><option value="hybrid">híbrido</option><option value="phrase">frase exacta</option></select>
+          <select id="procedure-limit" name="limit" aria-label="Límite"><option value="6">6 fuentes</option><option value="8" selected>8 fuentes</option><option value="12">12 fuentes</option></select>
+          <button id="procedure-submit" type="submit">Generar flujo</button>
+        </div>
+      </form>
+
+      <div class="error-box" id="procedure-error" role="alert"></div>
+      <section class="empty-state" id="procedure-empty">Genera un flujo para ver pasos, documentos, brechas y citas.</section>
+      <section class="workflow-shell" id="procedure-workflow" aria-live="polite"></section>
+    </main>
+
+    <script src="./pages-demo-api.js" data-demo-mode="auto"></script>
+    <script>
+      const $ = (id) => document.getElementById(id);
+      const esc = (value) => {
+        const div = document.createElement("div");
+        div.textContent = String(value ?? "");
+        return div.innerHTML;
+      };
+      const asArray = (value) => Array.isArray(value) ? value : [];
+      const labelForConfidence = (value) => value === "high" ? "alta" : value === "medium" ? "media" : "baja";
+      const labelForSeverity = (value) => value === "blocking" ? "bloqueante" : value === "important" ? "importante" : "complementaria";
+
+      const renderList = (items, empty = "No indicado en evidencia") => {
+        const values = asArray(items).filter(Boolean);
+        if (!values.length) return `<p>${esc(empty)}</p>`;
+        return `<ul>${values.map((item) => `<li>${esc(item)}</li>`).join("")}</ul>`;
+      };
+
+      const renderCitations = (citations) => {
+        const values = asArray(citations);
+        if (!values.length) return `<span class="citation-chip">Sin cita directa</span>`;
+        return values.slice(0, 4).map((citation) => `<span class="citation-chip">${esc(citation.citationLabel || citation.sourceType || "Fuente")}</span>`).join("");
+      };
+
+      const renderStep = (step) => `
+        <article class="procedure-step-card">
+          <div class="step-head">
+            <div class="step-number">${esc(step.stepNumber || "?")}</div>
+            <div><h3 class="step-title">${esc(step.title || "Paso sin título")}</h3><p class="step-action">${esc(step.action || "Acción pendiente de evidencia.")}</p></div>
+            <span class="chip ${esc(step.confidence || "low")}">confianza ${esc(labelForConfidence(step.confidence))}</span>
+          </div>
+          <div class="doc-columns">
+            <div class="doc-box"><b>Documentos requeridos</b>${renderList(step.requiredDocuments)}</div>
+            <div class="doc-box"><b>Salidas / entregables</b>${renderList(step.outputDocuments)}</div>
+          </div>
+          <div class="citation-strip">${renderCitations(step.sourceEvidence || step.legalBasis)}</div>
+          ${step.notes ? `<p class="step-note">${esc(step.notes)}</p>` : ""}
+        </article>`;
+
+      const renderGap = (gap) => `<article class="procedure-gap-card ${esc(gap.severity || "important")}"><b>${esc(gap.missingItem || "Brecha documental")}</b><p>${esc(gap.whyItMatters || "Requiere validación documental.")}</p><p><strong>Para confirmar:</strong> ${esc(gap.requiredToConfirm || "Fuente oficial aplicable")}</p><span class="chip ${gap.severity === "blocking" ? "low" : "medium"}">${esc(labelForSeverity(gap.severity))}</span></article>`;
+
+      const checklistText = (workflow) => {
+        const lines = [workflow.title, workflow.summary, "", "Pasos:"];
+        asArray(workflow.steps).forEach((step) => {
+          lines.push(`${step.stepNumber}. ${step.title}`);
+          lines.push(`Acción: ${step.action}`);
+          lines.push(`Documentos requeridos: ${asArray(step.requiredDocuments).join(", ") || "No indicados"}`);
+          lines.push("");
+        });
+        lines.push("Brechas:");
+        asArray(workflow.gaps).forEach((gap) => lines.push(`- ${gap.missingItem}: ${gap.requiredToConfirm}`));
+        lines.push("", `Validación: ${workflow.validationWarning || "Validación humana requerida."}`);
+        return lines.join("\n");
+      };
+
+      const renderProcedureWorkflow = (workflow) => {
+        const shell = $("procedure-workflow");
+        const steps = asArray(workflow.steps);
+        const gaps = asArray(workflow.gaps);
+        const metadata = workflow.metadata || {};
+        shell.innerHTML = `
+          <header class="workflow-header">
+            <div class="eyebrow">${esc(workflow.procedureType || "procedimiento")}</div>
+            <h2>${esc(workflow.title || "Flujo procedimental")}</h2>
+            <p class="lead">${esc(workflow.summary || "Flujo generado desde evidencia disponible.")}</p>
+            <div class="workflow-meta">
+              <span class="chip">jurisdicción: ${esc(workflow.jurisdiction || "Antigua Guatemala")}</span>
+              <span class="chip ${esc(workflow.confidence || "low")}">confianza ${esc(labelForConfidence(workflow.confidence))}</span>
+              <span class="chip">evidencia: ${esc(metadata.evidenceCount ?? workflow.citations?.length ?? 0)}</span>
+              <button class="secondary" id="copy-procedure-checklist" type="button">Copiar checklist</button>
+            </div>
+            ${metadata.hasExternalReference ? `<div class="external-warning">Este flujo usa referencia externa. Debe validarse contra documentos oficiales de Antigua Guatemala y normativa nacional aplicable.</div>` : ""}
+          </header>
+          <div class="workflow-body">
+            <section><h2 class="section-title">Flujo paso a paso</h2><div class="step-grid">${steps.map(renderStep).join("") || "<p>No hay pasos disponibles.</p>"}</div></section>
+            <section><h2 class="section-title">Brechas y documentos faltantes</h2><div class="gap-grid">${gaps.map(renderGap).join("") || "<p>No se reportaron brechas en la evidencia recuperada.</p>"}</div></section>
+            <section class="validation-warning"><strong>Validación humana requerida.</strong> ${esc(workflow.validationWarning || "Este flujo debe revisarse con las unidades municipales competentes.")}</section>
+          </div>`;
+        shell.classList.add("visible");
+        $("procedure-empty").style.display = "none";
+        $("copy-procedure-checklist")?.addEventListener("click", async () => {
+          await navigator.clipboard?.writeText(checklistText(workflow));
+          $("copy-procedure-checklist").textContent = "Checklist copiado";
+          setTimeout(() => { $("copy-procedure-checklist").textContent = "Copiar checklist"; }, 1400);
+        });
+      };
+
+      const loadProcedureWorkflow = async () => {
+        const query = $("procedure-query").value.trim();
+        const mode = $("procedure-mode").value;
+        const limit = $("procedure-limit").value;
+        if (!query) return;
+        const params = new URLSearchParams({ q: query, mode, limit });
+        $("procedure-submit").disabled = true;
+        $("procedure-error").classList.remove("visible");
+        try {
+          const response = await fetch(`/api/procedure?${params.toString()}`, { headers: { accept: "application/json" } });
+          if (!response.ok) throw new Error(`HTTP ${response.status}`);
+          renderProcedureWorkflow(await response.json());
+        } catch (error) {
+          $("procedure-error").textContent = error instanceof Error ? error.message : "No se pudo generar el flujo procedimental.";
+          $("procedure-error").classList.add("visible");
+        } finally {
+          $("procedure-submit").disabled = false;
+        }
+      };
+
+      $("procedure-workflow-form").addEventListener("submit", (event) => { event.preventDefault(); void loadProcedureWorkflow(); });
+    </script>
+  </body>
+</html>
