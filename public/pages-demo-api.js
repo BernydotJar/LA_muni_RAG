@@ -1,8 +1,8 @@
 /**
  * LA Muni RAG — GitHub Pages demo/API bridge.
  *
- * GitHub Pages cannot run /api/chat. This bridge keeps the public demo usable:
- * - ?apiUrl=https://example.com routes /api/chat calls to that API.
+ * GitHub Pages cannot run /api/chat or /api/procedure. This bridge keeps the public demo usable:
+ * - ?apiUrl=https://example.com routes API calls to that API.
  * - data-api-url on this script does the same.
  * - data-demo-mode="auto" returns static demo evidence on *.github.io when no API URL is configured.
  *
@@ -47,16 +47,28 @@
 
   const nativeFetch = window.fetch.bind(window);
 
-  const isChatRequest = (input) => {
+  const requestPath = (input) => {
     try {
       const rawUrl = typeof input === "string" ? input : input?.url;
-      if (!rawUrl) return false;
-      const url = new URL(rawUrl, window.location.origin);
-      return url.pathname.endsWith("/api/chat");
+      if (!rawUrl) return "";
+      return new URL(rawUrl, window.location.origin).pathname;
     } catch {
-      return false;
+      return "";
     }
   };
+
+  const requestSearch = (input) => {
+    try {
+      const rawUrl = typeof input === "string" ? input : input?.url;
+      if (!rawUrl) return "";
+      return new URL(rawUrl, window.location.origin).search;
+    } catch {
+      return "";
+    }
+  };
+
+  const isChatRequest = (input) => requestPath(input).endsWith("/api/chat");
+  const isProcedureRequest = (input) => requestPath(input).endsWith("/api/procedure");
 
   const parseMessage = (init) => {
     try {
@@ -75,12 +87,29 @@
     redirect: "error",
   });
 
+  const safeProcedureProxyInit = () => ({
+    method: "GET",
+    headers: { accept: "application/json" },
+    credentials: "omit",
+    redirect: "error",
+  });
+
   const citation = (citationLabel, excerpt, pageStart) => ({
     citationLabel,
     sourceType: "plan",
     pageStart,
     excerpt,
     sourceUrl: null,
+  });
+
+  const procedureCitation = (citationLabel, excerpt, pageStart, authorityClass = "pdm_ot") => ({
+    citationLabel,
+    sourceType: "plan",
+    pageStart,
+    excerpt,
+    sourceUrl: null,
+    authorityClass,
+    evidenceUse: "cited_text",
   });
 
   const demoCitationsFor = (message) => {
@@ -162,8 +191,109 @@
     };
   };
 
+  const procedureStep = (stepNumber, title, action, requiredDocuments, outputDocuments, citations) => ({
+    stepNumber,
+    title,
+    action,
+    requiredDocuments,
+    outputDocuments,
+    legalBasis: citations,
+    sourceEvidence: citations,
+    confidence: "medium",
+    notes: "Paso de demostración: validar contra expediente y documentos oficiales de Antigua Guatemala antes de ejecutar.",
+  });
+
+  const demoProcedureResponse = (query) => {
+    const citations = [
+      procedureCitation(
+        "PDM-OT Antigua Guatemala, pagina 170",
+        "El plan refleja prioridades locales, acciones de desarrollo y alineación con prioridades nacionales.",
+        170
+      ),
+      procedureCitation(
+        "PDM-OT Antigua Guatemala, pagina 106",
+        "Se mencionan capacidades productivas, participación ciudadana y elaboración de proyectos como parte de la planificación territorial.",
+        106
+      ),
+      procedureCitation(
+        "Presupuesto municipal demo, pagina 22",
+        "Referencia demostrativa para explicar que todo proyecto requiere validación presupuestaria antes de contratación.",
+        22,
+        "budget"
+      ),
+    ];
+
+    return {
+      id: "procedure:pages-demo",
+      title: "Flujo procedimental demo para obra pública municipal",
+      jurisdiction: "Antigua Guatemala",
+      procedureType: "public_works",
+      confidence: "medium",
+      summary:
+        "Demo estática de GitHub Pages: el flujo organiza pasos típicos de obra municipal, pero debe validarse contra expediente, normativa nacional y documentos oficiales de Antigua Guatemala.",
+      classification: {
+        isProcedural: true,
+        procedureType: "public_works",
+        asksForExactDeadline: false,
+        asksForCurrentStatus: /qué falta|que falta|cerrar/i.test(query),
+        mentionsExternalMunicipality: false,
+        retrievalQueries: [query, "obra pública proyecto municipal presupuesto contratación ejecución recepción liquidación"],
+      },
+      steps: [
+        procedureStep(1, "Clasificar el proyecto", "Determinar si la iniciativa es obra pública, inversión nueva, ampliación o mantenimiento.", ["Perfil del proyecto", "Justificación técnica", "Ubicación o terreno"], ["Clasificación preliminar"], citations.slice(0, 2)),
+        procedureStep(2, "Validar planificación y presupuesto", "Cruzar la obra con planificación municipal, POA/POM y disponibilidad presupuestaria.", ["PDM-OT", "POA/POM", "Presupuesto"], ["Validación de alineación y financiamiento"], citations),
+        procedureStep(3, "Preparar expediente técnico", "Integrar especificaciones, planos, presupuesto detallado, dictámenes y cronograma.", ["Especificaciones técnicas", "Planos", "Presupuesto detallado", "Dictamen técnico"], ["Expediente técnico"], citations.slice(0, 2)),
+        procedureStep(4, "Definir modalidad de contratación", "Determinar la modalidad aplicable según monto, objeto y normativa.", ["Monto estimado", "Objeto contractual", "Base normativa"], ["Modalidad de contratación definida"], citations),
+        procedureStep(5, "Ejecutar, supervisar y documentar", "Formalizar contrato, supervisar avances y conservar evidencias del expediente.", ["Contrato", "Orden de inicio", "Informes de supervisión"], ["Expediente de ejecución"], citations),
+        procedureStep(6, "Recepción, liquidación y cierre", "Verificar acta de recepción, pagos, liquidación y cierre documental antes de afirmar cierre institucional.", ["Acta de recepción", "Estimaciones/pagos", "Liquidación", "Expediente completo"], ["Expediente de cierre"], citations),
+      ],
+      gaps: [
+        {
+          missingItem: "Expediente específico del proyecto",
+          whyItMatters: "Sin expediente no se puede afirmar estado actual, cierre, recepción o liquidación.",
+          requiredToConfirm: "Contrato, actas, informes de supervisión, pagos y liquidación del caso.",
+          severity: "blocking",
+        },
+        {
+          missingItem: "Validación jurídica/técnica municipal",
+          whyItMatters: "La ruta exacta puede depender de monto, fuente de financiamiento, unidad ejecutora y normativa aplicable.",
+          requiredToConfirm: "Revisión de Gerencia Municipal, DAFIM, Asesoría Jurídica y unidad técnica.",
+          severity: "important",
+        },
+      ],
+      citations,
+      validationWarning:
+        "Este flujo de demostración organiza evidencia documental y no sustituye validación de Gerencia Municipal, DAFIM, Asesoría Jurídica, unidad técnica, Concejo Municipal o COCODE cuando corresponda.",
+      metadata: {
+        query,
+        retrievalMode: "keyword",
+        evidenceCount: citations.length,
+        hasExternalReference: false,
+        hasAntiguaEvidence: true,
+        generatedBy: "procedure_workflow_advisor_mvp",
+        demoMode: true,
+      },
+    };
+  };
+
   window.fetch = async (input, init) => {
-    if (!isChatRequest(input)) return nativeFetch(input, init);
+    if (!isChatRequest(input) && !isProcedureRequest(input)) return nativeFetch(input, init);
+
+    if (isProcedureRequest(input)) {
+      if (shouldProxy) {
+        const targetUrl = new URL(`/api/procedure${requestSearch(input)}`, configuredApiUrl).href;
+        return nativeFetch(targetUrl, safeProcedureProxyInit());
+      }
+
+      const query = new URLSearchParams(requestSearch(input)).get("q") || "procedimiento municipal";
+      return new Response(JSON.stringify(demoProcedureResponse(query)), {
+        status: 200,
+        headers: {
+          "content-type": "application/json; charset=utf-8",
+          "x-la-muni-rag-demo": "true",
+        },
+      });
+    }
 
     if (shouldProxy) {
       const targetUrl = new URL("/api/chat", configuredApiUrl).href;
