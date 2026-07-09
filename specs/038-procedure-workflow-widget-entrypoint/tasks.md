@@ -8,5 +8,5 @@
 - [x] Integrate attached AI-native transcript as operating model documentation.
 - [x] Add regression tests.
 - [x] Update harness progress.
-- [ ] Run local typecheck/build/test.
-- [ ] Close feature after verification or note not run.
+- [x] Note local typecheck/build/test as not run in connector-only environment.
+- [x] Close feature with local verification required.
