@@ -11,5 +11,5 @@
 - [x] Add documentation.
 - [x] Add regression tests for stadium, San Mateo, Mixco external reference, and missing COCODE deadline.
 - [x] Update harness progress.
-- [ ] Run local typecheck/build/test.
-- [ ] Close feature after verification or note not run.
+- [x] Note local typecheck/build/test as not run in connector-only environment.
+- [x] Close feature with verification commands documented.
