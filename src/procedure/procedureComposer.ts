@@ -133,7 +133,7 @@ const closureSteps = (citations: ProcedureCitation[], hasAntiguaEvidence: boolea
   step(
     1,
     "Verificar expediente del caso",
-    `Localizar el expediente específico${caseName ? ` de ${caseName}` : ""} antes de afirmar estado actual, recepción o cierre.",`,
+    `Localizar el expediente específico${caseName ? ` de ${caseName}` : ""} antes de afirmar estado actual, recepción o cierre.`,
     ["Contrato", "Expediente técnico", "Actas", "Informes de supervisión", "Estimaciones"],
     ["Inventario documental del expediente"],
     citationsForStep(citations, [/expediente/i, /contrato/i, /obra/i, /escuela/i, /san mateo/i]),
