@@ -66,7 +66,7 @@ describe("chat answer quality and evidence composition", () => {
 
     assert.match(widget, /\/api\/chat/);
     assert.match(widget, /JSON\.stringify\(\{ message, mode: this\.searchMode, limit: 5 \}\)/);
-    assert.match(widget, /this\.searchMode = "keyword"/);
+    assert.match(widget, /this\.searchMode\s*=\s*"keyword"/);
     assert.match(widget, /this\.setSearchMode\("phrase"\)/);
     assert.match(widget, /Palabras clave/);
     assert.match(widget, /Frase exacta/);
