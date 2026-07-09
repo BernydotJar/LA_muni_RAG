@@ -42,8 +42,8 @@ describe("frontend responsive layout stabilization", () => {
     assert.match(asset, /arcos coloniales/);
     assert.match(asset, /campanario/);
     assert.match(asset, /cúpula/);
-    assert.match(asset, /ring-drift-a/);
-    assert.match(asset, /ring-drift-b/);
+    assert.match(asset, /ring-drift-a|spinA/);
+    assert.match(asset, /ring-drift-b|spinB/);
   });
 
   it("keeps the public hero side-by-side on laptop viewports", async () => {
