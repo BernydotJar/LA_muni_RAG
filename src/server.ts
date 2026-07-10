@@ -183,6 +183,8 @@ export const createRequestHandler = (options: ServerOptions = {}): RequestListen
           sendJson(res, 200, result);
           return;
         }
+
+        throw new HttpError(405, "feedback_method_not_allowed", "Only GET and POST are supported");
       }
 
       // ----- Agent -----
