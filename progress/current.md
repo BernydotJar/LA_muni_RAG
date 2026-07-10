@@ -18,13 +18,7 @@ MVP
 
 ## Summary
 
-Feature 040 is closed as an MVP. LA Muni RAG now has a local review dashboard for ProcedureWorkflow feedback captured by Feature 039. The dashboard reads localStorage feedback, renders metrics and feedback cards, supports filtering, and lets the team copy/export JSON without backend persistence.
-
-## Baseline
-
-Before this feature, Feature 039 was closed as a local/exportable feedback loop.
-
-`dist-pages/` remained untracked and out of scope.
+Feature 040 is closed and locally verified. LA Muni RAG now has a local review dashboard for ProcedureWorkflow feedback captured by Feature 039. The dashboard reads localStorage feedback, renders metrics and feedback cards, supports filtering, lets the team copy/export JSON, and explicitly marks feedback associated with `external reference` workflows as comparative rather than Antigua procedure.
 
 ## Completed Implementation
 
@@ -40,6 +34,10 @@ Before this feature, Feature 039 was closed as a local/exportable feedback loop.
 - docs/procedure-feedback-review-dashboard.md
 - src/__tests__/procedure-feedback-review-dashboard.test.ts
 
+Related operating-model documentation remains updated:
+
+- docs/ai-native-operating-model.md
+
 ## Final Acceptance
 
 - Added `public/procedure-feedback-dashboard.html`.
@@ -50,20 +48,20 @@ Before this feature, Feature 039 was closed as a local/exportable feedback loop.
 - Dashboard supports copying filtered JSON and all JSON.
 - Dashboard supports clearing local feedback with confirmation.
 - Procedure feedback panel links to the dashboard.
+- Feedback from `external reference` workflows displays a clear comparative warning and requires validation against official Antigua documents and applicable national legislation.
 - Pages build/verification includes `procedure-feedback-dashboard.html`.
-- Added local-only governance and future backend path documentation.
+- Feedback remains product signal, not municipal evidence.
 - `src/procedure/*` backend logic was not modified.
-- `dist-pages/` was not touched.
+- Generated `dist-pages/` was cleaned after verification and is not tracked.
 
-## Verification
+## Local Verification
 
-Local verification was not run in this connector-only environment.
+Reported by the user after synchronizing the repository:
 
-Run locally:
-
-- npm run typecheck
-- npm run build
-- npm run test
+- npm run typecheck: passed
+- npm run build: passed
+- npm run test: 270 passed, 0 failed
+- npm run build:pages && node scripts/verify-pages-artifact.mjs: passed
 
 ## Next Recommended Feature
 
