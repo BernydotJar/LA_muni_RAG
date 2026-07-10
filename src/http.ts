@@ -26,7 +26,7 @@ export class HttpError extends Error {
 const CORS_HEADERS: Record<string, string> = {
   "access-control-allow-origin": "*",
   "access-control-allow-methods": "GET, POST, OPTIONS",
-  "access-control-allow-headers": "content-type",
+  "access-control-allow-headers": "content-type, authorization",
   "access-control-max-age": "86400",
 };
 
@@ -187,4 +187,3 @@ export const serveStatic = (
   createReadStream(filePath).pipe(res);
   return true;
 };
-
