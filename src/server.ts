@@ -19,6 +19,15 @@ import {
   serveStatic,
 } from "./http.js";
 import { buildProcedureWorkflowWithDependencies } from "./procedure/index.js";
+import {
+  createProcedureFeedback,
+  createProcedureFeedbackDependencies,
+  listProcedureFeedback,
+  requireProcedureFeedbackAuth,
+  type ProcedureFeedbackDependencies,
+  validateProcedureFeedbackFilters,
+  validateProcedureFeedbackInput,
+} from "./procedureFeedback/index.js";
 import { keywordSearch, phraseSearch } from "./search.js";
 import {
   createRuntimeEvidenceDependencyContext,
@@ -35,6 +44,7 @@ export interface ServerOptions {
   publicDir?: string;
   evidenceDependencies?: EvidenceDependencies;
   vectorRuntimeStatus?: RuntimeVectorStatus;
+  procedureFeedbackDependencies?: ProcedureFeedbackDependencies;
 }
 
 const requireDatabaseUrl = (): void => {
@@ -67,6 +77,8 @@ export const createRequestHandler = (options: ServerOptions = {}): RequestListen
     : createRuntimeEvidenceDependencyContext();
   const evidenceDependencies = runtimeContext.dependencies;
   const vectorRuntimeStatus = options.vectorRuntimeStatus ?? runtimeContext.vectorStatus;
+  const procedureFeedbackDependencies =
+    options.procedureFeedbackDependencies ?? createProcedureFeedbackDependencies();
 
   return async (req, res) => {
     try {
@@ -81,6 +93,9 @@ export const createRequestHandler = (options: ServerOptions = {}): RequestListen
           status: "ok",
           service: "la-muni-rag-api",
           vectorRuntime: vectorRuntimeStatus,
+          procedureFeedbackApi: {
+            enabled: Boolean(procedureFeedbackDependencies.apiToken?.trim()),
+          },
         });
         return;
       }
@@ -143,6 +158,31 @@ export const createRequestHandler = (options: ServerOptions = {}): RequestListen
         const workflow = await buildProcedureWorkflowWithDependencies(query, mode, limit, evidenceDependencies);
         sendJson(res, 200, workflow);
         return;
+      }
+
+      // ----- Procedure Workflow Feedback -----
+      if (url.pathname === "/api/procedure-feedback") {
+        requireProcedureFeedbackAuth(req, procedureFeedbackDependencies.apiToken);
+
+        if (req.method === "POST") {
+          const body = await readJsonBody<unknown>(req);
+          const input = validateProcedureFeedbackInput(body);
+          const clientKey = req.socket.remoteAddress || "unknown";
+          const record = await createProcedureFeedback(
+            input,
+            clientKey,
+            procedureFeedbackDependencies
+          );
+          sendJson(res, 201, { item: record });
+          return;
+        }
+
+        if (req.method === "GET") {
+          const filters = validateProcedureFeedbackFilters(url);
+          const result = await listProcedureFeedback(filters, procedureFeedbackDependencies);
+          sendJson(res, 200, result);
+          return;
+        }
       }
 
       // ----- Agent -----
