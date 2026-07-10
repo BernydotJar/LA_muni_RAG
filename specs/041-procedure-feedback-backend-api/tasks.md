@@ -11,7 +11,8 @@
 - [x] Update CORS and environment example.
 - [x] Add documentation.
 - [x] Add unit/API contract tests.
+- [x] Add security contract tests.
 - [x] Update harness progress.
 - [ ] Run local typecheck/build/test.
 - [ ] Apply migration in local database and run integration tests.
-- [ ] Close feature after verification or note not run.
+- [ ] Close feature after local verification.
