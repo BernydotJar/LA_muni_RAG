@@ -127,11 +127,11 @@ export const sendError = (res: ServerResponse, error: unknown): void => {
     return;
   }
 
-  const message = error instanceof Error ? error.message : "Unexpected error";
+  // Do not expose database, filesystem, dependency, or configuration details.
   sendJson(res, 500, {
     error: {
       code: "internal_error",
-      message,
+      message: "Unexpected server error",
     },
   } satisfies ApiErrorBody);
 };
