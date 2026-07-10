@@ -27,6 +27,7 @@ It does not call the backend, send telemetry, or persist data remotely.
 - missing-document feedback count;
 - missing legal basis / deadline count;
 - feedback cards with workflow title, query, procedure type, jurisdiction, confidence, selected step, feedback type, comment, and timestamp;
+- comparative warning on cards whose workflow jurisdiction is `external reference`;
 - filters by type and free-text search.
 
 ## Actions
@@ -38,6 +39,8 @@ It does not call the backend, send telemetry, or persist data remotely.
 ## Governance
 
 Feedback is product signal, not municipal evidence. It should be reviewed by the team before becoming corpus changes, procedure template changes, documentation, or UX work.
+
+If feedback comes from a workflow marked as `external reference`, treat it as comparative signal only. Another municipality's manual may show structure, but the team must validate it against official Antigua Guatemala documents and applicable national legislation before using it as procedure.
 
 Users should not paste personal data, secrets, confidential municipal records, or reserved information into local feedback comments.
 

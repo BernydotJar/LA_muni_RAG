@@ -27,6 +27,9 @@ describe("procedure feedback review dashboard", () => {
     assert.match(html, /clear-feedback/);
     assert.match(html, /feedback-card/);
     assert.match(html, /comment-box/);
+    assert.match(html, /external-reference-note/);
+    assert.match(html, /Referencia comparativa/);
+    assert.match(html, /validar contra normativa\/documentos oficiales de Antigua/);
     assert.match(html, /window\.confirm/);
   });
 
@@ -71,6 +74,8 @@ describe("procedure feedback review dashboard", () => {
     assert.match(docs, /localStorage/);
     assert.match(docs, /product signal/);
     assert.match(docs, /not municipal evidence/);
+    assert.match(docs, /external reference/);
+    assert.match(docs, /applicable national legislation/);
     assert.match(docs, /Future backend path/);
   });
 });

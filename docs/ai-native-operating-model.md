@@ -10,7 +10,7 @@ These notes integrate the attached AI-native company transcript as product direc
 
 The transcript frames AI-native work as a culture change, not as simply giving people access to tools such as coding agents or chat assistants. For this repo, that means the RAG should not stop at chat. It should create operational artifacts that teams can review and improve.
 
-### 2. Capture signal as machine-readable data
+### 2. Capture signal as machine-readable signal
 
 AI-native operations require discipline around recording and converting work into usable signal: transcripts, support, feedback, analytics, documents, and customer interactions. For LA Muni RAG, this maps to document ingestion, evidence normalization, case files, workflow output, and future feedback capture.
 

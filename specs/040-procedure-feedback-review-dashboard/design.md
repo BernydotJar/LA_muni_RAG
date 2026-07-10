@@ -53,6 +53,9 @@ type ProcedureWorkflowFeedback = {
    - feedback is local;
    - feedback is not municipal evidence;
    - do not paste sensitive data.
+7. External-reference notice:
+   - if a feedback item came from an `external reference` workflow, the card surfaces a comparative-use warning;
+   - wording must preserve the Antigua-first rule: other municipal manuals can guide structure, but require validation against official Antigua documents and applicable national legislation.
 
 ## Safety
 
@@ -80,6 +83,7 @@ Static tests verify:
 - dashboard page exists and reads the correct localStorage key;
 - no network APIs are used;
 - metrics, filters, feedback cards, export, and clear affordances exist;
+- external-reference cards preserve the comparative warning;
 - dynamic text is escaped;
 - procedure page links to the dashboard;
 - Pages scripts include and verify the dashboard;

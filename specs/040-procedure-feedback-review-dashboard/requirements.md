@@ -38,6 +38,7 @@ la-muni-rag:procedure-feedback
    - missing document count;
    - missing legal/deadline count.
 5. It must render feedback cards with workflow title, procedure type, jurisdiction, confidence, selected step, feedback type, comment, and timestamp.
+   - If jurisdiction is `external reference`, the card must clearly state that the workflow is comparative only and must be validated against official Antigua documents and applicable national legislation.
 6. It must provide filters for feedback type and free-text search.
 7. It must provide copy/export JSON action.
 8. It may provide a clear-local-feedback action, with confirmation copy in the UI.

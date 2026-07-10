@@ -63,6 +63,7 @@
       .chip.kind { color: #bae6fd; border-color: rgba(34,211,238,.22); }
       .chip.confidence { color: #fde68a; border-color: rgba(245,158,11,.22); }
       .comment-box { margin-top: 12px; padding: 12px; border: 1px solid rgba(255,255,255,.08); border-radius: 16px; background: rgba(255,255,255,.035); color: var(--muted); line-height: 1.55; }
+      .external-reference-note { margin-top: 12px; padding: 11px 12px; border: 1px solid rgba(245,158,11,.25); border-radius: 16px; background: rgba(245,158,11,.06); color: #fde68a; font-size: 12px; line-height: 1.5; }
       .empty-card { padding: 28px; color: var(--muted); text-align: center; }
       @media (max-width: 900px) { .metrics-grid, .filter-panel { grid-template-columns: 1fr 1fr; } }
       @media (max-width: 620px) { .metrics-grid, .filter-panel, .feedback-head { grid-template-columns: 1fr; display: grid; } }
@@ -124,6 +125,7 @@
         other: "Otro",
       }[value] || value || "Sin tipo");
       const allTypes = (items) => [...new Set(items.map((item) => item.feedbackType).filter(Boolean))].sort();
+      const isExternalReference = (item) => String(item.jurisdiction || "").toLowerCase().includes("external");
       const currentFilters = () => ({ type: $("feedback-type-filter").value, search: $("feedback-search").value.trim().toLowerCase() });
       const matchesSearch = (item, search) => {
         if (!search) return true;
@@ -163,6 +165,7 @@
             <span class="chip">${escapeHtml(item.createdAt || "sin fecha")}</span>
           </div>
           <div class="comment-box">${escapeHtml(item.comment || "Sin comentario")}</div>
+          ${isExternalReference(item) ? '<div class="external-reference-note">Referencia comparativa: así se estructura en otra municipalidad; validar contra normativa/documentos oficiales de Antigua y legislación nacional aplicable.</div>' : ""}
         </article>`;
       const renderDashboard = () => {
         const all = readFeedback();
