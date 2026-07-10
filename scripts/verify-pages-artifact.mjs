@@ -8,6 +8,7 @@ const requiredFiles = [
   "index.html",
   "glass-wall.html",
   "procedure-workflow.html",
+  "procedure-feedback-dashboard.html",
   "widget.js",
   "procedure-widget-entrypoint.js",
   "procedure-feedback.js",
@@ -27,11 +28,13 @@ for (const file of requiredFiles) {
 const indexHtml = await readFile(join(outputDir, "index.html"), "utf-8");
 const glassWallHtml = await readFile(join(outputDir, "glass-wall.html"), "utf-8");
 const procedureWorkflowHtml = await readFile(join(outputDir, "procedure-workflow.html"), "utf-8");
+const feedbackDashboardHtml = await readFile(join(outputDir, "procedure-feedback-dashboard.html"), "utf-8");
 
 const forbiddenRootRelativePatterns = [
   'href="/"',
   'href="/glass-wall.html"',
   'href="/procedure-workflow.html"',
+  'href="/procedure-feedback-dashboard.html"',
   'href="/index.html"',
   'src="/widget.js"',
   'src="/procedure-widget-entrypoint.js"',
@@ -41,7 +44,12 @@ const forbiddenRootRelativePatterns = [
 ];
 
 for (const pattern of forbiddenRootRelativePatterns) {
-  if (indexHtml.includes(pattern) || glassWallHtml.includes(pattern) || procedureWorkflowHtml.includes(pattern)) {
+  if (
+    indexHtml.includes(pattern) ||
+    glassWallHtml.includes(pattern) ||
+    procedureWorkflowHtml.includes(pattern) ||
+    feedbackDashboardHtml.includes(pattern)
+  ) {
     throw new Error(`GitHub Pages artifact still contains root-relative static reference: ${pattern}`);
   }
 }
@@ -64,6 +72,10 @@ if (!procedureWorkflowHtml.includes('src="./pages-demo-api.js" data-demo-mode="a
 
 if (!procedureWorkflowHtml.includes('src="./procedure-feedback.js"')) {
   throw new Error("Procedure workflow page is missing the feedback loop script.");
+}
+
+if (!feedbackDashboardHtml.includes('la-muni-rag:procedure-feedback')) {
+  throw new Error("Feedback dashboard is missing the localStorage feedback key.");
 }
 
 console.log("GitHub Pages artifact verified.");
