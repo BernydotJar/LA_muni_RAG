@@ -32,7 +32,7 @@ const enumValue = <T extends readonly string[]>(
   field: string,
   allowed: T
 ): T[number] => {
-  if (typeof value !== "string" || !allowed.includes(value)) {
+  if (typeof value !== "string" || !allowed.includes(value as T[number])) {
     throw new HttpError(400, "invalid_feedback_payload", `${field} has an unsupported value`);
   }
   return value as T[number];
