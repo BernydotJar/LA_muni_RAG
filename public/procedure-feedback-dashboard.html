@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>LA Muni RAG — Dashboard de feedback procedimental</title>
+    <meta name="description" content="Dashboard local para revisar feedback capturado sobre flujos procedimentales municipales." />
+    <style>
+      :root {
+        --bg: #070712;
+        --panel: rgba(12, 16, 36, 0.84);
+        --panel-strong: rgba(17, 24, 52, 0.95);
+        --line: rgba(148, 163, 184, 0.16);
+        --text: #f8fafc;
+        --muted: #a8b3c7;
+        --quiet: #718096;
+        --cyan: #22d3ee;
+        --violet: #8b5cf6;
+        --pink: #f472b6;
+        --amber: #f59e0b;
+        --red: #fb7185;
+        color-scheme: dark;
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        min-height: 100vh;
+        font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        color: var(--text);
+        background:
+          radial-gradient(circle at 16% 4%, rgba(34, 211, 238, 0.17), transparent 30rem),
+          radial-gradient(circle at 86% 12%, rgba(244, 114, 182, 0.15), transparent 28rem),
+          linear-gradient(180deg, #070711 0%, #080817 100%);
+      }
+      main { width: min(1180px, calc(100vw - 28px)); margin: 0 auto; padding: 28px 0 54px; }
+      a { color: inherit; }
+      .topbar { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 20px; }
+      .topbar a, .status-pill { display: inline-flex; align-items: center; min-height: 38px; padding: 0 13px; border-radius: 999px; border: 1px solid var(--line); background: rgba(255,255,255,.045); text-decoration: none; font-size: 12px; font-weight: 850; }
+      .status-pill { color: var(--cyan); }
+      .hero { padding: clamp(22px, 4vw, 38px); border: 1px solid var(--line); border-radius: 34px; background: linear-gradient(135deg, rgba(255,255,255,.09), rgba(255,255,255,.025)), var(--panel); box-shadow: 0 28px 90px rgba(0,0,0,.34); margin-bottom: 18px; }
+      .eyebrow { color: var(--cyan); font-size: 12px; font-weight: 950; letter-spacing: .14em; text-transform: uppercase; }
+      h1 { margin: 10px 0 12px; font-size: clamp(36px, 6vw, 72px); line-height: .94; letter-spacing: -.06em; }
+      .lead { max-width: 850px; color: var(--muted); line-height: 1.6; margin: 0; }
+      .governance-note { margin-top: 16px; padding: 13px 14px; border: 1px solid rgba(245,158,11,.25); border-radius: 18px; background: rgba(245,158,11,.055); color: #fde68a; font-size: 13px; line-height: 1.5; }
+      .metrics-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; margin-bottom: 16px; }
+      .metric-card, .filter-panel, .feedback-card, .empty-card { border: 1px solid var(--line); border-radius: 24px; background: var(--panel); box-shadow: 0 18px 60px rgba(0,0,0,.22); backdrop-filter: blur(16px); }
+      .metric-card { padding: 16px; }
+      .metric-card span { color: var(--quiet); font-size: 11px; text-transform: uppercase; font-weight: 900; letter-spacing: .08em; }
+      .metric-card b { display: block; margin-top: 8px; font-size: 32px; letter-spacing: -.04em; }
+      .filter-panel { padding: 14px; display: grid; grid-template-columns: 190px minmax(0, 1fr) auto auto auto; gap: 10px; align-items: center; margin-bottom: 16px; }
+      select, input, button { min-height: 44px; border-radius: 15px; border: 1px solid var(--line); color: var(--text); background: rgba(255,255,255,.045); font: 750 13px/1.2 inherit; }
+      select, input { padding: 0 12px; }
+      button { cursor: pointer; padding: 0 14px; border-color: rgba(34,211,238,.24); background: linear-gradient(135deg, rgba(139,92,246,.85), rgba(34,211,238,.64)); }
+      button.secondary { background: rgba(255,255,255,.05); border-color: var(--line); }
+      button.danger { background: rgba(251,113,133,.11); border-color: rgba(251,113,133,.24); color: #fecdd3; }
+      .feedback-list { display: grid; gap: 12px; }
+      .feedback-card { padding: 16px; }
+      .feedback-head { display: flex; justify-content: space-between; gap: 12px; align-items: flex-start; margin-bottom: 12px; }
+      .feedback-card h2 { margin: 0 0 6px; font-size: 18px; letter-spacing: -.02em; }
+      .feedback-card p { margin: 0; color: var(--muted); line-height: 1.5; }
+      .chip-row { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 10px; }
+      .chip { display: inline-flex; align-items: center; min-height: 27px; padding: 0 9px; border-radius: 999px; border: 1px solid var(--line); color: var(--muted); background: rgba(255,255,255,.04); font-size: 11px; font-weight: 850; text-transform: uppercase; letter-spacing: .04em; }
+      .chip.kind { color: #bae6fd; border-color: rgba(34,211,238,.22); }
+      .chip.confidence { color: #fde68a; border-color: rgba(245,158,11,.22); }
+      .comment-box { margin-top: 12px; padding: 12px; border: 1px solid rgba(255,255,255,.08); border-radius: 16px; background: rgba(255,255,255,.035); color: var(--muted); line-height: 1.55; }
+      .empty-card { padding: 28px; color: var(--muted); text-align: center; }
+      @media (max-width: 900px) { .metrics-grid, .filter-panel { grid-template-columns: 1fr 1fr; } }
+      @media (max-width: 620px) { .metrics-grid, .filter-panel, .feedback-head { grid-template-columns: 1fr; display: grid; } }
+      @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; } }
+    </style>
+  </head>
+  <body>
+    <main>
+      <div class="topbar"><a href="/procedure-workflow.html">← Volver a flujos</a><span class="status-pill">Feedback local</span></div>
+      <section class="hero">
+        <div class="eyebrow">ProcedureWorkflow feedback loop</div>
+        <h1>Dashboard de feedback procedimental</h1>
+        <p class="lead">Revisa la señal capturada localmente sobre flujos: documentos faltantes, pasos confusos, fundamentos legales ausentes, plazos no citados y evidencia de caso pendiente.</p>
+        <div class="governance-note">Este dashboard lee feedback local del navegador. No envía datos al servidor. El feedback es señal de producto, no evidencia municipal oficial.</div>
+      </section>
+
+      <section class="metrics-grid" aria-label="Métricas de feedback">
+        <article class="metric-card"><span>Total feedback</span><b id="metric-total">0</b></article>
+        <article class="metric-card"><span>Workflows únicos</span><b id="metric-workflows">0</b></article>
+        <article class="metric-card"><span>Falta documento</span><b id="metric-docs">0</b></article>
+        <article class="metric-card"><span>Base legal/plazo</span><b id="metric-legal-deadline">0</b></article>
+      </section>
+
+      <section class="filter-panel" aria-label="Filtros de feedback">
+        <select id="feedback-type-filter" aria-label="Filtrar por tipo"><option value="all">Todos los tipos</option></select>
+        <input id="feedback-search" type="search" placeholder="Buscar workflow, paso, comentario o query" />
+        <button id="copy-filtered-json" type="button">Copiar filtrado</button>
+        <button id="copy-all-json" class="secondary" type="button">Copiar todo JSON</button>
+        <button id="clear-feedback" class="danger" type="button">Limpiar local</button>
+      </section>
+
+      <section id="feedback-list" class="feedback-list" aria-live="polite"></section>
+    </main>
+
+    <script>
+      const STORAGE_KEY = "la-muni-rag:procedure-feedback";
+      const $ = (id) => document.getElementById(id);
+      const escapeHtml = (value) => {
+        const div = document.createElement("div");
+        div.textContent = String(value ?? "");
+        return div.innerHTML;
+      };
+      const asArray = (value) => Array.isArray(value) ? value : [];
+      const readFeedback = () => {
+        try {
+          const parsed = JSON.parse(window.localStorage.getItem(STORAGE_KEY) || "[]");
+          return Array.isArray(parsed) ? parsed : [];
+        } catch {
+          return [];
+        }
+      };
+      const feedbackTypeLabel = (value) => ({
+        missing_document: "Falta documento",
+        wrong_or_unclear_step: "Paso incorrecto o confuso",
+        unclear_responsible: "Responsable no claro",
+        missing_legal_basis: "Falta fundamento legal",
+        missing_deadline: "Falta plazo",
+        missing_case_evidence: "Falta expediente del caso",
+        other: "Otro",
+      }[value] || value || "Sin tipo");
+      const allTypes = (items) => [...new Set(items.map((item) => item.feedbackType).filter(Boolean))].sort();
+      const currentFilters = () => ({ type: $("feedback-type-filter").value, search: $("feedback-search").value.trim().toLowerCase() });
+      const matchesSearch = (item, search) => {
+        if (!search) return true;
+        const haystack = [item.workflowTitle, item.procedureType, item.jurisdiction, item.confidence, item.query, item.stepTitle, item.feedbackType, item.comment, item.createdAt].join(" ").toLowerCase();
+        return haystack.includes(search);
+      };
+      const filteredFeedback = () => {
+        const items = readFeedback();
+        const filters = currentFilters();
+        return items.filter((item) => (filters.type === "all" || item.feedbackType === filters.type) && matchesSearch(item, filters.search));
+      };
+      const updateTypeOptions = (items) => {
+        const selected = $("feedback-type-filter").value || "all";
+        $("feedback-type-filter").innerHTML = '<option value="all">Todos los tipos</option>' + allTypes(items).map((type) => `<option value="${escapeHtml(type)}">${escapeHtml(feedbackTypeLabel(type))}</option>`).join("");
+        $("feedback-type-filter").value = allTypes(items).includes(selected) ? selected : "all";
+      };
+      const updateMetrics = (items) => {
+        $("metric-total").textContent = String(items.length);
+        $("metric-workflows").textContent = String(new Set(items.map((item) => item.workflowId || item.workflowTitle)).size);
+        $("metric-docs").textContent = String(items.filter((item) => item.feedbackType === "missing_document" || item.feedbackType === "missing_case_evidence").length);
+        $("metric-legal-deadline").textContent = String(items.filter((item) => item.feedbackType === "missing_legal_basis" || item.feedbackType === "missing_deadline").length);
+      };
+      const renderCard = (item) => `
+        <article class="feedback-card">
+          <div class="feedback-head">
+            <div>
+              <h2>${escapeHtml(item.workflowTitle || "Flujo procedimental")}</h2>
+              <p>${escapeHtml(item.query || "Consulta no indicada")}</p>
+            </div>
+            <span class="chip kind">${escapeHtml(feedbackTypeLabel(item.feedbackType))}</span>
+          </div>
+          <div class="chip-row">
+            <span class="chip">${escapeHtml(item.procedureType || "unknown")}</span>
+            <span class="chip">${escapeHtml(item.jurisdiction || "Antigua Guatemala")}</span>
+            <span class="chip confidence">confianza ${escapeHtml(item.confidence || "low")}</span>
+            <span class="chip">paso ${escapeHtml(item.stepNumber || "overall")}: ${escapeHtml(item.stepTitle || "Flujo completo")}</span>
+            <span class="chip">${escapeHtml(item.createdAt || "sin fecha")}</span>
+          </div>
+          <div class="comment-box">${escapeHtml(item.comment || "Sin comentario")}</div>
+        </article>`;
+      const renderDashboard = () => {
+        const all = readFeedback();
+        updateTypeOptions(all);
+        const filtered = filteredFeedback().reverse();
+        updateMetrics(all);
+        $("feedback-list").innerHTML = filtered.length ? filtered.map(renderCard).join("") : '<section class="empty-card">No hay feedback que coincida con los filtros actuales.</section>';
+      };
+      const copyJson = async (items, buttonId) => {
+        await navigator.clipboard?.writeText(JSON.stringify(items, null, 2));
+        const button = $(buttonId);
+        const original = button.textContent;
+        button.textContent = "JSON copiado";
+        window.setTimeout(() => { button.textContent = original; }, 1400);
+      };
+      $("feedback-type-filter").addEventListener("change", renderDashboard);
+      $("feedback-search").addEventListener("input", renderDashboard);
+      $("copy-filtered-json").addEventListener("click", () => copyJson(filteredFeedback(), "copy-filtered-json"));
+      $("copy-all-json").addEventListener("click", () => copyJson(readFeedback(), "copy-all-json"));
+      $("clear-feedback").addEventListener("click", () => {
+        const confirmed = window.confirm("Esto eliminará el feedback local de este navegador. ¿Continuar?");
+        if (!confirmed) return;
+        window.localStorage.removeItem(STORAGE_KEY);
+        renderDashboard();
+      });
+      renderDashboard();
+    </script>
+  </body>
+</html>
