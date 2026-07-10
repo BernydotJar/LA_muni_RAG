@@ -2,15 +2,11 @@
 
 ## Active Feature
 
-none
-
-## Last Completed Feature
-
-039-procedure-workflow-feedback-loop
+040-procedure-feedback-review-dashboard
 
 ## State
 
-done
+review
 
 ## Mode
 
@@ -18,55 +14,31 @@ MVP
 
 ## Summary
 
-Feature 039 is closed as an MVP. LA Muni RAG now has a local/exportable feedback loop around the `ProcedureWorkflow` outcome object. The procedure workflow page dispatches a render event, the feedback module captures user signal locally, and the user can copy/export feedback JSON for team review.
+Feature 040 adds a local review dashboard for ProcedureWorkflow feedback captured by Feature 039. The dashboard reads localStorage feedback, renders metrics and feedback cards, supports filtering, and lets the team copy/export JSON without backend persistence.
 
 ## Baseline
 
-Before this feature, the user reported local verification green before Feature 038:
+Before this feature, Feature 039 was closed as a local/exportable feedback loop.
 
-- npm run typecheck: passed
-- npm run build: passed
-- npm run test: 246 passed, 0 failed
+`dist-pages/` remains untracked and out of scope.
 
-`dist-pages/` remained untracked and out of scope.
+## Acceptance Focus
 
-## Completed Implementation
+- Add `public/procedure-feedback-dashboard.html`.
+- Read only from `la-muni-rag:procedure-feedback`.
+- Render metrics, filters, and feedback review cards.
+- Support copy/export filtered and full JSON.
+- Support clearing local feedback with confirmation.
+- Link the dashboard from `procedure-workflow.html`.
+- Update Pages build/verify scripts for the dashboard page.
+- Document local-only governance and future backend path.
+- Do not modify `src/procedure/*` backend logic.
+- Do not touch `dist-pages/`.
 
-039 added or updated:
-
-- specs/039-procedure-workflow-feedback-loop/requirements.md
-- specs/039-procedure-workflow-feedback-loop/design.md
-- specs/039-procedure-workflow-feedback-loop/tasks.md
-- public/procedure-feedback.js
-- public/procedure-workflow.html
-- scripts/build-pages.mjs
-- scripts/verify-pages-artifact.mjs
-- docs/procedure-workflow-feedback-loop.md
-- src/__tests__/procedure-workflow-feedback-loop.test.ts
-
-## Final Acceptance
-
-- Added local feedback module for `ProcedureWorkflow` review.
-- `procedure-workflow.html` dispatches `procedure-workflow:rendered` after rendering a workflow.
-- Feedback stores locally under `la-muni-rag:procedure-feedback`.
-- Feedback captures workflow id, title, type, jurisdiction, confidence, query, selected step, feedback type, and comment.
-- UI supports copy/export JSON via `Copiar feedback JSON`.
-- No network feedback submission was added in this MVP.
-- Pages build/verification includes `procedure-feedback.js`.
-- Added AI-native feedback-loop documentation.
-- `src/procedure/*` backend logic was not modified.
-- `dist-pages/` was not touched.
-
-## Verification
-
-Local verification was not run in this connector-only environment.
+## Verification Required
 
 Run locally:
 
 - npm run typecheck
 - npm run build
 - npm run test
-
-## Next Recommended Feature
-
-040-procedure-feedback-review-dashboard
