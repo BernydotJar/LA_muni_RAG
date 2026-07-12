@@ -6,6 +6,7 @@ import { evaluateQueryWithDependencies } from "./agent.js";
 import { buildDeterministicAnswerWithDependencies } from "./answer.js";
 import { processChatWithDependencies } from "./chat.js";
 import { closeDb } from "./db.js";
+import { loadActiveDomainPack, summarizeDomainPack, type DomainPack } from "./domain/registry.js";
 import { type EvidenceDependencies, type EvidenceMode, findEvidenceWithDependencies } from "./evidence.js";
 import {
   HttpError,
@@ -45,6 +46,7 @@ export interface ServerOptions {
   evidenceDependencies?: EvidenceDependencies;
   vectorRuntimeStatus?: RuntimeVectorStatus;
   procedureFeedbackDependencies?: ProcedureFeedbackDependencies;
+  domainPack?: DomainPack;
 }
 
 const requireDatabaseUrl = (): void => {
@@ -79,6 +81,8 @@ export const createRequestHandler = (options: ServerOptions = {}): RequestListen
   const vectorRuntimeStatus = options.vectorRuntimeStatus ?? runtimeContext.vectorStatus;
   const procedureFeedbackDependencies =
     options.procedureFeedbackDependencies ?? createProcedureFeedbackDependencies();
+  const domainPack = options.domainPack ?? loadActiveDomainPack();
+  const domainPackSummary = summarizeDomainPack(domainPack);
 
   return async (req, res) => {
     try {
@@ -96,6 +100,7 @@ export const createRequestHandler = (options: ServerOptions = {}): RequestListen
           procedureFeedbackApi: {
             enabled: Boolean(procedureFeedbackDependencies.apiToken?.trim()),
           },
+          domainPack: domainPackSummary,
         });
         return;
       }
@@ -155,7 +160,7 @@ export const createRequestHandler = (options: ServerOptions = {}): RequestListen
         const query = requireQueryParam(url, "q");
         const limit = parseLimit(url.searchParams.get("limit"));
 
-        const workflow = await buildProcedureWorkflowWithDependencies(query, mode, limit, evidenceDependencies);
+        const workflow = await buildProcedureWorkflowWithDependencies(query, mode, limit, evidenceDependencies, domainPack);
         sendJson(res, 200, workflow);
         return;
       }

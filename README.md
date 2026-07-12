@@ -1,9 +1,9 @@
 # LA Muni RAG
 
 Last updated: 2026-07-11  
-Status: Procedure Workflow Advisor MVP complete; reusable template extraction planned
+Status: Procedure Workflow Advisor MVP complete; domain-pack foundation active
 
-LA Muni RAG is an evidence-first RAG and procedural workflow system currently configured for the Municipality of La Antigua Guatemala, Sacatepéquez.
+LA Muni RAG is an evidence-first RAG and procedural workflow system configured by default for the Municipality of La Antigua Guatemala, Sacatepéquez. The core can now load validated domain packs so the same architecture can support other evidence-first procedural assistants.
 
 The repository now does more than answer questions with citations. It can retrieve evidence, classify procedural questions, compose step-by-step workflows, expose gaps and missing documents, collect feedback, and persist controlled feedback through an authenticated backend API.
 
@@ -67,6 +67,24 @@ GET  /api/procedure-feedback
 
 `/api/procedure-feedback` requires a configured Bearer token through `PROCEDURE_FEEDBACK_API_TOKEN`.
 
+## Domain Packs
+
+The active domain is selected with `DOMAIN_PACK`. If unset, the server defaults to:
+
+```env
+DOMAIN_PACK=municipal-antigua
+```
+
+Supported starter packs:
+
+- `municipal-antigua`
+- `hr`
+- `finance`
+- `sales-sop`
+- `custom`
+
+Unsupported values fail closed during startup/configuration validation. `/health` exposes a safe domain-pack summary without secrets.
+
 ## Current Antigua Configuration
 
 The current domain pack is municipal and Antigua-first. It includes assumptions and terminology related to:
@@ -86,7 +104,7 @@ External municipal references are never presented as official Antigua procedure 
 
 ## Important Product Boundary
 
-The reusable RAG core already exists, but the repository is not yet a fully domain-agnostic template.
+The reusable RAG core and domain-pack contract now exist, but the repository is not yet a complete domain administration product.
 
 Reusable today:
 
@@ -97,20 +115,18 @@ Reusable today:
 - evidence response contract;
 - deterministic answer layer;
 - chat API;
+- domain-pack registry and validation;
+- domain-aware procedural workflow classification and templates;
 - source-link safety;
 - feedback infrastructure;
 - tests and harness workflow.
 
-Still coupled to the municipal domain:
+Still intentionally municipal or incomplete:
 
-- procedure types;
-- source authority classes;
-- procedure classifier keywords;
-- Antigua-first governance copy;
-- municipal workflow templates;
 - public branding and Spanish municipal UI;
-- municipal feedback labels;
 - seed documents and examples.
+- document ingestion/admin is not yet pack-scoped in a public UI;
+- starter HR/finance/sales/custom packs are templates, not deployed customer policy corpora.
 
 ## Reusable Template Direction
 
@@ -147,6 +163,8 @@ A domain pack should define:
 - example questions;
 - UI labels;
 - evaluation cases.
+
+The contract lives in `src/domain/types.ts`, the validated registry in `src/domain/registry.ts`, and starter packs in `src/domain/packs/`.
 
 Examples:
 
@@ -234,6 +252,7 @@ psql "$DATABASE_URL" -f db/seeds/002_document_versions.sql
 
 ```env
 DATABASE_URL=postgresql://postgres:YOUR_PASSWORD@localhost:5432/la_muni_rag
+DOMAIN_PACK=municipal-antigua
 PROCEDURE_FEEDBACK_API_TOKEN=replace-with-a-long-random-secret
 ```
 
@@ -268,10 +287,11 @@ Documents are registered and searched through PostgreSQL and ingestion scripts. 
 
 That is why uploaded corpus documents do not currently appear as a visible library in the public frontend.
 
-## Next Architectural Feature
+## Next Architectural Features
 
 ```text
-042-domain-pack-template-foundation
+043-domain-pack-ingestion-metadata
+044-domain-pack-ui-labels-and-routing
 ```
 
-This feature should extract Antigua-specific behavior into a `municipal-antigua` domain pack and create a neutral template contract for HR, finance, sales SOPs, and other document-driven procedural assistants.
+Likely next work: make ingestion metadata and public UI routing fully pack-aware while preserving the Antigua-first default behavior.

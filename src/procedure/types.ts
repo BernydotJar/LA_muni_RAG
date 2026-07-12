@@ -1,31 +1,9 @@
 import type { EvidenceItem, EvidenceMode } from "../evidence.js";
+import type { DomainPackId } from "../domain/types.js";
 
-export type SourceAuthorityClass =
-  | "national_law"
-  | "municipal_code"
-  | "municipal_manual"
-  | "mof"
-  | "organigram"
-  | "pdm_ot"
-  | "pom_poa"
-  | "budget"
-  | "council_minutes"
-  | "community_file"
-  | "case_file"
-  | "war_room"
-  | "external_reference"
-  | "unknown";
+export type SourceAuthorityClass = string;
 
-export type ProcedureType =
-  | "public_works"
-  | "procurement"
-  | "project_execution"
-  | "project_closure"
-  | "budget"
-  | "community_request"
-  | "cocode"
-  | "council_approval"
-  | "unknown";
+export type ProcedureType = string;
 
 export type ProcedureConfidence = "high" | "medium" | "low";
 
@@ -81,7 +59,7 @@ export interface ProcedureQueryClassification {
 export interface ProcedureWorkflow {
   id: string;
   title: string;
-  jurisdiction: "Antigua Guatemala" | "Guatemala national" | "external reference";
+  jurisdiction: string;
   procedureType: ProcedureType;
   confidence: ProcedureConfidence;
   summary: string;
@@ -91,9 +69,12 @@ export interface ProcedureWorkflow {
   citations: ProcedureCitation[];
   validationWarning: string;
   metadata: {
+    domainPackId: DomainPackId;
+    domainPackName: string;
     query: string;
     retrievalMode: EvidenceMode;
     evidenceCount: number;
+    hasLocalEvidence: boolean;
     hasExternalReference: boolean;
     hasAntiguaEvidence: boolean;
     generatedBy: "procedure_workflow_advisor_mvp";

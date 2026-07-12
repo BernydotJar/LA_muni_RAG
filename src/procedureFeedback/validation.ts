@@ -1,4 +1,5 @@
 import { HttpError } from "../http.js";
+import { DEFAULT_DOMAIN_PACK_ID, loadDomainPack } from "../domain/registry.js";
 import {
   PROCEDURE_CONFIDENCE,
   PROCEDURE_FEEDBACK_TYPES,
@@ -38,6 +39,16 @@ const enumValue = <T extends readonly string[]>(
   return value as T[number];
 };
 
+const optionalDomainPackId = (value: unknown): string => {
+  if (value === undefined || value === null || value === "") return DEFAULT_DOMAIN_PACK_ID;
+  const normalized = normalizeText(value, "domainPackId", 80);
+  try {
+    return loadDomainPack(normalized).id;
+  } catch {
+    throw new HttpError(400, "invalid_feedback_payload", "domainPackId has an unsupported value");
+  }
+};
+
 export const validateProcedureFeedbackInput = (value: unknown): ProcedureFeedbackInput => {
   if (!value || typeof value !== "object" || Array.isArray(value)) {
     throw new HttpError(400, "invalid_feedback_payload", "Request body must be an object");
@@ -45,6 +56,7 @@ export const validateProcedureFeedbackInput = (value: unknown): ProcedureFeedbac
 
   const body = value as Record<string, unknown>;
   return {
+    domainPackId: optionalDomainPackId(body.domainPackId),
     workflowId: normalizeText(body.workflowId, "workflowId", 200),
     workflowTitle: normalizeText(body.workflowTitle, "workflowTitle", 300),
     procedureType: enumValue(body.procedureType, "procedureType", PROCEDURE_TYPES),

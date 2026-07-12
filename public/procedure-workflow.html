@@ -203,6 +203,10 @@
         </article>`;
 
       const renderGap = (gap) => `<article class="procedure-gap-card ${esc(gap.severity || "important")}"><b>${esc(gap.missingItem || "Brecha documental")}</b><p>${esc(gap.whyItMatters || "Requiere validación documental.")}</p><p><strong>Para confirmar:</strong> ${esc(gap.requiredToConfirm || "Fuente oficial aplicable")}</p><span class="chip ${gap.severity === "blocking" ? "low" : "medium"}">${esc(labelForSeverity(gap.severity))}</span></article>`;
+      const externalWarningText = (metadata) =>
+        metadata.domainPackId === "municipal-antigua"
+          ? "Este flujo usa referencia externa. Debe validarse contra documentos oficiales de Antigua Guatemala y normativa nacional aplicable."
+          : "Este flujo usa referencia externa o comparativa. Debe validarse contra documentos oficiales del dominio activo antes de tratarlo como procedimiento.";
 
       const checklistText = (workflow) => {
         const lines = [workflow.title, workflow.summary, "", "Pasos:"];
@@ -230,11 +234,12 @@
             <p class="lead">${esc(workflow.summary || "Flujo generado desde evidencia disponible.")}</p>
             <div class="workflow-meta">
               <span class="chip">jurisdicción: ${esc(workflow.jurisdiction || "Antigua Guatemala")}</span>
+              <span class="chip">dominio: ${esc(metadata.domainPackName || metadata.domainPackId || "municipal-antigua")}</span>
               <span class="chip ${esc(workflow.confidence || "low")}">confianza ${esc(labelForConfidence(workflow.confidence))}</span>
               <span class="chip">evidencia: ${esc(metadata.evidenceCount ?? workflow.citations?.length ?? 0)}</span>
               <button class="secondary" id="copy-procedure-checklist" type="button">Copiar checklist</button>
             </div>
-            ${metadata.hasExternalReference ? `<div class="external-warning">Este flujo usa referencia externa. Debe validarse contra documentos oficiales de Antigua Guatemala y normativa nacional aplicable.</div>` : ""}
+            ${metadata.hasExternalReference ? `<div class="external-warning">${esc(externalWarningText(metadata))}</div>` : ""}
           </header>
           <div class="workflow-body">
             <section><h2 class="section-title">Flujo paso a paso</h2><div class="step-grid">${steps.map(renderStep).join("") || "<p>No hay pasos disponibles.</p>"}</div></section>

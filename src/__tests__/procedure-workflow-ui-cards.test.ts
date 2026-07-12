@@ -36,6 +36,8 @@ describe("procedure workflow UI cards", () => {
     assert.match(html, /Brechas y documentos faltantes/);
     assert.match(html, /Validación humana requerida/);
     assert.match(html, /copy-procedure-checklist/);
+    assert.match(html, /dominio:/);
+    assert.match(html, /domainPackName/);
   });
 
   it("escapes dynamic workflow content before rendering", async () => {

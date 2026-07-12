@@ -265,9 +265,12 @@
       validationWarning:
         "Este flujo de demostración organiza evidencia documental y no sustituye validación de Gerencia Municipal, DAFIM, Asesoría Jurídica, unidad técnica, Concejo Municipal o COCODE cuando corresponda.",
       metadata: {
+        domainPackId: "municipal-antigua",
+        domainPackName: "Municipal Antigua",
         query,
         retrievalMode: "keyword",
         evidenceCount: citations.length,
+        hasLocalEvidence: true,
         hasExternalReference: false,
         hasAntiguaEvidence: true,
         generatedBy: "procedure_workflow_advisor_mvp",

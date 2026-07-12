@@ -1,4 +1,6 @@
 import type { ProcedureGap, ProcedureQueryClassification, ProcedureType } from "./types.js";
+import { loadDomainPack } from "../domain/registry.js";
+import type { DomainPack } from "../domain/types.js";
 
 const closureDocs = [
   "Contrato de obra",
@@ -50,30 +52,54 @@ const docsForType = (type: ProcedureType): string[] => {
     case "unknown":
       return ["Documento normativo aplicable", "Responsable institucional", "Formulario o expediente requerido", "Plazo citado"];
   }
+  return ["Documento normativo aplicable", "Responsable institucional", "Formulario o expediente requerido", "Plazo citado"];
+};
+
+const docsForDomainType = (type: ProcedureType, domainPack: DomainPack): string[] => {
+  const template = domainPack.workflowTemplates.find((item) => item.workflowType === type) ??
+    domainPack.workflowTemplates.find((item) => item.workflowType === "unknown") ??
+    domainPack.workflowTemplates[0];
+
+  if (!template) return docsForType("unknown");
+  return [...new Set(template.steps.flatMap((step) => step.requiredDocuments))];
 };
 
 export const buildProcedureGaps = (
   classification: ProcedureQueryClassification,
   evidenceCount: number,
-  hasAntiguaEvidence: boolean,
-  hasExternalReference: boolean
+  hasLocalEvidence: boolean,
+  hasExternalReference: boolean,
+  domainPack: DomainPack = loadDomainPack(undefined)
 ): ProcedureGap[] => {
   const gaps: ProcedureGap[] = [];
+  const isMunicipalAntigua = domainPack.id === "municipal-antigua";
 
-  if (!hasAntiguaEvidence) {
+  if (!hasLocalEvidence) {
     gaps.push({
-      missingItem: "Documento oficial de Antigua Guatemala sobre el procedimiento",
-      whyItMatters: "Sin una fuente oficial local no se debe afirmar que el flujo es obligatorio para Antigua.",
-      requiredToConfirm: "Manual, MOF, acta, normativa interna, expediente o documento oficial de Antigua.",
+      missingItem: isMunicipalAntigua
+        ? "Documento oficial de Antigua Guatemala sobre el procedimiento"
+        : `Authoritative ${domainPack.name} source for this workflow`,
+      whyItMatters: isMunicipalAntigua
+        ? "Sin una fuente oficial local no se debe afirmar que el flujo es obligatorio para Antigua."
+        : "Without an authoritative domain source, the workflow cannot be treated as required procedure.",
+      requiredToConfirm: isMunicipalAntigua
+        ? "Manual, MOF, acta, normativa interna, expediente o documento oficial de Antigua."
+        : "Policy, SOP, handbook, approval matrix, playbook, or other authoritative domain document.",
       severity: "blocking",
     });
   }
 
   if (hasExternalReference) {
     gaps.push({
-      missingItem: "Validación contra normativa/documentos oficiales de Antigua",
-      whyItMatters: "La evidencia externa puede orientar, pero no sustituye la autoridad local.",
-      requiredToConfirm: "Comparar el flujo externo con documentos oficiales de Antigua y normativa nacional aplicable.",
+      missingItem: isMunicipalAntigua
+        ? "Validación contra normativa/documentos oficiales de Antigua"
+        : "Validation against authoritative domain documents",
+      whyItMatters: isMunicipalAntigua
+        ? "La evidencia externa puede orientar, pero no sustituye la autoridad local."
+        : "Comparative or contextual evidence can guide structure, but cannot replace domain authority.",
+      requiredToConfirm: isMunicipalAntigua
+        ? "Comparar el flujo externo con documentos oficiales de Antigua y normativa nacional aplicable."
+        : "Compare the external reference with current domain policy, SOP, approval matrix, or governing source.",
       severity: "important",
     });
   }
@@ -99,11 +125,18 @@ export const buildProcedureGaps = (
   }
 
   if (evidenceCount === 0) {
-    for (const doc of docsForType(classification.procedureType).slice(0, 5)) {
+    const requiredDocs = isMunicipalAntigua
+      ? docsForType(classification.procedureType)
+      : docsForDomainType(classification.procedureType, domainPack);
+    for (const doc of requiredDocs.slice(0, 5)) {
       gaps.push({
         missingItem: doc,
-        whyItMatters: "Sin evidencia recuperada, el workflow solo puede presentarse como checklist de investigación.",
-        requiredToConfirm: "Ingerir o localizar fuente oficial aplicable.",
+        whyItMatters: isMunicipalAntigua
+          ? "Sin evidencia recuperada, el workflow solo puede presentarse como checklist de investigación."
+          : "Without retrieved evidence, the workflow can only be treated as an investigation checklist.",
+        requiredToConfirm: isMunicipalAntigua
+          ? "Ingerir o localizar fuente oficial aplicable."
+          : "Ingest or locate the authoritative domain source.",
         severity: "important",
       });
     }

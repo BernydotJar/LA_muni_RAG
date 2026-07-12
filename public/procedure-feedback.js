@@ -45,6 +45,8 @@
   };
 
   const workflowMetadata = (workflow) => ({
+    domainPackId: workflow?.metadata?.domainPackId || "municipal-antigua",
+    domainPackName: workflow?.metadata?.domainPackName || "Municipal Antigua",
     workflowId: workflow?.id || "workflow:unknown",
     workflowTitle: workflow?.title || "Flujo procedimental",
     procedureType: workflow?.procedureType || "unknown",

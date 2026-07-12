@@ -38,6 +38,7 @@ class MemoryFeedbackRepository implements ProcedureFeedbackRepository {
 }
 
 const validPayload = (): ProcedureFeedbackInput => ({
+  domainPackId: "municipal-antigua",
   workflowId: "procedure:test",
   workflowTitle: "Flujo de cierre de obra",
   procedureType: "project_closure",
@@ -152,6 +153,7 @@ describe("procedure feedback backend API", () => {
     assert.equal(response.status, 201);
     const item = response.body.item as Record<string, unknown>;
     assert.equal(item.workflowId, "procedure:test");
+    assert.equal(item.domainPackId, "municipal-antigua");
     assert.equal(item.isExternalReference, true);
     assert.equal(item.jurisdiction, "external reference");
   });
@@ -177,6 +179,16 @@ describe("procedure feedback backend API", () => {
 
     assert.equal(response.status, 400);
     assert.equal((response.body.error as Record<string, unknown>).code, "invalid_feedback_payload");
+  });
+
+  it("rejects unsupported domain pack ids", () => {
+    assert.throws(
+      () => validateProcedureFeedbackInput({
+        ...validPayload(),
+        domainPackId: "unsupported-domain",
+      }),
+      /domainPackId has an unsupported value/
+    );
   });
 
   it("rate-limits repeated writes", async () => {
