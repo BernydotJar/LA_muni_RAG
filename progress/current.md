@@ -2,11 +2,15 @@
 
 ## Active Feature
 
+none
+
+## Last Completed Feature
+
 041-procedure-feedback-backend-api
 
 ## State
 
-review
+done
 
 ## Mode
 
@@ -14,18 +18,7 @@ MVP
 
 ## Summary
 
-Feature 041 implementation is complete and awaiting local verification. LA Muni RAG now has a secure PostgreSQL-backed API for ProcedureWorkflow feedback. The API is authenticated with a configured Bearer token, validates and normalizes payloads, rate-limits writes, stores no request metadata, and preserves `external reference` governance.
-
-## Verified Baseline
-
-Before this feature, the user reported:
-
-- npm run typecheck: passed
-- npm run build: passed
-- npm run test: 270 passed, 0 failed
-- npm run build:pages && node scripts/verify-pages-artifact.mjs: passed
-
-Generated `dist-pages/` was cleaned and remains out of scope.
+Feature 041 is closed and locally verified. LA Muni RAG now has a secure PostgreSQL-backed API for ProcedureWorkflow feedback. The API is authenticated with a configured Bearer token, validates and normalizes payloads, rate-limits writes, stores no request metadata, and preserves `external reference` governance.
 
 ## Completed Implementation
 
@@ -62,20 +55,26 @@ Generated `dist-pages/` was cleaned and remains out of scope.
 - `external reference` remains explicit comparative signal and not Antigua procedure.
 - Feedback remains product signal, not municipal evidence.
 
-## Verification Required
+## Local Verification
 
-Apply the migration:
+Reported by the user after applying `db/migrations/002_procedure_feedback.sql`:
 
-```bash
-psql "$DATABASE_URL" -f db/migrations/002_procedure_feedback.sql
-```
+- npm run typecheck: passed
+- npm run build: passed
+- npm run test: 283 passed, 0 failed
 
-Then run:
+## Documentation Update
 
-```bash
-npm run typecheck
-npm run build
-npm run test
-```
+README now documents:
 
-After those commands pass, close the feature as `done`.
+- current product surfaces and routes;
+- Procedure Workflow Advisor;
+- feedback dashboard and backend API;
+- current municipal/Antigua coupling;
+- reusable RAG core;
+- domain-pack architecture for municipal, HR, finance, sales SOP, and custom use cases;
+- current absence of a document-library/admin UI.
+
+## Next Recommended Feature
+
+042-domain-pack-template-foundation
