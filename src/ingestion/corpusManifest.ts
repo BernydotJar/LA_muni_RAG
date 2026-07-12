@@ -1,6 +1,7 @@
 import { mkdir, readFile, rename, writeFile } from "node:fs/promises";
 import { dirname } from "node:path";
 import { sha256Hex } from "../embeddings/chunkIdentity.js";
+import type { DomainDocumentMetadata } from "../domain/types.js";
 import type { SourceFormat } from "./types.js";
 import type { VectorIndexingInput, VectorIndexingResult } from "./vectorIndexing.js";
 import { indexVectorSource } from "./vectorIndexing.js";
@@ -19,6 +20,7 @@ export interface CorpusManifestRecord {
   embeddingProvider: string;
   embeddingModel: string;
   embeddingDimension: number;
+  documentMetadata?: DomainDocumentMetadata;
   status: CorpusManifestStatus;
   indexedAt: string;
   failureCount: number;
@@ -173,7 +175,7 @@ export interface CorpusBackfillDocumentInput {
   embeddingProvider: string;
   embeddingModel: string;
   embeddingDimension: number;
-  metadata?: Record<string, unknown>;
+  metadata?: DomainDocumentMetadata;
 }
 
 export interface CorpusBackfillInput {
@@ -210,6 +212,19 @@ export interface ReindexDecisionInput {
 
 export const computeCorpusContentSha256 = (content: string): string => sha256Hex(content);
 
+const stableJson = (value: unknown): string => {
+  if (value === undefined) return "undefined";
+  if (Array.isArray(value)) return `[${value.map(stableJson).join(",")}]`;
+  if (value && typeof value === "object") {
+    const record = value as Record<string, unknown>;
+    return `{${Object.keys(record)
+      .sort()
+      .map((key) => `${JSON.stringify(key)}:${stableJson(record[key])}`)
+      .join(",")}}`;
+  }
+  return JSON.stringify(value);
+};
+
 export const decideCorpusBackfill = ({
   existingRecord,
   document,
@@ -223,7 +238,8 @@ export const decideCorpusBackfill = ({
     existingRecord.documentVersion !== document.documentVersion ||
     existingRecord.embeddingProvider !== document.embeddingProvider ||
     existingRecord.embeddingModel !== document.embeddingModel ||
-    existingRecord.embeddingDimension !== document.embeddingDimension;
+    existingRecord.embeddingDimension !== document.embeddingDimension ||
+    stableJson(existingRecord.documentMetadata ?? null) !== stableJson(document.metadata ?? null);
 
   return changed ? "reindex" : "skip";
 };
@@ -254,6 +270,7 @@ const recordFromIndexingResult = (
   embeddingProvider: document.embeddingProvider,
   embeddingModel: document.embeddingModel,
   embeddingDimension: document.embeddingDimension,
+  documentMetadata: document.metadata,
   status,
   indexedAt,
   failureCount: indexingResult.failures.length,
@@ -276,7 +293,7 @@ const vectorInputFromDocument = (document: CorpusBackfillDocumentInput): VectorI
   title: document.title,
   documentKey: document.documentKey,
   documentVersion: document.documentVersion,
-  metadata: document.metadata,
+  metadata: document.metadata ? { ...document.metadata } : undefined,
 });
 
 export const backfillCorpusManifest = async (

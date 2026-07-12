@@ -85,6 +85,41 @@ describe("vector indexing orchestration", () => {
     assert.equal((await repository.list()).length, 1);
   });
 
+  it("preserves domain document metadata in planned vector chunks", async () => {
+    const repository = createRepository();
+    const metadata = {
+      domainPackId: "hr",
+      sourceAuthorityClass: "employee_handbook",
+      documentType: "handbook",
+      confidentiality: "internal",
+      tags: ["onboarding"],
+    };
+
+    const result = await indexVectorSource(
+      {
+        inputPath: "fixtures/test.md",
+        documentKey: "hr-handbook",
+        documentVersion: "2026-01",
+        metadata,
+      },
+      {
+        ...baseDependencies(),
+        embeddingRepository: repository,
+        extractByPath: async (_sourcePath, input) => ({
+          ...normalizedDocument,
+          metadata: input.metadata ?? {},
+        }),
+      }
+    );
+
+    const records = await repository.list();
+    assert.equal(result.status, "indexed");
+    assert.deepEqual(records[0]?.chunk.metadata.documentMetadata, {
+      ...metadata,
+      sourcePath: "fixtures/test.md",
+    });
+  });
+
   it("returns a stable failure when input is missing", async () => {
     const result = await indexVectorSource({ inputPath: "" }, baseDependencies());
 

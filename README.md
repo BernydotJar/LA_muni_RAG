@@ -271,6 +271,24 @@ API default:
 http://localhost:4010
 ```
 
+## Domain-Aware Backfill
+
+Corpus backfill accepts domain metadata flags:
+
+```bash
+node --import tsx src/cli/backfillCorpus.ts \
+  --manifest .rag/corpus-manifest.json \
+  --input corpus/document.md \
+  --document-key document-key \
+  --document-version v1 \
+  --domain-pack municipal-antigua \
+  --source-authority-class municipal_manual \
+  --document-type manual \
+  --confidentiality public
+```
+
+If `--domain-pack` is omitted, backfill defaults to `municipal-antigua`. Unsupported domain packs or source authority classes fail closed before indexing.
+
 ## Verification
 
 ```bash
@@ -290,8 +308,8 @@ That is why uploaded corpus documents do not currently appear as a visible libra
 ## Next Architectural Features
 
 ```text
-043-domain-pack-ingestion-metadata
 044-domain-pack-ui-labels-and-routing
+045-domain-pack-admin-intake
 ```
 
-Likely next work: make ingestion metadata and public UI routing fully pack-aware while preserving the Antigua-first default behavior.
+Likely next work: make public UI routing and document intake/admin flows fully pack-aware while preserving the Antigua-first default behavior.

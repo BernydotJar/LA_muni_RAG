@@ -2,6 +2,8 @@ import "dotenv/config";
 import { readFile } from "node:fs/promises";
 import { detectFormat } from "../ingestion/detectFormat.js";
 import type { SourceFormat } from "../ingestion/types.js";
+import { buildDomainDocumentMetadata } from "../domain/documentMetadata.js";
+import type { DomainDocumentMetadata } from "../domain/types.js";
 import {
   backfillCorpusManifest,
   computeCorpusContentSha256,
@@ -23,6 +25,13 @@ export interface BackfillCorpusArgs {
   documentVersion?: string;
   title?: string;
   sourceFormat?: SourceFormat;
+  domainPackId?: string;
+  sourceAuthorityClass?: string;
+  documentType?: string;
+  jurisdiction?: string;
+  organization?: string;
+  confidentiality?: string;
+  tags?: string[];
   dryRun: boolean;
   help: boolean;
 }
@@ -54,6 +63,7 @@ export interface BackfillCorpusDryRunResult {
   embeddingProvider: string;
   embeddingModel: string;
   embeddingDimension: number;
+  documentMetadata: DomainDocumentMetadata;
 }
 
 export const usage = `Usage:
@@ -66,12 +76,34 @@ Options:
   --document-version   Document version.
   --title              Optional document title override.
   --source-format      Optional source format: markdown, txt, docx, pdf.
+  --domain-pack        Optional domain pack id. Defaults to municipal-antigua.
+  --source-authority-class
+                       Optional source authority class from the selected domain pack.
+  --document-type      Optional domain document type. Defaults to source format.
+  --jurisdiction       Optional jurisdiction label.
+  --organization       Optional source organization label.
+  --confidentiality    Optional confidentiality: public, internal, restricted.
+  --tag                Optional repeatable metadata tag.
   --dry-run            Show the manifest decision without indexing or writing the manifest.
   --help               Show this help text.
 `;
 
 const requiresValue = (flag: string): boolean =>
-  ["--manifest", "--input", "--document-key", "--document-version", "--title", "--source-format"].includes(flag);
+  [
+    "--manifest",
+    "--input",
+    "--document-key",
+    "--document-version",
+    "--title",
+    "--source-format",
+    "--domain-pack",
+    "--source-authority-class",
+    "--document-type",
+    "--jurisdiction",
+    "--organization",
+    "--confidentiality",
+    "--tag",
+  ].includes(flag);
 
 const parseSourceFormat = (value: string): SourceFormat => {
   if (SOURCE_FORMATS.includes(value as SourceFormat)) return value as SourceFormat;
@@ -113,6 +145,13 @@ export const parseBackfillCorpusArgs = (args: string[]): BackfillCorpusArgs => {
     if (arg === "--document-version") parsed.documentVersion = next;
     if (arg === "--title") parsed.title = next;
     if (arg === "--source-format") parsed.sourceFormat = parseSourceFormat(next);
+    if (arg === "--domain-pack") parsed.domainPackId = next;
+    if (arg === "--source-authority-class") parsed.sourceAuthorityClass = next;
+    if (arg === "--document-type") parsed.documentType = next;
+    if (arg === "--jurisdiction") parsed.jurisdiction = next;
+    if (arg === "--organization") parsed.organization = next;
+    if (arg === "--confidentiality") parsed.confidentiality = next;
+    if (arg === "--tag") parsed.tags = [...(parsed.tags ?? []), next];
 
     index += 1;
   }
@@ -159,8 +198,20 @@ const buildDocumentInput = async (
   args: ValidBackfillCorpusArgs,
   runtimeMetadata: BackfillCorpusRuntimeMetadata
 ): Promise<CorpusBackfillDocumentInput> => {
-  const content = await readFile(args.inputPath, "utf-8");
   const sourceFormat = args.sourceFormat ?? detectFormat(args.inputPath);
+  const metadata = buildDomainDocumentMetadata(
+    {
+      domainPackId: args.domainPackId,
+      sourceAuthorityClass: args.sourceAuthorityClass,
+      documentType: args.documentType,
+      jurisdiction: args.jurisdiction,
+      organization: args.organization,
+      confidentiality: args.confidentiality,
+      tags: args.tags,
+    },
+    sourceFormat
+  );
+  const content = await readFile(args.inputPath, "utf-8");
   const document: CorpusBackfillDocumentInput = {
     inputPath: args.inputPath,
     documentKey: args.documentKey,
@@ -170,6 +221,7 @@ const buildDocumentInput = async (
     embeddingProvider: runtimeMetadata.embeddingProvider,
     embeddingModel: runtimeMetadata.embeddingModel,
     embeddingDimension: runtimeMetadata.embeddingDimension,
+    metadata,
   };
   if (args.title !== undefined) document.title = args.title;
   return document;
@@ -203,6 +255,9 @@ export const formatBackfillCorpusDryRunResult = (result: BackfillCorpusDryRunRes
     `- embedding-provider: ${result.embeddingProvider}`,
     `- embedding-model: ${result.embeddingModel}`,
     `- embedding-dimension: ${result.embeddingDimension}`,
+    `- domain-pack: ${result.documentMetadata.domainPackId}`,
+    `- source-authority-class: ${result.documentMetadata.sourceAuthorityClass}`,
+    `- document-type: ${result.documentMetadata.documentType}`,
   ].join("\n");
 
 const redactBackfillCliMessage = (message: string): string =>
@@ -211,6 +266,11 @@ const redactBackfillCliMessage = (message: string): string =>
     .replace(/https?:\/\/\S+/gi, "[redacted]")
     .replace(/Bearer\s+\S+/gi, "Bearer [redacted]")
     .replace(/(?:api[_-]?key|token|password|secret)=\S+/gi, "[redacted]");
+
+const requireDocumentMetadata = (metadata: DomainDocumentMetadata | undefined): DomainDocumentMetadata => {
+  if (!metadata) throw new Error("Domain document metadata was not built.");
+  return metadata;
+};
 
 export const formatBackfillCorpusError = (error: unknown): string => {
   const message = error instanceof Error ? error.message : String(error);
@@ -247,6 +307,7 @@ export const runBackfillCorpusDryRun = async (
     embeddingProvider: document.embeddingProvider,
     embeddingModel: document.embeddingModel,
     embeddingDimension: document.embeddingDimension,
+    documentMetadata: requireDocumentMetadata(document.metadata),
   };
 };
 
