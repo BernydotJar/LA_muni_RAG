@@ -35,6 +35,14 @@ Generates structured workflows with:
 - validation warnings;
 - copyable checklist.
 
+### Domain intake
+
+```text
+/domain-intake.html
+```
+
+Prepares domain-aware document metadata and a local `backfillCorpus` command before indexing. It does not upload files or write to the backend.
+
 ### Feedback dashboard
 
 ```text
@@ -304,15 +312,15 @@ node scripts/verify-pages-artifact.mjs
 
 ## Current Limitation: Document Administration
 
-Documents are registered and searched through PostgreSQL and ingestion scripts. The project does not yet include a complete document-library/admin UI for uploading, tagging, versioning, reviewing, and activating files.
+Documents are registered and searched through PostgreSQL and ingestion scripts. The project includes a local domain-aware intake preparation page, but it does not yet include a complete document-library/admin UI for uploading, tagging, versioning, reviewing, and activating files.
 
 That is why uploaded corpus documents do not currently appear as a visible library in the public frontend.
 
 ## Next Architectural Features
 
 ```text
-045-domain-pack-admin-intake
 046-domain-pack-evaluation-harness
+047-domain-pack-admin-library
 ```
 
 Likely next work: make public UI routing and document intake/admin flows fully pack-aware while preserving the Antigua-first default behavior.

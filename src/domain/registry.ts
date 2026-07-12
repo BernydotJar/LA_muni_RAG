@@ -56,6 +56,13 @@ export const summarizeDomainPackForUi = (pack: DomainPack) => ({
     label: workflowType.label,
     description: workflowType.description,
   })),
+  sourceAuthorityClasses: pack.sourceAuthorityClasses.map((authority) => ({
+    id: authority.id,
+    label: authority.label,
+    description: authority.description,
+    authorityLevel: authority.authorityLevel,
+    externalReference: Boolean(authority.externalReference),
+  })),
   exampleQueries: pack.exampleQueries,
   defaultQuery: pack.exampleQueries[0] ?? "",
 });

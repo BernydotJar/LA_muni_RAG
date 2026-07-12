@@ -127,7 +127,9 @@ describe("domain pack template foundation", () => {
     assert.equal(body.name, "HR Procedure Assistant");
     assert.equal(body.defaultQuery, "How do we onboard a new employee?");
     assert.ok(Array.isArray(body.workflowTypes));
+    assert.ok(Array.isArray(body.sourceAuthorityClasses));
     assert.ok(Array.isArray(body.exampleQueries));
+    assert.match(JSON.stringify(body.sourceAuthorityClasses), /employee_handbook/);
     assert.doesNotMatch(JSON.stringify(body), /DATABASE_URL|PROCEDURE_FEEDBACK_API_TOKEN|Bearer|postgres/i);
   });
 

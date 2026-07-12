@@ -9,6 +9,7 @@ const requiredFiles = [
   "glass-wall.html",
   "procedure-workflow.html",
   "procedure-feedback-dashboard.html",
+  "domain-intake.html",
   "widget.js",
   "procedure-widget-entrypoint.js",
   "procedure-feedback.js",
@@ -29,12 +30,14 @@ const indexHtml = await readFile(join(outputDir, "index.html"), "utf-8");
 const glassWallHtml = await readFile(join(outputDir, "glass-wall.html"), "utf-8");
 const procedureWorkflowHtml = await readFile(join(outputDir, "procedure-workflow.html"), "utf-8");
 const feedbackDashboardHtml = await readFile(join(outputDir, "procedure-feedback-dashboard.html"), "utf-8");
+const domainIntakeHtml = await readFile(join(outputDir, "domain-intake.html"), "utf-8");
 
 const forbiddenRootRelativePatterns = [
   'href="/"',
   'href="/glass-wall.html"',
   'href="/procedure-workflow.html"',
   'href="/procedure-feedback-dashboard.html"',
+  'href="/domain-intake.html"',
   'href="/index.html"',
   'src="/widget.js"',
   'src="/procedure-widget-entrypoint.js"',
@@ -48,7 +51,8 @@ for (const pattern of forbiddenRootRelativePatterns) {
     indexHtml.includes(pattern) ||
     glassWallHtml.includes(pattern) ||
     procedureWorkflowHtml.includes(pattern) ||
-    feedbackDashboardHtml.includes(pattern)
+    feedbackDashboardHtml.includes(pattern) ||
+    domainIntakeHtml.includes(pattern)
   ) {
     throw new Error(`GitHub Pages artifact still contains root-relative static reference: ${pattern}`);
   }
@@ -76,6 +80,14 @@ if (!procedureWorkflowHtml.includes('src="./procedure-feedback.js"')) {
 
 if (!feedbackDashboardHtml.includes('la-muni-rag:procedure-feedback')) {
   throw new Error("Feedback dashboard is missing the localStorage feedback key.");
+}
+
+if (!domainIntakeHtml.includes('src="./pages-demo-api.js" data-demo-mode="auto"')) {
+  throw new Error("Domain intake page is missing the Pages demo/API bridge.");
+}
+
+if (!domainIntakeHtml.includes('/api/domain-pack')) {
+  throw new Error("Domain intake page is missing the active domain-pack metadata route.");
 }
 
 console.log("GitHub Pages artifact verified.");
