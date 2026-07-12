@@ -11,6 +11,7 @@
     "build:pages": "node scripts/build-pages.mjs",
     "dev:api": "tsx watch src/server.ts",
     "dev:start": "node scripts/dev-start.mjs",
+    "domain:evaluate": "tsx src/cli/evaluateDomainPacks.ts",
     "ports:kill": "node scripts/kill-ports.mjs",
     "search": "tsx src/cli/search.ts",
     "start": "node dist/server.js",

@@ -6,7 +6,7 @@ None
 
 ## Last Completed Feature
 
-045-domain-pack-admin-intake
+046-domain-pack-evaluation-harness
 
 ## State
 
@@ -18,34 +18,30 @@ MVP
 
 ## Summary
 
-Feature 045 added a local, pack-aware document intake preparation page. It helps operators assemble domain metadata and a `backfillCorpus` command without executing browser-side mutations or building a full admin system.
+Feature 046 added a deterministic evaluation harness for domain packs. It validates workflow classification and expected source authority classes from each pack's `evaluationCases`.
 
 ## Completed Implementation
 
-045 added or updated:
+046 added or updated:
 
-- specs/045-domain-pack-admin-intake/requirements.md
-- specs/045-domain-pack-admin-intake/design.md
-- specs/045-domain-pack-admin-intake/tasks.md
-- public/domain-intake.html
-- public/procedure-workflow.html
-- scripts/build-pages.mjs
-- scripts/verify-pages-artifact.mjs
-- src/domain/registry.ts
-- src/__tests__/domain-pack-admin-intake.test.ts
-- src/__tests__/domain-pack-template-foundation.test.ts
-- docs/domain-pack-admin-intake.md
+- specs/046-domain-pack-evaluation-harness/requirements.md
+- specs/046-domain-pack-evaluation-harness/design.md
+- specs/046-domain-pack-evaluation-harness/tasks.md
+- src/domain/evaluation.ts
+- src/cli/evaluateDomainPacks.ts
+- src/__tests__/domain-pack-evaluation.test.ts
+- docs/domain-pack-evaluation-harness.md
+- package.json
 - README.md
 - progress/current.md
 
 ## Governance Acceptance
 
-- `/domain-intake.html` loads active pack metadata from `/api/domain-pack`.
-- Source authority options come from the active pack.
-- The page generates metadata JSON and a `backfillCorpus` command.
-- The page does not upload files, execute commands, write to the backend, persist intake data, or call feedback APIs.
-- Procedure workflow UI links to document intake.
-- Pages build and verification include the intake page.
+- All registered starter packs are evaluated.
+- Workflow classification expectations are checked.
+- Source authority expectations are checked when provided.
+- The CLI exits non-zero if any case fails.
+- The harness uses deterministic code only; no database, network, retrieval, or LLM judging.
 - Generated `dist-pages/` output was verified but not kept as a source change.
 
 ## Local Verification
@@ -54,7 +50,8 @@ Ran locally:
 
 - npm run typecheck: passed
 - npm run build: passed
-- npm run test: 301 passed, 0 failed
+- npm run domain:evaluate: passed, 6/6 cases
+- npm run test: 305 passed, 0 failed
 - npm run build:pages: passed
 - node scripts/verify-pages-artifact.mjs: passed
 
@@ -62,5 +59,5 @@ Ran locally:
 
 Recommended next features:
 
-- 046-domain-pack-evaluation-harness
 - 047-domain-pack-admin-library
+- 048-domain-pack-feedback-analytics

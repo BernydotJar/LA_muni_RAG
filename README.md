@@ -305,6 +305,7 @@ If `--domain-pack` is omitted, backfill defaults to `municipal-antigua`. Unsuppo
 ```bash
 npm run typecheck
 npm run build
+npm run domain:evaluate
 npm run test
 npm run build:pages
 node scripts/verify-pages-artifact.mjs
@@ -319,8 +320,8 @@ That is why uploaded corpus documents do not currently appear as a visible libra
 ## Next Architectural Features
 
 ```text
-046-domain-pack-evaluation-harness
 047-domain-pack-admin-library
+048-domain-pack-feedback-analytics
 ```
 
 Likely next work: make public UI routing and document intake/admin flows fully pack-aware while preserving the Antigua-first default behavior.
