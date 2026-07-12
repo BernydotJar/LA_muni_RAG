@@ -107,6 +107,30 @@ describe("domain pack template foundation", () => {
     assert.doesNotMatch(JSON.stringify(domainPack), /DATABASE_URL|PROCEDURE_FEEDBACK_API_TOKEN|Bearer/i);
   });
 
+  it("exposes safe domain pack UI metadata without runtime secrets", async () => {
+    const server = createApiServer({
+      evidenceDependencies: {},
+      domainPack: hrDomainPack,
+    });
+    servers.push(server);
+    await new Promise<void>((resolve, reject) => {
+      server.once("error", reject);
+      server.listen({ port: 0, host: "127.0.0.1" }, () => {
+        server.off("error", reject);
+        resolve();
+      });
+    });
+
+    const body = await getJson(server, "/api/domain-pack");
+
+    assert.equal(body.id, "hr");
+    assert.equal(body.name, "HR Procedure Assistant");
+    assert.equal(body.defaultQuery, "How do we onboard a new employee?");
+    assert.ok(Array.isArray(body.workflowTypes));
+    assert.ok(Array.isArray(body.exampleQueries));
+    assert.doesNotMatch(JSON.stringify(body), /DATABASE_URL|PROCEDURE_FEEDBACK_API_TOKEN|Bearer|postgres/i);
+  });
+
   it("uses a non-municipal domain pack for neutral workflow classification and templates", async () => {
     const workflow = await buildProcedureWorkflowWithDependencies(
       "How do we onboard a new employee?",

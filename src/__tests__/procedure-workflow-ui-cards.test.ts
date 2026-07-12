@@ -12,6 +12,8 @@ describe("procedure workflow UI cards", () => {
     assert.match(html, /Procedure Workflow Advisor/);
     assert.match(html, /Antigua-first/);
     assert.match(html, /Del documento al <span>paso a paso/);
+    assert.match(html, /domain-status-pill/);
+    assert.match(html, /domain-eyebrow/);
     assert.match(html, /procedure-workflow-form/);
     assert.match(html, /procedure-query/);
   });
@@ -23,6 +25,17 @@ describe("procedure workflow UI cards", () => {
     assert.match(html, /new URLSearchParams\(\{ q: query, mode, limit \}\)/);
     assert.match(html, /headers: \{ accept: "application\/json" \}/);
     assert.match(html, /renderProcedureWorkflow\(await response\.json\(\)\)/);
+  });
+
+  it("loads active domain-pack UI labels without allowing public pack switching", async () => {
+    const html = await readSource("public/procedure-workflow.html");
+
+    assert.match(html, /loadDomainPackUi/);
+    assert.match(html, /fetch\("\/api\/domain-pack"/);
+    assert.match(html, /applyDomainPackUi/);
+    assert.match(html, /activeDomainPack/);
+    assert.match(html, /workflow assistant/);
+    assert.doesNotMatch(html, /domainPackId: new URLSearchParams|DOMAIN_PACK=/);
   });
 
   it("renders workflow cards, documents, citations, gaps, and validation warning", async () => {
@@ -54,7 +67,10 @@ describe("procedure workflow UI cards", () => {
     const bridge = await readSource("public/pages-demo-api.js");
 
     assert.match(bridge, /isProcedureRequest/);
+    assert.match(bridge, /isDomainPackRequest/);
     assert.match(bridge, /\/api\/procedure/);
+    assert.match(bridge, /\/api\/domain-pack/);
+    assert.match(bridge, /demoDomainPackResponse/);
     assert.match(bridge, /demoProcedureResponse/);
     assert.match(bridge, /procedureStep/);
     assert.match(bridge, /Procedure Workflow|Flujo procedimental|procedure_workflow_advisor_mvp/);

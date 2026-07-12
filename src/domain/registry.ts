@@ -49,6 +49,17 @@ export const summarizeDomainPack = (pack: DomainPack): DomainPackSummary => ({
   branding: pack.branding,
 });
 
+export const summarizeDomainPackForUi = (pack: DomainPack) => ({
+  ...summarizeDomainPack(pack),
+  workflowTypes: pack.workflowTypes.map((workflowType) => ({
+    id: workflowType.id,
+    label: workflowType.label,
+    description: workflowType.description,
+  })),
+  exampleQueries: pack.exampleQueries,
+  defaultQuery: pack.exampleQueries[0] ?? "",
+});
+
 export const loadDomainPack = (id: string | undefined | null): DomainPack => {
   const normalized = id?.trim() || DEFAULT_DOMAIN_PACK_ID;
   const pack = DOMAIN_PACKS[normalized as DomainPackId];

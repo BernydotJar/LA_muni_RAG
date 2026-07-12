@@ -6,7 +6,12 @@ import { evaluateQueryWithDependencies } from "./agent.js";
 import { buildDeterministicAnswerWithDependencies } from "./answer.js";
 import { processChatWithDependencies } from "./chat.js";
 import { closeDb } from "./db.js";
-import { loadActiveDomainPack, summarizeDomainPack, type DomainPack } from "./domain/registry.js";
+import {
+  loadActiveDomainPack,
+  summarizeDomainPack,
+  summarizeDomainPackForUi,
+  type DomainPack,
+} from "./domain/registry.js";
 import { type EvidenceDependencies, type EvidenceMode, findEvidenceWithDependencies } from "./evidence.js";
 import {
   HttpError,
@@ -83,6 +88,7 @@ export const createRequestHandler = (options: ServerOptions = {}): RequestListen
     options.procedureFeedbackDependencies ?? createProcedureFeedbackDependencies();
   const domainPack = options.domainPack ?? loadActiveDomainPack();
   const domainPackSummary = summarizeDomainPack(domainPack);
+  const domainPackUiSummary = summarizeDomainPackForUi(domainPack);
 
   return async (req, res) => {
     try {
@@ -102,6 +108,12 @@ export const createRequestHandler = (options: ServerOptions = {}): RequestListen
           },
           domainPack: domainPackSummary,
         });
+        return;
+      }
+
+      // ----- Active Domain Pack -----
+      if (req.method === "GET" && url.pathname === "/api/domain-pack") {
+        sendJson(res, 200, domainPackUiSummary);
         return;
       }
 

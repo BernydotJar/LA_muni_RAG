@@ -60,6 +60,7 @@ GET  /api/evidence
 GET  /api/agent
 GET  /api/answer
 POST /api/chat
+GET  /api/domain-pack
 GET  /api/procedure
 POST /api/procedure-feedback
 GET  /api/procedure-feedback
@@ -84,6 +85,8 @@ Supported starter packs:
 - `custom`
 
 Unsupported values fail closed during startup/configuration validation. `/health` exposes a safe domain-pack summary without secrets.
+
+`/api/domain-pack` exposes safe UI metadata for the active pack so public pages can adapt labels and default prompts without exposing runtime configuration or secrets.
 
 ## Current Antigua Configuration
 
@@ -308,8 +311,8 @@ That is why uploaded corpus documents do not currently appear as a visible libra
 ## Next Architectural Features
 
 ```text
-044-domain-pack-ui-labels-and-routing
 045-domain-pack-admin-intake
+046-domain-pack-evaluation-harness
 ```
 
 Likely next work: make public UI routing and document intake/admin flows fully pack-aware while preserving the Antigua-first default behavior.

@@ -69,6 +69,7 @@
 
   const isChatRequest = (input) => requestPath(input).endsWith("/api/chat");
   const isProcedureRequest = (input) => requestPath(input).endsWith("/api/procedure");
+  const isDomainPackRequest = (input) => requestPath(input).endsWith("/api/domain-pack");
 
   const parseMessage = (init) => {
     try {
@@ -92,6 +93,28 @@
     headers: { accept: "application/json" },
     credentials: "omit",
     redirect: "error",
+  });
+
+  const demoDomainPackResponse = () => ({
+    id: "municipal-antigua",
+    name: "Municipal Antigua",
+    language: "es",
+    branding: {
+      productName: "LA Muni RAG",
+      assistantName: "Asistente Municipal",
+      organizationName: "Municipalidad de La Antigua Guatemala",
+      primaryLabel: "Antigua-first",
+    },
+    workflowTypes: [
+      { id: "public_works", label: "Obra pública", description: "Construcción, ampliación o mejora municipal." },
+      { id: "procurement", label: "Contratación", description: "Compras, adquisiciones, cotización o licitación." },
+      { id: "project_closure", label: "Cierre de obra", description: "Recepción, liquidación y cierre de expediente." },
+    ],
+    exampleQueries: [
+      "¿Qué hay que hacer para construir un estadio municipal?",
+      "¿Qué falta para cerrar la obra de la escuela de San Mateo?",
+    ],
+    defaultQuery: "¿Qué hay que hacer para construir un estadio municipal?",
   });
 
   const citation = (citationLabel, excerpt, pageStart) => ({
@@ -280,7 +303,22 @@
   };
 
   window.fetch = async (input, init) => {
-    if (!isChatRequest(input) && !isProcedureRequest(input)) return nativeFetch(input, init);
+    if (!isChatRequest(input) && !isProcedureRequest(input) && !isDomainPackRequest(input)) return nativeFetch(input, init);
+
+    if (isDomainPackRequest(input)) {
+      if (shouldProxy) {
+        const targetUrl = new URL("/api/domain-pack", configuredApiUrl).href;
+        return nativeFetch(targetUrl, safeProcedureProxyInit());
+      }
+
+      return new Response(JSON.stringify(demoDomainPackResponse()), {
+        status: 200,
+        headers: {
+          "content-type": "application/json; charset=utf-8",
+          "x-la-muni-rag-demo": "true",
+        },
+      });
+    }
 
     if (isProcedureRequest(input)) {
       if (shouldProxy) {
