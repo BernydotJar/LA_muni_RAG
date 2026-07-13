@@ -123,9 +123,7 @@ export const validateEditableWorkflowTemplate = (
 
   const authoritative = template.authoritative === true;
   if (authoritative && evidenceRequirement !== "required") {
-    throw new WorkflowTemplateValidationError(
-      "authoritative templates must require evidence"
-    );
+    throw new WorkflowTemplateValidationError("authoritative templates must require evidence");
   }
 
   const governanceIds = new Set(domainPack.governanceRules.map((rule) => rule.id));
@@ -158,6 +156,21 @@ export const validateEditableWorkflowTemplate = (
       throw new WorkflowTemplateValidationError("steps order must be contiguous and start at 1");
     }
   });
+
+  if (evidenceRequirement === "required") {
+    steps.forEach((step, index) => {
+      if (step.evidencePatterns.length === 0) {
+        throw new WorkflowTemplateValidationError(
+          `steps[${index}] must define evidencePatterns when evidence is required`
+        );
+      }
+      if (step.allowedSourceAuthorities.length === 0) {
+        throw new WorkflowTemplateValidationError(
+          `steps[${index}] must define allowedSourceAuthorities when evidence is required`
+        );
+      }
+    });
+  }
 
   return {
     domainPackId,
