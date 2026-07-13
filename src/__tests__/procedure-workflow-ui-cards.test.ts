@@ -12,6 +12,8 @@ describe("procedure workflow UI cards", () => {
     assert.match(html, /Procedure Workflow Advisor/);
     assert.match(html, /Antigua-first/);
     assert.match(html, /Del documento al <span>paso a paso/);
+    assert.match(html, /domain-status-pill/);
+    assert.match(html, /domain-eyebrow/);
     assert.match(html, /procedure-workflow-form/);
     assert.match(html, /procedure-query/);
   });
@@ -25,6 +27,17 @@ describe("procedure workflow UI cards", () => {
     assert.match(html, /renderProcedureWorkflow\(await response\.json\(\)\)/);
   });
 
+  it("loads active domain-pack UI labels without allowing public pack switching", async () => {
+    const html = await readSource("public/procedure-workflow.html");
+
+    assert.match(html, /loadDomainPackUi/);
+    assert.match(html, /fetch\("\/api\/domain-pack"/);
+    assert.match(html, /applyDomainPackUi/);
+    assert.match(html, /activeDomainPack/);
+    assert.match(html, /workflow assistant/);
+    assert.doesNotMatch(html, /domainPackId: new URLSearchParams|DOMAIN_PACK=/);
+  });
+
   it("renders workflow cards, documents, citations, gaps, and validation warning", async () => {
     const html = await readSource("public/procedure-workflow.html");
 
@@ -36,6 +49,8 @@ describe("procedure workflow UI cards", () => {
     assert.match(html, /Brechas y documentos faltantes/);
     assert.match(html, /Validación humana requerida/);
     assert.match(html, /copy-procedure-checklist/);
+    assert.match(html, /dominio:/);
+    assert.match(html, /domainPackName/);
   });
 
   it("escapes dynamic workflow content before rendering", async () => {
@@ -52,7 +67,10 @@ describe("procedure workflow UI cards", () => {
     const bridge = await readSource("public/pages-demo-api.js");
 
     assert.match(bridge, /isProcedureRequest/);
+    assert.match(bridge, /isDomainPackRequest/);
     assert.match(bridge, /\/api\/procedure/);
+    assert.match(bridge, /\/api\/domain-pack/);
+    assert.match(bridge, /demoDomainPackResponse/);
     assert.match(bridge, /demoProcedureResponse/);
     assert.match(bridge, /procedureStep/);
     assert.match(bridge, /Procedure Workflow|Flujo procedimental|procedure_workflow_advisor_mvp/);

@@ -34,6 +34,7 @@ export type ProcedureConfidence = (typeof PROCEDURE_CONFIDENCE)[number];
 export type ProcedureFeedbackType = (typeof PROCEDURE_FEEDBACK_TYPES)[number];
 
 export interface ProcedureFeedbackInput {
+  domainPackId: string;
   workflowId: string;
   workflowTitle: string;
   procedureType: ProcedureType;

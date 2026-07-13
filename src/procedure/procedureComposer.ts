@@ -1,5 +1,7 @@
 import type { EvidenceItem, EvidenceMode } from "../evidence.js";
-import { toProcedureCitation, hasAntiguaEvidence as citationsHaveAntiguaEvidence } from "./procedureAuthorities.js";
+import type { DomainPack, DomainWorkflowTemplate, DomainWorkflowTemplateStep } from "../domain/types.js";
+import { loadDomainPack } from "../domain/registry.js";
+import { toProcedureCitation, hasLocalEvidence as citationsHaveLocalEvidence } from "./procedureAuthorities.js";
 import { buildProcedureGaps } from "./procedureGaps.js";
 import type {
   ProcedureCitation,
@@ -10,41 +12,46 @@ import type {
   ProcedureWorkflow,
 } from "./types.js";
 
-const titleForType = (type: ProcedureType, query: string): string => {
-  switch (type) {
-    case "public_works":
-      return "Flujo procedimental para obra pública municipal";
-    case "procurement":
-      return "Flujo procedimental para contratación o adquisición municipal";
-    case "project_execution":
-      return "Flujo procedimental para ejecución de proyecto municipal";
-    case "project_closure":
-      return "Flujo procedimental para cierre y liquidación de obra municipal";
-    case "budget":
-      return "Flujo procedimental presupuestario municipal";
-    case "community_request":
-    case "cocode":
-      return "Flujo procedimental para solicitud comunitaria/COCODE";
-    case "council_approval":
-      return "Flujo procedimental para aprobación de Concejo Municipal";
-    case "unknown":
-      return `Flujo procedimental preliminar para: ${query}`;
+const normalize = (value: string): string =>
+  value
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/\s+/g, " ")
+    .trim();
+
+const isMunicipalAntigua = (domainPack: DomainPack): boolean => domainPack.id === "municipal-antigua";
+
+const templateForType = (domainPack: DomainPack, type: ProcedureType): DomainWorkflowTemplate => {
+  const direct = domainPack.workflowTemplates.find((template) => template.workflowType === type);
+  if (direct) return direct;
+
+  if (domainPack.id === "municipal-antigua" && type === "project_execution") {
+    return domainPack.workflowTemplates.find((template) => template.workflowType === "public_works")!;
   }
+
+  return domainPack.workflowTemplates.find((template) => template.workflowType === "unknown") ?? domainPack.workflowTemplates[0]!;
 };
 
-const citationsForStep = (citations: ProcedureCitation[], patterns: RegExp[]): ProcedureCitation[] => {
+const titleForType = (type: ProcedureType, query: string, domainPack: DomainPack): string => {
+  const template = templateForType(domainPack, type);
+  if (type === "unknown" && isMunicipalAntigua(domainPack)) return `Flujo procedimental preliminar para: ${query}`;
+  return template.title;
+};
+
+const citationsForStep = (citations: ProcedureCitation[], patterns: string[]): ProcedureCitation[] => {
   const selected = citations.filter((citation) => {
-    const haystack = `${citation.citationLabel} ${citation.excerpt} ${citation.sourceType}`;
-    return patterns.some((pattern) => pattern.test(haystack));
+    const haystack = normalize(`${citation.citationLabel} ${citation.excerpt} ${citation.sourceType}`);
+    return patterns.some((pattern) => haystack.includes(normalize(pattern)));
   });
 
   return (selected.length ? selected : citations.slice(0, 2)).slice(0, 4);
 };
 
-const confidenceFor = (evidence: ProcedureCitation[], hasAntiguaEvidence: boolean): ProcedureConfidence => {
+const confidenceFor = (evidence: ProcedureCitation[], hasLocalEvidence: boolean): ProcedureConfidence => {
   if (evidence.length === 0) return "low";
-  if (hasAntiguaEvidence && evidence.length >= 3) return "medium";
-  if (hasAntiguaEvidence) return "medium";
+  if (hasLocalEvidence && evidence.length >= 3) return "medium";
+  if (hasLocalEvidence) return "medium";
   return "low";
 };
 
@@ -55,7 +62,8 @@ const step = (
   requiredDocuments: string[],
   outputDocuments: string[],
   evidence: ProcedureCitation[],
-  hasAntiguaEvidence: boolean,
+  hasLocalEvidence: boolean,
+  domainPack: DomainPack,
   options: Partial<ProcedureStep> = {}
 ): ProcedureStep => ({
   stepNumber,
@@ -65,153 +73,74 @@ const step = (
   outputDocuments,
   legalBasis: evidence,
   sourceEvidence: evidence,
-  confidence: confidenceFor(evidence, hasAntiguaEvidence),
-  notes: hasAntiguaEvidence
+  confidence: confidenceFor(evidence, hasLocalEvidence),
+  notes: hasLocalEvidence
     ? options.notes
-    : options.notes ?? "Paso conservador: requiere validación contra fuente oficial de Antigua Guatemala.",
+    : options.notes ??
+      (isMunicipalAntigua(domainPack)
+        ? "Paso conservador: requiere validación contra fuente oficial de Antigua Guatemala."
+        : `Conservative step: requires validation against authoritative ${domainPack.name} sources.`),
   ...options,
 });
 
-const publicWorksSteps = (citations: ProcedureCitation[], hasAntiguaEvidence: boolean): ProcedureStep[] => [
-  step(
-    1,
-    "Clasificar el proyecto",
-    "Determinar si la iniciativa es obra pública municipal, inversión nueva, ampliación, remodelación, mantenimiento o proyecto sujeto a SNIP u otra planificación aplicable.",
-    ["Perfil del proyecto", "Justificación técnica", "Ubicación o terreno", "Necesidad comunitaria o institucional"],
-    ["Clasificación preliminar del proyecto"],
-    citationsForStep(citations, [/obra/i, /proyecto/i, /snip/i, /constru/i]),
-    hasAntiguaEvidence
-  ),
-  step(
-    2,
-    "Validar planificación y presupuesto",
-    "Cruzar la iniciativa con PDM-OT, POM/POA, presupuesto y disponibilidad financiera antes de iniciar contratación.",
-    ["PDM-OT", "POM/POA", "Presupuesto", "Disponibilidad presupuestaria"],
-    ["Validación de alineación y financiamiento"],
-    citationsForStep(citations, [/pdm/i, /poa/i, /pom/i, /presupuesto/i, /plan/i]),
-    hasAntiguaEvidence
-  ),
-  step(
-    3,
-    "Preparar expediente técnico",
-    "Integrar especificaciones, planos, presupuesto detallado, dictámenes y documentos técnicos necesarios para sustentar la obra.",
-    ["Especificaciones técnicas", "Planos", "Presupuesto detallado", "Dictamen técnico", "Cronograma"],
-    ["Expediente técnico de obra"],
-    citationsForStep(citations, [/tecnico/i, /técnico/i, /expediente/i, /plano/i, /presupuesto/i]),
-    hasAntiguaEvidence
-  ),
-  step(
-    4,
-    "Definir modalidad de contratación",
-    "Determinar si corresponde compra directa, cotización, licitación u otra modalidad según monto, objeto y normativa aplicable.",
-    ["Monto estimado", "Objeto contractual", "Base normativa", "Disponibilidad presupuestaria"],
-    ["Modalidad de contratación definida"],
-    citationsForStep(citations, [/licitacion/i, /licitación/i, /cotizacion/i, /cotización/i, /contratacion/i, /adquis/i]),
-    hasAntiguaEvidence
-  ),
-  step(
-    5,
-    "Aprobar, contratar y ejecutar",
-    "Completar aprobaciones internas, adjudicación/contrato, orden de inicio, supervisión y control de avance según expediente aplicable.",
-    ["Bases o términos", "Acta/adjudicación si aplica", "Contrato", "Orden de inicio", "Bitácora o informes de supervisión"],
-    ["Contrato y expediente de ejecución"],
-    citationsForStep(citations, [/contrato/i, /concejo/i, /acta/i, /supervision/i, /ejecucion/i]),
-    hasAntiguaEvidence
-  ),
-  step(
-    6,
-    "Recepción, liquidación y cierre",
-    "Para cerrar la obra, verificar recepción, informes, pagos, liquidación y documentación final antes de afirmar cierre institucional.",
-    ["Acta de recepción", "Informes de supervisión", "Estimaciones/pagos", "Liquidación", "Expediente completo"],
-    ["Expediente de cierre o liquidación"],
-    citationsForStep(citations, [/recepcion/i, /recepción/i, /liquidacion/i, /liquidación/i, /cierre/i, /estimacion/i]),
-    hasAntiguaEvidence
-  ),
-];
+const stepFromTemplate = (
+  templateStep: DomainWorkflowTemplateStep,
+  index: number,
+  citations: ProcedureCitation[],
+  hasLocalEvidence: boolean,
+  domainPack: DomainPack,
+  classification: ProcedureQueryClassification
+): ProcedureStep => {
+  const title = templateStep.title;
+  const action =
+    classification.caseName && title === "Verificar expediente del caso"
+      ? `Localizar el expediente específico de ${classification.caseName} antes de afirmar estado actual, recepción o cierre.`
+      : templateStep.action;
 
-const closureSteps = (citations: ProcedureCitation[], hasAntiguaEvidence: boolean, caseName?: string): ProcedureStep[] => [
-  step(
-    1,
-    "Verificar expediente del caso",
-    `Localizar el expediente específico${caseName ? ` de ${caseName}` : ""} antes de afirmar estado actual, recepción o cierre.`,
-    ["Contrato", "Expediente técnico", "Actas", "Informes de supervisión", "Estimaciones"],
-    ["Inventario documental del expediente"],
-    citationsForStep(citations, [/expediente/i, /contrato/i, /obra/i, /escuela/i, /san mateo/i]),
-    hasAntiguaEvidence,
-    { notes: "Si el expediente específico no está en corpus, el sistema solo puede listar faltantes." }
-  ),
-  step(
-    2,
-    "Confirmar recepción física o técnica",
-    "Revisar si existe acta de recepción, informe de supervisión o documento equivalente que demuestre entrega de la obra.",
-    ["Acta de recepción", "Informe de supervisión", "Evidencia de entrega"],
-    ["Confirmación documental de recepción"],
-    citationsForStep(citations, [/recepcion/i, /recepción/i, /supervision/i, /entrega/i]),
-    hasAntiguaEvidence
-  ),
-  step(
-    3,
-    "Validar pagos, estimaciones y liquidación",
-    "Revisar estimaciones, pagos, saldos, liquidación y cierre administrativo/financiero.",
-    ["Estimaciones", "Pagos", "Liquidación", "Presupuesto/ejecución"],
-    ["Validación financiera de cierre"],
-    citationsForStep(citations, [/estimacion/i, /pago/i, /liquidacion/i, /presupuesto/i, /ejecucion presupuestaria/i]),
-    hasAntiguaEvidence
-  ),
-  step(
-    4,
-    "Confirmar aprobación o conocimiento institucional",
-    "Verificar si el cierre requiere punto de Concejo, certificación, intervención de gerencia, unidad técnica o comunidad/COCODE según expediente.",
-    ["Acta o punto de Concejo si aplica", "Certificación", "Visto bueno técnico", "Documento comunitario si aplica"],
-    ["Validación institucional del cierre"],
-    citationsForStep(citations, [/concejo/i, /acta/i, /cocode/i, /gerencia/i, /certificacion/i]),
-    hasAntiguaEvidence
-  ),
-];
-
-const procurementSteps = (citations: ProcedureCitation[], hasAntiguaEvidence: boolean): ProcedureStep[] => [
-  step(1, "Preparar requerimiento", "Definir necesidad, objeto, especificaciones y respaldo presupuestario.", ["Solicitud", "Especificaciones técnicas", "Disponibilidad presupuestaria"], ["Requerimiento completo"], citationsForStep(citations, [/solicitud/i, /requerimiento/i, /presupuesto/i]), hasAntiguaEvidence),
-  step(2, "Definir modalidad", "Determinar modalidad de contratación conforme monto, objeto y normativa aplicable.", ["Monto", "Objeto", "Normativa aplicable"], ["Modalidad definida"], citationsForStep(citations, [/cotizacion/i, /licitacion/i, /contratacion/i, /adquis/i]), hasAntiguaEvidence),
-  step(3, "Integrar expediente y publicar/adjudicar", "Preparar bases, integrar junta si aplica, publicar o solicitar ofertas, evaluar y adjudicar.", ["Bases", "Junta", "Ofertas", "Actas"], ["Adjudicación o decisión documentada"], citationsForStep(citations, [/junta/i, /bases/i, /oferta/i, /adjudic/i, /acta/i]), hasAntiguaEvidence),
-  step(4, "Formalizar y ejecutar", "Formalizar contrato u orden, supervisar cumplimiento y conservar expediente.", ["Contrato", "Orden", "Garantías si aplican", "Supervisión"], ["Contrato ejecutado y expediente"], citationsForStep(citations, [/contrato/i, /orden/i, /garantia/i, /supervision/i]), hasAntiguaEvidence),
-];
-
-const genericSteps = (citations: ProcedureCitation[], hasAntiguaEvidence: boolean): ProcedureStep[] => [
-  step(1, "Identificar fuente aplicable", "Determinar qué documento oficial regula el procedimiento.", ["Documento oficial", "Norma aplicable"], ["Fuente rectora identificada"], citations.slice(0, 3), hasAntiguaEvidence),
-  step(2, "Listar requisitos", "Extraer requisitos, responsables, documentos, plazos y aprobaciones citadas.", ["Texto procedimental", "MOF/manual/acta"], ["Checklist preliminar"], citations.slice(0, 3), hasAntiguaEvidence),
-  step(3, "Validar con autoridad municipal", "Confirmar el flujo con la unidad responsable antes de ejecutarlo.", ["Checklist", "Citas", "Expediente"], ["Flujo validado"], citations.slice(0, 2), hasAntiguaEvidence, { confidence: "low" }),
-];
+  return step(
+    index + 1,
+    title,
+    action,
+    templateStep.requiredDocuments,
+    templateStep.outputDocuments,
+    citationsForStep(citations, templateStep.evidencePatterns),
+    hasLocalEvidence,
+    domainPack,
+    { notes: templateStep.notes }
+  );
+};
 
 const stepsForType = (
   type: ProcedureType,
   citations: ProcedureCitation[],
-  hasAntiguaEvidence: boolean,
-  caseName?: string
+  hasLocalEvidence: boolean,
+  domainPack: DomainPack,
+  classification: ProcedureQueryClassification
 ): ProcedureStep[] => {
-  switch (type) {
-    case "public_works":
-    case "project_execution":
-      return publicWorksSteps(citations, hasAntiguaEvidence);
-    case "project_closure":
-      return closureSteps(citations, hasAntiguaEvidence, caseName);
-    case "procurement":
-      return procurementSteps(citations, hasAntiguaEvidence);
-    case "budget":
-    case "community_request":
-    case "cocode":
-    case "council_approval":
-    case "unknown":
-      return genericSteps(citations, hasAntiguaEvidence);
-  }
+  const template = templateForType(domainPack, type);
+  return template.steps.map((templateStep, index) =>
+    stepFromTemplate(templateStep, index, citations, hasLocalEvidence, domainPack, classification)
+  );
 };
 
-const workflowConfidence = (steps: ProcedureStep[], hasAntiguaEvidence: boolean): ProcedureConfidence => {
-  if (!hasAntiguaEvidence) return "low";
+const workflowConfidence = (steps: ProcedureStep[], hasLocalEvidence: boolean): ProcedureConfidence => {
+  if (!hasLocalEvidence) return "low";
   if (steps.some((item) => item.confidence === "low")) return "medium";
   return "medium";
 };
 
-const jurisdictionFor = (citations: ProcedureCitation[], classification: ProcedureQueryClassification): ProcedureWorkflow["jurisdiction"] => {
+const hasExternalReferenceCitation = (citations: ProcedureCitation[], domainPack: DomainPack): boolean =>
+  citations.some((citation) => domainPack.sourceAuthorityClasses.find((authority) => authority.id === citation.authorityClass)?.externalReference);
+
+const jurisdictionFor = (
+  citations: ProcedureCitation[],
+  classification: ProcedureQueryClassification,
+  domainPack: DomainPack
+): ProcedureWorkflow["jurisdiction"] => {
+  if (!isMunicipalAntigua(domainPack)) {
+    if (hasExternalReferenceCitation(citations, domainPack)) return "external reference";
+    return domainPack.branding.organizationName ?? domainPack.name;
+  }
   if (classification.mentionsExternalMunicipality && citations.every((citation) => citation.authorityClass === "external_reference")) return "external reference";
   if (citations.some((citation) => citation.authorityClass === "national_law")) return "Guatemala national";
   return "Antigua Guatemala";
@@ -221,53 +150,63 @@ const summaryFor = (
   query: string,
   classification: ProcedureQueryClassification,
   evidenceCount: number,
-  hasAntiguaEvidence: boolean,
-  hasExternalReference: boolean
+  hasLocalEvidence: boolean,
+  hasExternalReference: boolean,
+  domainPack: DomainPack
 ): string => {
+  const template = templateForType(domainPack, classification.procedureType);
   if (evidenceCount === 0) {
-    return `No encontré evidencia suficiente para afirmar un procedimiento específico para “${query}”. Devuelvo un checklist de investigación y documentos faltantes.`;
+    return isMunicipalAntigua(domainPack)
+      ? `No encontré evidencia suficiente para afirmar un procedimiento específico para “${query}”. Devuelvo un checklist de investigación y documentos faltantes.`
+      : `I did not find enough ${domainPack.name} evidence to assert a specific workflow for “${query}”. I am returning an investigation checklist.`;
   }
 
-  if (!hasAntiguaEvidence && hasExternalReference) {
-    return "Encontré referencia procedimental de otra municipalidad. Puede orientar el flujo comparativo, pero no debe tratarse como procedimiento oficial de Antigua Guatemala sin validación local y nacional.";
+  if (!hasLocalEvidence && hasExternalReference) {
+    return domainPack.governanceRules.find((rule) => rule.appliesToAuthorityClasses?.some((authority) => authority !== "unknown"))?.warning ??
+      "Found a comparative reference. Validate against authoritative local/domain documents before treating it as procedure.";
   }
 
   if (classification.asksForCurrentStatus && classification.caseName) {
     return `Para determinar qué falta en ${classification.caseName}, el sistema necesita expediente específico. El flujo lista los documentos mínimos para validar cierre sin inventar estado actual.`;
   }
 
-  return "Encontré evidencia relacionada y organicé un flujo municipal conservador. Los pasos sin respaldo directo quedan marcados para validación humana.";
+  return template.defaultSummary;
 };
 
 export const composeProcedureWorkflow = (
   query: string,
   mode: EvidenceMode,
   classification: ProcedureQueryClassification,
-  evidence: EvidenceItem[]
+  evidence: EvidenceItem[],
+  domainPack: DomainPack = loadDomainPack(undefined)
 ): ProcedureWorkflow => {
-  const citations = evidence.map((item) => toProcedureCitation(item));
-  const hasExternalReference = citations.some((citation) => citation.authorityClass === "external_reference");
-  const hasAntiguaEvidence = citationsHaveAntiguaEvidence(citations);
-  const steps = stepsForType(classification.procedureType, citations, hasAntiguaEvidence, classification.caseName);
-  const gaps = buildProcedureGaps(classification, evidence.length, hasAntiguaEvidence, hasExternalReference);
+  const citations = evidence.map((item) => toProcedureCitation(item, "cited_text", domainPack));
+  const hasExternalReference = hasExternalReferenceCitation(citations, domainPack);
+  const hasLocalEvidence = citationsHaveLocalEvidence(citations, domainPack);
+  const hasAntiguaEvidence = isMunicipalAntigua(domainPack) ? hasLocalEvidence : false;
+  const steps = stepsForType(classification.procedureType, citations, hasLocalEvidence, domainPack, classification);
+  const gaps = buildProcedureGaps(classification, evidence.length, hasLocalEvidence, hasExternalReference, domainPack);
+  const template = templateForType(domainPack, classification.procedureType);
 
   return {
     id: `procedure:${Buffer.from(query).toString("base64url").slice(0, 18)}`,
-    title: titleForType(classification.procedureType, query),
-    jurisdiction: jurisdictionFor(citations, classification),
+    title: titleForType(classification.procedureType, query, domainPack),
+    jurisdiction: jurisdictionFor(citations, classification, domainPack),
     procedureType: classification.procedureType,
-    confidence: workflowConfidence(steps, hasAntiguaEvidence),
-    summary: summaryFor(query, classification, evidence.length, hasAntiguaEvidence, hasExternalReference),
+    confidence: workflowConfidence(steps, hasLocalEvidence),
+    summary: summaryFor(query, classification, evidence.length, hasLocalEvidence, hasExternalReference, domainPack),
     classification,
     steps,
     gaps,
     citations,
-    validationWarning:
-      "Este flujo organiza evidencia documental y no sustituye validación de Gerencia Municipal, DAFIM, Asesoría Jurídica, unidad técnica, Concejo Municipal o COCODE cuando corresponda.",
+    validationWarning: template.validationWarning,
     metadata: {
+      domainPackId: domainPack.id,
+      domainPackName: domainPack.name,
       query,
       retrievalMode: mode,
       evidenceCount: evidence.length,
+      hasLocalEvidence,
       hasExternalReference,
       hasAntiguaEvidence,
       generatedBy: "procedure_workflow_advisor_mvp",

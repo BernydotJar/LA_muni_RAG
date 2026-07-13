@@ -10,6 +10,7 @@ import type {
 
 interface ProcedureFeedbackRow extends QueryResultRow {
   id: string;
+  metadata: { domainPackId?: string } | string | null;
   workflow_id: string;
   workflow_title: string;
   procedure_type: ProcedureFeedbackRecord["procedureType"];
@@ -31,6 +32,9 @@ const iso = (value: Date | string): string =>
 
 const mapRow = (row: ProcedureFeedbackRow): ProcedureFeedbackRecord => ({
   id: row.id,
+  domainPackId: typeof row.metadata === "string"
+    ? (JSON.parse(row.metadata) as { domainPackId?: string }).domainPackId ?? "municipal-antigua"
+    : row.metadata?.domainPackId ?? "municipal-antigua",
   workflowId: row.workflow_id,
   workflowTitle: row.workflow_title,
   procedureType: row.procedure_type,
@@ -62,11 +66,13 @@ export class PostgresProcedureFeedbackRepository implements ProcedureFeedbackRep
           step_number,
           step_title,
           feedback_type,
-          comment
+          comment,
+          metadata
         )
-        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
         RETURNING
           id,
+          metadata,
           workflow_id,
           workflow_title,
           procedure_type,
@@ -92,6 +98,7 @@ export class PostgresProcedureFeedbackRepository implements ProcedureFeedbackRep
         input.stepTitle,
         input.feedbackType,
         input.comment,
+        { domainPackId: input.domainPackId },
       ]
     );
 
@@ -121,6 +128,7 @@ export class PostgresProcedureFeedbackRepository implements ProcedureFeedbackRep
       `
         SELECT
           id,
+          metadata,
           workflow_id,
           workflow_title,
           procedure_type,

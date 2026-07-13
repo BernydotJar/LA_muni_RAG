@@ -1,4 +1,6 @@
 import type { EvidenceDependencies, EvidenceMode } from "../evidence.js";
+import { loadDomainPack } from "../domain/registry.js";
+import type { DomainPack } from "../domain/types.js";
 import { classifyProcedureQuery } from "./procedureClassifier.js";
 import { composeProcedureWorkflow } from "./procedureComposer.js";
 import { retrieveProcedureEvidence } from "./procedureRetriever.js";
@@ -8,11 +10,12 @@ export const buildProcedureWorkflowWithDependencies = async (
   query: string,
   mode: EvidenceMode = "keyword",
   limit = 8,
-  dependencies: EvidenceDependencies = {}
+  dependencies: EvidenceDependencies = {},
+  domainPack: DomainPack = loadDomainPack(undefined)
 ): Promise<ProcedureWorkflow> => {
-  const classification = classifyProcedureQuery(query);
+  const classification = classifyProcedureQuery(query, domainPack);
   const evidenceBundle = await retrieveProcedureEvidence(classification, mode, limit, dependencies);
-  return composeProcedureWorkflow(query, mode, classification, evidenceBundle.evidence.slice(0, limit));
+  return composeProcedureWorkflow(query, mode, classification, evidenceBundle.evidence.slice(0, limit), domainPack);
 };
 
 export { classifyProcedureQuery } from "./procedureClassifier.js";

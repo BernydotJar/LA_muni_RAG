@@ -28,7 +28,7 @@ describe("procedure feedback backend security contract", () => {
   it("uses parameterized SQL for feedback persistence", async () => {
     const repository = await readSource("src/procedureFeedback/repository.ts");
 
-    assert.match(repository, /VALUES \(\$1, \$2, \$3, \$4, \$5, \$6, \$7, \$8, \$9, \$10\)/);
+    assert.match(repository, /VALUES \(\$1, \$2, \$3, \$4, \$5, \$6, \$7, \$8, \$9, \$10, \$11\)/);
     assert.match(repository, /feedback_type = \$\$\{params\.length\}/);
     assert.match(repository, /workflow_id = \$\$\{params\.length\}/);
     assert.doesNotMatch(repository, /authorization/i);

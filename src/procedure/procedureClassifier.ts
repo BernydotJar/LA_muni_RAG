@@ -1,4 +1,6 @@
 import type { ProcedureQueryClassification, ProcedureType } from "./types.js";
+import { loadDomainPack } from "../domain/registry.js";
+import type { DomainPack } from "../domain/types.js";
 
 const normalize = (value: string): string =>
   value
@@ -10,40 +12,11 @@ const normalize = (value: string): string =>
 
 const includesAny = (text: string, terms: string[]): boolean => terms.some((term) => text.includes(term));
 
-const inferProcedureType = (normalized: string): ProcedureType => {
-  if (includesAny(normalized, ["cierre", "cerrar", "liquidacion", "recepcion final", "acta de recepcion"])) {
-    return "project_closure";
-  }
-
-  if (includesAny(normalized, ["licitacion", "cotizacion", "contratacion", "compras", "adquisicion", "adquisiciones"])) {
-    return "procurement";
-  }
-
-  if (includesAny(normalized, ["construir", "construccion", "estadio", "obra publica", "obra municipal", "escuela", "proyecto snip"])) {
-    return "public_works";
-  }
-
-  if (includesAny(normalized, ["ejecutar", "ejecucion", "supervision", "estimacion", "avance de obra"])) {
-    return "project_execution";
-  }
-
-  if (includesAny(normalized, ["presupuesto", "poa", "pom", "asignacion", "renglon presupuestario"])) {
-    return "budget";
-  }
-
-  if (includesAny(normalized, ["cocode", "comude", "comunidad", "aldea", "solicitud comunitaria"])) {
-    return "cocode";
-  }
-
-  if (includesAny(normalized, ["concejo", "acta", "punto de acta", "aprobacion municipal"])) {
-    return "council_approval";
-  }
-
-  if (includesAny(normalized, ["paso", "procedimiento", "flujo", "tramite", "requisito", "documentos"])) {
-    return "unknown";
-  }
-
-  return "unknown";
+const inferProcedureType = (normalized: string, domainPack: DomainPack): ProcedureType => {
+  const matchedRule = domainPack.classifierRules.find((rule) =>
+    includesAny(normalized, rule.keywords.map((keyword) => normalize(keyword)))
+  );
+  return matchedRule?.workflowType ?? "unknown";
 };
 
 const detectCaseName = (query: string, normalized: string): string | undefined => {
@@ -71,41 +44,43 @@ const externalMunicipalityName = (normalized: string): string | undefined => {
   return undefined;
 };
 
-const retrievalTermsForType = (type: ProcedureType): string[] => {
-  switch (type) {
-    case "public_works":
-      return ["obra pública proyecto municipal SNIP presupuesto contratación ejecución recepción liquidación"];
-    case "procurement":
-      return ["adquisiciones contrataciones licitación cotización junta contrato obra SNIP"];
-    case "project_execution":
-      return ["ejecución obra supervisión estimaciones avance contrato proyecto"];
-    case "project_closure":
-      return ["cierre obra recepción final acta recepción liquidación contrato supervisión estimaciones"];
-    case "budget":
-      return ["presupuesto POA POM asignación obra proyecto municipal"];
-    case "community_request":
-    case "cocode":
-      return ["COCODE COMUDE comunidad solicitud obra aldea priorización"];
-    case "council_approval":
-      return ["Concejo Municipal acta punto aprobación obra contrato presupuesto"];
-    case "unknown":
-      return ["procedimiento municipal requisitos documentos responsables aprobación"];
-  }
+const retrievalTermsForType = (type: ProcedureType, domainPack: DomainPack): string[] => {
+  const ruleQueries = domainPack.classifierRules
+    .filter((rule) => rule.workflowType === type)
+    .flatMap((rule) => rule.retrievalQueries);
+  const workflowHints = domainPack.workflowTypes.find((workflowType) => workflowType.id === type)?.retrievalHints ?? [];
+  return [...ruleQueries, ...workflowHints];
 };
 
-export const classifyProcedureQuery = (query: string): ProcedureQueryClassification => {
+export const classifyProcedureQuery = (
+  query: string,
+  domainPack: DomainPack = loadDomainPack(undefined)
+): ProcedureQueryClassification => {
   const normalized = normalize(query);
-  const procedureType = inferProcedureType(normalized);
+  const procedureType = inferProcedureType(normalized, domainPack);
   const municipalityName = externalMunicipalityName(normalized);
   const caseName = detectCaseName(query, normalized);
   const communityName = detectCommunityName(normalized);
   const asksForExactDeadline = includesAny(normalized, ["cuantos dias", "cuánto dias", "plazo exacto", "dias exactos", "cuanto tarda", "cuánto tarda"]);
   const asksForCurrentStatus = includesAny(normalized, ["en este momento", "estado actual", "que falta", "qué falta", "cerrar la obra", "pendiente"]);
-  const isProcedural = procedureType !== "unknown" || includesAny(normalized, ["paso", "procedimiento", "flujo", "tramite", "requisito", "documentos", "quien firma", "quién firma"]);
+  const isProcedural = procedureType !== "unknown" || includesAny(normalized, [
+    "paso",
+    "procedimiento",
+    "procedure",
+    "workflow",
+    "flujo",
+    "tramite",
+    "requisito",
+    "documentos",
+    "documents",
+    "approval",
+    "quien firma",
+    "quién firma",
+  ]);
 
   const retrievalQueries = [
     query,
-    ...retrievalTermsForType(procedureType),
+    ...retrievalTermsForType(procedureType, domainPack),
     caseName ? `${caseName} expediente contrato acta recepción liquidación` : "",
     communityName ? `${communityName} COCODE COMUDE comunidad obra` : "",
     municipalityName ? `${municipalityName} manual normas procedimientos adquisiciones contrataciones obra` : "",

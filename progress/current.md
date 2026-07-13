@@ -2,11 +2,11 @@
 
 ## Active Feature
 
-none
+None
 
 ## Last Completed Feature
 
-041-procedure-feedback-backend-api
+046-domain-pack-evaluation-harness
 
 ## State
 
@@ -18,63 +18,46 @@ MVP
 
 ## Summary
 
-Feature 041 is closed and locally verified. LA Muni RAG now has a secure PostgreSQL-backed API for ProcedureWorkflow feedback. The API is authenticated with a configured Bearer token, validates and normalizes payloads, rate-limits writes, stores no request metadata, and preserves `external reference` governance.
+Feature 046 added a deterministic evaluation harness for domain packs. It validates workflow classification and expected source authority classes from each pack's `evaluationCases`.
 
 ## Completed Implementation
 
-041 added or updated:
+046 added or updated:
 
-- specs/041-procedure-feedback-backend-api/requirements.md
-- specs/041-procedure-feedback-backend-api/design.md
-- specs/041-procedure-feedback-backend-api/tasks.md
-- db/migrations/002_procedure_feedback.sql
-- src/procedureFeedback/types.ts
-- src/procedureFeedback/validation.ts
-- src/procedureFeedback/auth.ts
-- src/procedureFeedback/rateLimit.ts
-- src/procedureFeedback/repository.ts
-- src/procedureFeedback/index.ts
-- src/server.ts
-- src/http.ts
-- src/__tests__/procedure-feedback-backend-api.test.ts
-- src/__tests__/procedure-feedback-backend-security.test.ts
-- docs/procedure-feedback-backend-api.md
-- .env.example
+- specs/046-domain-pack-evaluation-harness/requirements.md
+- specs/046-domain-pack-evaluation-harness/design.md
+- specs/046-domain-pack-evaluation-harness/tasks.md
+- src/domain/evaluation.ts
+- src/cli/evaluateDomainPacks.ts
+- src/__tests__/domain-pack-evaluation.test.ts
+- docs/domain-pack-evaluation-harness.md
+- package.json
+- README.md
+- progress/current.md
 
-## Security and Governance Acceptance
+## Governance Acceptance
 
-- POST and GET `/api/procedure-feedback` require a Bearer token.
-- Routes fail closed with `feedback_api_disabled` when `PROCEDURE_FEEDBACK_API_TOKEN` is absent.
-- Token comparison uses timing-safe equality.
-- Public assets do not receive or embed the token.
-- POST payloads are strictly validated, normalized, and length-bounded.
-- SQL is parameterized.
-- POST requests are rate-limited in memory using the direct socket address.
-- IP address, user-agent, cookies, headers, and authentication material are not persisted.
-- Records include a 180-day retention boundary.
-- `external reference` remains explicit comparative signal and not Antigua procedure.
-- Feedback remains product signal, not municipal evidence.
+- All registered starter packs are evaluated.
+- Workflow classification expectations are checked.
+- Source authority expectations are checked when provided.
+- The CLI exits non-zero if any case fails.
+- The harness uses deterministic code only; no database, network, retrieval, or LLM judging.
+- Generated `dist-pages/` output was verified but not kept as a source change.
 
 ## Local Verification
 
-Reported by the user after applying `db/migrations/002_procedure_feedback.sql`:
+Ran locally:
 
 - npm run typecheck: passed
 - npm run build: passed
-- npm run test: 283 passed, 0 failed
+- npm run domain:evaluate: passed, 6/6 cases
+- npm run test: 305 passed, 0 failed
+- npm run build:pages: passed
+- node scripts/verify-pages-artifact.mjs: passed
 
-## Documentation Update
+## Next Work
 
-README now documents:
+Recommended next features:
 
-- current product surfaces and routes;
-- Procedure Workflow Advisor;
-- feedback dashboard and backend API;
-- current municipal/Antigua coupling;
-- reusable RAG core;
-- domain-pack architecture for municipal, HR, finance, sales SOP, and custom use cases;
-- current absence of a document-library/admin UI.
-
-## Next Recommended Feature
-
-042-domain-pack-template-foundation
+- 047-domain-pack-admin-library
+- 048-domain-pack-feedback-analytics

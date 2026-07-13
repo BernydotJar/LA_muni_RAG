@@ -1,0 +1,207 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>LA Muni RAG - Intake documental</title>
+    <meta name="description" content="Preparador de metadata para backfill documental por domain pack." />
+    <style>
+      :root {
+        --bg: #070712;
+        --panel: rgba(12, 16, 36, 0.84);
+        --line: rgba(148, 163, 184, 0.18);
+        --text: #f8fafc;
+        --muted: #a8b3c7;
+        --cyan: #22d3ee;
+        --violet: #8b5cf6;
+        --green: #22c55e;
+        --amber: #f59e0b;
+        color-scheme: dark;
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        min-height: 100vh;
+        font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        color: var(--text);
+        background:
+          radial-gradient(circle at 16% 4%, rgba(34, 211, 238, .18), transparent 28rem),
+          radial-gradient(circle at 82% 0%, rgba(139, 92, 246, .18), transparent 30rem),
+          linear-gradient(180deg, #070711 0%, #090918 52%, #070712 100%);
+      }
+      main { width: min(1180px, calc(100vw - 28px)); margin: 0 auto; padding: 28px 0 58px; }
+      .topbar { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 22px; }
+      .pill, a.pill {
+        display: inline-flex; align-items: center; min-height: 38px; padding: 0 13px; border: 1px solid var(--line);
+        border-radius: 999px; color: var(--text); background: rgba(255,255,255,.045); text-decoration: none;
+        font-size: 12px; font-weight: 850;
+      }
+      .pill.accent { color: var(--cyan); }
+      .hero, .panel {
+        border: 1px solid var(--line); border-radius: 28px; background: var(--panel); backdrop-filter: blur(18px);
+        box-shadow: 0 24px 80px rgba(0,0,0,.28);
+      }
+      .hero { display: grid; grid-template-columns: minmax(0, 1fr) minmax(260px, .36fr); gap: 20px; padding: clamp(22px, 4vw, 38px); margin-bottom: 18px; }
+      .eyebrow { color: var(--cyan); font-size: 12px; font-weight: 950; letter-spacing: .12em; text-transform: uppercase; }
+      h1 { margin: 10px 0 12px; font-size: clamp(38px, 6vw, 72px); line-height: .94; letter-spacing: -.06em; }
+      h1 span { display: block; background: linear-gradient(115deg, #fff, #c4b5fd 58%, #22d3ee); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+      p { color: var(--muted); line-height: 1.6; }
+      .note { padding: 16px; border: 1px solid rgba(34, 211, 238, .16); border-radius: 20px; background: rgba(34, 211, 238, .055); }
+      .layout { display: grid; grid-template-columns: minmax(0, .9fr) minmax(300px, .6fr); gap: 18px; }
+      .panel { padding: 18px; }
+      .form-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+      label { display: grid; gap: 7px; color: var(--muted); font-size: 12px; font-weight: 850; text-transform: uppercase; letter-spacing: .06em; }
+      input, select, textarea, button {
+        width: 100%; min-height: 44px; border: 1px solid var(--line); border-radius: 14px; color: var(--text);
+        background: rgba(255,255,255,.05); padding: 0 12px; font: 750 14px/1.2 inherit;
+      }
+      textarea { min-height: 88px; padding: 12px; line-height: 1.45; resize: vertical; }
+      button { cursor: pointer; border-color: rgba(34,211,238,.28); background: linear-gradient(135deg, rgba(139,92,246,.9), rgba(34,211,238,.72)); }
+      button.secondary { background: rgba(255,255,255,.05); }
+      .wide { grid-column: 1 / -1; }
+      .preview { display: grid; gap: 14px; }
+      pre {
+        margin: 0; padding: 14px; overflow: auto; border: 1px solid rgba(255,255,255,.10); border-radius: 16px;
+        background: rgba(0,0,0,.28); color: #dbeafe; line-height: 1.5; white-space: pre-wrap;
+      }
+      .section-title { margin: 0 0 12px; color: var(--cyan); font-size: 12px; font-weight: 950; letter-spacing: .12em; text-transform: uppercase; }
+      .warning { margin-top: 12px; padding: 12px; border: 1px solid rgba(245,158,11,.26); border-radius: 16px; color: #fde68a; background: rgba(245,158,11,.055); font-size: 13px; line-height: 1.5; }
+      @media (max-width: 860px) { .hero, .layout, .form-grid { grid-template-columns: 1fr; } }
+    </style>
+  </head>
+  <body>
+    <main>
+      <div class="topbar">
+        <a class="pill" href="./index.html">Volver al inicio</a>
+        <span class="pill accent" id="domain-pill">Domain intake</span>
+      </div>
+
+      <section class="hero">
+        <div>
+          <div class="eyebrow">Intake documental pack-aware</div>
+          <h1>Preparar evidencia <span>antes de indexar.</span></h1>
+          <p>Construye la metadata y el comando de backfill para el domain pack activo. Esta vista no sube archivos ni escribe en la base de datos.</p>
+        </div>
+        <aside class="note">
+          <strong id="domain-name">municipal-antigua</strong>
+          <p id="domain-description">La metadata debe reflejar autoridad, tipo documental y confidencialidad antes de promover un documento al corpus.</p>
+        </aside>
+      </section>
+
+      <section class="layout">
+        <form class="panel" id="intake-form">
+          <h2 class="section-title">Metadata de backfill</h2>
+          <div class="form-grid">
+            <label class="wide">Ruta del archivo<input id="input-path" value="corpus/document.md" /></label>
+            <label>Manifest<input id="manifest-path" value=".rag/corpus-manifest.json" /></label>
+            <label>Document key<input id="document-key" value="document-key" /></label>
+            <label>Versión<input id="document-version" value="v1" /></label>
+            <label>Título<input id="document-title" value="" placeholder="Opcional" /></label>
+            <label>Formato<select id="source-format"><option value="markdown">markdown</option><option value="txt">txt</option><option value="docx">docx</option><option value="pdf">pdf</option></select></label>
+            <label>Autoridad<select id="source-authority-class"></select></label>
+            <label>Tipo documental<input id="document-type" value="manual" /></label>
+            <label>Jurisdicción<input id="jurisdiction" value="" placeholder="Opcional" /></label>
+            <label>Organización<input id="organization" value="" placeholder="Opcional" /></label>
+            <label>Confidencialidad<select id="confidentiality"><option value="public">public</option><option value="internal">internal</option><option value="restricted">restricted</option></select></label>
+            <label>Tags<input id="tags" value="" placeholder="contratacion,obra" /></label>
+            <div class="wide"><button type="button" id="copy-command">Copiar comando</button></div>
+          </div>
+          <div class="warning">Validar licencias, autoridad documental y confidencialidad antes de indexar. Feedback de usuarios no debe promoverse como evidencia sin revisión separada.</div>
+        </form>
+
+        <aside class="panel preview">
+          <div>
+            <h2 class="section-title">Metadata JSON</h2>
+            <pre id="metadata-preview"></pre>
+          </div>
+          <div>
+            <h2 class="section-title">Comando</h2>
+            <pre id="command-preview"></pre>
+          </div>
+        </aside>
+      </section>
+    </main>
+
+    <script src="./pages-demo-api.js" data-demo-mode="auto"></script>
+    <script>
+      const $ = (id) => document.getElementById(id);
+      let activeDomainPack = { id: "municipal-antigua", name: "Municipal Antigua", sourceAuthorityClasses: [{ id: "unknown", label: "Unknown" }] };
+
+      const shellQuote = (value) => `'${String(value ?? "").replaceAll("'", "'\\''")}'`;
+      const clean = (value) => String(value ?? "").trim();
+      const tagList = () => clean($("tags").value).split(",").map((tag) => tag.trim()).filter(Boolean);
+
+      const metadata = () => {
+        const data = {
+          domainPackId: activeDomainPack.id,
+          sourceAuthorityClass: $("source-authority-class").value || "unknown",
+          documentType: clean($("document-type").value) || $("source-format").value,
+          confidentiality: $("confidentiality").value,
+        };
+        if (clean($("jurisdiction").value)) data.jurisdiction = clean($("jurisdiction").value);
+        if (clean($("organization").value)) data.organization = clean($("organization").value);
+        if (tagList().length) data.tags = tagList();
+        return data;
+      };
+
+      const command = () => {
+        const args = [
+          "node --import tsx src/cli/backfillCorpus.ts",
+          "--manifest", shellQuote($("manifest-path").value),
+          "--input", shellQuote($("input-path").value),
+          "--document-key", shellQuote($("document-key").value),
+          "--document-version", shellQuote($("document-version").value),
+          "--source-format", shellQuote($("source-format").value),
+          "--domain-pack", shellQuote(activeDomainPack.id),
+          "--source-authority-class", shellQuote($("source-authority-class").value || "unknown"),
+          "--document-type", shellQuote(clean($("document-type").value) || $("source-format").value),
+          "--confidentiality", shellQuote($("confidentiality").value),
+        ];
+        if (clean($("document-title").value)) args.push("--title", shellQuote($("document-title").value));
+        if (clean($("jurisdiction").value)) args.push("--jurisdiction", shellQuote($("jurisdiction").value));
+        if (clean($("organization").value)) args.push("--organization", shellQuote($("organization").value));
+        tagList().forEach((tag) => args.push("--tag", shellQuote(tag)));
+        return args.join(" ");
+      };
+
+      const render = () => {
+        $("metadata-preview").textContent = JSON.stringify(metadata(), null, 2);
+        $("command-preview").textContent = command();
+      };
+
+      const applyDomainPack = (domainPack) => {
+        activeDomainPack = { ...activeDomainPack, ...(domainPack || {}) };
+        document.documentElement.lang = activeDomainPack.language || "es";
+        $("domain-pill").textContent = activeDomainPack.branding?.assistantName || activeDomainPack.name || activeDomainPack.id;
+        $("domain-name").textContent = `${activeDomainPack.id} · ${activeDomainPack.name}`;
+        const authorities = Array.isArray(activeDomainPack.sourceAuthorityClasses) ? activeDomainPack.sourceAuthorityClasses : [];
+        $("source-authority-class").replaceChildren();
+        (authorities.length ? authorities : [{ id: "unknown", label: "unknown" }]).forEach((authority) => {
+          const option = document.createElement("option");
+          option.value = authority.id;
+          option.textContent = authority.label || authority.id;
+          $("source-authority-class").append(option);
+        });
+        render();
+      };
+
+      const loadDomainPack = async () => {
+        try {
+          const response = await fetch("/api/domain-pack", { headers: { accept: "application/json" } });
+          if (response.ok) applyDomainPack(await response.json());
+          else applyDomainPack(activeDomainPack);
+        } catch {
+          applyDomainPack(activeDomainPack);
+        }
+      };
+
+      $("intake-form").addEventListener("input", render);
+      $("copy-command").addEventListener("click", async () => {
+        await navigator.clipboard?.writeText(command());
+        $("copy-command").textContent = "Comando copiado";
+        setTimeout(() => { $("copy-command").textContent = "Copiar comando"; }, 1400);
+      });
+      void loadDomainPack();
+    </script>
+  </body>
+</html>

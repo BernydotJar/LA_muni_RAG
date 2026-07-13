@@ -26,6 +26,8 @@ describe("procedure workflow feedback loop", () => {
   it("captures workflow metadata, selected step, feedback type, and comment", async () => {
     const script = await readSource("public/procedure-feedback.js");
 
+    assert.match(script, /domainPackId/);
+    assert.match(script, /domainPackName/);
     assert.match(script, /workflowId/);
     assert.match(script, /workflowTitle/);
     assert.match(script, /procedureType/);

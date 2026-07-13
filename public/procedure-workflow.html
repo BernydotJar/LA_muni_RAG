@@ -138,14 +138,14 @@
   </head>
   <body>
     <main>
-      <div class="topbar"><a class="back-link" href="/">← Volver al inicio</a><span class="status-pill">Procedure Workflow Advisor</span></div>
+      <div class="topbar"><a class="back-link" href="/">← Volver al inicio</a><a class="back-link" href="./domain-intake.html">Intake documental</a><span class="status-pill" id="domain-status-pill">Procedure Workflow Advisor</span></div>
       <section class="hero">
         <div>
-          <div class="eyebrow">Flujos municipales con evidencia</div>
-          <h1>Del documento al <span>paso a paso.</span></h1>
-          <p class="lead">Consulta procedimientos municipales y revisa un flujo estructurado con responsables cuando estén citados, documentos requeridos, brechas, evidencia y validación humana requerida.</p>
+          <div class="eyebrow" id="domain-eyebrow">Flujos municipales con evidencia</div>
+          <h1 id="domain-title">Del documento al <span>paso a paso.</span></h1>
+          <p class="lead" id="domain-lead">Consulta procedimientos municipales y revisa un flujo estructurado con responsables cuando estén citados, documentos requeridos, brechas, evidencia y validación humana requerida.</p>
         </div>
-        <aside class="hero-note"><b>Antigua-first</b>La vista prioriza documentos oficiales de Antigua Guatemala. Si usa referencias externas, las marca como comparativas y exige validación contra normativa local y nacional.</aside>
+        <aside class="hero-note"><b id="domain-note-title">Antigua-first</b><span id="domain-note-body">La vista prioriza documentos oficiales de Antigua Guatemala. Si usa referencias externas, las marca como comparativas y exige validación contra normativa local y nacional.</span></aside>
       </section>
 
       <form class="query-card" id="procedure-workflow-form">
@@ -174,6 +174,63 @@
       const asArray = (value) => Array.isArray(value) ? value : [];
       const labelForConfidence = (value) => value === "high" ? "alta" : value === "medium" ? "media" : "baja";
       const labelForSeverity = (value) => value === "blocking" ? "bloqueante" : value === "important" ? "importante" : "complementaria";
+      let activeDomainPack = {
+        id: "municipal-antigua",
+        name: "Municipal Antigua",
+        language: "es",
+        branding: {
+          productName: "LA Muni RAG",
+          assistantName: "Asistente Municipal",
+          primaryLabel: "Antigua-first",
+        },
+        defaultQuery: "¿Qué hay que hacer para construir un estadio municipal?",
+      };
+
+      const isMunicipalDomain = () => activeDomainPack.id === "municipal-antigua";
+      const setHeroTitle = (prefix, highlight) => {
+        const title = $("domain-title");
+        title.textContent = "";
+        title.append(document.createTextNode(prefix));
+        const span = document.createElement("span");
+        span.textContent = highlight;
+        title.append(span);
+      };
+
+      const applyDomainPackUi = (domainPack) => {
+        activeDomainPack = { ...activeDomainPack, ...(domainPack || {}) };
+        const branding = activeDomainPack.branding || {};
+        document.documentElement.lang = activeDomainPack.language || "es";
+        $("domain-status-pill").textContent = branding.assistantName || activeDomainPack.name || "Procedure Workflow Advisor";
+
+        if (isMunicipalDomain()) {
+          $("domain-eyebrow").textContent = "Flujos municipales con evidencia";
+          setHeroTitle("Del documento al ", "paso a paso.");
+          $("domain-lead").textContent = "Consulta procedimientos municipales y revisa un flujo estructurado con responsables cuando estén citados, documentos requeridos, brechas, evidencia y validación humana requerida.";
+          $("domain-note-title").textContent = branding.primaryLabel || "Antigua-first";
+          $("domain-note-body").textContent = "La vista prioriza documentos oficiales de Antigua Guatemala. Si usa referencias externas, las marca como comparativas y exige validación contra normativa local y nacional.";
+        } else {
+          $("domain-eyebrow").textContent = `${branding.primaryLabel || "Evidence-first"} workflow assistant`;
+          setHeroTitle(`${branding.productName || activeDomainPack.name || "Procedure"} `, "workflows.");
+          $("domain-lead").textContent = `Generate a structured ${activeDomainPack.name || "domain"} workflow with required documents, outputs, gaps, citations, and human validation.`;
+          $("domain-note-title").textContent = activeDomainPack.name || "Domain pack";
+          $("domain-note-body").textContent = "This view uses the active server-side domain pack. Comparative or external references must be validated against authoritative documents for the active domain.";
+        }
+
+        if (activeDomainPack.defaultQuery && $("procedure-query").value === activeDomainPack.defaultQuery) return;
+        if (activeDomainPack.defaultQuery && $("procedure-query").value === "¿Qué hay que hacer para construir un estadio municipal?") {
+          $("procedure-query").value = activeDomainPack.defaultQuery;
+        }
+      };
+
+      const loadDomainPackUi = async () => {
+        try {
+          const response = await fetch("/api/domain-pack", { headers: { accept: "application/json" } });
+          if (!response.ok) return;
+          applyDomainPackUi(await response.json());
+        } catch {
+          applyDomainPackUi(activeDomainPack);
+        }
+      };
 
       const renderList = (items, empty = "No indicado en evidencia") => {
         const values = asArray(items).filter(Boolean);
@@ -203,6 +260,10 @@
         </article>`;
 
       const renderGap = (gap) => `<article class="procedure-gap-card ${esc(gap.severity || "important")}"><b>${esc(gap.missingItem || "Brecha documental")}</b><p>${esc(gap.whyItMatters || "Requiere validación documental.")}</p><p><strong>Para confirmar:</strong> ${esc(gap.requiredToConfirm || "Fuente oficial aplicable")}</p><span class="chip ${gap.severity === "blocking" ? "low" : "medium"}">${esc(labelForSeverity(gap.severity))}</span></article>`;
+      const externalWarningText = (metadata) =>
+        metadata.domainPackId === "municipal-antigua"
+          ? "Este flujo usa referencia externa. Debe validarse contra documentos oficiales de Antigua Guatemala y normativa nacional aplicable."
+          : "Este flujo usa referencia externa o comparativa. Debe validarse contra documentos oficiales del dominio activo antes de tratarlo como procedimiento.";
 
       const checklistText = (workflow) => {
         const lines = [workflow.title, workflow.summary, "", "Pasos:"];
@@ -230,16 +291,17 @@
             <p class="lead">${esc(workflow.summary || "Flujo generado desde evidencia disponible.")}</p>
             <div class="workflow-meta">
               <span class="chip">jurisdicción: ${esc(workflow.jurisdiction || "Antigua Guatemala")}</span>
+              <span class="chip">dominio: ${esc(metadata.domainPackName || metadata.domainPackId || "municipal-antigua")}</span>
               <span class="chip ${esc(workflow.confidence || "low")}">confianza ${esc(labelForConfidence(workflow.confidence))}</span>
               <span class="chip">evidencia: ${esc(metadata.evidenceCount ?? workflow.citations?.length ?? 0)}</span>
               <button class="secondary" id="copy-procedure-checklist" type="button">Copiar checklist</button>
             </div>
-            ${metadata.hasExternalReference ? `<div class="external-warning">Este flujo usa referencia externa. Debe validarse contra documentos oficiales de Antigua Guatemala y normativa nacional aplicable.</div>` : ""}
+            ${metadata.hasExternalReference ? `<div class="external-warning">${esc(externalWarningText(metadata))}</div>` : ""}
           </header>
           <div class="workflow-body">
             <section><h2 class="section-title">Flujo paso a paso</h2><div class="step-grid">${steps.map(renderStep).join("") || "<p>No hay pasos disponibles.</p>"}</div></section>
             <section><h2 class="section-title">Brechas y documentos faltantes</h2><div class="gap-grid">${gaps.map(renderGap).join("") || "<p>No se reportaron brechas en la evidencia recuperada.</p>"}</div></section>
-            <section class="validation-warning"><strong>Validación humana requerida.</strong> ${esc(workflow.validationWarning || "Este flujo debe revisarse con las unidades municipales competentes.")}</section>
+            <section class="validation-warning"><strong>Validación humana requerida.</strong> ${esc(workflow.validationWarning || (isMunicipalDomain() ? "Este flujo debe revisarse con las unidades municipales competentes." : "This workflow must be reviewed by the accountable domain owner before execution."))}</section>
           </div>`;
         shell.classList.add("visible");
         $("procedure-empty").style.display = "none";
@@ -272,6 +334,7 @@
       };
 
       $("procedure-workflow-form").addEventListener("submit", (event) => { event.preventDefault(); void loadProcedureWorkflow(); });
+      void loadDomainPackUi();
     </script>
   </body>
 </html>

@@ -129,7 +129,7 @@
       const currentFilters = () => ({ type: $("feedback-type-filter").value, search: $("feedback-search").value.trim().toLowerCase() });
       const matchesSearch = (item, search) => {
         if (!search) return true;
-        const haystack = [item.workflowTitle, item.procedureType, item.jurisdiction, item.confidence, item.query, item.stepTitle, item.feedbackType, item.comment, item.createdAt].join(" ").toLowerCase();
+        const haystack = [item.domainPackId, item.domainPackName, item.workflowTitle, item.procedureType, item.jurisdiction, item.confidence, item.query, item.stepTitle, item.feedbackType, item.comment, item.createdAt].join(" ").toLowerCase();
         return haystack.includes(search);
       };
       const filteredFeedback = () => {
@@ -159,6 +159,7 @@
           </div>
           <div class="chip-row">
             <span class="chip">${escapeHtml(item.procedureType || "unknown")}</span>
+            <span class="chip">${escapeHtml(item.domainPackName || item.domainPackId || "municipal-antigua")}</span>
             <span class="chip">${escapeHtml(item.jurisdiction || "Antigua Guatemala")}</span>
             <span class="chip confidence">confianza ${escapeHtml(item.confidence || "low")}</span>
             <span class="chip">paso ${escapeHtml(item.stepNumber || "overall")}: ${escapeHtml(item.stepTitle || "Flujo completo")}</span>

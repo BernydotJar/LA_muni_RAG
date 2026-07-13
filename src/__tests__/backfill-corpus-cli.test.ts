@@ -49,6 +49,22 @@ describe("corpus backfill CLI helpers", () => {
       "Document Title",
       "--source-format",
       "markdown",
+      "--domain-pack",
+      "hr",
+      "--source-authority-class",
+      "employee_handbook",
+      "--document-type",
+      "policy",
+      "--jurisdiction",
+      "People Ops",
+      "--organization",
+      "Acme HR",
+      "--confidentiality",
+      "internal",
+      "--tag",
+      "onboarding",
+      "--tag",
+      "benefits",
       "--dry-run",
     ]);
 
@@ -59,6 +75,13 @@ describe("corpus backfill CLI helpers", () => {
       documentVersion: "v1",
       title: "Document Title",
       sourceFormat: "markdown",
+      domainPackId: "hr",
+      sourceAuthorityClass: "employee_handbook",
+      documentType: "policy",
+      jurisdiction: "People Ops",
+      organization: "Acme HR",
+      confidentiality: "internal",
+      tags: ["onboarding", "benefits"],
       dryRun: true,
       help: false,
     });
@@ -170,8 +193,12 @@ describe("corpus backfill CLI helpers", () => {
     if (!isBackfillCorpusDryRunResult(result)) throw new Error("Expected dry-run result.");
     assert.equal(result.documentKey, "doc-key");
     assert.equal(result.decision, "index");
+    assert.equal(result.documentMetadata.domainPackId, "municipal-antigua");
+    assert.equal(result.documentMetadata.sourceAuthorityClass, "unknown");
+    assert.equal(result.documentMetadata.documentType, "markdown");
     await assert.rejects(() => readFile(manifestPath, "utf-8"), /ENOENT/);
     assert.match(formatBackfillCorpusDryRunResult(result), /Corpus backfill dry run/);
+    assert.match(formatBackfillCorpusDryRunResult(result), /domain-pack: municipal-antigua/);
   });
 
   it("fails before manifest writes when required args are missing", async () => {
@@ -181,6 +208,58 @@ describe("corpus backfill CLI helpers", () => {
     await assert.rejects(
       () => runBackfillCorpus({ manifestPath, dryRun: false, help: false }, runtimeMetadata),
       /Invalid corpus backfill arguments/
+    );
+    await assert.rejects(() => readFile(manifestPath, "utf-8"), /ENOENT/);
+  });
+
+  it("fails closed for unsupported domain metadata before file reads or manifest writes", async () => {
+    const directory = await createTempDir();
+    const manifestPath = join(directory, "manifest.json");
+    const missingInputPath = join(directory, "missing.md");
+
+    await assert.rejects(
+      () =>
+        runBackfillCorpus(
+          {
+            manifestPath,
+            inputPath: missingInputPath,
+            documentKey: "doc-key",
+            documentVersion: "v1",
+            sourceFormat: "markdown",
+            domainPackId: "not-a-pack",
+            dryRun: false,
+            help: false,
+          },
+          runtimeMetadata
+        ),
+      /Unsupported DOMAIN_PACK/
+    );
+    await assert.rejects(() => readFile(manifestPath, "utf-8"), /ENOENT/);
+  });
+
+  it("rejects source authority classes outside the selected domain pack", async () => {
+    const directory = await createTempDir();
+    const inputPath = join(directory, "doc.md");
+    const manifestPath = join(directory, "manifest.json");
+    await writeFile(inputPath, "# Document\n\nArticle 1.", "utf-8");
+
+    await assert.rejects(
+      () =>
+        runBackfillCorpus(
+          {
+            manifestPath,
+            inputPath,
+            documentKey: "doc-key",
+            documentVersion: "v1",
+            sourceFormat: "markdown",
+            domainPackId: "hr",
+            sourceAuthorityClass: "municipal_manual",
+            dryRun: true,
+            help: false,
+          },
+          runtimeMetadata
+        ),
+      /Unsupported source authority class for hr/
     );
     await assert.rejects(() => readFile(manifestPath, "utf-8"), /ENOENT/);
   });

@@ -20,6 +20,12 @@ const documentInput = (overrides: Partial<CorpusBackfillDocumentInput> = {}): Co
   embeddingProvider: "test-provider",
   embeddingModel: "test-model",
   embeddingDimension: 3,
+  metadata: {
+    domainPackId: "municipal-antigua",
+    sourceAuthorityClass: "municipal_manual",
+    documentType: "manual",
+    confidentiality: "public",
+  },
   ...overrides,
 });
 
@@ -53,6 +59,7 @@ const manifestRecord = (overrides: Partial<CorpusManifestRecord> = {}): CorpusMa
     embeddingProvider: doc.embeddingProvider,
     embeddingModel: doc.embeddingModel,
     embeddingDimension: doc.embeddingDimension,
+    documentMetadata: doc.metadata,
     status: "indexed",
     indexedAt: "2026-01-01T00:00:00.000Z",
     failureCount: 0,
@@ -108,6 +115,23 @@ describe("corpus manifest reindex decisions", () => {
     assert.equal(decision, "reindex");
   });
 
+  it("reindexes when domain document metadata changes", () => {
+    const doc = documentInput({
+      metadata: {
+        domainPackId: "municipal-antigua",
+        sourceAuthorityClass: "pdm_ot",
+        documentType: "plan",
+      },
+    });
+    const decision = decideCorpusBackfill({
+      existingRecord: manifestRecord(),
+      document: doc,
+      contentSha256: computeCorpusContentSha256(doc.content),
+    });
+
+    assert.equal(decision, "reindex");
+  });
+
   it("retries failed prior records", () => {
     const doc = documentInput();
     const decision = decideCorpusBackfill({
@@ -148,6 +172,27 @@ describe("corpus manifest backfill orchestration", () => {
     assert.equal(record?.contentSha256, computeCorpusContentSha256(doc.content));
     assert.equal(record?.chunkCount, 2);
     assert.equal(record?.embeddingModel, "test-model");
+    assert.deepEqual(record?.documentMetadata, doc.metadata);
+  });
+
+  it("passes domain document metadata into the indexer", async () => {
+    const store = new InMemoryCorpusManifestStore();
+    const doc = documentInput();
+    let receivedMetadata: unknown = null;
+
+    await backfillCorpusManifest(
+      { documents: [doc] },
+      {
+        manifestStore: store,
+        now: fixedNow,
+        indexVectorSource: async (input) => {
+          receivedMetadata = input.metadata;
+          return indexingResult();
+        },
+      }
+    );
+
+    assert.deepEqual(receivedMetadata, doc.metadata);
   });
 
   it("skips unchanged documents without calling the indexer", async () => {
