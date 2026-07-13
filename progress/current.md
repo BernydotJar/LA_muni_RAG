@@ -2,15 +2,11 @@
 
 ## Active Feature
 
-None
-
-## Last Completed Feature
-
-046-domain-pack-evaluation-harness
+047-workflow-template-editor-foundation
 
 ## State
 
-done
+review
 
 ## Mode
 
@@ -18,35 +14,11 @@ MVP
 
 ## Summary
 
-Feature 046 added a deterministic evaluation harness for domain packs. It validates workflow classification and expected source authority classes from each pack's `evaluationCases`.
+Feature 047 adds a controlled, validated JSON workflow-template editing foundation. It introduces a domain-neutral editable template contract, deterministic conversion from existing domain-pack templates, strict validation, a safe validation CLI, a reviewable municipal example, and compatibility tests that preserve current `municipal-antigua` workflow behavior.
 
-## Completed Implementation
+## Verified Baseline
 
-046 added or updated:
-
-- specs/046-domain-pack-evaluation-harness/requirements.md
-- specs/046-domain-pack-evaluation-harness/design.md
-- specs/046-domain-pack-evaluation-harness/tasks.md
-- src/domain/evaluation.ts
-- src/cli/evaluateDomainPacks.ts
-- src/__tests__/domain-pack-evaluation.test.ts
-- docs/domain-pack-evaluation-harness.md
-- package.json
-- README.md
-- progress/current.md
-
-## Governance Acceptance
-
-- All registered starter packs are evaluated.
-- Workflow classification expectations are checked.
-- Source authority expectations are checked when provided.
-- The CLI exits non-zero if any case fails.
-- The harness uses deterministic code only; no database, network, retrieval, or LLM judging.
-- Generated `dist-pages/` output was verified but not kept as a source change.
-
-## Local Verification
-
-Ran locally:
+Before this feature:
 
 - npm run typecheck: passed
 - npm run build: passed
@@ -55,9 +27,24 @@ Ran locally:
 - npm run build:pages: passed
 - node scripts/verify-pages-artifact.mjs: passed
 
-## Next Work
+## Acceptance Focus
 
-Recommended next features:
+- Add a domain-neutral editable workflow-template contract.
+- Validate domain ownership, workflow ids, step ids/order, labels/actions, documents, source authorities, governance rules, and evidence requirements.
+- Reject unsafe ids, duplicates, unknown domain packs, unsupported authority/governance references, empty steps, and authoritative templates without evidence requirements.
+- Add a safe JSON validation CLI that reads only repository-local `.json` files.
+- Add a reviewable municipal example without changing runtime behavior.
+- Preserve current Antigua classification and composition behavior.
+- Do not execute imported content or auto-publish templates.
+- Do not modify database schema or `dist-pages/`.
 
-- 047-domain-pack-admin-library
-- 048-domain-pack-feedback-analytics
+## Verification Required
+
+```bash
+npm run typecheck
+npm run build
+npm run domain:evaluate
+npm run test
+npm run build:pages
+node scripts/verify-pages-artifact.mjs
+```
