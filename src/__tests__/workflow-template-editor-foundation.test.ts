@@ -42,7 +42,10 @@ describe("workflow template editor foundation", () => {
       converted.steps.map((step) => step.action),
       sourceTemplate.steps.map((step) => step.action)
     );
-    assert.equal(validateEditableWorkflowTemplate(converted, municipalAntiguaDomainPack), converted);
+    assert.deepEqual(
+      validateEditableWorkflowTemplate(converted, municipalAntiguaDomainPack),
+      converted
+    );
   });
 
   it("preserves municipal workflow composition behavior", () => {
@@ -119,13 +122,20 @@ describe("workflow template editor foundation", () => {
     );
   });
 
-  it("requires evidence for authoritative templates", () => {
+  it("requires explicit evidence configuration", () => {
     const authoritative = structuredClone(validTemplate());
     authoritative.authoritative = true;
     authoritative.evidenceRequirement = "recommended";
     expectValidationError(
       () => validateEditableWorkflowTemplate(authoritative, municipalAntiguaDomainPack),
       /authoritative templates must require evidence/
+    );
+
+    const missingPatterns = structuredClone(validTemplate());
+    missingPatterns.steps[0]!.evidencePatterns = [];
+    expectValidationError(
+      () => validateEditableWorkflowTemplate(missingPatterns, municipalAntiguaDomainPack),
+      /must define evidencePatterns when evidence is required/
     );
   });
 
