@@ -16,7 +16,8 @@
     "search": "tsx src/cli/search.ts",
     "start": "node dist/server.js",
     "test": "node --import tsx --test src/__tests__/*.test.ts",
-    "typecheck": "tsc -p tsconfig.json --noEmit"
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "workflow:validate": "tsx src/cli/validateWorkflowTemplate.ts"
   },
   "keywords": [],
   "author": "",
