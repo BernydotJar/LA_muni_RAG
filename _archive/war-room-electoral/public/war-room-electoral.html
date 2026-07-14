@@ -1,0 +1,1086 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>StratOS Electoral - War Room de Campaña</title>
+    <meta
+      name="description"
+      content="War Room electoral con asesor, agentes de flujo, estrategia, territorio, contenido, pauta y seguimiento."
+    />
+    <link rel="icon" href="data:," />
+    <style>
+      *, *::before, *::after { box-sizing: border-box; }
+      :root {
+        --ink: #f7f4ec;
+        --muted: #b9b2a3;
+        --quiet: #807a70;
+        --bg: #090907;
+        --coal: #10100e;
+        --panel: rgba(18, 18, 15, 0.88);
+        --panel-strong: rgba(27, 26, 22, 0.96);
+        --line: rgba(247, 244, 236, 0.14);
+        --line-strong: rgba(229, 185, 83, 0.36);
+        --red: #b91626;
+        --red-soft: rgba(185, 22, 38, 0.22);
+        --gold: #e5b953;
+        --green: #1f8a5b;
+        --blue: #2f6f9f;
+        --paper: #f4efe3;
+        --shadow: 0 28px 80px rgba(0, 0, 0, 0.42);
+        color-scheme: dark;
+      }
+
+      html { scroll-behavior: smooth; }
+      body {
+        margin: 0;
+        min-height: 100vh;
+        font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        color: var(--ink);
+        background:
+          linear-gradient(rgba(229, 185, 83, 0.035) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(229, 185, 83, 0.03) 1px, transparent 1px),
+          radial-gradient(circle at 24% 12%, rgba(185, 22, 38, 0.24), transparent 24rem),
+          radial-gradient(circle at 78% 20%, rgba(47, 111, 159, 0.18), transparent 26rem),
+          linear-gradient(180deg, #080806 0%, #10100d 48%, #080806 100%);
+        background-size: 34px 34px, 34px 34px, auto, auto, auto;
+      }
+
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        background:
+          linear-gradient(115deg, transparent 0 38%, rgba(229, 185, 83, 0.10) 49%, transparent 60% 100%),
+          radial-gradient(circle at 50% 50%, transparent 0 52%, rgba(0, 0, 0, 0.45) 100%);
+        mix-blend-mode: screen;
+        opacity: 0.52;
+      }
+
+      a { color: inherit; }
+      button, input, textarea {
+        font: inherit;
+      }
+      button {
+        min-height: 42px;
+        border: 1px solid rgba(229, 185, 83, 0.42);
+        border-radius: 8px;
+        color: var(--ink);
+        background: linear-gradient(135deg, var(--red), #73121b);
+        font-weight: 800;
+        cursor: pointer;
+      }
+      button.secondary {
+        background: rgba(247, 244, 236, 0.055);
+        border-color: var(--line);
+      }
+      button.ghost {
+        background: transparent;
+        border-color: rgba(247, 244, 236, 0.18);
+      }
+      button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visible {
+        outline: 2px solid var(--gold);
+        outline-offset: 3px;
+      }
+
+      .shell {
+        width: min(1440px, calc(100% - 28px));
+        margin: 0 auto;
+        padding: 16px 0 48px;
+        position: relative;
+        z-index: 1;
+      }
+
+      .topbar {
+        min-height: 66px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        padding: 10px 12px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: rgba(10, 10, 8, 0.76);
+        backdrop-filter: blur(18px);
+        box-shadow: 0 18px 60px rgba(0, 0, 0, 0.26);
+        position: sticky;
+        top: 12px;
+        z-index: 10;
+      }
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        min-width: 0;
+      }
+      .mark {
+        width: 44px;
+        height: 44px;
+        display: grid;
+        place-items: center;
+        border-radius: 8px;
+        background:
+          linear-gradient(135deg, rgba(229, 185, 83, 0.26), rgba(185, 22, 38, 0.32)),
+          rgba(255, 255, 255, 0.06);
+        border: 1px solid rgba(229, 185, 83, 0.28);
+      }
+      .mark svg {
+        width: 28px;
+        height: 28px;
+        fill: none;
+        stroke: var(--ink);
+        stroke-width: 1.8;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+      }
+      .brand strong { display: block; font-size: 15px; }
+      .brand span { display: block; color: var(--muted); font-size: 12px; margin-top: 2px; }
+      .nav {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: flex-end;
+        gap: 8px;
+      }
+      .nav a {
+        min-height: 38px;
+        display: inline-flex;
+        align-items: center;
+        padding: 0 12px;
+        border-radius: 8px;
+        color: var(--muted);
+        text-decoration: none;
+        border: 1px solid transparent;
+        font-size: 13px;
+        font-weight: 750;
+      }
+      .nav a:hover { color: var(--ink); border-color: var(--line); background: rgba(247, 244, 236, 0.055); }
+
+      .command-deck {
+        display: grid;
+        grid-template-columns: minmax(300px, 0.72fr) minmax(420px, 1.15fr) minmax(320px, 0.82fr);
+        gap: 16px;
+        min-height: calc(100svh - 110px);
+        padding: 18px 0 22px;
+      }
+      .panel {
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: var(--panel);
+        box-shadow: var(--shadow);
+        backdrop-filter: blur(18px);
+        overflow: hidden;
+      }
+      .panel-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 14px 16px;
+        border-bottom: 1px solid var(--line);
+        background: rgba(247, 244, 236, 0.035);
+      }
+      .panel-head h2, .panel-head h3 {
+        margin: 0;
+        font-size: 14px;
+        letter-spacing: 0;
+      }
+      .status {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        color: #b9f2d0;
+        font-size: 11px;
+        font-weight: 850;
+        text-transform: uppercase;
+      }
+      .status::before {
+        content: "";
+        width: 8px;
+        height: 8px;
+        border-radius: 99px;
+        background: var(--green);
+        box-shadow: 0 0 18px rgba(31, 138, 91, 0.85);
+      }
+
+      .advisor {
+        display: grid;
+        grid-template-rows: auto 1fr auto;
+        min-height: 100%;
+      }
+      .advisor-intro {
+        padding: 16px;
+        display: grid;
+        gap: 10px;
+      }
+      .kicker {
+        margin: 0;
+        color: var(--gold);
+        font-size: 12px;
+        font-weight: 900;
+        text-transform: uppercase;
+      }
+      h1 {
+        margin: 0;
+        font-size: 44px;
+        line-height: 0.98;
+        letter-spacing: 0;
+      }
+      .lead {
+        margin: 0;
+        color: var(--muted);
+        font-size: 15px;
+        line-height: 1.6;
+      }
+      .advisor-feed {
+        display: grid;
+        align-content: start;
+        gap: 10px;
+        padding: 0 16px 16px;
+      }
+      .message {
+        padding: 12px;
+        border: 1px solid rgba(247, 244, 236, 0.12);
+        border-radius: 8px;
+        background: rgba(247, 244, 236, 0.045);
+        color: var(--muted);
+        line-height: 1.5;
+        font-size: 13px;
+      }
+      .message strong { color: var(--ink); }
+      .brief-box {
+        display: grid;
+        gap: 10px;
+        padding: 14px 16px 16px;
+        border-top: 1px solid var(--line);
+        background: rgba(0, 0, 0, 0.16);
+      }
+      .brief-box textarea {
+        width: 100%;
+        min-height: 116px;
+        resize: vertical;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: rgba(247, 244, 236, 0.055);
+        color: var(--ink);
+        padding: 12px;
+        line-height: 1.48;
+      }
+      .brief-actions {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+      }
+
+      .war-room-stage {
+        position: relative;
+        min-height: 100%;
+        display: grid;
+        grid-template-rows: auto 1fr auto;
+      }
+      .stage-title {
+        padding: 18px 18px 0;
+        display: flex;
+        justify-content: space-between;
+        gap: 16px;
+        align-items: flex-start;
+      }
+      .stage-title h2 {
+        margin: 0;
+        font-size: 30px;
+        line-height: 1.04;
+      }
+      .stage-title p {
+        margin: 6px 0 0;
+        color: var(--muted);
+        line-height: 1.52;
+        max-width: 640px;
+      }
+      .mode-toggle {
+        display: flex;
+        gap: 6px;
+        padding: 4px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: rgba(247, 244, 236, 0.045);
+      }
+      .mode-toggle button {
+        min-height: 34px;
+        padding: 0 10px;
+        border-color: transparent;
+        background: transparent;
+        color: var(--muted);
+        font-size: 12px;
+      }
+      .mode-toggle button.active { color: var(--ink); background: rgba(185, 22, 38, 0.72); }
+
+      .orbit-wrap {
+        position: relative;
+        display: grid;
+        place-items: center;
+        min-height: 540px;
+        overflow: hidden;
+      }
+      .map-floor {
+        position: absolute;
+        inset: 48px;
+        border: 1px solid rgba(229, 185, 83, 0.18);
+        border-radius: 50%;
+        background:
+          conic-gradient(from 0deg, rgba(185, 22, 38, 0.16), rgba(47, 111, 159, 0.12), rgba(31, 138, 91, 0.12), rgba(229, 185, 83, 0.16), rgba(185, 22, 38, 0.16)),
+          radial-gradient(circle, rgba(247, 244, 236, 0.08) 0 18%, transparent 19% 100%);
+        box-shadow: inset 0 0 80px rgba(0, 0, 0, 0.55), 0 0 90px rgba(185, 22, 38, 0.12);
+        animation: floor-turn 28s linear infinite;
+      }
+      .map-floor::before,
+      .map-floor::after {
+        content: "";
+        position: absolute;
+        border-radius: 50%;
+        border: 1px solid rgba(247, 244, 236, 0.10);
+      }
+      .map-floor::before { inset: 14%; }
+      .map-floor::after { inset: 31%; border-color: rgba(229, 185, 83, 0.18); }
+      @keyframes floor-turn { to { transform: rotate(360deg); } }
+
+      .command-table {
+        position: relative;
+        z-index: 2;
+        width: min(310px, 52vw);
+        aspect-ratio: 1;
+        display: grid;
+        place-items: center;
+        border: 1px solid rgba(229, 185, 83, 0.34);
+        border-radius: 50%;
+        background:
+          radial-gradient(circle at 50% 44%, rgba(229, 185, 83, 0.24), transparent 34%),
+          radial-gradient(circle at 50% 50%, rgba(17, 17, 14, 0.98), rgba(10, 10, 8, 0.88) 66%, transparent 68%);
+        box-shadow: 0 24px 100px rgba(0, 0, 0, 0.46);
+      }
+      .table-copy {
+        width: 74%;
+        text-align: center;
+        display: grid;
+        gap: 8px;
+      }
+      .table-copy b {
+        font-size: 20px;
+        line-height: 1.1;
+      }
+      .table-copy span {
+        color: var(--muted);
+        font-size: 12px;
+        line-height: 1.45;
+      }
+      .station-grid {
+        position: absolute;
+        inset: 0;
+        z-index: 3;
+      }
+      .station {
+        --x: 50%;
+        --y: 50%;
+        position: absolute;
+        left: var(--x);
+        top: var(--y);
+        transform: translate(-50%, -50%);
+        width: 122px;
+        min-height: 82px;
+        display: grid;
+        gap: 5px;
+        align-content: center;
+        padding: 9px;
+        color: var(--ink);
+        border: 1px solid rgba(247, 244, 236, 0.16);
+        border-radius: 8px;
+        background: rgba(16, 16, 14, 0.90);
+        box-shadow: 0 16px 40px rgba(0, 0, 0, 0.35);
+      }
+      .station:hover,
+      .station.active {
+        border-color: var(--gold);
+        background: linear-gradient(180deg, rgba(185, 22, 38, 0.72), rgba(19, 18, 15, 0.94));
+      }
+      .station small {
+        color: var(--gold);
+        font-size: 11px;
+        font-weight: 900;
+      }
+      .station span {
+        font-size: 12px;
+        font-weight: 850;
+        line-height: 1.2;
+      }
+      .connector-line {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        width: 1px;
+        height: 43%;
+        transform-origin: top center;
+        background: linear-gradient(to bottom, rgba(229, 185, 83, 0.40), transparent);
+        opacity: 0.42;
+      }
+
+      .agent-bus {
+        display: grid;
+        grid-template-columns: repeat(6, minmax(0, 1fr));
+        gap: 8px;
+        padding: 14px;
+        border-top: 1px solid var(--line);
+        background: rgba(0, 0, 0, 0.18);
+      }
+      .bus-step {
+        min-height: 70px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 10px;
+        background: rgba(247, 244, 236, 0.04);
+      }
+      .bus-step b {
+        display: block;
+        font-size: 12px;
+        margin-bottom: 6px;
+      }
+      .bus-step span {
+        display: block;
+        color: var(--muted);
+        font-size: 11px;
+        line-height: 1.35;
+      }
+      .bus-step.active { border-color: rgba(229, 185, 83, 0.55); background: rgba(229, 185, 83, 0.08); }
+
+      .station-detail {
+        display: grid;
+        grid-template-rows: auto 1fr;
+        min-height: 100%;
+      }
+      .detail-body {
+        padding: 16px;
+        display: grid;
+        gap: 14px;
+        align-content: start;
+      }
+      .station-label {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        color: var(--gold);
+        font-weight: 900;
+        font-size: 12px;
+        text-transform: uppercase;
+      }
+      .station-label::before {
+        content: "";
+        width: 28px;
+        height: 2px;
+        background: var(--gold);
+      }
+      .detail-title {
+        margin: 0;
+        font-size: 28px;
+        line-height: 1.06;
+      }
+      .detail-copy {
+        margin: 0;
+        color: var(--muted);
+        line-height: 1.56;
+        font-size: 14px;
+      }
+      .detail-actions {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+      }
+      .metric-row {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 8px;
+      }
+      .metric {
+        min-height: 82px;
+        padding: 10px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: rgba(247, 244, 236, 0.045);
+      }
+      .metric b {
+        display: block;
+        font-size: 20px;
+        color: var(--ink);
+      }
+      .metric span {
+        color: var(--muted);
+        font-size: 11px;
+        line-height: 1.35;
+      }
+      .asset-list {
+        display: grid;
+        gap: 8px;
+      }
+      .asset {
+        display: grid;
+        grid-template-columns: auto 1fr auto;
+        gap: 10px;
+        align-items: center;
+        min-height: 52px;
+        padding: 10px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: rgba(247, 244, 236, 0.04);
+      }
+      .asset i {
+        width: 28px;
+        height: 28px;
+        display: grid;
+        place-items: center;
+        border-radius: 6px;
+        background: rgba(229, 185, 83, 0.14);
+        color: var(--gold);
+        font-style: normal;
+        font-size: 13px;
+        font-weight: 900;
+      }
+      .asset b { display: block; font-size: 13px; }
+      .asset span { color: var(--muted); font-size: 12px; line-height: 1.35; }
+      .asset a {
+        color: var(--gold);
+        font-size: 12px;
+        font-weight: 850;
+        text-decoration: none;
+      }
+      .route-output {
+        display: grid;
+        gap: 8px;
+        padding: 12px;
+        border: 1px solid rgba(31, 138, 91, 0.32);
+        border-radius: 8px;
+        background: rgba(31, 138, 91, 0.08);
+      }
+      .route-output h4 { margin: 0; font-size: 14px; }
+      .route-output ul {
+        margin: 0;
+        padding-left: 18px;
+        color: var(--muted);
+        line-height: 1.5;
+        font-size: 13px;
+      }
+
+      .operations {
+        display: grid;
+        grid-template-columns: 0.9fr 1.1fr;
+        gap: 16px;
+        margin-top: 16px;
+      }
+      .workflow-board,
+      .visual-board {
+        min-height: 520px;
+      }
+      .timeline {
+        display: grid;
+        gap: 10px;
+        padding: 16px;
+      }
+      .timeline-step {
+        display: grid;
+        grid-template-columns: 42px 1fr;
+        gap: 12px;
+        align-items: start;
+      }
+      .timeline-step .num {
+        width: 42px;
+        height: 42px;
+        display: grid;
+        place-items: center;
+        border-radius: 8px;
+        color: #21070b;
+        background: var(--gold);
+        font-weight: 950;
+      }
+      .timeline-step h3 {
+        margin: 0 0 5px;
+        font-size: 16px;
+      }
+      .timeline-step p {
+        margin: 0;
+        color: var(--muted);
+        line-height: 1.5;
+        font-size: 13px;
+      }
+      .source-grid {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 8px;
+        padding: 0 16px 16px;
+      }
+      .source {
+        min-height: 84px;
+        padding: 10px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: rgba(247, 244, 236, 0.04);
+      }
+      .source b { display: block; font-size: 12px; margin-bottom: 6px; }
+      .source span { display: block; color: var(--muted); font-size: 11px; line-height: 1.35; }
+
+      .reference-strip {
+        display: grid;
+        grid-template-columns: repeat(7, minmax(140px, 1fr));
+        gap: 10px;
+        padding: 16px;
+        overflow-x: auto;
+      }
+      .reference {
+        min-width: 140px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: rgba(247, 244, 236, 0.045);
+        overflow: hidden;
+      }
+      .reference img {
+        display: block;
+        width: 100%;
+        aspect-ratio: 16 / 10;
+        object-fit: cover;
+        background: #111;
+      }
+      .reference span {
+        display: block;
+        padding: 9px;
+        color: var(--muted);
+        font-size: 11px;
+        line-height: 1.35;
+      }
+
+      .handoff {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 12px;
+        margin-top: 16px;
+      }
+      .handoff a, .handoff div {
+        min-height: 120px;
+        padding: 14px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: var(--panel);
+        text-decoration: none;
+      }
+      .handoff b { display: block; margin-bottom: 8px; }
+      .handoff span { color: var(--muted); font-size: 13px; line-height: 1.45; }
+
+      @media (max-width: 1180px) {
+        .command-deck { grid-template-columns: 1fr; }
+        .advisor, .station-detail { min-height: auto; }
+        .orbit-wrap { min-height: 620px; }
+        .operations { grid-template-columns: 1fr; }
+      }
+      @media (max-width: 780px) {
+        .shell { width: min(100% - 18px, 720px); }
+        .topbar { align-items: flex-start; flex-direction: column; position: relative; top: auto; }
+        .nav { justify-content: flex-start; }
+        h1 { font-size: 34px; }
+        .stage-title { display: grid; }
+        .mode-toggle { width: 100%; }
+        .mode-toggle button { flex: 1; }
+        .orbit-wrap { min-height: auto; padding: 16px; display: block; }
+        .map-floor, .connector-line, .command-table { display: none; }
+        .station-grid { position: relative; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+        .station { position: relative; left: auto; top: auto; transform: none; width: 100%; }
+        .agent-bus, .source-grid, .handoff, .metric-row { grid-template-columns: 1fr; }
+        .detail-actions, .brief-actions { grid-template-columns: 1fr; }
+        .reference-strip { grid-template-columns: repeat(7, 150px); }
+      }
+      @media (max-width: 460px) {
+        .station-grid { grid-template-columns: 1fr; }
+        .brand { align-items: flex-start; }
+        .nav a { width: 100%; justify-content: center; }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        *, *::before, *::after { animation: none !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="shell">
+      <header class="topbar">
+        <a class="brand" href="./index.html" aria-label="Volver a LA Muni RAG">
+          <span class="mark" aria-hidden="true">
+            <svg viewBox="0 0 36 36"><path d="M18 4v6M8 18h20M18 26v6M9 10l5 5M22 21l5 5M27 10l-5 5M14 21l-5 5"/><circle cx="18" cy="18" r="6"/><path d="M4 28h28"/></svg>
+          </span>
+          <span><strong>StratOS Electoral</strong><span>War Room con agentes de campaña</span></span>
+        </a>
+        <nav class="nav" aria-label="Navegación principal">
+          <a href="#jefe-campana">Jefe de campaña</a>
+          <a href="#flujo-operativo">Flujo</a>
+          <a href="#biblioteca">Assets</a>
+          <a href="https://eduardosacahui.com/territorio_electoral" target="_blank" rel="noreferrer">Territorio</a>
+          <a href="https://github.com/BernydotJar/LA_muni_RAG" target="_blank" rel="noreferrer">RAG</a>
+        </nav>
+      </header>
+
+      <main>
+        <section class="command-deck" aria-label="Mesa central del War Room">
+          <aside class="panel advisor" id="jefe-campana">
+            <div class="panel-head">
+              <h2>Asesor principal</h2>
+              <span class="status">En sesión</span>
+            </div>
+            <div class="advisor-intro">
+              <p class="kicker">De incertidumbre a metodología</p>
+              <h1>La campaña como sistema operativo.</h1>
+              <p class="lead">El asesor no solo responde: dirige agentes, produce entregables y deja una ruta visible para estrategia, contenido, territorio y seguimiento.</p>
+            </div>
+            <div class="advisor-feed" id="advisor-feed"></div>
+            <form class="brief-box" id="brief-form">
+              <textarea id="brief-input" aria-label="Brief de campaña">Precandidato municipal en fase de posicionamiento. Necesitamos convertir investigación, territorio y contenido digital en una ruta semanal con entregables visibles.</textarea>
+              <div class="brief-actions">
+                <button type="submit">Generar ruta</button>
+                <button class="secondary" type="button" id="reset-brief">Reiniciar sala</button>
+              </div>
+            </form>
+          </aside>
+
+          <section class="panel war-room-stage">
+            <div class="stage-title">
+              <div>
+                <p class="kicker">Mesa cinematica</p>
+                <h2>Estaciones que giran alrededor del War Room.</h2>
+                <p>El flujo separa estrategia de tácticas: primero datos, luego decisión, producción, publicación y control.</p>
+              </div>
+              <div class="mode-toggle" aria-label="Modo de trabajo">
+                <button type="button" class="active" data-mode="estrategia">Estrategia</button>
+                <button type="button" data-mode="construccion">Construcción</button>
+                <button type="button" data-mode="seguimiento">Seguimiento</button>
+              </div>
+            </div>
+            <div class="orbit-wrap">
+              <div class="map-floor" aria-hidden="true"></div>
+              <div class="connector-line" style="transform: rotate(0deg)"></div>
+              <div class="connector-line" style="transform: rotate(45deg)"></div>
+              <div class="connector-line" style="transform: rotate(90deg)"></div>
+              <div class="connector-line" style="transform: rotate(135deg)"></div>
+              <div class="connector-line" style="transform: rotate(180deg)"></div>
+              <div class="connector-line" style="transform: rotate(225deg)"></div>
+              <div class="connector-line" style="transform: rotate(270deg)"></div>
+              <div class="connector-line" style="transform: rotate(315deg)"></div>
+              <div class="command-table" aria-hidden="true">
+                <div class="table-copy">
+                  <b>War Room</b>
+                  <span id="table-summary">Investigación, estrategia y operación conectadas en una misma mesa.</span>
+                </div>
+              </div>
+              <div class="station-grid" id="station-grid" aria-label="Estaciones de agentes"></div>
+            </div>
+            <div class="agent-bus" id="agent-bus"></div>
+          </section>
+
+          <aside class="panel station-detail">
+            <div class="panel-head">
+              <h2 id="detail-agent">Jefe de Campaña</h2>
+              <span class="status">Agente activo</span>
+            </div>
+            <div class="detail-body">
+              <div class="station-label" id="detail-label">Estación 01</div>
+              <h2 class="detail-title" id="detail-title">Dirección de campaña</h2>
+              <p class="detail-copy" id="detail-copy"></p>
+              <div class="metric-row" id="metric-row"></div>
+              <div class="detail-actions">
+                <button type="button" id="strategy-action">Ver estrategia</button>
+                <button type="button" class="secondary" id="asset-action">Construir assets</button>
+              </div>
+              <div class="asset-list" id="asset-list"></div>
+              <div class="route-output" id="route-output"></div>
+            </div>
+          </aside>
+        </section>
+
+        <section class="operations" id="flujo-operativo">
+          <div class="panel workflow-board">
+            <div class="panel-head">
+              <h2>Flujo operativo de agentes</h2>
+              <span class="status">Visible</span>
+            </div>
+            <div class="timeline">
+              <article class="timeline-step"><span class="num">01</span><div><h3>Investigación electoral</h3><p>El agente de datos convierte encuestas, focus group, FODA y coyuntura en hipótesis verificables.</p></div></article>
+              <article class="timeline-step"><span class="num">02</span><div><h3>Definición estratégica</h3><p>El jefe de campaña traduce objetivos, segmento, causa política y narrativa en decisiones operables.</p></div></article>
+              <article class="timeline-step"><span class="num">03</span><div><h3>Territorio y agenda</h3><p>El agente territorial conecta mapa, padrones, liderazgos, comités, agenda de calle y señales vecinales.</p></div></article>
+              <article class="timeline-step"><span class="num">04</span><div><h3>Contenido y canales</h3><p>El agente digital define redes, pilares, formatos, propuesta de contenido y calendario de publicación.</p></div></article>
+              <article class="timeline-step"><span class="num">05</span><div><h3>Producción y pauta</h3><p>El equipo transforma guiones, piezas, reels, carruseles, pauta y respuestas en lotes listos para revisión.</p></div></article>
+              <article class="timeline-step"><span class="num">06</span><div><h3>Seguimiento y aprendizaje</h3><p>El tablero cruza avance, interacción, territorio, riesgos, decisiones y próximos movimientos.</p></div></article>
+            </div>
+            <div class="source-grid">
+              <div class="source"><b>Agenda territorial</b><span>Eventos fuera de oficina y señales de calle.</span></div>
+              <div class="source"><b>Agenda de gestión</b><span>Convenios, encuentros, obras, solicitudes.</span></div>
+              <div class="source"><b>Coyuntura</b><span>Temas resonando con identidad política.</span></div>
+              <div class="source"><b>Vecinos</b><span>Historias humanas y necesidades concretas.</span></div>
+              <div class="source"><b>Vida personal</b><span>Familia, profesión, gustos y cotidianidad.</span></div>
+              <div class="source"><b>Localidad</b><span>Historia, monumentos, acontecimientos y orgullo local.</span></div>
+              <div class="source"><b>Tendencias</b><span>Oportunidades de relevancia sin perder coherencia.</span></div>
+              <div class="source"><b>Social listening</b><span>Conversaciones, objeciones y reputación digital.</span></div>
+            </div>
+          </div>
+
+          <div class="panel visual-board" id="biblioteca">
+            <div class="panel-head">
+              <h2>Biblioteca visual y plantillas</h2>
+              <span class="status">Referencia</span>
+            </div>
+            <div class="reference-strip">
+              <figure class="reference"><img src="./assets/war-room-reference-content-flow.png" alt="Flujo de contenido para candidatos" /><span>Definición de redes, pilares, propuesta y calendario.</span></figure>
+              <figure class="reference"><img src="./assets/war-room-reference-channel-map.png" alt="Mapa de canales digitales" /><span>Canales, audiencias, historias, comunidades y tendencias.</span></figure>
+              <figure class="reference"><img src="./assets/war-room-reference-content-sources.png" alt="Fuentes de contenido para políticos" /><span>Fuentes reales de contenido político.</span></figure>
+              <figure class="reference"><img src="./assets/war-room-reference-before-after.png" alt="Antes y después de metodología de asesor político" /><span>La herramienta debe reducir incertidumbre y elevar método.</span></figure>
+              <figure class="reference"><img src="./assets/war-room-reference-modules.png" alt="Temario de módulos de campaña" /><span>Módulos para estrategia, investigación, War Room, territorio y storytelling.</span></figure>
+              <figure class="reference"><img src="./assets/war-room-reference-templates.png" alt="Plantillas aplicativas de campaña" /><span>Plantillas como output, no solo teoría.</span></figure>
+              <figure class="reference"><img src="./assets/war-room-reference-syllabus.png" alt="Capítulos de investigación y estrategia electoral" /><span>Marco de investigación, estrategia, organización y comunicación.</span></figure>
+            </div>
+            <div class="timeline">
+              <article class="timeline-step"><span class="num">A</span><div><h3>Assets que debe producir el sistema</h3><p>Brief estratégico, mapa de segmentos, diagnóstico coyuntural, matriz territorial, calendario editorial, guiones, tablero de pauta y bitácora de decisiones.</p></div></article>
+              <article class="timeline-step"><span class="num">B</span><div><h3>Conexión con tus superficies actuales</h3><p>La vista enlaza el RAG documental, el mapa territorial y la web pública para convertirlos en piezas de un mismo proceso operativo.</p></div></article>
+            </div>
+          </div>
+        </section>
+
+        <section class="handoff" aria-label="Conexiones del sistema">
+          <a href="./procedure-workflow.html"><b>Workflow Advisor</b><span>Base existente para generar pasos, documentos, brechas y validación.</span></a>
+          <a href="./glass-wall.html"><b>Glass Wall</b><span>Inspección técnica del flujo RAG y evidencia recuperada.</span></a>
+          <a href="https://eduardosacahui.com/territorio_electoral" target="_blank" rel="noreferrer"><b>Territorio electoral</b><span>Entrada natural para mapa, padrones, localidades y operación de calle.</span></a>
+          <a href="https://eduardosacahui.com/" target="_blank" rel="noreferrer"><b>Web pública</b><span>Destino para publicar narrativa, piezas y páginas de campaña.</span></a>
+        </section>
+      </main>
+    </div>
+
+    <script>
+      const stations = [
+        {
+          id: "direccion",
+          number: "01",
+          agent: "Jefe de Campaña",
+          title: "Dirección de campaña",
+          copy: "Convierte el brief en objetivo, estrategia, táctica, responsables y ritmo de decisión. Esta es la página de mando: si algo no ayuda a ganar claridad, no entra al flujo.",
+          metrics: ["8 modulos", "6 agentes", "1 tablero"],
+          assets: [
+            ["BR", "Brief estrategico", "Objetivo, etapa, territorio, segmento y restriccion principal."],
+            ["RO", "Mapa de roles", "Jefe, investigacion, territorio, contenido, pauta y seguimiento."],
+            ["DC", "Bitacora de decisiones", "Decision, evidencia, responsable, fecha y siguiente accion."]
+          ],
+          route: ["Definir objetivo politico de la semana.", "Asignar responsable por estacion.", "Cerrar decisiones pendientes antes de producir contenido."]
+        },
+        {
+          id: "investigacion",
+          number: "02",
+          agent: "Agente de Investigacion",
+          title: "Investigación electoral",
+          copy: "Evita iniciar al azar. Junta encuesta, focus group, FODA, PESTEL, social listening y lectura coyuntural para que la estrategia nazca de datos objetivos.",
+          metrics: ["4 metodos", "12 preguntas", "3 brechas"],
+          assets: [
+            ["EN", "Diseno de encuesta", "Preguntas de posicionamiento, problemas, atributos y voto probable."],
+            ["FG", "Guia focus group", "Percepciones, objeciones, lenguaje ciudadano y narrativa."],
+            ["FD", "FODA electoral", "Fortalezas, debilidades, oportunidades y amenazas."]
+          ],
+          route: ["Recolectar senales duras y blandas.", "Separar percepcion de evidencia.", "Entregar hipotesis al jefe de campana."]
+        },
+        {
+          id: "digital",
+          number: "03",
+          agent: "Agente Digital",
+          title: "Estrategia digital",
+          copy: "No confunde calendario con estrategia. Define redes primarias y secundarias, pilares, formatos, propuesta de contenido y calendarizacion por objetivo comunicacional.",
+          metrics: ["4 pasos", "7 canales", "30 dias"],
+          assets: [
+            ["RD", "Mapa de redes", "X, Facebook, Instagram, TikTok, WhatsApp, historias y comunidades."],
+            ["PI", "Pilares de contenido", "Causa, gestion, territorio, vecinos, coyuntura y vida personal."],
+            ["CA", "Calendario editorial", "Frecuencia, formato, objetivo, responsable y estado."]
+          ],
+          route: ["Elegir red por segmento.", "Traducir pilares en formatos.", "Programar piezas con coherencia semanal."]
+        },
+        {
+          id: "territorio",
+          number: "04",
+          agent: "Agente Territorial",
+          title: "Territorio y movilización",
+          copy: "Conecta lo digital con la calle: comunidades, liderazgos, comites, agenda territorial, visitas, reclutamiento y seguimiento de promesas.",
+          metrics: ["22 zonas", "5 rutas", "1 mapa"],
+          assets: [
+            ["MP", "Mapa territorial", "Sectores, liderazgos, prioridad y oportunidad de contacto."],
+            ["AG", "Agenda de calle", "Visitas, reuniones, responsables y evidencia de seguimiento."],
+            ["CM", "Comites territoriales", "Roles, cobertura, capacitacion y necesidades."]
+          ],
+          route: ["Abrir mapa territorial.", "Priorizar zonas por oportunidad.", "Convertir visitas en contenido y tareas."]
+        },
+        {
+          id: "contenido",
+          number: "05",
+          agent: "Agente de Contenido",
+          title: "Contenido politico",
+          copy: "Produce desde fuentes reales: agenda territorial, gestion, agenda partidaria, coyuntura, efemerides utiles, vecinos, vida personal y localidad.",
+          metrics: ["8 fuentes", "5 formatos", "1 lote"],
+          assets: [
+            ["GU", "Guiones cortos", "Reels, historias, carruseles y respuestas."],
+            ["LO", "Lote semanal", "Ideas priorizadas por objetivo, fuente y formato."],
+            ["VO", "Voz del candidato", "Tono, palabras prohibidas, prueba de cercania y consistencia."]
+          ],
+          route: ["Elegir fuente de contenido.", "Alinear con pilar estrategico.", "Producir pieza y checklist de revision."]
+        },
+        {
+          id: "pauta",
+          number: "06",
+          agent: "Agente de Pauta",
+          title: "Pauta y distribución",
+          copy: "Distribuye con intencion: audiencia, objetivo, presupuesto, creatividad, aprendizaje, respuesta y correccion de rumbo.",
+          metrics: ["3 audiencias", "5 KPIs", "24 horas"],
+          assets: [
+            ["AU", "Matriz de audiencias", "Segmentos, mensaje, plataforma y exclusion."],
+            ["PA", "Plan de pauta", "Objetivo, presupuesto, duracion, pieza y metrica principal."],
+            ["RS", "Registro de respuesta", "Comentarios, ataques, preguntas y oportunidad de aclaracion."]
+          ],
+          route: ["Vincular pieza con segmento.", "Asignar presupuesto de prueba.", "Leer respuesta antes de escalar."]
+        },
+        {
+          id: "storytelling",
+          number: "07",
+          agent: "Agente de Storytelling",
+          title: "Discurso y narrativa",
+          copy: "Ordena causa, historia, arquetipo, mensaje, discurso, media training y preparacion para debate.",
+          metrics: ["1 causa", "3 mensajes", "2 pruebas"],
+          assets: [
+            ["MS", "Mensaje rector", "Que defiende, para quien y contra que problema."],
+            ["DS", "Discurso base", "Apertura, problema, prueba, propuesta y cierre."],
+            ["MT", "Media training", "Preguntas dificiles, puentes y respuestas seguras."]
+          ],
+          route: ["Definir causa politica.", "Probar mensaje con objeciones.", "Convertir en discurso y clips."]
+        },
+        {
+          id: "seguimiento",
+          number: "08",
+          agent: "Agente de Seguimiento",
+          title: "Control y aprendizaje",
+          copy: "Da visibilidad: decisiones, tareas, riesgos, resultados, avances territoriales, publicaciones, pauta y aprendizaje de la semana.",
+          metrics: ["1 tablero", "7 senales", "48 horas"],
+          assets: [
+            ["TB", "Tablero ejecutivo", "Avance, bloqueo, responsable y decision requerida."],
+            ["RI", "Registro de riesgos", "Tema, probabilidad, impacto, mitigacion y dueno."],
+            ["AP", "Aprendizajes", "Que funciono, que se corrige y que se prueba despues."]
+          ],
+          route: ["Actualizar tablero.", "Escalar bloqueos.", "Convertir aprendizaje en proxima decision."]
+        }
+      ];
+
+      const busSteps = [
+        ["Entrada", "Brief, datos, territorio y evidencia"],
+        ["Diagnostico", "Senales, brechas y riesgos"],
+        ["Decision", "Objetivo, segmento y prioridad"],
+        ["Produccion", "Assets, guiones y calendario"],
+        ["Validacion", "Revision politica y factual"],
+        ["Seguimiento", "KPIs, tareas y aprendizaje"]
+      ];
+
+      const $ = (selector) => document.querySelector(selector);
+      const stationGrid = $("#station-grid");
+      const agentBus = $("#agent-bus");
+      const feed = $("#advisor-feed");
+      const routeOutput = $("#route-output");
+      let activeStation = stations[0];
+      let activeMode = "estrategia";
+
+      const escapeHtml = (value) => {
+        const node = document.createElement("div");
+        node.textContent = String(value ?? "");
+        return node.innerHTML;
+      };
+
+      const renderStations = () => {
+        const radius = 35;
+        stationGrid.innerHTML = stations.map((station, index) => {
+          const angle = (-90 + index * 45) * Math.PI / 180;
+          const x = 50 + radius * Math.cos(angle);
+          const y = 50 + radius * Math.sin(angle);
+          return `<button type="button" class="station ${station.id === activeStation.id ? "active" : ""}" data-station="${station.id}" style="--x:${x}%;--y:${y}%"><small>${station.number}</small><span>${escapeHtml(station.title)}</span></button>`;
+        }).join("");
+      };
+
+      const renderBus = () => {
+        const activeIndex = activeMode === "estrategia" ? 2 : activeMode === "construccion" ? 3 : 5;
+        agentBus.innerHTML = busSteps.map((step, index) => `<div class="bus-step ${index === activeIndex ? "active" : ""}"><b>${step[0]}</b><span>${step[1]}</span></div>`).join("");
+      };
+
+      const renderDetail = () => {
+        $("#detail-agent").textContent = activeStation.agent;
+        $("#detail-label").textContent = `Estacion ${activeStation.number}`;
+        $("#detail-title").textContent = activeStation.title;
+        $("#detail-copy").textContent = activeStation.copy;
+        $("#table-summary").textContent = `${activeStation.agent}: ${activeStation.title}`;
+        $("#metric-row").innerHTML = activeStation.metrics.map((metric) => {
+          const [value, ...label] = metric.split(" ");
+          return `<div class="metric"><b>${escapeHtml(value)}</b><span>${escapeHtml(label.join(" "))}</span></div>`;
+        }).join("");
+        $("#asset-list").innerHTML = activeStation.assets.map((asset) => `<div class="asset"><i>${asset[0]}</i><div><b>${escapeHtml(asset[1])}</b><span>${escapeHtml(asset[2])}</span></div><a href="#biblioteca">Ver</a></div>`).join("");
+        routeOutput.innerHTML = `<h4>Siguiente ruta</h4><ul>${activeStation.route.map((item) => `<li>${escapeHtml(item)}</li>`).join("")}</ul>`;
+        renderFeed();
+      };
+
+      const renderFeed = (brief) => {
+        const prompt = brief || $("#brief-input").value.trim();
+        feed.innerHTML = [
+          `<div class="message"><strong>${activeStation.agent}:</strong> La estacion activa es ${escapeHtml(activeStation.title)}. Trabajo en modo ${escapeHtml(activeMode)}.</div>`,
+          `<div class="message"><strong>Lectura del brief:</strong> ${escapeHtml(prompt || "Sin brief cargado.")}</div>`,
+          `<div class="message"><strong>Criterio:</strong> Si no hay investigacion suficiente, el sistema marca brecha antes de producir tacticas.</div>`
+        ].join("");
+      };
+
+      const setStation = (id) => {
+        activeStation = stations.find((station) => station.id === id) || stations[0];
+        renderStations();
+        renderDetail();
+      };
+
+      stationGrid.addEventListener("click", (event) => {
+        const button = event.target.closest("[data-station]");
+        if (!button) return;
+        setStation(button.dataset.station);
+      });
+
+      document.querySelectorAll("[data-mode]").forEach((button) => {
+        button.addEventListener("click", () => {
+          activeMode = button.dataset.mode;
+          document.querySelectorAll("[data-mode]").forEach((item) => item.classList.toggle("active", item === button));
+          renderBus();
+          renderDetail();
+        });
+      });
+
+      $("#brief-form").addEventListener("submit", (event) => {
+        event.preventDefault();
+        renderFeed($("#brief-input").value.trim());
+        routeOutput.innerHTML = `<h4>Ruta generada para ${escapeHtml(activeStation.title)}</h4><ul>${activeStation.route.map((item) => `<li>${escapeHtml(item)}</li>`).join("")}<li>Registrar entregable y responsable en el tablero ejecutivo.</li></ul>`;
+      });
+
+      $("#reset-brief").addEventListener("click", () => {
+        $("#brief-input").value = "Precandidato municipal en fase de posicionamiento. Necesitamos convertir investigacion, territorio y contenido digital en una ruta semanal con entregables visibles.";
+        activeMode = "estrategia";
+        document.querySelectorAll("[data-mode]").forEach((item) => item.classList.toggle("active", item.dataset.mode === "estrategia"));
+        setStation("direccion");
+        renderBus();
+      });
+
+      $("#strategy-action").addEventListener("click", () => {
+        activeMode = "estrategia";
+        document.querySelectorAll("[data-mode]").forEach((item) => item.classList.toggle("active", item.dataset.mode === "estrategia"));
+        renderBus();
+        routeOutput.innerHTML = `<h4>Estrategia visible</h4><ul><li>Objetivo politico claro.</li><li>Segmento y territorio prioritario.</li><li>Mensaje rector y evidencia minima.</li></ul>`;
+      });
+
+      $("#asset-action").addEventListener("click", () => {
+        activeMode = "construccion";
+        document.querySelectorAll("[data-mode]").forEach((item) => item.classList.toggle("active", item.dataset.mode === "construccion"));
+        renderBus();
+        routeOutput.innerHTML = `<h4>Assets en construccion</h4><ul>${activeStation.assets.map((asset) => `<li>${escapeHtml(asset[1])}: ${escapeHtml(asset[2])}</li>`).join("")}</ul>`;
+      });
+
+      renderStations();
+      renderBus();
+      renderDetail();
+    </script>
+  </body>
+</html>
