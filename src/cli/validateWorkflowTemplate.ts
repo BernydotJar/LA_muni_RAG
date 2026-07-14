@@ -8,6 +8,19 @@ const fail = (message: string): never => {
   process.exit(1);
 };
 
+const requireDomainPackId = (value: unknown): string => {
+  if (typeof value !== "string") {
+    fail("collection domainPackId is required");
+  }
+
+  const normalized = value.trim();
+  if (!normalized) {
+    fail("collection domainPackId is required");
+  }
+
+  return normalized;
+};
+
 const input = process.argv[2];
 if (!input) fail("provide a repository-relative .json file path");
 if (path.isAbsolute(input)) fail("absolute paths are not allowed");
@@ -27,12 +40,9 @@ try {
     fail("JSON root must be an object");
   }
 
-  const rawDomainPackId = (parsed as Record<string, unknown>).domainPackId;
-  if (typeof rawDomainPackId !== "string" || !rawDomainPackId.trim()) {
-    fail("collection domainPackId is required");
-  }
-  const domainPackId = rawDomainPackId.trim();
-
+  const domainPackId = requireDomainPackId(
+    (parsed as Record<string, unknown>).domainPackId
+  );
   const domainPack = loadDomainPack(domainPackId);
   const validated = validateEditableWorkflowTemplateCollection(parsed, domainPack);
 
