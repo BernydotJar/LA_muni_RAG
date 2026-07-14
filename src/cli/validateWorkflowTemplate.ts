@@ -27,10 +27,11 @@ try {
     fail("JSON root must be an object");
   }
 
-  const domainPackId = (parsed as Record<string, unknown>).domainPackId;
-  if (typeof domainPackId !== "string" || !domainPackId.trim()) {
+  const rawDomainPackId = (parsed as Record<string, unknown>).domainPackId;
+  if (typeof rawDomainPackId !== "string" || !rawDomainPackId.trim()) {
     fail("collection domainPackId is required");
   }
+  const domainPackId = rawDomainPackId.trim();
 
   const domainPack = loadDomainPack(domainPackId);
   const validated = validateEditableWorkflowTemplateCollection(parsed, domainPack);
