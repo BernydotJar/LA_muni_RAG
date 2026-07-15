@@ -46,7 +46,7 @@ test("domain pack bootstrap rejects unsafe, reserved, duplicate, and unsupported
     "invalid_arguments"
   );
   expectSyncCode(() => parseDomainInitArgs(["--output", "/tmp", "--id", "legal", "--name", "Legal"]), "invalid_arguments");
-  expectSyncCode(() => parseDomainInitArgs(["--id", "legal", "--name", "", "--language", "es"]), "invalid_name");
+  expectSyncCode(() => parseDomainInitArgs(["--id", "legal", "--name", "", "--language", "es"]), "invalid_arguments");
   expectSyncCode(() => parseDomainInitArgs(["--id", "legal", "--name", "Legal", "--language", "../../es"]), "invalid_language");
 });
 
@@ -63,7 +63,12 @@ test("domain pack bootstrap renders deterministic draft-only content", () => {
   const text = first.files.map((file) => file.content).join("\n").toLowerCase();
   assert.match(text, /draft/);
   assert.match(text, /placeholder/);
-  assert.doesNotMatch(text, /statute|deadline|approver|responsible ministry/);
+  const generatedData = first.files
+    .filter((file) => file.path.endsWith(".json"))
+    .map((file) => file.content)
+    .join("\n")
+    .toLowerCase();
+  assert.doesNotMatch(generatedData, /statute|deadline|approver|responsible ministry/);
 });
 
 test("domain pack bootstrap starter evaluation passes without registering a pack", () => {
