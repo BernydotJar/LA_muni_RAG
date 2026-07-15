@@ -12,8 +12,15 @@ import {
   validateDomainPackScaffold,
 } from "../domain/bootstrap.js";
 
-const expectCode = async (action: () => unknown | Promise<unknown>, code: string) => {
-  await assert.rejects(action, (error: unknown) => error instanceof DomainBootstrapError && error.code === code);
+const matchesCode = (code: string) =>
+  (error: unknown): boolean => error instanceof DomainBootstrapError && error.code === code;
+
+const expectSyncCode = (action: () => unknown, code: string): void => {
+  assert.throws(action, matchesCode(code));
+};
+
+const expectAsyncCode = async (action: () => Promise<unknown>, code: string): Promise<void> => {
+  await assert.rejects(action, matchesCode(code));
 };
 
 test("domain pack bootstrap parses supported flags and defaults language", () => {
@@ -26,11 +33,11 @@ test("domain pack bootstrap parses supported flags and defaults language", () =>
   assert.equal(parseDomainInitArgs(["--id", "legal", "--name", "Legal Assistant", "--language", "es", "--dry-run"]).dryRun, true);
 });
 
-test("domain pack bootstrap rejects unsafe, reserved, duplicate, and unsupported arguments", async () => {
-  await expectCode(() => parseDomainInitArgs(["--id", "../legal", "--name", "Legal"]), "invalid_id");
-  await expectCode(() => parseDomainInitArgs(["--id", "municipal-antigua", "--name", "Legal"]), "reserved_id");
-  await expectCode(() => parseDomainInitArgs(["--id", "legal", "--id", "other", "--name", "Legal"]), "invalid_arguments");
-  await expectCode(() => parseDomainInitArgs(["--output", "/tmp", "--id", "legal", "--name", "Legal"]), "invalid_arguments");
+test("domain pack bootstrap rejects unsafe, reserved, duplicate, and unsupported arguments", () => {
+  expectSyncCode(() => parseDomainInitArgs(["--id", "../legal", "--name", "Legal"]), "invalid_id");
+  expectSyncCode(() => parseDomainInitArgs(["--id", "municipal-antigua", "--name", "Legal"]), "reserved_id");
+  expectSyncCode(() => parseDomainInitArgs(["--id", "legal", "--id", "other", "--name", "Legal"]), "invalid_arguments");
+  expectSyncCode(() => parseDomainInitArgs(["--output", "/tmp", "--id", "legal", "--name", "Legal"]), "invalid_arguments");
 });
 
 test("domain pack bootstrap renders deterministic draft-only content", () => {
@@ -86,7 +93,7 @@ test("domain pack bootstrap clean-room initialization validates files and refuse
     assert.equal(manifest.authoritative, false);
     assert.deepEqual(templates.templates, []);
 
-    await expectCode(() => initializeDomainPack(options, { workspaceRoot: root }), "target_exists");
+    await expectAsyncCode(() => initializeDomainPack(options, { workspaceRoot: root }), "target_exists");
     assert.equal(JSON.parse(await readFile(path.join(root, "domain-packs/legal/domain-pack.json"), "utf8")).name, "Legal Procedure Assistant");
   } finally {
     await rm(root, { recursive: true, force: true });
