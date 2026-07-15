@@ -1,7 +1,7 @@
 # LA Muni RAG
 
-Last updated: 2026-07-13  
-Status: Reusable domain-pack template foundation complete; workflow-template authoring in review
+Last updated: 2026-07-15  
+Status: Reusable domain-pack template foundation complete; template bootstrap CLI in review
 
 LA Muni RAG is an evidence-first RAG and procedural workflow system configured by default for the Municipality of La Antigua Guatemala, Sacatepéquez. Its core supports validated domain packs so the same architecture can be reused for HR, finance, sales SOPs, and custom procedural assistants.
 
@@ -107,6 +107,37 @@ Detailed guide:
 docs/workflow-template-editor-foundation.md
 ```
 
+## Domain Pack Bootstrap CLI
+
+Feature `048-template-bootstrap-cli` scaffolds an inactive, reviewable draft pack under the fixed path `domain-packs/<id>/`.
+
+Preview the exact file plan without writing:
+
+```bash
+npm run domain:init -- \
+  --id legal \
+  --name "Legal Procedure Assistant" \
+  --language es \
+  --dry-run
+```
+
+Create the scaffold after reviewing the plan:
+
+```bash
+npm run domain:init -- \
+  --id legal \
+  --name "Legal Procedure Assistant" \
+  --language es
+```
+
+The CLI accepts only safe lowercase kebab-case ids, rejects reserved and existing targets, never accepts an arbitrary output path, and never overwrites files. Generated manifests remain `status: "draft"` and `authoritative: false`; workflow templates start empty and the pack is not added to the runtime registry automatically.
+
+Detailed guide:
+
+```text
+docs/domain-pack-bootstrap-cli.md
+```
+
 ## Domain-Aware Document Intake
 
 Corpus backfill accepts domain metadata:
@@ -181,7 +212,7 @@ npm run build:pages
 node scripts/verify-pages-artifact.mjs
 ```
 
-Generated `dist-pages/` is a build artifact and must remain untracked.
+`dist-pages/` contains generated Pages output. After local verification, restore tracked content and remove only generated untracked files before confirming a clean working tree.
 
 ## Current Boundaries
 
@@ -196,7 +227,8 @@ Reusable today:
 - source-link safety;
 - controlled feedback infrastructure;
 - deterministic domain-pack evaluation;
-- validated JSON workflow-template authoring foundation.
+- validated JSON workflow-template authoring foundation;
+- deterministic draft domain-pack bootstrap CLI.
 
 Still intentionally incomplete:
 
@@ -205,6 +237,6 @@ Still intentionally incomplete:
 - automatic workflow-template publication;
 - visual workflow-template editor;
 - real customer HR, finance, or sales policy corpora;
-- domain-pack bootstrap CLI and final template hardening.
+- final reusable-template hardening and documentation.
 
-Starter packs are templates and must not be treated as authoritative organizational policy until populated and reviewed by the relevant domain owner.
+Starter packs and generated scaffolds are templates. They must not be treated as authoritative organizational policy until populated, evidenced, reviewed, and approved by the relevant domain owner.
