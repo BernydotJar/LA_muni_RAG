@@ -9,6 +9,6 @@
 - [x] Add focused validation, security, and compatibility tests.
 - [x] Add documentation and package script.
 - [x] Update harness progress.
-- [ ] Run focused tests.
-- [ ] Run complete verification gate.
-- [ ] Mark feature done after local verification.
+- [x] Run focused tests.
+- [x] Run complete verification gate.
+- [x] Mark feature done after local verification.

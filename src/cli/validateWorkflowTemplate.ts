@@ -9,16 +9,16 @@ const fail = (message: string): never => {
 };
 
 const requireDomainPackId = (value: unknown): string => {
-  if (typeof value !== "string") {
-    fail("collection domainPackId is required");
+  if (typeof value === "string") {
+    const normalized = value.trim();
+    if (!normalized) {
+      fail("collection domainPackId is required");
+    }
+
+    return normalized;
   }
 
-  const normalized = value.trim();
-  if (!normalized) {
-    fail("collection domainPackId is required");
-  }
-
-  return normalized;
+  return fail("collection domainPackId is required");
 };
 
 const input = process.argv[2];
