@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { mkdtemp, readFile, rm, stat } from "node:fs/promises";
+import { mkdir, mkdtemp, readFile, rm, stat } from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import test from "node:test";
@@ -30,14 +30,24 @@ test("domain pack bootstrap parses supported flags and defaults language", () =>
     language: "en",
     dryRun: false,
   });
-  assert.equal(parseDomainInitArgs(["--id", "legal", "--name", "Legal Assistant", "--language", "es", "--dry-run"]).dryRun, true);
+  assert.equal(
+    parseDomainInitArgs(["--id", "legal", "--name", "Legal Assistant", "--language", "es", "--dry-run"]).dryRun,
+    true
+  );
 });
 
 test("domain pack bootstrap rejects unsafe, reserved, duplicate, and unsupported arguments", () => {
   expectSyncCode(() => parseDomainInitArgs(["--id", "../legal", "--name", "Legal"]), "invalid_id");
+  expectSyncCode(() => parseDomainInitArgs(["--id", "Legal", "--name", "Legal"]), "invalid_id");
   expectSyncCode(() => parseDomainInitArgs(["--id", "municipal-antigua", "--name", "Legal"]), "reserved_id");
   expectSyncCode(() => parseDomainInitArgs(["--id", "legal", "--id", "other", "--name", "Legal"]), "invalid_arguments");
+  expectSyncCode(
+    () => parseDomainInitArgs(["--id", "legal", "--name", "Legal", "--dry-run", "--dry-run"]),
+    "invalid_arguments"
+  );
   expectSyncCode(() => parseDomainInitArgs(["--output", "/tmp", "--id", "legal", "--name", "Legal"]), "invalid_arguments");
+  expectSyncCode(() => parseDomainInitArgs(["--id", "legal", "--name", "", "--language", "es"]), "invalid_name");
+  expectSyncCode(() => parseDomainInitArgs(["--id", "legal", "--name", "Legal", "--language", "../../es"]), "invalid_language");
 });
 
 test("domain pack bootstrap renders deterministic draft-only content", () => {
@@ -72,7 +82,30 @@ test("domain pack bootstrap dry-run performs no writes", async () => {
       { workspaceRoot: root }
     );
     assert.equal(result.status, "dry_run");
+    assert.equal(result.target, "domain-packs/legal");
+    assert.deepEqual(result.files, [
+      "domain-packs/legal/README.md",
+      "domain-packs/legal/domain-pack.json",
+      "domain-packs/legal/starter.test.ts",
+      "domain-packs/legal/workflow-templates.json",
+    ]);
     await assert.rejects(stat(path.join(root, "domain-packs")));
+  } finally {
+    await rm(root, { recursive: true, force: true });
+  }
+});
+
+test("domain pack bootstrap dry-run refuses an existing target", async () => {
+  const root = await mkdtemp(path.join(os.tmpdir(), "domain-bootstrap-existing-dry-"));
+  try {
+    await mkdir(path.join(root, "domain-packs", "legal"), { recursive: true });
+    await expectAsyncCode(
+      () => initializeDomainPack(
+        { id: "legal", name: "Legal Procedure Assistant", language: "es", dryRun: true },
+        { workspaceRoot: root }
+      ),
+      "target_exists"
+    );
   } finally {
     await rm(root, { recursive: true, force: true });
   }
@@ -89,9 +122,13 @@ test("domain pack bootstrap clean-room initialization validates files and refuse
 
     const manifest = JSON.parse(await readFile(path.join(root, "domain-packs/legal/domain-pack.json"), "utf8"));
     const templates = JSON.parse(await readFile(path.join(root, "domain-packs/legal/workflow-templates.json"), "utf8"));
+    const readme = await readFile(path.join(root, "domain-packs/legal/README.md"), "utf8");
+    const starterTest = await readFile(path.join(root, "domain-packs/legal/starter.test.ts"), "utf8");
     assert.equal(manifest.status, "draft");
     assert.equal(manifest.authoritative, false);
     assert.deepEqual(templates.templates, []);
+    assert.match(readme, /DRAFT PLACEHOLDER/);
+    assert.match(starterTest, /remains draft and non-authoritative/);
 
     await expectAsyncCode(() => initializeDomainPack(options, { workspaceRoot: root }), "target_exists");
     assert.equal(JSON.parse(await readFile(path.join(root, "domain-packs/legal/domain-pack.json"), "utf8")).name, "Legal Procedure Assistant");
