@@ -89,6 +89,9 @@ export const parseDomainInitArgs = (args: string[]): DomainBootstrapOptions => {
   for (let index = 0; index < args.length; index += 1) {
     const current = args[index];
     if (current === "--dry-run") {
+      if (dryRun) {
+        throw new DomainBootstrapError("invalid_arguments", "duplicate argument: --dry-run");
+      }
       dryRun = true;
       continue;
     }
@@ -122,7 +125,7 @@ export const validateDomainBootstrapOptions = (options: DomainBootstrapOptions):
   const name = options.name.trim();
   const language = options.language.trim();
 
-  if (!id || id.length > 63 || !SAFE_ID.test(id) || id.includes("..") || id.includes("/") || id.includes("\\")) {
+  if (!id || id.length > 63 || !SAFE_ID.test(id)) {
     throw new DomainBootstrapError("invalid_id", "id must be a safe lowercase kebab-case value of at most 63 characters");
   }
   if (RESERVED_IDS.has(id)) {
@@ -280,6 +283,9 @@ const exists = async (target: string): Promise<boolean> => {
   }
 };
 
+const isAlreadyExistsError = (error: unknown): boolean =>
+  Boolean(error && typeof error === "object" && "code" in error && error.code === "EEXIST");
+
 export const initializeDomainPack = async (
   input: DomainBootstrapOptions,
   dependencies: { workspaceRoot?: string } = {}
@@ -292,8 +298,12 @@ export const initializeDomainPack = async (
   const scaffold = renderDomainPackScaffold(options);
   const files = scaffold.files.map((file) => `${relativeTarget}/${file.path}`);
 
-  if (options.dryRun) return { status: "dry_run", target: relativeTarget, fileCount: files.length, files };
-  if (await exists(target)) throw new DomainBootstrapError("target_exists", `target already exists: ${relativeTarget}`);
+  if (await exists(target)) {
+    throw new DomainBootstrapError("target_exists", `target already exists: ${relativeTarget}`);
+  }
+  if (options.dryRun) {
+    return { status: "dry_run", target: relativeTarget, fileCount: files.length, files };
+  }
 
   let createdTarget = false;
   try {
@@ -307,6 +317,9 @@ export const initializeDomainPack = async (
   } catch (error) {
     if (createdTarget) await rm(target, { recursive: true, force: true });
     if (error instanceof DomainBootstrapError) throw error;
+    if (isAlreadyExistsError(error)) {
+      throw new DomainBootstrapError("target_exists", `target already exists: ${relativeTarget}`);
+    }
     throw new DomainBootstrapError("write_failed", "failed to create domain pack scaffold");
   }
 };
