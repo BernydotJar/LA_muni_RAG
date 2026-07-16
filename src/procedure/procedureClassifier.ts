@@ -1,4 +1,8 @@
-import type { ProcedureQueryClassification, ProcedureType } from "./types.js";
+import type {
+  ProcedureQueryClassification,
+  ProcedureQueryIntent,
+  ProcedureType,
+} from "./types.js";
 import { loadDomainPack } from "../domain/registry.js";
 import type { DomainPack } from "../domain/types.js";
 
@@ -52,6 +56,87 @@ const retrievalTermsForType = (type: ProcedureType, domainPack: DomainPack): str
   return [...ruleQueries, ...workflowHints];
 };
 
+const detectIntent = (
+  normalized: string,
+  procedureType: ProcedureType,
+  caseName?: string,
+  asksForCurrentStatus = false
+): { intent: ProcedureQueryIntent; signals: string[] } => {
+  const signals: string[] = [];
+  const closureTerms = [
+    "cerrar la obra",
+    "cierre de obra",
+    "liquidacion",
+    "recepcion final",
+    "finiquito",
+    "acta de recepcion",
+  ];
+  const planningTerms = [
+    "construir",
+    "planificar",
+    "proyecto",
+    "pdm-ot",
+    "pom",
+    "poa",
+    "presupuesto",
+    "priorizar",
+  ];
+  const legalTerms = [
+    "fundamento legal",
+    "base legal",
+    "que ley",
+    "que articulo",
+    "codigo municipal",
+    "decreto",
+    "reglamento",
+    "legalmente",
+  ];
+  const proceduralTerms = [
+    "paso a paso",
+    "procedimiento",
+    "workflow",
+    "flujo",
+    "tramite",
+    "que hay que hacer",
+    "quien firma",
+    "quien aprueba",
+    "documentos necesita",
+  ];
+
+  if (includesAny(normalized, closureTerms) || procedureType === "project_closure") {
+    signals.push("closure_or_liquidation_language");
+    if (caseName) signals.push("named_case");
+    if (asksForCurrentStatus) signals.push("current_status_request");
+    return { intent: "closure_liquidation", signals };
+  }
+
+  if (caseName || asksForCurrentStatus) {
+    if (caseName) signals.push("named_case");
+    if (asksForCurrentStatus) signals.push("current_status_request");
+    return { intent: "case_specific", signals };
+  }
+
+  if (includesAny(normalized, planningTerms) || ["public_works", "project_execution", "budget"].includes(procedureType)) {
+    signals.push("planning_or_project_language");
+    if (procedureType !== "unknown") signals.push(`procedure_type:${procedureType}`);
+    return { intent: "planning_project", signals };
+  }
+
+  if (includesAny(normalized, legalTerms)) {
+    signals.push("legal_basis_language");
+    return { intent: "legal", signals };
+  }
+
+  if (includesAny(normalized, proceduralTerms) || procedureType !== "unknown") {
+    signals.push("procedural_language");
+    if (procedureType !== "unknown") signals.push(`procedure_type:${procedureType}`);
+    return { intent: "procedural", signals };
+  }
+
+  signals.push("document_lookup_default");
+  return { intent: "documentary", signals };
+};
+
 export const classifyProcedureQuery = (
   query: string,
   domainPack: DomainPack = loadDomainPack(undefined)
@@ -61,22 +146,12 @@ export const classifyProcedureQuery = (
   const municipalityName = externalMunicipalityName(normalized);
   const caseName = detectCaseName(query, normalized);
   const communityName = detectCommunityName(normalized);
-  const asksForExactDeadline = includesAny(normalized, ["cuantos dias", "cuánto dias", "plazo exacto", "dias exactos", "cuanto tarda", "cuánto tarda"]);
-  const asksForCurrentStatus = includesAny(normalized, ["en este momento", "estado actual", "que falta", "qué falta", "cerrar la obra", "pendiente"]);
-  const isProcedural = procedureType !== "unknown" || includesAny(normalized, [
-    "paso",
-    "procedimiento",
-    "procedure",
-    "workflow",
-    "flujo",
-    "tramite",
-    "requisito",
-    "documentos",
-    "documents",
-    "approval",
-    "quien firma",
-    "quién firma",
-  ]);
+  const asksForExactDeadline = includesAny(normalized, ["cuantos dias", "plazo exacto", "dias exactos", "cuanto tarda"]);
+  const asksForCurrentStatus = includesAny(normalized, ["en este momento", "estado actual", "que falta", "cerrar la obra", "pendiente"]);
+  const { intent, signals } = detectIntent(normalized, procedureType, caseName, asksForCurrentStatus);
+  const isProcedural =
+    procedureType !== "unknown" ||
+    ["procedural", "case_specific", "planning_project", "closure_liquidation"].includes(intent);
 
   const retrievalQueries = [
     query,
@@ -87,6 +162,8 @@ export const classifyProcedureQuery = (
   ].filter((value) => value.trim().length > 0);
 
   return {
+    intent,
+    intentSignals: signals,
     isProcedural,
     procedureType,
     caseName,
