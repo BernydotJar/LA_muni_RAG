@@ -9,12 +9,14 @@ const requiredFiles = [
   "glass-wall.html",
   "procedure-workflow.html",
   "procedure-feedback-dashboard.html",
+  "procedure-case-portfolio.html",
   "domain-intake.html",
   "widget.js",
   "procedure-widget-entrypoint.js",
   "procedure-feedback.js",
   "procedure-deep-dive.js",
   "procedure-case-workspace.js",
+  "procedure-case-open.js",
   "pages-demo-api.js",
   "pages-security-guard.js",
   ".nojekyll",
@@ -32,16 +34,19 @@ const indexHtml = await readFile(join(outputDir, "index.html"), "utf-8");
 const glassWallHtml = await readFile(join(outputDir, "glass-wall.html"), "utf-8");
 const procedureWorkflowHtml = await readFile(join(outputDir, "procedure-workflow.html"), "utf-8");
 const feedbackDashboardHtml = await readFile(join(outputDir, "procedure-feedback-dashboard.html"), "utf-8");
+const casePortfolioHtml = await readFile(join(outputDir, "procedure-case-portfolio.html"), "utf-8");
 const domainIntakeHtml = await readFile(join(outputDir, "domain-intake.html"), "utf-8");
 const procedureFeedbackJs = await readFile(join(outputDir, "procedure-feedback.js"), "utf-8");
 const procedureDeepDiveJs = await readFile(join(outputDir, "procedure-deep-dive.js"), "utf-8");
 const procedureCaseWorkspaceJs = await readFile(join(outputDir, "procedure-case-workspace.js"), "utf-8");
+const procedureCaseOpenJs = await readFile(join(outputDir, "procedure-case-open.js"), "utf-8");
 
 const forbiddenRootRelativePatterns = [
   'href="/"',
   'href="/glass-wall.html"',
   'href="/procedure-workflow.html"',
   'href="/procedure-feedback-dashboard.html"',
+  'href="/procedure-case-portfolio.html"',
   'href="/domain-intake.html"',
   'href="/index.html"',
   'src="/widget.js"',
@@ -49,6 +54,7 @@ const forbiddenRootRelativePatterns = [
   'src="/procedure-feedback.js"',
   'src="/procedure-deep-dive.js"',
   'src="/procedure-case-workspace.js"',
+  'src="/procedure-case-open.js"',
   'src="/assets/',
   'href="/assets/',
 ];
@@ -59,6 +65,7 @@ for (const pattern of forbiddenRootRelativePatterns) {
     glassWallHtml.includes(pattern) ||
     procedureWorkflowHtml.includes(pattern) ||
     feedbackDashboardHtml.includes(pattern) ||
+    casePortfolioHtml.includes(pattern) ||
     domainIntakeHtml.includes(pattern)
   ) {
     throw new Error(`GitHub Pages artifact still contains root-relative static reference: ${pattern}`);
@@ -93,6 +100,10 @@ if (!procedureFeedbackJs.includes('./procedure-case-workspace.js')) {
   throw new Error("Procedure workflow feedback loader is missing the case workspace enhancement.");
 }
 
+if (!procedureFeedbackJs.includes('./procedure-case-open.js') || !procedureFeedbackJs.includes('./procedure-case-portfolio.html')) {
+  throw new Error("Procedure workflow feedback loader is missing the case opener or portfolio entrypoint.");
+}
+
 if (!procedureDeepDiveJs.includes('value="deep_dive"') || !procedureDeepDiveJs.includes('Dependencias y decisiones')) {
   throw new Error("Procedure deep-dive artifact is missing its depth control or dependency rendering.");
 }
@@ -103,6 +114,23 @@ if (
   !procedureCaseWorkspaceJs.includes("auditLog.push")
 ) {
   throw new Error("Procedure case workspace artifact is missing storage, safety, or audit controls.");
+}
+
+if (
+  !procedureCaseOpenJs.includes("CASE_KEY_PATTERN") ||
+  !procedureCaseOpenJs.includes("workflowSnapshot?.query") ||
+  !procedureCaseOpenJs.includes("procedure-workflow-form")
+) {
+  throw new Error("Procedure case opener is missing bounded key validation or workflow restoration.");
+}
+
+if (
+  !casePortfolioHtml.includes("Portafolio local de casos") ||
+  !casePortfolioHtml.includes("la-muni-rag:procedure-case:") ||
+  !casePortfolioHtml.includes("Señales operativas, no dictamen institucional") ||
+  !casePortfolioHtml.includes("case-portfolio-export.json")
+) {
+  throw new Error("Case portfolio dashboard is missing local storage, safety, or export controls.");
 }
 
 if (!feedbackDashboardHtml.includes('la-muni-rag:procedure-feedback')) {
