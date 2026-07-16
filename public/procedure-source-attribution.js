@@ -16,6 +16,13 @@
       return null;
     }
   };
+  const categoryLabel = (status) => ({
+    official_municipal: "Fuente oficial municipal",
+    official_national: "Base nacional aplicable",
+    comparative: "Referencia comparativa",
+    contextual: "Fuente contextual",
+    insufficient: "Sin fuente suficiente",
+  }[status] || "Fuente del paso");
 
   const injectStyles = () => {
     if (document.getElementById("procedure-source-attribution-style")) return;
@@ -26,6 +33,7 @@
       .source-attribution.official_national{border-color:rgba(139,92,246,.3);background:rgba(139,92,246,.055)}
       .source-attribution.comparative,.source-attribution.contextual{border-color:rgba(245,158,11,.28);background:rgba(245,158,11,.055)}
       .source-attribution.insufficient{border-color:rgba(251,113,133,.28);background:rgba(251,113,133,.05)}
+      .source-attribution-category{display:block;margin-bottom:5px;color:#c4b5fd;font-size:10px;font-weight:950;letter-spacing:.09em;text-transform:uppercase}
       .source-attribution h4{margin:0 0 6px;font-size:13px;color:#bae6fd}
       .source-attribution p{margin:0;color:var(--muted);font-size:12px;line-height:1.55}
       .source-attribution-meta{display:flex;flex-wrap:wrap;gap:7px;margin-top:9px}
@@ -57,16 +65,19 @@
 
   const renderAttribution = (step) => {
     const attribution = step.sourceAttribution || fallbackAttribution(step);
+    const status = attribution.status || "insufficient";
     const citation = attribution.primaryCitation || asArray(attribution.citations)[0];
     const link = safeUrl(citation?.sourceUrl);
+    const linkLabel = status === "comparative" ? "Abrir referencia comparativa" : status === "contextual" ? "Abrir fuente contextual" : "Abrir fuente";
     const meta = [
       citation?.authorityLabel ? `<span>${esc(citation.authorityLabel)}</span>` : "",
       citation?.authorityLevel ? `<span>Nivel: ${esc(citation.authorityLevel)}</span>` : "",
       citation?.pageStart != null ? `<span>Página ${esc(citation.pageStart)}</span>` : "",
-      link ? `<a href="${esc(link)}" target="_blank" rel="noopener noreferrer">Abrir fuente oficial</a>` : "",
+      link ? `<a href="${esc(link)}" target="_blank" rel="noopener noreferrer">${esc(linkLabel)}</a>` : "",
     ].filter(Boolean).join("");
     return `
-      <section class="source-attribution ${esc(attribution.status || "insufficient")}" data-source-attribution="true">
+      <section class="source-attribution ${esc(status)}" data-source-attribution="true">
+        <span class="source-attribution-category">${esc(categoryLabel(status))}</span>
         <h4>${esc(attribution.heading || "Fuente del paso")}</h4>
         <p>${esc(attribution.statement || "No encontré base documental suficiente para afirmar este paso.")}</p>
         ${meta ? `<div class="source-attribution-meta">${meta}</div>` : ""}
