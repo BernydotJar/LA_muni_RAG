@@ -14,21 +14,23 @@ describe("local procedure case portfolio", () => {
     assert.match(html, /id="case-list"/);
     assert.match(html, /class="metric-grid"/);
     assert.match(html, /procedure-case-portfolio\.css/);
+    assert.match(html, /procedure-case-portfolio-data\.js/);
     assert.match(html, /procedure-case-portfolio\.js/);
     assert.match(html, /<\/body>\s*<\/html>/);
   });
 
   it("reads only bounded namespaced LocalStorage records", async () => {
-    const runtime = await readSource("public/procedure-case-portfolio.js");
+    const dataRuntime = await readSource("public/procedure-case-portfolio-data.js");
 
-    assert.match(runtime, /la-muni-rag:procedure-case:/);
-    assert.match(runtime, /MAX_CASES=200/);
-    assert.match(runtime, /MAX_STEPS=100/);
-    assert.match(runtime, /MAX_DOCUMENTS=200/);
-    assert.match(runtime, /MAX_AUDIT_EVENTS=300/);
-    assert.match(runtime, /schemaVersion!==1/);
-    assert.match(runtime, /localStorage\.length/);
-    assert.doesNotMatch(runtime, /fetch\(|XMLHttpRequest|WebSocket|sendBeacon/);
+    assert.match(dataRuntime, /la-muni-rag:procedure-case:/);
+    assert.match(dataRuntime, /MAX_CASES=200/);
+    assert.match(dataRuntime, /MAX_STEPS=100/);
+    assert.match(dataRuntime, /MAX_DOCUMENTS=200/);
+    assert.match(dataRuntime, /MAX_AUDIT_EVENTS=300/);
+    assert.match(dataRuntime, /schemaVersion!==1/);
+    assert.match(dataRuntime, /localStorage\.length/);
+    assert.match(dataRuntime, /window\.ProcedureCasePortfolio/);
+    assert.doesNotMatch(dataRuntime, /fetch\(|XMLHttpRequest|WebSocket|sendBeacon/);
   });
 
   it("shows metrics, filters, deterministic sorting, and cards", async () => {
@@ -46,18 +48,20 @@ describe("local procedure case portfolio", () => {
     assert.match(runtime, /progressPct/);
     assert.match(runtime, /missing/);
     assert.match(runtime, /lastActivity/);
+    assert.match(runtime, /No hay casos locales que coincidan con los filtros/);
   });
 
   it("keeps metrics operational and exports a versioned snapshot", async () => {
     const html = await readSource("public/procedure-case-portfolio.html");
+    const dataRuntime = await readSource("public/procedure-case-portfolio-data.js");
     const runtime = await readSource("public/procedure-case-portfolio.js");
 
     assert.match(html, /no prueban cumplimiento legal/i);
     assert.match(html, /no dictaminan recepción, liquidación, pago ni cierre/i);
-    assert.match(runtime, /portfolioSchemaVersion:1/);
+    assert.match(dataRuntime, /portfolioSchemaVersion:1/);
     assert.match(runtime, /case-portfolio-export\.json/);
     assert.match(html, /Exportar portafolio JSON/);
-    assert.doesNotMatch(runtime, /import.*portfolio/i);
+    assert.doesNotMatch(`${dataRuntime}\n${runtime}`, /import.*portfolio/i);
   });
 
   it("opens a case only through a bounded local key", async () => {
@@ -80,6 +84,7 @@ describe("local procedure case portfolio", () => {
 
     assert.match(verifier, /procedure-case-portfolio\.html/);
     assert.match(verifier, /procedure-case-portfolio\.css/);
+    assert.match(verifier, /procedure-case-portfolio-data\.js/);
     assert.match(verifier, /procedure-case-portfolio\.js/);
     assert.match(verifier, /procedure-case-open\.js/);
     assert.match(verifier, /Case portfolio dashboard/);
