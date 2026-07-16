@@ -2,13 +2,9 @@ import type { EvidenceItem, EvidenceMode } from "../evidence.js";
 import type { DomainPackId } from "../domain/types.js";
 
 export type SourceAuthorityClass = string;
-
 export type ProcedureType = string;
-
 export type ProcedureConfidence = "high" | "medium" | "low";
-
 export type ProcedureGapSeverity = "blocking" | "important" | "nice_to_have";
-
 export type EvidenceUse = "cited_text" | "inference" | "validation_required";
 
 export type ProcedureQueryIntent =
@@ -17,7 +13,8 @@ export type ProcedureQueryIntent =
   | "procedural"
   | "case_specific"
   | "planning_project"
-  | "closure_liquidation";
+  | "closure_liquidation"
+  | "unknown";
 
 export interface ProcedureCitation {
   citationLabel: string;
@@ -55,6 +52,8 @@ export interface ProcedureGap {
 export interface ProcedureQueryClassification {
   intent: ProcedureQueryIntent;
   intentSignals: string[];
+  requiresCaseContext: boolean;
+  requiresNormativeRetrieval: boolean;
   isProcedural: boolean;
   procedureType: ProcedureType;
   caseName?: string;
