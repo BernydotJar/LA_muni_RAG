@@ -26,6 +26,7 @@ export type {
   ProcedureConfidence,
   ProcedureGap,
   ProcedureQueryClassification,
+  ProcedureQueryIntent,
   ProcedureStep,
   ProcedureType,
   ProcedureWorkflow,

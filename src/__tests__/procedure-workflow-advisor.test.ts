@@ -25,12 +25,56 @@ const dependenciesFor = (results: KeywordSearchResult[]) => ({
 });
 
 describe("procedure workflow advisor", () => {
-  it("classifies stadium construction as public works", () => {
+  it("classifies stadium construction as a planning project", () => {
     const classification = classifyProcedureQuery("¿Qué hay que hacer para construir un estadio municipal?");
 
     assert.equal(classification.isProcedural, true);
+    assert.equal(classification.intent, "planning_project");
     assert.equal(classification.procedureType, "public_works");
+    assert.equal(classification.requiresCaseContext, false);
+    assert.equal(classification.requiresNormativeRetrieval, true);
     assert.equal(classification.mentionsExternalMunicipality, false);
+    assert.ok(classification.intentSignals.includes("planning_or_project_language"));
+  });
+
+  it("distinguishes documentary, legal, procedural, case, planning, closure, and unknown intents", () => {
+    assert.equal(classifyProcedureQuery("Muéstrame el organigrama municipal vigente.").intent, "documentary");
+    assert.equal(classifyProcedureQuery("¿Qué ley y artículo regulan las licitaciones públicas?").intent, "legal");
+    assert.equal(classifyProcedureQuery("¿Quién firma y quién aprueba una licitación pública?").intent, "procedural");
+    assert.equal(classifyProcedureQuery("¿Cuál es el estado actual de la obra de la escuela de San Mateo?").intent, "case_specific");
+    assert.equal(classifyProcedureQuery("¿Cómo se planifica y presupuesta un proyecto municipal?").intent, "planning_project");
+    assert.equal(classifyProcedureQuery("¿Cómo se cierra y liquida una obra municipal?").intent, "closure_liquidation");
+    assert.equal(classifyProcedureQuery("Hola, buenos días.").intent, "unknown");
+  });
+
+  it("uses deterministic precedence and explicit retrieval flags", () => {
+    const closure = classifyProcedureQuery("¿Qué falta para cerrar la obra de la escuela de San Mateo?");
+    assert.equal(closure.intent, "closure_liquidation");
+    assert.equal(closure.requiresCaseContext, true);
+    assert.equal(closure.requiresNormativeRetrieval, true);
+    assert.ok(closure.intentSignals.includes("named_case"));
+    assert.ok(closure.intentSignals.includes("current_status_request"));
+
+    const caseSpecific = classifyProcedureQuery("¿Cuál es el estado actual de la obra de la escuela de San Mateo?");
+    assert.equal(caseSpecific.intent, "case_specific");
+    assert.equal(caseSpecific.requiresCaseContext, true);
+    assert.equal(caseSpecific.requiresNormativeRetrieval, false);
+    assert.equal(caseSpecific.caseName, "Escuela de San Mateo");
+
+    const legal = classifyProcedureQuery("¿Qué ley regula esta contratación?");
+    assert.equal(legal.requiresCaseContext, false);
+    assert.equal(legal.requiresNormativeRetrieval, true);
+  });
+
+  it("keeps the original query first and retrieval queries deterministic without duplicates", () => {
+    const query = "¿Qué ley regula una licitación pública?";
+    const first = classifyProcedureQuery(query);
+    const second = classifyProcedureQuery(query);
+
+    assert.equal(first.retrievalQueries[0], query);
+    assert.deepEqual(first.retrievalQueries, second.retrievalQueries);
+    assert.equal(new Set(first.retrievalQueries.map((value) => value.toLowerCase())).size, first.retrievalQueries.length);
+    assert.ok(first.retrievalQueries.some((value) => value.includes("fundamento legal")));
   });
 
   it("builds a conservative public works workflow with gaps and citations", async () => {
@@ -55,6 +99,7 @@ describe("procedure workflow advisor", () => {
     );
 
     assert.equal(workflow.procedureType, "public_works");
+    assert.equal(workflow.classification.intent, "planning_project");
     assert.equal(workflow.jurisdiction, "Antigua Guatemala");
     assert.ok(workflow.steps.length >= 6);
     assert.ok(workflow.steps.some((step) => step.title.includes("Clasificar")));
@@ -72,6 +117,7 @@ describe("procedure workflow advisor", () => {
     );
 
     assert.equal(workflow.procedureType, "project_closure");
+    assert.equal(workflow.classification.intent, "closure_liquidation");
     assert.equal(workflow.classification.caseName, "Escuela de San Mateo");
     assert.match(workflow.summary, /No encontré evidencia suficiente|expediente específico/i);
     assert.ok(workflow.gaps.some((gap) => gap.missingItem.includes("Contrato de obra")));
