@@ -13,7 +13,14 @@
 - [x] Extend Pages artifact verification.
 - [x] Add focused static tests.
 - [x] Add documentation and progress tracking.
-- [ ] Run focused verification.
+- [x] Correct truncated portfolio shell and add anti-truncation verification.
+- [x] Add structured official-source attribution to procedure citations and steps.
+- [x] Distinguish municipal, national, comparative, contextual, and insufficient sources.
+- [x] Render source name, authority, excerpt, page, and safe HTTP(S) link.
+- [x] Remove the generic official-source warning when a classified source is available.
+- [x] Add focused source-attribution tests and Pages verification.
+- [ ] Run focused verification for the post-merge attribution fix.
 - [ ] Run complete verification gate.
+- [ ] Visually verify official source attribution in overview and deep dive.
 - [ ] Reviewer report.
 - [ ] Mark done only after successful verification.

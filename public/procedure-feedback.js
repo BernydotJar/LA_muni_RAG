@@ -7,6 +7,15 @@
   document.head.appendChild(script);
 })();
 
+(function loadProcedureSourceAttribution() {
+  if (document.querySelector('script[data-procedure-source-attribution="true"]')) return;
+  const script = document.createElement("script");
+  script.src = "./procedure-source-attribution.js";
+  script.async = false;
+  script.dataset.procedureSourceAttribution = "true";
+  document.head.appendChild(script);
+})();
+
 (function loadProcedureCaseWorkspace() {
   if (document.querySelector('script[data-procedure-case-workspace="true"]')) return;
   const script = document.createElement("script");

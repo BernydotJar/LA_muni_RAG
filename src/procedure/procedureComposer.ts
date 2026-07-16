@@ -8,6 +8,7 @@ import type {
   ProcedureConfidence,
   ProcedureDependency,
   ProcedureQueryClassification,
+  ProcedureSourceAttribution,
   ProcedureStep,
   ProcedureStepEvidenceStatus,
   ProcedureType,
@@ -50,32 +51,95 @@ const matchingCitationsForStep = (citations: ProcedureCitation[], patterns: stri
     })
     .slice(0, 4);
 
-const confidenceFor = (evidence: ProcedureCitation[], hasLocalEvidence: boolean): ProcedureConfidence => {
-  if (evidence.length === 0) return "low";
-  if (hasLocalEvidence) return "medium";
-  return "low";
+const authorityRank = (citation: ProcedureCitation): number => {
+  if (citation.authorityLevel === "primary") return 5;
+  if (citation.authorityLevel === "national") return 4;
+  if (citation.authorityLevel === "context") return 3;
+  if (citation.authorityLevel === "comparative") return 2;
+  return 1;
 };
 
-const evidenceStatusFor = (
-  evidence: ProcedureCitation[],
-  hasLocalEvidence: boolean
-): ProcedureStepEvidenceStatus => {
+const primaryCitationFor = (citations: ProcedureCitation[]): ProcedureCitation | undefined =>
+  [...citations].sort((left, right) => authorityRank(right) - authorityRank(left))[0];
+
+const evidenceStatusFor = (evidence: ProcedureCitation[]): ProcedureStepEvidenceStatus => {
   if (evidence.length === 0) return "insufficient";
-  if (!hasLocalEvidence || evidence.every((citation) => citation.authorityClass === "external_reference")) return "inferred";
-  return "supported";
+  if (evidence.some((citation) => citation.authorityLevel === "primary" || citation.authorityLevel === "national")) {
+    return "supported";
+  }
+  return "inferred";
 };
 
-const evidenceStatementFor = (status: ProcedureStepEvidenceStatus): string => {
-  if (status === "supported") return "Paso respaldado por evidencia coincidente recuperada para este paso.";
-  if (status === "inferred") return "Este paso es inferido por relación entre documentos y requiere validación humana.";
-  return "No encontré base documental suficiente para afirmar este paso.";
+const sourceAttributionFor = (
+  evidence: ProcedureCitation[],
+  domainPack: DomainPack
+): ProcedureSourceAttribution => {
+  const primary = primaryCitationFor(evidence);
+  if (!primary) {
+    return {
+      status: "insufficient",
+      heading: "Sin fuente suficiente para este paso",
+      statement: "No encontré base documental suficiente para afirmar este paso.",
+      citations: [],
+    };
+  }
+
+  if (primary.authorityLevel === "primary") {
+    return {
+      status: "official_municipal",
+      heading: `Fuente oficial municipal: ${primary.citationLabel}`,
+      statement: `Este paso está respaldado por ${primary.authorityLabel ?? "una fuente municipal oficial"} recuperada por el RAG. Revise el extracto y la vigencia del documento antes de ejecutar.`,
+      primaryCitation: primary,
+      citations: evidence,
+    };
+  }
+
+  if (primary.authorityLevel === "national") {
+    return {
+      status: "official_national",
+      heading: `Base nacional aplicable: ${primary.citationLabel}`,
+      statement: `Este paso tiene respaldo normativo nacional en ${primary.authorityLabel ?? "una norma aplicable"}. Cuando el paso dependa de una práctica interna municipal, debe corroborarse además con expediente o fuente local de Antigua Guatemala.`,
+      primaryCitation: primary,
+      citations: evidence,
+    };
+  }
+
+  if (primary.authorityLevel === "comparative") {
+    return {
+      status: "comparative",
+      heading: `Referencia comparativa: ${primary.citationLabel}`,
+      statement: "La fuente recuperada pertenece a otra municipalidad o entidad. Sirve como referencia comparativa, pero no define por sí sola el procedimiento oficial de Antigua Guatemala.",
+      primaryCitation: primary,
+      citations: evidence,
+    };
+  }
+
+  if (primary.authorityLevel === "context") {
+    return {
+      status: "contextual",
+      heading: `Fuente contextual: ${primary.citationLabel}`,
+      statement: "La fuente aporta contexto operativo o comunitario, pero no es suficiente por sí sola para afirmar una obligación o procedimiento oficial.",
+      primaryCitation: primary,
+      citations: evidence,
+    };
+  }
+
+  return {
+    status: "insufficient",
+    heading: `Fuente no clasificada: ${primary.citationLabel}`,
+    statement: "Encontré contenido relacionado, pero no pude clasificarlo como fuente oficial suficiente para afirmar este paso.",
+    primaryCitation: primary,
+    citations: evidence,
+  };
 };
+
+const confidenceFor = (status: ProcedureStepEvidenceStatus): ProcedureConfidence =>
+  status === "supported" ? "medium" : "low";
 
 const stepFromTemplate = (
   templateStep: DomainWorkflowTemplateStep,
   index: number,
   citations: ProcedureCitation[],
-  hasLocalEvidence: boolean,
   domainPack: DomainPack,
   classification: ProcedureQueryClassification,
   depth: ProcedureWorkflowDepth
@@ -86,7 +150,8 @@ const stepFromTemplate = (
       ? `Localizar el expediente específico de ${classification.caseName} antes de afirmar estado actual, recepción o cierre.`
       : templateStep.action;
   const matched = matchingCitationsForStep(citations, templateStep.evidencePatterns);
-  const evidenceStatus = evidenceStatusFor(matched, hasLocalEvidence);
+  const evidenceStatus = evidenceStatusFor(matched);
+  const sourceAttribution = sourceAttributionFor(matched, domainPack);
   const dependsOn = depth === "deep_dive" && index > 0 ? [index] : undefined;
 
   return {
@@ -99,29 +164,23 @@ const stepFromTemplate = (
     legalBasis: matched,
     sourceEvidence: matched,
     evidenceStatus,
-    evidenceStatement: evidenceStatementFor(evidenceStatus),
-    confidence: confidenceFor(matched, hasLocalEvidence),
-    notes:
-      templateStep.notes ??
-      (evidenceStatus === "supported"
-        ? undefined
-        : isMunicipalAntigua(domainPack)
-          ? "Requiere validación contra fuente oficial de Antigua Guatemala."
-          : `Requires validation against authoritative ${domainPack.name} sources.`),
+    evidenceStatement: sourceAttribution.statement,
+    sourceAttribution,
+    confidence: confidenceFor(evidenceStatus),
+    notes: templateStep.notes,
   };
 };
 
 const stepsForType = (
   type: ProcedureType,
   citations: ProcedureCitation[],
-  hasLocalEvidence: boolean,
   domainPack: DomainPack,
   classification: ProcedureQueryClassification,
   depth: ProcedureWorkflowDepth
 ): ProcedureStep[] => {
   const template = templateForType(domainPack, type);
   return template.steps.map((templateStep, index) =>
-    stepFromTemplate(templateStep, index, citations, hasLocalEvidence, domainPack, classification, depth)
+    stepFromTemplate(templateStep, index, citations, domainPack, classification, depth)
   );
 };
 
@@ -212,7 +271,7 @@ export const composeProcedureWorkflow = (
   const hasExternalReference = hasExternalReferenceCitation(citations, domainPack);
   const hasLocalEvidence = citationsHaveLocalEvidence(citations, domainPack);
   const hasAntiguaEvidence = isMunicipalAntigua(domainPack) ? hasLocalEvidence : false;
-  const steps = stepsForType(classification.procedureType, citations, hasLocalEvidence, domainPack, classification, depth);
+  const steps = stepsForType(classification.procedureType, citations, domainPack, classification, depth);
   const gaps = buildProcedureGaps(classification, evidence.length, hasLocalEvidence, hasExternalReference, domainPack);
   const template = templateForType(domainPack, classification.procedureType);
 

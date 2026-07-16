@@ -2,7 +2,7 @@
 
 ## Active Feature
 
-052-case-portfolio-dashboard
+052-case-portfolio-dashboard — official-source attribution follow-up
 
 ## Last Completed Feature
 
@@ -18,32 +18,25 @@ MVP
 
 ## Summary
 
-Feature 052 adds a browser-local Case Portfolio Dashboard over validated Procedure Case Workspace records. It aggregates operational progress, blockers, document checklist states, assignees, and recent activity without changing procedure evidence or presenting portfolio metrics as legal or institutional determinations.
+Feature 052 added a browser-local Case Portfolio Dashboard and was merged through PR #13. A post-merge review identified that procedure steps still displayed a generic `Requiere validación contra fuente oficial de Antigua Guatemala` note even when the RAG had already retrieved a classified official source. The active follow-up replaces that generic warning with structured per-step source attribution.
 
-## Baseline
+## Merged Dashboard
 
-Feature 051 was merged through PR #11 and verified locally by the user:
+- PR #13 merged.
+- Merge commit: `8305d9daf331fcb17432f827794921650e44e675`.
+- The portfolio shell truncation found during visual review was corrected before merge.
+- Browser review confirmed that the dashboard renders after the correction.
 
-- typecheck and build passed;
-- 40 focused tests passed;
-- domain evaluation passed 6/6;
-- full suite passed 338/338 across 62 suites;
-- Pages build and artifact verification passed;
-- diff check and scoped Pages cleanup passed.
+## Official Source Attribution Follow-up
 
-## Completed Implementation
-
-- Created `feature/052-case-portfolio-dashboard` from the reconciled Feature 051 closure commit.
-- Added `public/procedure-case-portfolio.html` as a local-only aggregate dashboard.
-- Added fail-closed discovery of namespaced `schemaVersion: 1` workspaces.
-- Added operational metrics, document-state totals, text/type/status/blocker/recent filters, and deterministic sorting.
-- Added case cards with calculated progress, blockers, missing documents, user-entered assignees, and last activity.
-- Added consolidated versioned JSON export without portfolio import or server upload.
-- Added `procedure-case-open.js` for bounded local key navigation and workflow query restoration.
-- Linked the workflow feedback panel to the portfolio.
-- Extended Pages artifact verification.
-- Added focused tests, documentation, issue #12, and harness tracking.
-- Preserved backend procedure semantics, corpus, migrations, deployment configuration, and War Room work.
+- Added `authorityLabel` and `authorityLevel` to procedure citations.
+- Added structured `sourceAttribution` to procedure steps.
+- Distinguished official municipal sources, national legal bases, comparative references, contextual sources, and insufficient evidence.
+- Changed step evidence status to depend on citations matched to that step rather than a workflow-global local-evidence flag.
+- Removed the generic Antigua official-source warning when a classified source is already available.
+- Added an overview/deep-dive visual attribution panel with source name, authority class, page, excerpt, and safe HTTP(S) link.
+- Preserved comparative-source and national-versus-local governance boundaries.
+- Added focused attribution tests, documentation, and Pages artifact verification.
 
 ## Verification Status
 
@@ -51,14 +44,15 @@ Remote implementation and static inspection are complete. Local verification rem
 
 - `npm run typecheck`
 - `npm run build`
-- focused portfolio/workspace/UI tests
+- focused source-attribution and procedure tests
 - `npm run domain:evaluate`
 - complete test suite
 - `npm run build:pages`
 - `node scripts/verify-pages-artifact.mjs`
 - `git diff --check`
+- browser review in overview and deep-dive modes
 - clean `git status --short` after scoped Pages cleanup
 
 ## Next Work
 
-Run the local gate, validate dashboard filtering/export/open-case behavior in a browser, then perform Reviewer validation. Do not merge or deploy automatically.
+Run the local gate, visually confirm the five attribution states, then complete Reviewer validation. Do not merge automatically.
