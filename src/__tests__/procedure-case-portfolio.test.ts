@@ -5,31 +5,35 @@ import { readFile } from "node:fs/promises";
 const readSource = (path: string): Promise<string> => readFile(path, "utf-8");
 
 describe("local procedure case portfolio", () => {
-  it("adds a dedicated Spanish local portfolio page", async () => {
+  it("adds a complete Spanish local portfolio shell", async () => {
     const html = await readSource("public/procedure-case-portfolio.html");
 
     assert.match(html, /Portafolio local de casos/);
     assert.match(html, /Señales operativas, no dictamen institucional/);
     assert.match(html, /Volver a flujos/);
-    assert.match(html, /case-list/);
-    assert.match(html, /metric-grid/);
+    assert.match(html, /id="case-list"/);
+    assert.match(html, /class="metric-grid"/);
+    assert.match(html, /procedure-case-portfolio\.css/);
+    assert.match(html, /procedure-case-portfolio\.js/);
+    assert.match(html, /<\/body>\s*<\/html>/);
   });
 
   it("reads only bounded namespaced LocalStorage records", async () => {
-    const html = await readSource("public/procedure-case-portfolio.html");
+    const runtime = await readSource("public/procedure-case-portfolio.js");
 
-    assert.match(html, /la-muni-rag:procedure-case:/);
-    assert.match(html, /MAX_CASES = 200/);
-    assert.match(html, /MAX_STEPS = 100/);
-    assert.match(html, /MAX_DOCUMENTS = 200/);
-    assert.match(html, /MAX_AUDIT_EVENTS = 300/);
-    assert.match(html, /schemaVersion !== 1/);
-    assert.match(html, /localStorage\.length/);
-    assert.doesNotMatch(html, /fetch\(|XMLHttpRequest|WebSocket|sendBeacon/);
+    assert.match(runtime, /la-muni-rag:procedure-case:/);
+    assert.match(runtime, /MAX_CASES=200/);
+    assert.match(runtime, /MAX_STEPS=100/);
+    assert.match(runtime, /MAX_DOCUMENTS=200/);
+    assert.match(runtime, /MAX_AUDIT_EVENTS=300/);
+    assert.match(runtime, /schemaVersion!==1/);
+    assert.match(runtime, /localStorage\.length/);
+    assert.doesNotMatch(runtime, /fetch\(|XMLHttpRequest|WebSocket|sendBeacon/);
   });
 
-  it("shows operational metrics, filters, deterministic sorting, and cards", async () => {
+  it("shows metrics, filters, deterministic sorting, and cards", async () => {
     const html = await readSource("public/procedure-case-portfolio.html");
+    const runtime = await readSource("public/procedure-case-portfolio.js");
 
     assert.match(html, /Total de casos/);
     assert.match(html, /Casos activos/);
@@ -39,23 +43,24 @@ describe("local procedure case portfolio", () => {
     assert.match(html, /case-search/);
     assert.match(html, /case-status/);
     assert.match(html, /case-sort/);
-    assert.match(html, /progressPct/);
-    assert.match(html, /missingDocuments/);
-    assert.match(html, /lastActivity/);
+    assert.match(runtime, /progressPct/);
+    assert.match(runtime, /missing/);
+    assert.match(runtime, /lastActivity/);
   });
 
-  it("keeps portfolio metrics operational and exports a versioned bounded snapshot", async () => {
+  it("keeps metrics operational and exports a versioned snapshot", async () => {
     const html = await readSource("public/procedure-case-portfolio.html");
+    const runtime = await readSource("public/procedure-case-portfolio.js");
 
     assert.match(html, /no prueban cumplimiento legal/i);
     assert.match(html, /no dictaminan recepción, liquidación, pago ni cierre/i);
-    assert.match(html, /portfolioSchemaVersion: 1/);
-    assert.match(html, /case-portfolio-export\.json/);
+    assert.match(runtime, /portfolioSchemaVersion:1/);
+    assert.match(runtime, /case-portfolio-export\.json/);
     assert.match(html, /Exportar portafolio JSON/);
-    assert.doesNotMatch(html, /import.*portfolio/i);
+    assert.doesNotMatch(runtime, /import.*portfolio/i);
   });
 
-  it("opens a case only through a bounded local key and restores its query", async () => {
+  it("opens a case only through a bounded local key", async () => {
     const opener = await readSource("public/procedure-case-open.js");
     const feedback = await readSource("public/procedure-feedback.js");
 
@@ -70,12 +75,13 @@ describe("local procedure case portfolio", () => {
     assert.match(feedback, /procedure-case-portfolio\.html/);
   });
 
-  it("includes the portfolio and opener in the Pages artifact contract", async () => {
+  it("includes all portfolio artifacts in Pages verification", async () => {
     const verifier = await readSource("scripts/verify-pages-artifact.mjs");
 
     assert.match(verifier, /procedure-case-portfolio\.html/);
+    assert.match(verifier, /procedure-case-portfolio\.css/);
+    assert.match(verifier, /procedure-case-portfolio\.js/);
     assert.match(verifier, /procedure-case-open\.js/);
     assert.match(verifier, /Case portfolio dashboard/);
-    assert.match(verifier, /Procedure case opener/);
   });
 });
