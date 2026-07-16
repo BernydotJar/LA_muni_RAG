@@ -1,63 +1,17 @@
 # LA Muni RAG
 
-Last updated: 2026-07-11  
-Status: Procedure Workflow Advisor MVP complete; domain-pack foundation active
+Last updated: 2026-07-15  
+Status: Reusable domain-pack template foundation complete; template bootstrap CLI in review
 
-LA Muni RAG is an evidence-first RAG and procedural workflow system configured by default for the Municipality of La Antigua Guatemala, Sacatepéquez. The core can now load validated domain packs so the same architecture can support other evidence-first procedural assistants.
+LA Muni RAG is an evidence-first RAG and procedural workflow system configured by default for the Municipality of La Antigua Guatemala, Sacatepéquez. Its core supports validated domain packs so the same architecture can be reused for HR, finance, sales SOPs, and custom procedural assistants.
 
-The repository now does more than answer questions with citations. It can retrieve evidence, classify procedural questions, compose step-by-step workflows, expose gaps and missing documents, collect feedback, and persist controlled feedback through an authenticated backend API.
+## Product Surfaces
 
-## Current Product Surfaces
-
-### Public assistant
-
-```text
-/
-```
-
-Evidence-backed municipal Q&A through the embeddable chat widget.
-
-### Procedure Workflow Advisor
-
-```text
-/procedure-workflow.html
-```
-
-Generates structured workflows with:
-
-- summary;
-- steps;
-- required documents;
-- output documents;
-- confidence;
-- citations;
-- gaps;
-- validation warnings;
-- copyable checklist.
-
-### Domain intake
-
-```text
-/domain-intake.html
-```
-
-Prepares domain-aware document metadata and a local `backfillCorpus` command before indexing. It does not upload files or write to the backend.
-
-### Feedback dashboard
-
-```text
-/procedure-feedback-dashboard.html
-```
-
-Reviews locally captured ProcedureWorkflow feedback. Feedback remains product signal, not municipal evidence.
-
-### Glass Wall
-
-```text
-/glass-wall.html
-```
-
-Technical view for observable retrieval behavior and evidence inspection.
+- `/` — public evidence-backed assistant.
+- `/procedure-workflow.html` — structured Procedure Workflow Advisor.
+- `/domain-intake.html` — prepares domain-aware ingestion metadata and commands; it does not upload files.
+- `/procedure-feedback-dashboard.html` — reviews locally captured workflow feedback.
+- `/glass-wall.html` — technical evidence and retrieval inspection.
 
 ## API Surface
 
@@ -74,11 +28,11 @@ POST /api/procedure-feedback
 GET  /api/procedure-feedback
 ```
 
-`/api/procedure-feedback` requires a configured Bearer token through `PROCEDURE_FEEDBACK_API_TOKEN`.
+`/api/procedure-feedback` requires a Bearer token configured through `PROCEDURE_FEEDBACK_API_TOKEN`.
 
 ## Domain Packs
 
-The active domain is selected with `DOMAIN_PACK`. If unset, the server defaults to:
+Select the active pack with:
 
 ```env
 DOMAIN_PACK=municipal-antigua
@@ -92,56 +46,9 @@ Supported starter packs:
 - `sales-sop`
 - `custom`
 
-Unsupported values fail closed during startup/configuration validation. `/health` exposes a safe domain-pack summary without secrets.
+Unsupported values fail closed. `/health` and `/api/domain-pack` expose safe pack metadata without exposing secrets.
 
-`/api/domain-pack` exposes safe UI metadata for the active pack so public pages can adapt labels and default prompts without exposing runtime configuration or secrets.
-
-## Current Antigua Configuration
-
-The current domain pack is municipal and Antigua-first. It includes assumptions and terminology related to:
-
-- public works;
-- procurement;
-- project execution;
-- project closure;
-- budget;
-- COCODE/community requests;
-- Concejo Municipal;
-- official Antigua documents;
-- national Guatemalan legislation;
-- comparative `external reference` documents from other municipalities.
-
-External municipal references are never presented as official Antigua procedure unless corroborated by Antigua documents or national law.
-
-## Important Product Boundary
-
-The reusable RAG core and domain-pack contract now exist, but the repository is not yet a complete domain administration product.
-
-Reusable today:
-
-- PostgreSQL document registry;
-- document versions;
-- citable sections;
-- keyword, phrase, and hybrid retrieval;
-- evidence response contract;
-- deterministic answer layer;
-- chat API;
-- domain-pack registry and validation;
-- domain-aware procedural workflow classification and templates;
-- source-link safety;
-- feedback infrastructure;
-- tests and harness workflow.
-
-Still intentionally municipal or incomplete:
-
-- public branding and Spanish municipal UI;
-- seed documents and examples.
-- document ingestion/admin is not yet pack-scoped in a public UI;
-- starter HR/finance/sales/custom packs are templates, not deployed customer policy corpora.
-
-## Reusable Template Direction
-
-The intended architecture is:
+The reusable architecture is:
 
 ```text
 RAG Core
@@ -161,85 +68,97 @@ Domain Packs
   └── custom
 ```
 
-A domain pack should define:
-
-- branding;
-- language;
-- procedure/workflow types;
-- source authority taxonomy;
-- classifier vocabulary;
-- workflow templates;
-- validation rules;
-- seed documents;
-- example questions;
-- UI labels;
-- evaluation cases.
-
 The contract lives in `src/domain/types.ts`, the validated registry in `src/domain/registry.ts`, and starter packs in `src/domain/packs/`.
 
-Examples:
+## Current Antigua Reference Implementation
 
-### HR domain pack
+The municipal pack includes public works, procurement, project execution, project closure, budget, community requests, COCODE, Concejo Municipal, national law, Antigua official sources, and external municipal references.
 
-Documents:
+External references remain comparative and are never presented as official Antigua procedure without corroboration from Antigua documents or applicable national law.
 
-- employee handbook;
-- onboarding SOP;
-- leave policy;
-- disciplinary process;
-- benefits documentation;
-- role descriptions.
+## Workflow Template Authoring
 
-Possible workflows:
+Feature `047-workflow-template-editor-foundation` adds a controlled JSON-based authoring foundation without changing the active runtime templates.
 
-- onboard a new employee;
-- process a leave request;
-- close an employee offboarding case;
-- execute a disciplinary procedure;
-- request a compensation adjustment.
+The editable contract validates:
 
-### Finance domain pack
+- domain-pack ownership;
+- safe workflow and step ids;
+- existing workflow types;
+- contiguous step order;
+- labels and actions;
+- required and output documents;
+- source-authority classes;
+- governance rules;
+- evidence requirements;
+- human-validation checkpoints.
 
-Documents:
+Validate the reviewable example:
 
-- accounts payable SOP;
-- expense policy;
-- budget approval matrix;
-- procurement rules;
-- month-end close checklist;
-- audit controls.
+```bash
+npm run workflow:validate -- examples/workflow-templates/municipal-antigua.public-works.json
+```
 
-Possible workflows:
+The validator is read-only. It accepts only repository-local JSON, performs no dynamic import or code execution, writes nothing, publishes nothing, and never converts feedback automatically into authoritative procedure.
 
-- process a vendor invoice;
-- approve an expense;
-- close the month;
-- prepare an audit package;
-- request a budget transfer.
+Detailed guide:
 
-### Sales SOP domain pack
+```text
+docs/workflow-template-editor-foundation.md
+```
 
-Documents:
+## Domain Pack Bootstrap CLI
 
-- qualification playbook;
-- pricing policy;
-- discount approval matrix;
-- handoff SOP;
-- proposal process;
-- contracting checklist.
+Feature `048-template-bootstrap-cli` scaffolds an inactive, reviewable draft pack under the fixed path `domain-packs/<id>/`.
 
-Possible workflows:
+Preview the exact file plan without writing:
 
-- qualify a lead;
-- handle a pricing objection;
-- request discount approval;
-- hand off an opportunity;
-- prepare a proposal;
-- close a contract.
+```bash
+npm run domain:init -- \
+  --id legal \
+  --name "Legal Procedure Assistant" \
+  --language es \
+  --dry-run
+```
+
+Create the scaffold after reviewing the plan:
+
+```bash
+npm run domain:init -- \
+  --id legal \
+  --name "Legal Procedure Assistant" \
+  --language es
+```
+
+The CLI accepts only safe lowercase kebab-case ids, rejects reserved and existing targets, never accepts an arbitrary output path, and never overwrites files. Generated manifests remain `status: "draft"` and `authoritative: false`; workflow templates start empty and the pack is not added to the runtime registry automatically.
+
+Detailed guide:
+
+```text
+docs/domain-pack-bootstrap-cli.md
+```
+
+## Domain-Aware Document Intake
+
+Corpus backfill accepts domain metadata:
+
+```bash
+node --import tsx src/cli/backfillCorpus.ts \
+  --manifest .rag/corpus-manifest.json \
+  --input corpus/document.md \
+  --document-key document-key \
+  --document-version v1 \
+  --domain-pack municipal-antigua \
+  --source-authority-class municipal_manual \
+  --document-type manual \
+  --confidentiality public
+```
+
+If `--domain-pack` is omitted, backfill defaults to `municipal-antigua`. Unsupported packs or authority classes fail closed before indexing.
 
 ## Local Database
 
-Recommended database name:
+Recommended database:
 
 ```text
 la_muni_rag
@@ -267,7 +186,7 @@ DOMAIN_PACK=municipal-antigua
 PROCEDURE_FEEDBACK_API_TOKEN=replace-with-a-long-random-secret
 ```
 
-Never place secrets in public frontend files or GitHub Pages assets.
+Never place secrets in frontend files or GitHub Pages assets.
 
 ## Run Locally
 
@@ -276,29 +195,11 @@ npm install
 npm run dev:start
 ```
 
-API default:
+Default API:
 
 ```text
 http://localhost:4010
 ```
-
-## Domain-Aware Backfill
-
-Corpus backfill accepts domain metadata flags:
-
-```bash
-node --import tsx src/cli/backfillCorpus.ts \
-  --manifest .rag/corpus-manifest.json \
-  --input corpus/document.md \
-  --document-key document-key \
-  --document-version v1 \
-  --domain-pack municipal-antigua \
-  --source-authority-class municipal_manual \
-  --document-type manual \
-  --confidentiality public
-```
-
-If `--domain-pack` is omitted, backfill defaults to `municipal-antigua`. Unsupported domain packs or source authority classes fail closed before indexing.
 
 ## Verification
 
@@ -311,17 +212,31 @@ npm run build:pages
 node scripts/verify-pages-artifact.mjs
 ```
 
-## Current Limitation: Document Administration
+`dist-pages/` contains generated Pages output. After local verification, restore tracked content and remove only generated untracked files before confirming a clean working tree.
 
-Documents are registered and searched through PostgreSQL and ingestion scripts. The project includes a local domain-aware intake preparation page, but it does not yet include a complete document-library/admin UI for uploading, tagging, versioning, reviewing, and activating files.
+## Current Boundaries
 
-That is why uploaded corpus documents do not currently appear as a visible library in the public frontend.
+Reusable today:
 
-## Next Architectural Features
+- PostgreSQL document registry and versions;
+- citable sections;
+- keyword, phrase, and hybrid retrieval;
+- evidence-first response contracts;
+- domain-pack registry and validation;
+- domain-aware workflow classification and composition;
+- source-link safety;
+- controlled feedback infrastructure;
+- deterministic domain-pack evaluation;
+- validated JSON workflow-template authoring foundation;
+- deterministic draft domain-pack bootstrap CLI.
 
-```text
-047-domain-pack-admin-library
-048-domain-pack-feedback-analytics
-```
+Still intentionally incomplete:
 
-Likely next work: make public UI routing and document intake/admin flows fully pack-aware while preserving the Antigua-first default behavior.
+- complete authenticated document-library/admin UI;
+- browser-based file upload and ingestion;
+- automatic workflow-template publication;
+- visual workflow-template editor;
+- real customer HR, finance, or sales policy corpora;
+- final reusable-template hardening and documentation.
+
+Starter packs and generated scaffolds are templates. They must not be treated as authoritative organizational policy until populated, evidenced, reviewed, and approved by the relevant domain owner.

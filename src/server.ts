@@ -24,7 +24,7 @@ import {
   sendJson,
   serveStatic,
 } from "./http.js";
-import { buildProcedureWorkflowWithDependencies } from "./procedure/index.js";
+import { buildProcedureWorkflowWithDependencies, type ProcedureWorkflowDepth } from "./procedure/index.js";
 import {
   createProcedureFeedback,
   createProcedureFeedbackDependencies,
@@ -40,9 +40,6 @@ import {
   type RuntimeVectorStatus,
 } from "./runtime/evidenceDependencies.js";
 
-// Resolve public directory relative to the project root.
-// In dev (tsx): src/server.ts → ../public
-// In dist: dist/server.js → ../public
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const defaultPublicDir = join(__dirname, "..", "public");
 
@@ -66,6 +63,14 @@ const parseEvidenceMode = (value: string | null | undefined): EvidenceMode => {
     throw new HttpError(400, "invalid_mode", "mode must be keyword, phrase, or hybrid");
   }
   return mode;
+};
+
+const parseProcedureDepth = (value: string | null | undefined): ProcedureWorkflowDepth => {
+  const depth = value?.trim() || "overview";
+  if (depth !== "overview" && depth !== "deep_dive") {
+    throw new HttpError(400, "invalid_depth", "depth must be overview or deep_dive");
+  }
+  return depth;
 };
 
 export const createRequestHandler = (options: ServerOptions = {}): RequestListener => {
@@ -92,12 +97,10 @@ export const createRequestHandler = (options: ServerOptions = {}): RequestListen
 
   return async (req, res) => {
     try {
-      // CORS for all routes
       if (handleCors(req, res)) return;
 
       const url = requestUrl(req);
 
-      // ----- Health -----
       if (req.method === "GET" && url.pathname === "/health") {
         sendJson(res, 200, {
           status: "ok",
@@ -111,13 +114,11 @@ export const createRequestHandler = (options: ServerOptions = {}): RequestListen
         return;
       }
 
-      // ----- Active Domain Pack -----
       if (req.method === "GET" && url.pathname === "/api/domain-pack") {
         sendJson(res, 200, domainPackUiSummary);
         return;
       }
 
-      // ----- Search -----
       if (req.method === "GET" && url.pathname === "/api/search") {
         const mode = parseEvidenceMode(url.searchParams.get("mode"));
         const query = requireQueryParam(url, "q");
@@ -125,23 +126,13 @@ export const createRequestHandler = (options: ServerOptions = {}): RequestListen
 
         if (mode === "keyword") {
           const results = await keywordSearch(query, limit);
-          sendJson(res, 200, {
-            mode,
-            query,
-            resultCount: results.length,
-            results,
-          });
+          sendJson(res, 200, { mode, query, resultCount: results.length, results });
           return;
         }
 
         if (mode === "phrase") {
           const results = await phraseSearch(query, limit);
-          sendJson(res, 200, {
-            mode,
-            query,
-            resultCount: results.length,
-            results,
-          });
+          sendJson(res, 200, { mode, query, resultCount: results.length, results });
           return;
         }
 
@@ -155,29 +146,32 @@ export const createRequestHandler = (options: ServerOptions = {}): RequestListen
         return;
       }
 
-      // ----- Evidence -----
       if (req.method === "GET" && url.pathname === "/api/evidence") {
         const mode = parseEvidenceMode(url.searchParams.get("mode"));
         const query = requireQueryParam(url, "q");
         const limit = parseLimit(url.searchParams.get("limit"));
-
         const evidence = await findEvidenceWithDependencies(query, mode, limit, evidenceDependencies);
         sendJson(res, 200, evidence);
         return;
       }
 
-      // ----- Procedure Workflow Advisor -----
       if (req.method === "GET" && url.pathname === "/api/procedure") {
         const mode = parseEvidenceMode(url.searchParams.get("mode"));
+        const depth = parseProcedureDepth(url.searchParams.get("depth"));
         const query = requireQueryParam(url, "q");
         const limit = parseLimit(url.searchParams.get("limit"));
-
-        const workflow = await buildProcedureWorkflowWithDependencies(query, mode, limit, evidenceDependencies, domainPack);
+        const workflow = await buildProcedureWorkflowWithDependencies(
+          query,
+          mode,
+          limit,
+          evidenceDependencies,
+          domainPack,
+          depth
+        );
         sendJson(res, 200, workflow);
         return;
       }
 
-      // ----- Procedure Workflow Feedback -----
       if (url.pathname === "/api/procedure-feedback") {
         requireProcedureFeedbackAuth(req, procedureFeedbackDependencies.apiToken);
 
@@ -185,11 +179,7 @@ export const createRequestHandler = (options: ServerOptions = {}): RequestListen
           const body = await readJsonBody<unknown>(req);
           const input = validateProcedureFeedbackInput(body);
           const clientKey = req.socket.remoteAddress || "unknown";
-          const record = await createProcedureFeedback(
-            input,
-            clientKey,
-            procedureFeedbackDependencies
-          );
+          const record = await createProcedureFeedback(input, clientKey, procedureFeedbackDependencies);
           sendJson(res, 201, { item: record });
           return;
         }
@@ -204,36 +194,28 @@ export const createRequestHandler = (options: ServerOptions = {}): RequestListen
         throw new HttpError(405, "feedback_method_not_allowed", "Only GET and POST are supported");
       }
 
-      // ----- Agent -----
       if (req.method === "GET" && url.pathname === "/api/agent") {
         const mode = parseEvidenceMode(url.searchParams.get("mode"));
         const query = requireQueryParam(url, "q");
         const limit = parseLimit(url.searchParams.get("limit"));
-
         const agentResponse = await evaluateQueryWithDependencies(query, mode, limit, evidenceDependencies);
         sendJson(res, 200, agentResponse);
         return;
       }
 
-      // ----- Deterministic Answer -----
       if (req.method === "GET" && url.pathname === "/api/answer") {
         const mode = parseEvidenceMode(url.searchParams.get("mode"));
         const query = requireQueryParam(url, "q");
         const limit = parseLimit(url.searchParams.get("limit"));
-
         const answer = await buildDeterministicAnswerWithDependencies(query, mode, limit, evidenceDependencies);
         sendJson(res, 200, answer);
         return;
       }
 
-      // ----- Chat -----
       if (req.method === "POST" && url.pathname === "/api/chat") {
         const body = await readJsonBody<{ message?: string; mode?: string; limit?: number }>(req);
-
         const message = body.message?.trim();
-        if (!message) {
-          throw new HttpError(400, "missing_message", "message is required");
-        }
+        if (!message) throw new HttpError(400, "missing_message", "message is required");
 
         const mode = parseEvidenceMode(body.mode);
         const limit = body.limit ?? 5;
@@ -246,13 +228,10 @@ export const createRequestHandler = (options: ServerOptions = {}): RequestListen
         return;
       }
 
-      // ----- Static files (demo page, widget) -----
       let staticPath = url.pathname;
       if (staticPath === "/") staticPath = "/index.html";
 
-      if (req.method === "GET" && serveStatic(publicDir, staticPath, res)) {
-        return;
-      }
+      if (req.method === "GET" && serveStatic(publicDir, staticPath, res)) return;
 
       throw new HttpError(404, "not_found", "Route not found");
     } catch (error) {
@@ -261,46 +240,25 @@ export const createRequestHandler = (options: ServerOptions = {}): RequestListen
   };
 };
 
-export const createApiServer = (options: ServerOptions = {}): Server => {
-  return createServer(createRequestHandler(options));
-};
+export const createApiServer = (options: ServerOptions = {}): Server =>
+  createServer(createRequestHandler(options));
 
-const closeServer = async (server: Server): Promise<void> => {
-  await new Promise<void>((resolveClose, rejectClose) => {
-    server.close((error) => {
-      if (error) {
-        rejectClose(error);
-        return;
-      }
-      resolveClose();
-    });
-  });
-};
-
-const shutdown = async (server: Server): Promise<void> => {
-  await closeServer(server);
-  await closeDb();
-};
-
-export const startServer = (port = Number(process.env.PORT ?? 4010)): Server => {
+export const startServer = (): Server => {
   requireDatabaseUrl();
-
+  const port = Number(process.env.PORT ?? 3000);
   const server = createApiServer();
-
-  process.on("SIGINT", () => {
-    void shutdown(server).finally(() => process.exit(0));
-  });
-  process.on("SIGTERM", () => {
-    void shutdown(server).finally(() => process.exit(0));
-  });
-
   server.listen(port, () => {
-    console.log(`LA Muni RAG API listening on http://localhost:${port}`);
+    console.log(`LA Muni RAG API listening on port ${port}`);
   });
-
   return server;
 };
 
-if (process.argv[1]?.endsWith("server.js") || process.argv[1]?.endsWith("server.ts")) {
-  startServer();
+if (process.argv[1] === fileURLToPath(import.meta.url)) {
+  const server = startServer();
+  const shutdown = async () => {
+    server.close();
+    await closeDb();
+  };
+  process.on("SIGINT", shutdown);
+  process.on("SIGTERM", shutdown);
 }

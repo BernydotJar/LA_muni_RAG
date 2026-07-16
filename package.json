@@ -12,11 +12,13 @@
     "dev:api": "tsx watch src/server.ts",
     "dev:start": "node scripts/dev-start.mjs",
     "domain:evaluate": "tsx src/cli/evaluateDomainPacks.ts",
+    "domain:init": "tsx src/cli/initDomainPack.ts",
     "ports:kill": "node scripts/kill-ports.mjs",
     "search": "tsx src/cli/search.ts",
     "start": "node dist/server.js",
     "test": "node --import tsx --test src/__tests__/*.test.ts",
-    "typecheck": "tsc -p tsconfig.json --noEmit"
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "workflow:validate": "tsx src/cli/validateWorkflowTemplate.ts"
   },
   "keywords": [],
   "author": "",

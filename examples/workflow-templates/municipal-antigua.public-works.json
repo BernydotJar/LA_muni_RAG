@@ -1,0 +1,88 @@
+{
+  "schemaVersion": 1,
+  "domainPackId": "municipal-antigua",
+  "templates": [
+    {
+      "domainPackId": "municipal-antigua",
+      "workflowId": "public-works",
+      "workflowType": "public_works",
+      "title": "Flujo procedimental para obra pública municipal",
+      "description": "Plantilla revisable para organizar un procedimiento municipal conservador con evidencia.",
+      "defaultSummary": "Encontré evidencia relacionada y organicé un flujo municipal conservador.",
+      "validationWarning": "Este flujo organiza evidencia documental y requiere validación institucional antes de ejecutarse.",
+      "governanceRules": [
+        "antigua-first",
+        "external-reference",
+        "missing-local-source"
+      ],
+      "evidenceRequirement": "required",
+      "authoritative": false,
+      "steps": [
+        {
+          "id": "classify-project",
+          "order": 1,
+          "label": "Clasificar el proyecto",
+          "action": "Determinar si la iniciativa corresponde a obra pública municipal, ampliación, remodelación, mantenimiento o proyecto sujeto a planificación aplicable.",
+          "requiredDocuments": [
+            "Perfil del proyecto",
+            "Justificación técnica",
+            "Ubicación o terreno"
+          ],
+          "outputDocuments": [
+            "Clasificación preliminar del proyecto"
+          ],
+          "allowedSourceAuthorities": [
+            "municipal_manual",
+            "pdm_ot",
+            "pom_poa",
+            "budget",
+            "national_law",
+            "unknown"
+          ],
+          "governanceRules": [
+            "antigua-first",
+            "missing-local-source"
+          ],
+          "evidencePatterns": [
+            "obra",
+            "proyecto",
+            "snip"
+          ],
+          "humanValidationRequired": true
+        },
+        {
+          "id": "validate-planning-and-budget",
+          "order": 2,
+          "label": "Validar planificación y presupuesto",
+          "action": "Cruzar la iniciativa con PDM-OT, POM/POA, presupuesto y disponibilidad financiera antes de iniciar contratación.",
+          "requiredDocuments": [
+            "PDM-OT",
+            "POM/POA",
+            "Presupuesto",
+            "Disponibilidad presupuestaria"
+          ],
+          "outputDocuments": [
+            "Validación de alineación y financiamiento"
+          ],
+          "allowedSourceAuthorities": [
+            "pdm_ot",
+            "pom_poa",
+            "budget",
+            "national_law"
+          ],
+          "governanceRules": [
+            "antigua-first",
+            "missing-local-source"
+          ],
+          "evidencePatterns": [
+            "pdm",
+            "poa",
+            "pom",
+            "presupuesto"
+          ],
+          "humanValidationRequired": true
+        }
+      ]
+    }
+  ]
+}

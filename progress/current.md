@@ -6,7 +6,7 @@ None
 
 ## Last Completed Feature
 
-046-domain-pack-evaluation-harness
+049-procedure-workflow-advisor-deep-dive
 
 ## State
 
@@ -18,46 +18,38 @@ MVP
 
 ## Summary
 
-Feature 046 added a deterministic evaluation harness for domain packs. It validates workflow classification and expected source authority classes from each pack's `evaluationCases`.
+Feature 049 adds an explicit `deep_dive` mode over the existing Procedure Workflow Advisor while preserving the default `overview` response. Deep-dive workflows expose per-step evidence status, explicit insufficiency statements, structured dependencies, strict step-level citation matching, and comparative-source governance.
 
 ## Completed Implementation
 
-046 added or updated:
+- Added overview/deep-dive workflow depth contract.
+- Added per-step `supported`, `inferred`, and `insufficient` evidence states.
+- Removed unrelated fallback citations from procedure steps.
+- Added explicit evidence statements for inferred and unsupported steps.
+- Added structured sequential dependencies for deep-dive responses.
+- Exposed `depth=deep_dive` through `/api/procedure` with fail-closed validation.
+- Restored `createApiServer` compatibility for integration tests.
+- Added focused safety, compatibility, and HTTP depth tests.
+- Added deep-dive API and governance documentation.
+- Added reviewer report.
 
-- specs/046-domain-pack-evaluation-harness/requirements.md
-- specs/046-domain-pack-evaluation-harness/design.md
-- specs/046-domain-pack-evaluation-harness/tasks.md
-- src/domain/evaluation.ts
-- src/cli/evaluateDomainPacks.ts
-- src/__tests__/domain-pack-evaluation.test.ts
-- docs/domain-pack-evaluation-harness.md
-- package.json
-- README.md
-- progress/current.md
-
-## Governance Acceptance
-
-- All registered starter packs are evaluated.
-- Workflow classification expectations are checked.
-- Source authority expectations are checked when provided.
-- The CLI exits non-zero if any case fails.
-- The harness uses deterministic code only; no database, network, retrieval, or LLM judging.
-- Generated `dist-pages/` output was verified but not kept as a source change.
-
-## Local Verification
+## Verification
 
 Ran locally:
 
 - npm run typecheck: passed
 - npm run build: passed
+- focused deep-dive/server tests: passed
 - npm run domain:evaluate: passed, 6/6 cases
-- npm run test: 305 passed, 0 failed
+- npm run test: 327 passed, 0 failed
 - npm run build:pages: passed
 - node scripts/verify-pages-artifact.mjs: passed
+- git diff --check: passed
+
+Generated `dist-pages/` output was verified and cleaned.
 
 ## Next Work
 
-Recommended next features:
+Recommended next feature:
 
-- 047-domain-pack-admin-library
-- 048-domain-pack-feedback-analytics
+- Deep-dive UI rendering for dependencies, evidence status, and per-step citations.
