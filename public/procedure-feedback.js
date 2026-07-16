@@ -1,3 +1,12 @@
+(function loadProcedureDeepDive() {
+  if (document.querySelector('script[data-procedure-deep-dive="true"]')) return;
+  const script = document.createElement("script");
+  script.src = "./procedure-deep-dive.js";
+  script.async = false;
+  script.dataset.procedureDeepDive = "true";
+  document.head.appendChild(script);
+})();
+
 /**
  * LA Muni RAG — Procedure Workflow Feedback Loop
  *
