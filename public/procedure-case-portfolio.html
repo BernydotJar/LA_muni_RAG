@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>LA Muni RAG — Portafolio local de casos</title>
+  <meta name="description" content="Dashboard local de seguimiento operativo para Procedure Case Workspace." />
+  <link rel="stylesheet" href="./procedure-case-portfolio.css" />
+</head>
+<body>
+  <main class="shell">
+    <nav class="topbar" aria-label="Navegación del portafolio">
+      <a class="back-link" href="./procedure-workflow.html">← Volver a flujos</a>
+      <button class="button" id="export-portfolio" type="button">Exportar portafolio JSON</button>
+    </nav>
+
+    <section class="hero">
+      <p class="eyebrow">Procedure Case Workspace</p>
+      <h1>Portafolio local de casos</h1>
+      <p>Visibilidad agregada de seguimiento operativo almacenado en este navegador.</p>
+      <div class="warning"><strong>Señales operativas, no dictamen institucional.</strong> Estas métricas no prueban cumplimiento legal ni presupuestario y no dictaminan recepción, liquidación, pago ni cierre.</div>
+    </section>
+
+    <section class="metric-grid" aria-label="Métricas operativas">
+      <article class="metric-card"><span>Total de casos</span><strong id="m-total">0</strong></article>
+      <article class="metric-card"><span>Casos activos</span><strong id="m-active">0</strong></article>
+      <article class="metric-card"><span>Con bloqueos</span><strong id="m-blocked">0</strong></article>
+      <article class="metric-card"><span>Listos para revisión</span><strong id="m-ready">0</strong></article>
+      <article class="metric-card"><span>Completados operativos</span><strong id="m-completed">0</strong></article>
+      <article class="metric-card"><span>Documentos faltantes</span><strong id="m-docs">0</strong></article>
+    </section>
+
+    <section class="toolbar" aria-label="Filtros del portafolio">
+      <label>Buscar<input id="case-search" type="search" placeholder="Título, consulta o responsable" /></label>
+      <label>Tipo<select id="case-type"><option value="all">Todos</option></select></label>
+      <label>Estado<select id="case-status"><option value="all">Todos</option><option value="active">Activos</option><option value="blocked">Bloqueados</option><option value="ready">Listos para revisión</option><option value="completed">Completados operativos</option></select></label>
+      <label>Orden<select id="case-sort"><option value="updated">Última actualización</option><option value="title">Título</option><option value="progress">Progreso</option></select></label>
+      <label class="check"><input id="case-blockers" type="checkbox" /> Solo con bloqueos</label>
+      <label class="check"><input id="case-recent" type="checkbox" /> Actividad últimos 7 días</label>
+    </section>
+
+    <p class="result-count" id="result-count">0 casos</p>
+    <section class="case-grid" id="case-list" aria-live="polite"></section>
+  </main>
+  <script src="./procedure-case-portfolio.js"></script>
+</body>
+</html>
