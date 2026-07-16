@@ -56,6 +56,30 @@ const retrievalTermsForType = (type: ProcedureType, domainPack: DomainPack): str
   return [...ruleQueries, ...workflowHints];
 };
 
+const intentRetrievalTerms: Record<ProcedureQueryIntent, string[]> = {
+  documentary: ["documento oficial fuente autoridad fecha vigencia"],
+  legal: ["ley reglamento decreto artículo fundamento legal vigente"],
+  procedural: ["manual procedimiento responsables documentos aprobaciones"],
+  case_specific: ["expediente específico contrato actas informes estado documentado"],
+  planning_project: ["PDM-OT POM POA presupuesto priorización proyecto"],
+  closure_liquidation: ["acta recepción final liquidación finiquito cierre expediente"],
+  unknown: [],
+};
+
+const uniqueQueries = (values: string[]): string[] => {
+  const seen = new Set<string>();
+  const result: string[] = [];
+  for (const value of values) {
+    const trimmed = value.trim();
+    if (!trimmed) continue;
+    const key = normalize(trimmed);
+    if (seen.has(key)) continue;
+    seen.add(key);
+    result.push(trimmed);
+  }
+  return result;
+};
+
 const detectIntent = (
   normalized: string,
   procedureType: ProcedureType,
@@ -63,45 +87,11 @@ const detectIntent = (
   asksForCurrentStatus = false
 ): { intent: ProcedureQueryIntent; signals: string[] } => {
   const signals: string[] = [];
-  const closureTerms = [
-    "cerrar la obra",
-    "cierre de obra",
-    "liquidacion",
-    "recepcion final",
-    "finiquito",
-    "acta de recepcion",
-  ];
-  const planningTerms = [
-    "construir",
-    "planificar",
-    "proyecto",
-    "pdm-ot",
-    "pom",
-    "poa",
-    "presupuesto",
-    "priorizar",
-  ];
-  const legalTerms = [
-    "fundamento legal",
-    "base legal",
-    "que ley",
-    "que articulo",
-    "codigo municipal",
-    "decreto",
-    "reglamento",
-    "legalmente",
-  ];
-  const proceduralTerms = [
-    "paso a paso",
-    "procedimiento",
-    "workflow",
-    "flujo",
-    "tramite",
-    "que hay que hacer",
-    "quien firma",
-    "quien aprueba",
-    "documentos necesita",
-  ];
+  const closureTerms = ["cerrar la obra", "cierre de obra", "liquidacion", "recepcion final", "finiquito", "acta de recepcion"];
+  const planningTerms = ["construir", "planificar", "proyecto", "pdm-ot", "pom", "poa", "presupuesto", "priorizar"];
+  const legalTerms = ["fundamento legal", "base legal", "que ley", "que articulo", "codigo municipal", "decreto", "reglamento", "legalmente"];
+  const proceduralTerms = ["paso a paso", "procedimiento", "workflow", "flujo", "tramite", "que hay que hacer", "quien firma", "quien aprueba", "documentos necesita"];
+  const documentaryTerms = ["muestrame", "buscar documento", "donde dice", "organigrama", "manual", "acta", "presupuesto vigente", "texto oficial"];
 
   if (includesAny(normalized, closureTerms) || procedureType === "project_closure") {
     signals.push("closure_or_liquidation_language");
@@ -133,8 +123,13 @@ const detectIntent = (
     return { intent: "procedural", signals };
   }
 
-  signals.push("document_lookup_default");
-  return { intent: "documentary", signals };
+  if (includesAny(normalized, documentaryTerms)) {
+    signals.push("document_lookup_language");
+    return { intent: "documentary", signals };
+  }
+
+  signals.push("no_supported_intent_signal");
+  return { intent: "unknown", signals };
 };
 
 export const classifyProcedureQuery = (
@@ -149,21 +144,26 @@ export const classifyProcedureQuery = (
   const asksForExactDeadline = includesAny(normalized, ["cuantos dias", "plazo exacto", "dias exactos", "cuanto tarda"]);
   const asksForCurrentStatus = includesAny(normalized, ["en este momento", "estado actual", "que falta", "cerrar la obra", "pendiente"]);
   const { intent, signals } = detectIntent(normalized, procedureType, caseName, asksForCurrentStatus);
+  const requiresCaseContext = intent === "case_specific" || intent === "closure_liquidation";
+  const requiresNormativeRetrieval = ["legal", "procedural", "planning_project", "closure_liquidation"].includes(intent);
   const isProcedural =
     procedureType !== "unknown" ||
     ["procedural", "case_specific", "planning_project", "closure_liquidation"].includes(intent);
 
-  const retrievalQueries = [
+  const retrievalQueries = uniqueQueries([
     query,
+    ...intentRetrievalTerms[intent],
     ...retrievalTermsForType(procedureType, domainPack),
     caseName ? `${caseName} expediente contrato acta recepción liquidación` : "",
     communityName ? `${communityName} COCODE COMUDE comunidad obra` : "",
     municipalityName ? `${municipalityName} manual normas procedimientos adquisiciones contrataciones obra` : "",
-  ].filter((value) => value.trim().length > 0);
+  ]);
 
   return {
     intent,
     intentSignals: signals,
+    requiresCaseContext,
+    requiresNormativeRetrieval,
     isProcedural,
     procedureType,
     caseName,
