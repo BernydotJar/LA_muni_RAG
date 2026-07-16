@@ -1,7 +1,7 @@
 import type { EvidenceItem } from "../evidence.js";
 import type { ProcedureCitation, SourceAuthorityClass } from "./types.js";
 import { loadDomainPack } from "../domain/registry.js";
-import type { DomainPack } from "../domain/types.js";
+import type { DomainPack, DomainSourceAuthority } from "../domain/types.js";
 
 const normalize = (value: string): string =>
   value
@@ -13,20 +13,23 @@ const normalize = (value: string): string =>
 
 const includesAny = (value: string, terms: string[]): boolean => terms.some((term) => value.includes(term));
 
-export const classifySourceAuthority = (
+export const resolveSourceAuthority = (
   evidence: EvidenceItem,
   domainPack: DomainPack = loadDomainPack(undefined)
-): SourceAuthorityClass => {
+): DomainSourceAuthority | undefined => {
   const type = normalize(evidence.sourceType || "");
   const title = normalize(`${evidence.documentTitle} ${evidence.citationLabel}`);
 
-  const authority = domainPack.sourceAuthorityClasses.find((candidate) =>
+  return domainPack.sourceAuthorityClasses.find((candidate) =>
     includesAny(title, candidate.titleKeywords.map((keyword) => normalize(keyword))) ||
     candidate.sourceTypes.map((sourceType) => normalize(sourceType)).includes(type)
   );
-
-  return authority?.id ?? "unknown";
 };
+
+export const classifySourceAuthority = (
+  evidence: EvidenceItem,
+  domainPack: DomainPack = loadDomainPack(undefined)
+): SourceAuthorityClass => resolveSourceAuthority(evidence, domainPack)?.id ?? "unknown";
 
 export const hasLocalEvidence = (
   citations: ProcedureCitation[],
@@ -43,12 +46,17 @@ export const toProcedureCitation = (
   evidence: EvidenceItem,
   evidenceUse: ProcedureCitation["evidenceUse"] = "cited_text",
   domainPack: DomainPack = loadDomainPack(undefined)
-): ProcedureCitation => ({
-  citationLabel: evidence.citationLabel,
-  sourceType: evidence.sourceType,
-  pageStart: evidence.pageStart,
-  excerpt: evidence.excerpt.length > 360 ? `${evidence.excerpt.slice(0, 360)}…` : evidence.excerpt,
-  sourceUrl: evidence.sourceUrl ?? null,
-  authorityClass: classifySourceAuthority(evidence, domainPack),
-  evidenceUse,
-});
+): ProcedureCitation => {
+  const authority = resolveSourceAuthority(evidence, domainPack);
+  return {
+    citationLabel: evidence.citationLabel,
+    sourceType: evidence.sourceType,
+    pageStart: evidence.pageStart,
+    excerpt: evidence.excerpt.length > 360 ? `${evidence.excerpt.slice(0, 360)}…` : evidence.excerpt,
+    sourceUrl: evidence.sourceUrl ?? null,
+    authorityClass: authority?.id ?? "unknown",
+    authorityLabel: authority?.label ?? "Fuente no clasificada",
+    authorityLevel: authority?.authorityLevel ?? "unknown",
+    evidenceUse,
+  };
+};
