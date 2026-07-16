@@ -2,7 +2,7 @@
 
 ## Active Feature
 
-None
+050-procedure-deep-dive-ui
 
 ## Last Completed Feature
 
@@ -10,7 +10,7 @@ None
 
 ## State
 
-done
+review
 
 ## Mode
 
@@ -18,38 +18,34 @@ MVP
 
 ## Summary
 
-Feature 049 adds an explicit `deep_dive` mode over the existing Procedure Workflow Advisor while preserving the default `overview` response. Deep-dive workflows expose per-step evidence status, explicit insufficiency statements, structured dependencies, strict step-level citation matching, and comparative-source governance.
+Feature 050 connects the verified Procedure Workflow Advisor deep-dive contract to the existing public workflow page through an isolated progressive-enhancement layer. Overview remains the default. Deep dive adds dependencies, per-step evidence status, evidence statements, supported responsibility/deadline metadata, expandable citations, and visible unsupported/inferred states.
 
 ## Completed Implementation
 
-- Added overview/deep-dive workflow depth contract.
-- Added per-step `supported`, `inferred`, and `insufficient` evidence states.
-- Removed unrelated fallback citations from procedure steps.
-- Added explicit evidence statements for inferred and unsupported steps.
-- Added structured sequential dependencies for deep-dive responses.
-- Exposed `depth=deep_dive` through `/api/procedure` with fail-closed validation.
-- Restored `createApiServer` compatibility for integration tests.
-- Added focused safety, compatibility, and HTTP depth tests.
-- Added deep-dive API and governance documentation.
-- Added reviewer report.
+- Created `feature/050-procedure-deep-dive-ui` from verified commit `0fc42a8`.
+- Added overview / `Ver flujo completo` depth control.
+- Added `depth=overview|deep_dive` to procedure requests without changing the existing page renderer.
+- Added step evidence badges and explicit insufficiency/inference statements.
+- Added dependency rendering.
+- Added responsible role, unit, and deadline fields only when returned by the API.
+- Added escaped expandable citation dossiers.
+- Added conservative GitHub Pages demo promotion for deep-dive requests.
+- Added focused static tests, Pages artifact verification, documentation, issue #8, and harness tracking.
+- Preserved backend procedure semantics, corpus, migrations, War Room work, and deployment configuration.
 
-## Verification
+## Verification Status
 
-Ran locally:
+Remote implementation and static inspection are complete. Local verification remains required:
 
-- npm run typecheck: passed
-- npm run build: passed
-- focused deep-dive/server tests: passed
-- npm run domain:evaluate: passed, 6/6 cases
-- npm run test: 327 passed, 0 failed
-- npm run build:pages: passed
-- node scripts/verify-pages-artifact.mjs: passed
-- git diff --check: passed
-
-Generated `dist-pages/` output was verified and cleaned.
+- `npm run typecheck`
+- `npm run build`
+- focused UI tests
+- complete test suite
+- `npm run build:pages`
+- `node scripts/verify-pages-artifact.mjs`
+- `git diff --check`
+- clean `git status --short` after scoped Pages cleanup
 
 ## Next Work
 
-Recommended next feature:
-
-- Deep-dive UI rendering for dependencies, evidence status, and per-step citations.
+Run the local gate, correct resolvable defects, then perform Reviewer validation. Do not merge or deploy automatically.
