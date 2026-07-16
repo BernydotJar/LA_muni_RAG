@@ -2,7 +2,7 @@
 
 ## Active Feature
 
-None
+052-case-portfolio-dashboard
 
 ## Last Completed Feature
 
@@ -10,7 +10,7 @@ None
 
 ## State
 
-done
+review
 
 ## Mode
 
@@ -18,31 +18,47 @@ MVP
 
 ## Summary
 
-Feature 051 adds a local, auditable Procedure Case Workspace on top of rendered workflows. It tracks operational progress, document checklist state, user-entered assignees and notes, and an append-only local audit log without changing procedure evidence or presenting operational completion as legal or institutional approval.
+Feature 052 adds a browser-local Case Portfolio Dashboard over validated Procedure Case Workspace records. It aggregates operational progress, blockers, document checklist states, assignees, and recent activity without changing procedure evidence or presenting portfolio metrics as legal or institutional determinations.
 
-## Verification
+## Baseline
 
-User-provided local gate completed successfully:
+Feature 051 was merged through PR #11 and verified locally by the user:
 
-- `npm run typecheck`: passed.
-- `npm run build`: passed.
-- Focused workspace/deep-dive/workflow/server tests: 40 passed, 0 failed.
-- `npm run domain:evaluate`: 6/6 passed, 100%.
-- `npm run test`: 338 passed, 0 failed across 62 suites.
-- `npm run build:pages`: passed.
-- `node scripts/verify-pages-artifact.mjs`: passed.
-- `git diff --check`: passed.
-- Generated `dist-pages/` output was removed with scoped cleanup.
+- typecheck and build passed;
+- 40 focused tests passed;
+- domain evaluation passed 6/6;
+- full suite passed 338/338 across 62 suites;
+- Pages build and artifact verification passed;
+- diff check and scoped Pages cleanup passed.
 
-## Merge
+## Completed Implementation
 
-- PR #11 merged.
-- Merge commit: `413778a5ab0df325e62e5b09bb90b8db3e7bdc6a`.
-- Reviewer report: `progress/review_051-procedure-case-workspace.md`.
-- Issue #10 closed as completed.
+- Created `feature/052-case-portfolio-dashboard` from the reconciled Feature 051 closure commit.
+- Added `public/procedure-case-portfolio.html` as a local-only aggregate dashboard.
+- Added fail-closed discovery of namespaced `schemaVersion: 1` workspaces.
+- Added operational metrics, document-state totals, text/type/status/blocker/recent filters, and deterministic sorting.
+- Added case cards with calculated progress, blockers, missing documents, user-entered assignees, and last activity.
+- Added consolidated versioned JSON export without portfolio import or server upload.
+- Added `procedure-case-open.js` for bounded local key navigation and workflow query restoration.
+- Linked the workflow feedback panel to the portfolio.
+- Extended Pages artifact verification.
+- Added focused tests, documentation, issue #12, and harness tracking.
+- Preserved backend procedure semantics, corpus, migrations, deployment configuration, and War Room work.
+
+## Verification Status
+
+Remote implementation and static inspection are complete. Local verification remains required:
+
+- `npm run typecheck`
+- `npm run build`
+- focused portfolio/workspace/UI tests
+- `npm run domain:evaluate`
+- complete test suite
+- `npm run build:pages`
+- `node scripts/verify-pages-artifact.mjs`
+- `git diff --check`
+- clean `git status --short` after scoped Pages cleanup
 
 ## Next Work
 
-Recommended next feature:
-
-- Local Case Portfolio Dashboard for aggregate operational visibility across Procedure Case Workspaces.
+Run the local gate, validate dashboard filtering/export/open-case behavior in a browser, then perform Reviewer validation. Do not merge or deploy automatically.
