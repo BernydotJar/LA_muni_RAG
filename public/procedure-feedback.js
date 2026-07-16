@@ -7,6 +7,15 @@
   document.head.appendChild(script);
 })();
 
+(function loadProcedureCaseWorkspace() {
+  if (document.querySelector('script[data-procedure-case-workspace="true"]')) return;
+  const script = document.createElement("script");
+  script.src = "./procedure-case-workspace.js";
+  script.async = false;
+  script.dataset.procedureCaseWorkspace = "true";
+  document.head.appendChild(script);
+})();
+
 /**
  * LA Muni RAG — Procedure Workflow Feedback Loop
  *

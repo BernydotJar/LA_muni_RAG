@@ -2,11 +2,11 @@
 
 ## Active Feature
 
-050-procedure-deep-dive-ui
+051-procedure-case-workspace
 
 ## Last Completed Feature
 
-049-procedure-workflow-advisor-deep-dive
+050-procedure-deep-dive-ui
 
 ## State
 
@@ -18,20 +18,24 @@ MVP
 
 ## Summary
 
-Feature 050 connects the verified Procedure Workflow Advisor deep-dive contract to the existing public workflow page through an isolated progressive-enhancement layer. Overview remains the default. Deep dive adds dependencies, per-step evidence status, evidence statements, supported responsibility/deadline metadata, expandable citations, and visible unsupported/inferred states.
+Feature 051 adds a local, auditable Procedure Case Workspace on top of rendered workflows. It tracks operational progress, document checklist state, user-entered assignees and notes, and an append-only local audit log without changing procedure evidence or presenting operational completion as legal or institutional approval.
+
+## Baseline
+
+Feature 050 was merged through PR #9 and visually accepted by the user. Its merge commit is `6e8fea0c711a3f71da67f6d7b9694d016e91611d`. No post-merge GitHub Actions run was available, so that limitation remains explicit.
 
 ## Completed Implementation
 
-- Created `feature/050-procedure-deep-dive-ui` from verified commit `0fc42a8`.
-- Added overview / `Ver flujo completo` depth control.
-- Added `depth=overview|deep_dive` to procedure requests without changing the existing page renderer.
-- Added step evidence badges and explicit insufficiency/inference statements.
-- Added dependency rendering.
-- Added responsible role, unit, and deadline fields only when returned by the API.
-- Added escaped expandable citation dossiers.
-- Added conservative GitHub Pages demo promotion for deep-dive requests.
-- Added focused static tests, Pages artifact verification, documentation, issue #8, and harness tracking.
-- Preserved backend procedure semantics, corpus, migrations, War Room work, and deployment configuration.
+- Created `feature/051-procedure-case-workspace` from the Feature 050 merge commit.
+- Added a workflow-specific LocalStorage workspace with `schemaVersion: 1`.
+- Added per-step operational states: not started, in progress, blocked, ready for review, and completed operationally.
+- Added document states: missing, requested, received, and reviewed operationally.
+- Added user-entered operational assignee and note fields.
+- Added append-only local audit events for material mutations.
+- Added bounded JSON import/export with schema and enum validation.
+- Added persistent non-approval and sensitive-data warnings.
+- Added a progressive loader without changing the workflow renderer or backend semantics.
+- Added focused static tests, Pages artifact verification, documentation, issue #10, and harness tracking.
 
 ## Verification Status
 
@@ -39,7 +43,8 @@ Remote implementation and static inspection are complete. Local verification rem
 
 - `npm run typecheck`
 - `npm run build`
-- focused UI tests
+- focused workspace/UI tests
+- `npm run domain:evaluate`
 - complete test suite
 - `npm run build:pages`
 - `node scripts/verify-pages-artifact.mjs`
@@ -48,4 +53,4 @@ Remote implementation and static inspection are complete. Local verification rem
 
 ## Next Work
 
-Run the local gate, correct resolvable defects, then perform Reviewer validation. Do not merge or deploy automatically.
+Run the local gate, correct resolvable defects, visually review workspace persistence/import/export, then perform Reviewer validation. Do not merge or deploy automatically.

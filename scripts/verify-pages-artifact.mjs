@@ -14,6 +14,7 @@ const requiredFiles = [
   "procedure-widget-entrypoint.js",
   "procedure-feedback.js",
   "procedure-deep-dive.js",
+  "procedure-case-workspace.js",
   "pages-demo-api.js",
   "pages-security-guard.js",
   ".nojekyll",
@@ -34,6 +35,7 @@ const feedbackDashboardHtml = await readFile(join(outputDir, "procedure-feedback
 const domainIntakeHtml = await readFile(join(outputDir, "domain-intake.html"), "utf-8");
 const procedureFeedbackJs = await readFile(join(outputDir, "procedure-feedback.js"), "utf-8");
 const procedureDeepDiveJs = await readFile(join(outputDir, "procedure-deep-dive.js"), "utf-8");
+const procedureCaseWorkspaceJs = await readFile(join(outputDir, "procedure-case-workspace.js"), "utf-8");
 
 const forbiddenRootRelativePatterns = [
   'href="/"',
@@ -46,6 +48,7 @@ const forbiddenRootRelativePatterns = [
   'src="/procedure-widget-entrypoint.js"',
   'src="/procedure-feedback.js"',
   'src="/procedure-deep-dive.js"',
+  'src="/procedure-case-workspace.js"',
   'src="/assets/',
   'href="/assets/',
 ];
@@ -86,8 +89,20 @@ if (!procedureFeedbackJs.includes('./procedure-deep-dive.js')) {
   throw new Error("Procedure workflow feedback loader is missing the deep-dive UI enhancement.");
 }
 
+if (!procedureFeedbackJs.includes('./procedure-case-workspace.js')) {
+  throw new Error("Procedure workflow feedback loader is missing the case workspace enhancement.");
+}
+
 if (!procedureDeepDiveJs.includes('value="deep_dive"') || !procedureDeepDiveJs.includes('Dependencias y decisiones')) {
   throw new Error("Procedure deep-dive artifact is missing its depth control or dependency rendering.");
+}
+
+if (
+  !procedureCaseWorkspaceJs.includes("la-muni-rag:procedure-case:") ||
+  !procedureCaseWorkspaceJs.includes("Seguimiento operativo, no evidencia legal") ||
+  !procedureCaseWorkspaceJs.includes("auditLog.push")
+) {
+  throw new Error("Procedure case workspace artifact is missing storage, safety, or audit controls.");
 }
 
 if (!feedbackDashboardHtml.includes('la-muni-rag:procedure-feedback')) {
