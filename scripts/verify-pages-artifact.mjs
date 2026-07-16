@@ -13,6 +13,7 @@ const requiredFiles = [
   "widget.js",
   "procedure-widget-entrypoint.js",
   "procedure-feedback.js",
+  "procedure-deep-dive.js",
   "pages-demo-api.js",
   "pages-security-guard.js",
   ".nojekyll",
@@ -31,6 +32,8 @@ const glassWallHtml = await readFile(join(outputDir, "glass-wall.html"), "utf-8"
 const procedureWorkflowHtml = await readFile(join(outputDir, "procedure-workflow.html"), "utf-8");
 const feedbackDashboardHtml = await readFile(join(outputDir, "procedure-feedback-dashboard.html"), "utf-8");
 const domainIntakeHtml = await readFile(join(outputDir, "domain-intake.html"), "utf-8");
+const procedureFeedbackJs = await readFile(join(outputDir, "procedure-feedback.js"), "utf-8");
+const procedureDeepDiveJs = await readFile(join(outputDir, "procedure-deep-dive.js"), "utf-8");
 
 const forbiddenRootRelativePatterns = [
   'href="/"',
@@ -42,6 +45,7 @@ const forbiddenRootRelativePatterns = [
   'src="/widget.js"',
   'src="/procedure-widget-entrypoint.js"',
   'src="/procedure-feedback.js"',
+  'src="/procedure-deep-dive.js"',
   'src="/assets/',
   'href="/assets/',
 ];
@@ -76,6 +80,14 @@ if (!procedureWorkflowHtml.includes('src="./pages-demo-api.js" data-demo-mode="a
 
 if (!procedureWorkflowHtml.includes('src="./procedure-feedback.js"')) {
   throw new Error("Procedure workflow page is missing the feedback loop script.");
+}
+
+if (!procedureFeedbackJs.includes('./procedure-deep-dive.js')) {
+  throw new Error("Procedure workflow feedback loader is missing the deep-dive UI enhancement.");
+}
+
+if (!procedureDeepDiveJs.includes('value="deep_dive"') || !procedureDeepDiveJs.includes('Dependencias y decisiones')) {
+  throw new Error("Procedure deep-dive artifact is missing its depth control or dependency rendering.");
 }
 
 if (!feedbackDashboardHtml.includes('la-muni-rag:procedure-feedback')) {
