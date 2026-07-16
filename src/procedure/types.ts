@@ -11,6 +11,14 @@ export type ProcedureGapSeverity = "blocking" | "important" | "nice_to_have";
 
 export type EvidenceUse = "cited_text" | "inference" | "validation_required";
 
+export type ProcedureQueryIntent =
+  | "documentary"
+  | "legal"
+  | "procedural"
+  | "case_specific"
+  | "planning_project"
+  | "closure_liquidation";
+
 export interface ProcedureCitation {
   citationLabel: string;
   sourceType: string;
@@ -45,6 +53,8 @@ export interface ProcedureGap {
 }
 
 export interface ProcedureQueryClassification {
+  intent: ProcedureQueryIntent;
+  intentSignals: string[];
   isProcedural: boolean;
   procedureType: ProcedureType;
   caseName?: string;
