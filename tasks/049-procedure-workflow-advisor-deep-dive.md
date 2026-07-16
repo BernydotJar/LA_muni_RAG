@@ -8,7 +8,7 @@
 - [x] Add API depth parsing and validation.
 - [x] Add focused deep-dive tests.
 - [x] Add authoring and API documentation.
-- [ ] Run focused verification.
-- [ ] Run complete verification gate.
-- [ ] Reviewer report.
-- [ ] Mark feature done only after successful verification.
+- [x] Run focused verification.
+- [x] Run complete verification gate.
+- [x] Reviewer report.
+- [x] Mark feature done only after successful verification.

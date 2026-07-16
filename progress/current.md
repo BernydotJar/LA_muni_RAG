@@ -2,15 +2,15 @@
 
 ## Active Feature
 
-049-procedure-workflow-advisor-deep-dive
+None
 
 ## Last Completed Feature
 
-048-template-bootstrap-cli
+049-procedure-workflow-advisor-deep-dive
 
 ## State
 
-review
+done
 
 ## Mode
 
@@ -28,23 +28,28 @@ Feature 049 adds an explicit `deep_dive` mode over the existing Procedure Workfl
 - Added explicit evidence statements for inferred and unsupported steps.
 - Added structured sequential dependencies for deep-dive responses.
 - Exposed `depth=deep_dive` through `/api/procedure` with fail-closed validation.
-- Added focused safety and compatibility tests.
+- Restored `createApiServer` compatibility for integration tests.
+- Added focused safety, compatibility, and HTTP depth tests.
 - Added deep-dive API and governance documentation.
-- Opened tracking issue #4.
+- Added reviewer report.
 
-## Verification Status
+## Verification
 
-Remote implementation and static review are complete. Local verification is pending:
+Ran locally:
 
-- `npm run typecheck`
-- `npm run build`
-- focused deep-dive tests
-- `npm run domain:evaluate`
-- complete test suite
-- Pages build and artifact verification
-- `git diff --check`
-- clean `git status --short`
+- npm run typecheck: passed
+- npm run build: passed
+- focused deep-dive/server tests: passed
+- npm run domain:evaluate: passed, 6/6 cases
+- npm run test: 327 passed, 0 failed
+- npm run build:pages: passed
+- node scripts/verify-pages-artifact.mjs: passed
+- git diff --check: passed
+
+Generated `dist-pages/` output was verified and cleaned.
 
 ## Next Work
 
-Run the local gate, fix any resolvable regressions, then perform Reviewer validation. Do not merge or deploy automatically.
+Recommended next feature:
+
+- Deep-dive UI rendering for dependencies, evidence status, and per-step citations.

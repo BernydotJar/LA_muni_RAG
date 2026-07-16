@@ -264,6 +264,18 @@ if (!process.env.DATABASE_URL) {
     });
 
     // -----------------------------------------------------------------------
+    // Procedure Workflow
+    // -----------------------------------------------------------------------
+
+    it("GET /api/procedure supports deep_dive depth", async () => {
+      const { status, body } = await get("/api/procedure?mode=keyword&q=procedimiento&limit=2&depth=deep_dive");
+      assert.equal(status, 200);
+      assert.ok("metadata" in body);
+      const metadata = body.metadata as Record<string, unknown>;
+      assert.equal(metadata.depth, "deep_dive");
+    });
+
+    // -----------------------------------------------------------------------
     // Static files
     // -----------------------------------------------------------------------
 
@@ -306,6 +318,13 @@ if (!process.env.DATABASE_URL) {
       assert.equal(status, 400);
       const error = body.error as Record<string, unknown>;
       assert.equal(error.code, "invalid_mode");
+    });
+
+    it("invalid procedure depth returns 400", async () => {
+      const { status, body } = await get("/api/procedure?mode=keyword&q=test&depth=bad");
+      assert.equal(status, 400);
+      const error = body.error as Record<string, unknown>;
+      assert.equal(error.code, "invalid_depth");
     });
 
     it("unknown route returns 404", async () => {

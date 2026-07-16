@@ -240,10 +240,13 @@ export const createRequestHandler = (options: ServerOptions = {}): RequestListen
   };
 };
 
+export const createApiServer = (options: ServerOptions = {}): Server =>
+  createServer(createRequestHandler(options));
+
 export const startServer = (): Server => {
   requireDatabaseUrl();
   const port = Number(process.env.PORT ?? 3000);
-  const server = createServer(createRequestHandler());
+  const server = createApiServer();
   server.listen(port, () => {
     console.log(`LA Muni RAG API listening on port ${port}`);
   });
