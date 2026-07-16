@@ -13,7 +13,7 @@
 - [x] Extend Pages artifact verification.
 - [x] Add focused static tests.
 - [x] Add documentation and progress tracking.
-- [ ] Run focused verification.
-- [ ] Run complete verification gate.
-- [ ] Reviewer report.
-- [ ] Mark done only after successful verification.
+- [x] Run focused verification.
+- [x] Run complete verification gate.
+- [x] Reviewer report.
+- [x] Mark done only after successful verification.
