@@ -23,6 +23,11 @@
     contextual: "Fuente contextual",
     insufficient: "Sin fuente suficiente",
   }[status] || "Fuente del paso");
+  const sourceLinkLabel = (status) => {
+    if (status === "comparative") return "Abrir referencia comparativa";
+    if (status === "contextual") return "Abrir fuente contextual";
+    return "Abrir fuente oficial";
+  };
 
   const injectStyles = () => {
     if (document.getElementById("procedure-source-attribution-style")) return;
@@ -68,12 +73,11 @@
     const status = attribution.status || "insufficient";
     const citation = attribution.primaryCitation || asArray(attribution.citations)[0];
     const link = safeUrl(citation?.sourceUrl);
-    const linkLabel = status === "comparative" ? "Abrir referencia comparativa" : status === "contextual" ? "Abrir fuente contextual" : "Abrir fuente";
     const meta = [
       citation?.authorityLabel ? `<span>${esc(citation.authorityLabel)}</span>` : "",
       citation?.authorityLevel ? `<span>Nivel: ${esc(citation.authorityLevel)}</span>` : "",
       citation?.pageStart != null ? `<span>Página ${esc(citation.pageStart)}</span>` : "",
-      link ? `<a href="${esc(link)}" target="_blank" rel="noopener noreferrer">${esc(linkLabel)}</a>` : "",
+      link ? `<a href="${esc(link)}" target="_blank" rel="noopener noreferrer">${esc(sourceLinkLabel(status))}</a>` : "",
     ].filter(Boolean).join("");
     return `
       <section class="source-attribution ${esc(status)}" data-source-attribution="true">
