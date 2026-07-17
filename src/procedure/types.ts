@@ -9,8 +9,4 @@ export type ProcedureConfidence = "high" | "medium" | "low";
 
 export type ProcedureWorkflowDepth = "overview" | "deep_dive";
 
-export type ProcedureStepEvidenceStatus = "supported" | "inferred" | "insufficient";
-
-export type ProcedureSourceAttributionStatus =
-  | "official_municipal"
-  | "official_n
+export type ProcedureStepEvidenceStatus = "supported" |
