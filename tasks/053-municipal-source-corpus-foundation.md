@@ -24,32 +24,40 @@
 
 ## Critic
 
-- [ ] Verify no source is falsely marked acquired or ingested.
-- [ ] Verify Mixco remains comparative.
-- [ ] Verify national law does not set Antigua evidence.
-- [ ] Verify unknown municipality cannot become primary.
-- [ ] Verify duplicate/version/hash rules.
-- [ ] Verify no War Room changes.
-- [ ] Verify no database or corpus writes.
+- [x] Verify no source is falsely marked acquired or ingested.
+- [x] Verify Mixco remains comparative.
+- [x] Verify national law does not set Antigua evidence.
+- [x] Verify unknown municipality cannot become primary.
+- [x] Verify duplicate/version/hash rules.
+- [x] Verify declarative authority maps to valid domain-pack IDs.
+- [x] Verify no War Room changes.
+- [x] Verify no database or corpus writes.
+
+Critic finding corrected: declarative authority classes were initially passed directly as domain-pack IDs. A bounded mapper and focused test now preserve inventory authority in tags while emitting valid domain authority IDs.
 
 ## Independent verifier
 
-- [ ] `npm run source-inventory:validate`
-- [ ] `npm run typecheck`
-- [ ] `npm run build`
-- [ ] focused Feature 053 tests
-- [ ] `npm run domain:evaluate`
-- [ ] `npm run test`
-- [ ] `npm run build:pages`
-- [ ] `node scripts/verify-pages-artifact.mjs`
-- [ ] `git diff --check`
-- [ ] bounded `dist-pages/` cleanup
-- [ ] clean generated state
+- [x] `npm run source-inventory:validate`
+- [x] `npm run typecheck`
+- [x] `npm run build`
+- [x] focused Feature 053 tests
+- [x] `npm run domain:evaluate`
+- [x] `npm run test`
+- [x] `npm run build:pages`
+- [x] `node scripts/verify-pages-artifact.mjs`
+- [x] `git diff --check`
+- [x] bounded `dist-pages/` cleanup
+- [x] clean generated state
+
+GitHub Actions runs `29660080600` and `29660134062` completed successfully; the second run includes the Critic fix.
 
 ## Release review
 
-- [ ] Draft PR opened.
-- [ ] CI evidence recorded.
-- [ ] Scope and limitations documented.
+- [x] Draft PR #18 opened.
+- [x] CI evidence recorded.
+- [x] Scope and limitations documented.
+- [x] Decision log added.
+- [x] Risk register added.
+- [x] Requirements traceability added.
 - [ ] Human review requested.
-- [ ] No automatic merge.
+- [x] No automatic merge.
