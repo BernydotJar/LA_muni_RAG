@@ -13,12 +13,29 @@ const normalize = (value: string): string =>
 
 const includesAny = (value: string, terms: string[]): boolean => terms.some((term) => value.includes(term));
 
+const identifiesExternalMunicipality = (value: string): boolean => {
+  const title = normalize(value);
+  const match = title.match(/municipalidad de ([a-z ]+)/);
+  if (!match) return false;
+  const municipality = match[1]?.trim() ?? "";
+  return municipality.length > 0 && municipality !== "la antigua guatemala" && municipality !== "antigua guatemala";
+};
+
+const externalReferenceAuthority = (domainPack: DomainPack): DomainSourceAuthority | undefined =>
+  domainPack.sourceAuthorityClasses.find(
+    (authority) => authority.externalReference || authority.authorityLevel === "comparative"
+  );
+
 export const resolveSourceAuthority = (
   evidence: EvidenceItem,
   domainPack: DomainPack = loadDomainPack(undefined)
 ): DomainSourceAuthority | undefined => {
   const type = normalize(evidence.sourceType || "");
   const title = normalize(`${evidence.documentTitle} ${evidence.citationLabel}`);
+
+  if (identifiesExternalMunicipality(title)) {
+    return externalReferenceAuthority(domainPack);
+  }
 
   return domainPack.sourceAuthorityClasses.find((candidate) =>
     includesAny(title, candidate.titleKeywords.map((keyword) => normalize(keyword))) ||
@@ -37,7 +54,7 @@ export const hasLocalEvidence = (
 ): boolean =>
   citations.some((citation) => {
     const authority = domainPack.sourceAuthorityClasses.find((item) => item.id === citation.authorityClass);
-    return authority && authority.authorityLevel !== "unknown" && !authority.externalReference;
+    return Boolean(authority && authority.authorityLevel === "primary" && !authority.externalReference);
   });
 
 export const hasAntiguaEvidence = hasLocalEvidence;
