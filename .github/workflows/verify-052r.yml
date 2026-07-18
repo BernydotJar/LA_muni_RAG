@@ -1,0 +1,19 @@
+name: Verify 052R reconciliation
+
+on:
+  pull_request:
+    branches:
+      - stack-base/052-case-portfolio-dashboard-merged
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    if: github.head_ref == 'fix/052-post-merge-reconciliation-hardening' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      -
