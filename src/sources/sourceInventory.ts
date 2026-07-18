@@ -158,67 +158,53 @@ const STATES: SourceInventoryState[] = [
 const isObject = (value: unknown): value is Record<string, unknown> =>
   typeof value === "object" && value !== null && !Array.isArray(value);
 
-const clean = (value: string): string => value.trim();
+const normalize = (value: string): string =>
+  value.trim().toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/\s+/g, " ");
 
-const normalizeJurisdiction = (value: string): string =>
-  clean(value)
-    .toLowerCase()
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .replace(/\s+/g, " ");
-
-const isAntiguaJurisdiction = (value: string): boolean => {
-  const normalized = normalizeJurisdiction(value);
-  return normalized.includes("antigua guatemala") || normalized === "antigua";
+const isAntigua = (value: string): boolean => {
+  const normalized = normalize(value);
+  return normalized === "antigua" || normalized.includes("antigua guatemala");
 };
 
 const isHttpUrl = (value: string | undefined): boolean => {
   if (!value) return false;
   try {
     const url = new URL(value);
-    return url.protocol === "https:" || url.protocol === "http:";
+    return url.protocol === "http:" || url.protocol === "https:";
   } catch {
     return false;
   }
 };
 
-const hasAcquisition = (record: SourceInventoryRecord): boolean => {
-  const acquisition = record.acquisition;
-  return Boolean(
-    acquisition &&
-      acquisition.acquiredAt.trim() &&
-      acquisition.artifactPath.trim() &&
-      /^[a-f0-9]{64}$/i.test(acquisition.contentSha256)
-  );
-};
+const hasAcquisition = (record: SourceInventoryRecord): boolean => Boolean(
+  record.acquisition?.acquiredAt.trim() &&
+  record.acquisition.artifactPath.trim() &&
+  /^[a-f0-9]{64}$/i.test(record.acquisition.contentSha256)
+);
 
-const hasExtraction = (record: SourceInventoryRecord): boolean =>
-  Boolean(
-    record.extraction &&
-      record.extraction.extractedAt.trim() &&
-      record.extraction.extractor.trim() &&
-      Number.isInteger(record.extraction.sectionCount) &&
-      record.extraction.sectionCount > 0
-  );
+const hasExtraction = (record: SourceInventoryRecord): boolean => Boolean(
+  record.extraction?.extractedAt.trim() &&
+  record.extraction.extractor.trim() &&
+  Number.isInteger(record.extraction.sectionCount) &&
+  record.extraction.sectionCount > 0
+);
 
-const hasIndexing = (record: SourceInventoryRecord): boolean =>
-  Boolean(
-    record.indexing &&
-      record.indexing.indexedAt.trim() &&
-      record.indexing.indexer.trim() &&
-      record.indexing.manifestDocumentKey.trim() &&
-      Number.isInteger(record.indexing.chunkCount) &&
-      record.indexing.chunkCount > 0
-  );
+const hasIndexing = (record: SourceInventoryRecord): boolean => Boolean(
+  record.indexing?.indexedAt.trim() &&
+  record.indexing.indexer.trim() &&
+  record.indexing.manifestDocumentKey.trim() &&
+  Number.isInteger(record.indexing.chunkCount) &&
+  record.indexing.chunkCount > 0
+);
 
 const failure = (
   code: SourceInventoryValidationCode,
   message: string,
   sourceId?: string
 ): SourceInventoryValidationFailure => {
-  const result: SourceInventoryValidationFailure = { code, message };
-  if (sourceId) result.sourceId = sourceId;
-  return result;
+  const item: SourceInventoryValidationFailure = { code, message };
+  if (sourceId) item.sourceId = sourceId;
+  return item;
 };
 
 export const validateSourceInventoryRecord = (value: unknown): SourceInventoryValidationResult => {
@@ -229,118 +215,73 @@ export const validateSourceInventoryRecord = (value: unknown): SourceInventoryVa
   const record = value as unknown as SourceInventoryRecord;
   const failures: SourceInventoryValidationFailure[] = [];
   const sourceId = typeof record.sourceId === "string" ? record.sourceId : undefined;
+  const required: Array<[unknown, SourceInventoryValidationCode, string]> = [
+    [record.sourceId, "missing_source_id", "sourceId"],
+    [record.documentKey, "missing_document_key", "documentKey"],
+    [record.documentVersion, "missing_document_version", "documentVersion"],
+    [record.title, "missing_title", "title"],
+    [record.targetJurisdiction, "missing_target_jurisdiction", "targetJurisdiction"],
+    [record.sourceJurisdiction, "missing_source_jurisdiction", "sourceJurisdiction"],
+  ];
 
-  if (typeof record.sourceId !== "string" || clean(record.sourceId).length === 0) {
-    failures.push(failure("missing_source_id", "sourceId must be a non-empty string."));
+  for (const [valueToCheck, code, label] of required) {
+    if (typeof valueToCheck !== "string" || !valueToCheck.trim()) {
+      failures.push(failure(code, `${label} must be a non-empty string.`, sourceId));
+    }
   }
-  if (typeof record.documentKey !== "string" || clean(record.documentKey).length === 0) {
-    failures.push(failure("missing_document_key", "documentKey must be a non-empty string.", sourceId));
-  }
-  if (typeof record.documentVersion !== "string" || clean(record.documentVersion).length === 0) {
-    failures.push(failure("missing_document_version", "documentVersion must be a non-empty string.", sourceId));
-  }
-  if (typeof record.title !== "string" || clean(record.title).length === 0) {
-    failures.push(failure("missing_title", "title must be a non-empty string.", sourceId));
-  }
-  if (typeof record.targetJurisdiction !== "string" || clean(record.targetJurisdiction).length === 0) {
-    failures.push(failure("missing_target_jurisdiction", "targetJurisdiction must be explicit.", sourceId));
-  }
-  if (typeof record.sourceJurisdiction !== "string" || clean(record.sourceJurisdiction).length === 0) {
-    failures.push(failure("missing_source_jurisdiction", "sourceJurisdiction must be explicit.", sourceId));
-  }
-  if (!STATES.includes(record.status)) {
-    failures.push(failure("invalid_record", "status is unsupported.", sourceId));
-  }
+
+  if (!STATES.includes(record.status)) failures.push(failure("invalid_record", "status is unsupported.", sourceId));
   if (record.publicUrl !== undefined && !isHttpUrl(record.publicUrl)) {
     failures.push(failure("invalid_public_url", "publicUrl must use HTTP or HTTPS.", sourceId));
   }
 
-  const targetIsAntigua = typeof record.targetJurisdiction === "string" && isAntiguaJurisdiction(record.targetJurisdiction);
-  const sourceIsAntigua = typeof record.sourceJurisdiction === "string" && isAntiguaJurisdiction(record.sourceJurisdiction);
-  const municipality = record.municipality?.trim().toLowerCase();
-  const sourceIsExternalMunicipality = Boolean(municipality && municipality !== "antigua guatemala" && municipality !== "antigua");
+  const targetIsAntigua = typeof record.targetJurisdiction === "string" && isAntigua(record.targetJurisdiction);
+  const sourceIsAntigua = typeof record.sourceJurisdiction === "string" && isAntigua(record.sourceJurisdiction);
+  const municipality = record.municipality ? normalize(record.municipality) : "";
+  const externalMunicipality = Boolean(municipality && municipality !== "antigua" && municipality !== "antigua guatemala");
 
   if (record.authorityLevel === "primary" && (!sourceIsAntigua || !record.officialForTargetJurisdiction)) {
-    failures.push(
-      failure(
-        "invalid_authority_combination",
-        "Primary authority requires an official source for the target jurisdiction.",
-        sourceId
-      )
-    );
+    failures.push(failure("invalid_authority_combination", "Primary authority requires an official source for Antigua.", sourceId));
   }
 
-  if (targetIsAntigua && sourceIsExternalMunicipality) {
-    if (
-      record.authorityClass !== "external_reference" ||
-      record.authorityLevel !== "comparative" ||
-      record.officialForTargetJurisdiction
-    ) {
-      failures.push(
-        failure(
-          "external_municipality_must_be_comparative",
-          "A source from another municipality must remain comparative for Antigua.",
-          sourceId
-        )
-      );
-    }
+  if (targetIsAntigua && externalMunicipality && (
+    record.authorityClass !== "external_reference" ||
+    record.authorityLevel !== "comparative" ||
+    record.officialForTargetJurisdiction
+  )) {
+    failures.push(failure(
+      "external_municipality_must_be_comparative",
+      "A source from another municipality must remain comparative for Antigua.",
+      sourceId
+    ));
   }
 
-  if (
-    normalizeJurisdiction(record.sourceJurisdiction ?? "") === "unknown" &&
-    (record.authorityLevel === "primary" || record.officialForTargetJurisdiction)
-  ) {
-    failures.push(
-      failure(
-        "unknown_jurisdiction_cannot_be_primary",
-        "Unknown source jurisdiction cannot be promoted to primary authority.",
-        sourceId
-      )
-    );
+  if (typeof record.sourceJurisdiction === "string" && normalize(record.sourceJurisdiction) === "unknown" && (
+    record.authorityLevel === "primary" || record.officialForTargetJurisdiction
+  )) {
+    failures.push(failure("unknown_jurisdiction_cannot_be_primary", "Unknown jurisdiction cannot be primary.", sourceId));
   }
 
   if (record.status === "missing_source" && (record.publicUrl || record.acquisition || record.extraction || record.indexing)) {
-    failures.push(
-      failure("missing_source_has_evidence", "missing_source cannot include URL or processing evidence.", sourceId)
-    );
+    failures.push(failure("missing_source_has_evidence", "missing_source cannot include URL or processing evidence.", sourceId));
   }
-
   if (record.status === "verified" && (!isHttpUrl(record.publicUrl) || !record.verifiedAt?.trim())) {
-    failures.push(
-      failure("verified_requires_url_and_timestamp", "verified requires publicUrl and verifiedAt.", sourceId)
-    );
+    failures.push(failure("verified_requires_url_and_timestamp", "verified requires publicUrl and verifiedAt.", sourceId));
   }
-
   if (record.status === "acquired" && !hasAcquisition(record)) {
-    failures.push(
-      failure("acquired_requires_acquisition_evidence", "acquired requires hash and artifact evidence.", sourceId)
-    );
+    failures.push(failure("acquired_requires_acquisition_evidence", "acquired requires artifact and hash evidence.", sourceId));
   }
-
   if (record.status === "ingestion_pending" && !hasAcquisition(record)) {
-    failures.push(
-      failure("ingestion_pending_requires_acquisition", "ingestion_pending requires acquisition evidence.", sourceId)
-    );
+    failures.push(failure("ingestion_pending_requires_acquisition", "ingestion_pending requires acquisition evidence.", sourceId));
   }
-
   if (record.status === "ingested" && (!hasAcquisition(record) || !hasExtraction(record) || !hasIndexing(record))) {
-    failures.push(
-      failure(
-        "ingested_requires_full_evidence",
-        "ingested requires acquisition, extraction, and indexing evidence.",
-        sourceId
-      )
-    );
+    failures.push(failure("ingested_requires_full_evidence", "ingested requires acquisition, extraction, and indexing evidence.", sourceId));
   }
-
-  if (record.status === "failed" && !(record.failureCodes?.length)) {
+  if (record.status === "failed" && !record.failureCodes?.length) {
     failures.push(failure("failed_requires_failure_code", "failed requires at least one failure code.", sourceId));
   }
-
   if (record.status === "superseded" && !record.supersededBySourceId?.trim()) {
-    failures.push(
-      failure("superseded_requires_replacement", "superseded requires supersededBySourceId.", sourceId)
-    );
+    failures.push(failure("superseded_requires_replacement", "superseded requires supersededBySourceId.", sourceId));
   }
 
   return { valid: failures.length === 0, failures };
@@ -348,38 +289,25 @@ export const validateSourceInventoryRecord = (value: unknown): SourceInventoryVa
 
 export const validateSourceInventory = (records: unknown[]): SourceInventoryValidationResult => {
   const failures = records.flatMap((record) => validateSourceInventoryRecord(record).failures);
-  const declaredVersions = new Map<string, SourceInventoryRecord>();
+  const versions = new Map<string, SourceInventoryRecord>();
 
-  for (const rawRecord of records) {
-    if (!isObject(rawRecord)) continue;
-    const record = rawRecord as unknown as SourceInventoryRecord;
+  for (const value of records) {
+    if (!isObject(value)) continue;
+    const record = value as unknown as SourceInventoryRecord;
     if (!record.sourceId || !record.documentVersion) continue;
     const key = `${record.sourceId}::${record.documentVersion}`;
-    const existing = declaredVersions.get(key);
+    const existing = versions.get(key);
     if (!existing) {
-      declaredVersions.set(key, record);
+      versions.set(key, record);
       continue;
     }
-
-    const existingHash = existing.acquisition?.contentSha256;
-    const currentHash = record.acquisition?.contentSha256;
-    if (existingHash && currentHash && existingHash !== currentHash) {
-      failures.push(
-        failure(
-          "conflicting_acquired_hash",
-          `Conflicting acquired hash for ${record.sourceId} version ${record.documentVersion}.`,
-          record.sourceId
-        )
-      );
-    } else {
-      failures.push(
-        failure(
-          "duplicate_declared_version",
-          `Duplicate source/version: ${record.sourceId} ${record.documentVersion}.`,
-          record.sourceId
-        )
-      );
-    }
+    const leftHash = existing.acquisition?.contentSha256;
+    const rightHash = record.acquisition?.contentSha256;
+    failures.push(failure(
+      leftHash && rightHash && leftHash !== rightHash ? "conflicting_acquired_hash" : "duplicate_declared_version",
+      `Duplicate or conflicting source/version: ${record.sourceId} ${record.documentVersion}.`,
+      record.sourceId
+    ));
   }
 
   return { valid: failures.length === 0, failures };
@@ -401,29 +329,49 @@ export const toSourceAuthorityMetadata = (record: SourceInventoryRecord): Source
   return metadata;
 };
 
-export const isAntiguaPrimaryAuthority = (metadata: SourceAuthorityMetadata | undefined): boolean =>
-  Boolean(
-    metadata &&
-      metadata.authorityLevel === "primary" &&
-      metadata.officialForTargetJurisdiction &&
-      isAntiguaJurisdiction(metadata.targetJurisdiction) &&
-      isAntiguaJurisdiction(metadata.sourceJurisdiction)
-  );
+export const isAntiguaPrimaryAuthority = (metadata: SourceAuthorityMetadata | undefined): boolean => Boolean(
+  metadata &&
+  metadata.authorityLevel === "primary" &&
+  metadata.officialForTargetJurisdiction &&
+  isAntigua(metadata.targetJurisdiction) &&
+  isAntigua(metadata.sourceJurisdiction)
+);
+
+export const sourceInventoryAuthorityToDomainClass = (record: SourceInventoryRecord): string => {
+  if (record.authorityClass === "external_reference") return "external_reference";
+  if (record.authorityClass === "unknown") return "unknown";
+  if (record.authorityClass === "contextual") return "community_file";
+  if (record.authorityClass === "official_national") {
+    return normalize(record.title).includes("codigo municipal") ? "municipal_code" : "national_law";
+  }
+
+  if (record.category === "planning") {
+    const title = normalize(record.title);
+    return title.includes("poa") || title.includes("pom") ? "pom_poa" : "pdm_ot";
+  }
+  if (record.category === "budget") return "budget";
+  if (record.category === "organization") return "organigram";
+  if (record.category === "function_manual") return "mof";
+  if (record.category === "council_record") return "council_minutes";
+  if (record.category === "community_record") return "community_file";
+  return "municipal_manual";
+};
 
 export const sourceInventoryRecordToDomainMetadata = (record: SourceInventoryRecord): DomainDocumentMetadata => {
   const metadata: DomainDocumentMetadata = {
     domainPackId: "municipal-antigua",
-    sourceAuthorityClass: record.authorityClass,
+    sourceAuthorityClass: sourceInventoryAuthorityToDomainClass(record),
     documentType: record.category,
     jurisdiction: record.targetJurisdiction,
     organization: record.sourceJurisdiction,
     confidentiality: "public",
     tags: [
       `source_inventory:${record.sourceId}`,
+      `inventory_authority:${record.authorityClass}`,
       `authority_level:${record.authorityLevel}`,
       `official_source:${record.officialSource}`,
       `official_for_target:${record.officialForTargetJurisdiction}`,
-      `source_jurisdiction:${normalizeJurisdiction(record.sourceJurisdiction)}`,
+      `source_jurisdiction:${normalize(record.sourceJurisdiction)}`,
     ],
   };
   if (record.effectiveFrom) metadata.effectiveDate = record.effectiveFrom;
@@ -437,7 +385,7 @@ export const summarizeSourceInventory = (records: SourceInventoryRecord[]): Sour
   return {
     total: records.length,
     byStatus,
-    acquired: records.filter((record) => hasAcquisition(record)).length,
+    acquired: records.filter(hasAcquisition).length,
     ingested: records.filter((record) => record.status === "ingested").length,
     comparative: records.filter((record) => record.authorityLevel === "comparative").length,
     missing: records.filter((record) => record.status === "missing_source").length,
