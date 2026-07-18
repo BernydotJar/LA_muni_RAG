@@ -6,7 +6,7 @@
 
 ## State
 
-implementation_complete_pending_verification
+review
 
 ## Mode
 
@@ -22,29 +22,25 @@ SHIP
 
 ## Summary
 
-Feature 053 establishes a declarative, versioned source inventory that is separate from the operational corpus manifest. It records documentary authority, jurisdiction, discovery, acquisition, extraction, and ingestion claims without treating a URL or source registration as proof of ingestion.
+Feature 053 establishes a declarative, versioned source inventory separate from the operational corpus manifest. It records authority, jurisdiction, discovery, acquisition, extraction and ingestion claims without treating a URL or registration as proof of ingestion.
 
 ## Implemented
 
-- `specs/053-municipal-source-corpus-foundation.md`
-- `src/sources/sourceInventory.ts`
-- `src/sources/sourceInventoryManifest.ts`
-- `.rag/source-inventory.json`
-- `src/cli/validateSourceInventory.ts`
-- `npm run source-inventory:validate`
-- `src/__tests__/source-inventory.test.ts`
-- `src/__tests__/procedure-authority-boundaries.test.ts`
-- `docs/municipal-source-inventory.md`
-- `tasks/053-municipal-source-corpus-foundation.md`
-- strict documentary lifecycle states
-- explicit target/source jurisdiction
-- explicit authority class and level
-- acquisition, extraction, and indexing evidence contracts
-- declarative/operational manifest reconciliation
+- source inventory specification and lifecycle contract
+- strict source record and manifest validation
+- explicit target/source jurisdiction and authority metadata
+- declarative-to-operational manifest reconciliation
 - duplicate version and conflicting hash detection
-- external municipality comparison boundary
 - Antigua-specific evidence boundary
-- initial Antigua, national, and Mixco inventory
+- external municipality comparison boundary
+- valid domain-pack authority mapping
+- initial Antigua, national and Mixco inventory
+- validation CLI and npm command
+- deterministic and adversarial tests
+- acquisition and ingestion runbook
+- decision log, risk register and requirements traceability
+- Feature 053 CI gate
+- draft PR #18
 
 ## Current Inventory Truth
 
@@ -52,13 +48,29 @@ Feature 053 establishes a declarative, versioned source inventory that is separa
 - ingested documents: 0
 - Mixco records are comparative for Antigua
 - priority Antigua documents without confirmed official URLs are `missing_source`
-- verified portals do not imply acquired individual documents
+- verified portal records do not imply acquired individual documents
 
-## Corrected Existing Boundary
+## Critic Result
 
-- national law no longer sets `hasAntiguaEvidence=true`
-- a named external municipality cannot become primary authority through generic manual keywords
-- Mixco and Escuintla examples remain comparative
+The Critic found that declarative authority classes were initially being passed directly as domain-pack authority IDs. The implementation now maps each inventory authority/category to a valid domain-pack ID while preserving the original declarative authority in audit tags. Focused coverage verifies the mapping.
+
+## Independent Verification
+
+GitHub Actions run `29660134062` completed successfully after the Critic fix:
+
+- source inventory validation
+- TypeScript typecheck
+- build
+- source inventory tests
+- authority boundary tests
+- existing source attribution tests
+- domain evaluation
+- complete test suite
+- Pages build
+- Pages artifact verification
+- diff integrity
+- bounded generated artifact cleanup
+- clean generated state
 
 ## Non-Goals Preserved
 
@@ -73,19 +85,15 @@ Feature 053 establishes a declarative, versioned source inventory that is separa
 - no tenant/auth/RBAC work
 - no political profiling or targeting
 
-## Verification Pending
+## Review Artifacts
 
-- source inventory validation
-- TypeScript typecheck
-- build
-- focused Feature 053 tests
-- domain evaluation
-- complete test suite
-- Pages build and verification
-- diff integrity
-- generated artifact cleanup
-- clean generated state
+- `specs/053-municipal-source-corpus-foundation.md`
+- `docs/municipal-source-inventory.md`
+- `docs/decisions/053-source-inventory-boundaries.md`
+- `docs/risks/053-source-inventory-risk-register.md`
+- `docs/traceability/053-requirements-traceability.md`
+- `tasks/053-municipal-source-corpus-foundation.md`
 
 ## Next Gate
 
-Open a draft PR, execute independent CI verification, correct every failure, perform critic/release review, and leave the PR ready for human review without merging.
+Human review of PR #18. Do not merge automatically.
