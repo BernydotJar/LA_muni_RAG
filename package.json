@@ -15,6 +15,7 @@
     "domain:init": "tsx src/cli/initDomainPack.ts",
     "ports:kill": "node scripts/kill-ports.mjs",
     "search": "tsx src/cli/search.ts",
+    "source-inventory:validate": "node --import tsx src/cli/validateSourceInventory.ts --manifest .rag/source-inventory.json",
     "start": "node dist/server.js",
     "test": "node --import tsx --test src/__tests__/*.test.ts",
     "typecheck": "tsc -p tsconfig.json --noEmit",

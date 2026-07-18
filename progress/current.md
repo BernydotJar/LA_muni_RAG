@@ -2,11 +2,7 @@
 
 ## Active Feature
 
-052-case-portfolio-dashboard — official-source attribution follow-up
-
-## Last Completed Feature
-
-051-procedure-case-workspace
+053-municipal-source-corpus-foundation
 
 ## State
 
@@ -14,45 +10,90 @@ review
 
 ## Mode
 
-MVP
+SHIP
+
+## Dependency Resolution
+
+- PR #17 passed the complete reconciliation gate.
+- Human approval was received.
+- PR #17 was merged externally; this session did not perform the merge.
+- Reconciled base: `stack-base/052-case-portfolio-dashboard-reconciled`.
+- Reconciled merge commit: `ed2fa98427e2857956c0ed30b6a7813043ab1bfe`.
 
 ## Summary
 
-Feature 052 added a browser-local Case Portfolio Dashboard and was merged through PR #13. A post-merge review identified that procedure steps still displayed a generic `Requiere validación contra fuente oficial de Antigua Guatemala` note even when the RAG had already retrieved a classified official source. The active follow-up replaces that generic warning with structured per-step source attribution.
+Feature 053 establishes a declarative, versioned source inventory separate from the operational corpus manifest. It records authority, jurisdiction, discovery, acquisition, extraction and ingestion claims without treating a URL or registration as proof of ingestion.
 
-## Merged Dashboard
+## Implemented
 
-- PR #13 merged.
-- Merge commit: `8305d9daf331fcb17432f827794921650e44e675`.
-- The portfolio shell truncation found during visual review was corrected before merge.
-- Browser review confirmed that the dashboard renders after the correction.
+- source inventory specification and lifecycle contract
+- strict source record and manifest validation
+- explicit target/source jurisdiction and authority metadata
+- declarative-to-operational manifest reconciliation
+- duplicate version and conflicting hash detection
+- Antigua-specific evidence boundary
+- external municipality comparison boundary
+- valid domain-pack authority mapping
+- initial Antigua, national and Mixco inventory
+- validation CLI and npm command
+- deterministic and adversarial tests
+- acquisition and ingestion runbook
+- decision log, risk register and requirements traceability
+- Feature 053 CI gate
+- draft PR #18
 
-## Official Source Attribution Follow-up
+## Current Inventory Truth
 
-- Added `authorityLabel` and `authorityLevel` to procedure citations.
-- Added structured `sourceAttribution` to procedure steps.
-- Distinguished official municipal sources, national legal bases, comparative references, contextual sources, and insufficient evidence.
-- Changed step evidence status to depend on citations matched to that step rather than a workflow-global local-evidence flag.
-- Removed the generic Antigua official-source warning when a classified source is already available.
-- Added an overview/deep-dive visual attribution panel with source name, authority class, page, excerpt, and safe HTTP(S) link.
-- Preserved comparative-source and national-versus-local governance boundaries.
-- Added focused attribution tests, documentation, and Pages artifact verification.
+- acquired documents: 0
+- ingested documents: 0
+- Mixco records are comparative for Antigua
+- priority Antigua documents without confirmed official URLs are `missing_source`
+- verified portal records do not imply acquired individual documents
 
-## Verification Status
+## Critic Result
 
-Remote implementation and static inspection are complete. Local verification remains required:
+The Critic found that declarative authority classes were initially being passed directly as domain-pack authority IDs. The implementation now maps each inventory authority/category to a valid domain-pack ID while preserving the original declarative authority in audit tags. Focused coverage verifies the mapping.
 
-- `npm run typecheck`
-- `npm run build`
-- focused source-attribution and procedure tests
-- `npm run domain:evaluate`
+## Independent Verification
+
+GitHub Actions run `29660134062` completed successfully after the Critic fix:
+
+- source inventory validation
+- TypeScript typecheck
+- build
+- source inventory tests
+- authority boundary tests
+- existing source attribution tests
+- domain evaluation
 - complete test suite
-- `npm run build:pages`
-- `node scripts/verify-pages-artifact.mjs`
-- `git diff --check`
-- browser review in overview and deep-dive modes
-- clean `git status --short` after scoped Pages cleanup
+- Pages build
+- Pages artifact verification
+- diff integrity
+- bounded generated artifact cleanup
+- clean generated state
 
-## Next Work
+## Non-Goals Preserved
 
-Run the local gate, visually confirm the five attribution states, then complete Reviewer validation. Do not merge automatically.
+- no document upload UI
+- no background acquisition
+- no corpus or database write
+- no migrations
+- no deployment
+- no War Room changes
+- no workflow publication lifecycle
+- no water-project workflow
+- no tenant/auth/RBAC work
+- no political profiling or targeting
+
+## Review Artifacts
+
+- `specs/053-municipal-source-corpus-foundation.md`
+- `docs/municipal-source-inventory.md`
+- `docs/decisions/053-source-inventory-boundaries.md`
+- `docs/risks/053-source-inventory-risk-register.md`
+- `docs/traceability/053-requirements-traceability.md`
+- `tasks/053-municipal-source-corpus-foundation.md`
+
+## Next Gate
+
+Human review of PR #18. Do not merge automatically.
