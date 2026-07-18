@@ -36,12 +36,14 @@ jobs:
       - name: Build
         run: npm run build
 
-      - name: Focused reconciliation tests
-        run: >-
-          node --import tsx --test
-          src/__tests__/052-reconciliation-integrity.test.ts
-          src/__tests__/procedure-case-portfolio.test.ts
-          src/__tests__/procedure-official-source-attribution.test.ts
+      - name: Reconciliation integrity test
+        run: node --import tsx --test src/__tests__/052-reconciliation-integrity.test.ts
+
+      - name: Portfolio focused test
+        run: node --import tsx --test src/__tests__/procedure-case-portfolio.test.ts
+
+      - name: Source attribution focused test
+        run: node --import tsx --test src/__tests__/procedure-official-source-attribution.test.ts
 
       - name: Domain evaluation
         run: npm run domain:evaluate
