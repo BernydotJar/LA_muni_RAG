@@ -1,0 +1,26 @@
+# Tasks — Local Case Portfolio Dashboard
+
+- [x] Confirm Feature 051 merge and local verification evidence.
+- [x] Close Feature 051 harness and issue.
+- [x] Create isolated branch and tracking issue.
+- [x] Define dashboard and safety specification.
+- [x] Add portfolio page and local runtime.
+- [x] Add validated LocalStorage discovery.
+- [x] Add aggregate metrics, filters, and deterministic sorting.
+- [x] Add case cards and focused case view.
+- [x] Add consolidated JSON export.
+- [x] Link individual workspaces to the portfolio.
+- [x] Extend Pages artifact verification.
+- [x] Add focused static tests.
+- [x] Add documentation and progress tracking.
+- [x] Correct truncated portfolio shell and add anti-truncation verification.
+- [x] Add structured official-source attribution to procedure citations and steps.
+- [x] Distinguish municipal, national, comparative, contextual, and insufficient sources.
+- [x] Render source name, authority, excerpt, page, and safe HTTP(S) link.
+- [x] Remove the generic official-source warning when a classified source is available.
+- [x] Add focused source-attribution tests and Pages verification.
+- [ ] Run focused verification for the post-merge attribution fix.
+- [ ] Run complete verification gate.
+- [ ] Visually verify official source attribution in overview and deep dive.
+- [ ] Reviewer report.
+- [ ] Mark done only after successful verification.

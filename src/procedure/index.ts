@@ -35,6 +35,8 @@ export type {
   ProcedureDependency,
   ProcedureGap,
   ProcedureQueryClassification,
+  ProcedureSourceAttribution,
+  ProcedureSourceAttributionStatus,
   ProcedureStep,
   ProcedureStepEvidenceStatus,
   ProcedureType,

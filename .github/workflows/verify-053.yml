@@ -1,0 +1,81 @@
+name: Verify Feature 053
+
+on:
+  pull_request:
+    branches:
+      - stack-base/052-case-portfolio-dashboard-reconciled
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    if: github.head_ref == 'feature/053-municipal-source-corpus-foundation' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Validate source inventory
+        run: npm run source-inventory:validate
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Build
+        run: npm run build
+
+      - name: Source inventory tests
+        run: node --import tsx --test src/__tests__/source-inventory.test.ts
+
+      - name: Authority boundary tests
+        run: node --import tsx --test src/__tests__/procedure-authority-boundaries.test.ts
+
+      - name: Existing source attribution tests
+        run: node --import tsx --test src/__tests__/procedure-official-source-attribution.test.ts
+
+      - name: Domain evaluation
+        run: npm run domain:evaluate
+
+      - name: Full test suite
+        run: npm run test
+
+      - name: Build Pages artifact
+        run: npm run build:pages
+
+      - name: Verify Pages artifact
+        run: node scripts/verify-pages-artifact.mjs
+
+      - name: Diff integrity
+        run: git diff --check "${{ github.event.pull_request.base.sha || github.event.before }}"...HEAD
+
+      - name: Restore and clean generated Pages artifact
+        shell: bash
+        run: |
+          git restore dist-pages || true
+          git clean -nd -- dist-pages/
+          git clean -fd -- dist-pages/
+
+      - name: Verify clean generated state
+        shell: bash
+        run: |
+          status="$(git status --short)"
+          printf '%s\n' "$status"
+          if [ -n "$status" ]; then
+            echo "Unexpected generated or untracked files remain after verification."
+            exit 1
+          fi

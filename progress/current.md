@@ -2,54 +2,98 @@
 
 ## Active Feature
 
-None
-
-## Last Completed Feature
-
-049-procedure-workflow-advisor-deep-dive
+053-municipal-source-corpus-foundation
 
 ## State
 
-done
+review
 
 ## Mode
 
-MVP
+SHIP
+
+## Dependency Resolution
+
+- PR #17 passed the complete reconciliation gate.
+- Human approval was received.
+- PR #17 was merged externally; this session did not perform the merge.
+- Reconciled base: `stack-base/052-case-portfolio-dashboard-reconciled`.
+- Reconciled merge commit: `ed2fa98427e2857956c0ed30b6a7813043ab1bfe`.
 
 ## Summary
 
-Feature 049 adds an explicit `deep_dive` mode over the existing Procedure Workflow Advisor while preserving the default `overview` response. Deep-dive workflows expose per-step evidence status, explicit insufficiency statements, structured dependencies, strict step-level citation matching, and comparative-source governance.
+Feature 053 establishes a declarative, versioned source inventory separate from the operational corpus manifest. It records authority, jurisdiction, discovery, acquisition, extraction and ingestion claims without treating a URL or registration as proof of ingestion.
 
-## Completed Implementation
+## Implemented
 
-- Added overview/deep-dive workflow depth contract.
-- Added per-step `supported`, `inferred`, and `insufficient` evidence states.
-- Removed unrelated fallback citations from procedure steps.
-- Added explicit evidence statements for inferred and unsupported steps.
-- Added structured sequential dependencies for deep-dive responses.
-- Exposed `depth=deep_dive` through `/api/procedure` with fail-closed validation.
-- Restored `createApiServer` compatibility for integration tests.
-- Added focused safety, compatibility, and HTTP depth tests.
-- Added deep-dive API and governance documentation.
-- Added reviewer report.
+- source inventory specification and lifecycle contract
+- strict source record and manifest validation
+- explicit target/source jurisdiction and authority metadata
+- declarative-to-operational manifest reconciliation
+- duplicate version and conflicting hash detection
+- Antigua-specific evidence boundary
+- external municipality comparison boundary
+- valid domain-pack authority mapping
+- initial Antigua, national and Mixco inventory
+- validation CLI and npm command
+- deterministic and adversarial tests
+- acquisition and ingestion runbook
+- decision log, risk register and requirements traceability
+- Feature 053 CI gate
+- draft PR #18
 
-## Verification
+## Current Inventory Truth
 
-Ran locally:
+- acquired documents: 0
+- ingested documents: 0
+- Mixco records are comparative for Antigua
+- priority Antigua documents without confirmed official URLs are `missing_source`
+- verified portal records do not imply acquired individual documents
 
-- npm run typecheck: passed
-- npm run build: passed
-- focused deep-dive/server tests: passed
-- npm run domain:evaluate: passed, 6/6 cases
-- npm run test: 327 passed, 0 failed
-- npm run build:pages: passed
-- node scripts/verify-pages-artifact.mjs: passed
-- git diff --check: passed
+## Critic Result
 
-Generated `dist-pages/` output was verified and cleaned.
+The Critic found that declarative authority classes were initially being passed directly as domain-pack authority IDs. The implementation now maps each inventory authority/category to a valid domain-pack ID while preserving the original declarative authority in audit tags. Focused coverage verifies the mapping.
 
-## Next Work
+## Independent Verification
 
-Recommended next feature:
+GitHub Actions run `29660134062` completed successfully after the Critic fix:
 
-- Deep-dive UI rendering for dependencies, evidence status, and per-step citations.
+- source inventory validation
+- TypeScript typecheck
+- build
+- source inventory tests
+- authority boundary tests
+- existing source attribution tests
+- domain evaluation
+- complete test suite
+- Pages build
+- Pages artifact verification
+- diff integrity
+- bounded generated artifact cleanup
+- clean generated state
+
+## Non-Goals Preserved
+
+- no document upload UI
+- no background acquisition
+- no corpus or database write
+- no migrations
+- no deployment
+- no War Room changes
+- no workflow publication lifecycle
+- no water-project workflow
+- no tenant/auth/RBAC work
+- no political profiling or targeting
+
+## Review Artifacts
+
+- `specs/053-municipal-source-corpus-foundation.md`
+- `docs/municipal-source-inventory.md`
+- `docs/decisions/053-source-inventory-boundaries.md`
+- `docs/risks/053-source-inventory-risk-register.md`
+- `docs/traceability/053-requirements-traceability.md`
+- `tasks/053-municipal-source-corpus-foundation.md`
+
+## Next Gate
+
+Human review of PR #18. Do not merge automatically.

@@ -1,3 +1,39 @@
+(function loadProcedureDeepDive() {
+  if (document.querySelector('script[data-procedure-deep-dive="true"]')) return;
+  const script = document.createElement("script");
+  script.src = "./procedure-deep-dive.js";
+  script.async = false;
+  script.dataset.procedureDeepDive = "true";
+  document.head.appendChild(script);
+})();
+
+(function loadProcedureSourceAttribution() {
+  if (document.querySelector('script[data-procedure-source-attribution="true"]')) return;
+  const script = document.createElement("script");
+  script.src = "./procedure-source-attribution.js";
+  script.async = false;
+  script.dataset.procedureSourceAttribution = "true";
+  document.head.appendChild(script);
+})();
+
+(function loadProcedureCaseWorkspace() {
+  if (document.querySelector('script[data-procedure-case-workspace="true"]')) return;
+  const script = document.createElement("script");
+  script.src = "./procedure-case-workspace.js";
+  script.async = false;
+  script.dataset.procedureCaseWorkspace = "true";
+  document.head.appendChild(script);
+})();
+
+(function loadProcedureCaseOpener() {
+  if (document.querySelector('script[data-procedure-case-open="true"]')) return;
+  const script = document.createElement("script");
+  script.src = "./procedure-case-open.js";
+  script.async = false;
+  script.dataset.procedureCaseOpen = "true";
+  document.head.appendChild(script);
+})();
+
 /**
  * LA Muni RAG — Procedure Workflow Feedback Loop
  *
@@ -11,6 +47,7 @@
   const EVENT_NAME = "procedure-workflow:rendered";
   const PANEL_ID = "procedure-feedback-panel";
   const DASHBOARD_URL = "./procedure-feedback-dashboard.html";
+  const PORTFOLIO_URL = "./procedure-case-portfolio.html";
   let currentWorkflow = null;
 
   const feedbackTypes = [
@@ -145,6 +182,7 @@
           <button type="submit">Guardar feedback local</button>
           <button type="button" class="secondary" id="copy-procedure-feedback-json">Copiar feedback JSON</button>
           <a class="secondary" href="${DASHBOARD_URL}">Ver dashboard de feedback</a>
+          <a class="secondary" href="${PORTFOLIO_URL}">Ver portafolio de casos</a>
         </div>
       </form>
       <div class="procedure-feedback-privacy">No se envía información al servidor en este MVP. No pegues datos personales, secretos ni información reservada.</div>
