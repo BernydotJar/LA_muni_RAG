@@ -57,7 +57,7 @@ describe("local procedure case portfolio", () => {
     const runtime = await readSource("public/procedure-case-portfolio.js");
 
     assert.match(html, /no prueban cumplimiento legal/i);
-    assert.match(html, /no dictaminan recepción, liquidación, pago ni cierre/i);
+    assert.match(html, /no dictaminan recepción,\s*liquidación, pago ni cierre/i);
     assert.match(dataRuntime, /portfolioSchemaVersion:1/);
     assert.match(runtime, /case-portfolio-export\.json/);
     assert.match(html, /Exportar portafolio JSON/);
