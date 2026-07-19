@@ -235,7 +235,7 @@ describe("integration contracts v1", () => {
     assert.equal(validate(mismatched), false);
   });
 
-  it("describes only the planned POST operation with required security controls", async () => {
+  it("describes only the implemented provider POST operation with required security controls", async () => {
     const openapi = JSON.parse(
       await readFile(resolve(projectRoot, OPENAPI_RELATIVE_PATH), "utf8")
     );
@@ -262,12 +262,19 @@ describe("integration contracts v1", () => {
     assert.equal(openapi.components.securitySchemes.bearerAuth.scheme, "bearer");
     assert.equal(
       openapi.components.headers.WWWAuthenticate.schema.const,
-      "Bearer"
+      'Bearer realm="la-muni-rag"'
+    );
+    assert.equal(
+      operation.parameters[0].schema.pattern,
+      "^[A-Za-z0-9][A-Za-z0-9._:-]{15,127}$"
     );
     assert.deepEqual(
       openapi.components.responses.Unauthorized.headers["WWW-Authenticate"],
       { $ref: "#/components/headers/WWWAuthenticate" }
     );
-    assert.equal(openapi["x-implementation-status"], "contract_only");
+    assert.equal(
+      openapi["x-implementation-status"],
+      "procedure_workflow_provider_implemented"
+    );
   });
 });

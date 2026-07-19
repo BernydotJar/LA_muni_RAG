@@ -249,10 +249,10 @@ const validateOpenApiDocument = async (
   const wwwAuthenticateSchema = isJsonObject(wwwAuthenticate.schema)
     ? wwwAuthenticate.schema
     : {};
-  if (wwwAuthenticateSchema.const !== "Bearer") {
+  if (wwwAuthenticateSchema.const !== 'Bearer realm="la-muni-rag"') {
     recordIssue(
       "invalid_www_authenticate_header",
-      "WWWAuthenticate header must declare the Bearer challenge"
+      "WWWAuthenticate header must declare the exact v1 Bearer challenge"
     );
   }
 
@@ -273,7 +273,7 @@ const validateOpenApiDocument = async (
   if (unauthorizedChallenge.$ref !== "#/components/headers/WWWAuthenticate") {
     recordIssue(
       "missing_www_authenticate_header",
-      "401 Unauthorized must return WWW-Authenticate: Bearer"
+      "401 Unauthorized must return the reusable WWW-Authenticate challenge"
     );
   }
 

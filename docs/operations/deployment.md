@@ -84,6 +84,15 @@ The image includes the canonical v1 JSON Schemas and OpenAPI document because th
 
 Local build evidence on 2026-07-18: `docker build --tag la-muni-rag:ops-foundation .` completed with the versioned Node base, locked build/production installs, and TypeScript build. Image inspection reported `user=node`, `NODE_ENV=production`, `PORT=3000`, the `/health` check, no application secret in the image environment, and an approximately 80.8 MB local image. This was an ephemeral development build, not a vulnerability scan, signature, registry push, runtime start, health/SIGTERM test, or deployment. It is not a release artifact or digest attestation.
 
+The later provider preflight rebuilt the disposable tag from current sources with
+the base resolved to
+`node:24.12.0-bookworm-slim@sha256:7326fb2dbdce998edd72140946851be64ef4a643e8715e138ca467e8e9d92c99`.
+The local manifest digest was
+`sha256:4c0e291f1508a728d9c95c7f1d5661158781702d2eb7c825f6163db175fa3c8b`,
+size 81,083,418 bytes, `USER node`, and environment contained only the base
+PATH/version values plus `NODE_ENV=production` and `PORT=3000`. The digest is
+local build evidence only; it was not pushed, signed, scanned, or approved.
+
 ### Container validation still required
 
 Run in a non-production environment with a disposable, migration-compatible database:
@@ -124,6 +133,31 @@ For every new migration:
 8. use a new corrective forward migration if a defect appears. Do not edit an applied migration or run destructive down-SQL.
 
 The SQL files use transactions, but that does not guarantee an online or safe migration for a populated production database. A staging migration test is required for each release.
+
+### Disposable migration/runtime evidence (2026-07-18)
+
+A clean database named exactly `la_muni_rag_test` applied, with
+`ON_ERROR_STOP=1`, migrations `001`, `002`, legacy vector `011`, `003`, both
+registry seeds, and `004`. `db/tests/procedure_query_runtime_gate.sql` then used
+a disposable login that was neither owner, superuser, nor `BYPASSRLS` and proved
+missing/malformed tenant denial, tenant A/B read/write isolation, same source
+bytes in separate tenants, credential function access without identity-table
+access, bounded tenantless auth audit, and success-only replay state.
+
+The reported runtime was PostgreSQL 16.14 (Debian) with pgvector 0.8.5. The
+compiled handler smoke returned
+`200, 200, 409, 403, 400, 401, 500, 200` for success, replay, conflict, tenant
+denial, boundary refusal, missing auth, corrupt stored replay, and recomputation.
+The image-default production probe returned a non-CORS 404 for the legacy
+`/api/search` route.
+Post-run inspection found no raw disposable token, key, query, tenant-B marker,
+or corrupt-response marker in procedure audit details. The test SQL refuses any
+database name other than `la_muni_rag_test`.
+
+This is reproducible local evidence, not a migration ledger, populated-data lock
+test, backup restore, HA failover, load test, approved staging topology, or
+production authorization. The disposable credential literals in the test
+fixture are fixtures only and must never be reused outside that isolated gate.
 
 ## Deployment sequence
 

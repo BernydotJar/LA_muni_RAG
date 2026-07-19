@@ -1,12 +1,12 @@
 # Tenant Isolation Foundation
 
-Status: implemented foundation; not yet wired into HTTP routes.
+Status: implemented and wired for procedure-query v1; broader API migration pending.
 
 ## Boundary
 
 Every authenticated credential resolves to one UUID `tenant_id`. Request bodies,
 query parameters, `Host`, and forwarded headers are not sources of tenant truth.
-When a future endpoint includes `tenant_id` in its contract, the value must match
+When an endpoint includes `tenant_id` in its contract, the value must match
 the authenticated principal through `requireTenantMatch` before any repository
 call.
 
@@ -94,6 +94,13 @@ The third `set_config` argument must remain `true`. Session-level tenant setting
 can leak across pooled requests and are prohibited. Repository work outside this
 transaction fails closed under RLS.
 
+`POST /api/v1/procedure-queries` authenticates before body parsing, verifies
+`integration:query`, matches the credential and body tenant, and performs
+retrieval, rate/idempotency state, and tenant audit through this contract. Its
+keyword/phrase SQL repeats explicit tenant predicates and admits only public,
+active documents with processed versions. Calls on the single transaction-bound
+`pg` client are serialized.
+
 The runtime PostgreSQL role must:
 
 - be distinct from the migration/table owner;
@@ -112,9 +119,15 @@ isolation guarantee.
 
 Static adversarial tests verify the backfill, top-level ownership, fixed function
 search paths, default-deny policies, `FORCE` coverage, and absence of managed-role
-creation. A later database integration gate must execute real tenant A/tenant B
-queries using the production-shaped non-owner runtime role before release.
+creation. The guarded disposable gate in
+`db/tests/procedure_query_runtime_gate.sql` additionally ran the full migration
+order on PostgreSQL 16.14/pgvector 0.8.5, used a non-owner role without
+`BYPASSRLS`, and proved tenant A/B visibility/write isolation, missing/malformed
+context denial, scoped uniqueness, authentication, and sanitized aggregate audit.
+The compiled v1 handler then passed success/replay/conflict/tenant-denial/
+boundary/401/corrupt-replay/retry over that connection.
 
-No current endpoint is protected merely by adding this foundation. HTTP wiring,
-credential provisioning, tenant-scoped repository changes, and security-event
-persistence remain separate required slices.
+This evidence is local and disposable. Production role provisioning, credential
+rotation, HA/connection policy, staging repetition, and the remaining endpoint
+catalog are still release gates. Pre-v1 routes use global queries and remain
+development-only; production disables them before wildcard CORS.

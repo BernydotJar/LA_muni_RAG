@@ -1,17 +1,15 @@
 # Identity and RBAC Foundation
 
-Status: implemented foundation; not yet wired into HTTP routes.
+Status: implemented and enforced by procedure-query v1; broader API migration pending.
 
 ## Authentication
 
 The application accepts an opaque Bearer credential between 32 and 512 ASCII
 characters, with an authorization-header ceiling of 640 characters. Missing,
 malformed, oversized, expired, revoked, unknown, and role-less credentials must
-all produce the same external result:
-
-```json
-{"error":{"code":"unauthorized","message":"Authentication required"}}
-```
+all produce the same external v1 `ApiError`: HTTP 401 with
+`error.code = "unauthorized"`, `error.message = "Authentication required"`,
+tenant/credential `null`, and no rejection detail.
 
 Generate credentials from at least 256 bits of cryptographically secure random
 data. The raw value is shown only at provisioning time. Before repository access,
@@ -93,14 +91,21 @@ Protected handlers must apply controls in this order:
 5. the repository executes only inside that transaction;
 6. the decision is recorded as a sanitized security audit event.
 
+The procedure-query v1 route authenticates before reading body bytes and applies
+its per-principal rate gate immediately after authentication, before permission,
+header/body validation, replay, or compilation. It then follows the permission,
+contracted tenant, transaction, and audit controls above.
+
 Permission denial and tenant mismatch both return the same safe response:
 
 ```json
 {"error":{"code":"forbidden","message":"Access denied"}}
 ```
 
-Neither response includes tenant identifiers, role membership, credential state,
-object existence, or policy details.
+The v1 403 may repeat the caller's already authenticated tenant and credential
+correlation IDs, as required by its closed contract. It never includes the
+requested foreign tenant, role membership, credential state, object existence,
+or policy details.
 
 ## Security audit vocabulary
 
@@ -120,6 +125,9 @@ allowlisted set of bounded `requestId`, route pathname, permission, and reason
 code fields. Query strings, headers, request bodies, raw credentials, arbitrary
 metadata, and control characters are rejected.
 
-Persisting these events is not yet integrated. Future endpoint work must write
-both allowed and blocked security decisions without weakening the uniform client
-response.
+This builder vocabulary remains available for shared identity controls. The
+procedure-query route persists its more specific, allowlisted
+`integration.procedure_query.*` decisions in tenant-owned `audit.events`; pre-
+tenant failures use the separate bounded aggregate
+`audit.authentication_failures` sink. Other protected endpoints must provide
+equivalent persistence without weakening the uniform client response.

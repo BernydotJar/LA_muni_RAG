@@ -1,6 +1,6 @@
 # Integración con OS Electoral
 
-Estado: schemas/OpenAPI v1 implementados; provider/consumer runtime pendientes
+Estado: provider `ProcedureWorkflow` implementado y probado localmente; consumer OS Electoral pendiente
 
 Fecha de corte: 2026-07-18  
 Producer/consumer vecino: [`BernydotJar/OS-Electoral`](https://github.com/BernydotJar/OS-Electoral)
@@ -143,7 +143,7 @@ El assessment describe encaje documental contra una versión de procedimiento. N
 - Foreign campaign/community IDs se validan como opacos y se auditan, pero LA Muni RAG no los autoriza consultando DB de OS Electoral.
 - Errores de tenant o authorization no revelan existencia, título, authority o metadata del recurso.
 
-La foundation de identity, diez roles y RLS tenant-scoped existe, pero todavía no protege transversalmente los endpoints legacy ni demuestra aislamiento en una base production-shaped.
+La foundation de identity, diez roles y RLS tenant-scoped protege `POST /api/v1/procedure-queries`. Un gate desechable con rol PostgreSQL no propietario demostró aislamiento A/B y denial HTTP; esto no equivale a provisioning de producción. Las rutas legacy no son tenant-aware y por eso quedan en 404 por defecto cuando `NODE_ENV=production`.
 
 ### Idempotencia y correlation
 
@@ -178,17 +178,18 @@ Un fallo de red se reintenta con la misma key. OS Electoral no debe fabricar una
 
 | Solicitud | Respuesta de LA Muni RAG |
 |---|---|
-| “¿Qué requisitos documentales tiene este proyecto?” | Puede devolver evidence/workflow/assessment con gaps. |
+| “¿Qué requisitos documentales tiene este proyecto?” | Actualmente puede devolver un `ProcedureWorkflow` draft con gaps; bundle/assessment responden `503 capability_unavailable`. |
 | “¿Debemos prometer este proyecto en campaña?” | Devuelve sólo factibilidad/evidencia relevante y declara que la decisión pertenece a OS Electoral. |
 | “Prioriza comunidades para movilización.” | Refusal de boundary; no produce territorio o segmento. |
 | “Encontramos este manual, decláralo oficial.” | Registra/acepta gap para validación; no promueve la fuente por solicitud del consumidor. |
 
 ## Estado real al corte
 
-- LA Muni RAG tiene schemas draft 2020-12, ejemplos, OpenAPI 3.1.1 contract-only y contract tests de shape/boundary para estos artefactos.
-- Aún no hay consumer de OS Electoral ni evidencia end-to-end; el provider `/api/v1` y sus controles runtime permanecen fuera del último commit verificado de este documento.
+- LA Muni RAG tiene schemas draft 2020-12, ejemplos y OpenAPI 3.1.1 con estado `procedure_workflow_provider_implemented`.
+- `POST /api/v1/procedure-queries` autentica por digest, exige `integration:query`, verifica tenant/credential, valida schema, limita tráfico, conserva idempotencia y audit, recupera sólo corpus público/activo/procesado y devuelve un workflow draft nuevamente validado.
+- Pruebas focales y un smoke real sobre PostgreSQL 16.14/pgvector 0.8.5 cubren éxito, replay exacto, conflicto, tenant mismatch, boundary, 401, replay corrupto y reintento; no hay consumer de OS Electoral ni evidencia end-to-end entre repositorios.
 - El tipo interno actual `ProcedureEvidenceBundle` contiene sólo query/mode/evidence y no equivale a `EvidenceBundle`.
-- El `ProcedureWorkflow` MVP carece de `workflow_version`, lifecycle y aprobación persistente.
+- La respuesta provider fija `workflow_version=1.0.0` y `approval_status=draft`, pero carece de lifecycle, version store y aprobación persistente.
 - OS Electoral documenta bounded contexts de campaign/governance y contratos internos read-only; no se observó cliente de LA Muni RAG.
 - Por tanto, este documento no autoriza tráfico de producción ni afirma interoperabilidad.
 
@@ -197,8 +198,8 @@ Un fallo de red se reintenta con la misma key. OS Electoral no debe fabricar una
 La integración sólo cambia a operativa cuando:
 
 1. los schemas y OpenAPI v1 están versionados;
-2. identity/tenant mapping está aplicado en provider y consumer;
-3. provider y consumer contract tests cubren éxito, refusal, replay, conflicto y cross-tenant;
+2. identity/tenant mapping está aplicado también en el consumer;
+3. los contract tests del consumer y la prueba entre repositorios cubren éxito, refusal, replay, conflicto y cross-tenant;
 4. EVAL-OS-INTEGRATION-001 y EVAL-BOUNDARY-001 pasan;
 5. audit demuestra IDs/versiones/provenance sin filtrar cuerpos sensibles;
 6. el owner humano aprueba el despliegue.

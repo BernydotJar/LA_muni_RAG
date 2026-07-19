@@ -78,8 +78,8 @@ describe("operations readiness foundation", () => {
 
     assert.match(threatModel, /legacy `\/api\/search`/);
     assert.match(threatModel, /GitHub Pages is a public static demonstration/);
-    assert.match(threatModel, /identity, tenancy, RBAC, RLS, and sanitized-audit foundation is committed/);
-    assert.match(threatModel, /HTTP enforcement and proof against a real migrated PostgreSQL instance remain in progress/);
+    assert.match(threatModel, /disposable PostgreSQL 16\.14\/pgvector 0\.8\.5 gate/);
+    assert.match(threatModel, /not an image scan\/signature, staging test, production role attestation, load test, deployment, or external-consumer proof/);
     assert.match(threatModel, /No production backend infrastructure/);
     assert.match(threatModel, /internal campaign strategy/);
     assert.match(threatModel, /Context7 CLI resolved `\/nodejs\/node`/);

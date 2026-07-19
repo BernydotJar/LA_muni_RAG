@@ -1,12 +1,12 @@
 # Contratos entre productos
 
-Estado: foundation machine-readable v1 implementada; providers/consumers runtime pendientes
+Estado: foundation v1 y provider `ProcedureWorkflow` implementados; consumer y demás artifacts pendientes
 
 Fecha de corte: 2026-07-18
 
 ## Alcance
 
-Este documento define la semántica común para integrar LA Muni RAG, OS Electoral y Content Agency sin compartir storage. Los artifacts canónicos están en [`contracts/schemas/v1`](../../contracts/schemas/v1), [`contracts/openapi/v1/openapi.json`](../../contracts/openapi/v1/openapi.json) y [`contracts/examples/v1`](../../contracts/examples/v1). Su validación demuestra conformidad de schema, no interoperabilidad runtime ni compatibilidad de un consumer vecino.
+Este documento define la semántica común para integrar LA Muni RAG, OS Electoral y Content Agency sin compartir storage. Los artifacts canónicos están en [`contracts/schemas/v1`](../../contracts/schemas/v1), [`contracts/openapi/v1/openapi.json`](../../contracts/openapi/v1/openapi.json) y [`contracts/examples/v1`](../../contracts/examples/v1). La ruta `POST /api/v1/procedure-queries` implementa el slice provider de `ProcedureWorkflow`; su validación y smoke local no demuestran interoperabilidad con un consumer vecino ni despliegue productivo.
 
 La decisión de arquitectura está en [ADR-0001](../adr/0001-product-boundaries-and-data-ownership.md) y el ownership en [Ownership de datos](../architecture/data-ownership.md).
 
@@ -14,10 +14,10 @@ La decisión de arquitectura está en [ADR-0001](../adr/0001-product-boundaries-
 
 | Payload | Product owner | Producer -> consumer | Propósito | Estado al corte |
 |---|---|---|---|---|
-| `ProcedureQueryRequest` | OS Electoral | OS Electoral -> LA Muni RAG | Solicitar inteligencia procedimental con jurisdiction y case context. | Schema, ejemplo y OpenAPI v1 implementados; provider/consumer pendientes. |
+| `ProcedureQueryRequest` | OS Electoral | OS Electoral -> LA Muni RAG | Solicitar inteligencia procedimental con jurisdiction y case context. | Provider HTTP implementado para `requested_output=procedure_workflow`; consumer OS Electoral pendiente. |
 | `EvidenceGapRequest` | OS Electoral (request); LA Muni RAG (investigación resultante) | OS Electoral -> LA Muni RAG | Solicitar localización/validación de evidencia faltante. | Schema y ejemplo implementados; endpoint/adapter pendientes. |
 | `EvidenceBundle` | LA Muni RAG | LA Muni RAG -> OS Electoral | Entregar claims/citations/contradictions/gaps de una consulta. | Schema y ejemplo implementados; mapper/provider pendientes. |
-| `ProcedureWorkflow` | LA Muni RAG | LA Muni RAG -> OS Electoral | Entregar workflow y versión con autoridad/aprobación explícitas. | Schema y ejemplo implementados; lifecycle/versioning persistente ausente. |
+| `ProcedureWorkflow` | LA Muni RAG | LA Muni RAG -> OS Electoral | Entregar workflow y versión con autoridad/aprobación explícitas. | Mapper/provider draft-only implementado y validado; lifecycle/versioning persistente y aprobación humana ausentes. |
 | `ProcedureAssessment` | LA Muni RAG | LA Muni RAG -> OS Electoral | Evaluar case context contra requisitos de una procedure version. | Schema y ejemplo implementados; assessment service ausente. |
 | `ApprovedCommunicationBrief` | OS Electoral | OS Electoral -> Content Agency | Entregar decisión comunicacional aprobada y evidence refs. | Boundary documentado aquí; no pertenece al runtime de LA Muni RAG. |
 | `ClaimPack` | LA Muni RAG | LA Muni RAG -> Content Agency | Entregar claims citables y límites de uso. | Schema y ejemplo implementados; provider/consumer pendientes. |
@@ -152,16 +152,12 @@ El contrato v1 usa un error seguro y versionado:
 
 En `401`, tenant y credential son `null`; inventarlos sería un fallo de seguridad. En `403`, ambos son UUID ya autenticados y la respuesta se fija a `forbidden` / `Access denied` / `[]`, igual para permiso y tenant mismatch.
 
-Códigos y status están cerrados por schema/OpenAPI; todavía faltan provider tests para varios escenarios:
+Códigos y status están cerrados por schema/OpenAPI. El provider implementado cubre schema estricto, authn/authz/tenant, igualdad de request IDs, boundary, replay/conflicto/corrupción, rate limit, CORS exacto y errores seguros. Todavía faltan escenarios de recursos versionados que este slice no expone:
 
-- validation/unsupported schema;
-- authentication/authorization/tenant scope;
 - resource/version not found sin metadata leakage;
 - insufficient evidence y ambiguous jurisdiction;
-- product-boundary refusal;
-- idempotency conflict;
 - superseded/expired artifact;
-- dependency unavailable y rate limited.
+- consumer timeout/retry end-to-end.
 
 `details` no devuelve valores sometidos, secrets, existencia cross-tenant, prompts completos ni stack traces.
 
@@ -174,7 +170,7 @@ Códigos y status están cerrados por schema/OpenAPI; todavía faltan provider t
 - Content clasificado/confidencial no cruza de producto sin policy explícita.
 - CORS o network reachability no reemplaza authn/authz.
 
-Estas reglas aún no están implementadas transversalmente en LA Muni RAG.
+Estas reglas están implementadas para `POST /api/v1/procedure-queries`, no transversalmente para el catálogo mínimo de APIs ni para consumers externos. Las rutas pre-v1 quedan deshabilitadas por defecto con `NODE_ENV=production`; en desarrollo siguen siendo código legacy no tenant-aware.
 
 ## Transportes permitidos
 
@@ -211,14 +207,16 @@ Cada test debe ejecutar los artifacts machine-readable canónicos, no una copia 
 
 Al corte:
 
-- existen nueve schemas draft 2020-12, nueve ejemplos, un OpenAPI 3.1.1 contract-only y doce contract tests de shape/boundary;
-- `npm run contracts:validate` valida el registry completo con Ajv; la igualdad semántica entre headers/body y IDs duplicados queda para runtime;
-- los endpoints actuales `/api/*` todavía no implementan transversalmente estas reglas comunes;
+- existen nueve schemas draft 2020-12, nueve ejemplos y un OpenAPI 3.1.1 que declara honestamente `procedure_workflow_provider_implemented`;
+- `npm run contracts:validate` valida el registry completo con Ajv y el provider vuelve a validar request, `ProcedureWorkflow` y `ApiError` en runtime;
+- pruebas focales cubren igualdad header/body, identidad/tenant/RBAC, boundary, CORS, public-only retrieval, replay/conflicto/corrupción, rate limit y rutas legacy cerradas en producción;
+- un gate desechable sobre PostgreSQL 16.14/pgvector 0.8.5 y rol no propietario ejecutó migraciones, aislamiento A/B y el smoke HTTP `200/200/409/403/400/401/500/200`;
+- el catálogo mínimo completo de `/api/v1/*` todavía no implementa transversalmente estas reglas;
 - `ProcedureEvidenceBundle` actual no cumple `EvidenceBundle`;
 - el control plane v1 observado de Content Agency es su API interna de misiones/runs/approvals, no este contrato;
 - los contratos read-only observados de OS Electoral son internos a sus bounded contexts, no este contrato.
 
-Por tanto, “schema válido” no equivale a “integración operativa”. Faltan provider/consumer adapters, persistencia/idempotencia, aislamiento runtime y evidencia de los productos vecinos.
+Por tanto, “provider local probado” no equivale a “integración operativa”. Persistencia, idempotencia y aislamiento están probados para este slice en una base desechable; faltan el consumer de OS Electoral, pruebas entre repositorios, los demás artifacts/endpoints, lifecycle humano, staging y despliegue.
 
 ## Documentos relacionados
 

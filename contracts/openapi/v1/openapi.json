@@ -4,9 +4,9 @@
   "info": {
     "title": "LA Muni RAG Procedure Query Contract",
     "version": "1.0.0",
-    "description": "Contract-only definition for the planned LA Muni RAG procedure query integration. This document does not claim that the endpoint is deployed."
+    "description": "Contract for the implemented LA Muni RAG procedure-workflow provider slice. EvidenceBundle and ProcedureAssessment remain unavailable, no consumer integration is claimed, and this document does not claim that the endpoint is deployed."
   },
-  "x-implementation-status": "contract_only",
+  "x-implementation-status": "procedure_workflow_provider_implemented",
   "paths": {
     "/api/v1/procedure-queries": {
       "post": {
@@ -28,7 +28,7 @@
               "type": "string",
               "minLength": 16,
               "maxLength": 128,
-              "pattern": "^[A-Za-z0-9._:-]+$"
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{15,127}$"
             }
           },
           {
@@ -54,7 +54,7 @@
         },
         "responses": {
           "200": {
-            "description": "Evidence-backed response selected by requested_output.",
+            "description": "Evidence-backed ProcedureWorkflow response. Other contract-valid requested_output values currently return 503 capability_unavailable.",
             "headers": {
               "X-Request-Id": {
                 "$ref": "#/components/headers/RequestId"
@@ -130,7 +130,7 @@
         "description": "Bearer authentication challenge.",
         "schema": {
           "type": "string",
-          "const": "Bearer"
+          "const": "Bearer realm=\"la-muni-rag\""
         }
       }
     },
@@ -232,7 +232,7 @@
         }
       },
       "Unavailable": {
-        "description": "A required evidence or platform dependency is unavailable.",
+        "description": "The requested contract capability or a required dependency is unavailable.",
         "headers": {
           "X-Request-Id": {
             "$ref": "#/components/headers/RequestId"

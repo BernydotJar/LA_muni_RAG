@@ -9,18 +9,18 @@ Required approvers before production: named Security owner, Privacy/Legal owner,
 
 This document is a design-time threat model, not a penetration test, deployment attestation, or certification. No production backend infrastructure, WAF, secret manager, centralized observability stack, on-call integration, or disaster-recovery drill is evidenced in this repository.
 
-The repository now contains backend CI and a container definition. Those artifacts are readiness controls only. They do not prove that an image has been scanned, signed, deployed, or operated. The identity, tenancy, RBAC, RLS, and sanitized-audit foundation is committed with static/unit coverage. Its HTTP enforcement and proof against a real migrated PostgreSQL instance remain in progress; the foundation must pass integration, migration, isolation, and runtime tests before this model credits it as an effective end-to-end production control.
+The repository now contains backend CI, a container definition, and one authenticated provider slice at `POST /api/v1/procedure-queries`. Static tests plus a disposable PostgreSQL 16.14/pgvector 0.8.5 gate exercised the full migration chain, a non-owner/non-`BYPASSRLS` role, tenant A/B isolation, audit/idempotency, and real HTTP decisions. That is effective local evidence for this route; it is not an image scan/signature, staging test, production role attestation, load test, deployment, or external-consumer proof.
 
 Known exposed or potentially exposed surfaces remain:
 
-- legacy `/api/search`, `/api/evidence`, `/api/procedure`, `/api/agent`, `/api/answer`, and `/api/chat` routes do not enforce tenant-aware authentication;
-- `/api/procedure-feedback` uses a single shared Bearer token rather than per-principal RBAC;
+- legacy `/api/search`, `/api/evidence`, `/api/procedure`, `/api/agent`, `/api/answer`, `/api/chat`, and `/api/procedure-feedback` do not enforce the v1 tenant policy when explicitly enabled outside production;
+- `NODE_ENV=production` disables all pre-v1 `/api/*` routes before wildcard CORS; configuration regression or deliberate re-enablement would reopen this risk;
 - `/health` and static assets are intentionally unauthenticated;
 - GitHub Pages is a public static demonstration, not the backend, and has no project-level custom response headers in the current setup;
 - the Pages demo can be configured to call an API, but no production API origin has been approved;
-- external contracts with OS Electoral and Content Agency are schemas and boundary definitions, not an operational integration.
+- the `ProcedureWorkflow` provider exists, but OS Electoral/Content Agency consumers and the remaining artifacts are not an operational integration.
 
-Until the legacy routes are removed, isolated, or protected, the backend must not be exposed to untrusted networks with confidential, internal, or cross-tenant data.
+The production artifact must retain the tested legacy-route gate. Development/legacy mode must not be exposed to untrusted networks with confidential, internal, or cross-tenant data.
 
 ## System and trust boundaries
 
@@ -39,7 +39,8 @@ Public Internet
                      +--> document/object storage    [production service absent]
 
 OS Electoral / Content Agency
-  +--> versioned JSON Schema / HTTP contracts        [runtime adapters absent]
+  +--> ProcedureWorkflow v1 provider                 [local provider tested]
+  +--> remaining versioned contracts                 [adapters absent]
 ```
 
 Each arrow crosses a trust boundary. CORS, private network placement, source URLs, `tenant_id` fields, and contract `producer` fields are not identities. Authentication and authorization must be established from server-controlled credentials before a tenant-scoped resource is read or changed.
@@ -49,11 +50,11 @@ Each arrow crosses a trust boundary. CORS, private network placement, source URL
 | Boundary | Untrusted input | Required control | Current evidence |
 |---|---|---|---|
 | Browser -> Pages | URL parameters, DOM data, configured API URL | scheme/origin validation, no secrets, safe links | static hardening tests exist; Pages remains public |
-| Client -> API | headers, JSON body, query, tenant/resource IDs | TLS, body bounds, authentication, RBAC, tenant match, rate limits, safe errors | complete control is not yet integrated; legacy routes remain open |
-| API -> PostgreSQL | query parameters and principal/tenant context | parameterized SQL, transaction-local tenant context, RLS, least-privilege DB role | migration/repository foundation is committed; real database execution and HTTP enforcement are not yet proven |
+| Client -> API | headers, JSON body, query, tenant/resource IDs | TLS, body bounds, authentication, RBAC, tenant match, rate limits, safe errors | implemented/tested for procedure-query v1; TLS/ingress and the remaining API catalog are absent; legacy is production-disabled |
+| API -> PostgreSQL | query parameters and principal/tenant context | parameterized SQL, transaction-local tenant context, RLS, least-privilege DB role | disposable real-DB/HTTP gate passes for procedure-query v1; production provisioning, statement limits, HA and monitoring are absent |
 | Ingestion -> corpus | bytes, MIME type, filenames, URLs, extracted text | size/type/hash validation, malware policy, provenance, quarantine, human promotion | controlled local import and hashing exist; malware scanning/quarantine service absent |
-| API -> logs/audit | identifiers, outcomes, errors | allowlisted fields, redaction, immutable access control, retention | sanitized audit builder is committed; endpoint integration/runtime sink proof and centralized storage are absent |
-| Product -> external product | contract envelope and claims | schema validation, authenticated producer, tenant scope, idempotency, provenance | machine contracts exist in development; adapters and runtime proof absent |
+| API -> logs/audit | identifiers, outcomes, errors | allowlisted fields, redaction, immutable access control, retention | v1 route persists allowlisted tenant audit and bounded tenantless auth aggregates; centralized append-only storage/access review remain absent |
+| Product -> external product | contract envelope and claims | schema validation, authenticated producer, tenant scope, idempotency, provenance | local ProcedureWorkflow provider is tested; consumer identity/interoperability and remaining adapters are absent |
 
 ## Assets and security objectives
 
@@ -86,29 +87,29 @@ LA Muni RAG is not an owner or storage system for internal campaign strategy, vo
 
 | Class | Representative threat | Existing or planned control | Residual risk / required action |
 |---|---|---|---|
-| Spoofing | Client declares another `tenant_id`, role, or producer in JSON | server-derived principal; credential digest lookup; tenant/permission guard | foundation is committed; HTTP enforcement, rotation, expiry, revocation, and real-database negative tests remain required |
+| Spoofing | Client declares another `tenant_id`, role, or producer in JSON | server-derived principal; credential digest lookup; tenant/permission guard | v1 HTTP and real-DB negative tests pass; production credential provisioning/rotation and other endpoints remain required |
 | Spoofing | Forged OS Electoral or Content Agency payload | Bearer/service identity plus versioned schema | adapters and mutual producer verification are absent; contract validity alone is not authenticity |
 | Tampering | Source document changes without a version transition | SHA-256, source/version IDs, controlled import | remote reacquisition policy, malware scanning, and signed provenance are unresolved |
 | Tampering | Workflow/approval or ClaimPack modified after review | immutable version IDs, approval state, audit event | persistent approval lifecycle is not complete; never label a draft approved from client input |
 | Tampering | Build dependency or base image compromised | lockfile, `npm ci`, explicit Node image version, separated CI | digest pinning, SBOM, signature verification, registry policy, and dependency scanning remain pending |
 | Repudiation | Operator denies a query, import, approval, or denial | correlation/request IDs and sanitized audit events | centralized append-only audit store, clock guarantees, access review, and retention are absent |
-| Information disclosure | Cross-tenant search or direct object reference | tenant-bound authorization plus PostgreSQL RLS | highest current risk: legacy routes and global queries remain; block production exposure until isolated |
+| Information disclosure | Cross-tenant search or direct object reference | tenant-bound authorization plus PostgreSQL RLS | v1 gate passes and production disables legacy routes; guard `NODE_ENV`, protect future routes, and repeat in staging/production topology |
 | Information disclosure | Secrets, queries, case context, or PII leak in errors/logs | safe error envelopes and allowlisted audit metadata | legacy error/log review and centralized redaction verification are still required |
 | Information disclosure | Public Pages artifact includes confidential source or token | static-only build, ignored environment files, secret-free client | artifact inspection must remain a release gate; Pages can only contain public demonstration data |
-| Denial of service | Large body, expensive hybrid query, retry storm, or scraper | body/limit validation, rate limit, timeout, idempotency | global enforcement and infrastructure quotas are not yet demonstrated |
+| Denial of service | Large body, expensive hybrid query, retry storm, or scraper | body/limit validation, per-principal rate limit, server timeouts, idempotency | v1 behavior is tested; load thresholds, DB statement timeout, ingress quotas and global enforcement are not demonstrated |
 | Denial of service | Database pool exhaustion or slow vector query | bounded pool/query timeout, health/metrics, capacity alert | limits, SLOs, load test, autoscaling, and alerts are not selected or validated |
-| Elevation of privilege | App/database owner bypasses RLS | least-privilege runtime DB role, `FORCE ROW LEVEL SECURITY`, no `BYPASSRLS` | provisioning and runtime proof are absent; table owner must not be the application role |
+| Elevation of privilege | App/database owner bypasses RLS | least-privilege runtime DB role, `FORCE ROW LEVEL SECURITY`, no `BYPASSRLS` | disposable non-owner role proof passes; production provisioning/continuous attestation remain absent |
 | Elevation of privilege | Shared feedback token enables broad read/write | migrate to per-principal permission checks | shared token remains a transitional control and must not be treated as production RBAC |
 
 ## Priority abuse cases
 
 ### TM-01: cross-tenant query
 
-An authenticated client submits its own credential with another tenant's UUID or a resource ID learned elsewhere. Authorization must fail before retrieval, return the same safe denial shape regardless of resource existence, and record only sanitized identifiers/outcome. No global fallback query is allowed. This is a production blocker until an end-to-end test proves the database and application layers both deny it.
+An authenticated client submits its own credential with another tenant's UUID or a resource ID learned elsewhere. Authorization must fail before retrieval, return the same safe denial shape regardless of resource existence, and record only sanitized identifiers/outcome. No global fallback query is allowed. The disposable v1 HTTP/database gate passes this case; it must be repeated with the approved production topology and for every future tenant route.
 
 ### TM-02: legacy unauthenticated data extraction
 
-An anonymous client enumerates legacy search, evidence, procedure, agent, answer, or chat routes. Network isolation is not a sufficient long-term fix. Before production data is present, routes must be removed, protected with the v1 policy, or bound to a demonstrably public-only dataset and separately rate-limited. Current status: open risk.
+An anonymous client enumerates legacy search, evidence, procedure, agent, answer, chat, or feedback routes. The production server now returns a non-CORS 404 for all pre-v1 `/api/*` routes; tests cover the route inventory and preflight. The legacy implementations remain available for development, so environment/config enforcement and regression tests are release controls, not a reason to expose legacy mode.
 
 ### TM-03: prompt injection in an official-looking document
 
@@ -120,7 +121,7 @@ An operator imports a file from an unofficial URL, or an official URL later serv
 
 ### TM-05: replay or idempotency collision
 
-A client repeats a POST or reuses a key with a different payload. The server must scope the key by authenticated principal, tenant, and operation; replay the stored result only for the same canonical fingerprint; and return a safe conflict otherwise. Storage and concurrent-race behavior still require runtime proof.
+A client repeats a POST or reuses a key with a different payload. The v1 server scopes the digest by principal, tenant, and operation, returns byte-exact replay only after current-contract and identity validation, conflicts on another fingerprint, and deletes/audits corrupt stored bytes. Unit and disposable PostgreSQL HTTP gates pass replay, conflict, corruption, and retry. Concurrent load and timeout-race testing remain required.
 
 ### TM-06: boundary-violating electoral request
 
@@ -137,7 +138,7 @@ A valid operator copies a production dump, query body, token, or confidential do
 ## Security requirements before a production approval
 
 1. Select and document the runtime platform, ingress, secret manager, registry, database roles, log sink, and on-call ownership.
-2. Close or protect every legacy route; prove authentication, RBAC, tenant matching, default-deny RLS, and non-leaking errors end to end.
+2. Preserve the production legacy-route gate and extend the proven v1 authentication, RBAC, tenant matching, default-deny RLS, and non-leaking errors to every new endpoint.
 3. Run contract, isolation, migration, dependency, container, secret, and adversarial-input checks in an approved pipeline.
 4. Pin the released image by digest and retain build provenance; review base/dependency findings with a named owner.
 5. Define log/audit fields and retention, then verify that queries, case bodies, credentials, and cross-product payloads are not recorded.

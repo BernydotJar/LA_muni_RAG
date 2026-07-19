@@ -17,6 +17,7 @@
     "domain:init": "tsx src/cli/initDomainPack.ts",
     "ports:kill": "node scripts/kill-ports.mjs",
     "search": "tsx src/cli/search.ts",
+    "smoke:postgres-api": "node scripts/procedure-query-postgres-smoke.mjs",
     "source-inventory:validate": "node --import tsx src/cli/validateSourceInventory.ts --manifest .rag/source-inventory.json",
     "start": "node dist/server.js",
     "test": "node --import tsx --test src/__tests__/*.test.ts",
@@ -28,6 +29,8 @@
   "license": "UNLICENSED",
   "type": "module",
   "dependencies": {
+    "ajv": "8.20.0",
+    "ajv-formats": "3.0.1",
     "dotenv": "^17.4.2",
     "mammoth": "^1.12.0",
     "pg": "^8.22.0"
@@ -35,8 +38,6 @@
   "devDependencies": {
     "@types/node": "^26.0.0",
     "@types/pg": "^8.20.0",
-    "ajv": "8.20.0",
-    "ajv-formats": "3.0.1",
     "tsx": "^4.22.4",
     "typescript": "^6.0.3"
   }

@@ -4,6 +4,11 @@ import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { evaluateQueryWithDependencies } from "./agent.js";
 import { buildDeterministicAnswerWithDependencies } from "./answer.js";
+import {
+  createProcedureQueryV1Dependencies,
+  handleProcedureQueryV1,
+  type ProcedureQueryV1Options,
+} from "./api/v1/index.js";
 import { processChatWithDependencies } from "./chat.js";
 import { closeDb } from "./db.js";
 import {
@@ -16,6 +21,7 @@ import { type EvidenceDependencies, type EvidenceMode, findEvidenceWithDependenc
 import {
   HttpError,
   handleCors,
+  handleV1Cors,
   parseLimit,
   readJsonBody,
   requestUrl,
@@ -49,6 +55,13 @@ export interface ServerOptions {
   vectorRuntimeStatus?: RuntimeVectorStatus;
   procedureFeedbackDependencies?: ProcedureFeedbackDependencies;
   domainPack?: DomainPack;
+  procedureQueryV1?: ProcedureQueryV1Options;
+  v1CorsAllowedOrigins?: readonly string[];
+  legacyApiEnabled?: boolean;
+  requestTimeoutMs?: number;
+  headersTimeoutMs?: number;
+  keepAliveTimeoutMs?: number;
+  maxHeadersCount?: number;
 }
 
 const requireDatabaseUrl = (): void => {
@@ -94,12 +107,39 @@ export const createRequestHandler = (options: ServerOptions = {}): RequestListen
   const domainPack = options.domainPack ?? loadActiveDomainPack();
   const domainPackSummary = summarizeDomainPack(domainPack);
   const domainPackUiSummary = summarizeDomainPackForUi(domainPack);
+  const procedureQueryV1Dependencies = createProcedureQueryV1Dependencies(
+    options.procedureQueryV1,
+    domainPack
+  );
+  const v1CorsAllowedOrigins =
+    options.v1CorsAllowedOrigins ??
+    (process.env.V1_CORS_ALLOWED_ORIGINS ?? "")
+      .split(",")
+      .map((origin) => origin.trim())
+      .filter(Boolean);
+  const legacyApiEnabled =
+    options.legacyApiEnabled ?? process.env.NODE_ENV !== "production";
 
   return async (req, res) => {
     try {
-      if (handleCors(req, res)) return;
-
       const url = requestUrl(req);
+
+      if (url.pathname === "/api/v1/procedure-queries") {
+        if (handleV1Cors(req, res, v1CorsAllowedOrigins)) return;
+        await handleProcedureQueryV1(req, res, procedureQueryV1Dependencies);
+        return;
+      }
+
+      // The pre-v1 API uses global-pool queries and demo-oriented wildcard
+      // CORS. It is intentionally unavailable in production until every route
+      // is migrated to authenticated tenant transactions and bounded abuse
+      // controls. Keep this check before legacy CORS so a disabled route does
+      // not advertise browser access.
+      if (!legacyApiEnabled && url.pathname.startsWith("/api/")) {
+        throw new HttpError(404, "not_found", "Route not found");
+      }
+
+      if (handleCors(req, res)) return;
 
       if (req.method === "GET" && url.pathname === "/health") {
         sendJson(res, 200, {
@@ -240,8 +280,15 @@ export const createRequestHandler = (options: ServerOptions = {}): RequestListen
   };
 };
 
-export const createApiServer = (options: ServerOptions = {}): Server =>
-  createServer(createRequestHandler(options));
+export const createApiServer = (options: ServerOptions = {}): Server => {
+  const server = createServer(createRequestHandler(options));
+  server.requestTimeout = options.requestTimeoutMs ?? 15_000;
+  server.headersTimeout = options.headersTimeoutMs ?? 10_000;
+  server.keepAliveTimeout = options.keepAliveTimeoutMs ?? 5_000;
+  server.maxHeadersCount = options.maxHeadersCount ?? 100;
+  server.maxRequestsPerSocket = 1_000;
+  return server;
+};
 
 export const startServer = (): Server => {
   requireDatabaseUrl();
