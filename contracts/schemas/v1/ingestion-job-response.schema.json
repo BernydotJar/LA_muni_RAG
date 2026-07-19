@@ -1,0 +1,133 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://contracts.la-muni-rag.invalid/v1/ingestion-job-response.schema.json",
+  "title": "IngestionJobResponse v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "response_type",
+    "tenant_id",
+    "request_id",
+    "audit_id",
+    "result",
+    "job",
+    "provenance"
+  ],
+  "properties": {
+    "schema_version": {
+      "$ref": "common.schema.json#/$defs/SchemaVersion"
+    },
+    "response_type": {
+      "const": "ingestion_job"
+    },
+    "tenant_id": {
+      "$ref": "common.schema.json#/$defs/Uuid"
+    },
+    "request_id": {
+      "$ref": "common.schema.json#/$defs/Uuid"
+    },
+    "audit_id": {
+      "$ref": "common.schema.json#/$defs/Uuid"
+    },
+    "result": {
+      "type": "string",
+      "enum": [
+        "new",
+        "replay",
+        "duplicate_work",
+        "status"
+      ]
+    },
+    "job": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "job_id",
+        "document_version_id",
+        "pipeline_profile",
+        "status",
+        "attempt_count",
+        "max_attempts",
+        "available_at",
+        "started_at",
+        "finished_at",
+        "lease_expires_at",
+        "heartbeat_at",
+        "last_error_code",
+        "last_error_retryable",
+        "created_at",
+        "updated_at"
+      ],
+      "properties": {
+        "job_id": {
+          "$ref": "common.schema.json#/$defs/Uuid"
+        },
+        "document_version_id": {
+          "$ref": "common.schema.json#/$defs/Uuid"
+        },
+        "pipeline_profile": {
+          "const": "municipal_document_v1"
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "queued",
+            "processing",
+            "processed",
+            "failed",
+            "superseded"
+          ]
+        },
+        "attempt_count": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 10
+        },
+        "max_attempts": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 10
+        },
+        "available_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "started_at": {
+          "type": ["string", "null"],
+          "format": "date-time"
+        },
+        "finished_at": {
+          "type": ["string", "null"],
+          "format": "date-time"
+        },
+        "lease_expires_at": {
+          "type": ["string", "null"],
+          "format": "date-time"
+        },
+        "heartbeat_at": {
+          "type": ["string", "null"],
+          "format": "date-time"
+        },
+        "last_error_code": {
+          "type": ["string", "null"],
+          "pattern": "^[a-z][a-z0-9_]{0,63}$"
+        },
+        "last_error_retryable": {
+          "type": ["boolean", "null"]
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "provenance": {
+      "$ref": "common.schema.json#/$defs/Provenance"
+    }
+  }
+}

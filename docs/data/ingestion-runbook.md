@@ -1,9 +1,9 @@
 # Ingestion runbook
 
-Status: pre-production local workflow; bounded raw-PDF process isolation and a
-tenant-safe durable job/vector core exist, while an authenticated library/worker,
-production scanner/storage, approved OS sandbox, and end-to-end wiring remain
-incomplete.
+Status: pre-production local workflow; bounded raw-PDF process isolation,
+tenant-safe durable job/vector state, an authenticated enqueue/status API, and a
+callable worker exist, while a deployed worker, approved storage/scanner adapter,
+approved OS sandbox, and end-to-end wiring remain incomplete.
 
 ## Preconditions
 
@@ -39,10 +39,11 @@ new reviewed version rather than overwriting expected acquisition identity.
 5. Reconcile internal title/version/approval/effective-date evidence through human
    review. A clean scan is not documentary approval.
 6. Run `ingest --dry-run`. Require positive extracted sections and zero writes.
-7. Apply ingestion only after the extractor, tenant job/vector service,
-   authenticated worker, scanner/storage evidence, database role/topology, and
-   operational manifest are production-shaped and approved. The current local
-   library CLI is not wired to the durable PostgreSQL service.
+7. Apply ingestion only after the extractor, tenant job/vector service, deployed
+   worker, immutable storage resolver, scanner-evidence store, database
+   role/topology, and operational manifest are production-shaped and approved.
+   The authenticated API alone is only a job request; the current local library
+   CLI is not wired to it or to the durable PostgreSQL service.
 8. Validate source inventory and corpus-manifest reconciliation, then run retrieval
    and citation fidelity evaluations before promotion to user-facing evidence.
 
@@ -88,8 +89,8 @@ audit trail, or substitute for restricted storage IAM.
 are controlled locally, but no clean ClamAV evidence, section extraction, vector
 index, corpus-manifest record, approval, current-validity decision, or reuse
 license is claimed. Do not run `ingest` merely because the structural PDF import
-check passes. The new job/vector tables do not change this state and no DMP bytes
-were read by their synthetic integration gates.
+check passes. The job/vector state, API, and callable worker do not change this
+status; no DMP bytes were read by their synthetic integration gates.
 
 ## Durable job handoff boundary
 
@@ -98,21 +99,31 @@ heartbeat/fencing, bounded retry, and atomic vector/version/job/audit completion
 Embedding preparation happens before the final database transaction. See
 [Tenant Vector and Ingestion Runtime](../tenant-ingestion-runtime.md).
 
-This is a callable backend core, not an operator command or authorization
-boundary. A future adapter must authenticate a `document_manager`, prove current
-persisted clean-scan evidence for the exact artifact, resolve restricted storage,
-enqueue the matching `document_version_id` and SHA-256, and ensure the worker
-receives those exact bytes. It must never enqueue from a URL, local path, client
-title, or caller-provided tenant alone.
+Feature 057 adds `POST /api/v1/ingestion-jobs`, scoped status reads, and
+`TenantIngestionWorker`. The API authenticates a principal with
+`document:ingest`, but it accepts only an existing version UUID/digest and no
+bytes, URL, path, scanner assertion, provider/model, or worker control. The
+worker requires an injected resolver to provide an immutable object generation,
+the exact private bytes, and current clean evidence before parsing.
+
+This remains a callable backend boundary, not a complete operator flow. A
+future adapter must persist approved storage/scan evidence, ensure the registry
+version is valid, call the API, route the tenant job to a deployed worker, and
+resolve the exact immutable bytes. It must never enqueue from a URL, local path,
+client title, or caller-provided tenant alone. See
+[Ingestion jobs API v1](../api/ingestion-jobs-v1.md).
 
 ## Production blockers
 
-- authenticated tenant-scoped library/upload/API, worker, and RBAC;
+- authenticated tenant-scoped library/upload administration and version
+  acceptance;
 - source URL acquisition policy and egress controls;
 - durable object storage with restricted quarantine IAM and retention;
 - monitored scanner service, definition freshness alert, and scan-capacity test;
 - approved OS/container isolation and native-memory/load testing for the bounded
   PDF parser process;
+- deployed worker with workload identity, tenant scheduling, attempt deadline,
+  cancellation, backpressure, graceful shutdown, and queue/lease metrics;
 - end-to-end binding of persisted scanner/storage evidence to durable jobs;
 - production runtime-role attestation, queue quotas/monitoring, exact-search load
   evidence, and tenant-partitioned index review before approximate retrieval;

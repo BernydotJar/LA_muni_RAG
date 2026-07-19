@@ -1,7 +1,7 @@
 # Contexto del sistema
 
 Estado: contexto objetivo aceptado; integraciones externas no implementadas  
-Fecha de corte: 2026-07-18
+Fecha de corte: 2026-07-19
 
 ## Sistema de interés
 
@@ -16,7 +16,7 @@ No es un sistema operativo de campaña ni una agencia de contenido. La clasifica
 | Document manager / researcher | Inventariar, adquirir, ingerir, validar y consultar fuentes. | No puede convertir evidencia faltante o comparativa en fuente oficial. |
 | Procedure author / reviewer / approver | Estructurar, revisar y aprobar versiones de procedimientos. | Autoría y aprobación deben ser acciones separadas y auditadas; este control aún no está implementado end-to-end. |
 | Case operator / viewer | Seguir requisitos y expediente de un caso ligado a una versión. | No modifica la definición del procedimiento. El tracking actual es local-only. |
-| Integration client | Consultar evidencia/procedimientos por tenant mediante contrato. | No recibe acceso a tablas internas ni autoridad de mutación. El cliente v1 todavía no existe. |
+| Integration client | Consultar evidencia/procedimientos por tenant mediante contrato. | No recibe acceso a tablas internas ni autoridad de mutación. El provider existe; el consumer externo v1 todavía no. |
 | OS Electoral | Convertir evidencia cívica en decisiones de campaña. | Es owner de campaña/estrategia; no del corpus o procedimiento. |
 | Content Agency | Producir contenido desde briefs y claim packs aprobados. | Es owner de artefactos/publicación; no de claims jurídicos o estrategia electoral. |
 | Fuentes oficiales | Publicar documentos o portales de origen. | Una URL no demuestra por sí sola vigencia, alcance o adquisición exitosa. |
@@ -50,18 +50,23 @@ Las flechas hacia productos vecinos describen el contrato objetivo. No implican 
 ```text
 Navegador / CLI
   -> servidor Node HTTP
-       -> endpoints MVP /api/*
+       -> endpoints autenticados /api/v1/procedure-queries e ingestion-jobs
+       -> endpoints MVP /api/* sólo en desarrollo
        -> retrieval y workflow composition en proceso
-       -> PostgreSQL rag/agent/audit cuando se configura
+       -> PostgreSQL identity/integration/rag/agent/audit cuando se configura
   -> archivos locales controlados
        -> source inventory / corpus manifest / artifacts de ingestión
+
+Worker de ingestión
+  -> clase callable con lease/heartbeat/fencing
+  -> no tiene proceso, scheduler ni adapter storage/scanner desplegado
 
 GitHub Pages
   -> superficies estáticas y modo de demostración
   -> no es backend de producción ni system of record
 ```
 
-Hechos del baseline:
+Hechos históricos del baseline (antes del programa de hardening):
 
 - sólo `/api/procedure-feedback` tiene Bearer token específico; los demás endpoints no forman una frontera autenticada integral;
 - no existe namespace `/api/v1`, OpenAPI externo, tenant scope transversal ni RBAC;
@@ -71,6 +76,19 @@ Hechos del baseline:
 - OS Electoral y Content Agency no están conectados al runtime.
 
 La evidencia detallada está en la [auditoría de baseline](../../program/baseline-audit.md).
+
+Estado implementado desde ese baseline:
+
+- identity/tenancy/RBAC y RLS forzado para los agregados protegidos;
+- `POST /api/v1/procedure-queries` con contratos, auth, tenant, rate,
+  idempotency y audit;
+- `POST/GET /api/v1/ingestion-jobs` para versiones existentes y un worker
+  callable que exige bytes inmutables ligados a evidencia limpia;
+- jobs/vectores tenant-scoped con leases, fencing y finalización atómica.
+
+Esto sigue siendo pre-producción: no hay consumidores externos, lifecycle de
+aprobación, storage/scanner/worker desplegado, observabilidad/HA/load aprobada ni
+release backend.
 
 ## Contenedores objetivo, sin declaración de implementación
 
@@ -83,7 +101,9 @@ La evidencia detallada está en la [auditoría de baseline](../../program/baseli
 | Integration Gateway | OpenAPI/JSON Schema, idempotency, correlation y contract translation. | Puede conservar receipts/outbox propios; nunca tablas de campaña o content runs. |
 | Observability/operations | Logs, metrics, traces, backups, restore e incident response. | Telemetría minimizada sin cuerpos sensibles o secretos. |
 
-Esta separación es un destino de diseño. Workers, Integration Gateway, identity completa y operación production-grade siguen pendientes.
+Esta separación sigue siendo el destino. Identity e Integration Gateway tienen
+slices v1 parciales; el worker desplegado y la operación production-grade siguen
+pendientes.
 
 ## Trust boundaries
 

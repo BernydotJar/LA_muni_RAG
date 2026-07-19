@@ -61,13 +61,17 @@ const appendVary = (res: ServerResponse, value: string): void => {
 export const handleV1Cors = (
   req: IncomingMessage,
   res: ServerResponse,
-  allowedOrigins: readonly string[]
+  allowedOrigins: readonly string[],
+  allowedMethods: readonly ("GET" | "POST")[] = ["POST"]
 ): boolean => {
   appendVary(res, "Origin");
   const origin = singleHeaderValue(req.headers.origin);
   if (origin && allowedOrigins.includes(origin)) {
     res.setHeader("access-control-allow-origin", origin);
-    res.setHeader("access-control-allow-methods", "POST, OPTIONS");
+    res.setHeader(
+      "access-control-allow-methods",
+      [...new Set([...allowedMethods, "OPTIONS" as const])].join(", ")
+    );
     res.setHeader(
       "access-control-allow-headers",
       "authorization, content-type, idempotency-key, x-request-id"

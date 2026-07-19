@@ -31,6 +31,7 @@ The release manager must stop if any item is unassigned or undocumented:
 | Runtime platform and region | architecture record, owner, support boundary | pending |
 | Container registry | private repository, retention, scanning/signing policy | pending |
 | PostgreSQL/pgvector service | version, HA, extensions, roles, connection limits | pending |
+| Object storage, scanner, and worker runtime | immutable versions, IAM, scan evidence, isolation, scheduling | pending |
 | Secret manager and rotation | secret owners, access policy, break-glass flow | pending |
 | TLS ingress, DNS, CORS/origins | certificate and network policy | pending |
 | Observability | logs, metrics, alerts, dashboards, paging owner | pending |
@@ -56,10 +57,10 @@ npm run build
 After the build, the workflow starts
 `pgvector/pgvector:0.8.5-pg16-bookworm` pinned to digest
 `sha256:1d533553fefe4f12e5d80c7b80622ba0c382abb5758856f52983d8789179f0fb`,
-applies canonical migrations `001..005`,
-runs the guarded non-owner SQL fixture, and runs the compiled tenant ingestion
-smoke with disposable CI-only credentials. The fixture database name is fixed and
-contains synthetic rows only.
+applies canonical migrations `001..006`, runs the guarded non-owner SQL fixture,
+and runs the compiled tenant ingestion service and authenticated ingestion HTTP
+smokes with disposable CI-only credentials. The fixture database name is fixed
+and contains synthetic rows only.
 
 The workflow contains no deployment step, production credential, Pages build,
 or repository write permission. Branch protection should require this check on
@@ -97,6 +98,12 @@ docker build --pull \
 `REVIEWED_COMMIT` is a non-secret immutable commit identifier. Do not promote a floating local tag as the release identity. The deployment specification must reference the registry digest (`repository@sha256:...`), not `latest` or a mutable tag.
 
 The image includes the canonical v1 JSON Schemas and OpenAPI document because the v1 handler loads schema validators at runtime. It intentionally excludes contract examples, migrations, raw document bytes, `.rag` local library state, tests, docs, environment files, and Git metadata. Migrations are a separately approved release action sourced from the same reviewed commit. PostgreSQL and any external storage remain required services; the container is not a self-contained database.
+
+The image serves the ingestion-job API code but has no worker entry point,
+object-storage resolver, scanner adapter, or background scheduler. Deploying this
+API image does not process queued jobs; a worker requires a separate reviewed
+artifact and workload identity. `/health` deliberately reports
+`workerConfigured: false`.
 
 Local build evidence on 2026-07-18: `docker build --tag la-muni-rag:ops-foundation .` completed with the versioned Node base, locked build/production installs, and TypeScript build. Image inspection reported `user=node`, `NODE_ENV=production`, `PORT=3000`, the `/health` check, no application secret in the image environment, and an approximately 80.8 MB local image. This was an ephemeral development build, not a vulnerability scan, signature, registry push, runtime start, health/SIGTERM test, or deployment. It is not a release artifact or digest attestation.
 
@@ -175,13 +182,14 @@ test, backup restore, HA failover, load test, approved staging topology, or
 production authorization. The disposable credential literals in the test
 fixture are fixtures only and must never be reused outside that isolated gate.
 
-### Tenant ingestion/vector evidence (2026-07-19)
+### Tenant ingestion/vector/API evidence (2026-07-19)
 
-The new canonical fresh order is migrations `001`, `002`, `003`, `004`, `005`;
+The canonical fresh order is migrations `001`, `002`, `003`, `004`, `005`, `006`;
 fresh databases do not apply standalone legacy vector migration `011`. A second
-test proved the supported historical `001`, `002`, `011`, `003`, `004`, `005`
-order converges. An intentionally unsafe post-003 standalone table with an
-unscoped row stopped at `005` and required explicit ownership review.
+test proved the supported historical
+`001`, `002`, `011`, `003`, `004`, `005`, `006` order converges. An intentionally
+unsafe post-003 standalone table with an unscoped row stopped at `005`, preserved
+the row, rolled back the attempted column, and required explicit ownership review.
 
 `db/tests/tenant_ingestion_runtime_gate.sql` used the exact disposable database
 `la_muni_rag_ingestion_test` and a table-non-owner login with `NOSUPERUSER` and
@@ -192,6 +200,14 @@ two claimers, heartbeat, artifact/stale-lease fencing, retry/terminal failure,
 cross-tenant equal chunk ids, atomic rollback, full-generation replacement,
 stale deletion, and public eligibility. It read no controlled artifacts.
 
+Migration `006` adds forced-RLS ingestion API rate state plus a narrow,
+unreadable pre-tenant authentication-failure aggregate. The compiled HTTP smoke
+then observed `401, 403, 403, 202, 200, 202, 409, 429, 200, 404, 404` for missing
+authentication, role/tenant denial, new/replay/dedup/conflict, rate denial, own
+status, and cross-tenant/missing status. It proved stable durable job identity,
+exact CORS, no raw credential/idempotency persistence, no artifact/control
+material in responses, and zero controlled artifact reads.
+
 The reported runtime was PostgreSQL 16.14 and pgvector 0.8.5. Vector search is
 exact in v1; migration `005` removes the legacy global IVFFlat index because
 tenant/RLS filtering can reduce approximate recall. Production approval still
@@ -199,10 +215,11 @@ requires a populated restore migration/lock-duration test, exact-search query
 plans and load thresholds, production role/startup attestation, HA/failover,
 queue/worker monitoring, and any future tenant-partitioned index review.
 
-This backend core has no authenticated ingestion route or deployed worker. Do
-not add an ingestion smoke item to release acceptance until those components,
-scanner/storage evidence handoff, RBAC, and rollback controls are implemented
-and reviewed.
+The authenticated route and callable worker boundary exist, but no worker
+process, immutable storage resolver, scanner-evidence store, workload identity,
+or operational queue controls exist. Do not treat the local smoke as end-to-end
+ingestion acceptance. Release acceptance remains blocked until those components,
+rollback/repair controls, and staging evidence are implemented and reviewed.
 
 ## Deployment sequence
 
@@ -240,8 +257,17 @@ At minimum, record status and request/correlation ID for:
 - rate limiting returns 429 with the expected retry guidance;
 - a boundary-violating electoral/content request is refused;
 - representative evidence links resolve only to authorized/public sources.
+- an authorized ingestion enqueue for a synthetic/approved existing version
+  returns contract-valid new/replay/dedup semantics without returning its digest
+  or pipeline/control secrets;
+- ingestion viewer/tenant denial and cross-tenant/missing status reads return the
+  expected uniform 403/404, and rate denial returns 429;
+- health does not claim a worker unless a separately deployed and attested
+  worker actually exists.
 
-If the v1 route or any isolation control is not integrated, the production smoke cannot pass and the release is blocked. Do not substitute successful legacy-route calls.
+If a v1 route included in the release or any isolation control is not integrated,
+the production smoke cannot pass and the release is blocked. Do not substitute
+successful legacy-route calls or a queued job for completed ingestion.
 
 ### 6. Progressive traffic and observation
 

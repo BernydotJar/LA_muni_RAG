@@ -20,6 +20,8 @@ export const CONTRACT_SCHEMA_FILES = [
   "procedure-workflow.schema.json",
   "procedure-assessment.schema.json",
   "procedure-query-request.schema.json",
+  "ingestion-job-request.schema.json",
+  "ingestion-job-response.schema.json",
   "evidence-gap-request.schema.json",
   "claim-pack.schema.json",
   "event-envelope.schema.json",
@@ -31,6 +33,8 @@ export const CONTRACT_EXAMPLE_BINDINGS = [
   { contractName: "procedure-workflow", schemaFile: "procedure-workflow.schema.json", exampleFile: "procedure-workflow.valid.json" },
   { contractName: "procedure-assessment", schemaFile: "procedure-assessment.schema.json", exampleFile: "procedure-assessment.valid.json" },
   { contractName: "procedure-query-request", schemaFile: "procedure-query-request.schema.json", exampleFile: "procedure-query-request.valid.json" },
+  { contractName: "ingestion-job-request", schemaFile: "ingestion-job-request.schema.json", exampleFile: "ingestion-job-request.valid.json" },
+  { contractName: "ingestion-job-response", schemaFile: "ingestion-job-response.schema.json", exampleFile: "ingestion-job-response.valid.json" },
   { contractName: "evidence-gap-request", schemaFile: "evidence-gap-request.schema.json", exampleFile: "evidence-gap-request.valid.json" },
   { contractName: "claim-pack", schemaFile: "claim-pack.schema.json", exampleFile: "claim-pack.valid.json" },
   { contractName: "event-envelope", schemaFile: "event-envelope.schema.json", exampleFile: "event-envelope.valid.json" },
@@ -186,29 +190,51 @@ const validateOpenApiDocument = async (
   }
 
   const paths = isJsonObject(openapi.paths) ? openapi.paths : {};
-  if (!equalStringSets(Object.keys(paths), ["/api/v1/procedure-queries"])) {
-    recordIssue("invalid_path_scope", "OpenAPI must describe only /api/v1/procedure-queries");
+  const expectedPaths = [
+    "/api/v1/procedure-queries",
+    "/api/v1/ingestion-jobs",
+    "/api/v1/ingestion-jobs/{job_id}",
+  ];
+  if (!equalStringSets(Object.keys(paths), expectedPaths)) {
+    recordIssue("invalid_path_scope", "OpenAPI path scope does not match implemented v1 routes");
   }
 
-  const pathItem = isJsonObject(paths["/api/v1/procedure-queries"])
+  const procedurePath = isJsonObject(paths["/api/v1/procedure-queries"])
     ? paths["/api/v1/procedure-queries"]
     : {};
-  if (!equalStringSets(Object.keys(pathItem), ["post"])) {
+  const ingestionPath = isJsonObject(paths["/api/v1/ingestion-jobs"])
+    ? paths["/api/v1/ingestion-jobs"]
+    : {};
+  const ingestionItemPath = isJsonObject(paths["/api/v1/ingestion-jobs/{job_id}"])
+    ? paths["/api/v1/ingestion-jobs/{job_id}"]
+    : {};
+  if (!equalStringSets(Object.keys(procedurePath), ["post"])) {
     recordIssue("invalid_method_scope", "Procedure query path must describe only POST");
   }
-
-  const operation = isJsonObject(pathItem.post) ? pathItem.post : {};
-  const security = Array.isArray(operation.security) ? operation.security : [];
-  const hasBearerSecurity = security.some(
-    (entry) => isJsonObject(entry) && Array.isArray(entry.bearerAuth)
-  );
-  if (!hasBearerSecurity) {
-    recordIssue("missing_bearer_security", "POST must require bearerAuth");
+  if (!equalStringSets(Object.keys(ingestionPath), ["post"])) {
+    recordIssue("invalid_method_scope", "Ingestion collection path must describe only POST");
+  }
+  if (!equalStringSets(Object.keys(ingestionItemPath), ["get"])) {
+    recordIssue("invalid_method_scope", "Ingestion item path must describe only GET");
   }
 
-  const parameters = Array.isArray(operation.parameters) ? operation.parameters : [];
-  const requiredHeaderNames = new Set(
-    parameters
+  const procedureOperation = isJsonObject(procedurePath.post) ? procedurePath.post : {};
+  const ingestionPostOperation = isJsonObject(ingestionPath.post) ? ingestionPath.post : {};
+  const ingestionGetOperation = isJsonObject(ingestionItemPath.get) ? ingestionItemPath.get : {};
+  const operations = [
+    ["POST /api/v1/procedure-queries", procedureOperation],
+    ["POST /api/v1/ingestion-jobs", ingestionPostOperation],
+    ["GET /api/v1/ingestion-jobs/{job_id}", ingestionGetOperation],
+  ] as const;
+  for (const [label, operation] of operations) {
+    const security = Array.isArray(operation.security) ? operation.security : [];
+    if (!security.some((entry) => isJsonObject(entry) && Array.isArray(entry.bearerAuth))) {
+      recordIssue("missing_bearer_security", label + " must require bearerAuth");
+    }
+  }
+
+  const requiredHeaders = (operation: JsonObject): Set<string> => new Set(
+    (Array.isArray(operation.parameters) ? operation.parameters : [])
       .filter(
         (parameter): parameter is JsonObject =>
           isJsonObject(parameter) &&
@@ -218,19 +244,31 @@ const validateOpenApiDocument = async (
       )
       .map((parameter) => String(parameter.name).toLowerCase())
   );
-  for (const requiredHeader of ["idempotency-key", "x-request-id"]) {
-    if (!requiredHeaderNames.has(requiredHeader)) {
-      recordIssue("missing_required_header", "Missing required header " + requiredHeader);
+  for (const [label, operation, expectedHeaders] of [
+    ["procedure query", procedureOperation, ["idempotency-key", "x-request-id"]],
+    ["ingestion enqueue", ingestionPostOperation, ["idempotency-key", "x-request-id"]],
+    ["ingestion status", ingestionGetOperation, ["x-request-id"]],
+  ] as const) {
+    const headerNames = requiredHeaders(operation);
+    for (const requiredHeader of expectedHeaders) {
+      if (!headerNames.has(requiredHeader)) {
+        recordIssue("missing_required_header", label + " is missing " + requiredHeader);
+      }
     }
   }
 
-  const responses = isJsonObject(operation.responses) ? operation.responses : {};
-  const requiredResponses = ["200", "400", "401", "403", "409", "429", "500", "503"];
-  if (!equalStringSets(Object.keys(responses), requiredResponses)) {
-    recordIssue(
-      "invalid_response_scope",
-      "Responses must be exactly " + requiredResponses.join(", ")
-    );
+  for (const [label, operation, expectedResponses] of [
+    ["procedure query", procedureOperation, ["200", "400", "401", "403", "409", "429", "500", "503"]],
+    ["ingestion enqueue", ingestionPostOperation, ["200", "202", "400", "401", "403", "409", "429", "500", "503"]],
+    ["ingestion status", ingestionGetOperation, ["200", "400", "401", "403", "404", "429", "500"]],
+  ] as const) {
+    const responses = isJsonObject(operation.responses) ? operation.responses : {};
+    if (!equalStringSets(Object.keys(responses), [...expectedResponses])) {
+      recordIssue(
+        "invalid_response_scope",
+        label + " responses must be exactly " + expectedResponses.join(", ")
+      );
+    }
   }
 
   const components = isJsonObject(openapi.components) ? openapi.components : {};

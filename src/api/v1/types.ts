@@ -50,7 +50,7 @@ export interface ApiErrorV1 {
   tenant_id: string | null;
   request_id: string;
   audit_id: string;
-  http_status: 400 | 401 | 403 | 409 | 429 | 500 | 503;
+  http_status: 400 | 401 | 403 | 404 | 409 | 429 | 500 | 503;
   retryable: boolean;
   error: {
     code: string;

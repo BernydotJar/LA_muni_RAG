@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import type { Server } from "node:http";
 import { after, before, describe, it } from "node:test";
+import { InMemoryIngestionApiPersistence } from "../api/v1/ingestionIndex.js";
 import { createApiServer } from "../server.js";
 
 describe("production server surface", () => {
@@ -11,7 +12,16 @@ describe("production server surface", () => {
   before(async () => {
     previousNodeEnv = process.env.NODE_ENV;
     process.env.NODE_ENV = "production";
-    server = createApiServer();
+    const ingestionPersistence = new InMemoryIngestionApiPersistence();
+    server = createApiServer({
+      ingestionJobV1: {
+        identityRepository: { authenticateByCredentialHash: async () => null },
+        persistence: ingestionPersistence,
+        authenticationFailureRecorder: ingestionPersistence,
+        pipelineConfig: null,
+      },
+      v1CorsAllowedOrigins: ["https://trusted.example"],
+    });
     await new Promise<void>((resolve, reject) => {
       server.once("error", reject);
       server.listen({ host: "127.0.0.1", port: 0 }, () => {
@@ -75,11 +85,55 @@ describe("production server surface", () => {
     assert.equal(response.headers.get("access-control-allow-origin"), null);
   });
 
+  it("keeps the authenticated ingestion route ahead of the legacy production gate", async () => {
+    const requestId = "aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa";
+    const response = await fetch(`${baseUrl}/api/v1/ingestion-jobs`, {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+        "idempotency-key": "production-surface-check-0001",
+        "x-request-id": requestId,
+      },
+      body: "{malformed-before-auth",
+    });
+    const body = await response.json() as {
+      tenant_id?: unknown;
+      error?: { code?: unknown };
+    };
+
+    assert.equal(response.status, 401);
+    assert.equal(response.headers.get("access-control-allow-origin"), null);
+    assert.equal(body.tenant_id, null);
+    assert.equal(body.error?.code, "unauthorized");
+  });
+
+  it("advertises only exact-origin GET/POST ingestion CORS", async () => {
+    const trusted = await fetch(`${baseUrl}/api/v1/ingestion-jobs`, {
+      method: "OPTIONS",
+      headers: { origin: "https://trusted.example" },
+    });
+    const untrusted = await fetch(`${baseUrl}/api/v1/ingestion-jobs`, {
+      method: "OPTIONS",
+      headers: { origin: "https://untrusted.example" },
+    });
+
+    assert.equal(trusted.status, 204);
+    assert.equal(trusted.headers.get("access-control-allow-origin"), "https://trusted.example");
+    assert.equal(trusted.headers.get("access-control-allow-methods"), "GET, POST, OPTIONS");
+    assert.equal(untrusted.status, 204);
+    assert.equal(untrusted.headers.get("access-control-allow-origin"), null);
+  });
+
   it("keeps the intentionally public health endpoint available", async () => {
     const response = await fetch(`${baseUrl}/health`);
-    const body = await response.json() as { status?: unknown };
+    const body = await response.json() as {
+      status?: unknown;
+      ingestionJobApi?: { enabled?: unknown; workerConfigured?: unknown };
+    };
 
     assert.equal(response.status, 200);
     assert.equal(body.status, "ok");
+    assert.equal(body.ingestionJobApi?.enabled, false);
+    assert.equal(body.ingestionJobApi?.workerConfigured, false);
   });
 });

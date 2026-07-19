@@ -1,8 +1,9 @@
 # HTTP API
 
-Last updated: 2026-06-22
+Last updated: 2026-07-19
 Owner: Product Engineering
-Status: Draft
+Status: pre-production; authenticated v1 procedure and ingestion-job routes
+implemented, legacy routes development-only
 
 ## Objective
 
@@ -44,6 +45,26 @@ PORT=4010 npm run dev:api
 
 ## Endpoints
 
+### Authenticated v1 production surface
+
+```http
+POST /api/v1/procedure-queries
+POST /api/v1/ingestion-jobs
+GET  /api/v1/ingestion-jobs/{job_id}
+```
+
+These routes use closed JSON Schema/OpenAPI contracts, Bearer credential
+authentication, explicit permissions, credential-derived tenant scope,
+per-principal rate limits, safe versioned errors, sanitized audit, and exact
+origin CORS. The ingestion route accepts only an existing document-version UUID
+and matching digest; it is not an upload or scanner endpoint. See
+[Procedure query API v1](api/procedure-queries-v1.md) and
+[Ingestion jobs API v1](api/ingestion-jobs-v1.md).
+
+With `NODE_ENV=production`, every other pre-v1 `/api/*` route listed below is
+disabled before legacy wildcard CORS. Those endpoints remain local/development
+surfaces and must not receive confidential or multi-tenant data.
+
 ### Health
 
 ```http
@@ -55,9 +76,18 @@ Expected response:
 ```json
 {
   "status": "ok",
-  "service": "la-muni-rag-api"
+  "service": "la-muni-rag-api",
+  "ingestionJobApi": {
+    "enabled": false,
+    "workerConfigured": false
+  }
 }
 ```
+
+`ingestionJobApi.enabled` reports only whether a compatible server-owned
+pipeline can be constructed. `workerConfigured` remains `false` because this
+repository does not start a worker process. Health does not prove storage,
+scanner, database-role, provider, or deployment readiness.
 
 ### Search
 
@@ -256,9 +286,15 @@ Spanish content with markdown formatting, plus structured citation cards.
 
 ## CORS
 
-All API responses include `Access-Control-Allow-Origin: *` to allow the widget
-to be embedded on any domain. Preflight `OPTIONS` requests are handled
-automatically.
+Authenticated `/api/v1/*` routes never emit wildcard CORS. They always vary on
+`Origin` and emit browser access only for an exact
+`V1_CORS_ALLOWED_ORIGINS` match. Server-to-server requests without `Origin`
+remain valid.
+
+Legacy development routes include `Access-Control-Allow-Origin: *` so the local
+widget can be embedded. Production disables those routes before applying the
+legacy headers. Do not expose legacy mode to an untrusted network or treat CORS
+as authentication.
 
 ## Chat Widget
 

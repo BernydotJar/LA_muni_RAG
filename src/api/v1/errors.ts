@@ -56,7 +56,7 @@ export const buildApiError = (
 export const serializeValidatedApiError = (
   error: ApiV1Error,
   context: ErrorIdentityContext,
-  validators: ProcedureQueryContractValidators
+  validators: Pick<ProcedureQueryContractValidators, "apiError">
 ): string => {
   const body = buildApiError(error, context);
   if (!validators.apiError(body)) {
@@ -70,6 +70,9 @@ export const unauthorizedError = (): ApiV1Error =>
 
 export const forbiddenError = (): ApiV1Error =>
   new ApiV1Error(403, "forbidden", "Access denied");
+
+export const notFoundError = (): ApiV1Error =>
+  new ApiV1Error(404, "not_found", "Resource not found");
 
 export const internalError = (): ApiV1Error =>
   new ApiV1Error(500, "internal_error", "Unexpected server error", [], true);

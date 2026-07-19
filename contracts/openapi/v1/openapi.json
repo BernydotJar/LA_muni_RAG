@@ -2,11 +2,11 @@
   "openapi": "3.1.1",
   "jsonSchemaDialect": "https://json-schema.org/draft/2020-12/schema",
   "info": {
-    "title": "LA Muni RAG Procedure Query Contract",
+    "title": "LA Muni RAG v1 API Contract",
     "version": "1.0.0",
-    "description": "Contract for the implemented LA Muni RAG procedure-workflow provider slice. EvidenceBundle and ProcedureAssessment remain unavailable, no consumer integration is claimed, and this document does not claim that the endpoint is deployed."
+    "description": "Contract for the implemented procedure-workflow provider and authenticated ingestion-job submission/status slices. EvidenceBundle, ProcedureAssessment, document upload, and a deployed worker/storage/scanner remain unavailable; this document does not claim deployment."
   },
-  "x-implementation-status": "procedure_workflow_provider_implemented",
+  "x-implementation-status": "procedure_workflow_and_ingestion_job_providers_implemented_with_limits",
   "paths": {
     "/api/v1/procedure-queries": {
       "post": {
@@ -101,6 +101,172 @@
           }
         }
       }
+    },
+    "/api/v1/ingestion-jobs": {
+      "post": {
+        "operationId": "enqueueIngestionJob",
+        "summary": "Enqueue an already accepted document version for ingestion",
+        "description": "Requires an existing tenant-owned document version whose persisted content digest matches the request. This operation does not upload bytes or assert scanner/storage acceptance.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "description": "Stable key for safely replaying the same principal-scoped ingestion request.",
+            "schema": {
+              "type": "string",
+              "minLength": 16,
+              "maxLength": 128,
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{15,127}$"
+            }
+          },
+          {
+            "name": "X-Request-Id",
+            "in": "header",
+            "required": true,
+            "description": "UUID that must equal request_id in the body.",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "../../schemas/v1/ingestion-job-request.schema.json"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Exact idempotent replay of an existing ingestion job.",
+            "headers": {
+              "X-Request-Id": {
+                "$ref": "#/components/headers/RequestId"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../../schemas/v1/ingestion-job-response.schema.json"
+                }
+              }
+            }
+          },
+          "202": {
+            "description": "A new job was queued or equivalent tenant work was deduplicated.",
+            "headers": {
+              "X-Request-Id": {
+                "$ref": "#/components/headers/RequestId"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../../schemas/v1/ingestion-job-response.schema.json"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          },
+          "503": {
+            "$ref": "#/components/responses/Unavailable"
+          }
+        }
+      }
+    },
+    "/api/v1/ingestion-jobs/{job_id}": {
+      "get": {
+        "operationId": "getIngestionJob",
+        "summary": "Read tenant-scoped ingestion job status",
+        "description": "Returns status only for a job visible to the authenticated tenant. Missing and cross-tenant identifiers share the same non-leaking 404 response.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "job_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "X-Request-Id",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Tenant-scoped ingestion job status.",
+            "headers": {
+              "X-Request-Id": {
+                "$ref": "#/components/headers/RequestId"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../../schemas/v1/ingestion-job-response.schema.json"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        }
+      }
     }
   },
   "components": {
@@ -108,7 +274,7 @@
       "bearerAuth": {
         "type": "http",
         "scheme": "bearer",
-        "description": "Tenant-scoped integration credential."
+        "description": "Tenant-scoped service, integration, or operator credential. Authorization remains operation-specific."
       }
     },
     "headers": {
@@ -170,6 +336,21 @@
       },
       "Forbidden": {
         "description": "The credential cannot access the requested tenant or resource.",
+        "headers": {
+          "X-Request-Id": {
+            "$ref": "#/components/headers/RequestId"
+          }
+        },
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "../../schemas/v1/api-error.schema.json"
+            }
+          }
+        }
+      },
+      "NotFound": {
+        "description": "The tenant-scoped resource was not found; no cross-tenant existence information is returned.",
         "headers": {
           "X-Request-Id": {
             "$ref": "#/components/headers/RequestId"

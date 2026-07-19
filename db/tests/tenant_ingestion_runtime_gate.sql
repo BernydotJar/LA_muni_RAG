@@ -20,7 +20,11 @@ CREATE ROLE la_muni_ingestion_runtime_test
 
 GRANT CONNECT ON DATABASE la_muni_rag_ingestion_test
   TO la_muni_ingestion_runtime_test;
-GRANT USAGE ON SCHEMA rag, audit
+GRANT USAGE ON SCHEMA identity, rag, audit, integration
+  TO la_muni_ingestion_runtime_test;
+GRANT EXECUTE ON FUNCTION identity.authenticate_api_credential(BYTEA)
+  TO la_muni_ingestion_runtime_test;
+GRANT EXECUTE ON FUNCTION audit.record_ingestion_authentication_failure(UUID, UUID, TEXT)
   TO la_muni_ingestion_runtime_test;
 GRANT SELECT ON rag.documents
   TO la_muni_ingestion_runtime_test;
@@ -28,7 +32,8 @@ GRANT SELECT, UPDATE ON rag.document_versions
   TO la_muni_ingestion_runtime_test;
 GRANT SELECT, INSERT, UPDATE, DELETE ON
   rag.ingestion_jobs,
-  rag.embedding_vectors
+  rag.embedding_vectors,
+  integration.ingestion_api_rate_limits
   TO la_muni_ingestion_runtime_test;
 GRANT INSERT ON audit.events
   TO la_muni_ingestion_runtime_test;
@@ -42,6 +47,8 @@ DECLARE
   vector_force BOOLEAN;
   jobs_rls BOOLEAN;
   jobs_force BOOLEAN;
+  api_rate_rls BOOLEAN;
+  api_rate_force BOOLEAN;
   vector_write_policy TEXT;
 BEGIN
   SELECT rolsuper, rolbypassrls
@@ -55,7 +62,13 @@ BEGIN
   SELECT EXISTS (
     SELECT 1
     FROM pg_class
-    WHERE relname IN ('embedding_vectors', 'ingestion_jobs', 'document_versions', 'documents')
+    WHERE relname IN (
+      'embedding_vectors',
+      'ingestion_jobs',
+      'ingestion_api_rate_limits',
+      'document_versions',
+      'documents'
+    )
       AND pg_get_userbyid(relowner) = 'la_muni_ingestion_runtime_test'
   ) INTO owns_protected;
   IF owns_protected THEN
@@ -70,8 +83,14 @@ BEGIN
   INTO jobs_rls, jobs_force
   FROM pg_class
   WHERE oid = 'rag.ingestion_jobs'::regclass;
-  IF NOT vector_rls OR NOT vector_force OR NOT jobs_rls OR NOT jobs_force THEN
-    RAISE EXCEPTION 'vector and job tables must enable and force RLS';
+  SELECT relrowsecurity, relforcerowsecurity
+  INTO api_rate_rls, api_rate_force
+  FROM pg_class
+  WHERE oid = 'integration.ingestion_api_rate_limits'::regclass;
+  IF NOT vector_rls OR NOT vector_force
+     OR NOT jobs_rls OR NOT jobs_force
+     OR NOT api_rate_rls OR NOT api_rate_force THEN
+    RAISE EXCEPTION 'vector, job, and ingestion API rate tables must enable and force RLS';
   END IF;
 
   SELECT pg_get_expr(polwithcheck, polrelid)
@@ -111,6 +130,13 @@ VALUES
     'service',
     'ingestion-service-b',
     'Ingestion service B'
+  ),
+  (
+    '33333333-3333-4333-8333-333333333333',
+    'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa',
+    'service',
+    'ingestion-viewer-a',
+    'Ingestion viewer A'
   );
 
 INSERT INTO identity.memberships (tenant_id, principal_id, role)
@@ -124,6 +150,41 @@ VALUES
     'bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb',
     '22222222-2222-4222-8222-222222222222',
     'document_manager'
+  ),
+  (
+    'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa',
+    '33333333-3333-4333-8333-333333333333',
+    'viewer'
+  );
+
+INSERT INTO identity.api_credentials (
+  id,
+  tenant_id,
+  principal_id,
+  label,
+  secret_sha256
+)
+VALUES
+  (
+    '44444444-4444-4444-8444-444444444444',
+    'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa',
+    '11111111-1111-4111-8111-111111111111',
+    'Disposable ingestion API credential A',
+    digest('disposable-ingestion-tenant-a-api-token-20260719', 'sha256')
+  ),
+  (
+    '55555555-5555-4555-8555-555555555555',
+    'bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb',
+    '22222222-2222-4222-8222-222222222222',
+    'Disposable ingestion API credential B',
+    digest('disposable-ingestion-tenant-b-api-token-20260719', 'sha256')
+  ),
+  (
+    '66666666-6666-4666-8666-666666666666',
+    'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa',
+    '33333333-3333-4333-8333-333333333333',
+    'Disposable ingestion viewer credential A',
+    digest('disposable-ingestion-viewer-api-token-20260719', 'sha256')
   );
 
 BEGIN;
@@ -208,6 +269,22 @@ VALUES
     'runtime-concurrency',
     repeat('5', 64),
     'queued'
+  ),
+  (
+    'aaaaaaaa-0000-4000-8000-000000000106',
+    'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa',
+    'aaaaaaaa-0000-4000-8000-000000000010',
+    'runtime-api-v1',
+    repeat('6', 64),
+    'queued'
+  ),
+  (
+    'aaaaaaaa-0000-4000-8000-000000000107',
+    'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa',
+    'aaaaaaaa-0000-4000-8000-000000000010',
+    'runtime-api-conflict',
+    repeat('7', 64),
+    'queued'
   );
 COMMIT;
 
@@ -269,17 +346,20 @@ DO $gate$
 DECLARE
   visible_jobs INTEGER;
   visible_vectors INTEGER;
+  visible_api_rates INTEGER;
 BEGIN
   SELECT count(*) INTO visible_jobs FROM rag.ingestion_jobs;
   SELECT count(*) INTO visible_vectors FROM rag.embedding_vectors;
-  IF visible_jobs <> 0 OR visible_vectors <> 0 THEN
+  SELECT count(*) INTO visible_api_rates FROM integration.ingestion_api_rate_limits;
+  IF visible_jobs <> 0 OR visible_vectors <> 0 OR visible_api_rates <> 0 THEN
     RAISE EXCEPTION 'missing tenant context exposed ingestion state';
   END IF;
 
   PERFORM set_config('app.tenant_id', 'malformed-tenant', false);
   SELECT count(*) INTO visible_jobs FROM rag.ingestion_jobs;
   SELECT count(*) INTO visible_vectors FROM rag.embedding_vectors;
-  IF visible_jobs <> 0 OR visible_vectors <> 0 THEN
+  SELECT count(*) INTO visible_api_rates FROM integration.ingestion_api_rate_limits;
+  IF visible_jobs <> 0 OR visible_vectors <> 0 OR visible_api_rates <> 0 THEN
     RAISE EXCEPTION 'malformed tenant context exposed ingestion state';
   END IF;
   RESET app.tenant_id;
@@ -325,12 +405,100 @@ BEGIN
 END;
 $gate$;
 
+DO $gate$
+BEGIN
+  BEGIN
+    PERFORM 1 FROM audit.ingestion_authentication_failures;
+    RAISE EXCEPTION 'runtime role unexpectedly read ingestion authentication failure storage';
+  EXCEPTION
+    WHEN insufficient_privilege THEN NULL;
+  END;
+END;
+$gate$;
+
+DO $gate$
+DECLARE
+  authenticated_tenant UUID;
+BEGIN
+  SELECT tenant_id
+  INTO authenticated_tenant
+  FROM identity.authenticate_api_credential(
+    digest('disposable-ingestion-tenant-a-api-token-20260719', 'sha256')
+  );
+  IF authenticated_tenant IS DISTINCT FROM 'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa'::uuid THEN
+    RAISE EXCEPTION 'ingestion credential authentication returned the wrong tenant';
+  END IF;
+END;
+$gate$;
+
+DO $gate$
+DECLARE
+  first_audit UUID;
+  repeated_audit UUID;
+BEGIN
+  SELECT audit.record_ingestion_authentication_failure(
+    '77777777-7777-4777-8777-777777777777',
+    '88888888-8888-4888-8888-888888888888',
+    'credential_rejected'
+  ) INTO first_audit;
+  SELECT audit.record_ingestion_authentication_failure(
+    '99999999-9999-4999-8999-999999999999',
+    'aaaaaaaa-1111-4111-8111-111111111111',
+    'credential_rejected'
+  ) INTO repeated_audit;
+  IF first_audit IS DISTINCT FROM repeated_audit THEN
+    RAISE EXCEPTION 'ingestion authentication failures did not aggregate by minute and reason';
+  END IF;
+END;
+$gate$;
+
+BEGIN;
+SELECT set_config('app.tenant_id', 'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa', true);
+DO $gate$
+BEGIN
+  BEGIN
+    INSERT INTO integration.ingestion_api_rate_limits (
+      tenant_id,
+      principal_id,
+      operation,
+      window_started_at,
+      request_count
+    ) VALUES (
+      'bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb',
+      '22222222-2222-4222-8222-222222222222',
+      'ingestion_job_enqueue_v1',
+      date_trunc('minute', statement_timestamp()),
+      1
+    );
+    RAISE EXCEPTION 'tenant A unexpectedly inserted tenant B ingestion API rate state';
+  EXCEPTION
+    WHEN insufficient_privilege THEN NULL;
+  END;
+END;
+$gate$;
+COMMIT;
+
 RESET ROLE;
+
+DO $gate$
+DECLARE
+  aggregate_count BIGINT;
+BEGIN
+  SELECT failure_count
+  INTO aggregate_count
+  FROM audit.ingestion_authentication_failures
+  WHERE audit_id = '77777777-7777-4777-8777-777777777777';
+  IF aggregate_count IS DISTINCT FROM 2 THEN
+    RAISE EXCEPTION 'expected ingestion authentication failure aggregate count 2, found %', aggregate_count;
+  END IF;
+END;
+$gate$;
 
 SELECT json_build_object(
   'result', 'tenant_ingestion_sql_gate_passed',
   'postgres_version', current_setting('server_version'),
-  'vector_version', extversion
+  'vector_version', extversion,
+  'controlledArtifactsRead', 0
 )
 FROM pg_extension
 WHERE extname = 'vector';

@@ -10,7 +10,7 @@ Status: implementation guide; production role grants and live RLS verification r
 
 Create the PostgreSQL evidence ledger with versioned documents, citable
 sections, tenant ownership, identity, RBAC, audit, durable ingestion jobs,
-tenant-owned vectors, and row-level isolation.
+tenant-owned vectors, ingestion API rate/auth state, and row-level isolation.
 
 ## Prerequisites
 
@@ -48,6 +48,7 @@ psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -f db/migrations/002_procedure_feedback.
 psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -f db/migrations/003_identity_tenancy_rbac.sql
 psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -f db/migrations/004_procedure_query_api.sql
 psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -f db/migrations/005_tenant_ingestion_runtime.sql
+psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -f db/migrations/006_ingestion_api_runtime.sql
 ```
 
 Migration `005` is the canonical vector-store migration for fresh databases.
@@ -83,6 +84,9 @@ privileges required by the application. It must:
 - not be a superuser and not have `BYPASSRLS`;
 - receive `EXECUTE` on
   `identity.authenticate_api_credential(bytea)` explicitly;
+- receive `EXECUTE` on the narrow
+  `audit.record_ingestion_authentication_failure(uuid, uuid, text)` function,
+  without read access to its tenantless aggregate table;
 - run tenant-owned work through `withTenantTransaction`, which sets
   `app.tenant_id` transaction-locally;
 - use transaction-bound ingestion/vector repositories; it does not need
@@ -107,15 +111,21 @@ execute a database integration gate with the non-owner runtime role:
 6. concurrently submit and lease ingestion work; prove replay/work
    deduplication, lease fencing, atomic rollback/replacement, and cross-tenant
    equal chunk ids;
-7. confirm denial/job audit records contain no credential, raw key/token, source
+7. run the compiled authenticated ingestion HTTP surface and prove role/tenant
+   denial, new/replay/dedup/conflict, rate limit, own/cross-tenant status, and
+   exact CORS;
+8. confirm denial/job audit records contain no credential, raw key/token, source
    body, query text, or exception text;
-8. record PostgreSQL and pgvector versions plus the executed evidence.
+9. record PostgreSQL and pgvector versions plus the executed evidence.
 
 The guarded disposable ingestion gate passed locally on PostgreSQL 16.14 and
 pgvector 0.8.5 with a table-non-owner, non-superuser, non-`BYPASSRLS` role. That
 is executable local evidence, not proof of production role provisioning,
 startup/continuous attestation, populated-data migration timing, HA, load, or
 release approval. See [Tenant Vector and Ingestion Runtime](tenant-ingestion-runtime.md).
+The compiled API smoke uses only synthetic registered versions and reports zero
+controlled artifact reads; it does not prove storage/scanner integration or a
+deployed worker. See [Ingestion jobs API v1](api/ingestion-jobs-v1.md).
 The complete production-shaped gate remains unproven until those controls run
 against the approved staging and production-equivalent role topology.
 

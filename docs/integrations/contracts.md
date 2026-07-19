@@ -1,12 +1,13 @@
 # Contratos entre productos
 
-Estado: foundation v1 y provider `ProcedureWorkflow` implementados; consumer y demás artifacts pendientes
+Estado: foundation v1, provider `ProcedureWorkflow` y API operacional de
+ingestion jobs implementados; consumers y demás artifacts pendientes
 
-Fecha de corte: 2026-07-18
+Fecha de corte: 2026-07-19
 
 ## Alcance
 
-Este documento define la semántica común para integrar LA Muni RAG, OS Electoral y Content Agency sin compartir storage. Los artifacts canónicos están en [`contracts/schemas/v1`](../../contracts/schemas/v1), [`contracts/openapi/v1/openapi.json`](../../contracts/openapi/v1/openapi.json) y [`contracts/examples/v1`](../../contracts/examples/v1). La ruta `POST /api/v1/procedure-queries` implementa el slice provider de `ProcedureWorkflow`; su validación y smoke local no demuestran interoperabilidad con un consumer vecino ni despliegue productivo.
+Este documento define la semántica común para integrar LA Muni RAG, OS Electoral y Content Agency sin compartir storage. Los artifacts canónicos están en [`contracts/schemas/v1`](../../contracts/schemas/v1), [`contracts/openapi/v1/openapi.json`](../../contracts/openapi/v1/openapi.json) y [`contracts/examples/v1`](../../contracts/examples/v1). La ruta `POST /api/v1/procedure-queries` implementa el slice provider de `ProcedureWorkflow`; su validación y smoke local no demuestran interoperabilidad con un consumer vecino ni despliegue productivo. El mismo registry contiene los contratos operacionales cerrados `IngestionJobRequest` y `IngestionJobResponse` para `POST/GET /api/v1/ingestion-jobs`; no son artifacts cross-product ni un API de upload.
 
 La decisión de arquitectura está en [ADR-0001](../adr/0001-product-boundaries-and-data-ownership.md) y el ownership en [Ownership de datos](../architecture/data-ownership.md).
 
@@ -152,9 +153,14 @@ El contrato v1 usa un error seguro y versionado:
 
 En `401`, tenant y credential son `null`; inventarlos sería un fallo de seguridad. En `403`, ambos son UUID ya autenticados y la respuesta se fija a `forbidden` / `Access denied` / `[]`, igual para permiso y tenant mismatch.
 
-Códigos y status están cerrados por schema/OpenAPI. El provider implementado cubre schema estricto, authn/authz/tenant, igualdad de request IDs, boundary, replay/conflicto/corrupción, rate limit, CORS exacto y errores seguros. Todavía faltan escenarios de recursos versionados que este slice no expone:
+Códigos y status están cerrados por schema/OpenAPI. El provider procedural y el
+API de ingestion implementados cubren schema estricto, authn/authz/tenant,
+igualdad de request IDs, boundary aplicable, replay/conflicto, rate limit, CORS
+exacto y errores seguros. Ingestion status implementa `404` uniforme para un job
+missing o cross-tenant. Todavía faltan escenarios de recursos versionados que
+estos slices no exponen:
 
-- resource/version not found sin metadata leakage;
+- document/version superseded o expired sin metadata leakage;
 - insufficient evidence y ambiguous jurisdiction;
 - superseded/expired artifact;
 - consumer timeout/retry end-to-end.
@@ -170,7 +176,11 @@ Códigos y status están cerrados por schema/OpenAPI. El provider implementado c
 - Content clasificado/confidencial no cruza de producto sin policy explícita.
 - CORS o network reachability no reemplaza authn/authz.
 
-Estas reglas están implementadas para `POST /api/v1/procedure-queries`, no transversalmente para el catálogo mínimo de APIs ni para consumers externos. Las rutas pre-v1 quedan deshabilitadas por defecto con `NODE_ENV=production`; en desarrollo siguen siendo código legacy no tenant-aware.
+Estas reglas están implementadas para `POST /api/v1/procedure-queries` y la
+familia `POST/GET /api/v1/ingestion-jobs`, con permisos y payloads distintos. No
+están implementadas transversalmente para todo el catálogo ni para consumers
+externos. Las rutas pre-v1 quedan deshabilitadas por defecto con
+`NODE_ENV=production`; en desarrollo siguen siendo código legacy no tenant-aware.
 
 ## Transportes permitidos
 
@@ -207,16 +217,21 @@ Cada test debe ejecutar los artifacts machine-readable canónicos, no una copia 
 
 Al corte:
 
-- existen nueve schemas draft 2020-12, nueve ejemplos y un OpenAPI 3.1.1 que declara honestamente `procedure_workflow_provider_implemented`;
-- `npm run contracts:validate` valida el registry completo con Ajv y el provider vuelve a validar request, `ProcedureWorkflow` y `ApiError` en runtime;
-- pruebas focales cubren igualdad header/body, identidad/tenant/RBAC, boundary, CORS, public-only retrieval, replay/conflicto/corrupción, rate limit y rutas legacy cerradas en producción;
-- un gate desechable sobre PostgreSQL 16.14/pgvector 0.8.5 y rol no propietario ejecutó migraciones, aislamiento A/B y el smoke HTTP `200/200/409/403/400/401/500/200`;
+- existen once schemas draft 2020-12, once ejemplos y un OpenAPI 3.1.1 que declara honestamente `procedure_workflow_and_ingestion_job_providers_implemented_with_limits`;
+- `npm run contracts:validate` valida el registry completo con Ajv; los handlers vuelven a validar sus requests, `ProcedureWorkflow` o `IngestionJobResponse`, y `ApiError` en runtime;
+- pruebas focales cubren igualdad header/body, identidad/tenant/RBAC, boundary, CORS, public-only retrieval, replay/conflicto/corrupción, ingestion new/dedup/status/404, rate limit y rutas legacy cerradas en producción;
+- gates desechables sobre PostgreSQL 16.14/pgvector 0.8.5 y roles no propietarios ejecutaron migraciones/aislamiento A/B, el smoke procedural `200/200/409/403/400/401/500/200` y el smoke ingestion `401/403/403/202/200/202/409/429/200/404/404`;
 - el catálogo mínimo completo de `/api/v1/*` todavía no implementa transversalmente estas reglas;
 - `ProcedureEvidenceBundle` actual no cumple `EvidenceBundle`;
 - el control plane v1 observado de Content Agency es su API interna de misiones/runs/approvals, no este contrato;
 - los contratos read-only observados de OS Electoral son internos a sus bounded contexts, no este contrato.
 
-Por tanto, “provider local probado” no equivale a “integración operativa”. Persistencia, idempotencia y aislamiento están probados para este slice en una base desechable; faltan el consumer de OS Electoral, pruebas entre repositorios, los demás artifacts/endpoints, lifecycle humano, staging y despliegue.
+Por tanto, “provider local probado” no equivale a “integración operativa”.
+Persistencia, idempotencia y aislamiento están probados para estos slices en una
+base desechable; el worker de ingestion no está desplegado y carece de adapter
+storage/scanner. También faltan el consumer de OS Electoral, pruebas entre
+repositorios, los demás artifacts/endpoints, lifecycle humano, staging y
+despliegue.
 
 ## Documentos relacionados
 

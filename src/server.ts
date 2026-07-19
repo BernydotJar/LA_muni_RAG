@@ -5,6 +5,12 @@ import { fileURLToPath } from "node:url";
 import { evaluateQueryWithDependencies } from "./agent.js";
 import { buildDeterministicAnswerWithDependencies } from "./answer.js";
 import {
+  createIngestionJobV1Dependencies,
+  handleIngestionJobV1,
+  INGESTION_JOBS_ROUTE,
+  type IngestionJobV1Options,
+} from "./api/v1/ingestionIndex.js";
+import {
   createProcedureQueryV1Dependencies,
   handleProcedureQueryV1,
   type ProcedureQueryV1Options,
@@ -56,6 +62,7 @@ export interface ServerOptions {
   procedureFeedbackDependencies?: ProcedureFeedbackDependencies;
   domainPack?: DomainPack;
   procedureQueryV1?: ProcedureQueryV1Options;
+  ingestionJobV1?: IngestionJobV1Options;
   v1CorsAllowedOrigins?: readonly string[];
   legacyApiEnabled?: boolean;
   requestTimeoutMs?: number;
@@ -111,6 +118,9 @@ export const createRequestHandler = (options: ServerOptions = {}): RequestListen
     options.procedureQueryV1,
     domainPack
   );
+  const ingestionJobV1Dependencies = createIngestionJobV1Dependencies(
+    options.ingestionJobV1
+  );
   const v1CorsAllowedOrigins =
     options.v1CorsAllowedOrigins ??
     (process.env.V1_CORS_ALLOWED_ORIGINS ?? "")
@@ -127,6 +137,15 @@ export const createRequestHandler = (options: ServerOptions = {}): RequestListen
       if (url.pathname === "/api/v1/procedure-queries") {
         if (handleV1Cors(req, res, v1CorsAllowedOrigins)) return;
         await handleProcedureQueryV1(req, res, procedureQueryV1Dependencies);
+        return;
+      }
+
+      if (
+        url.pathname === INGESTION_JOBS_ROUTE ||
+        url.pathname.startsWith(`${INGESTION_JOBS_ROUTE}/`)
+      ) {
+        if (handleV1Cors(req, res, v1CorsAllowedOrigins, ["GET", "POST"])) return;
+        await handleIngestionJobV1(req, res, ingestionJobV1Dependencies);
         return;
       }
 
@@ -148,6 +167,10 @@ export const createRequestHandler = (options: ServerOptions = {}): RequestListen
           vectorRuntime: vectorRuntimeStatus,
           procedureFeedbackApi: {
             enabled: Boolean(procedureFeedbackDependencies.apiToken?.trim()),
+          },
+          ingestionJobApi: {
+            enabled: Boolean(ingestionJobV1Dependencies.pipelineConfig),
+            workerConfigured: false,
           },
           domainPack: domainPackSummary,
         });

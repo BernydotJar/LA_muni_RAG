@@ -11,7 +11,7 @@
 | R55-07 | Native canvas or PDF.js consumes non-V8 memory | separate process and wall timeout | Open; V8 heap flag is not a total RSS/native-memory cap |
 | R55-08 | Dependency compromise or silent parser drift | exact `pdfjs-dist` and `@napi-rs/canvas` versions, lockfile, and dependency audit gate | Registry/build provenance, SBOM, signatures, and image scanning remain pending |
 | R55-09 | Parser upgrade changes text/chunk hashes and citations | parser/version recorded in metadata; exact dependency | Future upgrades require re-extraction/evaluation/version review |
-| R55-10 | Direct index/backfill bypasses scan evidence | `.pdf` paths fail before provider/read/extract; document library is the operational entry | No authenticated ingestion API exists; same-process code remains a trust boundary |
+| R55-10 | Direct index/backfill bypasses scan evidence | `.pdf` paths fail before provider/read/extract; document library is the operational entry | At Feature 055 completion no authenticated ingestion API existed; the same-process boundary remained a residual later narrowed by Feature 057 |
 | R55-11 | Same artifact is parsed twice with inconsistent results | document library extracts once and passes normalized object | Controlled with identity/call-count test |
 | R55-12 | Embedding fan-out creates denial-of-wallet | 5,000-chunk cap and sequential 64-text batches | Per-tenant/global quotas and distributed job limits remain absent |
 | R55-13 | Concurrent PDFs exhaust a scaled deployment | per-process parser concurrency cap | Open; no distributed queue, tenant quota, lease, or autoscaling policy |

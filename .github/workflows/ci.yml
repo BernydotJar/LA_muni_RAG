@@ -75,6 +75,7 @@ jobs:
             db/migrations/003_identity_tenancy_rbac.sql \
             db/migrations/004_procedure_query_api.sql \
             db/migrations/005_tenant_ingestion_runtime.sql \
+            db/migrations/006_ingestion_api_runtime.sql \
             db/tests/tenant_ingestion_runtime_gate.sql
           do
             docker exec -i "$POSTGRES_CONTAINER" \
@@ -86,3 +87,8 @@ jobs:
         env:
           DATABASE_URL: postgresql://la_muni_ingestion_runtime_test:disposable-ingestion-runtime-password-20260719@127.0.0.1:5432/la_muni_rag_ingestion_test
         run: npm run smoke:tenant-ingestion
+
+      - name: Verify compiled authenticated ingestion API
+        env:
+          DATABASE_URL: postgresql://la_muni_ingestion_runtime_test:disposable-ingestion-runtime-password-20260719@127.0.0.1:5432/la_muni_rag_ingestion_test
+        run: npm run smoke:ingestion-api

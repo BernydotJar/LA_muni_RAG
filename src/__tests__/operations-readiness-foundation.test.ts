@@ -41,8 +41,10 @@ describe("operations readiness foundation", () => {
       /pgvector\/pgvector:0\.8\.5-pg16-bookworm@sha256:1d533553fefe4f12e5d80c7b80622ba0c382abb5758856f52983d8789179f0fb/
     );
     assert.match(workflow, /db\/migrations\/005_tenant_ingestion_runtime\.sql/);
+    assert.match(workflow, /db\/migrations\/006_ingestion_api_runtime\.sql/);
     assert.match(workflow, /db\/tests\/tenant_ingestion_runtime_gate\.sql/);
     assert.match(workflow, /run: npm run smoke:tenant-ingestion/);
+    assert.match(workflow, /run: npm run smoke:ingestion-api/);
 
     assert.doesNotMatch(workflow, /build:pages|configure-pages|upload-pages|deploy-pages/i);
     assert.doesNotMatch(workflow, /^\s*(?:pages|id-token|actions|checks): write$/m);
@@ -89,6 +91,8 @@ describe("operations readiness foundation", () => {
     assert.match(threatModel, /disposable PostgreSQL 16\.14\/pgvector 0\.8\.5 gate/);
     assert.match(threatModel, /not an image scan\/signature, staging test, production role attestation, load test, deployment, or external-consumer proof/);
     assert.match(threatModel, /No production backend infrastructure/);
+    assert.match(threatModel, /authenticated ingestion enqueue\/status/);
+    assert.match(threatModel, /worker is only a class and is not\s+deployed/);
     assert.match(threatModel, /internal campaign strategy/);
     assert.match(threatModel, /Context7 CLI resolved `\/nodejs\/node`/);
   });
@@ -116,6 +120,8 @@ describe("operations readiness foundation", () => {
     assert.match(deployment, /includes the canonical v1 JSON Schemas and OpenAPI document/);
     assert.match(deployment, /ephemeral development build, not a vulnerability scan/);
     assert.match(deployment, /authenticated, authorized v1 procedure query succeeds/);
+    assert.match(deployment, /authorized ingestion enqueue/);
+    assert.match(deployment, /workerConfigured: false/);
     assert.match(deployment, /cross-tenant request return non-leaking 403/);
     assert.match(deployment, /Progressive traffic and observation/);
     assert.match(deployment, /does not select a cloud or container platform/i);

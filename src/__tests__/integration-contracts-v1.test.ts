@@ -32,8 +32,8 @@ describe("integration contracts v1", () => {
       status: "valid",
       schemaDialect: JSON_SCHEMA_DIALECT,
       openapiVersion: OPENAPI_VERSION,
-      schemasValidated: 9,
-      examplesValidated: 9,
+      schemasValidated: 11,
+      examplesValidated: 11,
       openapiDocumentsValidated: 1,
       issues: [],
     });
@@ -85,6 +85,34 @@ describe("integration contracts v1", () => {
     const unsupportedAggregate = clone(request);
     unsupportedAggregate.requested_output = "all";
     assert.equal(validate(unsupportedAggregate), false);
+  });
+
+  it("keeps ingestion submission and status contracts strict and digest-bound", async () => {
+    const validateRequest = await schemaValidator("ingestion-job-request.schema.json");
+    const validateResponse = await schemaValidator("ingestion-job-response.schema.json");
+    const request = await readContractExample(
+      projectRoot,
+      "ingestion-job-request.valid.json"
+    );
+    const response = await readContractExample(
+      projectRoot,
+      "ingestion-job-response.valid.json"
+    );
+    assert.equal(validateRequest(request), true);
+    assert.equal(validateResponse(response), true);
+
+    const uppercaseDigest = clone(request);
+    uppercaseDigest.artifact_sha256 = "A".repeat(64);
+    assert.equal(validateRequest(uppercaseDigest), false);
+
+    const callerSelectedProvider = clone(request);
+    callerSelectedProvider.embedding_provider = "untrusted-provider";
+    assert.equal(validateRequest(callerSelectedProvider), false);
+
+    const leakedLease = clone(response);
+    const leakedJob = leakedLease.job as Record<string, unknown>;
+    leakedJob.lease_token = "must-never-cross-the-api";
+    assert.equal(validateResponse(leakedLease), false);
   });
 
   it("models unknown authentication identity only for 401 errors", async () => {
@@ -235,15 +263,21 @@ describe("integration contracts v1", () => {
     assert.equal(validate(mismatched), false);
   });
 
-  it("describes only the implemented provider POST operation with required security controls", async () => {
+  it("describes only the implemented v1 route surface with required security controls", async () => {
     const openapi = JSON.parse(
       await readFile(resolve(projectRoot, OPENAPI_RELATIVE_PATH), "utf8")
     );
 
     assert.equal(openapi.openapi, OPENAPI_VERSION);
     assert.equal(openapi.jsonSchemaDialect, JSON_SCHEMA_DIALECT);
-    assert.deepEqual(Object.keys(openapi.paths), ["/api/v1/procedure-queries"]);
+    assert.deepEqual(Object.keys(openapi.paths), [
+      "/api/v1/procedure-queries",
+      "/api/v1/ingestion-jobs",
+      "/api/v1/ingestion-jobs/{job_id}",
+    ]);
     assert.deepEqual(Object.keys(openapi.paths["/api/v1/procedure-queries"]), ["post"]);
+    assert.deepEqual(Object.keys(openapi.paths["/api/v1/ingestion-jobs"]), ["post"]);
+    assert.deepEqual(Object.keys(openapi.paths["/api/v1/ingestion-jobs/{job_id}"]), ["get"]);
 
     const operation = openapi.paths["/api/v1/procedure-queries"].post;
     assert.deepEqual(operation.security, [{ bearerAuth: [] }]);
@@ -257,6 +291,26 @@ describe("integration contracts v1", () => {
     assert.deepEqual(
       Object.keys(operation.responses),
       ["200", "400", "401", "403", "409", "429", "500", "503"]
+    );
+    const enqueue = openapi.paths["/api/v1/ingestion-jobs"].post;
+    const status = openapi.paths["/api/v1/ingestion-jobs/{job_id}"].get;
+    assert.deepEqual(enqueue.security, [{ bearerAuth: [] }]);
+    assert.deepEqual(status.security, [{ bearerAuth: [] }]);
+    assert.deepEqual(
+      enqueue.parameters.map((parameter: { name: string }) => parameter.name),
+      ["Idempotency-Key", "X-Request-Id"]
+    );
+    assert.deepEqual(
+      status.parameters.map((parameter: { name: string }) => parameter.name),
+      ["job_id", "X-Request-Id"]
+    );
+    assert.deepEqual(
+      Object.keys(enqueue.responses),
+      ["200", "202", "400", "401", "403", "409", "429", "500", "503"]
+    );
+    assert.deepEqual(
+      Object.keys(status.responses),
+      ["200", "400", "401", "403", "404", "429", "500"]
     );
     assert.equal(openapi.components.securitySchemes.bearerAuth.type, "http");
     assert.equal(openapi.components.securitySchemes.bearerAuth.scheme, "bearer");
@@ -274,7 +328,7 @@ describe("integration contracts v1", () => {
     );
     assert.equal(
       openapi["x-implementation-status"],
-      "procedure_workflow_provider_implemented"
+      "procedure_workflow_and_ingestion_job_providers_implemented_with_limits"
     );
   });
 });

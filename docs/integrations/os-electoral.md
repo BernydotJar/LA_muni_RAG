@@ -185,7 +185,7 @@ Un fallo de red se reintenta con la misma key. OS Electoral no debe fabricar una
 
 ## Estado real al corte
 
-- LA Muni RAG tiene schemas draft 2020-12, ejemplos y OpenAPI 3.1.1 con estado `procedure_workflow_provider_implemented`.
+- LA Muni RAG tiene once schemas draft 2020-12, once ejemplos y OpenAPI 3.1.1 con estado `procedure_workflow_and_ingestion_job_providers_implemented_with_limits`; los dos contratos de ingestion son operacionales internos y no amplían el payload compartido con OS Electoral.
 - `POST /api/v1/procedure-queries` autentica por digest, exige `integration:query`, verifica tenant/credential, valida schema, limita tráfico, conserva idempotencia y audit, recupera sólo corpus público/activo/procesado y devuelve un workflow draft nuevamente validado.
 - Pruebas focales y un smoke real sobre PostgreSQL 16.14/pgvector 0.8.5 cubren éxito, replay exacto, conflicto, tenant mismatch, boundary, 401, replay corrupto y reintento; no hay consumer de OS Electoral ni evidencia end-to-end entre repositorios.
 - El tipo interno actual `ProcedureEvidenceBundle` contiene sólo query/mode/evidence y no equivale a `EvidenceBundle`.

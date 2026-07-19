@@ -107,7 +107,12 @@ El corpus y eval end-to-end requeridos para demostrar este caso todavía no est�
 
 ## Estado real y siguiente frontera
 
-El repository actual ya demuestra slices de inventario, hashing, ingestión local, extracción, búsqueda y workflow composition. No demuestra todavía autenticación/tenancy integral, API pública v1, procedimiento versionado con aprobación, casos server-side, hard evals, integraciones externas ni operación production-grade.
+El repository actual ya demuestra slices de inventario, hashing, ingestión
+local, extracción, búsqueda, workflow composition, identity/tenancy/RBAC,
+procedure-query v1, ingestion-job v1 y un worker callable. No demuestra todavía
+cobertura autenticada transversal de todo el API, procedimiento versionado con
+aprobación, casos server-side, hard evals, integraciones externas, worker/
+storage/scanner desplegado ni operación production-grade.
 
 La arquitectura objetivo está descompuesta en [Contextos delimitados](../architecture/bounded-contexts.md), el sistema y sus actores en [Contexto del sistema](../architecture/system-context.md), y la decisión de no-superposición en [ADR-0001](../adr/0001-product-boundaries-and-data-ownership.md).
 

@@ -25,7 +25,17 @@ describe("tenant-aware database bootstrap", () => {
       const migration001 = document.indexOf("001_initial_rag_schema.sql");
       const migration002 = document.indexOf("002_procedure_feedback.sql");
       const migration003 = document.indexOf("003_identity_tenancy_rbac.sql");
-      assert.ok(migration001 >= 0 && migration002 > migration001 && migration003 > migration002);
+      const migration004 = document.indexOf("004_procedure_query_api.sql");
+      const migration005 = document.indexOf("005_tenant_ingestion_runtime.sql");
+      const migration006 = document.indexOf("006_ingestion_api_runtime.sql");
+      assert.ok(
+        migration001 >= 0 &&
+        migration002 > migration001 &&
+        migration003 > migration002 &&
+        migration004 > migration003 &&
+        migration005 > migration004 &&
+        migration006 > migration005
+      );
       assert.doesNotMatch(document, /Password:\s*(?!REDACTED|YOUR_PASSWORD)[^\n]+/i);
       assert.doesNotMatch(
         document,

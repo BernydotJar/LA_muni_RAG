@@ -1,8 +1,9 @@
 # LA Muni RAG
 
 Last updated: 2026-07-19
-Status: Pre-production hardening in progress; controlled artifact, bounded raw-PDF,
-tenant-query, and durable tenant ingestion/vector foundations implemented
+Status: Pre-production hardening in progress; controlled artifact, bounded
+raw-PDF, tenant-query, authenticated ingestion API, and durable tenant
+ingestion/vector worker foundations implemented
 
 LA Muni RAG is an evidence-first RAG and procedural workflow system configured by default for the Municipality of La Antigua Guatemala, Sacatepéquez. Its core supports validated domain packs so the same architecture can be reused for HR, finance, sales SOPs, and custom procedural assistants.
 
@@ -19,6 +20,8 @@ LA Muni RAG is an evidence-first RAG and procedural workflow system configured b
 ```text
 GET  /health
 POST /api/v1/procedure-queries
+POST /api/v1/ingestion-jobs
+GET  /api/v1/ingestion-jobs/{job_id}
 GET  /api/search
 GET  /api/evidence
 GET  /api/agent
@@ -35,8 +38,10 @@ GET  /api/procedure-feedback
 `POST /api/v1/procedure-queries` is the authenticated, tenant-scoped production
 slice. Production disables every pre-v1 `/api/*` route; the legacy routes listed
 above are development-only and must not be exposed with confidential or
-multi-tenant data. The durable ingestion service is a backend core only and has
-no HTTP route or deployed worker yet.
+multi-tenant data. The ingestion v1 route family authenticates
+`document:ingest` and enqueues/reads jobs only for existing registry versions;
+it is not an upload or artifact-acceptance API. A bounded worker class exists,
+but no storage/scanner adapter, worker process, or deployment exists.
 
 ## Domain Packs
 
@@ -180,6 +185,7 @@ psql "$DATABASE_URL" -f db/migrations/002_procedure_feedback.sql
 psql "$DATABASE_URL" -f db/migrations/003_identity_tenancy_rbac.sql
 psql "$DATABASE_URL" -f db/migrations/004_procedure_query_api.sql
 psql "$DATABASE_URL" -f db/migrations/005_tenant_ingestion_runtime.sql
+psql "$DATABASE_URL" -f db/migrations/006_ingestion_api_runtime.sql
 ```
 
 Migration `005` is the canonical vector-store migration. Do not apply
@@ -255,13 +261,20 @@ Reusable today:
   fencing;
 - tenant-scoped, job/version-bound vector generations with atomic replacement and
   eligible public search.
+- authenticated, rate-limited enqueue/status contracts for existing document
+  versions, with server-owned pipeline policy and non-leaking status reads;
+- a callable worker that accepts only injected immutable, clean-scan-bound bytes
+  and rechecks their identity before atomic completion.
 
 Still intentionally incomplete:
 
 - complete authenticated document-library/admin UI;
 - browser-based file upload and ingestion;
 - production ClamAV/runtime sandbox and durable object storage;
-- authenticated tenant-scoped ingestion API/worker and scanner-evidence handoff;
+- approved immutable object-storage/scanner-evidence adapter and authenticated
+  administrative upload/version-acceptance flow;
+- separately packaged/deployed worker with workload identity, tenant routing,
+  cancellation/deadline, backpressure, monitoring, and graceful shutdown;
 - production DB role attestation, queue/observability, load/HA, and reviewed
   tenant-partitioned approximate-vector strategy if scale requires it;
 - automatic workflow-template publication;
@@ -273,4 +286,5 @@ Starter packs and generated scaffolds are templates. They must not be treated as
 
 See [Tenant Vector and Ingestion Runtime](docs/tenant-ingestion-runtime.md) for
 the durable job/vector contract, local PostgreSQL gate, and remaining production
-boundary.
+boundary, and [Ingestion jobs API v1](docs/api/ingestion-jobs-v1.md) for the
+authenticated enqueue/status contract.

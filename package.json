@@ -18,6 +18,7 @@
     "ports:kill": "node scripts/kill-ports.mjs",
     "search": "tsx src/cli/search.ts",
     "smoke:postgres-api": "node scripts/procedure-query-postgres-smoke.mjs",
+    "smoke:ingestion-api": "node scripts/ingestion-api-postgres-smoke.mjs",
     "smoke:tenant-ingestion": "node scripts/tenant-ingestion-postgres-smoke.mjs",
     "source-inventory:validate": "node --import tsx src/cli/validateSourceInventory.ts --manifest .rag/source-inventory.json",
     "start": "node dist/server.js",

@@ -1,6 +1,7 @@
 # Identity and RBAC Foundation
 
-Status: implemented and enforced by procedure-query v1; broader API migration pending.
+Status: implemented and enforced by procedure-query v1 and ingestion-job v1;
+broader API migration pending.
 
 ## Authentication
 
@@ -96,6 +97,12 @@ its per-principal rate gate immediately after authentication, before permission,
 header/body validation, replay, or compilation. It then follows the permission,
 contracted tenant, transaction, and audit controls above.
 
+The ingestion-job v1 route follows the same pre-body authentication/rate order,
+then requires `document:ingest`. `tenant_admin` and `document_manager` have this
+permission; `viewer`, `researcher`, and `integration_client` do not. Enqueue
+requires the body tenant to match the credential. Status uses only the
+credential tenant and returns the same 404 for a missing or cross-tenant job.
+
 Permission denial and tenant mismatch both return the same safe response:
 
 ```json
@@ -129,5 +136,8 @@ This builder vocabulary remains available for shared identity controls. The
 procedure-query route persists its more specific, allowlisted
 `integration.procedure_query.*` decisions in tenant-owned `audit.events`; pre-
 tenant failures use the separate bounded aggregate
-`audit.authentication_failures` sink. Other protected endpoints must provide
-equivalent persistence without weakening the uniform client response.
+`audit.authentication_failures` sink. Ingestion-job v1 similarly persists
+allowlisted `integration.ingestion_job.*` decisions and uses the distinct
+tenantless `audit.ingestion_authentication_failures` aggregate. Other protected
+endpoints must provide equivalent persistence without weakening the uniform
+client response.

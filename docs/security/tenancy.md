@@ -1,7 +1,8 @@
 # Tenant Isolation Foundation
 
-Status: implemented for procedure-query v1 and the durable ingestion/vector
-core; authenticated ingestion API/worker and broader API migration pending.
+Status: implemented for procedure-query v1, ingestion-job v1, and the durable
+ingestion/vector core; deployed worker/storage/scanner wiring and broader API
+migration pending.
 
 ## Boundary
 
@@ -66,6 +67,7 @@ transaction-expired values return `NULL`; every tenant policy then denies access
   procedure feedback;
 - `audit.events`;
 - `rag.embedding_vectors` (created or converged by migration `005`).
+- `integration.ingestion_api_rate_limits` (created by migration `006`).
 
 Each policy applies the same predicate to reads and writes:
 
@@ -114,6 +116,20 @@ keyword/phrase SQL repeats explicit tenant predicates and admits only public,
 active documents with processed versions. Calls on the single transaction-bound
 `pg` client are serialized.
 
+`POST /api/v1/ingestion-jobs` and scoped `GET` status authenticate and rate-limit
+before any POST body parse, require `document:ingest`, and bind every service
+call to the credential tenant. The POST body tenant must match, while GET never
+uses a caller-supplied tenant. The durable service independently repeats tenant
+predicates and version/hash identity checks. Missing and cross-tenant job IDs
+share a uniform 404. The callable worker can lease only one explicitly configured
+tenant at a time and resolves artifacts by the leased tenant/version/digest
+tuple; there is no global storage resolver.
+
+Migration `006` forces RLS on per-principal ingestion API rate state. Anonymous
+authentication failures stay in a separate tenantless aggregate behind a narrow
+fixed-search-path function, because assigning them to a tenant would invent
+identity. The application role cannot read that aggregate table.
+
 The runtime PostgreSQL role must:
 
 - be distinct from the migration/table owner;
@@ -138,12 +154,14 @@ roles without `BYPASSRLS`. They proved tenant A/B visibility/write isolation,
 missing/malformed context denial, scoped uniqueness, authentication, sanitized
 audit, cross-tenant equal vector ids, concurrent job/work deduplication, one
 lease winner, stale/artifact fencing, atomic vector rollback/replacement, and
-eligible public retrieval. The compiled v1 handler and compiled ingestion
-service both ran over those real connections.
+eligible public retrieval. The compiled procedure handler, ingestion service,
+and ingestion HTTP handler ran over real non-owner connections. The latter also
+proved viewer/tenant denial, stable replay/dedup, rate state, own/cross-tenant
+status parity, and exact CORS without exposing artifact/control secrets.
 
 This evidence is local and disposable. Production role provisioning and
 startup/continuous role attestation, credential rotation, statement limits,
-HA/connection policy, staging/load repetition, authenticated ingestion
-API/worker, and the remaining endpoint catalog are still release gates. Pre-v1
+HA/connection policy, staging/load repetition, deployed worker/storage/scanner
+wiring, and the remaining endpoint catalog are still release gates. Pre-v1
 routes use global queries and remain development-only; production disables them
 before wildcard CORS.

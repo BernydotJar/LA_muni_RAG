@@ -1,8 +1,8 @@
 # Tenant Vector and Ingestion Runtime
 
-Status: local database/runtime core implemented and integration-tested; no
-authenticated ingestion API, deployed worker, production scanner/storage, or
-deployment exists.
+Status: local database/runtime core, authenticated enqueue/status API, and
+callable bounded worker are implemented and integration-tested; no deployed
+worker, production scanner/storage adapter, or deployment exists.
 
 ## Operational boundary
 
@@ -13,17 +13,20 @@ itself.
 
 ```text
 accepted artifact/version
-  -> enqueue digest-bound job
+  -> authenticated API enqueues digest-bound job
   -> claim bounded lease
+  -> resolve immutable clean-scan-bound bytes
   -> extract/chunk/embed outside transaction
   -> atomically replace tenant vectors + mark states + audit
   -> eligible public retrieval
 ```
 
-The current document-library CLI is file-backed and is not wired to this service.
-Until an authenticated adapter persists clean scan evidence and supplies the
-exact controlled bytes to a worker, operators must not treat these job tables as
-authorization to ingest the acquired DMP.
+The current document-library CLI is file-backed and is not wired to this
+service. The API accepts only an existing version UUID and matching digest; it
+does not accept, locate, upload, scan, or approve bytes. Until an approved
+storage adapter persists clean scan evidence and resolves the exact immutable
+bytes to a deployed worker, operators must not treat an API `202` or these job
+tables as authorization to ingest the acquired DMP.
 
 ## Database contract
 
@@ -35,6 +38,7 @@ psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -f db/migrations/002_procedure_feedback.
 psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -f db/migrations/003_identity_tenancy_rbac.sql
 psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -f db/migrations/004_procedure_query_api.sql
 psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -f db/migrations/005_tenant_ingestion_runtime.sql
+psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -f db/migrations/006_ingestion_api_runtime.sql
 ```
 
 Do not apply `migrations/011-production-vector-store.sql` on a fresh database.
@@ -47,22 +51,44 @@ contract-0 rows even for a correctly scoped runtime tenant; historical rows keep
 contract 0 only for review/migration and are excluded from v1 retrieval.
 
 The runtime role needs only environment-reviewed privileges and must be a table
-non-owner, non-superuser, and non-`BYPASSRLS` role. It needs `SELECT` on active
-document identity, `SELECT/UPDATE` on document versions, job/vector mutation, and
-sanitized audit insertion. It does not need `UPDATE` on `rag.documents`.
+non-owner, non-superuser, and non-`BYPASSRLS` role. It needs the narrow
+credential/auth-failure functions, `SELECT` on active document identity,
+`SELECT/UPDATE` on document versions, job/vector/API-rate mutation, and
+sanitized audit insertion. It cannot read the tenantless authentication-failure
+table and does not need `UPDATE` on `rag.documents`.
+
+## Authenticated API boundary
+
+`POST /api/v1/ingestion-jobs` authenticates and rate-limits before parsing,
+requires `document:ingest`, matches the body tenant, validates the closed v1
+schema, and enqueues only the registered version/hash under the server-owned
+`municipal_document_v1` profile. `GET /api/v1/ingestion-jobs/{job_id}` uses the
+same permission and tenant scope. Missing and cross-tenant jobs share one 404.
+
+The API returns no artifact digest, provider/model, raw idempotency key, worker,
+or lease token. See [Ingestion jobs API v1](api/ingestion-jobs-v1.md) for exact
+headers, results, grants, rate/audit behavior, and CORS.
 
 ## Worker protocol
 
-The application service is `PostgresIngestionJobService`. A future worker must:
+The callable `TenantIngestionWorker` composes `PostgresIngestionJobService`, an
+embedding provider, and an injected `AcceptedArtifactResolver`. It has no
+filesystem, URL, or object-storage default. The resolver must return the exact
+leased tenant/version/digest, an immutable object generation, a bounded
+basename/media type, private bytes, and current clean evidence bound to those
+bytes.
+
+Each `runOnce`:
 
 1. call `leaseNext(tenantId, workerId, leaseSeconds)`;
-2. use only the leased `documentVersionId`, `artifactSha256`, and exact
-   `pipelineConfig`;
-3. periodically call `heartbeat` for long bounded work;
-4. call `prepareDocumentEmbeddings` before opening the final transaction;
-5. call `complete` with the same artifact digest, lease token, and complete
+2. require the leased extractor/provider/model/dimension to match the worker;
+3. resolve and verify immutable scope, structure, digest, and current clean scan
+   evidence before parser/provider work;
+4. heartbeat, parse the private in-memory bytes, and rehash after extraction;
+5. call `prepareDocumentEmbeddings` before opening the final transaction;
+6. call `complete` with the same artifact digest, lease token, and complete
    embedded record set; or call `fail` with an allowlisted stable error code;
-6. discard the raw lease token after completion/failure.
+7. discard the raw lease token after completion/failure.
 
 The lease duration is 30–900 seconds (default 300), attempts are 1–10 (default
 3), retry delay is capped at 900 seconds, chunks at 5,000 per document, embedding
@@ -73,6 +99,11 @@ These are compiled safety ceilings, not capacity targets.
 Completion rechecks the active database document, version label, title, stable
 document key (`documents.metadata.document_key`, falling back to document UUID),
 and artifact digest. Any mismatch rolls back all vector/job/version/audit changes.
+
+The worker class is not a running service. There is no loop, process entry point,
+tenant scheduler, object-store resolver, scanner service, workload identity,
+attempt-wide deadline/cancellation, or graceful-shutdown evidence. The public
+health response deliberately reports `workerConfigured: false`.
 
 ## Idempotency and fencing
 
@@ -117,12 +148,20 @@ psql "$DISPOSABLE_ADMIN_URL" -v ON_ERROR_STOP=1 \
   -f db/tests/tenant_ingestion_runtime_gate.sql
 npm run build
 DATABASE_URL="$DISPOSABLE_RUNTIME_URL" npm run smoke:tenant-ingestion
+DATABASE_URL="$DISPOSABLE_RUNTIME_URL" npm run smoke:ingestion-api
 ```
 
 Use only generated disposable credentials and destroy the database/role after
 the run. The gate is destructive to its named fixture and is not a production
 migration runner. Passing locally does not prove production grants, topology,
 load, backup, or release approval.
+
+The 2026-07-19 gate applied fresh `001..006` and supported historical
+`001,002,011,003,004,005,006` chains on PostgreSQL 16.14/pgvector 0.8.5. The
+compiled HTTP smoke covered authentication, permission/tenant denial,
+new/replay/dedup/conflict, rate limiting, scoped status/404, exact CORS, and
+secret minimization. All fixtures were synthetic and every smoke reported zero
+controlled artifact reads.
 
 ## Failure and recovery
 
@@ -142,4 +181,8 @@ load, backup, or release approval.
 Decisions, risks, and evidence mapping are recorded in the
 [Feature 056 decision log](decisions/056-tenant-vector-ingestion-runtime.md),
 [risk register](risks/056-tenant-vector-ingestion-risk-register.md), and
-[traceability matrix](traceability/056-requirements-traceability.md).
+[traceability matrix](traceability/056-requirements-traceability.md). The API and
+worker extension is recorded in the
+[Feature 057 decision log](decisions/057-authenticated-ingestion-api-worker.md),
+[risk register](risks/057-authenticated-ingestion-api-worker-risk-register.md),
+and [traceability matrix](traceability/057-requirements-traceability.md).
