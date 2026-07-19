@@ -1,6 +1,6 @@
 import { createHash } from "node:crypto";
 import { copyFile, mkdir, readFile, rename, stat, writeFile } from "node:fs/promises";
-import { basename, dirname, extname, resolve, sep } from "node:path";
+import { basename, dirname, extname, isAbsolute, relative, resolve, sep } from "node:path";
 import { extractByPath } from "../ingestion/registry.js";
 import {
   JsonFileCorpusManifestStore,
@@ -124,6 +124,11 @@ const boundedArtifactPath = (
   return target;
 };
 
+const manifestArtifactPath = (libraryRoot: string, resolvedArtifactPath: string): string =>
+  isAbsolute(libraryRoot)
+    ? resolvedArtifactPath
+    : relative(process.cwd(), resolvedArtifactPath).split(sep).join("/");
+
 const readInventory = async (
   inventoryPath: string,
   dependencies: DocumentLibraryDependencies
@@ -216,7 +221,13 @@ export const importLocalArtifact = async (
     const bytes = await (dependencies.readFile ?? readFile)(input.inputPath);
     const buffer = Buffer.isBuffer(bytes) ? bytes : Buffer.from(bytes);
     const contentSha256 = sha256Bytes(buffer);
-    const artifactPath = boundedArtifactPath(input.libraryRoot, record.sourceId, record.documentVersion, input.inputPath);
+    const resolvedArtifactPath = boundedArtifactPath(
+      input.libraryRoot,
+      record.sourceId,
+      record.documentVersion,
+      input.inputPath
+    );
+    const artifactPath = manifestArtifactPath(input.libraryRoot, resolvedArtifactPath);
 
     if (record.acquisition) {
       if (record.acquisition.contentSha256 !== contentSha256) {
@@ -253,9 +264,9 @@ export const importLocalArtifact = async (
       };
     }
 
-    await (dependencies.mkdir ?? mkdir)(dirname(artifactPath), { recursive: true });
-    await (dependencies.copyFile ?? copyFile)(input.inputPath, artifactPath);
-    const copied = await (dependencies.readFile ?? readFile)(artifactPath);
+    await (dependencies.mkdir ?? mkdir)(dirname(resolvedArtifactPath), { recursive: true });
+    await (dependencies.copyFile ?? copyFile)(input.inputPath, resolvedArtifactPath);
+    const copied = await (dependencies.readFile ?? readFile)(resolvedArtifactPath);
     const copiedHash = sha256Bytes(Buffer.isBuffer(copied) ? copied : Buffer.from(copied));
     if (copiedHash !== contentSha256) throw new Error("Copied artifact hash verification failed.");
 

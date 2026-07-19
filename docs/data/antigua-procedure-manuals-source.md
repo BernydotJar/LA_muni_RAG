@@ -1,6 +1,6 @@
 # Antigua procedure-manual source verification
 
-Status: catalog verified; individual DMP artifact acquisition pending
+Status: catalog verified; individual DMP artifact acquired; extraction and ingestion pending
 Verified at: 2026-07-19T03:53:06Z
 Target jurisdiction: Municipio de La Antigua Guatemala, Sacatepéquez, Guatemala
 
@@ -40,9 +40,17 @@ A metadata-only HTTP check returned status 200, `Content-Type: application/pdf`,
 2026 18:01:37 GMT`. The server did not publish a cryptographic checksum. Its Apache
 ETag is an opaque cache identifier and is not recorded as a document hash.
 
-The record `antigua-mnp-dmp-v3-2026` is consequently
-`acquisition_pending`. No PDF bytes were downloaded as part of this verification,
-and no `acquired` or `ingested` claim is made.
+The record `antigua-mnp-dmp-v3-2026` first entered `acquisition_pending`. Its stable
+declared version is `official-municipal-pdf-2026-02-17-v3`; the version name did not
+by itself prove acquisition.
+
+Feature 054 subsequently copied the exact 49,052,885 bytes into the Git-ignored,
+bounded local library and verified the copied bytes. The acquired SHA-256 is
+`4cbd35993b345c1f2bdb308825f1d3a6cac24ad239bdc9b087e2d99f2297e8f9`, the PDF
+header is `%PDF-1.4`, and file identification reports a 16-page PDF 1.4 document.
+The portable inventory stores the repository-relative artifact path rather than a
+workstation-specific absolute path. This evidence supports `acquired`; it does not
+support `extracted` or `ingested`.
 
 ## Authority and use boundary
 
@@ -58,17 +66,24 @@ administrative and operational manuals. This supports controlled public-interest
 retrieval; it is not a redistribution license. No express reuse license was found,
 so republication requires attribution and legal review.
 
-## Promotion gate
+## Acquisition evidence and remaining promotion gate
 
-Before the individual record may become `acquired`:
+The controlled acquisition completed these steps:
 
 1. reverify the official catalog entry and direct URL;
 2. copy the original bytes through the controlled document-library import path;
 3. record the SHA-256, exact byte length, media type, acquisition time, and bounded
-   artifact path;
-4. inspect the PDF safely and reconcile its internal title, version, approval, and
-   effective-date evidence;
+   repository-relative artifact path;
+4. reread the copied artifact and verify its SHA-256;
 5. retain the mutable-URL and redistribution limitations.
+
+Before extraction or ingestion:
+
+1. inspect the PDF safely and reconcile its internal title, version, approval, and
+   effective-date evidence;
+2. record a positive section count through a supported extractor;
+3. run indexing with configured production-shaped embedding and vector dependencies;
+4. reconcile a matching corpus-manifest document version and hash.
 
 Extraction and indexing remain separate gates. Neither follows automatically from
 successful acquisition.

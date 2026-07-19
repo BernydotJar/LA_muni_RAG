@@ -8,3 +8,4 @@ dist/
 coverage/
 artifacts/
 data/raw/
+.rag/library/

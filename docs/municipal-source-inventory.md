@@ -52,7 +52,10 @@ Run:
 npm run source-inventory:validate
 ```
 
-The command must report zero acquired and zero ingested records until concrete artifact evidence exists.
+The command must report lifecycle counts supported by concrete evidence. At this
+cut, one controlled acquisition exists and zero records are ingested; a verified
+URL or local file outside the controlled import path is not enough to increase
+either count.
 
 ## Acquisition procedure
 
@@ -77,11 +80,11 @@ Before changing a record to `ingested`:
 
 ## Current limitations
 
-The inventory intentionally contains no acquired or ingested documents. The Mixco
+The inventory contains one controlled local acquisition and no ingested documents. The Mixco
 library landing page, Congress decree index, Antigua PDM-OT PDF identity, and Antigua
 procedure-manual catalog are verified official discovery surfaces. The individual
-Antigua DMP v3 manual is queued as `acquisition_pending`, but its bytes, SHA-256,
-internal approval, effective date, and validity have not been inspected. Other
+Antigua DMP v3 manual is `acquired` with a copied-byte SHA-256, but its safe
+extraction, internal approval, effective date, validity, and indexing remain pending. Other
 priority Antigua documents without confirmed official URLs remain `missing_source`.
 
 See [Antigua procedure-manual source verification](./data/antigua-procedure-manuals-source.md)

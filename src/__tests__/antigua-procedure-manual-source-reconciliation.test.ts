@@ -32,7 +32,7 @@ describe("Antigua procedure-manual source reconciliation", () => {
     assert.equal(validateSourceInventoryRecord(record).valid, true);
   });
 
-  it("queues the individual DMP v3 PDF without inventing a checksum or lifecycle proof", async () => {
+  it("records controlled DMP v3 acquisition without inventing extraction or ingestion", async () => {
     const manifest = parseSourceInventoryManifest(await readFile(inventoryPath, "utf8"));
     const matches = manifest.records.filter(
       (record) => record.sourceId === "antigua-mnp-dmp-v3-2026"
@@ -40,15 +40,25 @@ describe("Antigua procedure-manual source reconciliation", () => {
 
     assert.equal(matches.length, 1);
     const record = matches[0]!;
-    assert.equal(record.status, "acquisition_pending");
+    assert.equal(record.status, "acquired");
     assert.equal(record.publicUrl, dmpPdfUrl);
-    assert.equal(record.documentVersion, "unacquired-2026-02-17-v3");
-    assert.equal(record.acquisition, undefined);
+    assert.equal(record.documentVersion, "official-municipal-pdf-2026-02-17-v3");
+    assert.equal(
+      record.acquisition?.artifactPath,
+      ".rag/library/antigua-mnp-dmp-v3-2026/antigua-mnp-dmp-v3-2026--official-municipal-pdf-2026-02-17-v3.pdf"
+    );
+    assert.equal(
+      record.acquisition?.contentSha256,
+      "4cbd35993b345c1f2bdb308825f1d3a6cac24ad239bdc9b087e2d99f2297e8f9"
+    );
+    assert.equal(record.acquisition?.byteLength, 49_052_885);
+    assert.equal(record.acquisition?.mediaType, "application/pdf");
     assert.equal(record.extraction, undefined);
     assert.equal(record.indexing, undefined);
     assert.ok(record.limitations.some((item) => item.includes("no publica checksum")));
     assert.ok(record.limitations.some((item) => item.includes("licencia expresa")));
     assert.ok(record.provenanceNotes.some((item) => item.includes("49052885")));
+    assert.ok(record.provenanceNotes.some((item) => item.includes("Feature 054")));
     assert.equal(validateSourceInventoryRecord(record).valid, true);
   });
 });

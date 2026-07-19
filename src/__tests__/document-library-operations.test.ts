@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
 import { mkdtemp, readFile, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
-import { join } from "node:path";
+import { isAbsolute, join, relative } from "node:path";
 import { describe, it } from "node:test";
 import { InMemoryCorpusManifestStore } from "../ingestion/corpusManifest.js";
 import type { VectorIndexingResult } from "../ingestion/vectorIndexing.js";
@@ -122,6 +122,29 @@ describe("document library import operations", () => {
 
     assert.equal(second.status, "noop");
     assert.equal(second.mutated, false);
+  });
+
+  it("stores a portable artifact path when the configured library root is relative", async () => {
+    const paths = await setup();
+    const relativeLibraryRoot = relative(process.cwd(), paths.libraryRoot);
+
+    const result = await importLocalArtifact({
+      inventoryPath: paths.inventoryPath,
+      sourceId: "antigua-pdm-ot",
+      inputPath: paths.inputPath,
+      libraryRoot: relativeLibraryRoot,
+      documentVersion: "2026-01",
+      mediaType: "application/pdf",
+      dryRun: false,
+    }, { now: fixedNow });
+
+    assert.equal(result.status, "imported");
+    assert.ok(result.artifactPath);
+    assert.equal(isAbsolute(result.artifactPath), false);
+    assert.deepEqual(await readFile(result.artifactPath), Buffer.from([0, 255, 1, 2, 3, 4, 5]));
+
+    const saved = JSON.parse(await readFile(paths.inventoryPath, "utf8")) as SourceInventoryManifestFile;
+    assert.equal(isAbsolute(saved.records[0]?.acquisition?.artifactPath ?? ""), false);
   });
 
   it("fails closed when the same version is imported with a different hash", async () => {
