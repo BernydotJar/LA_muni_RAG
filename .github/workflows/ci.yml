@@ -17,6 +17,20 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
 
+    services:
+      postgres:
+        image: pgvector/pgvector:0.8.5-pg16-bookworm@sha256:1d533553fefe4f12e5d80c7b80622ba0c382abb5758856f52983d8789179f0fb
+        env:
+          POSTGRES_DB: la_muni_rag_ingestion_test
+          POSTGRES_PASSWORD: disposable-ci-admin-password
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres -d la_muni_rag_ingestion_test"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+
     steps:
       - name: Checkout
         uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
@@ -50,3 +64,25 @@ jobs:
 
       - name: Build backend
         run: npm run build
+
+      - name: Verify tenant ingestion migrations and non-owner RLS
+        env:
+          POSTGRES_CONTAINER: ${{ job.services.postgres.id }}
+        run: |
+          for sql_file in \
+            db/migrations/001_initial_rag_schema.sql \
+            db/migrations/002_procedure_feedback.sql \
+            db/migrations/003_identity_tenancy_rbac.sql \
+            db/migrations/004_procedure_query_api.sql \
+            db/migrations/005_tenant_ingestion_runtime.sql \
+            db/tests/tenant_ingestion_runtime_gate.sql
+          do
+            docker exec -i "$POSTGRES_CONTAINER" \
+              psql -U postgres -d la_muni_rag_ingestion_test \
+              -v ON_ERROR_STOP=1 < "$sql_file"
+          done
+
+      - name: Verify compiled tenant ingestion service
+        env:
+          DATABASE_URL: postgresql://la_muni_ingestion_runtime_test:disposable-ingestion-runtime-password-20260719@127.0.0.1:5432/la_muni_rag_ingestion_test
+        run: npm run smoke:tenant-ingestion

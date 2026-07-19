@@ -1,6 +1,6 @@
 # PostgreSQL Setup
 
-Last updated: 2026-07-18
+Last updated: 2026-07-19
 
 Owner: Product Engineering
 
@@ -9,7 +9,8 @@ Status: implementation guide; production role grants and live RLS verification r
 ## Objective
 
 Create the PostgreSQL evidence ledger with versioned documents, citable
-sections, tenant ownership, identity, RBAC, audit, and row-level isolation.
+sections, tenant ownership, identity, RBAC, audit, durable ingestion jobs,
+tenant-owned vectors, and row-level isolation.
 
 ## Prerequisites
 
@@ -45,11 +46,16 @@ Apply migrations in this order:
 psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -f db/migrations/001_initial_rag_schema.sql
 psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -f db/migrations/002_procedure_feedback.sql
 psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -f db/migrations/003_identity_tenancy_rbac.sql
+psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -f db/migrations/004_procedure_query_api.sql
+psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -f db/migrations/005_tenant_ingestion_runtime.sql
 ```
 
-Deployments using the standalone `rag.embedding_vectors` table must apply
-`migrations/011-production-vector-store.sql` before migration `003`. Migration
-`003` hardens that table only when it already exists.
+Migration `005` is the canonical vector-store migration for fresh databases.
+Do not apply `migrations/011-production-vector-store.sql` on a fresh install; it
+is retained only for historical installations that applied it before migration
+`003`. Migration `005` converges that supported legacy order. If an unscoped
+standalone table was created after `003` and contains rows, `005` stops for an
+explicit reviewed tenant mapping rather than guessing ownership.
 
 Migration `003` creates an explicit bootstrap tenant for existing rows. It does
 not create a PostgreSQL login and does not make the bootstrap tenant a runtime
@@ -78,7 +84,9 @@ privileges required by the application. It must:
 - receive `EXECUTE` on
   `identity.authenticate_api_credential(bytea)` explicitly;
 - run tenant-owned work through `withTenantTransaction`, which sets
-  `app.tenant_id` transaction-locally.
+  `app.tenant_id` transaction-locally;
+- use transaction-bound ingestion/vector repositories; it does not need
+  `UPDATE` on `rag.documents` for the ingestion v1 flow.
 
 Grant statements are environment-specific and intentionally absent until the
 runtime role name and platform are approved. Do not weaken RLS to make a grant
@@ -96,11 +104,20 @@ execute a database integration gate with the non-owner runtime role:
 4. prove a missing or malformed tenant setting returns no protected rows;
 5. prove committed and rolled-back transactions do not leak the setting through
    the connection pool;
-6. confirm denial audit records contain no credential, body, or query text;
-7. record PostgreSQL and pgvector versions plus the executed evidence.
+6. concurrently submit and lease ingestion work; prove replay/work
+   deduplication, lease fencing, atomic rollback/replacement, and cross-tenant
+   equal chunk ids;
+7. confirm denial/job audit records contain no credential, raw key/token, source
+   body, query text, or exception text;
+8. record PostgreSQL and pgvector versions plus the executed evidence.
 
-This gate remains unproven until it runs against a production-shaped database
-and role topology.
+The guarded disposable ingestion gate passed locally on PostgreSQL 16.14 and
+pgvector 0.8.5 with a table-non-owner, non-superuser, non-`BYPASSRLS` role. That
+is executable local evidence, not proof of production role provisioning,
+startup/continuous attestation, populated-data migration timing, HA, load, or
+release approval. See [Tenant Vector and Ingestion Runtime](tenant-ingestion-runtime.md).
+The complete production-shaped gate remains unproven until those controls run
+against the approved staging and production-equivalent role topology.
 
 ## Evidence ledger rationale
 

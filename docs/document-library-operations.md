@@ -2,7 +2,8 @@
 
 Feature 054 provides a local operator workflow above the source inventory. It is
 not yet an authenticated HTTP document library, URL-acquisition service, durable
-job queue, or production object store.
+worker, or production object store. A durable tenant job/vector core now exists
+under Feature 056, but this file-backed CLI is not wired to it.
 
 The workflow has three separate gates:
 
@@ -146,6 +147,13 @@ manifests, and only then records `ingested`. A failed extraction or index does n
 mark the inventory ingested. See [Raw-PDF Extraction Operations](raw-pdf-extraction.md)
 for the policy, stable failures, and residual sandbox limitations.
 
+The default direct vector path now fails with `tenant_ingestion_job_required`;
+it never opens a global PostgreSQL writer from `DATABASE_URL`. End-to-end apply
+requires a future authenticated adapter/worker that binds current persisted scan
+evidence and exact bytes to `PostgresIngestionJobService`. The local dry-run and
+injected deterministic tests remain useful, but the acquired DMP must not be used
+to bridge this missing integration.
+
 ## Failure and recovery rules
 
 - `artifact_*mismatch`, `artifact_changed_during_scan`,
@@ -156,7 +164,8 @@ for the policy, stable failures, and residual sandbox limitations.
   hard-link moves. The operation attempts the same no-replace move in reverse if
   the inventory write fails.
 - File manifests still lack cross-process locking/CAS. Serialize operators until
-  durable job and locking controls exist.
+  they are replaced or bound transactionally to the durable job service; the
+  database lease does not lock these local JSON files.
 - Never delete a quarantined original merely to make a retry green. Preserve
   provenance and follow incident handling for actual malware detections.
 

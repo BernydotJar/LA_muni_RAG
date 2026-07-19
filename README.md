@@ -1,7 +1,8 @@
 # LA Muni RAG
 
 Last updated: 2026-07-19
-Status: Pre-production hardening in progress; controlled artifact and bounded raw-PDF foundations implemented
+Status: Pre-production hardening in progress; controlled artifact, bounded raw-PDF,
+tenant-query, and durable tenant ingestion/vector foundations implemented
 
 LA Muni RAG is an evidence-first RAG and procedural workflow system configured by default for the Municipality of La Antigua Guatemala, Sacatepéquez. Its core supports validated domain packs so the same architecture can be reused for HR, finance, sales SOPs, and custom procedural assistants.
 
@@ -17,6 +18,7 @@ LA Muni RAG is an evidence-first RAG and procedural workflow system configured b
 
 ```text
 GET  /health
+POST /api/v1/procedure-queries
 GET  /api/search
 GET  /api/evidence
 GET  /api/agent
@@ -29,6 +31,12 @@ GET  /api/procedure-feedback
 ```
 
 `/api/procedure-feedback` requires a Bearer token configured through `PROCEDURE_FEEDBACK_API_TOKEN`.
+
+`POST /api/v1/procedure-queries` is the authenticated, tenant-scoped production
+slice. Production disables every pre-v1 `/api/*` route; the legacy routes listed
+above are development-only and must not be exposed with confidential or
+multi-tenant data. The durable ingestion service is a backend core only and has
+no HTTP route or deployed worker yet.
 
 ## Domain Packs
 
@@ -170,12 +178,14 @@ Apply migrations in order:
 psql "$DATABASE_URL" -f db/migrations/001_initial_rag_schema.sql
 psql "$DATABASE_URL" -f db/migrations/002_procedure_feedback.sql
 psql "$DATABASE_URL" -f db/migrations/003_identity_tenancy_rbac.sql
+psql "$DATABASE_URL" -f db/migrations/004_procedure_query_api.sql
+psql "$DATABASE_URL" -f db/migrations/005_tenant_ingestion_runtime.sql
 ```
 
-If the standalone `rag.embedding_vectors` store is required, apply
-`migrations/011-production-vector-store.sql` before migration `003`; migration
-`003` conditionally adds its tenant boundary. Do not apply that legacy vector
-migration after `003`.
+Migration `005` is the canonical vector-store migration. Do not apply
+`migrations/011-production-vector-store.sql` on a fresh database; it exists only
+for historical upgrade reproduction. Unscoped legacy rows halt migration for an
+explicit reviewed ownership mapping.
 
 Initial seeds:
 
@@ -241,16 +251,26 @@ Reusable today:
 - deterministic draft domain-pack bootstrap CLI.
 - controlled local artifact import/inspection/quarantine operations;
 - bounded page-cited raw-PDF extraction after accepted safety evidence.
+- digest-bound durable ingestion jobs with bounded leases/retries and stale-worker
+  fencing;
+- tenant-scoped, job/version-bound vector generations with atomic replacement and
+  eligible public search.
 
 Still intentionally incomplete:
 
 - complete authenticated document-library/admin UI;
 - browser-based file upload and ingestion;
-- production ClamAV/runtime sandbox, durable ingestion jobs/storage, and
-  tenant-scoped vector writes;
+- production ClamAV/runtime sandbox and durable object storage;
+- authenticated tenant-scoped ingestion API/worker and scanner-evidence handoff;
+- production DB role attestation, queue/observability, load/HA, and reviewed
+  tenant-partitioned approximate-vector strategy if scale requires it;
 - automatic workflow-template publication;
 - visual workflow-template editor;
 - real customer HR, finance, or sales policy corpora;
 - final reusable-template hardening and documentation.
 
 Starter packs and generated scaffolds are templates. They must not be treated as authoritative organizational policy until populated, evidenced, reviewed, and approved by the relevant domain owner.
+
+See [Tenant Vector and Ingestion Runtime](docs/tenant-ingestion-runtime.md) for
+the durable job/vector contract, local PostgreSQL gate, and remaining production
+boundary.

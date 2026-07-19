@@ -1,7 +1,7 @@
 # Backend deployment runbook
 
 Status: pre-production procedure; no backend deployment has been performed
-Last reviewed: 2026-07-18
+Last reviewed: 2026-07-19
 Runbook owner: Platform/Operations owner pending assignment
 Approval authority: Release manager, Security owner, Database owner, and Product owner (named humans pending)
 
@@ -53,7 +53,19 @@ npm test
 npm run build
 ```
 
-It contains no deployment step, environment credential, Pages build, or write permission. Branch protection should require this check on the approved release branch; branch-protection configuration is outside this repository and is currently unverified.
+After the build, the workflow starts
+`pgvector/pgvector:0.8.5-pg16-bookworm` pinned to digest
+`sha256:1d533553fefe4f12e5d80c7b80622ba0c382abb5758856f52983d8789179f0fb`,
+applies canonical migrations `001..005`,
+runs the guarded non-owner SQL fixture, and runs the compiled tenant ingestion
+smoke with disposable CI-only credentials. The fixture database name is fixed and
+contains synthetic rows only.
+
+The workflow contains no deployment step, production credential, Pages build,
+or repository write permission. Branch protection should require this check on
+the approved release branch; branch-protection configuration is outside this
+repository and is currently unverified. A declared workflow is not evidence of
+a passing run until GitHub records success for the exact commit.
 
 Before approving a release, the release manager records the reviewed commit and independently confirms:
 
@@ -162,6 +174,35 @@ This is reproducible local evidence, not a migration ledger, populated-data lock
 test, backup restore, HA failover, load test, approved staging topology, or
 production authorization. The disposable credential literals in the test
 fixture are fixtures only and must never be reused outside that isolated gate.
+
+### Tenant ingestion/vector evidence (2026-07-19)
+
+The new canonical fresh order is migrations `001`, `002`, `003`, `004`, `005`;
+fresh databases do not apply standalone legacy vector migration `011`. A second
+test proved the supported historical `001`, `002`, `011`, `003`, `004`, `005`
+order converges. An intentionally unsafe post-003 standalone table with an
+unscoped row stopped at `005` and required explicit ownership review.
+
+`db/tests/tenant_ingestion_runtime_gate.sql` used the exact disposable database
+`la_muni_rag_ingestion_test` and a table-non-owner login with `NOSUPERUSER` and
+`NOBYPASSRLS`. It proved forced RLS on jobs/vectors and missing/malformed context
+read/write denial. The compiled service smoke then proved digest-bound
+replay/conflict/work deduplication, 50 concurrent submissions, one winner across
+two claimers, heartbeat, artifact/stale-lease fencing, retry/terminal failure,
+cross-tenant equal chunk ids, atomic rollback, full-generation replacement,
+stale deletion, and public eligibility. It read no controlled artifacts.
+
+The reported runtime was PostgreSQL 16.14 and pgvector 0.8.5. Vector search is
+exact in v1; migration `005` removes the legacy global IVFFlat index because
+tenant/RLS filtering can reduce approximate recall. Production approval still
+requires a populated restore migration/lock-duration test, exact-search query
+plans and load thresholds, production role/startup attestation, HA/failover,
+queue/worker monitoring, and any future tenant-partitioned index review.
+
+This backend core has no authenticated ingestion route or deployed worker. Do
+not add an ingestion smoke item to release acceptance until those components,
+scanner/storage evidence handoff, RBAC, and rollback controls are implemented
+and reviewed.
 
 ## Deployment sequence
 

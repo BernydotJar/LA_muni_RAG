@@ -1,6 +1,7 @@
 import type { NormalizedDocument, NormalizedSection } from "../ingestion/types.js";
 import { normalizeWhitespace } from "../ingestion/normalize.js";
 import { buildChunkId, sha256Hex } from "./chunkIdentity.js";
+import { EmbeddingPipelineError } from "./types.js";
 import type { ChunkPlannerOptions, EmbeddingChunk, EmbeddingSource, PlanChunksInput } from "./types.js";
 
 export const DEFAULT_CHUNK_PLANNER_OPTIONS: ChunkPlannerOptions = {
@@ -10,14 +11,38 @@ export const DEFAULT_CHUNK_PLANNER_OPTIONS: ChunkPlannerOptions = {
 
 const estimateTokens = (text: string): number => Math.ceil(text.length / 4);
 
-const splitLongText = (
+const assertPlannerOptions = ({ maxChars, overlapChars }: ChunkPlannerOptions): void => {
+  if (!Number.isSafeInteger(maxChars) || maxChars < 32 || maxChars > 1_000_000) {
+    throw new EmbeddingPipelineError(
+      "chunk_planner_policy_invalid",
+      "maxChars must be an integer between 32 and 1000000.",
+      false
+    );
+  }
+  if (
+    !Number.isSafeInteger(overlapChars) ||
+    overlapChars < 0 ||
+    overlapChars >= maxChars ||
+    overlapChars > Math.floor(maxChars / 2)
+  ) {
+    throw new EmbeddingPipelineError(
+      "chunk_planner_policy_invalid",
+      "overlapChars must be an integer between 0 and half of maxChars.",
+      false
+    );
+  }
+};
+
+function* splitLongText(
   text: string,
   { maxChars, overlapChars }: ChunkPlannerOptions
-): string[] => {
-  if (text.length <= maxChars) return [text];
+): Generator<string> {
+  if (text.length <= maxChars) {
+    yield text;
+    return;
+  }
 
   const paragraphs = text.split(/\n{2,}/).map((part) => part.trim()).filter(Boolean);
-  const chunks: string[] = [];
   let current = "";
 
   for (const paragraph of paragraphs) {
@@ -27,7 +52,7 @@ const splitLongText = (
       continue;
     }
 
-    if (current) chunks.push(current);
+    if (current) yield current;
 
     if (paragraph.length <= maxChars) {
       current = paragraph;
@@ -35,14 +60,14 @@ const splitLongText = (
     }
 
     for (let start = 0; start < paragraph.length; start += Math.max(1, maxChars - overlapChars)) {
-      chunks.push(paragraph.slice(start, start + maxChars).trim());
+      const chunk = paragraph.slice(start, start + maxChars).trim();
+      if (chunk) yield chunk;
     }
     current = "";
   }
 
-  if (current) chunks.push(current);
-  return chunks.filter(Boolean);
-};
+  if (current) yield current;
+}
 
 const sourceFromSection = (
   document: NormalizedDocument,
@@ -64,8 +89,17 @@ const sourceFromSection = (
 export const planChunks = (
   document: NormalizedDocument,
   input: PlanChunksInput,
-  options: ChunkPlannerOptions = DEFAULT_CHUNK_PLANNER_OPTIONS
+  options: ChunkPlannerOptions = DEFAULT_CHUNK_PLANNER_OPTIONS,
+  maxChunks = Number.MAX_SAFE_INTEGER
 ): EmbeddingChunk[] => {
+  assertPlannerOptions(options);
+  if (!Number.isSafeInteger(maxChunks) || maxChunks < 1) {
+    throw new EmbeddingPipelineError(
+      "embedding_resource_policy_invalid",
+      "maxChunks must be a positive safe integer.",
+      false
+    );
+  }
   const chunks: EmbeddingChunk[] = [];
   let chunkOrdinal = 1;
 
@@ -74,9 +108,7 @@ export const planChunks = (
     if (!sectionText) continue;
 
     const source = sourceFromSection(document, section, input);
-    const sectionChunks = splitLongText(sectionText, options);
-
-    for (const text of sectionChunks) {
+    for (const text of splitLongText(sectionText, options)) {
       const contentSha256 = sha256Hex(text);
       chunks.push({
         chunkId: buildChunkId(source, contentSha256, chunkOrdinal),
@@ -93,6 +125,7 @@ export const planChunks = (
           planner: "section_text_v1",
         },
       });
+      if (chunks.length > maxChunks) return chunks;
       chunkOrdinal += 1;
     }
   }

@@ -1,6 +1,7 @@
 # Tenant Isolation Foundation
 
-Status: implemented and wired for procedure-query v1; broader API migration pending.
+Status: implemented for procedure-query v1 and the durable ingestion/vector
+core; authenticated ingestion API/worker and broader API migration pending.
 
 ## Boundary
 
@@ -46,11 +47,11 @@ This is a migration bridge, not a default for new data. Operators must inventory
 and reassign legacy records before onboarding more than one tenant. New writes
 must always provide the authenticated tenant UUID.
 
-The standalone vector migration `migrations/011-production-vector-store.sql`
-must run before migration `003` in deployments that use `rag.embedding_vectors`.
-Migration `003` conditionally hardens that table when it exists; applying the
-legacy vector migration afterward would create an unscoped table and is not a
-supported production order.
+Migration `005_tenant_ingestion_runtime.sql` is now the canonical creator and
+hardener for `rag.embedding_vectors`. Fresh databases do not apply the standalone
+`migrations/011-production-vector-store.sql`. Historical databases that applied
+`011` before `003` converge through `005`; unscoped rows from an unsafe order
+halt migration until an explicit reviewed tenant mapping exists.
 
 ## Row-level security
 
@@ -64,7 +65,7 @@ transaction-expired values return `NULL`; every tenant policy then denies access
 - agent conversations, messages, runs, retrieval events/results, citations, and
   procedure feedback;
 - `audit.events`;
-- `rag.embedding_vectors` when it already exists.
+- `rag.embedding_vectors` (created or converged by migration `005`).
 
 Each policy applies the same predicate to reads and writes:
 
@@ -94,6 +95,18 @@ The third `set_config` argument must remain `true`. Session-level tenant setting
 can leak across pooled requests and are prohibited. Repository work outside this
 transaction fails closed under RLS.
 
+`PostgresIngestionJobService` uses the same contract for enqueue, claim,
+heartbeat, completion, retry/failure, vector replacement, document-version
+state, and audit. `TenantPgVectorRepository` receives the transaction client and
+repeats tenant predicates on every write/read in addition to RLS. A rollback
+failure destroys the pooled connection instead of returning a potentially
+session-poisoned client.
+
+Direct vector indexing no longer constructs a global repository from
+`DATABASE_URL`. Runtime vector readiness requires a repository already closed
+over an authenticated tenant transaction and otherwise reports
+`tenant_vector_context_required`.
+
 `POST /api/v1/procedure-queries` authenticates before body parsing, verifies
 `integration:query`, matches the credential and body tenant, and performs
 retrieval, rate/idempotency state, and tenant audit through this contract. Its
@@ -119,15 +132,18 @@ isolation guarantee.
 
 Static adversarial tests verify the backfill, top-level ownership, fixed function
 search paths, default-deny policies, `FORCE` coverage, and absence of managed-role
-creation. The guarded disposable gate in
-`db/tests/procedure_query_runtime_gate.sql` additionally ran the full migration
-order on PostgreSQL 16.14/pgvector 0.8.5, used a non-owner role without
-`BYPASSRLS`, and proved tenant A/B visibility/write isolation, missing/malformed
-context denial, scoped uniqueness, authentication, and sanitized aggregate audit.
-The compiled v1 handler then passed success/replay/conflict/tenant-denial/
-boundary/401/corrupt-replay/retry over that connection.
+creation. The guarded disposable procedure-query and ingestion gates ran the
+canonical migration order on PostgreSQL 16.14/pgvector 0.8.5 with table-non-owner
+roles without `BYPASSRLS`. They proved tenant A/B visibility/write isolation,
+missing/malformed context denial, scoped uniqueness, authentication, sanitized
+audit, cross-tenant equal vector ids, concurrent job/work deduplication, one
+lease winner, stale/artifact fencing, atomic vector rollback/replacement, and
+eligible public retrieval. The compiled v1 handler and compiled ingestion
+service both ran over those real connections.
 
-This evidence is local and disposable. Production role provisioning, credential
-rotation, HA/connection policy, staging repetition, and the remaining endpoint
-catalog are still release gates. Pre-v1 routes use global queries and remain
-development-only; production disables them before wildcard CORS.
+This evidence is local and disposable. Production role provisioning and
+startup/continuous role attestation, credential rotation, statement limits,
+HA/connection policy, staging/load repetition, authenticated ingestion
+API/worker, and the remaining endpoint catalog are still release gates. Pre-v1
+routes use global queries and remain development-only; production disables them
+before wildcard CORS.

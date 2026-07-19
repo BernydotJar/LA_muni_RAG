@@ -23,6 +23,15 @@ floods, and protocol corruption. No ClamAV executable/service is installed in th
 current runtime, so the DMP has not received a malware verdict and remains only
 `acquired`; Feature 055 did not parse or index it.
 
+The tenant ingestion core now persists digest-bound jobs and job-bound vectors,
+claims work with bounded leases and stale-worker fencing, and atomically replaces
+one complete document generation with version/job/audit state. A disposable
+non-owner PostgreSQL gate and compiled service smoke exercised tenant A/B,
+concurrent submission/claim, artifact/lease fencing, rollback, replacement, and
+eligible public search using synthetic records. There is still no authenticated
+ingestion endpoint, deployed worker, durable object storage/scanner evidence,
+production role attestation, load/HA proof, or DMP ingestion.
+
 Known exposed or potentially exposed surfaces remain:
 
 - legacy `/api/search`, `/api/evidence`, `/api/procedure`, `/api/agent`, `/api/answer`, `/api/chat`, and `/api/procedure-feedback` do not enforce the v1 tenant policy when explicitly enabled outside production;
@@ -64,7 +73,7 @@ Each arrow crosses a trust boundary. CORS, private network placement, source URL
 | Browser -> Pages | URL parameters, DOM data, configured API URL | scheme/origin validation, no secrets, safe links | static hardening tests exist; Pages remains public |
 | Client -> API | headers, JSON body, query, tenant/resource IDs | TLS, body bounds, authentication, RBAC, tenant match, rate limits, safe errors | implemented/tested for procedure-query v1; TLS/ingress and the remaining API catalog are absent; legacy is production-disabled |
 | API -> PostgreSQL | query parameters and principal/tenant context | parameterized SQL, transaction-local tenant context, RLS, least-privilege DB role | disposable real-DB/HTTP gate passes for procedure-query v1; production provisioning, statement limits, HA and monitoring are absent |
-| Ingestion -> corpus | bytes, MIME type, filenames, URLs, extracted text | size/type/hash validation, malware policy, provenance, parser isolation, resource bounds, quarantine, human promotion | local signature/MIME gate, private-snapshot ClamAV adapter, bounded raw-PDF child, quarantine and pre-extraction enforcement are tested; real scanner service, approved OS sandbox, authenticated library, durable jobs/storage, tenant vector writes and human promotion are absent |
+| Ingestion -> corpus | bytes, MIME type, filenames, URLs, extracted text | size/type/hash validation, malware policy, provenance, parser isolation, resource bounds, quarantine, durable leases, tenant vectors, human promotion | local signature/MIME gate, private-snapshot ClamAV adapter, bounded raw-PDF child, tenant job/vector core, rollback/replacement and pre-extraction enforcement are tested; real scanner/storage, approved OS sandbox, authenticated API/worker, load/HA and human promotion are absent |
 | API -> logs/audit | identifiers, outcomes, errors | allowlisted fields, redaction, immutable access control, retention | v1 route persists allowlisted tenant audit and bounded tenantless auth aggregates; centralized append-only storage/access review remain absent |
 | Product -> external product | contract envelope and claims | schema validation, authenticated producer, tenant scope, idempotency, provenance | local ProcedureWorkflow provider is tested; consumer identity/interoperability and remaining adapters are absent |
 
@@ -109,9 +118,9 @@ LA Muni RAG is not an owner or storage system for internal campaign strategy, vo
 | Information disclosure | Secrets, queries, case context, or PII leak in errors/logs | safe error envelopes and allowlisted audit metadata | legacy error/log review and centralized redaction verification are still required |
 | Information disclosure | Public Pages artifact includes confidential source or token | static-only build, ignored environment files, secret-free client | artifact inspection must remain a release gate; Pages can only contain public demonstration data |
 | Denial of service | Large body, expensive hybrid query, retry storm, or scraper | body/limit validation, per-principal rate limit, server timeouts, idempotency | v1 behavior is tested; load thresholds, DB statement timeout, ingress quotas and global enforcement are not demonstrated |
-| Denial of service | Pathological PDF expands text, stalls parsing, floods channels, or triggers provider fan-out | child-process byte/time/page/text/heap/channel/concurrency bounds; chunk and embedding-batch caps | V8 heap is not total RSS/native memory; distributed tenant quotas, queue limits and load thresholds are absent |
-| Denial of service | Database pool exhaustion or slow vector query | bounded pool/query timeout, health/metrics, capacity alert | limits, SLOs, load test, autoscaling, and alerts are not selected or validated |
-| Elevation of privilege | App/database owner bypasses RLS | least-privilege runtime DB role, `FORCE ROW LEVEL SECURITY`, no `BYPASSRLS` | disposable non-owner role proof passes; production provisioning/continuous attestation remain absent |
+| Denial of service | Pathological PDF expands text, stalls parsing, floods channels, or triggers provider fan-out | child-process byte/time/page/text/heap/channel/concurrency bounds; chunk/batch caps; durable attempts/lease/retry bounds | V8 heap is not total RSS/native memory; tenant quotas, queue-depth limits, deployed-worker backpressure and load thresholds are absent |
+| Denial of service | Database pool exhaustion or slow vector query | bounded result count; tenant/model predicates; exact search avoids approximate recall loss | statement/pool limits, SLOs, corpus-scale plans/load, partitioning, autoscaling, and alerts are not selected or validated |
+| Elevation of privilege | App/database owner bypasses RLS | least-privilege runtime DB role, `FORCE ROW LEVEL SECURITY`, no `BYPASSRLS` | disposable procedure and ingestion non-owner proofs pass; production provisioning/startup/continuous attestation remain absent |
 | Elevation of privilege | Shared feedback token enables broad read/write | migrate to per-principal permission checks | shared token remains a transitional control and must not be treated as production RBAC |
 
 ## Priority abuse cases
@@ -144,6 +153,12 @@ isolation, decompression-bomb resilience, or human document approval.
 
 A client repeats a POST or reuses a key with a different payload. The v1 server scopes the digest by principal, tenant, and operation, returns byte-exact replay only after current-contract and identity validation, conflicts on another fingerprint, and deletes/audits corrupt stored bytes. Unit and disposable PostgreSQL HTTP gates pass replay, conflict, corruption, and retry. Concurrent load and timeout-race testing remain required.
 
+Ingestion v1 separately binds tenant, principal, document version, artifact,
+pipeline, attempt policy, and key digests. The disposable compiled smoke passed
+same-request replay, changed-request conflict, duplicate-work collapse, 50
+concurrent submissions, and one winner across two claimers. That does not replace
+distributed load, network-partition, or production timeout evidence.
+
 ### TM-06: boundary-violating electoral request
 
 A caller asks LA Muni RAG to generate campaign strategy, voter segmentation, political messaging, or a content calendar. The service must refuse the out-of-scope work and may return only approved procedural evidence. It must not store the internal electoral context in the corpus or logs.
@@ -155,8 +170,9 @@ Automated clients send large bodies, high limits, repeated hybrid searches, or e
 Raw PDF extraction now rejects inputs above compiled ceilings, processes one page
 at a time in a killable child, validates bounded output, caps one process's parser
 concurrency, rejects more than 5,000 chunks, and embeds at most 64 texts per
-request. This limits the local path but does not provide distributed tenant
-quotas, durable backpressure, total RSS/native-memory enforcement, or an OS
+request. Durable jobs cap attempts, lease duration, retry delay, and claims, but
+no worker/API is deployed. These controls do not provide tenant quotas,
+queue-depth backpressure, total RSS/native-memory enforcement, or an OS
 network/seccomp sandbox.
 
 ### TM-08: backup or support-channel disclosure
@@ -189,6 +205,13 @@ resource options. Exact registry metadata separately established
 implementation uses the locked release API but records that Context7's repository
 documentation tracks a different revision; this evidence supports the design and
 does not prove hostile-file sandboxing or production runtime safety.
+
+Also on 2026-07-19, Context7 resolved `/brianc/node-postgres` for its primary
+transaction guidance: all statements in one transaction must use the same
+checked-out client, with explicit `BEGIN`/`COMMIT`/`ROLLBACK` and release. Current
+PostgreSQL documentation was consulted for `ON CONFLICT`, row locking,
+`SKIP LOCKED`, and forced RLS. This supports the transaction/claim design; it is
+not a production topology, load, or role attestation.
 
 ## Review triggers
 

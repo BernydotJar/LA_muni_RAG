@@ -261,7 +261,7 @@ describe("vector indexing orchestration", () => {
     assert.equal(result.recordsWritten, 0);
   });
 
-  it("returns a stable failure when vector store config is missing", async () => {
+  it("fails closed when no explicit tenant ingestion repository is supplied", async () => {
     const result = await indexVectorSource(
       { inputPath: "fixtures/test.md" },
       {
@@ -273,7 +273,7 @@ describe("vector indexing orchestration", () => {
     );
 
     assert.equal(result.status, "failed");
-    assert.equal(result.failures[0].code, "missing_vector_store_config");
+    assert.equal(result.failures[0].code, "tenant_ingestion_job_required");
     assert.equal(result.recordsWritten, 0);
   });
 

@@ -1,6 +1,8 @@
 # Raw-PDF Extraction Operations
 
-Status: local pre-production component; parser isolation is implemented, while a production scanner, tenant-safe ingestion jobs/storage/vector writes, and approved runtime sandbox remain absent.
+Status: local pre-production component; parser isolation and a tenant-safe durable
+job/vector core are implemented, while a production scanner/storage,
+authenticated worker wiring, and approved runtime sandbox remain absent.
 
 ## Allowed entry point
 
@@ -17,8 +19,9 @@ does not satisfy the safety gate.
 
 See [Document Library and Ingestion Operations](document-library-operations.md)
 for commands. Do not apply `ingest` to a real source until its scanner verdict,
-tenant/storage/job/vector controls, documentary review, and human release decision
-are approved.
+tenant/storage/worker integration, documentary review, and human release decision
+are approved. Feature 056's job/vector core does not ingest or authorize bytes by
+itself.
 
 ## Configuration
 
@@ -80,8 +83,9 @@ source content.
   network namespace, seccomp boundary, or native-memory/RSS limit.
 - The native canvas dependency is pinned directly but remains inside the parser
   process and must be covered by dependency and image review.
-- A per-process concurrency count is not a distributed queue, tenant quota,
-  lease, lock, or retry system.
+- The parser's per-process concurrency count is not a tenant quota or distributed
+  backpressure control. Durable leases/retries now exist in the separate
+  ingestion core, but no authenticated worker or queue monitoring is deployed.
 - Text extraction is not OCR, table reconstruction, form processing, document
   approval, legal validity, or evidence promotion.
 - A clean unit/integration result is not a real ClamAV verdict or production

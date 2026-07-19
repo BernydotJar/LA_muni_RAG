@@ -12,7 +12,6 @@ import type {
   EmbeddingRepository,
   IndexDocumentResult,
 } from "../embeddings/types.js";
-import { PgVectorEmbeddingRepository } from "../embeddings/pgVectorRepository.js";
 import {
   createQueryEmbeddingProvider,
   loadQueryEmbeddingProviderConfig,
@@ -147,18 +146,6 @@ const createDefaultEmbeddingProvider = (
   return queryProvider ? queryProviderToEmbeddingProvider(queryProvider) : null;
 };
 
-const hasVectorStoreConfig = (env: NodeJS.ProcessEnv | undefined): boolean =>
-  typeof env?.DATABASE_URL === "string" && env.DATABASE_URL.trim().length > 0;
-
-const createDefaultRepository = (
-  provider: EmbeddingProvider,
-  dependencies: VectorIndexingDependencies
-): EmbeddingRepository | null => {
-  const env = dependencies.env ?? process.env;
-  if (!hasVectorStoreConfig(env)) return null;
-  return new PgVectorEmbeddingRepository(undefined, provider.dimensions);
-};
-
 const resultStatusFromIndexResult = (result: IndexDocumentResult): VectorIndexingStatus => {
   if (result.failures.length === 0) return "indexed";
   return result.embeddedCount > 0 ? "partial" : "failed";
@@ -228,20 +215,23 @@ export const indexVectorSource = async (
     );
   }
 
+  const repository = dependencies.embeddingRepository;
+  if (!repository) {
+    return emptyResult(
+      input,
+      safeFailure(
+        "tenant_ingestion_job_required",
+        "Vector persistence requires an explicit tenant-scoped ingestion job repository."
+      ),
+      dependencies
+    );
+  }
+
   const provider = dependencies.embeddingProvider ?? createDefaultEmbeddingProvider(dependencies);
   if (!provider) {
     return emptyResult(
       input,
       safeFailure("missing_embedding_provider_config", "Embedding provider configuration is incomplete."),
-      dependencies
-    );
-  }
-
-  const repository = dependencies.embeddingRepository ?? createDefaultRepository(provider, dependencies);
-  if (!repository) {
-    return emptyResult(
-      input,
-      safeFailure("missing_vector_store_config", "Vector store configuration is incomplete."),
       dependencies
     );
   }

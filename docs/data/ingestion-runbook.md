@@ -1,8 +1,9 @@
 # Ingestion runbook
 
-Status: pre-production local workflow; bounded raw-PDF process isolation exists,
-while an authenticated library, durable jobs, production scanner/storage,
-approved OS sandbox, and tenant-safe indexing remain incomplete.
+Status: pre-production local workflow; bounded raw-PDF process isolation and a
+tenant-safe durable job/vector core exist, while an authenticated library/worker,
+production scanner/storage, approved OS sandbox, and end-to-end wiring remain
+incomplete.
 
 ## Preconditions
 
@@ -38,8 +39,10 @@ new reviewed version rather than overwriting expected acquisition identity.
 5. Reconcile internal title/version/approval/effective-date evidence through human
    review. A clean scan is not documentary approval.
 6. Run `ingest --dry-run`. Require positive extracted sections and zero writes.
-7. Apply ingestion only after the extractor, tenant-safe vector writer, database,
-   and operational manifest are production-shaped and approved.
+7. Apply ingestion only after the extractor, tenant job/vector service,
+   authenticated worker, scanner/storage evidence, database role/topology, and
+   operational manifest are production-shaped and approved. The current local
+   library CLI is not wired to the durable PostgreSQL service.
 8. Validate source inventory and corpus-manifest reconciliation, then run retrieval
    and citation fidelity evaluations before promotion to user-facing evidence.
 
@@ -85,17 +88,34 @@ audit trail, or substitute for restricted storage IAM.
 are controlled locally, but no clean ClamAV evidence, section extraction, vector
 index, corpus-manifest record, approval, current-validity decision, or reuse
 license is claimed. Do not run `ingest` merely because the structural PDF import
-check passes.
+check passes. The new job/vector tables do not change this state and no DMP bytes
+were read by their synthetic integration gates.
+
+## Durable job handoff boundary
+
+Feature 056 provides digest-bound enqueue/replay, `SKIP LOCKED` leases,
+heartbeat/fencing, bounded retry, and atomic vector/version/job/audit completion.
+Embedding preparation happens before the final database transaction. See
+[Tenant Vector and Ingestion Runtime](../tenant-ingestion-runtime.md).
+
+This is a callable backend core, not an operator command or authorization
+boundary. A future adapter must authenticate a `document_manager`, prove current
+persisted clean-scan evidence for the exact artifact, resolve restricted storage,
+enqueue the matching `document_version_id` and SHA-256, and ensure the worker
+receives those exact bytes. It must never enqueue from a URL, local path, client
+title, or caller-provided tenant alone.
 
 ## Production blockers
 
-- authenticated tenant-scoped library/upload/API and RBAC;
+- authenticated tenant-scoped library/upload/API, worker, and RBAC;
 - source URL acquisition policy and egress controls;
 - durable object storage with restricted quarantine IAM and retention;
 - monitored scanner service, definition freshness alert, and scan-capacity test;
 - approved OS/container isolation and native-memory/load testing for the bounded
   PDF parser process;
-- transactional tenant-scoped vector writes, job retries/locks, and append-only
-  audit;
+- end-to-end binding of persisted scanner/storage evidence to durable jobs;
+- production runtime-role attestation, queue quotas/monitoring, exact-search load
+  evidence, and tenant-partitioned index review before approximate retrieval;
+- centralized append-only audit retention and access control;
 - staging corrupt-file, decompression-bomb, concurrency, restore, and incident
   exercises.

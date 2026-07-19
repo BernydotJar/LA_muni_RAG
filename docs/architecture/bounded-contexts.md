@@ -1,7 +1,7 @@
 # Contextos delimitados
 
 Estado: arquitectura objetivo aceptada; implementación desigual  
-Fecha de corte: 2026-07-18
+Fecha de corte: 2026-07-19
 
 ## Cómo leer este mapa
 
@@ -18,14 +18,14 @@ Estados usados:
 | Contexto | Responsabilidad y datos propios | Evidencia actual | Estado al corte |
 |---|---|---|---|
 | **Source Catalog** | `source_id`, ubicación, autoridad, jurisdicción, vigencia, estado de adquisición, provenance y gaps. | `.rag/source-inventory.json`, validación de autoridad y operaciones locales de biblioteca. Persisten fuentes no adquiridas; la auditoría registró una contradicción PDM-OT cuya reconciliación requiere evidencia verificable. | parcial |
-| **Document Intelligence** | Documento estable, versiones inmutables, hash, bytes, extracción, secciones, chunks, embeddings e ingestion jobs. | Esquema PostgreSQL `rag.*`, extractores, manifest, SHA-256, CLI de import/ingest y pgvector opcional. Sin biblioteca autenticada, worker/queue ni operación production-grade. | parcial |
-| **Evidence Retrieval** | Consultas, candidatos, ranking, evidence items, citas, contradicciones, gaps y decisión de insuficiencia. | Keyword, phrase e hybrid; citas y `not_found`. Faltan filtros obligatorios, conflicto/version awareness y groundedness sobre corpus real. | parcial |
+| **Document Intelligence** | Documento estable, versiones inmutables, hash, bytes, extracción, secciones, chunks, embeddings e ingestion jobs. | Esquema PostgreSQL `rag.*`, extractores, manifest, SHA-256, CLI local y núcleo durable tenant-scoped con leases, retry, fencing y reemplazo vectorial atómico. Sin biblioteca/API autenticada, worker desplegado, storage/scanner durable ni operación production-grade. | parcial |
+| **Evidence Retrieval** | Consultas, candidatos, ranking, evidence items, citas, contradicciones, gaps y decisión de insuficiencia. | Keyword/phrase tenant-safe en v1, hybrid local, citas y `not_found`; el repositorio vectorial tenant-safe existe pero no está conectado al endpoint v1. Faltan evaluación grounded sobre corpus real, conflictos/version awareness y operación vectorial aprobada. | parcial |
 | **Procedural Knowledge** | Definición y versión de procedimiento, pasos, actores, documentos, dependencias, gates, legal basis, authority y evidence status. | Tipos/compositor MVP y templates. Faltan persistencia, versión canónica, estados objetivo y golden workflow de agua. | parcial |
 | **Workflow Governance** | Drafts, revisión, aprobación, supersession, archivo y audit de decisiones humanas. | Hay validación de templates y feedback controlado; no existe lifecycle persistente ni servicio de aprobación. | ausente |
 | **Procedural Cases** | Caso ligado a `procedure_version_id`, paso actual, documentos, blockers, seguimiento y audit trail. | UI/localStorage de portfolio/workspace documentada como local-only; no es system of record. | ausente como contexto server-side |
-| **Identity and Access** | Tenants, users, memberships, roles, credentials de integración, políticas y denial audit. | Un Bearer token compartido protege sólo procedure feedback. No hay tenant model, RBAC integral ni RLS. | ausente |
-| **Integration Gateway** | APIs v1, validación de schemas, idempotency, correlation, provenance, adapters y contract tests. | Endpoints MVP no versionados `/api/*`; no hay OpenAPI/JSON Schema externo ni adapters a productos vecinos. | ausente |
-| **Audit and Operations** | Eventos de auditoría, observabilidad, retención, backups, restore, incidentes y despliegue controlado. | El esquema contiene tablas `audit.*` y hay checks locales/Pages; faltan controles operativos production-grade. | parcial |
+| **Identity and Access** | Tenants, users, memberships, roles, credentials de integración, políticas y denial audit. | Modelo tenant/principal/membership/credential, diez roles, RLS forzado y transacción tenant-local; procedure-query v1 y el núcleo de ingestión usan la frontera. Faltan API de ingestión, catálogo completo de endpoints, provisioning/attestation productivo y control plane cross-tenant. | parcial |
+| **Integration Gateway** | APIs v1, validación de schemas, idempotency, correlation, provenance, adapters y contract tests. | `POST /api/v1/procedure-queries`, schemas/OpenAPI canónicos, idempotency y proveedor ProcedureWorkflow v1 están probados localmente. Faltan consumidores autenticados, adapters restantes y API/worker de ingestión. | parcial |
+| **Audit and Operations** | Eventos de auditoría, observabilidad, retención, backups, restore, incidentes y despliegue controlado. | Audit tenant-safe y sanitizado para consulta/ingestión, CI/runbooks y gates PostgreSQL no-owner locales. Faltan sink append-only central, retención, alertas, restore/HA/load y despliegue aprobado. | parcial |
 
 ## Relaciones y lenguaje compartido
 

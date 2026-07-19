@@ -26,7 +26,8 @@ export const requireTenantMatch = (
 
 export interface TenantTransactionClient {
   query(sql: string, values?: unknown[]): Promise<unknown>;
-  release(): void;
+  /** Passing an error destroys a poisoned node-postgres pooled connection. */
+  release(error?: Error | boolean): void;
 }
 
 export interface TenantTransactionPool {
@@ -45,6 +46,7 @@ export const withTenantTransaction = async <T>(
   if (!isCanonicalUuid(tenantId)) throw new Error("Invalid tenant context");
 
   const client = await pool.connect();
+  let releaseError: Error | undefined;
   try {
     await client.query("BEGIN");
     await client.query("SELECT set_config('app.tenant_id', $1, true)", [tenantId.toLowerCase()]);
@@ -54,11 +56,13 @@ export const withTenantTransaction = async <T>(
   } catch (error) {
     try {
       await client.query("ROLLBACK");
-    } catch {
-      // Preserve the original failure; the pool will discard a broken client.
+    } catch (rollbackError) {
+      releaseError = rollbackError instanceof Error
+        ? rollbackError
+        : new Error("Tenant transaction rollback failed");
     }
     throw error;
   } finally {
-    client.release();
+    client.release(releaseError);
   }
 };

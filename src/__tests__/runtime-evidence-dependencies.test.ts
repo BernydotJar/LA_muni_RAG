@@ -30,6 +30,12 @@ const transport: QueryEmbeddingTransport = async () => ({
   },
 });
 
+const tenantVectorRepository = {
+  async search() {
+    return [];
+  },
+};
+
 const assertNoSecretLeak = (value: unknown): void => {
   const serialized = JSON.stringify(value);
   assert.ok(!serialized.includes("super-secret-api-key"));
@@ -61,7 +67,18 @@ describe("runtime evidence dependencies", () => {
     assert.equal(dependencies.vectorRepository, undefined);
   });
 
-  it("creates query embedding and vector dependencies when config is complete", async () => {
+  it("does not create a global-pool vector repository from configuration alone", () => {
+    const dependencies = createRuntimeEvidenceDependencies({
+      env: completeEnv,
+      pool: fakePool,
+      queryEmbeddingTransport: transport,
+    });
+
+    assert.equal(dependencies.queryEmbeddingProvider, undefined);
+    assert.equal(dependencies.vectorRepository, undefined);
+  });
+
+  it("creates dependencies only with an explicitly tenant-bound vector repository", async () => {
     let transportCalled = false;
     const localTransport: QueryEmbeddingTransport = async () => {
       transportCalled = true;
@@ -78,6 +95,7 @@ describe("runtime evidence dependencies", () => {
       env: completeEnv,
       pool: fakePool,
       queryEmbeddingTransport: localTransport,
+      vectorRepository: tenantVectorRepository,
     });
 
     assert.ok(dependencies.queryEmbeddingProvider);
@@ -124,16 +142,33 @@ describe("runtime evidence dependencies", () => {
     assertNoSecretLeak(context.vectorStatus);
   });
 
-  it("reports enabled status when runtime vector config is complete", () => {
+  it("reports degraded status when config is complete but tenant context is absent", () => {
     const context = createRuntimeEvidenceDependencyContext({
       env: completeEnv,
       pool: fakePool,
       queryEmbeddingTransport: transport,
     });
 
+    assert.equal(context.vectorStatus.state, "degraded");
+    assert.deepEqual(context.vectorStatus.reasons, [
+      "tenant_vector_context_required",
+      "partial_runtime_dependencies",
+    ]);
+    assert.equal(context.vectorStatus.queryEmbeddingProviderConfigured, true);
+    assert.equal(context.vectorStatus.vectorRepositoryConfigured, false);
+    assertNoSecretLeak(context.vectorStatus);
+  });
+
+  it("reports enabled status only for an explicitly tenant-bound repository", () => {
+    const context = createRuntimeEvidenceDependencyContext({
+      env: completeEnv,
+      pool: fakePool,
+      queryEmbeddingTransport: transport,
+      vectorRepository: tenantVectorRepository,
+    });
+
     assert.equal(context.vectorStatus.state, "enabled");
     assert.deepEqual(context.vectorStatus.reasons, ["runtime_dependencies_ready"]);
-    assert.equal(context.vectorStatus.queryEmbeddingProviderConfigured, true);
     assert.equal(context.vectorStatus.vectorRepositoryConfigured, true);
     assert.equal(context.vectorStatus.providerName, "http");
     assert.equal(context.vectorStatus.model, "test-model");

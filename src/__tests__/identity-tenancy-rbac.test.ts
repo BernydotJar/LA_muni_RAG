@@ -252,6 +252,28 @@ describe("identity, tenancy, and RBAC foundation", () => {
     assert.equal(released, true);
   });
 
+  it("destroys the pooled client when rollback cleanup fails", async () => {
+    const operationFailure = new Error("operation failed");
+    const rollbackFailure = new Error("rollback failed");
+    let releaseError: Error | boolean | undefined;
+    const client: TenantTransactionClient = {
+      async query(sql) {
+        if (sql === "ROLLBACK") throw rollbackFailure;
+        return {};
+      },
+      release(error) {
+        releaseError = error;
+      },
+    };
+    const pool: TenantTransactionPool = { async connect() { return client; } };
+
+    await assert.rejects(
+      () => withTenantTransaction(pool, TENANT_A, async () => { throw operationFailure; }),
+      (error) => error === operationFailure
+    );
+    assert.equal(releaseError, rollbackFailure);
+  });
+
   it("builds only allowlisted, bounded security audit data", () => {
     const event = buildSecurityAuditEvent({
       tenantId: TENANT_A,
