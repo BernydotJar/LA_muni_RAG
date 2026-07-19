@@ -1,0 +1,458 @@
+schema_version: 1
+updated_at: "2026-07-19T02:48:59Z"
+runtime:
+  type: yaml_fallback
+  farmtable_available: false
+  canonical_graph: program/task-graph.yaml
+status_vocabulary:
+  - pending
+  - ready
+  - in_progress
+  - blocked_external
+  - completed
+  - completed_with_limitations
+tasks:
+  - id: PRG-SKILL-001
+    workstream: WS-01
+    title: "Initialize skill-first usage register"
+    status: completed
+    owner: /root/program_tooling
+    files:
+      - program/skill-usage-register.md
+    depends_on: []
+    blockers: []
+    evidence:
+      - "Session skill catalog was compared to the task; no specific applicable skill was found."
+      - "program/skill-usage-register.md"
+    branch: "program/procedural-intelligence-prod-ready"
+    pr: null
+    ci: not_applicable
+  - id: PRG-AUTO-001
+    workstream: WS-01
+    title: "Run and risk-review AutoSkills dry-run"
+    status: completed_with_limitations
+    owner: /root/program_tooling
+    files:
+      - program/skill-usage-register.md
+    depends_on:
+      - PRG-SKILL-001
+    blockers:
+      - BLK-AUTO-001
+    evidence:
+      - "npx --offline autoskills --dry-run exited 0."
+      - "AutoSkills 0.3.6 detected TypeScript and Node.js, proposed six skills, and reported nothing installed."
+      - "No skills-lock.json or additional repository change was observed."
+    limitations:
+      - "Five proposal review summaries say review skipped despite approved status."
+      - "Per-skill licenses and publisher provenance are unproven."
+      - "npm view --offline could not recover tarball integrity; npm cache verify failed EPERM and was not escalated."
+    branch: "program/procedural-intelligence-prod-ready"
+    pr: null
+    ci: not_applicable
+  - id: PRG-CTX7-001
+    workstream: WS-01
+    title: "Enable Context7 evidence workflow"
+    status: completed
+    owner: /root/program_tooling
+    files:
+      - program/context7-evidence.md
+    depends_on:
+      - PRG-SKILL-001
+    blockers: []
+    evidence:
+      - "npx ctx7 v0.5.5 is available under the MIT license from github.com/upstash/context7."
+      - "Resolved /nodejs/node, /websites/postgresql_current, /oai/openapi-specification/3.1.1, /websites/json-schema_understanding-json-schema, and /ajv-validator/ajv/v8.17.1."
+      - "Retrieved evidence covers timingSafeEqual/hash/randomUUID, RLS default-deny and FORCE, OpenAPI bearer/components/JSON Schema, strict object validation, and Ajv2020 strict/allErrors/addSchema."
+      - "Required versioned records exist in program/context7-evidence.md."
+    limitations:
+      - "Context7 Node documentation reaches v25 while the observed runtime is v26.5.0."
+      - "Context7 Ajv documentation is v8.17.1 while implementation selected ajv 8.20.0 and ajv-formats 3.0.1; compatibility verification is required."
+    branch: "program/procedural-intelligence-prod-ready"
+    pr: null
+    ci: not_applicable
+  - id: PRG-FARM-001
+    workstream: WS-01
+    title: "Initialize Farmtable or semantic YAML fallback"
+    status: completed_with_limitations
+    owner: /root/program_tooling
+    files:
+      - program/task-graph.yaml
+      - program/task-ledger.yaml
+    depends_on:
+      - PRG-SKILL-001
+    blockers:
+      - BLK-FARM-001
+    evidence:
+      - "No Farmtable API operation was found."
+      - "ft --version exited 127: zsh:1: command not found: ft."
+      - "YAML fallback models releases, workstreams, dependencies, blockers, critical path, claims, owners, branches, PRs, and CI."
+    branch: "program/procedural-intelligence-prod-ready"
+    pr: null
+    ci: not_applicable
+  - id: BASE-001
+    workstream: WS-01
+    title: "Inspect repository, branches, PRs, CI, and reconcile baseline"
+    status: completed
+    owner: /root
+    files: []
+    depends_on:
+      - PRG-FARM-001
+    blockers: []
+    acceptance:
+      - "Current worktree changes are attributed and preserved."
+      - "Branches, open PRs, and CI are reconciled to a canonical implementation baseline."
+    evidence:
+      - "Canonical branch program/procedural-intelligence-prod-ready is based on origin/main at 4950ba3 with divergence 0 ahead / 0 behind."
+      - "371/371 tests passed; typecheck and build passed."
+      - "Source inventory validation passed with 16 total, 3 verified, 5 missing_source, 0 acquired, and 0 ingested; acquisition and ingestion remain production gaps."
+      - "Domain evaluation passed 6/6 and Pages verification passed."
+      - "RTK.md remains pre-existing untracked, untouched, and out of scope."
+    branch: "program/procedural-intelligence-prod-ready"
+    pr: null
+    ci: canonical_gate_passed
+  - id: BOUND-001
+    workstream: WS-01
+    title: "Create evidence-backed product-boundary ADR"
+    status: completed
+    owner: /root/boundary_arch_docs
+    files:
+      - docs/product/product-boundaries.md
+      - docs/product/procedural-intelligence-vision.md
+      - docs/architecture/bounded-contexts.md
+      - docs/architecture/system-context.md
+      - docs/architecture/data-ownership.md
+      - docs/integrations/os-electoral.md
+      - docs/integrations/content-agency.md
+      - docs/integrations/contracts.md
+      - docs/data/source-inventory.md
+    depends_on:
+      - BASE-001
+    blockers: []
+    acceptance:
+      - "LA Muni RAG, OS Electoral, and Content Agency ownership and non-overlap rules are explicit."
+    evidence:
+      - "Nine canonical product, architecture, integration, and source-truth documents exist."
+      - "Link validation checked 70 links with 0 broken."
+    pr: null
+    ci: passed
+  - id: GAP-001
+    workstream: WS-01
+    title: "Map every goal requirement and production gate to current evidence"
+    status: pending
+    owner: unassigned
+    files: []
+    depends_on:
+      - BASE-001
+      - BOUND-001
+    blockers: []
+    acceptance:
+      - "Every requirement, artifact, eval, gate, and invariant has an evidence state, owner, and task."
+      - "Missing or indirect evidence is recorded as not achieved."
+    evidence: []
+    pr: null
+    ci: not_started
+  - id: WS02-CORP-001
+    workstream: WS-02
+    title: "Inventory Antigua-first and Mixco-comparative sources"
+    status: in_progress
+    completion: partial
+    owner: /root
+    files: []
+    depends_on:
+      - BOUND-001
+    blockers: []
+    acceptance:
+      - "Authority, jurisdiction, provenance, comparison warning, and evidence gaps are explicit."
+    evidence:
+      - "Inventory is valid with 16 total, 3 verified, 5 missing_source, 0 acquired, and 0 ingested."
+      - "The completed PDM-OT reconciliation slice does not complete the Antigua/Mixco corpus workstream."
+    pr: null
+    ci: partial
+  - id: WS02-CORP-RECON-001
+    workstream: WS-02
+    title: "Reconcile PDM-OT portable verification without acquisition or ingestion claims"
+    status: completed
+    owner: /root
+    files:
+      - .rag/source-inventory.json
+      - docs/data/source-inventory.md
+      - src/__tests__/pdm-source-inventory-reconciliation.test.ts
+    depends_on:
+      - BASE-001
+      - BOUND-001
+    blockers: []
+    acceptance:
+      - "PDM-OT moves from missing_source to verified only."
+      - "Official URL, version, verification date, and hash are portable."
+      - "Optional local bytes may verify identity without becoming a controlled acquisition."
+      - "Feature 054 dry-run plans work and performs no mutation."
+    evidence:
+      - "Status transition missing_source -> verified; acquired false; ingested false."
+      - "Official URL, version, verification date, and SHA-256 are portable; optional local bytes matched."
+      - "Feature 054 import dry-run returned planned true and mutated false."
+      - "Inventory summary: 16 total / 3 verified / 5 missing_source / 0 acquired / 0 ingested."
+      - "Focused tests passed 15/15 and typecheck passed."
+    pr: null
+    ci: passed
+  - id: WS07-FOUNDATION-001
+    workstream: WS-07
+    title: "Build the identity, tenancy, and RBAC foundation"
+    status: in_progress
+    owner: /root/api_security_audit
+    files: []
+    depends_on:
+      - BOUND-001
+      - PRG-CTX7-001
+    blockers: []
+    acceptance:
+      - "Foundation follows timing-safe secret handling and PostgreSQL RLS default-deny/FORCE evidence."
+    evidence:
+      - program/context7-evidence.md
+    pr: null
+    ci: in_progress
+  - id: WS07-ID-001
+    workstream: WS-07
+    title: "Audit authentication, tenancy, RBAC, denial audit, and metadata isolation"
+    status: pending
+    owner: unassigned
+    files: []
+    depends_on:
+      - BOUND-001
+      - PRG-CTX7-001
+      - WS07-FOUNDATION-001
+    blockers: []
+    acceptance:
+      - "Minimum roles are enforced and cross-tenant access is denied, audited, and leak-free."
+    evidence: []
+    pr: null
+    ci: not_started
+  - id: WS03-ING-001
+    workstream: WS-03
+    title: "Harden authenticated ingestion, idempotency, corrupt input, and retry"
+    status: pending
+    owner: unassigned
+    files: []
+    depends_on:
+      - WS02-CORP-001
+      - WS07-ID-001
+      - PRG-CTX7-001
+    blockers: []
+    acceptance:
+      - "Ingestion is tenant-scoped, idempotent, auditable, and stable on corrupt input."
+    evidence: []
+    pr: null
+    ci: not_started
+  - id: WS04-RET-001
+    workstream: WS-04
+    title: "Measure retrieval quality and citation fidelity"
+    status: pending
+    owner: unassigned
+    files: []
+    depends_on:
+      - WS02-CORP-001
+      - WS03-ING-001
+      - PRG-CTX7-001
+    blockers: []
+    acceptance:
+      - "Authority, conflicts, missing evidence, and citations are visible and no facts are invented."
+    evidence: []
+    pr: null
+    ci: not_started
+  - id: WS05-PROC-001
+    workstream: WS-05
+    title: "Validate procedure schema, workflow compiler, lifecycle, and approval"
+    status: pending
+    owner: unassigned
+    files: []
+    depends_on:
+      - BOUND-001
+      - WS02-CORP-001
+      - WS04-RET-001
+    blockers: []
+    acceptance:
+      - "Steps, dependencies, documents, citations, evidence state, gaps, versioning, and human approval are represented."
+      - "Golden water workflow is Antigua-first and evidence-backed per step."
+    evidence: []
+    pr: null
+    ci: not_started
+  - id: WS06-CASE-001
+    workstream: WS-06
+    title: "Harden tenant-scoped procedure case tracking"
+    status: pending
+    owner: unassigned
+    files: []
+    depends_on:
+      - WS05-PROC-001
+      - WS07-ID-001
+    blockers: []
+    acceptance:
+      - "Cases track status, actors, evidence, decisions, events, and audit history."
+    evidence: []
+    pr: null
+    ci: not_started
+  - id: WS08-CONTRACT-FOUNDATION-001
+    workstream: WS-08
+    title: "Build the OpenAPI 3.1.1 and strict Ajv contract foundation"
+    status: in_progress
+    owner: /root/baseline_gap_audit
+    files: []
+    depends_on:
+      - BOUND-001
+      - PRG-CTX7-001
+    blockers: []
+    acceptance:
+      - "Bearer security and reusable strict schemas follow OpenAPI 3.1.1."
+      - "Ajv2020 uses strict, allErrors, addSchema, and ajv-formats."
+      - "Ajv v8.17.1 documentation compatibility with selected ajv 8.20.0 is verified."
+    evidence:
+      - "Context7 /ajv-validator/ajv/v8.17.1 query: Ajv2020 strict allErrors addSchema."
+      - "Implementation selected ajv 8.20.0 and ajv-formats 3.0.1."
+    limitations:
+      - "Compatibility between Context7 docs v8.17.1 and selected package v8.20.0 remains to be verified."
+    pr: null
+    ci: in_progress
+  - id: WS08-INT-001
+    workstream: WS-08
+    title: "Implement and test adjacent-product contracts"
+    status: pending
+    owner: unassigned
+    files: []
+    depends_on:
+      - BOUND-001
+      - WS04-RET-001
+      - WS05-PROC-001
+      - WS07-ID-001
+      - PRG-CTX7-001
+      - WS08-CONTRACT-FOUNDATION-001
+    blockers: []
+    acceptance:
+      - "OS Electoral gets evidence/procedures without campaign strategy."
+      - "Content Agency gets ClaimPack evidence without content generation."
+      - "Both contract suites pass."
+    evidence: []
+    pr: null
+    ci: not_started
+  - id: WS09-UX-001
+    workstream: WS-09
+    title: "Harden authenticated and accessible evidence/workflow UX"
+    status: pending
+    owner: unassigned
+    files: []
+    depends_on:
+      - WS04-RET-001
+      - WS05-PROC-001
+      - WS06-CASE-001
+      - WS07-ID-001
+    blockers: []
+    acceptance:
+      - "UX exposes citations, authority, conflicts, gaps, workflow state, and cases without overstatement."
+      - "Accessibility review passes."
+    evidence: []
+    pr: null
+    ci: not_started
+  - id: WS10-OPS-001
+    workstream: WS-10
+    title: "Close security, platform, and operations gaps"
+    status: pending
+    owner: unassigned
+    files: []
+    depends_on:
+      - WS03-ING-001
+      - WS04-RET-001
+      - WS05-PROC-001
+      - WS06-CASE-001
+      - WS07-ID-001
+      - WS08-INT-001
+      - WS09-UX-001
+      - PRG-CTX7-001
+    blockers: []
+    acceptance:
+      - "Security/privacy have zero critical and high findings."
+      - "Observability, Terraform, backup/restore, deploy, rollback, and incident response are proven."
+    evidence: []
+    pr: null
+    ci: not_started
+  - id: WS11-QA-001
+    workstream: WS-11
+    title: "Run required evals, tests, docs checks, and global regression"
+    status: pending
+    owner: unassigned
+    files: []
+    depends_on:
+      - GAP-001
+    integration_dependencies:
+      - WS02-CORP-001
+      - WS03-ING-001
+      - WS04-RET-001
+      - WS05-PROC-001
+      - WS06-CASE-001
+      - WS07-ID-001
+      - WS08-INT-001
+      - WS09-UX-001
+      - WS10-OPS-001
+    blockers: []
+    acceptance:
+      - "All nine named hard evals, required tests, and cross-workstream regression pass."
+      - "Mandatory documentation exists and matches runtime truth."
+    evidence: []
+    pr: null
+    ci: not_started
+  - id: REL-VERIFY-001
+    workstream: WS-11
+    title: "Audit completion and record human deploy decision"
+    status: pending
+    owner: /root
+    files: []
+    depends_on:
+      - WS10-OPS-001
+      - WS11-QA-001
+    blockers: []
+    acceptance:
+      - "Every requirement is proved by authoritative current-state evidence."
+      - "GATE-PROD-001 passes and human deployment approval is recorded."
+    evidence: []
+    pr: null
+    ci: not_started
+blockers:
+  - id: BLK-CTX7-001
+    state: resolved
+    condition: "Context7 was initially unavailable through MCP and PATH."
+    exact_evidence:
+      - "npx ctx7 v0.5.5, MIT, github.com/upstash/context7"
+      - "Four required libraries resolved and queried; evidence recorded in program/context7-evidence.md."
+    resolution: "CLI fallback is active; PRG-CTX7-001 completed."
+    residual_limitation: "Node docs through v25 versus observed runtime v26.5.0."
+    next_safe_action: "Continue task-specific Context7 queries and verify v26-only Node behavior against matching primary documentation."
+  - id: BLK-AUTO-001
+    state: mitigated
+    condition: "Proposal licenses and five prompt-injection reviews are unproven."
+    next_safe_action: "Keep skills uninstalled pending human license, provenance, content, path, and hash review."
+  - id: BLK-FARM-001
+    state: mitigated
+    condition: "Farmtable is unavailable."
+    next_safe_action: "Operate from the YAML graph and ledger; migrate only after compatibility review."
+  - id: BLK-BASE-001
+    state: resolved
+    condition: "The previous branch upstream was gone and RTK.md was pre-existing untracked work."
+    resolution: "Canonical branch program/procedural-intelligence-prod-ready is synchronized 0/0 with origin/main at 4950ba3."
+    residual_limitation: "RTK.md remains pre-existing untracked, untouched, and out of scope."
+    next_safe_action: "Continue on the canonical branch and preserve RTK.md."
+farmtable_equivalent_queries:
+  GetReadyTasks:
+    result:
+      - GAP-001
+    caveat: "WS02-CORP-001, WS07-FOUNDATION-001, and WS08-CONTRACT-FOUNDATION-001 are already in_progress."
+  GetDependencyTree:
+    root: REL-VERIFY-001
+    source: program/task-graph.yaml
+  GetCriticalPath:
+    source: program/task-graph.yaml
+    current_bottlenecks: []
+  GetBottlenecks:
+    open: []
+    mitigated:
+      - BLK-AUTO-001
+      - BLK-FARM-001
+    resolved:
+      - BLK-CTX7-001
+      - BLK-BASE-001

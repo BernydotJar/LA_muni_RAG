@@ -1,0 +1,124 @@
+# Skill usage register
+
+Last updated: 2026-07-19T02:48:59Z
+
+Program source: /Volumes/Cool HD 2TB/Downloads/goal_la_muni_rag_procedural_intelligence_prod_ready.md
+
+Repository baseline observed during this audit:
+
+- branch: program/procedural-intelligence-prod-ready
+- base and observed commit: origin/main at 4950ba3
+- divergence from origin/main: 0 ahead / 0 behind
+- canonical gate: 371/371 tests; typecheck, build, inventory validation, domain evaluation, and Pages verification passed
+- source inventory: valid, 16 total documents, 3 verified, 5 missing_source, 0 acquired, and 0 ingested; verification is not acquisition or ingestion
+- pre-existing untracked file: RTK.md
+
+## Skill-first decision log
+
+| task_id | task | skill considered | decision | inputs | outputs | evidence | result |
+|---|---|---|---|---|---|---|---|
+| PRG-SKILL-001 | Bootstrap the program tooling controls | Current session skill catalog | No listed skill specifically covers AutoSkills, Context7/Farmtable availability auditing, or fallback program ledgers. Manual execution was selected. | Goal sections 12-16 and 20; RTK.md; package.json; current tool inventory | This register, Context7 evidence, task graph, task ledger | Initial API tool inventory search returned an empty array. Candidate skills such as skill-creator and plugin-creator target creation rather than this audit; repository-specific RICE skills target a different repository. Context7 was subsequently resolved through its CLI via npx. | completed |
+| PRG-RTK-001 | Follow repository command-output guidance | RTK repository toolkit | Used as command tooling, not as a Codex skill. No installation or initialization was performed. | RTK.md | Compressed repository inspection output | command -v rtk returned /opt/homebrew/bin/rtk; rtk --version returned rtk 0.34.1 | completed |
+| PRG-AUTO-001 | Run the required AutoSkills dry-run without permitting a fetch or install | AutoSkills CLI 0.3.6 from the existing npm cache | Executed in offline dry-run mode. Installation was rejected pending license and review closure. | package.json; cached AutoSkills registry | Detected stack and six proposed skills listed below | npx --offline autoskills --dry-run exited 0 and ended with “--dry-run: nothing was installed.” | completed_with_limitations |
+| PRG-CTX7-001 | Enable the Context7 evidence workflow | Context7 CLI via npx | CLI fallback activated without requiring a standalone executable. Five libraries were resolved and queried; task-specific evidence remains mandatory. | Node v26.5.0 runtime; PostgreSQL/RLS; OpenAPI 3.1.1; JSON Schema object validation; Ajv validation | Versioned records and implementation decisions in program/context7-evidence.md | npx ctx7 v0.5.5, MIT, github.com/upstash/context7; includes /ajv-validator/ajv/v8.17.1 for Ajv2020 strict/allErrors/addSchema. | completed |
+| PRG-FARM-001 | Initialize Farmtable or its semantic fallback | Farmtable CLI/MCP | Farmtable is unavailable. The required YAML graph and ledger are the active runtime of record. | Current API tool inventory and PATH; goal section 15 | program/task-graph.yaml and program/task-ledger.yaml | No Farmtable-related API tool was present; ft --version exited 127 with “zsh:1: command not found: ft”. | fallback_active |
+| BOUND-001 | Establish canonical product boundaries and architecture | No listed repository-specific documentation skill applies to LA Muni RAG | Manual documentation-as-code workflow with explicit link verification. | Goal ownership, non-overlap, contracts, system context, data ownership | Nine canonical documents across docs/product, docs/architecture, and docs/integrations | Nine required documents exist; link audit checked 70 links with 0 broken. | completed |
+| WS02-CORP-RECON-001 | Reconcile PDM-OT source truth without promoting lifecycle state | No listed corpus-reconciliation skill applies | Manual inventory, dry-run, portable identity, documentation, and focused-test workflow. | Existing PDM-OT official URL, version/date/hash metadata, optional local bytes, Feature 054 importer | Reconciled inventory and docs/data/source-inventory.md | missing_source to verified; no acquired/ingested claim; Feature 054 dry-run planned/mutated false; 15/15 focused tests and typecheck passed. | completed |
+
+## Context7 activation evidence
+
+- invocation: npx ctx7
+- CLI version: 0.5.5
+- license: MIT
+- repository: https://github.com/upstash/context7
+- resolved libraries: /nodejs/node, /websites/postgresql_current, /oai/openapi-specification/3.1.1, /websites/json-schema_understanding-json-schema, /ajv-validator/ajv/v8.17.1
+- retrieved topics: timingSafeEqual/hash/randomUUID; PostgreSQL RLS default-deny and FORCE; OpenAPI bearer security/components/JSON Schema; strict JSON Schema object validation; Ajv2020 strict/allErrors/addSchema
+- task result: BLK-CTX7-001 resolved and PRG-CTX7-001 completed
+- limitation: Context7 Node documentation reaches v25 while the observed runtime is v26.5.0; v26-specific decisions require matching primary documentation
+- Ajv implementation selection: ajv 8.20.0 and ajv-formats 3.0.1
+- Ajv limitation: Context7 documentation is pinned to v8.17.1; compatibility with selected ajv 8.20.0 must be verified before passing the contract gate
+
+## Completed program slices
+
+### BOUND-001
+
+Canonical documents:
+
+1. docs/product/product-boundaries.md
+2. docs/product/procedural-intelligence-vision.md
+3. docs/architecture/bounded-contexts.md
+4. docs/architecture/system-context.md
+5. docs/architecture/data-ownership.md
+6. docs/integrations/os-electoral.md
+7. docs/integrations/content-agency.md
+8. docs/integrations/contracts.md
+9. docs/data/source-inventory.md
+
+The canonical set contains 70 checked links and 0 broken links.
+
+### WS02-CORP-RECON-001
+
+- PDM-OT lifecycle transition: missing_source to verified
+- deliberately unchanged lifecycle states: acquired false; ingested false
+- portable identity: official URL, version, verification date, and SHA-256
+- optional local-byte check: matching bytes verified without making the artifact a portable acquisition
+- Feature 054 import check: dry-run with planned true and mutated false
+- inventory summary: 16 total, 3 verified, 5 missing_source, 0 acquired, 0 ingested
+- verification: 15/15 focused tests and typecheck passed
+- parent workstream: WS02-CORP-001 remains in_progress and partial
+
+## AutoSkills dry-run evidence
+
+The exact goal command was constrained to offline mode so npx could not fetch or install a package:
+
+    npx --offline autoskills --dry-run
+
+Observed result:
+
+- exit code: 0
+- AutoSkills version: 0.3.6
+- detected technologies: TypeScript and Node.js
+- reported target agents: universal and kiro-cli
+- reported action: six skills proposed
+- repository writes: none observed
+- skills-lock.json: absent
+- standalone autoskills executable on PATH: absent
+- package source: existing npm npx cache at /Users/eduardosacahui/.npm/_npx/4ee5619d4353c7f4/node_modules/autoskills
+- cached package license: CC-BY-NC-4.0
+- cached package package.json SHA-256: 43b3ef91d99553ed3a83e7f7af87c646a8006709ca966952db003a7fe1386781
+- cached registry SHA-256: 12b50d1562e4b84a9e3ae051c0cd64532ff15c3f14202d32ec38a66d440103b0
+- cached registry generatedAt: 2026-05-03T15:50:34.696Z
+- cached registry reviewer metadata: model gpt-5.4, promptVersion 1.0.0
+
+### Proposed skill manifest
+
+| skill | source and path | pinned commit | bundle SHA-256 | files | registry review evidence |
+|---|---|---|---|---|---|
+| typescript-advanced-types | wshobson/agents/typescript-advanced-types | 87b81e9d642d7bb9602b33d1e2dadf1c2a619f2b | 5ca0e177c6aaaba1889255691224daafdb7d71f317cc70bede1590d3907ded42 | SKILL.md | status approved, but summary says “review skipped (--no-review)”; prompt-injection review is not proven |
+| nodejs-backend-patterns | wshobson/agents/nodejs-backend-patterns | 87b81e9d642d7bb9602b33d1e2dadf1c2a619f2b | 710a5e6f83c46e8f6c43356df55c143a7375c4414559a581654ce51709138c55 | SKILL.md; references/advanced-patterns.md | status approved, but summary says “review skipped (--no-review)”; prompt-injection review is not proven |
+| nodejs-best-practices | sickn33/antigravity-awesome-skills/nodejs-best-practices | 1930a079452fa15a54b6b4232a89d8a3f75c3239 | 7361ab02fb6b09913e3bdd9cf61c629ed6c17de9485e6a781054e5d437ccfc29 | SKILL.md | review approved and securityCheck status ok with no findings |
+| frontend-design | anthropics/skills/frontend-design | 2c7ec5e78b8e5d43ea02e90bb8826f6b9f147b0c | 82fb11a63fb1e35ee2469516ed02d54695f783115b1540c0e783197af4240a3a | LICENSE.txt; SKILL.md | status approved, but summary says “review skipped (--no-review)”; prompt-injection review is not proven |
+| accessibility | addyosmani/web-quality-skills/accessibility | fed9617111260e19f4f54b72a2874a3f3de8ff94 | bffe3d08cfe92ebad63699f74ce29e35c19850ebfbf474c1463183cfe34d6a09 | SKILL.md; references/A11Y-PATTERNS.md; references/WCAG.md | status approved, but summary says “review skipped (--no-review)”; prompt-injection review is not proven |
+| seo | addyosmani/web-quality-skills/seo | fed9617111260e19f4f54b72a2874a3f3de8ff94 | c184da724d1c61ad077f27418ea8e7e88fd54bcdf98165e18be7e4681cbd5e20 | SKILL.md | status approved, but summary says “review skipped (--no-review)”; prompt-injection review is not proven |
+
+### Installation decision
+
+No skill was installed and no skills-lock.json was created.
+
+Reasons:
+
+1. The registry does not declare the license of each proposed skill. A bundled LICENSE.txt hash for frontend-design is not a license determination.
+2. Five proposals have internally inconsistent review evidence: status approved while the review summary says review skipped.
+3. Commit and content hashes reduce ambiguity but do not prove publisher identity, artifact provenance, or freedom from supply-chain compromise.
+4. The AutoSkills package itself is CC-BY-NC-4.0. Its permissibility as development tooling and any distribution implications need explicit legal review for a commercial product.
+5. The proposed target set includes universal and kiro-cli; the intended repository-local installation paths and agent scope were not printed by the dry-run.
+
+Before any installation, require an owner to verify every skill file, license, destination path, publisher provenance, and hash against the pinned manifest. If approved, run the non-dry command separately, review the diff, and only then register skills-lock.json.
+
+## Audit limitations
+
+- npm view --offline autoskills@0.3.6 dist --json returned ENOTCACHED, so registry-provided tarball integrity and shasum were not independently recovered.
+- npm cache verify returned EPERM while attempting to inspect a root-owned cache entry. No privilege escalation or ownership change was attempted, so whole-cache integrity remains unverified.
+- This audit did not download source repositories, execute proposed skill content, or infer licenses from repository names.
+- RTK.md was already untracked before the audit and was read only.
+- Context7 availability is resolved through npx, not through a standalone PATH executable or MCP operation.
