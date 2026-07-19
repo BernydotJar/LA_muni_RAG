@@ -1,0 +1,97 @@
+name: Verify Feature 054
+
+on:
+  pull_request:
+    branches:
+      - stack-base/053-municipal-source-corpus-foundation-merged
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    if: github.head_ref == 'feature/054-document-library-ingestion-operations' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Validate source inventory
+        run: npm run source-inventory:validate
+
+      - name: Typecheck
+        shell: bash
+        run: |
+          set +e
+          npm run typecheck > typecheck.log 2>&1
+          status=$?
+          cat typecheck.log
+          exit $status
+
+      - name: Upload typecheck diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: feature-054-typecheck
+          path: typecheck.log
+          if-no-files-found: error
+          retention-days: 3
+
+      - name: Build
+        run: npm run build
+
+      - name: Document library focused tests
+        run: node --import tsx --test src/__tests__/document-library-operations.test.ts
+
+      - name: Existing source inventory tests
+        run: node --import tsx --test src/__tests__/source-inventory.test.ts src/__tests__/source-inventory-domain-metadata.test.ts
+
+      - name: Authority boundary tests
+        run: node --import tsx --test src/__tests__/procedure-authority-boundaries.test.ts src/__tests__/procedure-official-source-attribution.test.ts
+
+      - name: Domain evaluation
+        run: npm run domain:evaluate
+
+      - name: Full test suite
+        run: npm run test
+
+      - name: Build Pages artifact
+        run: npm run build:pages
+
+      - name: Verify Pages artifact
+        run: node scripts/verify-pages-artifact.mjs
+
+      - name: Diff integrity
+        run: git diff --check "${{ github.event.pull_request.base.sha || github.event.before }}"...HEAD
+
+      - name: Restore and clean generated artifacts
+        shell: bash
+        run: |
+          rm -f typecheck.log
+          git restore dist-pages || true
+          git clean -nd -- dist-pages/
+          git clean -fd -- dist-pages/
+
+      - name: Verify clean generated state
+        shell: bash
+        run: |
+          status="$(git status --short)"
+          printf '%s\n' "$status"
+          if [ -n "$status" ]; then
+            echo "Unexpected generated or untracked files remain after verification."
+            exit 1
+          fi

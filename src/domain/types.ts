@@ -91,6 +91,7 @@ export interface DomainPack {
 }
 
 export interface DomainDocumentMetadata {
+  [key: string]: unknown;
   domainPackId: string;
   sourceAuthorityClass: string;
   documentType: string;
