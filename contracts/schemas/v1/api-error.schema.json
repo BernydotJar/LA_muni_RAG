@@ -1,0 +1,252 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://contracts.la-muni-rag.invalid/v1/api-error.schema.json",
+  "title": "ApiError v1",
+  "$defs": {
+    "ErrorProvenance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "source_product",
+        "generated_by",
+        "created_at",
+        "source_refs",
+        "credential_id",
+        "audit_id"
+      ],
+      "properties": {
+        "source_product": {
+          "const": "la_muni_rag"
+        },
+        "generated_by": {
+          "type": "string",
+          "enum": [
+            "ai",
+            "human",
+            "system",
+            "integration_client",
+            "import"
+          ]
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "source_refs": {
+          "type": "array",
+          "items": {
+            "$ref": "common.schema.json#/$defs/SafeOpaqueId"
+          },
+          "uniqueItems": true
+        },
+        "credential_id": {
+          "oneOf": [
+            {
+              "$ref": "common.schema.json#/$defs/Uuid"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "audit_id": {
+          "$ref": "common.schema.json#/$defs/Uuid"
+        }
+      }
+    }
+  },
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "response_type",
+    "tenant_id",
+    "request_id",
+    "audit_id",
+    "http_status",
+    "retryable",
+    "error",
+    "provenance"
+  ],
+  "properties": {
+    "schema_version": {
+      "$ref": "common.schema.json#/$defs/SchemaVersion"
+    },
+    "response_type": {
+      "const": "api_error"
+    },
+    "tenant_id": {
+      "oneOf": [
+        {
+          "$ref": "common.schema.json#/$defs/Uuid"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "request_id": {
+      "$ref": "common.schema.json#/$defs/Uuid"
+    },
+    "audit_id": {
+      "$ref": "common.schema.json#/$defs/Uuid"
+    },
+    "http_status": {
+      "type": "integer",
+      "enum": [
+        400,
+        401,
+        403,
+        409,
+        429,
+        500,
+        503
+      ]
+    },
+    "retryable": {
+      "type": "boolean"
+    },
+    "error": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "code",
+        "message",
+        "details"
+      ],
+      "properties": {
+        "code": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100,
+          "pattern": "^[a-z][a-z0-9_]*$"
+        },
+        "message": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1000
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "$ref": "common.schema.json#/$defs/ErrorDetail"
+          }
+        }
+      }
+    },
+    "provenance": {
+      "$ref": "#/$defs/ErrorProvenance"
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "type": "object",
+        "required": [
+          "http_status"
+        ],
+        "properties": {
+          "http_status": {
+            "const": 401
+          }
+        }
+      },
+      "then": {
+        "type": "object",
+        "properties": {
+          "tenant_id": {
+            "const": null
+          },
+          "provenance": {
+            "type": "object",
+            "required": [
+              "credential_id"
+            ],
+            "properties": {
+              "credential_id": {
+                "const": null
+              }
+            }
+          },
+          "error": {
+            "type": "object",
+            "required": [
+              "code",
+              "message",
+              "details"
+            ],
+            "properties": {
+              "code": {
+                "const": "unauthorized"
+              },
+              "message": {
+                "const": "Authentication required"
+              },
+              "details": {
+                "type": "array",
+                "maxItems": 0
+              }
+            }
+          }
+        }
+      },
+      "else": {
+        "type": "object",
+        "properties": {
+          "tenant_id": {
+            "$ref": "common.schema.json#/$defs/Uuid"
+          },
+          "provenance": {
+            "type": "object",
+            "required": [
+              "credential_id"
+            ],
+            "properties": {
+              "credential_id": {
+                "$ref": "common.schema.json#/$defs/Uuid"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "type": "object",
+        "required": [
+          "http_status"
+        ],
+        "properties": {
+          "http_status": {
+            "const": 403
+          }
+        }
+      },
+      "then": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "object",
+            "required": [
+              "code",
+              "message",
+              "details"
+            ],
+            "properties": {
+              "code": {
+                "const": "forbidden"
+              },
+              "message": {
+                "const": "Access denied"
+              },
+              "details": {
+                "type": "array",
+                "maxItems": 0
+              }
+            }
+          }
+        }
+      }
+    }
+  ]
+}

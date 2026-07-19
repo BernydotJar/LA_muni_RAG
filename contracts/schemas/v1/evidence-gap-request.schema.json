@@ -1,0 +1,81 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://contracts.la-muni-rag.invalid/v1/evidence-gap-request.schema.json",
+  "title": "EvidenceGapRequest v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "direction",
+    "product_boundary",
+    "gap_request_id",
+    "request_id",
+    "tenant_id",
+    "subject",
+    "missing_document",
+    "reason",
+    "priority",
+    "campaign_reference",
+    "jurisdiction",
+    "provenance"
+  ],
+  "properties": {
+    "schema_version": {
+      "$ref": "common.schema.json#/$defs/SchemaVersion"
+    },
+    "direction": {
+      "const": "inbound"
+    },
+    "product_boundary": {
+      "const": "evidence_gap_request_only"
+    },
+    "gap_request_id": {
+      "$ref": "common.schema.json#/$defs/Uuid"
+    },
+    "request_id": {
+      "$ref": "common.schema.json#/$defs/Uuid"
+    },
+    "tenant_id": {
+      "$ref": "common.schema.json#/$defs/Uuid"
+    },
+    "subject": {
+      "$ref": "common.schema.json#/$defs/NonEmptyString"
+    },
+    "missing_document": {
+      "$ref": "common.schema.json#/$defs/NonEmptyString"
+    },
+    "reason": {
+      "$ref": "common.schema.json#/$defs/NonEmptyString"
+    },
+    "priority": {
+      "type": "string",
+      "enum": [
+        "low",
+        "medium",
+        "high",
+        "critical"
+      ]
+    },
+    "campaign_reference": {
+      "$ref": "common.schema.json#/$defs/SafeOpaqueId"
+    },
+    "jurisdiction": {
+      "$ref": "common.schema.json#/$defs/Jurisdiction"
+    },
+    "provenance": {
+      "allOf": [
+        {
+          "$ref": "common.schema.json#/$defs/Provenance"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "source_product": {
+              "const": "os_electoral"
+            }
+          }
+        }
+      ]
+    }
+  }
+}

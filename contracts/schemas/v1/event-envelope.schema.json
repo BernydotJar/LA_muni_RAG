@@ -1,0 +1,234 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://contracts.la-muni-rag.invalid/v1/event-envelope.schema.json",
+  "title": "EventEnvelope v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "event_id",
+    "event_version",
+    "event_name",
+    "direction",
+    "occurred_at",
+    "tenant_id",
+    "request_id",
+    "actor_credential_id",
+    "audit_id",
+    "subject_id",
+    "payload_type",
+    "payload",
+    "provenance"
+  ],
+  "properties": {
+    "schema_version": {
+      "$ref": "common.schema.json#/$defs/SchemaVersion"
+    },
+    "event_id": {
+      "$ref": "common.schema.json#/$defs/Uuid"
+    },
+    "event_version": {
+      "$ref": "common.schema.json#/$defs/SemVer"
+    },
+    "event_name": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 200,
+      "pattern": "^[a-z][a-z0-9_.-]*$"
+    },
+    "direction": {
+      "type": "string",
+      "enum": [
+        "inbound",
+        "outbound",
+        "internal"
+      ]
+    },
+    "occurred_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "tenant_id": {
+      "$ref": "common.schema.json#/$defs/Uuid"
+    },
+    "request_id": {
+      "$ref": "common.schema.json#/$defs/Uuid"
+    },
+    "actor_credential_id": {
+      "$ref": "common.schema.json#/$defs/Uuid"
+    },
+    "audit_id": {
+      "$ref": "common.schema.json#/$defs/Uuid"
+    },
+    "subject_id": {
+      "$ref": "common.schema.json#/$defs/SafeOpaqueId"
+    },
+    "payload_type": {
+      "type": "string",
+      "enum": [
+        "evidence_bundle",
+        "procedure_workflow",
+        "procedure_assessment",
+        "procedure_query_request",
+        "evidence_gap_request",
+        "claim_pack",
+        "api_error"
+      ]
+    },
+    "payload": {
+      "type": "object"
+    },
+    "provenance": {
+      "$ref": "common.schema.json#/$defs/Provenance"
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "type": "object",
+        "properties": {
+          "payload_type": {
+            "const": "evidence_bundle"
+          }
+        },
+        "required": [
+          "payload_type"
+        ]
+      },
+      "then": {
+        "type": "object",
+        "properties": {
+          "payload": {
+            "$ref": "evidence-bundle.schema.json"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "type": "object",
+        "properties": {
+          "payload_type": {
+            "const": "procedure_workflow"
+          }
+        },
+        "required": [
+          "payload_type"
+        ]
+      },
+      "then": {
+        "type": "object",
+        "properties": {
+          "payload": {
+            "$ref": "procedure-workflow.schema.json"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "type": "object",
+        "properties": {
+          "payload_type": {
+            "const": "procedure_assessment"
+          }
+        },
+        "required": [
+          "payload_type"
+        ]
+      },
+      "then": {
+        "type": "object",
+        "properties": {
+          "payload": {
+            "$ref": "procedure-assessment.schema.json"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "type": "object",
+        "properties": {
+          "payload_type": {
+            "const": "procedure_query_request"
+          }
+        },
+        "required": [
+          "payload_type"
+        ]
+      },
+      "then": {
+        "type": "object",
+        "properties": {
+          "payload": {
+            "$ref": "procedure-query-request.schema.json"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "type": "object",
+        "properties": {
+          "payload_type": {
+            "const": "evidence_gap_request"
+          }
+        },
+        "required": [
+          "payload_type"
+        ]
+      },
+      "then": {
+        "type": "object",
+        "properties": {
+          "payload": {
+            "$ref": "evidence-gap-request.schema.json"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "type": "object",
+        "properties": {
+          "payload_type": {
+            "const": "claim_pack"
+          }
+        },
+        "required": [
+          "payload_type"
+        ]
+      },
+      "then": {
+        "type": "object",
+        "properties": {
+          "payload": {
+            "$ref": "claim-pack.schema.json"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "type": "object",
+        "properties": {
+          "payload_type": {
+            "const": "api_error"
+          }
+        },
+        "required": [
+          "payload_type"
+        ]
+      },
+      "then": {
+        "type": "object",
+        "properties": {
+          "payload": {
+            "$ref": "api-error.schema.json"
+          }
+        }
+      }
+    }
+  ]
+}

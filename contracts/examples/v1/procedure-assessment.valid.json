@@ -1,0 +1,54 @@
+{
+  "schema_version": "v1",
+  "response_type": "procedure_assessment",
+  "product_boundary": "evidence_and_procedure_only",
+  "assessment_id": "13131313-1313-4131-8131-131313131313",
+  "procedure_id": "cccccccc-cccc-4ccc-8ccc-cccccccccccc",
+  "workflow_version": "1.0.0",
+  "tenant_id": "11111111-1111-4111-8111-111111111111",
+  "request_id": "22222222-2222-4222-8222-222222222222",
+  "jurisdiction": "Municipio de La Antigua Guatemala, Sacatepéquez, Guatemala",
+  "case_context": {
+    "subject_reference": "water-case-san-mateo",
+    "community_id": "community-san-mateo",
+    "facts": [
+      "La comunidad solicitó orientación documental."
+    ],
+    "provided_documents": [],
+    "constraints": [
+      "No se dispone de expediente municipal validado."
+    ]
+  },
+  "completed_requirements": [],
+  "missing_requirements": [
+    {
+      "document_requirement_id": "ffffffff-ffff-4fff-8fff-ffffffffffff",
+      "name": "Solicitud comunitaria respaldada documentalmente",
+      "evidence_status": "missing_evidence",
+      "citation_refs": []
+    }
+  ],
+  "blocked_steps": [
+    "eeeeeeee-eeee-4eee-8eee-eeeeeeeeeeee"
+  ],
+  "unknowns": [
+    "No se ha identificado una unidad responsable con evidencia oficial."
+  ],
+  "evidence_refs": [
+    "99999999-9999-4999-8999-999999999999"
+  ],
+  "next_documental_action": "Solicitar y validar el expediente y la regla municipal aplicable.",
+  "limitations": [
+    "La evaluación no decide factibilidad política ni estrategia de campaña."
+  ],
+  "provenance": {
+    "source_product": "la_muni_rag",
+    "generated_by": "ai",
+    "created_at": "2026-07-18T18:00:00Z",
+    "source_refs": [
+      "gt-codigo-municipal-index"
+    ],
+    "credential_id": "33333333-3333-4333-8333-333333333333",
+    "audit_id": "44444444-4444-4444-8444-444444444444"
+  }
+}

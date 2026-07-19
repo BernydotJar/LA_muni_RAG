@@ -9,6 +9,7 @@
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "build:pages": "node scripts/build-pages.mjs",
+    "contracts:validate": "node --import tsx src/cli/validateIntegrationContracts.ts",
     "dev:api": "tsx watch src/server.ts",
     "dev:start": "node scripts/dev-start.mjs",
     "document-library": "node --import tsx src/cli/documentLibrary.ts",
@@ -34,6 +35,8 @@
   "devDependencies": {
     "@types/node": "^26.0.0",
     "@types/pg": "^8.20.0",
+    "ajv": "8.20.0",
+    "ajv-formats": "3.0.1",
     "tsx": "^4.22.4",
     "typescript": "^6.0.3"
   }

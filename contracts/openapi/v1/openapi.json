@@ -1,0 +1,254 @@
+{
+  "openapi": "3.1.1",
+  "jsonSchemaDialect": "https://json-schema.org/draft/2020-12/schema",
+  "info": {
+    "title": "LA Muni RAG Procedure Query Contract",
+    "version": "1.0.0",
+    "description": "Contract-only definition for the planned LA Muni RAG procedure query integration. This document does not claim that the endpoint is deployed."
+  },
+  "x-implementation-status": "contract_only",
+  "paths": {
+    "/api/v1/procedure-queries": {
+      "post": {
+        "operationId": "submitProcedureQuery",
+        "summary": "Request evidence-backed procedural intelligence",
+        "description": "Accepts a tenant-scoped ProcedureQueryRequest. LA Muni RAG returns evidence or procedural artifacts only; it does not return campaign strategy or generate content.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "description": "Stable key for safely replaying the same tenant-scoped request.",
+            "schema": {
+              "type": "string",
+              "minLength": 16,
+              "maxLength": 128,
+              "pattern": "^[A-Za-z0-9._:-]+$"
+            }
+          },
+          {
+            "name": "X-Request-Id",
+            "in": "header",
+            "required": true,
+            "description": "UUID that must equal request_id in the body.",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "../../schemas/v1/procedure-query-request.schema.json"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Evidence-backed response selected by requested_output.",
+            "headers": {
+              "X-Request-Id": {
+                "$ref": "#/components/headers/RequestId"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "../../schemas/v1/evidence-bundle.schema.json"
+                    },
+                    {
+                      "$ref": "../../schemas/v1/procedure-workflow.schema.json"
+                    },
+                    {
+                      "$ref": "../../schemas/v1/procedure-assessment.schema.json"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          },
+          "503": {
+            "$ref": "#/components/responses/Unavailable"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "description": "Tenant-scoped integration credential."
+      }
+    },
+    "headers": {
+      "RequestId": {
+        "description": "Request correlation UUID.",
+        "schema": {
+          "type": "string",
+          "format": "uuid"
+        }
+      },
+      "RetryAfter": {
+        "description": "Seconds before a retry is allowed.",
+        "schema": {
+          "type": "integer",
+          "minimum": 1
+        }
+      },
+      "WWWAuthenticate": {
+        "description": "Bearer authentication challenge.",
+        "schema": {
+          "type": "string",
+          "const": "Bearer"
+        }
+      }
+    },
+    "responses": {
+      "BadRequest": {
+        "description": "The request failed schema or semantic validation.",
+        "headers": {
+          "X-Request-Id": {
+            "$ref": "#/components/headers/RequestId"
+          }
+        },
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "../../schemas/v1/api-error.schema.json"
+            }
+          }
+        }
+      },
+      "Unauthorized": {
+        "description": "Bearer authentication is missing or invalid.",
+        "headers": {
+          "X-Request-Id": {
+            "$ref": "#/components/headers/RequestId"
+          },
+          "WWW-Authenticate": {
+            "$ref": "#/components/headers/WWWAuthenticate"
+          }
+        },
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "../../schemas/v1/api-error.schema.json"
+            }
+          }
+        }
+      },
+      "Forbidden": {
+        "description": "The credential cannot access the requested tenant or resource.",
+        "headers": {
+          "X-Request-Id": {
+            "$ref": "#/components/headers/RequestId"
+          }
+        },
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "../../schemas/v1/api-error.schema.json"
+            }
+          }
+        }
+      },
+      "Conflict": {
+        "description": "The idempotency key or referenced version conflicts with existing state.",
+        "headers": {
+          "X-Request-Id": {
+            "$ref": "#/components/headers/RequestId"
+          }
+        },
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "../../schemas/v1/api-error.schema.json"
+            }
+          }
+        }
+      },
+      "RateLimited": {
+        "description": "The tenant or credential rate limit was exceeded.",
+        "headers": {
+          "X-Request-Id": {
+            "$ref": "#/components/headers/RequestId"
+          },
+          "Retry-After": {
+            "$ref": "#/components/headers/RetryAfter"
+          }
+        },
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "../../schemas/v1/api-error.schema.json"
+            }
+          }
+        }
+      },
+      "InternalError": {
+        "description": "An internal error occurred without exposing sensitive details.",
+        "headers": {
+          "X-Request-Id": {
+            "$ref": "#/components/headers/RequestId"
+          }
+        },
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "../../schemas/v1/api-error.schema.json"
+            }
+          }
+        }
+      },
+      "Unavailable": {
+        "description": "A required evidence or platform dependency is unavailable.",
+        "headers": {
+          "X-Request-Id": {
+            "$ref": "#/components/headers/RequestId"
+          },
+          "Retry-After": {
+            "$ref": "#/components/headers/RetryAfter"
+          }
+        },
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "../../schemas/v1/api-error.schema.json"
+            }
+          }
+        }
+      }
+    }
+  }
+}
