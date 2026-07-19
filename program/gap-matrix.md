@@ -1,6 +1,6 @@
 # Matriz de gaps hacia production-ready
 
-Fecha de corte: 2026-07-18
+Fecha de corte: 2026-07-19
 
 Baseline relacionado: program/baseline-audit.md
 
@@ -11,8 +11,8 @@ Regla: un slice verde no convierte un workstream completo en achieved.
 | WS | Estado | Capacidad disponible | Gap mínimo para cumplir el goal | Evidencia de aceptación requerida | Prioridad | Depende de |
 |---|---|---|---|---|---|---|
 | WS-01 Baseline and Architecture | partial | Baseline reconciliado; boundaries, ownership, bounded contexts, ADR y control YAML versionados | Completar el mapeo requisito-por-requisito y mantener graph/ledger alineados con cada slice | Auditoría GAP-001 completa; branch/PR/CI actuales; cero claims obsoletos | P0 | — |
-| WS-02 Corpus and Source Inventory | partial | Inventario válido: 17 fuentes, 4 verificadas, 1 DMP adquirido, 4 missing, 0 ingested | Completar corpus Antigua/Mixco, autoridad/vigencia/licencia y storage seguro sin promover comparativos | Hashes/bytes/provenance; malware/quarantine; aprobación; estados honestos; manifest reconciliado | P0 | WS-01 |
-| WS-03 Ingestion and Document Library | partial | Extractores, chunking, embeddings, manifest y CLI local | Biblioteca autenticada, upload/URL acquisition, MIME/malware validation, jobs, retries, locking, audit, retention y APIs | Test corrupt/retry/idempotency; integración DB/object storage; métricas; runbook | P0 | WS-02, WS-07 |
+| WS-02 Corpus and Source Inventory | partial | Inventario válido: 17 fuentes, 4 verificadas, 1 DMP adquirido, 4 missing, 0 ingested; gate local de seguridad disponible | Completar corpus Antigua/Mixco, autoridad/vigencia/licencia, scanner real y storage seguro sin promover comparativos | Hashes/bytes/provenance; veredicto malware real; aprobación; estados honestos; manifest reconciliado | P0 | WS-01 |
+| WS-03 Ingestion and Document Library | partial | Extractores existentes, chunking, embeddings, manifest, CLI local y gate fail-closed de MIME/firma/tamaño/ClamAV/quarantine/retry | Biblioteca autenticada, upload/URL acquisition, scanner operativo, extracción PDF aislada, jobs, retries, locking, audit, retention, writes tenant-scoped y APIs | Test corrupt/retry/idempotency; scanner real; integración DB/object storage; métricas; runbook | P0 | WS-02, WS-07 |
 | WS-04 Retrieval and Evidence | partial | Keyword/phrase/hybrid/vector, dedupe, ranking y citas | Filtros completos, reranking evaluado, contradicciones, vigencia, missing-source y groundedness | Eval corpus real con thresholds; citation fidelity; conflict visibility; isolation tests | P0 | WS-02, WS-03, WS-07 |
 | WS-05 Procedure Schema and Compiler | partial | Workflow estructurado preliminar y gaps | Procedure/version/step schema completo; lifecycle; decision gates; approval; water compiler | Workflow JSON versionado; 47 categorías de agua; citas/evidence status por paso; human review | P0 | WS-04 |
 | WS-06 Procedure Cases and Tracking | partial | Workspace/portfolio en LocalStorage | Persistencia tenant-scoped, API, current step, docs, blockers, validation, follow-up, dossier y audit | API/DB integration tests; immutable audit; binding a procedure version; authorization | P0 | WS-05, WS-07 |
@@ -71,7 +71,7 @@ Autenticación, tenant scope, RBAC, validación, idempotencia, audit y rate limi
 | EVAL-BOUNDARY-001 | partial | Provider rechaza estrategia/movilización/contenido; falta matriz de todos los endpoints/consumers |
 | EVAL-TENANT-001 | partial | Gate PostgreSQL 16.14 + HTTP niega A/B, audita y no filtra; falta topología aprobada y catálogo completo |
 | EVAL-CONFLICT-001 | missing | Versiones contradictorias visibles y review |
-| EVAL-CORRUPT-001 | partial | Replay corrupto se invalida/audita y reintenta; ingestion corrupt/job state sigue pendiente |
+| EVAL-CORRUPT-001 | partial | Replay corrupto se invalida/audita/reintenta; artefactos locales corruptos, tampered y scanner-failure se bloquean, ponen en quarantine y admiten retry limpio; faltan scanner real, job state y DB/object storage |
 
 ## 5. Documentación y tooling obligatorio
 

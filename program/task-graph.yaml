@@ -1,5 +1,5 @@
 schema_version: 1
-generated_at: "2026-07-19T04:56:52Z"
+generated_at: "2026-07-19T05:54:37Z"
 program:
   id: LA-MUNI-RAG-PROD
   objective: "Make LA Muni RAG production-ready within its evidence, procedure, workflow, case-tracking, and integration domain."
@@ -309,7 +309,8 @@ tasks:
       focused_tests: "15/15 passed"
       typecheck: passed
       durable_storage: absent
-      malware_quarantine: absent
+      local_artifact_safety_gate: "implemented at 37ff0ad"
+      dmp_clean_malware_verdict: absent
       extraction_and_indexing: absent
     parent_completion_effect: "WS02-CORP-001 remains in_progress and partial."
   - id: WS07-FOUNDATION-001
@@ -348,10 +349,50 @@ tasks:
   - id: WS03-ING-001
     workstream: WS-03
     title: "Audit and harden authenticated ingestion, idempotency, corrupt-input handling, and retry"
+    status: in_progress
+    completion: partial
+    owner: /root
     depends_on:
       - WS02-CORP-001
       - WS07-ID-001
       - PRG-CTX7-001
+  - id: WS03-ARTIFACT-SAFETY-001
+    workstream: WS-03
+    title: "Add a fail-closed local artifact safety, malware, and quarantine gate"
+    status: completed_with_limitations
+    owner: /root
+    depends_on:
+      - WS02-DMP-ACQ-001
+      - PRG-CTX7-001
+    outputs:
+      - src/sources/artifactSafety.ts
+      - src/sources/documentLibraryOperations.ts
+      - src/sources/sourceInventory.ts
+      - src/cli/documentLibrary.ts
+      - docs/data/ingestion-runbook.md
+      - docs/document-library-operations.md
+    result:
+      commit: 37ff0ad
+      structural_formats: "PDF, DOCX, TXT, Markdown"
+      scanner_adapter: "fixed clamdscan/clamscan modes via execFile without a shell; bounded time/output"
+      no_replace_publication: passed
+      fail_closed_quarantine_and_retry: passed
+      verified_buffer_to_indexer: passed
+      focused_tests: "43/43 passed"
+      global_tests: "479/479 passed"
+      typecheck: passed
+      build: passed
+      source_inventory: "valid; 17 total / 4 verified / 4 missing_source / 8 acquisition_pending / 1 acquired / 0 ingested"
+      contracts: "9 schemas / 9 examples / 1 OpenAPI document valid"
+      domain_evaluation: "6/6 passed"
+      changed_markdown_links: "10 files checked / 0 missing local links"
+      real_dmp_dry_run: "noop; artifactSafety null; mutated false; 0 sections / 0 chunks"
+      real_scanner_runtime: absent
+    limitations:
+      - "The production image/runtime has no ClamAV executable or daemon, so applied safety inspection remains unavailable and fails closed."
+      - "The real DMP remains acquired only, with no clean malware verdict, extraction, index, approval, validity, or license claim."
+      - "Authenticated library/API, durable object storage, jobs/retries/locks/audit, isolated generic PDF extraction, and tenant-scoped vector writes remain absent."
+    parent_completion_effect: "WS03-ING-001 remains in_progress and partial."
   - id: WS04-RET-001
     workstream: WS-04
     title: "Audit and measure authority-aware retrieval, conflicts, gaps, and citation fidelity"
@@ -423,7 +464,8 @@ tasks:
       commit: deef177
       supported_output: procedure_workflow
       focal_tests: "35/35 passed"
-      global_tests: "539/539 passed"
+      global_tests: "457/457 passed at deef177 in a clean detached worktree"
+      test_count_correction: "539 was the reporter marker count, not the canonical Node test summary."
       database_gate: "PostgreSQL 16.14 / pgvector 0.8.5 / non-owner non-BYPASSRLS role passed"
       http_statuses: "200/200/409/403/400/401/500/200"
       production_legacy_route: "non-CORS 404"
@@ -597,13 +639,25 @@ claims:
       - "Official municipal catalog and PDF URL verified; commits d98ff2a and 2a8ff1c"
       - "49,052,885 copied bytes; SHA-256 4cbd35993b345c1f2bdb308825f1d3a6cac24ad239bdc9b087e2d99f2297e8f9"
       - "Feature 054 repeat import noop; portable bounded inventory path; 15/15 focused tests"
+      - "Commit 37ff0ad adds a local fail-closed safety gate; the real DMP dry-run remains noop with artifactSafety null"
     limitations:
-      - "Git-ignored local artifact only; no durable storage, malware quarantine, extraction, indexing, corpus manifest, validity decision, or reuse license"
+      - "Git-ignored local artifact only; no durable storage, clean malware verdict, extraction, indexing, corpus manifest, validity decision, or reuse license"
+  - id: CLAIM-ARTIFACT-SAFETY-GATE
+    statement: "Local document-library extraction is gated on current, matching structural and clean malware evidence."
+    status: supported_with_runtime_limitations
+    evidence:
+      - "Commit 37ff0ad; 43/43 focused and 479/479 global tests"
+      - "Scanner absence/error/infection/tamper quarantines applied artifacts and blocks extraction; clean retry is bounded and no-replace"
+      - "Ingestion rechecks path/hash/size/freshness and passes the exact verified buffer to the indexer"
+    limitations:
+      - "No real ClamAV runtime is installed; no DMP malware verdict is claimed"
+      - "Local files and manifests are not authenticated, durable, tenant-scoped, job-backed, or cross-process locked"
   - id: CLAIM-PROCEDURE-QUERY-V1
     statement: "The ProcedureWorkflow provider slice is implemented with tenant isolation, strict contracts, idempotency, bounded audit, and product-boundary enforcement."
     status: supported_with_limitations
     evidence:
-      - "Commit deef177; 35/35 focal tests and 539/539 global tests"
+      - "Commit deef177; 35/35 focal tests and canonical Node summary 457/457 in a clean detached worktree"
+      - "The prior 539 figure was a reporter marker count and has been corrected"
       - "Clean PostgreSQL 16.14/pgvector 0.8.5 non-owner RLS gate and image-contained HTTP smoke passed"
       - "Exact replay/conflict/corruption/retry and non-CORS production legacy 404 verified"
     limitations:
@@ -625,11 +679,11 @@ owners:
     - WS-11
 branches:
   - name: "program/procedural-intelligence-prod-ready"
-    commit: "deef177"
+    commit: "37ff0ad"
     upstream: "origin/program/procedural-intelligence-prod-ready"
-    upstream_state: ahead
+    upstream_state: synchronized_at_implementation_checkpoint
     divergence:
-      ahead: 1
+      ahead: 0
       behind: 0
     reconciliation_task: BASE-001
 prs:
@@ -639,7 +693,8 @@ ci:
   status: local_regression_passed
   baseline_task: WS11-QA-001
   evidence:
-    tests: "539/539 passed"
+    tests: "479/479 passed"
+    historical_procedure_query_tests: "457/457 at deef177; prior 539 reporter-marker count corrected"
     typecheck: passed
     build: passed
     source_inventory: "valid; 17 total, 4 verified, 4 missing_source, 1 acquired, 0 ingested"
@@ -648,6 +703,7 @@ ci:
     boundary_docs: "9 canonical documents; 70 links checked; 0 broken"
     pdm_reconciliation: "15/15 focused tests and typecheck passed"
     procedure_query_v1: "35/35 focused tests; PostgreSQL/HTTP disposable gate passed"
+    artifact_safety: "43/43 focused tests; fail-closed quarantine/retry and no-replace publication passed; real scanner absent"
     dependency_audit: "npm audit --omit=dev found 0 vulnerabilities"
 gates:
   - id: GATE-PROD-001

@@ -1,5 +1,5 @@
 schema_version: 1
-updated_at: "2026-07-19T04:56:52Z"
+updated_at: "2026-07-19T05:54:37Z"
 runtime:
   type: yaml_fallback
   farmtable_available: false
@@ -223,7 +223,8 @@ tasks:
       - "Current inventory validates at 17 total / 4 verified / 4 missing_source / 1 acquired / 0 ingested."
       - "Focused acquisition/inventory tests passed 15/15 and typecheck passed."
     limitations:
-      - "The acquired PDF is stored only in the Git-ignored local library; durable object storage, backup, malware scanning, quarantine, and production access controls are absent."
+      - "The acquired PDF is stored only in the Git-ignored local library; durable object storage, backup, production access controls, and a real scanner runtime are absent."
+      - "Commit 37ff0ad adds a local fail-closed scan/quarantine gate, but no clean malware verdict has been recorded for the DMP."
       - "No extraction, section count, embedding, vector indexing, corpus-manifest reconciliation, approval, effective date, or reuse license is claimed."
     pr: null
     ci: passed_local
@@ -283,8 +284,8 @@ tasks:
   - id: WS03-ING-001
     workstream: WS-03
     title: "Harden authenticated ingestion, idempotency, corrupt input, and retry"
-    status: pending
-    owner: unassigned
+    status: in_progress
+    owner: /root
     files: []
     depends_on:
       - WS02-CORP-001
@@ -293,9 +294,50 @@ tasks:
     blockers: []
     acceptance:
       - "Ingestion is tenant-scoped, idempotent, auditable, and stable on corrupt input."
-    evidence: []
+    evidence:
+      - "WS03-ARTIFACT-SAFETY-001 completed the local pre-extraction safety and quarantine slice at commit 37ff0ad."
+      - "The parent remains partial because authenticated tenant-scoped ingestion, durable storage, jobs, locks, audit, generic PDF extraction, and real vector writes are absent."
     pr: null
-    ci: not_started
+    ci: partial
+  - id: WS03-ARTIFACT-SAFETY-001
+    workstream: WS-03
+    title: "Add a fail-closed local artifact safety, malware, and quarantine gate"
+    status: completed_with_limitations
+    owner: /root
+    files:
+      - .env.example
+      - .gitignore
+      - src/sources/artifactSafety.ts
+      - src/sources/documentLibraryOperations.ts
+      - src/sources/sourceInventory.ts
+      - src/cli/documentLibrary.ts
+      - src/ingestion/vectorIndexing.ts
+      - docs/data/ingestion-runbook.md
+      - docs/document-library-operations.md
+      - docs/security/threat-model.md
+      - specs/054-document-library-ingestion-operations.md
+    depends_on:
+      - WS02-DMP-ACQ-001
+      - PRG-CTX7-001
+    blockers: []
+    acceptance:
+      - "Extension, explicit MIME, size, and structural signature agree before acquisition evidence is written."
+      - "Scanner absence, error, infection, tamper, and stale evidence fail closed before extraction and applied failures are quarantined without overwriting destinations."
+      - "Clean evidence binds path, expected/observed hash, size, media, signature, scanner versions, verdict, and inspection time."
+      - "The exact verified in-memory bytes reach extraction/indexing; a mutable path is not reread by the vector boundary."
+    evidence:
+      - "Commit 37ff0ad implements fixed clamdscan/clamscan adapters via execFile without a shell, bounded time/output, official-database and limit alerts for standalone clamscan, stable evidence, quarantine, and clean retry."
+      - "Atomic hard-link/no-replace publication prevents pre-existing and concurrently created managed destinations from being overwritten."
+      - "Focused artifact/library/inventory/vector suites passed 43/43; canonical global Node summary passed 479/479 with zero skips or failures."
+      - "Typecheck and build passed; inventory remained 17 total / 4 verified / 4 missing_source / 8 acquisition_pending / 1 acquired / 0 ingested."
+      - "Nine schemas, nine examples, and one OpenAPI document validated; domain evaluation passed 6/6; ten changed Markdown files had zero missing local links."
+      - "The real DMP import dry-run remained noop, artifactSafety null, mutated false, with zero sections and chunks; no artifact bytes or inventory state were changed."
+    limitations:
+      - "Neither clamdscan nor clamscan is installed in the current runtime or production image; real inspection is unavailable and fails closed."
+      - "The acquired DMP has no clean malware verdict and remains acquired only; raw PDF ingestion still expects pre-generated JSONL."
+      - "Authenticated library/API, durable object storage, jobs/retries/locks/audit, extraction isolation, and tenant-scoped vector writes remain open."
+    pr: null
+    ci: passed_local_with_runtime_limitation
   - id: WS04-RET-001
     workstream: WS-04
     title: "Measure retrieval quality and citation fidelity"
@@ -394,7 +436,8 @@ tasks:
       - "Any unsupported response artifact fails explicitly without a false capability claim."
     evidence:
       - "Commit deef177 implements the provider, migration 004, scoped public-only retrieval, current-contract replay validation, audit/rate controls, product-boundary refusal, and production legacy-route closure."
-      - "Focused API/security suites passed 35/35; global tests passed 539/539; contracts, inventory, domain evaluation, typecheck, build, Pages verification, and npm production audit passed."
+      - "Focused API/security suites passed 35/35; the canonical Node summary at deef177 passed 457/457 in a clean detached worktree; contracts, inventory, domain evaluation, typecheck, build, Pages verification, and npm production audit passed."
+      - "The previously recorded 539 figure counted reporter markers rather than Node tests and is corrected by the clean-worktree 457/457 summary."
       - "Clean PostgreSQL 16.14/pgvector 0.8.5 migrations and non-owner RLS assertions passed; image-contained HTTP smoke returned 200/200/409/403/400/401/500/200 plus a non-CORS legacy 404."
     limitations:
       - "Only ProcedureWorkflow is available; EvidenceBundle and ProcedureAssessment return 503 capability_unavailable."

@@ -1,6 +1,6 @@
 # Context7 evidence register
 
-Last updated: 2026-07-19T04:56:52Z
+Last updated: 2026-07-19T05:54:37Z
 
 Context7 is the required documentation source for implementation decisions involving APIs, frameworks, SDKs, authentication, PostgreSQL, pgvector, cloud services, Terraform, testing, observability, and security configuration. It is not an authority for legal or municipal claims.
 
@@ -141,6 +141,36 @@ Context7 is the required documentation source for implementation decisions invol
 | limitations | The test container is local and disposable. Production PostgreSQL/pgvector versioning, HA, backups, monitoring, tuning, query plans, upgrade strategy, and image provenance policy remain unresolved. |
 | task_id | WS07-ID-001 |
 
+### Node.js scanner process boundary
+
+| field | value |
+|---|---|
+| library | Node.js |
+| library_id | /nodejs/node |
+| installed_version | runtime v26.5.0; Context7 documentation through v25 |
+| query | child_process execFile timeout maxBuffer AbortSignal no shell for an untrusted-document malware scanner adapter |
+| retrieved_at | 2026-07-19T05:54:37Z |
+| documentation_summary | Node documents execFile as direct executable invocation without a shell by default. Its options include timeout and maxBuffer controls; callback failures expose process exit/error state rather than requiring shell parsing. |
+| implementation_decision | Invoke only fixed clamdscan or clamscan executables through execFile with shell false, a 120-second default timeout, a 64-KiB output ceiling, and fixed application-owned arguments. Treat missing executables, timeouts, output-limit failures, and unexpected exits as scanner errors that fail closed. |
+| source_links | https://nodejs.org/api/child_process.html#child_processexecfilefile-args-options-callback ; https://github.com/nodejs/node/blob/main/doc/api/child_process.md |
+| limitations | Context7 stops at Node v25 while the runtime is v26.5.0. The code uses long-standing execFile options and executable tests, but any v26-specific semantic change still requires matching primary documentation. This process boundary does not provide sandboxing or scanner isolation. |
+| task_id | WS03-ARTIFACT-SAFETY-001 |
+
+### ClamAV artifact-scanning boundary
+
+| field | value |
+|---|---|
+| library | ClamAV |
+| library_id | /cisco-talos/clamav |
+| installed_version | none in the current host runtime or production image; adapter targets reviewed clamdscan or clamscan deployments |
+| query | clamscan and clamdscan scanning, exit behavior, file-type magic, encrypted documents, official databases, and scanner size-limit handling |
+| retrieved_at | 2026-07-19T05:54:37Z |
+| documentation_summary | ClamAV documents clamscan for standalone scans and clamdscan as the client for a running daemon. Its scanning guidance warns that configured size limits affect what is inspected, and its file-type recognition uses byte magic rather than trusting extensions alone. |
+| implementation_decision | Require extension, declared MIME, and bounded structural-byte agreement before ClamAV. For standalone clamscan, use official databases and enable archive/PDF, encrypted-document, and exceeds-limit alerts. For clamdscan, require operator-reviewed daemon database and limit policy. Map only a successful clean exit to clean evidence; infection and every infrastructure/error state fail closed. |
+| source_links | https://docs.clamav.net/manual/Usage/Scanning.html ; https://docs.clamav.net/manual/Development/libclamav.html ; https://docs.clamav.net/manual/Signatures/FileTypeMagic.html |
+| limitations | No ClamAV binary, daemon, signature database, freshness monitor, or production scanner capacity test exists in the current runtime. Therefore the real DMP has no malware verdict and remains acquired only; injected scanner fixtures prove adapter behavior, not real-engine cleanliness. |
+| task_id | WS03-ARTIFACT-SAFETY-001 |
+
 ## Enforcement policy
 
 For every task in a Context7-required category:
@@ -157,7 +187,7 @@ For every task in a Context7-required category:
 
 | task_id | category | library or service | installed version evidence | required query | status | blocker |
 |---|---|---|---|---|---|---|
-| WS03-ING-001 | PostgreSQL ingestion and idempotency | pg | lockfile pins pg 8.22.0 | Transaction, retry, idempotency, and error handling guidance for the installed node-postgres version | pending | Provider idempotency is implemented, but ingestion-specific query/evidence is not yet recorded |
+| WS03-ING-001 | PostgreSQL ingestion and idempotency | pg | lockfile pins pg 8.22.0 | Transaction, retry, idempotency, and error handling guidance for the installed node-postgres version | pending | Local artifact safety evidence is complete under WS03-ARTIFACT-SAFETY-001; tenant-scoped database ingestion guidance and implementation remain pending |
 | WS04-RET-001 | PostgreSQL and pgvector retrieval | PostgreSQL and pgvector | disposable gate: PostgreSQL 16.14 and pgvector 0.8.5 | Vector index, distance operator, filtering, and query-plan guidance for the selected production versions | in_progress | Local versions are evidence only; production versions and query plans remain unselected |
 | WS07-ID-001 | authentication and tenancy | /nodejs/node and /websites/postgresql_current | Node v26.5.0 observed; disposable runtime PostgreSQL 16.14 | Apply retrieved crypto/RLS evidence and verify the selected auth/session architecture | completed_with_limitations | Procedure-query v1 passes local DB/HTTP isolation; production topology and Node v26 doc parity remain pending |
 | WS08-CONTRACT-FOUNDATION-001 | API contract foundation | /oai/openapi-specification/3.1.1, /websites/json-schema_understanding-json-schema, and /ajv-validator/ajv/v8.17.1 | OpenAPI 3.1.1; ajv 8.20.0; ajv-formats 3.0.1 | Apply bearer/components/strict-object guidance with Ajv2020 strict, allErrors, and addSchema | completed_with_version_limitation | Executable registry/provider validation passes; Context7 Ajv docs remain v8.17.1 rather than 8.20.0 |
