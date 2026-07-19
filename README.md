@@ -169,7 +169,13 @@ Apply migrations in order:
 ```bash
 psql "$DATABASE_URL" -f db/migrations/001_initial_rag_schema.sql
 psql "$DATABASE_URL" -f db/migrations/002_procedure_feedback.sql
+psql "$DATABASE_URL" -f db/migrations/003_identity_tenancy_rbac.sql
 ```
+
+If the standalone `rag.embedding_vectors` store is required, apply
+`migrations/011-production-vector-store.sql` before migration `003`; migration
+`003` conditionally adds its tenant boundary. Do not apply that legacy vector
+migration after `003`.
 
 Initial seeds:
 
@@ -177,6 +183,10 @@ Initial seeds:
 psql "$DATABASE_URL" -f db/seeds/001_core_documents.sql
 psql "$DATABASE_URL" -f db/seeds/002_document_versions.sql
 ```
+
+The seeds set the explicit legacy/bootstrap tenant transaction-locally so they
+continue to fail closed under forced RLS. That tenant is only a migration bridge;
+review and reassign seeded ownership before onboarding another tenant.
 
 ## Environment
 

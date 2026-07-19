@@ -160,9 +160,34 @@ describe("identity and tenant RLS migration", () => {
     assert.match(migration, /CREATE INDEX audit_events_tenant_idx ON audit\.events \(tenant_id,/);
   });
 
+  it("replaces deterministic global uniqueness with tenant-scoped identities", () => {
+    assert.match(migration, /DROP CONSTRAINT municipalities_slug_key/);
+    assert.match(
+      migration,
+      /municipalities_tenant_slug_key UNIQUE \(tenant_id, slug\)/
+    );
+    assert.match(
+      migration,
+      /DROP CONSTRAINT document_versions_content_sha256_key/
+    );
+    assert.match(
+      migration,
+      /document_versions_tenant_content_sha256_key[\s\S]*?UNIQUE \(tenant_id, content_sha256\)/
+    );
+    assert.match(
+      migration,
+      /document_versions_tenant_document_version_key[\s\S]*?UNIQUE \(tenant_id, document_id, version_label\)/
+    );
+  });
+
   it("conditionally hardens the standalone vector table without weakening policy", () => {
     assert.match(migration, /to_regclass\('rag\.embedding_vectors'\) IS NOT NULL/);
     assert.match(migration, /ALTER TABLE rag\.embedding_vectors ALTER COLUMN tenant_id SET NOT NULL/);
+    assert.match(migration, /ALTER TABLE rag\.embedding_vectors DROP CONSTRAINT embedding_vectors_pkey/);
+    assert.match(
+      migration,
+      /ALTER TABLE rag\.embedding_vectors ADD CONSTRAINT embedding_vectors_pkey PRIMARY KEY \(tenant_id, chunk_id\)/
+    );
     assert.match(migration, /ALTER TABLE rag\.embedding_vectors FORCE ROW LEVEL SECURITY/);
     assert.match(
       migration,

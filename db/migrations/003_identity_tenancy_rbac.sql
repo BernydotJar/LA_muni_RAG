@@ -197,6 +197,10 @@ ALTER TABLE rag.municipalities
   FOREIGN KEY (tenant_id) REFERENCES identity.tenants(id) ON DELETE RESTRICT;
 ALTER TABLE rag.municipalities
   ADD CONSTRAINT municipalities_id_tenant_key UNIQUE (id, tenant_id);
+-- Human-readable slugs must not create a cross-tenant uniqueness oracle.
+ALTER TABLE rag.municipalities DROP CONSTRAINT municipalities_slug_key;
+ALTER TABLE rag.municipalities
+  ADD CONSTRAINT municipalities_tenant_slug_key UNIQUE (tenant_id, slug);
 
 ALTER TABLE rag.documents ADD COLUMN tenant_id UUID;
 UPDATE rag.documents
@@ -225,6 +229,19 @@ ALTER TABLE rag.document_versions
   FOREIGN KEY (tenant_id) REFERENCES identity.tenants(id) ON DELETE RESTRICT;
 ALTER TABLE rag.document_versions
   ADD CONSTRAINT document_versions_id_tenant_key UNIQUE (id, tenant_id);
+-- Version labels and content hashes are tenant-owned identities. Keeping their
+-- legacy global constraints would both reject legitimate shared public bytes
+-- and disclose cross-tenant existence through unique-violation behavior.
+ALTER TABLE rag.document_versions
+  DROP CONSTRAINT document_versions_document_id_version_label_key;
+ALTER TABLE rag.document_versions
+  DROP CONSTRAINT document_versions_content_sha256_key;
+ALTER TABLE rag.document_versions
+  ADD CONSTRAINT document_versions_tenant_document_version_key
+  UNIQUE (tenant_id, document_id, version_label);
+ALTER TABLE rag.document_versions
+  ADD CONSTRAINT document_versions_tenant_content_sha256_key
+  UNIQUE (tenant_id, content_sha256);
 ALTER TABLE rag.document_versions
   ADD CONSTRAINT document_versions_document_tenant_fk
   FOREIGN KEY (document_id, tenant_id)
@@ -455,6 +472,8 @@ BEGIN
     EXECUTE 'UPDATE rag.embedding_vectors SET tenant_id = ''00000000-0000-4000-8000-000000000001''::uuid WHERE tenant_id IS NULL';
     EXECUTE 'ALTER TABLE rag.embedding_vectors ALTER COLUMN tenant_id SET NOT NULL';
     EXECUTE 'ALTER TABLE rag.embedding_vectors ADD CONSTRAINT embedding_vectors_tenant_fk FOREIGN KEY (tenant_id) REFERENCES identity.tenants(id) ON DELETE RESTRICT';
+    EXECUTE 'ALTER TABLE rag.embedding_vectors DROP CONSTRAINT embedding_vectors_pkey';
+    EXECUTE 'ALTER TABLE rag.embedding_vectors ADD CONSTRAINT embedding_vectors_pkey PRIMARY KEY (tenant_id, chunk_id)';
     EXECUTE 'CREATE INDEX embedding_vectors_tenant_idx ON rag.embedding_vectors (tenant_id, embedding_dimension)';
     EXECUTE 'ALTER TABLE rag.embedding_vectors ENABLE ROW LEVEL SECURITY';
     EXECUTE 'ALTER TABLE rag.embedding_vectors FORCE ROW LEVEL SECURITY';

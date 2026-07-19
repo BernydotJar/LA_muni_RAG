@@ -27,6 +27,12 @@ agent, feedback, and audit tables. Composite foreign keys keep child records in
 the same tenant as their parent. Tenant-leading indexes support policy-filtered
 access.
 
+Deterministic or user-selected identities are tenant-scoped as well. Municipality
+slugs, document-version labels, content hashes, and standalone vector chunk IDs
+no longer use a global uniqueness boundary. This permits two tenants to own the
+same public source bytes and prevents unique-constraint behavior from becoming
+a cross-tenant metadata oracle.
+
 ### Legacy bootstrap tenant
 
 Existing rows are assigned explicitly to:
