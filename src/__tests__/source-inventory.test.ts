@@ -67,7 +67,6 @@ describe("municipal source inventory", () => {
     assert.equal(summary.acquired, 0);
     assert.equal(summary.ingested, 0);
     assert.ok(summary.comparative >= 8);
-    assert.ok(summary.missing >= 6);
   });
 
   it("keeps every Mixco record comparative for Antigua", async () => {

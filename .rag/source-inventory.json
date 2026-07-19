@@ -208,10 +208,10 @@
     {
       "sourceId": "antigua-pdm-ot",
       "documentKey": "antigua-pdm-ot",
-      "documentVersion": "unknown",
+      "documentVersion": "official-municipal-pdf-2026-06-22",
       "title": "PDM-OT de La Antigua Guatemala",
       "category": "planning",
-      "status": "missing_source",
+      "status": "verified",
       "targetJurisdiction": "Municipio de La Antigua Guatemala, Sacatepéquez, Guatemala",
       "sourceJurisdiction": "Municipio de La Antigua Guatemala, Sacatepéquez, Guatemala",
       "municipality": "antigua guatemala",
@@ -219,9 +219,18 @@
       "authorityLevel": "primary",
       "officialSource": true,
       "officialForTargetJurisdiction": true,
-      "limitations": ["Documento o regla pendiente de localizar y validar."],
-      "provenanceNotes": ["No se registró URL porque no fue confirmada una fuente oficial precisa en esta verificación."],
-      "tags": ["antigua", "pdm-ot", "missing"]
+      "publicUrl": "https://muniantigua.gob.gt/assets/backend/info/MODULO_1_PDMOT.pdf",
+      "verifiedAt": "2026-06-22",
+      "limitations": [
+        "La evidencia disponible corresponde al Módulo 1 del PDM-OT; no demuestra por sí sola completitud, vigencia ni ausencia de reformas o módulos adicionales.",
+        "El PDF, su huella y los artefactos de extracción legacy existen sólo como evidencia local ignorada por Git; deben importarse y reconciliarse mediante Feature 054 antes de afirmar estado acquired o ingested."
+      ],
+      "provenanceNotes": [
+        "La URL municipal oficial y el SHA-256 están registrados en docs/core-document-download-log.md, actualizado el 2026-06-22.",
+        "db/seeds/002_document_versions.sql registra la misma versión, ruta, URL, huella, fecha de descarga y tamaño de archivo.",
+        "La identidad del PDF local se verificó sobre bytes crudos, pero data/raw/ está excluido del repositorio y no existe una importación controlada de Feature 054; no se trasladó evidencia legacy a acquisition, extraction o indexing."
+      ],
+      "tags": ["antigua", "pdm-ot", "verified", "feature-054-reconciliation-pending"]
     },
     {
       "sourceId": "antigua-poa",
