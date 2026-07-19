@@ -1,5 +1,5 @@
 schema_version: 1
-updated_at: "2026-07-19T02:48:59Z"
+updated_at: "2026-07-19T03:22:43Z"
 runtime:
   type: yaml_fallback
   farmtable_available: false
@@ -197,9 +197,19 @@ tasks:
   - id: WS07-FOUNDATION-001
     workstream: WS-07
     title: "Build the identity, tenancy, and RBAC foundation"
-    status: in_progress
+    status: completed_with_limitations
     owner: /root/api_security_audit
-    files: []
+    files:
+      - db/migrations/003_identity_tenancy_rbac.sql
+      - db/seeds/001_core_documents.sql
+      - db/seeds/002_document_versions.sql
+      - src/security/
+      - docs/security/tenancy.md
+      - docs/security/rbac.md
+      - docs/postgres-setup.md
+      - src/__tests__/identity-tenancy-rbac.test.ts
+      - src/__tests__/tenant-rls-migration.test.ts
+      - src/__tests__/tenant-aware-seeds.test.ts
     depends_on:
       - BOUND-001
       - PRG-CTX7-001
@@ -207,14 +217,19 @@ tasks:
     acceptance:
       - "Foundation follows timing-safe secret handling and PostgreSQL RLS default-deny/FORCE evidence."
     evidence:
-      - program/context7-evidence.md
+      - "Commits c24f003 and e15050d implement hashed Bearer lookup, ten roles, transaction-local tenant context, FORCE RLS, scoped uniqueness, tenant-aware seeds, and safe database setup guidance."
+      - "Identity/RBAC focal tests passed 22/22; tenant migration/bootstrap focal tests passed 14/14; typecheck passed."
+      - "Context7 Node crypto and PostgreSQL RLS evidence is recorded in program/context7-evidence.md."
+    limitations:
+      - "HTTP enforcement is a separate active slice; legacy endpoints are not protected by this foundation."
+      - "A real PostgreSQL isolation test with a non-owner runtime role is still unproven."
     pr: null
-    ci: in_progress
+    ci: passed_static
   - id: WS07-ID-001
     workstream: WS-07
     title: "Audit authentication, tenancy, RBAC, denial audit, and metadata isolation"
-    status: pending
-    owner: unassigned
+    status: in_progress
+    owner: /root/api_security_audit
     files: []
     depends_on:
       - BOUND-001
@@ -223,9 +238,11 @@ tasks:
     blockers: []
     acceptance:
       - "Minimum roles are enforced and cross-tenant access is denied, audited, and leak-free."
-    evidence: []
+    evidence:
+      - "WS07-FOUNDATION-001 completed with static proof."
+      - "POST /api/v1/procedure-queries security/provider slice is active and not yet integrated."
     pr: null
-    ci: not_started
+    ci: in_progress
   - id: WS03-ING-001
     workstream: WS-03
     title: "Harden authenticated ingestion, idempotency, corrupt input, and retry"
@@ -293,9 +310,14 @@ tasks:
   - id: WS08-CONTRACT-FOUNDATION-001
     workstream: WS-08
     title: "Build the OpenAPI 3.1.1 and strict Ajv contract foundation"
-    status: in_progress
+    status: completed
     owner: /root/baseline_gap_audit
-    files: []
+    files:
+      - contracts/schemas/v1/
+      - contracts/examples/v1/
+      - contracts/openapi/v1/openapi.json
+      - src/cli/validateIntegrationContracts.ts
+      - src/__tests__/integration-contracts-v1.test.ts
     depends_on:
       - BOUND-001
       - PRG-CTX7-001
@@ -306,9 +328,35 @@ tasks:
       - "Ajv v8.17.1 documentation compatibility with selected ajv 8.20.0 is verified."
     evidence:
       - "Context7 /ajv-validator/ajv/v8.17.1 query: Ajv2020 strict allErrors addSchema."
-      - "Implementation selected ajv 8.20.0 and ajv-formats 3.0.1."
+      - "Commit 2449064 pins ajv 8.20.0 and ajv-formats 3.0.1."
+      - "Nine draft 2020-12 schemas, nine valid examples, and one OpenAPI 3.1.1 contract validate with zero issues."
+      - "Twelve focal contract tests cover closed objects, identity/error safety, Mixco, AI draft, product boundaries, event discrimination, and OpenAPI controls."
     limitations:
-      - "Compatibility between Context7 docs v8.17.1 and selected package v8.20.0 remains to be verified."
+      - "Context7 documentation is v8.17.1; compatibility with selected v8.20.0 is evidenced by executable strict validation, not version-matched documentation."
+      - "Cross-field equality and provider/consumer interoperability require runtime contract tests."
+    pr: null
+    ci: passed
+  - id: WS08-PROCEDURE-QUERY-001
+    workstream: WS-08
+    title: "Implement a secure tenant-scoped procedure-query provider slice"
+    status: in_progress
+    owner: /root/api_security_audit
+    files:
+      - src/api/v1/
+      - src/server.ts
+      - src/http.ts
+      - src/search.ts
+      - db/migrations/004_procedure_query_api.sql
+      - docs/api/procedure-queries-v1.md
+    depends_on:
+      - WS07-FOUNDATION-001
+      - WS08-CONTRACT-FOUNDATION-001
+    blockers: []
+    acceptance:
+      - "Bearer/RBAC/tenant controls, scoped retrieval, validation, structured errors, idempotency, audit, rate limits, and boundary refusal pass adversarial tests."
+      - "Any unsupported response artifact fails explicitly without a false capability claim."
+    evidence:
+      - "Implementation assigned with exclusive file ownership; integration is not yet claimed."
     pr: null
     ci: in_progress
   - id: WS08-INT-001
@@ -372,6 +420,29 @@ tasks:
     evidence: []
     pr: null
     ci: not_started
+  - id: WS10-OPS-FOUNDATION-001
+    workstream: WS-10
+    title: "Build CI, non-root container, threat/privacy review, and operational runbook foundation"
+    status: in_progress
+    owner: /root/operations_foundation
+    files:
+      - .github/workflows/ci.yml
+      - Dockerfile
+      - .dockerignore
+      - docs/security/threat-model.md
+      - docs/security/privacy-review.md
+      - docs/operations/
+      - src/__tests__/operations-readiness-foundation.test.ts
+    depends_on:
+      - PRG-CTX7-001
+    blockers: []
+    acceptance:
+      - "Backend CI and container invariants are executable and deployment remains human-gated."
+      - "Runbooks and reviews distinguish implemented controls from unproven drills and platform decisions."
+    evidence:
+      - "Implementation active; no deployment authorized or attempted."
+    pr: null
+    ci: in_progress
   - id: WS11-QA-001
     workstream: WS-11
     title: "Run required evals, tests, docs checks, and global regression"

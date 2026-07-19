@@ -1,5 +1,5 @@
 schema_version: 1
-generated_at: "2026-07-19T02:48:59Z"
+generated_at: "2026-07-19T03:22:43Z"
 program:
   id: LA-MUNI-RAG-PROD
   objective: "Make LA Muni RAG production-ready within its evidence, procedure, workflow, case-tracking, and integration domain."
@@ -277,14 +277,31 @@ tasks:
   - id: WS07-FOUNDATION-001
     workstream: WS-07
     title: "Build the identity, tenancy, and RBAC foundation"
-    status: in_progress
+    status: completed_with_limitations
     owner: /root/api_security_audit
     depends_on:
       - BOUND-001
       - PRG-CTX7-001
+    outputs:
+      - db/migrations/003_identity_tenancy_rbac.sql
+      - src/security/
+      - docs/security/tenancy.md
+      - docs/security/rbac.md
+    result:
+      commits:
+        - c24f003
+        - e15050d
+      roles: 10
+      identity_rbac_tests: "22/22 passed"
+      tenant_bootstrap_tests: "14/14 passed"
+      typecheck: passed
+      runtime_http_enforcement: pending
+      real_database_isolation: unproven
   - id: WS07-ID-001
     workstream: WS-07
     title: "Audit and design authentication, tenant isolation, RBAC, and denial auditing"
+    status: in_progress
+    owner: /root/api_security_audit
     depends_on:
       - BOUND-001
       - PRG-CTX7-001
@@ -329,7 +346,7 @@ tasks:
   - id: WS08-CONTRACT-FOUNDATION-001
     workstream: WS-08
     title: "Build the OpenAPI 3.1.1 and strict Ajv contract foundation"
-    status: in_progress
+    status: completed
     owner: /root/baseline_gap_audit
     depends_on:
       - BOUND-001
@@ -340,7 +357,27 @@ tasks:
     context7_evidence:
       library_id: /ajv-validator/ajv/v8.17.1
       query: "Ajv2020 strict allErrors addSchema"
-      limitation: "Documentation v8.17.1 must be compatibility-checked against implementation v8.20.0."
+      limitation: "Documentation v8.17.1 differs from implementation v8.20.0; executable strict validation provides compatibility evidence."
+    result:
+      commit: 2449064
+      json_schemas: 9
+      valid_examples: 9
+      openapi_documents: 1
+      focal_tests: "12/12 passed"
+      contract_validation: passed
+      typecheck: passed
+  - id: WS08-PROCEDURE-QUERY-001
+    workstream: WS-08
+    title: "Implement a secure tenant-scoped procedure-query provider slice"
+    status: in_progress
+    owner: /root/api_security_audit
+    depends_on:
+      - WS07-FOUNDATION-001
+      - WS08-CONTRACT-FOUNDATION-001
+    outputs:
+      - src/api/v1/
+      - db/migrations/004_procedure_query_api.sql
+      - docs/api/procedure-queries-v1.md
   - id: WS09-UX-001
     workstream: WS-09
     title: "Audit and harden authenticated, accessible evidence and workflow UX"
@@ -361,6 +398,19 @@ tasks:
       - WS08-INT-001
       - WS09-UX-001
       - PRG-CTX7-001
+  - id: WS10-OPS-FOUNDATION-001
+    workstream: WS-10
+    title: "Build CI, non-root container, threat/privacy review, and operational runbook foundation"
+    status: in_progress
+    owner: /root/operations_foundation
+    depends_on:
+      - PRG-CTX7-001
+    outputs:
+      - .github/workflows/ci.yml
+      - Dockerfile
+      - docs/security/threat-model.md
+      - docs/security/privacy-review.md
+      - docs/operations/
   - id: WS11-QA-001
     workstream: WS-11
     title: "Build the required hard-eval, contract, security, accessibility, and global regression matrix"
