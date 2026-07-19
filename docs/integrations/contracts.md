@@ -1,11 +1,12 @@
 # Contratos entre productos
 
-Estado: catálogo y políticas definidos; artifacts machine-readable pendientes  
+Estado: foundation machine-readable v1 implementada; providers/consumers runtime pendientes
+
 Fecha de corte: 2026-07-18
 
 ## Alcance
 
-Este documento define la semántica común para integrar LA Muni RAG, OS Electoral y Content Agency sin compartir storage. No es un OpenAPI ni JSON Schema y no demuestra interoperabilidad. La entrega futura debe materializar estas reglas en artifacts versionados y contract tests.
+Este documento define la semántica común para integrar LA Muni RAG, OS Electoral y Content Agency sin compartir storage. Los artifacts canónicos están en [`contracts/schemas/v1`](../../contracts/schemas/v1), [`contracts/openapi/v1/openapi.json`](../../contracts/openapi/v1/openapi.json) y [`contracts/examples/v1`](../../contracts/examples/v1). Su validación demuestra conformidad de schema, no interoperabilidad runtime ni compatibilidad de un consumer vecino.
 
 La decisión de arquitectura está en [ADR-0001](../adr/0001-product-boundaries-and-data-ownership.md) y el ownership en [Ownership de datos](../architecture/data-ownership.md).
 
@@ -13,57 +14,65 @@ La decisión de arquitectura está en [ADR-0001](../adr/0001-product-boundaries-
 
 | Payload | Product owner | Producer -> consumer | Propósito | Estado al corte |
 |---|---|---|---|---|
-| `ProcedureQueryRequest` | OS Electoral | OS Electoral -> LA Muni RAG | Solicitar inteligencia procedimental con jurisdiction y case context. | Documentado; schema/API/adapter ausentes. |
-| `EvidenceGapRequest` | OS Electoral (request); LA Muni RAG (investigación resultante) | OS Electoral -> LA Muni RAG | Solicitar localización/validación de evidencia faltante. | Documentado; schema/API/adapter ausentes. |
-| `EvidenceBundle` | LA Muni RAG | LA Muni RAG -> OS Electoral | Entregar claims/citations/contradictions/gaps de una consulta. | Documentado; el tipo MVP actual no es equivalente. |
-| `ProcedureWorkflow` | LA Muni RAG | LA Muni RAG -> OS Electoral | Entregar workflow y versión con autoridad/aprobación explícitas. | Documentado; lifecycle/versioning persistente ausente. |
-| `ProcedureAssessment` | LA Muni RAG | LA Muni RAG -> OS Electoral | Evaluar case context contra requisitos de una procedure version. | Documentado; implementación ausente. |
+| `ProcedureQueryRequest` | OS Electoral | OS Electoral -> LA Muni RAG | Solicitar inteligencia procedimental con jurisdiction y case context. | Schema, ejemplo y OpenAPI v1 implementados; provider/consumer pendientes. |
+| `EvidenceGapRequest` | OS Electoral (request); LA Muni RAG (investigación resultante) | OS Electoral -> LA Muni RAG | Solicitar localización/validación de evidencia faltante. | Schema y ejemplo implementados; endpoint/adapter pendientes. |
+| `EvidenceBundle` | LA Muni RAG | LA Muni RAG -> OS Electoral | Entregar claims/citations/contradictions/gaps de una consulta. | Schema y ejemplo implementados; mapper/provider pendientes. |
+| `ProcedureWorkflow` | LA Muni RAG | LA Muni RAG -> OS Electoral | Entregar workflow y versión con autoridad/aprobación explícitas. | Schema y ejemplo implementados; lifecycle/versioning persistente ausente. |
+| `ProcedureAssessment` | LA Muni RAG | LA Muni RAG -> OS Electoral | Evaluar case context contra requisitos de una procedure version. | Schema y ejemplo implementados; assessment service ausente. |
 | `ApprovedCommunicationBrief` | OS Electoral | OS Electoral -> Content Agency | Entregar decisión comunicacional aprobada y evidence refs. | Boundary documentado aquí; no pertenece al runtime de LA Muni RAG. |
-| `ClaimPack` | LA Muni RAG | LA Muni RAG -> Content Agency | Entregar claims citables y límites de uso. | Documentado; implementación ausente. |
+| `ClaimPack` | LA Muni RAG | LA Muni RAG -> Content Agency | Entregar claims citables y límites de uso. | Schema y ejemplo implementados; provider/consumer pendientes. |
 | `ContentPackage` | Content Agency | Content Agency -> OS Electoral | Entregar artefactos/risk/Greenlight/publication/performance. | Boundary documentado aquí; no pertenece al runtime de LA Muni RAG. |
 
 Los campos de dominio de cada flujo están en [OS Electoral](./os-electoral.md) y [Content Agency](./content-agency.md).
 
-## Forma común objetivo
+## Forma común v1
 
 Cada payload debe ser un objeto cerrado (`additionalProperties: false`) y portar o estar envuelto por metadata equivalente a:
 
 ```json
 {
   "schema_version": "v1",
-  "message_id": "opaque-stable-id",
-  "message_type": "EvidenceBundle",
-  "producer": "la-muni-rag",
-  "tenant_id": "opaque-tenant-id",
+  "event_id": "00000000-0000-4000-8000-000000000000",
+  "event_version": "1.0.0",
+  "event_name": "procedure.query.completed",
+  "direction": "outbound",
   "occurred_at": "2026-07-18T00:00:00Z",
-  "correlation_id": "opaque-correlation-id",
-  "causation_id": "opaque-request-or-message-id",
-  "payload": {}
+  "tenant_id": "00000000-0000-4000-8000-000000000001",
+  "request_id": "00000000-0000-4000-8000-000000000002",
+  "actor_credential_id": "00000000-0000-4000-8000-000000000003",
+  "audit_id": "00000000-0000-4000-8000-000000000004",
+  "subject_id": "procedure-water-antigua",
+  "payload_type": "procedure_workflow",
+  "payload": {},
+  "provenance": {}
 }
 ```
 
-Este ejemplo es normativo en semántica, no un schema ya publicado. Los nombres definitivos, formatos/patterns y required sets deben fijarse en JSON Schema/OpenAPI y no pueden divergir entre transports.
+El schema `event-envelope.schema.json` es normativo. El fragmento omite deliberadamente el payload y provenance completos; los ejemplos válidos canónicos, no este fragmento abreviado, se usan para conformance.
 
 ### Campos comunes
 
 | Campo | Regla |
 |---|---|
 | `schema_version` | Major contract cerrado, inicialmente `v1`; no se negocia por heurística. |
-| `message_id` | ID opaco, único y estable para dedupe/audit. |
-| `message_type` | Enum cerrado que coincide con el payload validado. |
-| `producer` | Product/service owner; nunca se toma del cliente sin verificación. |
-| `tenant_id` | Scope obligatorio para datos protegidos; no es credencial. |
+| `event_id` | UUID único y estable para dedupe/audit del evento. |
+| `event_version` | SemVer de la forma del evento, separado del major `schema_version`. |
+| `event_name` | Nombre cerrado por pattern y semántica de dominio. |
+| `direction` | `inbound`, `outbound` o `internal`. |
+| `tenant_id` | UUID de scope obligatorio para datos protegidos; no es credencial. |
 | `occurred_at` | UTC RFC 3339/OpenAPI `date-time`. |
-| `correlation_id` | Relaciona la operación end-to-end sin incluir PII o secreto. |
-| `causation_id` | Request/message que causó el resultado, cuando exista. |
-| `payload` | Objeto validado por schema específico y owner explícito. |
+| `request_id` | Correlación end-to-end sin PII o secreto. |
+| `actor_credential_id` / `audit_id` | Referencias UUID; nunca incluyen el secreto Bearer. |
+| `subject_id` | ID opaco seguro del sujeto de dominio. |
+| `payload_type` / `payload` | Discriminador cerrado y objeto validado por su schema específico. |
+| `provenance` | Producer, actor de generación, tiempo y refs verificables. |
 
 ## JSON Schema y OpenAPI
 
 ### Estructura de versioning
 
 - Cada schema tiene `$id` estable con major version y title único.
-- `$schema` se fija a una versión soportada del estándar; el toolchain se decide e inspecciona antes de implementar.
+- `$schema` se fija a JSON Schema draft 2020-12 y Ajv valida en modo `strict`/`allErrors` con formats.
 - OpenAPI referencia los mismos componentes o genera artifacts verificados contra ellos; no se mantienen dos semánticas manuales divergentes.
 - La ruta pública usa `/api/v1/...`; `schema_version` sigue siendo obligatorio para detectar payloads fuera de contrato.
 - Schemas cierran enums, formatos y campos desconocidos.
@@ -121,21 +130,29 @@ Un cliente nunca puede completar un campo de provenance faltante inventándolo. 
 
 ## Errores
 
-El contrato objetivo usa un envelope seguro y versionado:
+El contrato v1 usa un error seguro y versionado:
 
 ```json
 {
   "schema_version": "v1",
+  "response_type": "api_error",
+  "tenant_id": null,
+  "request_id": "00000000-0000-4000-8000-000000000002",
+  "audit_id": "00000000-0000-4000-8000-000000000004",
+  "http_status": 401,
+  "retryable": false,
   "error": {
-    "code": "MACHINE_READABLE_CODE",
-    "message": "Resumen seguro para el operador",
-    "correlation_id": "opaque-correlation-id",
-    "details": {}
-  }
+    "code": "unauthorized",
+    "message": "Authentication required",
+    "details": []
+  },
+  "provenance": {}
 }
 ```
 
-Códigos mínimos por definir en OpenAPI:
+En `401`, tenant y credential son `null`; inventarlos sería un fallo de seguridad. En `403`, ambos son UUID ya autenticados y la respuesta se fija a `forbidden` / `Access denied` / `[]`, igual para permiso y tenant mismatch.
+
+Códigos y status están cerrados por schema/OpenAPI; todavía faltan provider tests para varios escenarios:
 
 - validation/unsupported schema;
 - authentication/authorization/tenant scope;
@@ -194,13 +211,14 @@ Cada test debe ejecutar los artifacts machine-readable canónicos, no una copia 
 
 Al corte:
 
-- no existen schemas compartidos, OpenAPI de integración, adapters ni contract tests en LA Muni RAG;
-- los endpoints actuales `/api/*` no implementan estas reglas comunes;
+- existen nueve schemas draft 2020-12, nueve ejemplos, un OpenAPI 3.1.1 contract-only y doce contract tests de shape/boundary;
+- `npm run contracts:validate` valida el registry completo con Ajv; la igualdad semántica entre headers/body y IDs duplicados queda para runtime;
+- los endpoints actuales `/api/*` todavía no implementan transversalmente estas reglas comunes;
 - `ProcedureEvidenceBundle` actual no cumple `EvidenceBundle`;
 - el control plane v1 observado de Content Agency es su API interna de misiones/runs/approvals, no este contrato;
 - los contratos read-only observados de OS Electoral son internos a sus bounded contexts, no este contrato.
 
-Por tanto, “documentado” no equivale a “operativo”. El estado sólo puede cambiar con artifacts, tests y evidencia runtime.
+Por tanto, “schema válido” no equivale a “integración operativa”. Faltan provider/consumer adapters, persistencia/idempotencia, aislamiento runtime y evidencia de los productos vecinos.
 
 ## Documentos relacionados
 

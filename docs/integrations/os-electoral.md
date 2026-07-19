@@ -1,6 +1,7 @@
 # Integración con OS Electoral
 
-Estado: contrato de boundary definido; adapter/API/contract tests no implementados  
+Estado: schemas/OpenAPI v1 implementados; provider/consumer runtime pendientes
+
 Fecha de corte: 2026-07-18  
 Producer/consumer vecino: [`BernydotJar/OS-Electoral`](https://github.com/BernydotJar/OS-Electoral)
 
@@ -131,7 +132,7 @@ unknowns[]
 next_documental_action
 ```
 
-El assessment describe encaje documental contra una versión de procedimiento. No recomienda estrategia electoral, prioridad territorial, mensaje, compromiso o voto de aprobación. El contrato final debe añadir la referencia exacta a `procedure_version_id` y el provenance común definido en [Contratos entre productos](./contracts.md); esa ampliación aún debe materializarse en schema.
+El assessment describe encaje documental contra una versión de procedimiento. No recomienda estrategia electoral, prioridad territorial, mensaje, compromiso o voto de aprobación. El schema v1 incluye `procedure_id`, `workflow_version`, evidencia y el provenance común definido en [Contratos entre productos](./contracts.md). La persistencia de procedure/workflow versions y su lifecycle humano aún no está implementada.
 
 ## Reglas operativas
 
@@ -142,7 +143,7 @@ El assessment describe encaje documental contra una versión de procedimiento. N
 - Foreign campaign/community IDs se validan como opacos y se auditan, pero LA Muni RAG no los autoriza consultando DB de OS Electoral.
 - Errores de tenant o authorization no revelan existencia, título, authority o metadata del recurso.
 
-Este control es requisito objetivo; el runtime actual de LA Muni RAG no lo implementa todavía.
+La foundation de identity, diez roles y RLS tenant-scoped existe, pero todavía no protege transversalmente los endpoints legacy ni demuestra aislamiento en una base production-shaped.
 
 ### Idempotencia y correlation
 
@@ -184,7 +185,8 @@ Un fallo de red se reintenta con la misma key. OS Electoral no debe fabricar una
 
 ## Estado real al corte
 
-- LA Muni RAG no tiene OpenAPI/JSON Schemas para estos artefactos, endpoint `/api/v1`, integration auth, adapter ni contract tests.
+- LA Muni RAG tiene schemas draft 2020-12, ejemplos, OpenAPI 3.1.1 contract-only y contract tests de shape/boundary para estos artefactos.
+- Aún no hay consumer de OS Electoral ni evidencia end-to-end; el provider `/api/v1` y sus controles runtime permanecen fuera del último commit verificado de este documento.
 - El tipo interno actual `ProcedureEvidenceBundle` contiene sólo query/mode/evidence y no equivale a `EvidenceBundle`.
 - El `ProcedureWorkflow` MVP carece de `workflow_version`, lifecycle y aprobación persistente.
 - OS Electoral documenta bounded contexts de campaign/governance y contratos internos read-only; no se observó cliente de LA Muni RAG.

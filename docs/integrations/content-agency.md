@@ -1,6 +1,7 @@
 # Integración con AI-Native Content Agency SaaS
 
-Estado: contrato de boundary definido; ClaimPack/API/contract tests no implementados  
+Estado: ClaimPack schema v1 implementado; provider/consumer runtime pendientes
+
 Fecha de corte: 2026-07-18  
 Producto vecino: [`BernydotJar/AI-Native-Content-Agency-SaaS`](https://github.com/BernydotJar/AI-Native-Content-Agency-SaaS)
 
@@ -134,7 +135,7 @@ LA Muni RAG no recibe este paquete como system of record. Si se usa para audit c
 
 ## Estado real al corte
 
-- LA Muni RAG no implementa `ClaimPack`, schema/OpenAPI, endpoint, integration identity, adapter ni contract tests.
+- LA Muni RAG implementa el schema cerrado, ejemplo válido y contract tests de boundary para `ClaimPack`; no implementa todavía provider endpoint, adapter, expiry/supersession runtime ni consumer test vecino.
 - Content Agency, en la rama inspeccionada `feat/production-foundation-v1` y commit `20a6e31ccaa54f10327858bee33996c52242f4e3`, tiene API HTTP v1 local para missions/runs/approvals, persistence SQL e idempotency.
 - Esa identidad usa headers sólo en desarrollo; proveedores/publicación son sandbox y staging/producción no están implementados.
 - Su OpenAPI observado no contiene ClaimPack ni un cliente de LA Muni RAG. Además, la evidencia proviene de una feature branch, por lo que no se asume integrada a su `main`.
