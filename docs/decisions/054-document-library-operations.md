@@ -34,6 +34,9 @@ Repeating an identical import or ingestion returns `noop`. Reusing the same sour
 
 Feature 054 does not add another extractor or embedding implementation. It invokes the existing registry and vector indexer and records their verified outcomes.
 
+Feature 055 later replaced the registered raw-PDF JSONL adapter with a bounded
+raw-byte extractor while preserving these registry/indexing boundaries.
+
 ## D-054-08 — Domain metadata is indexable
 
 `DomainDocumentMetadata` now declares an index signature because the vector indexing boundary accepts generic metadata records while the domain still requires its typed fields.
@@ -77,3 +80,13 @@ path.
 
 Reason: path re-reads introduce time-of-check/time-of-use substitution between
 safety acceptance, extraction, and embedding.
+
+## D-054-14 — Scan a private snapshot
+
+Inspection writes the verified in-memory bytes to a private mode-0600 temporary
+snapshot, verifies it, scans that path, verifies it again, and then rechecks the
+managed path. `clamdscan` is invoked in stream mode.
+
+Reason: scanning the mutable managed path with only pre/post hashes permits an
+ABA substitution in which the scanner sees different bytes but the final hash
+returns to the expected value.

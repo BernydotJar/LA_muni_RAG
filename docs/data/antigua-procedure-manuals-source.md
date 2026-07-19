@@ -89,7 +89,8 @@ Before extraction or ingestion:
 1. run the document-library `inspect` gate with a real, current ClamAV runtime and
    require clean evidence bound to the acquired path, hash, size, and MIME type;
 2. reconcile the internal title, version, approval, and effective-date evidence;
-3. record a positive section count through the future isolated raw-PDF extractor;
+3. run the current bounded raw-PDF extractor only through accepted
+   document-library evidence and record a positive section count;
 4. run indexing with configured production-shaped embedding and tenant-scoped
    vector dependencies;
 5. reconcile a matching corpus-manifest document version and hash.

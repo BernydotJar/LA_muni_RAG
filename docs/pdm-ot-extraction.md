@@ -2,7 +2,14 @@
 
 Last updated: 2026-06-22
 Owner: Product Engineering
-Status: Draft
+Status: Legacy offline extraction record; not an approved controlled-ingestion path
+
+> This page records the historical PyPDF/JSONL workflow. The registered raw-PDF
+> extractor now uses the Feature 055 bounded PDF.js child process only after
+> current clean document-library evidence. Do not use this script or its generated
+> SQL to bypass malware, tenant, job, vector-write, documentary-review, or human
+> approval gates. The controlled DMP remains acquired only and has not been parsed
+> or indexed by Feature 055.
 
 ## Objective
 
@@ -91,4 +98,3 @@ search before more sophisticated section detection.
 
 Later, planning documents can be re-chunked by headings, maps, tables, and
 policy sections. Legal documents should be chunked by article, not by page.
-

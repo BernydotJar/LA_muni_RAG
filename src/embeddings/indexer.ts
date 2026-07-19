@@ -8,12 +8,35 @@ import type {
   IndexDocumentResult,
   PlanChunksInput,
 } from "./types.js";
+import { EmbeddingPipelineError } from "./types.js";
 import { failureFromError, validateChunks, validateVectorCount, validateVectorDimensions } from "./validation.js";
+
+export const MAX_CHUNKS_PER_DOCUMENT = 5_000;
+export const MAX_EMBEDDING_BATCH_SIZE = 64;
 
 export interface IndexDocumentOptions {
   chunkPlannerOptions?: ChunkPlannerOptions;
+  maxChunksPerDocument?: number;
+  embeddingBatchSize?: number;
   now?: () => Date;
 }
+
+const boundedOption = (
+  value: number | undefined,
+  fallback: number,
+  maximum: number,
+  name: string
+): number => {
+  const resolved = value ?? fallback;
+  if (!Number.isSafeInteger(resolved) || resolved < 1 || resolved > maximum) {
+    throw new EmbeddingPipelineError(
+      "embedding_resource_policy_invalid",
+      `${name} must be an integer between 1 and ${maximum}.`,
+      false
+    );
+  }
+  return resolved;
+};
 
 export const indexDocument = async (
   document: NormalizedDocument,
@@ -34,10 +57,34 @@ export const indexDocument = async (
   };
 
   try {
+    const maxChunks = boundedOption(
+      options.maxChunksPerDocument,
+      MAX_CHUNKS_PER_DOCUMENT,
+      MAX_CHUNKS_PER_DOCUMENT,
+      "maxChunksPerDocument"
+    );
+    const embeddingBatchSize = boundedOption(
+      options.embeddingBatchSize,
+      MAX_EMBEDDING_BATCH_SIZE,
+      MAX_EMBEDDING_BATCH_SIZE,
+      "embeddingBatchSize"
+    );
+    if (chunks.length > maxChunks) {
+      throw new EmbeddingPipelineError(
+        "embedding_chunk_limit_exceeded",
+        `Document planned ${chunks.length} chunks; the limit is ${maxChunks}.`,
+        false
+      );
+    }
     validateChunks(chunks);
-    const vectors = await provider.embed(chunks.map((chunk) => chunk.text));
-    validateVectorCount(vectors, chunks.length);
-    validateVectorDimensions(vectors, provider.dimensions);
+    const vectors: number[][] = [];
+    for (let start = 0; start < chunks.length; start += embeddingBatchSize) {
+      const batch = chunks.slice(start, start + embeddingBatchSize);
+      const batchVectors = await provider.embed(batch.map((chunk) => chunk.text));
+      validateVectorCount(batchVectors, batch.length);
+      validateVectorDimensions(batchVectors, provider.dimensions);
+      vectors.push(...batchVectors);
+    }
     const indexedAt = (options.now ?? (() => new Date()))().toISOString();
 
     for (const [index, chunk] of chunks.entries()) {

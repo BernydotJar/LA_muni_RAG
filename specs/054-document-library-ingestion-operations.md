@@ -72,7 +72,9 @@ Behavior:
 - reject missing, stale, future-dated, quarantined, path/hash/size-mismatched, or symlinked evidence before extraction;
 - recalculate raw-byte SHA-256 and compare with inventory;
 - map inventory authority metadata to a valid domain-pack authority id;
-- pass the exact post-scan/hash-verified buffer through the existing extraction and vector indexing boundary without rereading the path;
+- pass the exact post-scan/hash-verified buffer through extraction once, then pass
+  the normalized document through vector indexing without rereading or reparsing
+  the path;
 - write the operational corpus manifest only after a successful index result;
 - mark the inventory record `ingested` only after extraction/index evidence and manifest reconciliation are valid;
 - repeat of an already reconciled source/version/hash is an idempotent no-op;

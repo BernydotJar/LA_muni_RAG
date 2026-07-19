@@ -63,7 +63,7 @@ describe("pdf adapter", () => {
     assert.equal(doc.sections[0]?.citationLabel, "PDM-OT Antigua Guatemala, pagina 12");
   });
 
-  it("routes PDF JSONL through the extractor registry", async () => {
+  it("keeps legacy PDF JSONL explicit and rejects it from the raw-PDF registry", async () => {
     assert.ok(registeredFormats().includes("pdf"));
 
     const jsonl = JSON.stringify({
@@ -76,14 +76,12 @@ describe("pdf adapter", () => {
       content_sha256: "def456",
     });
 
-    const doc = await extractByPath("pdm_ot.pdf", {
-      title: "PDM-OT Antigua Guatemala",
-      content: jsonl,
-    });
-
-    assert.equal(doc.sourceFormat, "pdf");
-    assert.equal(doc.metadata.sourceFlow, "scripts/extract_pdf_sections.py");
-    assert.equal(doc.sections[0]?.pageStart, 14);
-    assert.equal(doc.sections[0]?.citationLabel, "PDM-OT Antigua Guatemala, pagina 14");
+    await assert.rejects(
+      async () => extractByPath("pdm_ot.pdf", {
+        title: "PDM-OT Antigua Guatemala",
+        content: jsonl,
+      }),
+      (error: unknown) => (error as { code?: string }).code === "pdf_binary_input_required"
+    );
   });
 });

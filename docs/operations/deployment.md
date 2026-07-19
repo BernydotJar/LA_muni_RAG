@@ -68,7 +68,11 @@ Dependency scanning, secret scanning, SBOM generation, image signing, and proven
 
 ## Container artifact
 
-The repository `Dockerfile` uses the explicit `node:24.12.0-bookworm-slim` line for build, production dependency, and runtime stages. It uses `npm ci`, installs only production dependencies in the final stage, runs as the official image's non-root `node` user, exposes port 3000, and checks `/health`.
+The repository `Dockerfile` uses the explicit `node:24.12.0-bookworm-slim` line
+for build, production dependency, and runtime stages. It uses `npm ci`, installs
+only production dependencies in the final stage, copies the bounded PDF worker,
+runs as the official image's non-root `node` user, exposes port 3000, and checks
+`/health`.
 
 An approved build system should build from the reviewed commit, scan the image, push it to the selected registry, and record the registry-provided digest. A representative local preflight is:
 

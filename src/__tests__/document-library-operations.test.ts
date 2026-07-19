@@ -5,6 +5,8 @@ import { tmpdir } from "node:os";
 import { isAbsolute, join, relative } from "node:path";
 import { describe, it } from "node:test";
 import { InMemoryCorpusManifestStore } from "../ingestion/corpusManifest.js";
+import type { NormalizedDocument } from "../ingestion/types.js";
+import { IngestionError } from "../ingestion/types.js";
 import type { VectorIndexingInput, VectorIndexingResult } from "../ingestion/vectorIndexing.js";
 import type { MalwareScanner } from "../sources/artifactSafety.js";
 import {
@@ -83,6 +85,27 @@ const indexedResult = (): VectorIndexingResult => ({
   recordsWritten: 3,
   failures: [],
 });
+
+const extractedDocument = (sectionCount = 2): NormalizedDocument => {
+  const sections = Array.from({ length: sectionCount }, (_, index) => ({
+    heading: `Pagina ${index + 1}`,
+    sectionType: "page" as const,
+    sectionPath: [`Pagina ${index + 1}`],
+    text: `Contenido ${index + 1}.`,
+    pageStart: index + 1,
+    pageEnd: index + 1,
+    articleNumber: null,
+    citationLabel: `PDM-OT Antigua Guatemala, pagina ${index + 1}`,
+    metadata: { ordinal: index + 1 },
+  }));
+  return {
+    title: "PDM-OT Antigua Guatemala",
+    sourceFormat: "pdf",
+    text: sections.map((section) => section.text).join("\n\n"),
+    sections,
+    metadata: { extractor: "pdfjs_isolated_process_v1" },
+  };
+};
 
 const setup = async () => {
   const root = await mkdtemp(join(tmpdir(), "la-muni-library-"));
@@ -363,9 +386,9 @@ describe("document library artifact safety operations", () => {
       dryRun: true,
     }, {
       now: fixedNow,
-      extractSectionCount: async () => {
+      extractDocument: async () => {
         extractCalls += 1;
-        return 1;
+        return extractedDocument(1);
       },
     });
     assert.equal(blocked.status, "failed");
@@ -411,6 +434,46 @@ describe("document library artifact safety operations", () => {
     assert.equal(saved.records[0]?.status, "failed");
     assert.deepEqual(await readFile(result.artifactPath!), tampered);
   });
+
+  it("scans a private immutable snapshot even if the managed path undergoes an ABA mutation", async () => {
+    const paths = await setup();
+    const imported = await importArtifact(paths);
+    assert.ok(imported.artifactPath);
+    let snapshotPath = "";
+    const scanner: MalwareScanner = {
+      scan: async (path) => {
+        snapshotPath = path;
+        assert.notEqual(path, imported.artifactPath);
+        assert.deepEqual(await readFile(path), PDF_BYTES);
+        await writeFile(imported.artifactPath!, Buffer.from("%PDF-1.4\nchanged\n%%EOF\n", "ascii"));
+        await writeFile(imported.artifactPath!, PDF_BYTES);
+        return cleanScanner.scan(path);
+      },
+    };
+
+    const result = await inspectArtifact(paths, scanner);
+
+    assert.equal(result.status, "accepted");
+    assert.ok(snapshotPath.includes("la-muni-artifact-scan-"));
+    await assert.rejects(() => readFile(snapshotPath), /ENOENT/);
+    assert.deepEqual(await readFile(imported.artifactPath!), PDF_BYTES);
+  });
+
+  it("fails closed if a scanner changes its private snapshot", async () => {
+    const paths = await setup();
+    await importArtifact(paths);
+    const scanner: MalwareScanner = {
+      scan: async (path) => {
+        await writeFile(path, Buffer.from("changed snapshot", "utf8"));
+        return cleanScanner.scan(path);
+      },
+    };
+
+    const result = await inspectArtifact(paths, scanner);
+
+    assert.equal(result.status, "quarantined");
+    assert.ok(result.failures.some((failure) => failure.code === "artifact_scan_snapshot_changed"));
+  });
 });
 
 describe("document library ingestion operations", () => {
@@ -427,7 +490,7 @@ describe("document library ingestion operations", () => {
       dryRun: true,
     }, {
       now: fixedNow,
-      extractSectionCount: async () => 2,
+      extractDocument: async () => extractedDocument(2),
       indexVectorSource: async () => {
         indexCalls += 1;
         return indexedResult();
@@ -446,13 +509,20 @@ describe("document library ingestion operations", () => {
     await acquireAndAccept(paths);
     const store = new InMemoryCorpusManifestStore();
     let indexCalls = 0;
+    let extractCalls = 0;
     let indexedContent: string | Buffer | undefined;
+    let indexedDocument: NormalizedDocument | undefined;
+    const parsedDocument = extractedDocument(2);
     const dependencies = {
       now: fixedNow,
-      extractSectionCount: async () => 2,
+      extractDocument: async () => {
+        extractCalls += 1;
+        return parsedDocument;
+      },
       indexVectorSource: async (input: VectorIndexingInput) => {
         indexCalls += 1;
         indexedContent = input.content;
+        indexedDocument = input.document;
         return indexedResult();
       },
       corpusManifestStore: store,
@@ -474,7 +544,11 @@ describe("document library ingestion operations", () => {
     assert.equal(first.sectionCount, 2);
     assert.equal(first.chunkCount, 3);
     assert.equal(indexCalls, 1);
+    assert.equal(extractCalls, 1);
     assert.deepEqual(indexedContent, PDF_BYTES);
+    assert.strictEqual(indexedDocument?.sections, parsedDocument.sections);
+    assert.equal(indexedDocument?.metadata.domainPackId, "municipal-antigua");
+    assert.equal(indexedDocument?.metadata.sourceAuthorityClass, "pdm_ot");
     const operational = await store.get("antigua-pdm-ot");
     assert.equal(operational?.contentSha256, first.contentSha256);
     assert.equal(operational?.documentMetadata?.sourceAuthorityClass, "pdm_ot");
@@ -488,6 +562,7 @@ describe("document library ingestion operations", () => {
 
     assert.equal(second.status, "noop");
     assert.equal(indexCalls, 1);
+    assert.equal(extractCalls, 1);
   });
 
   it("does not mark inventory ingested when indexing fails", async () => {
@@ -502,7 +577,7 @@ describe("document library ingestion operations", () => {
       dryRun: false,
     }, {
       now: fixedNow,
-      extractSectionCount: async () => 1,
+      extractDocument: async () => extractedDocument(1),
       indexVectorSource: async () => ({
         ...indexedResult(),
         status: "failed",
@@ -519,6 +594,28 @@ describe("document library ingestion operations", () => {
     assert.equal(await readFile(paths.inventoryPath, "utf-8"), before);
   });
 
+  it("preserves stable extractor failure codes without mutating inventory", async () => {
+    const paths = await setup();
+    await acquireAndAccept(paths);
+    const before = await readFile(paths.inventoryPath, "utf-8");
+
+    const result = await ingestLibraryArtifact({
+      inventoryPath: paths.inventoryPath,
+      corpusManifestPath: paths.corpusManifestPath,
+      sourceId: "antigua-pdm-ot",
+      dryRun: true,
+    }, {
+      now: fixedNow,
+      extractDocument: async () => {
+        throw new IngestionError("pdf_timeout", "pdf", "PDF extraction exceeded the wall-clock limit.");
+      },
+    });
+
+    assert.equal(result.status, "failed");
+    assert.equal(result.failures[0]?.code, "pdf_timeout");
+    assert.equal(await readFile(paths.inventoryPath, "utf-8"), before);
+  });
+
   it("refuses stale scanner evidence before invoking the extractor", async () => {
     const paths = await setup();
     await acquireAndAccept(paths);
@@ -531,9 +628,9 @@ describe("document library ingestion operations", () => {
       dryRun: true,
     }, {
       now: () => new Date("2026-07-20T12:00:00.001Z"),
-      extractSectionCount: async () => {
+      extractDocument: async () => {
         extractCalls += 1;
-        return 1;
+        return extractedDocument(1);
       },
     });
 

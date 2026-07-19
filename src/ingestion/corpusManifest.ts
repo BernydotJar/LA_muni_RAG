@@ -1,3 +1,4 @@
+import { createHash } from "node:crypto";
 import { mkdir, readFile, rename, writeFile } from "node:fs/promises";
 import { dirname } from "node:path";
 import { sha256Hex } from "../embeddings/chunkIdentity.js";
@@ -171,7 +172,7 @@ export interface CorpusBackfillDocumentInput {
   documentKey: string;
   documentVersion: string;
   sourceFormat?: SourceFormat;
-  content: string;
+  content: string | Buffer;
   embeddingProvider: string;
   embeddingModel: string;
   embeddingDimension: number;
@@ -210,7 +211,10 @@ export interface ReindexDecisionInput {
   contentSha256: string;
 }
 
-export const computeCorpusContentSha256 = (content: string): string => sha256Hex(content);
+export const computeCorpusContentSha256 = (content: string | Buffer): string =>
+  typeof content === "string"
+    ? sha256Hex(content)
+    : createHash("sha256").update(content).digest("hex");
 
 const stableJson = (value: unknown): string => {
   if (value === undefined) return "undefined";
@@ -290,6 +294,7 @@ const skippedRecordFromExisting = (
 
 const vectorInputFromDocument = (document: CorpusBackfillDocumentInput): VectorIndexingInput => ({
   inputPath: document.inputPath,
+  content: document.content,
   title: document.title,
   documentKey: document.documentKey,
   documentVersion: document.documentVersion,

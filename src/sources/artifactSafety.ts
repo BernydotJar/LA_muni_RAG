@@ -337,6 +337,7 @@ export class ClamAvCommandScanner implements MalwareScanner {
         ]
       : [
           ...(this.options.configFile ? [`--config-file=${this.options.configFile}`] : []),
+          "--stream",
           "--infected",
           "--no-summary",
           filePath,

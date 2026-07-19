@@ -1,8 +1,8 @@
 # Ingestion runbook
 
-Status: pre-production local workflow; authenticated library, durable jobs,
-production scanner/storage, extraction isolation, and tenant-safe indexing remain
-incomplete.
+Status: pre-production local workflow; bounded raw-PDF process isolation exists,
+while an authenticated library, durable jobs, production scanner/storage,
+approved OS sandbox, and tenant-safe indexing remain incomplete.
 
 ## Preconditions
 
@@ -17,6 +17,8 @@ Before any operation, confirm:
   hard-link moves can fail closed;
 - an approved ClamAV runtime and current definitions are available for applied
   inspection;
+- raw-PDF byte/page/text/time/memory/concurrency policy is reviewed for the
+  selected runtime and remains within compiled ceilings;
 - embedding/vector configuration is test or production-shaped for any later
   indexing attempt.
 
@@ -71,9 +73,11 @@ audit trail, or substitute for restricted storage IAM.
 | acquisition drift | `artifact_acquisition_hash_mismatch`, `artifact_acquisition_size_mismatch` | recover expected bytes or register a new version |
 | scanner unavailable | `malware_scanner_unconfigured`, `malware_scanner_unavailable`, `malware_scanner_timeout` | restore scanner health; retry unchanged quarantine bytes |
 | detection | `malware_detected` | preserve quarantine; start Security/incident review |
-| race/tamper | `artifact_changed_during_import`, `artifact_changed_during_scan` | isolate operator/storage path and investigate |
+| race/tamper | `artifact_changed_during_import`, `artifact_changed_during_scan`, `artifact_scan_snapshot_changed` | isolate operator/storage path and investigate |
 | storage topology | `artifact_roots_cross_device` | place managed roots on one approved filesystem; do not copy around the gate |
 | freshness | `artifact_safety_evidence_stale` | rescan before extraction |
+| PDF structure/content | `pdf_malformed`, `pdf_encrypted`, `pdf_no_extractable_text` | preserve evidence; recover an approved source or use a separately reviewed OCR flow |
+| PDF resource bound | `pdf_timeout`, `pdf_*_limit_exceeded`, `pdf_worker_*` | stop the source/version and investigate parser/runtime capacity or hostile input |
 
 ## Current DMP pilot state
 
@@ -89,7 +93,8 @@ check passes.
 - source URL acquisition policy and egress controls;
 - durable object storage with restricted quarantine IAM and retention;
 - monitored scanner service, definition freshness alert, and scan-capacity test;
-- generic isolated PDF extraction with pinned dependency and resource limits;
+- approved OS/container isolation and native-memory/load testing for the bounded
+  PDF parser process;
 - transactional tenant-scoped vector writes, job retries/locks, and append-only
   audit;
 - staging corrupt-file, decompression-bomb, concurrency, restore, and incident

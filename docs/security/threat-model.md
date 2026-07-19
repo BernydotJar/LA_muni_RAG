@@ -14,10 +14,14 @@ The repository now contains backend CI, a container definition, and one authenti
 The local document-library path now validates size, extension, MIME and byte
 signature; exposes a fail-closed fixed-argument ClamAV adapter; quarantines
 applied failures; and refuses extraction without matching current clean evidence.
-Forty-three focused tests cover this slice, and the acquired DMP passed a non-mutating
-structural/hash import check. No ClamAV executable/service is installed in the
+ClamAV receives a private verified snapshot rather than the mutable managed path.
+Accepted raw PDF bytes are parsed once in a bounded child process with strict
+byte/time/page/text/channel/concurrency policy, then the normalized document is
+passed to indexing without a path reread or second parse. Adversarial tests cover
+ABA path mutation, snapshot tamper, corrupt/text-free PDFs, timeouts, output
+floods, and protocol corruption. No ClamAV executable/service is installed in the
 current runtime, so the DMP has not received a malware verdict and remains only
-`acquired`.
+`acquired`; Feature 055 did not parse or index it.
 
 Known exposed or potentially exposed surfaces remain:
 
@@ -60,7 +64,7 @@ Each arrow crosses a trust boundary. CORS, private network placement, source URL
 | Browser -> Pages | URL parameters, DOM data, configured API URL | scheme/origin validation, no secrets, safe links | static hardening tests exist; Pages remains public |
 | Client -> API | headers, JSON body, query, tenant/resource IDs | TLS, body bounds, authentication, RBAC, tenant match, rate limits, safe errors | implemented/tested for procedure-query v1; TLS/ingress and the remaining API catalog are absent; legacy is production-disabled |
 | API -> PostgreSQL | query parameters and principal/tenant context | parameterized SQL, transaction-local tenant context, RLS, least-privilege DB role | disposable real-DB/HTTP gate passes for procedure-query v1; production provisioning, statement limits, HA and monitoring are absent |
-| Ingestion -> corpus | bytes, MIME type, filenames, URLs, extracted text | size/type/hash validation, malware policy, provenance, quarantine, human promotion | local signature/MIME gate, fail-closed ClamAV adapter, bounded quarantine and pre-extraction enforcement are tested; real scanner service, authenticated library, durable storage and human promotion are absent |
+| Ingestion -> corpus | bytes, MIME type, filenames, URLs, extracted text | size/type/hash validation, malware policy, provenance, parser isolation, resource bounds, quarantine, human promotion | local signature/MIME gate, private-snapshot ClamAV adapter, bounded raw-PDF child, quarantine and pre-extraction enforcement are tested; real scanner service, approved OS sandbox, authenticated library, durable jobs/storage, tenant vector writes and human promotion are absent |
 | API -> logs/audit | identifiers, outcomes, errors | allowlisted fields, redaction, immutable access control, retention | v1 route persists allowlisted tenant audit and bounded tenantless auth aggregates; centralized append-only storage/access review remain absent |
 | Product -> external product | contract envelope and claims | schema validation, authenticated producer, tenant scope, idempotency, provenance | local ProcedureWorkflow provider is tested; consumer identity/interoperability and remaining adapters are absent |
 
@@ -105,6 +109,7 @@ LA Muni RAG is not an owner or storage system for internal campaign strategy, vo
 | Information disclosure | Secrets, queries, case context, or PII leak in errors/logs | safe error envelopes and allowlisted audit metadata | legacy error/log review and centralized redaction verification are still required |
 | Information disclosure | Public Pages artifact includes confidential source or token | static-only build, ignored environment files, secret-free client | artifact inspection must remain a release gate; Pages can only contain public demonstration data |
 | Denial of service | Large body, expensive hybrid query, retry storm, or scraper | body/limit validation, per-principal rate limit, server timeouts, idempotency | v1 behavior is tested; load thresholds, DB statement timeout, ingress quotas and global enforcement are not demonstrated |
+| Denial of service | Pathological PDF expands text, stalls parsing, floods channels, or triggers provider fan-out | child-process byte/time/page/text/heap/channel/concurrency bounds; chunk and embedding-batch caps | V8 heap is not total RSS/native memory; distributed tenant quotas, queue limits and load thresholds are absent |
 | Denial of service | Database pool exhaustion or slow vector query | bounded pool/query timeout, health/metrics, capacity alert | limits, SLOs, load test, autoscaling, and alerts are not selected or validated |
 | Elevation of privilege | App/database owner bypasses RLS | least-privilege runtime DB role, `FORCE ROW LEVEL SECURITY`, no `BYPASSRLS` | disposable non-owner role proof passes; production provisioning/continuous attestation remain absent |
 | Elevation of privilege | Shared feedback token enables broad read/write | migrate to per-principal permission checks | shared token remains a transitional control and must not be treated as production RBAC |
@@ -130,9 +135,10 @@ An operator imports a file from an unofficial URL, or an official URL later serv
 The local workflow now validates extension/MIME/signature on import, requires a
 current path/hash/size-bound clean ClamAV verdict before extraction, and moves
 applied failures to bounded quarantine without rewriting expected identity. This
-is executable local control logic, not proof of a deployed scanner, fresh
-definitions, object-storage isolation, decompression-bomb resilience, or human
-document approval.
+workflow scans a private copy of the verified buffer, so an ABA mutation of the
+managed path cannot substitute the scanner input. This is executable local
+control logic, not proof of a deployed scanner, fresh definitions, object-storage
+isolation, decompression-bomb resilience, or human document approval.
 
 ### TM-05: replay or idempotency collision
 
@@ -146,6 +152,13 @@ A caller asks LA Muni RAG to generate campaign strategy, voter segmentation, pol
 
 Automated clients send large bodies, high limits, repeated hybrid searches, or embedding requests. Enforce byte limits before parsing, per-tenant/principal rate limits before expensive work, database statement timeouts, queue limits, and infrastructure caps. Load thresholds and alerting are pending platform selection.
 
+Raw PDF extraction now rejects inputs above compiled ceilings, processes one page
+at a time in a killable child, validates bounded output, caps one process's parser
+concurrency, rejects more than 5,000 chunks, and embeds at most 64 texts per
+request. This limits the local path but does not provide distributed tenant
+quotas, durable backpressure, total RSS/native-memory enforcement, or an OS
+network/seccomp sandbox.
+
 ### TM-08: backup or support-channel disclosure
 
 A valid operator copies a production dump, query body, token, or confidential document into a ticket or local machine. Backups must be encrypted, access-logged, tenant-protected, and restored only into an approved isolated environment. Support artifacts must use sanitized IDs and approved secure transfer.
@@ -154,7 +167,9 @@ A valid operator copies a production dump, query body, token, or confidential do
 
 1. Select and document the runtime platform, ingress, secret manager, registry, database roles, log sink, and on-call ownership.
 2. Preserve the production legacy-route gate and extend the proven v1 authentication, RBAC, tenant matching, default-deny RLS, and non-leaking errors to every new endpoint.
-3. Run contract, isolation, migration, dependency, container, secret, and adversarial-input checks in an approved pipeline.
+3. Run contract, tenant isolation, migration, dependency, container, secret,
+   scanner, parser-abuse, native-memory, and adversarial-input checks in an
+   approved pipeline.
 4. Pin the released image by digest and retain build provenance; review base/dependency findings with a named owner.
 5. Define log/audit fields and retention, then verify that queries, case bodies, credentials, and cross-product payloads are not recorded.
 6. Set body/query/time/rate/concurrency limits and validate them with load and abuse testing.
@@ -166,6 +181,14 @@ A valid operator copies a production dump, query body, token, or confidential do
 On 2026-07-18, Context7 CLI resolved `/nodejs/node` (Node.js primary repository documentation) for `HTTP server SIGTERM graceful shutdown process signals production`. The returned primary references were Node's `process` and `http` documentation, which document signal listeners and `server.close()` behavior. This supports the shutdown and health expectations in the deployment runbook; it does not prove the service has been exercised under a production orchestrator.
 
 Docker and PostgreSQL queries and their primary references are recorded in the deployment and backup/restore runbooks respectively.
+
+On 2026-07-19, Context7 CLI resolved the primary Mozilla PDF.js repository as
+`/mozilla/pdf.js` for byte-based `getDocument`, text extraction, cleanup, and
+resource options. Exact registry metadata separately established
+`pdfjs-dist@6.1.200`, Apache-2.0, and its supported Node engine range. The
+implementation uses the locked release API but records that Context7's repository
+documentation tracks a different revision; this evidence supports the design and
+does not prove hostile-file sandboxing or production runtime safety.
 
 ## Review triggers
 

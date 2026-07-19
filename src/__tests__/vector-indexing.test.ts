@@ -1,6 +1,7 @@
 import { describe, it } from "node:test";
 import assert from "node:assert/strict";
 import type { NormalizedDocument } from "../ingestion/types.js";
+import { IngestionError } from "../ingestion/types.js";
 import type { EmbeddingProvider, EmbeddingRepository, EmbeddingVectorRecord } from "../embeddings/types.js";
 import { formatVectorIndexingResult, indexVectorSource } from "../ingestion/vectorIndexing.js";
 
@@ -107,6 +108,98 @@ describe("vector indexing orchestration", () => {
 
     assert.equal(result.status, "indexed");
     assert.strictEqual(extractedContent, verified);
+  });
+
+  it("rejects raw PDF entry points before provider setup, file reads, or extraction", async () => {
+    let readCalls = 0;
+    let extractCalls = 0;
+    const result = await indexVectorSource({
+      inputPath: "fixtures/manual.pdf",
+      content: Buffer.from("%PDF-1.4\n%%EOF\n", "ascii"),
+    }, {
+      env: {},
+      readFile: async () => {
+        readCalls += 1;
+        return Buffer.alloc(0);
+      },
+      extractByPath: async () => {
+        extractCalls += 1;
+        return { ...normalizedDocument, sourceFormat: "pdf" };
+      },
+    });
+
+    assert.equal(result.status, "failed");
+    assert.equal(result.failures[0]?.code, "pdf_requires_document_library");
+    assert.equal(result.failures[0]?.retryable, false);
+    assert.equal(readCalls, 0);
+    assert.equal(extractCalls, 0);
+  });
+
+  it("indexes a pre-normalized PDF without reopening or reparsing its path", async () => {
+    const repository = createRepository();
+    const document: NormalizedDocument = {
+      ...normalizedDocument,
+      sourceFormat: "pdf",
+      metadata: { sourcePath: "fixtures/manual.pdf", extractor: "pdfjs_isolated_process_v1" },
+    };
+    const result = await indexVectorSource({
+      inputPath: "fixtures/manual.pdf",
+      document,
+      documentKey: "manual",
+      documentVersion: "v1",
+      metadata: {
+        domainPackId: "municipal-antigua",
+        sourceAuthorityClass: "municipal_manual",
+      },
+    }, {
+      ...baseDependencies(),
+      embeddingRepository: repository,
+      readFile: async () => {
+        throw new Error("pre-normalized input must not be reread");
+      },
+      extractByPath: async () => {
+        throw new Error("pre-normalized input must not be reparsed");
+      },
+    });
+
+    assert.equal(result.status, "indexed");
+    assert.equal(result.sourceFormat, "pdf");
+    assert.equal(result.chunksPlanned, 1);
+    const indexedMetadata = (await repository.list())[0]?.chunk.metadata.documentMetadata as
+      | Record<string, unknown>
+      | undefined;
+    assert.equal(
+      indexedMetadata?.domainPackId,
+      "municipal-antigua"
+    );
+  });
+
+  it("rejects a normalized document whose format does not match its path", async () => {
+    const result = await indexVectorSource({
+      inputPath: "fixtures/manual.pdf",
+      document: normalizedDocument,
+    }, baseDependencies());
+
+    assert.equal(result.status, "failed");
+    assert.equal(result.failures[0]?.code, "document_source_format_mismatch");
+  });
+
+  it("preserves stable ingestion failure codes and retryability", async () => {
+    const result = await indexVectorSource({ inputPath: "fixtures/test.md" }, {
+      ...baseDependencies(),
+      extractByPath: async () => {
+        throw new IngestionError("extractor_bounded_failure", "markdown", "Bounded extraction failed.", {
+          retryable: false,
+        });
+      },
+    });
+
+    assert.equal(result.status, "failed");
+    assert.deepEqual(result.failures, [{
+      code: "extractor_bounded_failure",
+      message: "Bounded extraction failed.",
+      retryable: false,
+    }]);
   });
 
   it("preserves domain document metadata in planned vector chunks", async () => {

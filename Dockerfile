@@ -22,6 +22,7 @@ WORKDIR /app
 COPY --from=production-dependencies --chown=node:node /app/node_modules ./node_modules
 COPY --from=build --chown=node:node /app/dist ./dist
 COPY --chown=node:node package.json ./
+COPY --chown=node:node scripts/pdf-extraction-worker.mjs ./scripts/pdf-extraction-worker.mjs
 COPY --chown=node:node public ./public
 COPY --chown=node:node contracts/schemas/v1 ./contracts/schemas/v1
 COPY --chown=node:node contracts/openapi/v1 ./contracts/openapi/v1

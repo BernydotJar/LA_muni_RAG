@@ -17,11 +17,12 @@
 | Acquisition requires copied artifact and verified hash | Copy, reread and copied-hash verification before inventory write | Successful binary import test |
 | Import cannot overwrite a deterministic destination or copy swapped input bytes | validated buffer is written with `wx` to staging, verified, then renamed only when destination is absent | pre-existing destination remains byte-identical test |
 | Scanner execution must not use a shell or arbitrary argument string | fixed ClamAV modes/arguments through bounded `execFile` | command-runner and config rejection tests |
+| Scanner must inspect the verified bytes rather than a mutable path | private snapshot from verified buffer; pre/post snapshot hash; clamd stream mode | ABA managed-path and snapshot-tamper tests |
 | Missing/error/infected scanner result blocks extraction | `inspectLibraryArtifact` failure evidence plus quarantine move | missing-scanner, infected, and zero-extractor-call tests |
 | Quarantine retains expected identity and observed drift | bounded deterministic quarantine path plus separate expected/observed hash/size | tampered-byte quarantine test |
 | Clean retry restores unchanged transient failures | original bounded path is retained in failure evidence | missing-scanner then clean-retry test |
 | Ingestion requires matching current clean safety evidence | `hasCleanArtifactSafety` plus 24-hour default age gate | no-safety and stale-safety zero-extractor tests |
-| Extraction/indexing receives the exact verified buffer | optional `VectorIndexingInput.content`; document library supplies post-scan buffer | vector no-reread and document-library indexed-content tests |
+| Extraction/indexing receives the exact verified buffer/document | document library extracts the post-scan buffer once and supplies both bytes and normalized object | vector no-reread and document-library object-identity tests |
 | Ingestion requires positive extraction | Section count must be a positive integer | Dry-run and successful-ingestion tests |
 | Ingestion requires successful indexing | Indexed status, positive chunks and zero failures required | Failed-indexing test |
 | Inventory and operational manifest must reconcile | `reconcileSourceInventoryWithCorpusManifest` before inventory write | Successful ingestion and manifest assertions |
@@ -39,5 +40,5 @@
 - Inventory and operational manifest writes are separate file operations; reconciliation detects divergence but does not provide a distributed transaction.
 - Cross-process locking is not implemented; operator runs must be serialized until a later locking or compare-and-swap feature.
 - The repository has a ClamAV adapter but no installed/monitored scanner runtime or definition-freshness alert; real artifacts therefore remain unaccepted.
-- The raw-PDF registry adapter still expects pre-generated JSONL, so successful safety inspection does not yet provide isolated PDF extraction.
+- Feature 055 now provides bounded raw-PDF extraction, but it is not a complete OS sandbox and the real DMP remains uninspected and unparsed.
 - File quarantine is local and ignored, not durable object storage with restricted IAM, retention, backup, or incident-tested recovery.

@@ -1,7 +1,7 @@
 # LA Muni RAG
 
-Last updated: 2026-07-15  
-Status: Reusable domain-pack template foundation complete; template bootstrap CLI in review
+Last updated: 2026-07-19
+Status: Pre-production hardening in progress; controlled artifact and bounded raw-PDF foundations implemented
 
 LA Muni RAG is an evidence-first RAG and procedural workflow system configured by default for the Municipality of La Antigua Guatemala, Sacatepéquez. Its core supports validated domain packs so the same architecture can be reused for HR, finance, sales SOPs, and custom procedural assistants.
 
@@ -239,11 +239,15 @@ Reusable today:
 - deterministic domain-pack evaluation;
 - validated JSON workflow-template authoring foundation;
 - deterministic draft domain-pack bootstrap CLI.
+- controlled local artifact import/inspection/quarantine operations;
+- bounded page-cited raw-PDF extraction after accepted safety evidence.
 
 Still intentionally incomplete:
 
 - complete authenticated document-library/admin UI;
 - browser-based file upload and ingestion;
+- production ClamAV/runtime sandbox, durable ingestion jobs/storage, and
+  tenant-scoped vector writes;
 - automatic workflow-template publication;
 - visual workflow-template editor;
 - real customer HR, finance, or sales policy corpora;

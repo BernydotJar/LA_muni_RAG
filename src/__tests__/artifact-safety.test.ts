@@ -102,6 +102,7 @@ describe("ClamAV command scanner adapter", () => {
     assert.equal(result.signature, "Eicar-Signature");
     assert.equal(result.engineVersion, "1.4.3");
     assert.ok(result.definitionsVersion?.startsWith("27654/"));
+    assert.ok(calls[1]?.args.includes("--stream"));
     assert.deepEqual(calls[1]?.args.at(-1), "/tmp/manual with spaces.pdf");
   });
 

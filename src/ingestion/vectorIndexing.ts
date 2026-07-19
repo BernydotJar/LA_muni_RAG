@@ -1,7 +1,9 @@
 import { readFile } from "node:fs/promises";
 import { basename } from "node:path";
+import { detectFormat } from "./detectFormat.js";
 import { extractByPath } from "./registry.js";
 import type { ExtractorInput, NormalizedDocument, SourceFormat } from "./types.js";
+import { IngestionError } from "./types.js";
 import { indexDocument } from "../embeddings/indexer.js";
 import type {
   ChunkPlannerOptions,
@@ -24,11 +26,14 @@ export type VectorIndexingStatus = "indexed" | "partial" | "failed";
 export interface VectorIndexingInput {
   inputPath: string;
   content?: string | Buffer;
+  document?: NormalizedDocument;
   title?: string;
   documentKey?: string;
   documentVersion?: string;
   metadata?: Record<string, unknown>;
   chunkPlannerOptions?: ChunkPlannerOptions;
+  maxChunksPerDocument?: number;
+  embeddingBatchSize?: number;
 }
 
 export interface VectorIndexingResult {
@@ -192,6 +197,37 @@ export const indexVectorSource = async (
     return emptyResult(input, safeFailure("missing_input", "--input is required."), dependencies);
   }
 
+  let detectedFormat: SourceFormat;
+  try {
+    detectedFormat = detectFormat(input.inputPath);
+  } catch (error) {
+    return emptyResult(
+      input,
+      safeFailure("unsupported_input_format", error instanceof Error ? error.message : String(error)),
+      dependencies
+    );
+  }
+  if (detectedFormat === "pdf" && !input.document) {
+    return emptyResult(
+      input,
+      safeFailure(
+        "pdf_requires_document_library",
+        "Raw PDF indexing requires accepted document-library safety evidence and normalized extraction."
+      ),
+      dependencies
+    );
+  }
+  if (input.document && input.document.sourceFormat !== detectedFormat) {
+    return emptyResult(
+      input,
+      safeFailure(
+        "document_source_format_mismatch",
+        "Normalized document format does not match the input path."
+      ),
+      dependencies
+    );
+  }
+
   const provider = dependencies.embeddingProvider ?? createDefaultEmbeddingProvider(dependencies);
   if (!provider) {
     return emptyResult(
@@ -211,17 +247,29 @@ export const indexVectorSource = async (
   }
 
   try {
-    const content = input.content ?? await (dependencies.readFile ?? readFile)(input.inputPath);
-    const title = input.title ?? basename(input.inputPath);
-    const extract = dependencies.extractByPath ?? extractByPath;
-    const document = await extract(input.inputPath, {
-      title,
-      content,
-      metadata: {
-        ...(input.metadata ?? {}),
-        sourcePath: input.inputPath,
-      },
-    });
+    let document = input.document;
+    if (document) {
+      document = {
+        ...document,
+        metadata: {
+          ...document.metadata,
+          ...(input.metadata ?? {}),
+          sourcePath: input.inputPath,
+        },
+      };
+    } else {
+      const content = input.content ?? await (dependencies.readFile ?? readFile)(input.inputPath);
+      const title = input.title ?? basename(input.inputPath);
+      const extract = dependencies.extractByPath ?? extractByPath;
+      document = await extract(input.inputPath, {
+        title,
+        content,
+        metadata: {
+          ...(input.metadata ?? {}),
+          sourcePath: input.inputPath,
+        },
+      });
+    }
 
     const indexResult = await indexDocument(
       document,
@@ -233,19 +281,24 @@ export const indexVectorSource = async (
       repository,
       {
         chunkPlannerOptions: input.chunkPlannerOptions,
+        maxChunksPerDocument: input.maxChunksPerDocument,
+        embeddingBatchSize: input.embeddingBatchSize,
         now: dependencies.now,
       }
     );
 
     return toVectorIndexingResult(input, document, indexResult, dependencies);
   } catch (error) {
+    const failure = error instanceof IngestionError
+      ? safeFailure(error.code, error.message, error.retryable)
+      : safeFailure(
+          "vector_indexing_failed",
+          error instanceof Error ? error.message : String(error),
+          true
+        );
     return emptyResult(
       input,
-      safeFailure(
-        "vector_indexing_failed",
-        error instanceof Error ? error.message : String(error),
-        true
-      ),
+      failure,
       dependencies
     );
   }

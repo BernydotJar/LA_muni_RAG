@@ -1,7 +1,10 @@
 import { createHash } from "node:crypto";
-import { link, lstat, mkdir, readFile, realpath, rename, stat, unlink, writeFile } from "node:fs/promises";
-import { basename, dirname, extname, isAbsolute, relative, resolve, sep } from "node:path";
+import { chmod, link, lstat, mkdir, mkdtemp, readFile, realpath, rename, rm, stat, unlink, writeFile } from "node:fs/promises";
+import { tmpdir } from "node:os";
+import { dirname, extname, isAbsolute, join, relative, resolve, sep } from "node:path";
 import { extractByPath } from "../ingestion/registry.js";
+import type { NormalizedDocument } from "../ingestion/types.js";
+import { IngestionError } from "../ingestion/types.js";
 import {
   JsonFileCorpusManifestStore,
   type CorpusManifestRecord,
@@ -108,7 +111,7 @@ export interface DocumentLibraryDependencies {
   unlink?: typeof unlink;
   now?: () => Date;
   indexVectorSource?: (input: VectorIndexingInput) => Promise<VectorIndexingResult>;
-  extractSectionCount?: (path: string, title: string, content: Buffer) => Promise<number>;
+  extractDocument?: (path: string, title: string, content: Buffer) => Promise<NormalizedDocument>;
   corpusManifestStore?: CorpusManifestStore;
   runtimeMetadata?: DocumentLibraryRuntimeMetadata;
   malwareScanner?: MalwareScanner;
@@ -221,10 +224,12 @@ const resolveRuntimeMetadata = (dependencies: DocumentLibraryDependencies): Docu
   };
 };
 
-const defaultExtractSectionCount = async (path: string, title: string, content: Buffer): Promise<number> => {
-  const document = await extractByPath(path, { title, content, metadata: { sourcePath: path } });
-  return document.sections.length;
-};
+const defaultExtractDocument = async (
+  path: string,
+  title: string,
+  content: Buffer
+): Promise<NormalizedDocument> =>
+  extractByPath(path, { title, content, metadata: { sourcePath: path } });
 
 const sanitizeFailureMessage = (value: string): string => value
   .replace(/postgres(?:ql)?:\/\/\S+/gi, "[redacted]")
@@ -238,7 +243,9 @@ const failureResult = (
 ): DocumentLibraryOperationResult => emptyResult(operation, sourceId, [{
   code: error instanceof ArtifactSafetyError
     ? error.code
-    : `document_library_${operation}_failed`,
+    : error instanceof IngestionError
+      ? error.code
+      : `document_library_${operation}_failed`,
   message: sanitizeFailureMessage(error instanceof Error ? error.message : String(error)),
 }]);
 
@@ -552,6 +559,39 @@ const safetyFailures = (codes: string[]): DocumentLibraryFailure[] => codes.map(
 const resolveScanner = (dependencies: DocumentLibraryDependencies): MalwareScanner | undefined =>
   dependencies.malwareScanner ?? createClamAvScannerFromEnv(dependencies.env);
 
+const scanVerifiedSnapshot = async (
+  buffer: Buffer,
+  originalPath: string,
+  scanner: MalwareScanner
+): Promise<MalwareScanResult> => {
+  const directory = await mkdtemp(join(tmpdir(), "la-muni-artifact-scan-"));
+  try {
+    await chmod(directory, 0o700);
+    const extension = extname(originalPath).toLowerCase().replace(/[^a-z0-9.]/g, "");
+    const snapshotPath = join(directory, `artifact${extension}`);
+    await writeFile(snapshotPath, buffer, { flag: "wx", mode: 0o600 });
+    const expectedHash = sha256Bytes(buffer);
+    const before = await readFile(snapshotPath);
+    if (before.byteLength !== buffer.byteLength || sha256Bytes(before) !== expectedHash) {
+      throw new ArtifactSafetyError(
+        "artifact_scan_snapshot_mismatch",
+        "Private malware-scan snapshot does not match the verified artifact bytes."
+      );
+    }
+    const result = await scanner.scan(snapshotPath);
+    const after = await readFile(snapshotPath);
+    if (after.byteLength !== buffer.byteLength || sha256Bytes(after) !== expectedHash) {
+      throw new ArtifactSafetyError(
+        "artifact_scan_snapshot_changed",
+        "Private malware-scan snapshot changed during inspection."
+      );
+    }
+    return result;
+  } finally {
+    await rm(directory, { recursive: true, force: true });
+  }
+};
+
 const ensureDestinationAbsent = async (
   path: string,
   dependencies: DocumentLibraryDependencies
@@ -625,14 +665,15 @@ export const inspectLibraryArtifact = async (
       try {
         const scanner = resolveScanner(dependencies);
         scan = scanner
-          ? await scanner.scan(managed.resolvedPath)
+          ? await scanVerifiedSnapshot(buffer!, managed.resolvedPath, scanner)
           : {
               verdict: "error",
               engine: "not_configured",
               engineVersion: "not_available",
               failureCode: "malware_scanner_unconfigured",
             };
-      } catch {
+      } catch (error) {
+        if (error instanceof ArtifactSafetyError) failureCodes.push(error.code);
         scan = {
           verdict: "error",
           engine: "scanner_adapter",
@@ -921,9 +962,19 @@ export const ingestLibraryArtifact = async (
       throw new Error("Operational manifest contains a conflicting hash for this document version.");
     }
 
-    const extract = dependencies.extractSectionCount ?? defaultExtractSectionCount;
-    const sectionCount = await extract(record.acquisition.artifactPath, record.title, buffer);
+    const extract = dependencies.extractDocument ?? defaultExtractDocument;
+    const document = await extract(record.acquisition.artifactPath, record.title, buffer);
+    const sectionCount = document.sections.length;
     if (!Number.isInteger(sectionCount) || sectionCount <= 0) throw new Error("Extraction produced no sections.");
+    const domainMetadata = sourceInventoryRecordToDomainMetadata(record);
+    const documentForIndexing: NormalizedDocument = {
+      ...document,
+      metadata: {
+        ...document.metadata,
+        ...domainMetadata,
+        sourcePath: record.acquisition.artifactPath,
+      },
+    };
 
     if (input.dryRun) {
       return {
@@ -947,13 +998,20 @@ export const ingestLibraryArtifact = async (
     const indexing = await index({
       inputPath: record.acquisition.artifactPath,
       content: buffer,
+      document: documentForIndexing,
       title: record.title,
       documentKey: record.documentKey,
       documentVersion: record.documentVersion,
-      metadata: sourceInventoryRecordToDomainMetadata(record),
+      metadata: domainMetadata,
     });
     if (indexing.status !== "indexed" || indexing.chunksPlanned <= 0 || indexing.failures.length > 0) {
-      throw new Error(`Indexing failed: ${indexing.failures.map((item) => item.code).join(", ") || indexing.status}.`);
+      const failure = indexing.failures[0];
+      throw new IngestionError(
+        failure?.code ?? "vector_indexing_failed",
+        document.sourceFormat,
+        `Indexing failed: ${indexing.failures.map((item) => item.code).join(", ") || indexing.status}.`,
+        { retryable: failure?.retryable ?? false }
+      );
     }
 
     const runtime = resolveRuntimeMetadata(dependencies);
@@ -965,7 +1023,9 @@ export const ingestLibraryArtifact = async (
       status: "ingested",
       extraction: {
         extractedAt: indexedAt,
-        extractor: "registry",
+        extractor: typeof document.metadata.extractor === "string"
+          ? document.metadata.extractor
+          : "registry",
         sectionCount,
       },
       indexing: {
