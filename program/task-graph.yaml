@@ -1,5 +1,5 @@
 schema_version: 1
-generated_at: "2026-07-19T05:54:37Z"
+generated_at: "2026-07-19T07:07:41Z"
 program:
   id: LA-MUNI-RAG-PROD
   objective: "Make LA Muni RAG production-ready within its evidence, procedure, workflow, case-tracking, and integration domain."
@@ -391,7 +391,59 @@ tasks:
     limitations:
       - "The production image/runtime has no ClamAV executable or daemon, so applied safety inspection remains unavailable and fails closed."
       - "The real DMP remains acquired only, with no clean malware verdict, extraction, index, approval, validity, or license claim."
-      - "Authenticated library/API, durable object storage, jobs/retries/locks/audit, isolated generic PDF extraction, and tenant-scoped vector writes remain absent."
+      - "Authenticated library/API, durable object storage, jobs/retries/locks/audit, and tenant-scoped vector writes remain absent."
+      - "WS03-PDF-EXTRACTION-001 later hardened the scanner handoff with a private verified snapshot and added isolated generic raw-PDF extraction at commit 3a7b531."
+    parent_completion_effect: "WS03-ING-001 remains in_progress and partial."
+  - id: WS03-PDF-EXTRACTION-001
+    workstream: WS-03
+    title: "Add bounded isolated raw-PDF extraction and parse-once indexing"
+    status: completed_with_limitations
+    owner: /root
+    depends_on:
+      - WS03-ARTIFACT-SAFETY-001
+      - PRG-CTX7-001
+    outputs:
+      - scripts/pdf-extraction-worker.mjs
+      - src/ingestion/extractors/rawPdfExtractor.ts
+      - src/ingestion/extractors/pdfExtractorAdapter.ts
+      - src/ingestion/registry.ts
+      - src/ingestion/vectorIndexing.ts
+      - src/embeddings/indexer.ts
+      - src/sources/documentLibraryOperations.ts
+      - src/sources/artifactSafety.ts
+      - specs/055-isolated-raw-pdf-extraction.md
+      - docs/raw-pdf-extraction.md
+      - docs/decisions/055-isolated-raw-pdf-extraction.md
+      - docs/risks/055-isolated-raw-pdf-risk-register.md
+      - docs/traceability/055-requirements-traceability.md
+    result:
+      commit: 3a7b531
+      dependencies: "pdfjs-dist 6.1.200 and @napi-rs/canvas 1.0.2, exact direct production dependencies"
+      raw_pdf_route: "binary Buffer to a separate bounded Node child; legacy PDF JSONL remains explicit and is not registry-routed"
+      process_policy: "minimal environment/private cwd, stdin bytes only, Node permissions, heap/stack/time/page/text/input/output/stderr/concurrency bounds"
+      scanner_snapshot_aba_defense: passed
+      parse_once_indexing: passed
+      direct_raw_pdf_bypass_gate: passed
+      chunk_cap: 5000
+      embedding_batch_cap: 64
+      focused_tests: "80/80 passed"
+      global_tests: "498/498 passed"
+      typecheck: passed
+      build: passed
+      source_inventory: "valid; 17 total / 4 verified / 4 missing_source / 8 acquisition_pending / 1 acquired / 0 ingested"
+      contracts: "9 schemas / 9 examples / 1 OpenAPI document valid"
+      domain_evaluation: "6/6 passed"
+      production_dependency_audit: "0 vulnerabilities"
+      docker_runtime: "node:24.12.0-bookworm-slim image built; non-root in-container PDF extraction smoke passed"
+      pages: passed
+      changed_markdown_links: "16 files / 11 local links / 0 missing"
+      real_dmp_state: "untouched; acquired only; artifactSafety null; no extraction or index"
+    limitations:
+      - "The child process is a crash/resource boundary, not a complete OS sandbox: no network namespace, seccomp profile, or total native RSS enforcement is proved."
+      - "PDF.js requires the native @napi-rs/canvas package in the Node runtime; parser upgrades can change normalized text and hashes."
+      - "Concurrency is bounded per application process, not through a distributed admission controller; OCR, table, form, and semantic-layout extraction are absent."
+      - "No real scanner runtime, authenticated or durable library, tenant-scoped job/lock/audit layer, object storage, or tenant-scoped vector write/API exists."
+      - "The controlled DMP was not scanned, extracted, indexed, promoted, or otherwise mutated by this slice."
     parent_completion_effect: "WS03-ING-001 remains in_progress and partial."
   - id: WS04-RET-001
     workstream: WS-04

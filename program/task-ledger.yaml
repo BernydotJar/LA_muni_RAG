@@ -1,5 +1,5 @@
 schema_version: 1
-updated_at: "2026-07-19T05:54:37Z"
+updated_at: "2026-07-19T07:07:41Z"
 runtime:
   type: yaml_fallback
   farmtable_available: false
@@ -296,7 +296,8 @@ tasks:
       - "Ingestion is tenant-scoped, idempotent, auditable, and stable on corrupt input."
     evidence:
       - "WS03-ARTIFACT-SAFETY-001 completed the local pre-extraction safety and quarantine slice at commit 37ff0ad."
-      - "The parent remains partial because authenticated tenant-scoped ingestion, durable storage, jobs, locks, audit, generic PDF extraction, and real vector writes are absent."
+      - "WS03-PDF-EXTRACTION-001 completed bounded isolated raw-PDF extraction, parse-once indexing, and ingestion caps at commit 3a7b531."
+      - "The parent remains partial because authenticated tenant-scoped ingestion, a real scanner, durable storage, distributed jobs, locks, audit, and real tenant-scoped vector writes are absent."
     pr: null
     ci: partial
   - id: WS03-ARTIFACT-SAFETY-001
@@ -334,10 +335,64 @@ tasks:
       - "The real DMP import dry-run remained noop, artifactSafety null, mutated false, with zero sections and chunks; no artifact bytes or inventory state were changed."
     limitations:
       - "Neither clamdscan nor clamscan is installed in the current runtime or production image; real inspection is unavailable and fails closed."
-      - "The acquired DMP has no clean malware verdict and remains acquired only; raw PDF ingestion still expects pre-generated JSONL."
-      - "Authenticated library/API, durable object storage, jobs/retries/locks/audit, extraction isolation, and tenant-scoped vector writes remain open."
+      - "The acquired DMP has no clean malware verdict and remains acquired only."
+      - "Authenticated library/API, durable object storage, jobs/retries/locks/audit, and tenant-scoped vector writes remain open."
+      - "Commit 3a7b531 subsequently adds a private scanner snapshot and bounded isolated raw-PDF extraction under WS03-PDF-EXTRACTION-001."
     pr: null
     ci: passed_local_with_runtime_limitation
+  - id: WS03-PDF-EXTRACTION-001
+    workstream: WS-03
+    title: "Add bounded isolated raw-PDF extraction and parse-once indexing"
+    status: completed_with_limitations
+    owner: /root
+    files:
+      - .env.example
+      - Dockerfile
+      - package.json
+      - package-lock.json
+      - scripts/pdf-extraction-worker.mjs
+      - src/ingestion/extractors/rawPdfExtractor.ts
+      - src/ingestion/extractors/pdfExtractorAdapter.ts
+      - src/ingestion/registry.ts
+      - src/ingestion/types.ts
+      - src/ingestion/vectorIndexing.ts
+      - src/ingestion/corpusManifest.ts
+      - src/cli/backfillCorpus.ts
+      - src/embeddings/indexer.ts
+      - src/sources/artifactSafety.ts
+      - src/sources/documentLibraryOperations.ts
+      - specs/055-isolated-raw-pdf-extraction.md
+      - docs/raw-pdf-extraction.md
+      - docs/decisions/055-isolated-raw-pdf-extraction.md
+      - docs/risks/055-isolated-raw-pdf-risk-register.md
+      - docs/traceability/055-requirements-traceability.md
+    depends_on:
+      - WS03-ARTIFACT-SAFETY-001
+      - PRG-CTX7-001
+    blockers: []
+    acceptance:
+      - "Raw PDF bytes use a real binary parser; the legacy PDF JSONL adapter is explicit and cannot be selected through the extractor registry."
+      - "Untrusted parsing runs in a separate child with fixed permissions and bounded input, time, pages, per-page text, total text, output, stderr, memory settings, and concurrency."
+      - "Malformed, encrypted, no-text, timeout, crash, stderr/output flood, and protocol failures map to stable fail-closed errors."
+      - "The exact safety-verified buffer is parsed once and the resulting normalized document is passed to indexing without path reread or reparse."
+      - "Document chunk count and provider embedding batch size fail closed at fixed upper bounds before unbounded provider work."
+    evidence:
+      - "Commit 3a7b531 pins pdfjs-dist 6.1.200 and @napi-rs/canvas 1.0.2 as exact direct production dependencies and copies the extraction worker into the runtime image."
+      - "The PDF worker accepts only stdin bytes and returns strict v1 JSON; its minimal environment/private cwd and Node permission flags deny unmanaged reads, writes, child processes, and worker threads while allowing the required native addon."
+      - "The scanner now receives a private 0700-directory/0600-file snapshot of the verified buffer; before/after snapshot hashes and a managed-path recheck close the observed A-to-B-to-A mutation window."
+      - "Document-library ingestion passes the normalized document plus exact verified bytes to vector indexing; direct raw-PDF indexing/backfill routes fail before provider invocation or file parsing."
+      - "Focused PDF/library/vector/indexer/corpus/backfill/artifact suites passed 80/80; canonical global Node summary passed 498/498 with zero skips or failures."
+      - "Typecheck, build, Pages, inventory, contracts, and 6/6 domain evaluation passed; 16 changed Markdown files contained 11 local links and zero missing targets."
+      - "npm audit --omit=dev reported zero vulnerabilities; the node:24.12.0-bookworm-slim production image built and a non-root in-container raw-PDF extraction smoke passed."
+      - "The controlled DMP remained ignored and untouched: acquired only, artifactSafety null, with no scan, extraction, indexing, promotion, or inventory mutation."
+    limitations:
+      - "The child is not a complete OS sandbox: no network namespace, seccomp profile, or hard total-RSS/native-memory cap has been proved."
+      - "The parser uses a native canvas addon; concurrency is per application process rather than distributed, and no load/capacity gate has been run."
+      - "No OCR, table, form, or semantic-layout extraction exists; parser upgrades may change text normalization and hashes."
+      - "A real scanner, authenticated tenant-scoped API, durable object storage, job/retry/lock/audit/retention system, and tenant-scoped vector persistence remain absent."
+      - "The real DMP remains acquired only and has no clean malware verdict."
+    pr: null
+    ci: passed_local_with_platform_limitations
   - id: WS04-RET-001
     workstream: WS-04
     title: "Measure retrieval quality and citation fidelity"

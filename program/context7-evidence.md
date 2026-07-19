@@ -1,6 +1,6 @@
 # Context7 evidence register
 
-Last updated: 2026-07-19T05:54:37Z
+Last updated: 2026-07-19T07:07:41Z
 
 Context7 is the required documentation source for implementation decisions involving APIs, frameworks, SDKs, authentication, PostgreSQL, pgvector, cloud services, Terraform, testing, observability, and security configuration. It is not an authority for legal or municipal claims.
 
@@ -171,6 +171,21 @@ Context7 is the required documentation source for implementation decisions invol
 | limitations | No ClamAV binary, daemon, signature database, freshness monitor, or production scanner capacity test exists in the current runtime. Therefore the real DMP has no malware verdict and remains acquired only; injected scanner fixtures prove adapter behavior, not real-engine cleanliness. |
 | task_id | WS03-ARTIFACT-SAFETY-001 |
 
+### PDF.js binary document loading and text extraction
+
+| field | value |
+|---|---|
+| library | Mozilla PDF.js |
+| library_id | /mozilla/pdf.js |
+| installed_version | exact direct pdfjs-dist 6.1.200; exact direct Node native companion @napi-rs/canvas 1.0.2; production Node base 24.12.0 |
+| query | getDocument Uint8Array getTextContent cleanup useWorkerFetch useWasm stopAtErrors |
+| retrieved_at | 2026-07-19T07:07:41Z |
+| documentation_summary | Context7's official-repository snippets show getDocument accepting binary data, normalize Buffer-like input to Uint8Array for the Node API, expose numPages, and extract per-page text with getPage plus getTextContent. The data buffer may be transferred/taken over by an internal worker, so callers should not assume the supplied view remains reusable. |
+| implementation_decision | Copy stdin bytes into a Uint8Array owned by the extraction child, call getDocument with data rather than a path or URL, process pages sequentially through getTextContent, and emit only a strict bounded JSON result. Disable worker fetch, WebAssembly, image decoding, font face/system fonts, and XFA; require stopAtErrors; provide only application-owned local CMap/font/ICC roots. Destroy the loading task in a finally path. Keep the parent-side child-process timeout, output, protocol, and capacity controls authoritative. |
+| source_links | https://github.com/mozilla/pdf.js/blob/master/src/display/api.js ; https://github.com/mozilla/pdf.js/blob/master/src/display/api_utils.js ; https://github.com/mozilla/pdf.js/blob/master/test/unit/api_spec.js ; https://www.npmjs.com/package/pdfjs-dist/v/6.1.200 |
+| limitations | Context7 resolved current PDF.js repository snippets rather than immutable 6.1.200 documentation, and an older v3_6_172 documentation corpus was the only versioned Context7 alternative. Exact package metadata and executable tests therefore provide the version-specific check. PDF.js requires a native canvas addon in this Node environment, and neither the library nor the Node permission model supplies a complete OS sandbox, network namespace, seccomp profile, or total native-memory bound. Parser upgrades may change normalized text and hashes. |
+| task_id | WS03-PDF-EXTRACTION-001 |
+
 ## Enforcement policy
 
 For every task in a Context7-required category:
@@ -187,7 +202,7 @@ For every task in a Context7-required category:
 
 | task_id | category | library or service | installed version evidence | required query | status | blocker |
 |---|---|---|---|---|---|---|
-| WS03-ING-001 | PostgreSQL ingestion and idempotency | pg | lockfile pins pg 8.22.0 | Transaction, retry, idempotency, and error handling guidance for the installed node-postgres version | pending | Local artifact safety evidence is complete under WS03-ARTIFACT-SAFETY-001; tenant-scoped database ingestion guidance and implementation remain pending |
+| WS03-ING-001 | PostgreSQL ingestion and idempotency | pg | lockfile pins pg 8.22.0 | Transaction, retry, idempotency, and error handling guidance for the installed node-postgres version | pending | Local artifact safety and bounded PDF extraction evidence are complete under WS03-ARTIFACT-SAFETY-001 and WS03-PDF-EXTRACTION-001; tenant-scoped database/job ingestion guidance and implementation remain pending |
 | WS04-RET-001 | PostgreSQL and pgvector retrieval | PostgreSQL and pgvector | disposable gate: PostgreSQL 16.14 and pgvector 0.8.5 | Vector index, distance operator, filtering, and query-plan guidance for the selected production versions | in_progress | Local versions are evidence only; production versions and query plans remain unselected |
 | WS07-ID-001 | authentication and tenancy | /nodejs/node and /websites/postgresql_current | Node v26.5.0 observed; disposable runtime PostgreSQL 16.14 | Apply retrieved crypto/RLS evidence and verify the selected auth/session architecture | completed_with_limitations | Procedure-query v1 passes local DB/HTTP isolation; production topology and Node v26 doc parity remain pending |
 | WS08-CONTRACT-FOUNDATION-001 | API contract foundation | /oai/openapi-specification/3.1.1, /websites/json-schema_understanding-json-schema, and /ajv-validator/ajv/v8.17.1 | OpenAPI 3.1.1; ajv 8.20.0; ajv-formats 3.0.1 | Apply bearer/components/strict-object guidance with Ajv2020 strict, allErrors, and addSchema | completed_with_version_limitation | Executable registry/provider validation passes; Context7 Ajv docs remain v8.17.1 rather than 8.20.0 |
