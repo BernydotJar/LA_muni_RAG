@@ -33,25 +33,27 @@
 
 ## Independent verifier
 
-Final-head verification pending after release-document commits:
+GitHub Actions run `29667121105` passed on head `e73b3828daa789060c898febfaa26737415f0375`:
 
-- [ ] `npm run source-inventory:validate`
-- [ ] `npm run typecheck`
-- [ ] `npm run build`
-- [ ] focused document-library tests
-- [ ] `npm run domain:evaluate`
-- [ ] `npm run test`
-- [ ] `npm run build:pages`
-- [ ] `node scripts/verify-pages-artifact.mjs`
-- [ ] `git diff --check`
-- [ ] bounded generated-artifact cleanup
-- [ ] clean generated state
+- [x] `npm run source-inventory:validate`
+- [x] `npm run typecheck`
+- [x] `npm run build`
+- [x] focused document-library tests
+- [x] existing inventory and authority tests
+- [x] `npm run domain:evaluate`
+- [x] `npm run test`
+- [x] `npm run build:pages`
+- [x] `node scripts/verify-pages-artifact.mjs`
+- [x] `git diff --check`
+- [x] bounded generated-artifact cleanup
+- [x] clean generated state
 
 ## Release review
 
 - [x] Draft PR #21 opened.
-- [ ] Final-head CI evidence recorded.
+- [x] CI evidence recorded for the pre-release-document head.
 - [x] Scope audit completed.
 - [x] Decision log, risk register and requirements traceability added.
+- [ ] Final documentation-head CI gate.
 - [ ] Human review requested.
 - [x] No automatic merge.
