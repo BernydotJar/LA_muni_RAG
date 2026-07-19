@@ -1,5 +1,5 @@
 schema_version: 1
-updated_at: "2026-07-19T03:22:43Z"
+updated_at: "2026-07-19T04:56:52Z"
 runtime:
   type: yaml_fallback
   farmtable_available: false
@@ -138,9 +138,10 @@ tasks:
   - id: GAP-001
     workstream: WS-01
     title: "Map every goal requirement and production gate to current evidence"
-    status: pending
-    owner: unassigned
-    files: []
+    status: in_progress
+    owner: /root
+    files:
+      - program/gap-matrix.md
     depends_on:
       - BASE-001
       - BOUND-001
@@ -148,7 +149,8 @@ tasks:
     acceptance:
       - "Every requirement, artifact, eval, gate, and invariant has an evidence state, owner, and task."
       - "Missing or indirect evidence is recorded as not achieved."
-    evidence: []
+    evidence:
+      - "Gap matrix refreshed after the corpus acquisition and secure procedure-query provider slices; production claim remains unproven."
     pr: null
     ci: not_started
   - id: WS02-CORP-001
@@ -164,8 +166,8 @@ tasks:
     acceptance:
       - "Authority, jurisdiction, provenance, comparison warning, and evidence gaps are explicit."
     evidence:
-      - "Inventory is valid with 16 total, 3 verified, 5 missing_source, 0 acquired, and 0 ingested."
-      - "The completed PDM-OT reconciliation slice does not complete the Antigua/Mixco corpus workstream."
+      - "Current inventory is valid with 17 total, 4 verified, 4 missing_source, 1 acquired, and 0 ingested."
+      - "The completed PDM-OT reconciliation and DMP catalog/acquisition slices do not complete the Antigua/Mixco corpus workstream."
     pr: null
     ci: partial
   - id: WS02-CORP-RECON-001
@@ -190,10 +192,41 @@ tasks:
       - "Status transition missing_source -> verified; acquired false; ingested false."
       - "Official URL, version, verification date, and SHA-256 are portable; optional local bytes matched."
       - "Feature 054 import dry-run returned planned true and mutated false."
-      - "Inventory summary: 16 total / 3 verified / 5 missing_source / 0 acquired / 0 ingested."
+      - "Inventory summary at reconciliation commit 58ff4ae: 16 total / 3 verified / 5 missing_source / 0 acquired / 0 ingested."
       - "Focused tests passed 15/15 and typecheck passed."
     pr: null
     ci: passed
+  - id: WS02-DMP-ACQ-001
+    workstream: WS-02
+    title: "Verify the Antigua procedure-manual catalog and acquire the DMP v3 artifact"
+    status: completed_with_limitations
+    owner: /root
+    files:
+      - .rag/source-inventory.json
+      - .gitignore
+      - docs/data/antigua-procedure-manuals-source.md
+      - docs/municipal-source-inventory.md
+      - src/sources/documentLibraryOperations.ts
+      - src/__tests__/antigua-procedure-manual-source-reconciliation.test.ts
+      - src/__tests__/document-library-operations.test.ts
+      - src/__tests__/source-inventory.test.ts
+    depends_on:
+      - WS02-CORP-001
+    blockers: []
+    acceptance:
+      - "The official catalog and individual DMP v3 URL are verified without treating portal metadata as document validity."
+      - "Original bytes are imported through Feature 054, reread, SHA-256 verified, and represented by a portable bounded path."
+      - "Acquisition does not imply extraction, indexing, legal approval, or safe-content review."
+    evidence:
+      - "Commits d98ff2a and 2a8ff1c move the catalog missing_source -> verified and the individual DMP v3 artifact acquisition_pending -> acquired."
+      - "Controlled copy is 49,052,885 bytes with SHA-256 4cbd35993b345c1f2bdb308825f1d3a6cac24ad239bdc9b087e2d99f2297e8f9; repeated import returned noop/mutated false."
+      - "Current inventory validates at 17 total / 4 verified / 4 missing_source / 1 acquired / 0 ingested."
+      - "Focused acquisition/inventory tests passed 15/15 and typecheck passed."
+    limitations:
+      - "The acquired PDF is stored only in the Git-ignored local library; durable object storage, backup, malware scanning, quarantine, and production access controls are absent."
+      - "No extraction, section count, embedding, vector indexing, corpus-manifest reconciliation, approval, effective date, or reuse license is claimed."
+    pr: null
+    ci: passed_local
   - id: WS07-FOUNDATION-001
     workstream: WS-07
     title: "Build the identity, tenancy, and RBAC foundation"
@@ -220,9 +253,10 @@ tasks:
       - "Commits c24f003 and e15050d implement hashed Bearer lookup, ten roles, transaction-local tenant context, FORCE RLS, scoped uniqueness, tenant-aware seeds, and safe database setup guidance."
       - "Identity/RBAC focal tests passed 22/22; tenant migration/bootstrap focal tests passed 14/14; typecheck passed."
       - "Context7 Node crypto and PostgreSQL RLS evidence is recorded in program/context7-evidence.md."
+      - "Commit deef177 wires the foundation into procedure-query v1 and adds a disposable non-owner PostgreSQL/HTTP isolation gate."
     limitations:
-      - "HTTP enforcement is a separate active slice; legacy endpoints are not protected by this foundation."
-      - "A real PostgreSQL isolation test with a non-owner runtime role is still unproven."
+      - "HTTP enforcement is proven only for procedure-query v1; pre-v1 routes remain development-only and the rest of the required v1 catalog is absent."
+      - "The real PostgreSQL gate is disposable local evidence, not production role provisioning, staging, load, or HA proof."
     pr: null
     ci: passed_static
   - id: WS07-ID-001
@@ -240,7 +274,10 @@ tasks:
       - "Minimum roles are enforced and cross-tenant access is denied, audited, and leak-free."
     evidence:
       - "WS07-FOUNDATION-001 completed with static proof."
-      - "POST /api/v1/procedure-queries security/provider slice is active and not yet integrated."
+      - "Commit deef177 integrates POST /api/v1/procedure-queries with Bearer/RBAC/tenant checks, RLS retrieval, uniform denials, and allowlisted audit."
+      - "PostgreSQL 16.14/pgvector 0.8.5 disposable gate proved A/B isolation with a non-owner/non-BYPASSRLS role; HTTP smoke returned 403 without metadata leakage."
+    limitations:
+      - "Production provisioning/rotation and equivalent enforcement for all future v1 endpoints remain incomplete."
     pr: null
     ci: in_progress
   - id: WS03-ING-001
@@ -339,8 +376,8 @@ tasks:
   - id: WS08-PROCEDURE-QUERY-001
     workstream: WS-08
     title: "Implement a secure tenant-scoped procedure-query provider slice"
-    status: in_progress
-    owner: /root/api_security_audit
+    status: completed_with_limitations
+    owner: /root
     files:
       - src/api/v1/
       - src/server.ts
@@ -356,9 +393,14 @@ tasks:
       - "Bearer/RBAC/tenant controls, scoped retrieval, validation, structured errors, idempotency, audit, rate limits, and boundary refusal pass adversarial tests."
       - "Any unsupported response artifact fails explicitly without a false capability claim."
     evidence:
-      - "Implementation assigned with exclusive file ownership; integration is not yet claimed."
+      - "Commit deef177 implements the provider, migration 004, scoped public-only retrieval, current-contract replay validation, audit/rate controls, product-boundary refusal, and production legacy-route closure."
+      - "Focused API/security suites passed 35/35; global tests passed 539/539; contracts, inventory, domain evaluation, typecheck, build, Pages verification, and npm production audit passed."
+      - "Clean PostgreSQL 16.14/pgvector 0.8.5 migrations and non-owner RLS assertions passed; image-contained HTTP smoke returned 200/200/409/403/400/401/500/200 plus a non-CORS legacy 404."
+    limitations:
+      - "Only ProcedureWorkflow is available; EvidenceBundle and ProcedureAssessment return 503 capability_unavailable."
+      - "No OS Electoral consumer/interoperability, durable workflow lifecycle/approval, staging/load test, production platform/role, or deployment is claimed."
     pr: null
-    ci: in_progress
+    ci: passed_local
   - id: WS08-INT-001
     workstream: WS-08
     title: "Implement and test adjacent-product contracts"
@@ -423,8 +465,8 @@ tasks:
   - id: WS10-OPS-FOUNDATION-001
     workstream: WS-10
     title: "Build CI, non-root container, threat/privacy review, and operational runbook foundation"
-    status: in_progress
-    owner: /root/operations_foundation
+    status: completed_with_limitations
+    owner: /root
     files:
       - .github/workflows/ci.yml
       - Dockerfile
@@ -440,9 +482,13 @@ tasks:
       - "Backend CI and container invariants are executable and deployment remains human-gated."
       - "Runbooks and reviews distinguish implemented controls from unproven drills and platform decisions."
     evidence:
-      - "Implementation active; no deployment authorized or attempted."
+      - "Commit fd227a7 adds backend CI, a non-root multi-stage container, threat/privacy foundation, and deployment/backup/rollback/incident runbooks."
+      - "Commit deef177 adds the guarded PostgreSQL/API gate and current provider/legacy-production evidence to the runbooks."
+      - "Local image digest sha256:4c0e291f1508a728d9c95c7f1d5661158781702d2eb7c825f6163db175fa3c8b ran as node and passed the disposable DB smoke."
+    limitations:
+      - "No registry push, SBOM, scan, signature, Terraform, platform, secret manager, observability, backup/restore drill, rollback rehearsal, incident exercise, or deployment."
     pr: null
-    ci: in_progress
+    ci: passed_local
   - id: WS11-QA-001
     workstream: WS-11
     title: "Run required evals, tests, docs checks, and global regression"

@@ -10,17 +10,17 @@ Regla: un slice verde no convierte un workstream completo en achieved.
 
 | WS | Estado | Capacidad disponible | Gap mínimo para cumplir el goal | Evidencia de aceptación requerida | Prioridad | Depende de |
 |---|---|---|---|---|---|---|
-| WS-01 Baseline and Architecture | partial | DB y módulos RAG; specs por feature | Reconciliar origin/main con 2 commits locales; definir boundaries, ownership, bounded contexts, ADRs y graph del programa | HEAD canónico limpio; docs obligatorias; ADR aceptado; task graph validado | P0 | — |
-| WS-02 Corpus and Source Inventory | partial | 4 seeds; 1 PDF verificado; inventario remoto de 16 fuentes | Unificar inventario legado/nuevo; ampliar corpus Antigua; adquirir Mixco requerido sin promoverlo a autoridad local | Manifest reconciliado; hashes; provenance; estados missing_source honestos; cero conflictos silenciosos | P0 | WS-01 |
+| WS-01 Baseline and Architecture | partial | Baseline reconciliado; boundaries, ownership, bounded contexts, ADR y control YAML versionados | Completar el mapeo requisito-por-requisito y mantener graph/ledger alineados con cada slice | Auditoría GAP-001 completa; branch/PR/CI actuales; cero claims obsoletos | P0 | — |
+| WS-02 Corpus and Source Inventory | partial | Inventario válido: 17 fuentes, 4 verificadas, 1 DMP adquirido, 4 missing, 0 ingested | Completar corpus Antigua/Mixco, autoridad/vigencia/licencia y storage seguro sin promover comparativos | Hashes/bytes/provenance; malware/quarantine; aprobación; estados honestos; manifest reconciliado | P0 | WS-01 |
 | WS-03 Ingestion and Document Library | partial | Extractores, chunking, embeddings, manifest y CLI local | Biblioteca autenticada, upload/URL acquisition, MIME/malware validation, jobs, retries, locking, audit, retention y APIs | Test corrupt/retry/idempotency; integración DB/object storage; métricas; runbook | P0 | WS-02, WS-07 |
 | WS-04 Retrieval and Evidence | partial | Keyword/phrase/hybrid/vector, dedupe, ranking y citas | Filtros completos, reranking evaluado, contradicciones, vigencia, missing-source y groundedness | Eval corpus real con thresholds; citation fidelity; conflict visibility; isolation tests | P0 | WS-02, WS-03, WS-07 |
 | WS-05 Procedure Schema and Compiler | partial | Workflow estructurado preliminar y gaps | Procedure/version/step schema completo; lifecycle; decision gates; approval; water compiler | Workflow JSON versionado; 47 categorías de agua; citas/evidence status por paso; human review | P0 | WS-04 |
 | WS-06 Procedure Cases and Tracking | partial | Workspace/portfolio en LocalStorage | Persistencia tenant-scoped, API, current step, docs, blockers, validation, follow-up, dossier y audit | API/DB integration tests; immutable audit; binding a procedure version; authorization | P0 | WS-05, WS-07 |
-| WS-07 Identity, Tenancy and RBAC | missing | Token compartido sólo para feedback | Identity, tenants, memberships, 10 roles, resource authorization, RLS y credentials | EVAL-TENANT-001; negative tests; audit sin metadata leakage | P0 | WS-01 |
-| WS-08 Integration Contracts | missing | Ningún contrato externo versionado | OpenAPI/JSON Schema para cinco artefactos, event envelope, adapters e idempotency | Schema validation; consumer/provider contract tests; boundary refusal | P0 | WS-01, WS-05, WS-07 |
+| WS-07 Identity, Tenancy and RBAC | partial | Identity, tenants, 10 roles, credential digest, RLS y procedure-query v1 con gate PostgreSQL/HTTP | Provisioning/rotation productivos y extender el control a todo endpoint requerido | Staging/production-shaped negative tests por endpoint; audit/access review; EVAL-TENANT completo | P0 | WS-01 |
+| WS-08 Integration Contracts | partial | 9 schemas/ejemplos, OpenAPI 3.1.1 y provider `ProcedureWorkflow` v1 seguro/idempotente | EvidenceBundle/Assessment/Gap/ClaimPack providers, consumers vecinos y pruebas entre repos | Provider/consumer contract tests; timeout/retry; boundary; refs/versiones preservadas | P0 | WS-01, WS-05, WS-07 |
 | WS-09 Frontend and UX | partial | Demo Pages, widget, workflow/deep-dive/cases locales | Admin autenticado, library/source viewer, reviews/approvals, cases server-side, estados y a11y | Browser E2E desktop/mobile; WCAG 2.2 AA; auth/error/empty-state tests | P1 | WS-03, WS-05, WS-06, WS-07 |
-| WS-10 Security, Platform and Ops | partial | Pages deploy; sanitización y health parcial | Backend platform, Terraform, secrets, observabilidad, backups, restore, rollback, incident, rate limits distribuidos | Threat/privacy review; zero high/critical; restore drill; rollback test; SLO/alerts | P0 | WS-07 y todos los servicios |
-| WS-11 Quality, Evals and Docs | partial | 349 tests; harness sintético; docs por feature | Nueve hard evals, regression global main, docs obligatorias, Skills/Context7 records y freshness | Todos hard evals verdes; CI required; docs lint; evidence register actualizado | P0 | Todos |
+| WS-10 Security, Platform and Ops | partial | Backend CI, imagen no-root, runbooks, threat/privacy y gate local PostgreSQL/API | Plataforma/Terraform/secrets/observabilidad, scans, backup/restore real, rollback, incident y límites distribuidos | Zero high/critical; staging; restore/rollback drill; SLO/alerts; imagen firmada por digest | P0 | WS-07 y todos los servicios |
+| WS-11 Quality, Evals and Docs | partial | Suite ampliada, contratos/inventario/domain gates y docs obligatorias presentes | Nueve hard evals completos, E2E/browser/a11y/load, regression global y freshness automática | Todos hard evals verdes; CI required; docs lint/link; evidence register actualizado | P0 | Todos |
 
 ## 2. Gaps de API v1
 
@@ -34,7 +34,7 @@ Regla: un slice verde no convierte un workstream completo en achieved.
 | POST /api/v1/search | missing | Existe GET /api/search MVP sin v1 ni filtros completos |
 | POST /api/v1/evidence-bundles | missing | Tipo interno no cumple EvidenceBundle externo |
 | GET /api/v1/procedures | missing | Sólo GET /api/procedure que compone al vuelo |
-| POST /api/v1/procedure-queries | missing | No contrato ProcedureQueryRequest |
+| POST /api/v1/procedure-queries | implemented_with_limits | Sólo `ProcedureWorkflow`; provider/DB gate local pasan; bundle/assessment, consumer, staging y lifecycle faltan |
 | GET /api/v1/workflows/:id | missing | Workflows no persistidos/versionados |
 | POST /api/v1/workflow-drafts | missing | Sin lifecycle |
 | POST /api/v1/workflow-reviews | missing | Sin review service |
@@ -43,7 +43,7 @@ Regla: un slice verde no convierte un workstream completo en achieved.
 | GET /api/v1/procedure-cases/:id | missing | Sin case service |
 | POST /api/v1/evidence-gap-requests | missing | Gaps sólo se calculan en respuesta |
 
-Requisitos transversales ausentes en la API: autenticación global, tenant scope, RBAC, cursor pagination, idempotency keys, audit de mutaciones y rate limits distribuidos.
+Autenticación, tenant scope, RBAC, validación, idempotencia, audit y rate limit están implementados sólo para `POST /api/v1/procedure-queries`. Siguen ausentes transversalmente en el catálogo; las rutas pre-v1 son 404 por defecto en producción porque usan queries globales/wildcard CORS.
 
 ## 3. Gaps del golden use case agua
 
@@ -64,40 +64,40 @@ Requisitos transversales ausentes en la API: autenticación global, tenant scope
 | Eval requerido | Estado | Gap de cierre |
 |---|---|---|
 | EVAL-PROCEDURE-001 | missing | Validar classification, steps, dependencies, docs, citations, state, gaps y workflow JSON |
-| EVAL-WATER-001 | missing | Corpus Antigua-first y 47 categorías sin invenciones |
+| EVAL-WATER-001 | partial | Smoke DB/HTTP devuelve workflow Antigua-first sin fuga; faltan corpus real ingerido y 47 categorías |
 | EVAL-MIXCO-001 | partial | Existe caso sintético de authority; falta flujo/corpus/warning end-to-end |
-| EVAL-OS-INTEGRATION-001 | missing | Requiere contratos y adapter OS Electoral |
+| EVAL-OS-INTEGRATION-001 | partial | Provider ProcedureWorkflow y boundary pasan; falta consumer OS Electoral y prueba entre repos |
 | EVAL-CONTENT-INTEGRATION-001 | missing | Requiere ClaimPack y boundary |
-| EVAL-BOUNDARY-001 | missing | Rechazo explícito de estrategia electoral/calendario |
-| EVAL-TENANT-001 | missing | Cross-tenant deny + audit + no leakage |
+| EVAL-BOUNDARY-001 | partial | Provider rechaza estrategia/movilización/contenido; falta matriz de todos los endpoints/consumers |
+| EVAL-TENANT-001 | partial | Gate PostgreSQL 16.14 + HTTP niega A/B, audita y no filtra; falta topología aprobada y catálogo completo |
 | EVAL-CONFLICT-001 | missing | Versiones contradictorias visibles y review |
-| EVAL-CORRUPT-001 | partial | Extractores tienen fallos estables; falta job/retry state end-to-end |
+| EVAL-CORRUPT-001 | partial | Replay corrupto se invalida/audita y reintenta; ingestion corrupt/job state sigue pendiente |
 
 ## 5. Documentación y tooling obligatorio
 
 | Artefacto | Estado | Prioridad |
 |---|---|---|
-| docs/product/product-boundaries.md | missing | P0 |
-| docs/product/procedural-intelligence-vision.md | missing | P1 |
-| docs/architecture/bounded-contexts.md | missing | P0 |
-| docs/architecture/system-context.md | missing | P0 |
-| docs/architecture/data-ownership.md | missing | P0 |
-| docs/integrations/os-electoral.md | missing | P0 |
-| docs/integrations/content-agency.md | missing | P0 |
-| docs/integrations/contracts.md | missing | P0 |
-| docs/data/source-inventory.md | missing; existe nombre distinto en origin/main | P1 |
-| docs/data/ingestion-runbook.md | missing; existe runbook parcial en raíz docs | P1 |
-| docs/security/threat-model.md | missing | P0 |
-| docs/security/tenancy.md | missing | P0 |
-| docs/security/rbac.md | missing | P0 |
-| docs/operations/deployment.md | missing | P0 |
-| docs/operations/backup-restore.md | missing | P0 |
-| docs/operations/incident-response.md | missing | P0 |
-| docs/testing/eval-harness.md | missing | P0 |
-| program/skill-usage-register.md | missing | P1 |
-| program/context7-evidence.md | missing | P1 |
-| program/task-graph.yaml | missing | P0 |
-| program/task-ledger.yaml | missing | P0 |
+| docs/product/product-boundaries.md | present | P0 |
+| docs/product/procedural-intelligence-vision.md | present | P1 |
+| docs/architecture/bounded-contexts.md | present | P0 |
+| docs/architecture/system-context.md | present | P0 |
+| docs/architecture/data-ownership.md | present | P0 |
+| docs/integrations/os-electoral.md | present; consumer pending | P0 |
+| docs/integrations/content-agency.md | present; provider/consumer pending | P0 |
+| docs/integrations/contracts.md | present; provider slice current | P0 |
+| docs/data/source-inventory.md | present | P1 |
+| docs/data/ingestion-runbook.md | present; platform controls pending | P1 |
+| docs/security/threat-model.md | present; human review pending | P0 |
+| docs/security/tenancy.md | present; v1 slice verified | P0 |
+| docs/security/rbac.md | present; v1 slice verified | P0 |
+| docs/operations/deployment.md | present; no deployment | P0 |
+| docs/operations/backup-restore.md | present; no restore drill | P0 |
+| docs/operations/incident-response.md | present; roster/exercise pending | P0 |
+| docs/testing/eval-harness.md | present; hard evals incomplete | P0 |
+| program/skill-usage-register.md | present | P1 |
+| program/context7-evidence.md | present | P1 |
+| program/task-graph.yaml | present; active | P0 |
+| program/task-ledger.yaml | present; active | P0 |
 | skills-lock.json | missing; AutoSkills no verificado | P1 |
 
 ## 6. Critical path recomendado
@@ -105,7 +105,7 @@ Requisitos transversales ausentes en la API: autenticación global, tenant scope
 1. P0 — reconciliar Git y declarar origin/main como base canónica sin perder los dos commits locales válidos;
 2. P0 — reconciliar source inventory, seed y artifact PDM-OT;
 3. P0 — fijar boundaries, ownership, contratos de datos y modelo tenant/RBAC;
-4. P0 — implementar APIs v1 y persistencia de documents/procedures/workflows/cases;
+4. P0 — extender el provider v1 probado a documents/procedures/workflows/cases y consumers;
 5. P0 — adquirir e ingerir corpus mínimo de agua Antigua y comparativos Mixco;
 6. P0 — completar retrieval filtrado y compiler versionado con human approval;
 7. P0 — implementar los nueve hard evals y regression global;

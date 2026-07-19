@@ -1,6 +1,6 @@
 # Skill usage register
 
-Last updated: 2026-07-19T02:48:59Z
+Last updated: 2026-07-19T04:56:52Z
 
 Program source: /Volumes/Cool HD 2TB/Downloads/goal_la_muni_rag_procedural_intelligence_prod_ready.md
 
@@ -11,6 +11,7 @@ Repository baseline observed during this audit:
 - divergence from origin/main: 0 ahead / 0 behind
 - canonical gate: 371/371 tests; typecheck, build, inventory validation, domain evaluation, and Pages verification passed
 - source inventory: valid, 16 total documents, 3 verified, 5 missing_source, 0 acquired, and 0 ingested; verification is not acquisition or ingestion
+- current source inventory after controlled DMP acquisition: valid, 17 total, 4 verified, 4 missing_source, 1 acquired, and 0 ingested
 - pre-existing untracked file: RTK.md
 
 ## Skill-first decision log
@@ -24,6 +25,8 @@ Repository baseline observed during this audit:
 | PRG-FARM-001 | Initialize Farmtable or its semantic fallback | Farmtable CLI/MCP | Farmtable is unavailable. The required YAML graph and ledger are the active runtime of record. | Current API tool inventory and PATH; goal section 15 | program/task-graph.yaml and program/task-ledger.yaml | No Farmtable-related API tool was present; ft --version exited 127 with “zsh:1: command not found: ft”. | fallback_active |
 | BOUND-001 | Establish canonical product boundaries and architecture | No listed repository-specific documentation skill applies to LA Muni RAG | Manual documentation-as-code workflow with explicit link verification. | Goal ownership, non-overlap, contracts, system context, data ownership | Nine canonical documents across docs/product, docs/architecture, and docs/integrations | Nine required documents exist; link audit checked 70 links with 0 broken. | completed |
 | WS02-CORP-RECON-001 | Reconcile PDM-OT source truth without promoting lifecycle state | No listed corpus-reconciliation skill applies | Manual inventory, dry-run, portable identity, documentation, and focused-test workflow. | Existing PDM-OT official URL, version/date/hash metadata, optional local bytes, Feature 054 importer | Reconciled inventory and docs/data/source-inventory.md | missing_source to verified; no acquired/ingested claim; Feature 054 dry-run planned/mutated false; 15/15 focused tests and typecheck passed. | completed |
+| WS02-DMP-ACQ-001 | Verify the official Antigua procedure-manual catalog and acquire the DMP v3 artifact | No listed corpus acquisition or malware-quarantine skill applies | Used authoritative-source research followed by the existing Feature 054 local import boundary; did not use a skill intended for unrelated repositories. | Official municipal catalog/API/PDF URL; metadata-only verification; bounded temp download; Feature 054 dry-run and import | Verified catalog, acquired DMP v3 record, portable bounded path, SHA-256 evidence, focused tests | Catalog missing_source to verified; DMP acquisition_pending to acquired; 49,052,885 bytes; SHA-256 4cbd35993b345c1f2bdb308825f1d3a6cac24ad239bdc9b087e2d99f2297e8f9; repeat import noop; 15/15 focused tests and typecheck passed. | completed_with_limitations |
+| WS08-PROCEDURE-QUERY-001 | Implement and adversarially verify the procedure-query v1 provider | No listed skill targets this repository's Node/PostgreSQL API implementation | Used the repository contract/security foundations, Context7 evidence, direct code review, focused adversarial tests, and a guarded disposable PostgreSQL/HTTP gate. | Canonical v1 schemas/OpenAPI; identity/RBAC/RLS foundation; PostgreSQL 16.14/pgvector 0.8.5 disposable runtime | Secure provider, migration 004, public-only scoped retrieval, production legacy gate, DB fixture, HTTP smoke, current docs | Commit deef177; 35/35 focal tests; 539/539 global; contract/inventory/domain/Pages/build/typecheck gates; 0 production dependency vulnerabilities; DB/HTTP statuses 200/200/409/403/400/401/500/200 and legacy 404. | completed_with_limitations |
 
 ## Context7 activation evidence
 
@@ -66,6 +69,28 @@ The canonical set contains 70 checked links and 0 broken links.
 - inventory summary: 16 total, 3 verified, 5 missing_source, 0 acquired, 0 ingested
 - verification: 15/15 focused tests and typecheck passed
 - parent workstream: WS02-CORP-001 remains in_progress and partial
+
+### WS02-DMP-ACQ-001
+
+- official Antigua procedure-manual catalog: missing_source to verified
+- individual DMP v3 manual: acquisition_pending to acquired
+- acquired bytes: 49,052,885; PDF 1.4; copied-byte SHA-256 `4cbd35993b345c1f2bdb308825f1d3a6cac24ad239bdc9b087e2d99f2297e8f9`
+- controlled path: repository-relative under the Git-ignored `.rag/library/` root
+- repeated import: noop with mutated false
+- current inventory: 17 total, 4 verified, 4 missing_source, 1 acquired, 0 ingested
+- verification: 15/15 focused tests and typecheck passed
+- limitations: no durable object store, malware scanning/quarantine, extraction, indexing, corpus-manifest reconciliation, validity approval, or reuse license
+- parent workstream: WS02-CORP-001 remains in_progress and partial
+
+### WS08-PROCEDURE-QUERY-001
+
+- provider: `POST /api/v1/procedure-queries`, `requested_output=procedure_workflow` only
+- commit: `deef177`
+- controls: Bearer digest auth, `integration:query`, tenant/credential match, strict Ajv, body/rate limits, exact CORS, idempotency, bounded audit, public/active/processed retrieval, draft mapping, boundary refusal
+- negative evidence: cross-tenant 403, exact replay/conflict, corrupt replay invalidation/retry, no raw token/key/question in audit details, non-CORS legacy 404 in production
+- database gate: PostgreSQL 16.14, pgvector 0.8.5, non-owner/non-`BYPASSRLS` role, full migration order
+- verification: 35/35 focused; 539/539 global; contracts/inventory/domain/build/typecheck/Pages passed; `npm audit --omit=dev` found 0 vulnerabilities
+- limitations: no OS Electoral consumer, EvidenceBundle/Assessment provider, lifecycle/approval store, staging/load test, production role/platform, or deployment
 
 ## AutoSkills dry-run evidence
 

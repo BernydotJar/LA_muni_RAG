@@ -1,5 +1,5 @@
 schema_version: 1
-generated_at: "2026-07-19T03:22:43Z"
+generated_at: "2026-07-19T04:56:52Z"
 program:
   id: LA-MUNI-RAG-PROD
   objective: "Make LA Muni RAG production-ready within its evidence, procedure, workflow, case-tracking, and integration domain."
@@ -233,6 +233,10 @@ tasks:
   - id: GAP-001
     workstream: WS-01
     title: "Map every goal requirement and production gate to current evidence, owner, task, and gap"
+    status: in_progress
+    owner: /root
+    outputs:
+      - program/gap-matrix.md
     depends_on:
       - BASE-001
       - BOUND-001
@@ -274,6 +278,40 @@ tasks:
       focused_tests: "15/15 passed"
       typecheck: passed
     parent_completion_effect: "WS02-CORP-001 remains in_progress and partial."
+  - id: WS02-DMP-ACQ-001
+    workstream: WS-02
+    title: "Verify the Antigua procedure-manual catalog and acquire the DMP v3 artifact"
+    status: completed_with_limitations
+    owner: /root
+    depends_on:
+      - WS02-CORP-001
+    outputs:
+      - .rag/source-inventory.json
+      - docs/data/antigua-procedure-manuals-source.md
+      - src/sources/documentLibraryOperations.ts
+    result:
+      commits:
+        - d98ff2a
+        - 2a8ff1c
+      catalog_transition: "missing_source -> verified"
+      dmp_v3_transition: "acquisition_pending -> acquired"
+      content_sha256: 4cbd35993b345c1f2bdb308825f1d3a6cac24ad239bdc9b087e2d99f2297e8f9
+      byte_length: 49052885
+      portable_artifact_path: verified
+      repeated_import: "noop; mutated false"
+      inventory:
+        total: 17
+        verified: 4
+        missing_source: 4
+        acquisition_pending: 8
+        acquired: 1
+        ingested: 0
+      focused_tests: "15/15 passed"
+      typecheck: passed
+      durable_storage: absent
+      malware_quarantine: absent
+      extraction_and_indexing: absent
+    parent_completion_effect: "WS02-CORP-001 remains in_progress and partial."
   - id: WS07-FOUNDATION-001
     workstream: WS-07
     title: "Build the identity, tenancy, and RBAC foundation"
@@ -295,8 +333,9 @@ tasks:
       identity_rbac_tests: "22/22 passed"
       tenant_bootstrap_tests: "14/14 passed"
       typecheck: passed
-      runtime_http_enforcement: pending
-      real_database_isolation: unproven
+      runtime_http_enforcement: "procedure-query v1 only; commit deef177"
+      real_database_isolation: "proved locally on PostgreSQL 16.14/pgvector 0.8.5 with non-owner runtime role"
+      production_topology: unproven
   - id: WS07-ID-001
     workstream: WS-07
     title: "Audit and design authentication, tenant isolation, RBAC, and denial auditing"
@@ -369,15 +408,28 @@ tasks:
   - id: WS08-PROCEDURE-QUERY-001
     workstream: WS-08
     title: "Implement a secure tenant-scoped procedure-query provider slice"
-    status: in_progress
-    owner: /root/api_security_audit
+    status: completed_with_limitations
+    owner: /root
     depends_on:
       - WS07-FOUNDATION-001
       - WS08-CONTRACT-FOUNDATION-001
     outputs:
       - src/api/v1/
       - db/migrations/004_procedure_query_api.sql
+      - db/tests/procedure_query_runtime_gate.sql
+      - scripts/procedure-query-postgres-smoke.mjs
       - docs/api/procedure-queries-v1.md
+    result:
+      commit: deef177
+      supported_output: procedure_workflow
+      focal_tests: "35/35 passed"
+      global_tests: "539/539 passed"
+      database_gate: "PostgreSQL 16.14 / pgvector 0.8.5 / non-owner non-BYPASSRLS role passed"
+      http_statuses: "200/200/409/403/400/401/500/200"
+      production_legacy_route: "non-CORS 404"
+      dependency_audit: "0 production vulnerabilities"
+    limitations:
+      - "EvidenceBundle, ProcedureAssessment, external consumer, lifecycle/approval, staging/load, and deployment remain absent."
   - id: WS09-UX-001
     workstream: WS-09
     title: "Audit and harden authenticated, accessible evidence and workflow UX"
@@ -401,8 +453,8 @@ tasks:
   - id: WS10-OPS-FOUNDATION-001
     workstream: WS-10
     title: "Build CI, non-root container, threat/privacy review, and operational runbook foundation"
-    status: in_progress
-    owner: /root/operations_foundation
+    status: completed_with_limitations
+    owner: /root
     depends_on:
       - PRG-CTX7-001
     outputs:
@@ -411,6 +463,16 @@ tasks:
       - docs/security/threat-model.md
       - docs/security/privacy-review.md
       - docs/operations/
+    result:
+      commits:
+        - fd227a7
+        - deef177
+      local_image_digest: sha256:4c0e291f1508a728d9c95c7f1d5661158781702d2eb7c825f6163db175fa3c8b
+      local_image_user: node
+      local_database_http_smoke: passed
+      deployment: not_attempted
+    limitations:
+      - "No registry, scan/signature/SBOM, Terraform, platform, secrets, observability, restore/rollback/incident drill, or deployment."
   - id: WS11-QA-001
     workstream: WS-11
     title: "Build the required hard-eval, contract, security, accessibility, and global regression matrix"
@@ -526,8 +588,26 @@ claims:
     evidence:
       - "missing_source -> verified; official URL/version/date/hash portable"
       - "optional local bytes verified; Feature 054 dry-run planned true, mutated false"
-      - "Inventory 16 total / 3 verified / 5 missing_source / 0 acquired / 0 ingested"
+      - "Inventory at reconciliation commit 58ff4ae: 16 total / 3 verified / 5 missing_source / 0 acquired / 0 ingested"
       - "15/15 focused tests and typecheck passed"
+  - id: CLAIM-DMP-ACQUIRED
+    statement: "The Antigua DMP v3 manual has controlled local acquisition evidence without extraction or ingestion claims."
+    status: supported_with_limitations
+    evidence:
+      - "Official municipal catalog and PDF URL verified; commits d98ff2a and 2a8ff1c"
+      - "49,052,885 copied bytes; SHA-256 4cbd35993b345c1f2bdb308825f1d3a6cac24ad239bdc9b087e2d99f2297e8f9"
+      - "Feature 054 repeat import noop; portable bounded inventory path; 15/15 focused tests"
+    limitations:
+      - "Git-ignored local artifact only; no durable storage, malware quarantine, extraction, indexing, corpus manifest, validity decision, or reuse license"
+  - id: CLAIM-PROCEDURE-QUERY-V1
+    statement: "The ProcedureWorkflow provider slice is implemented with tenant isolation, strict contracts, idempotency, bounded audit, and product-boundary enforcement."
+    status: supported_with_limitations
+    evidence:
+      - "Commit deef177; 35/35 focal tests and 539/539 global tests"
+      - "Clean PostgreSQL 16.14/pgvector 0.8.5 non-owner RLS gate and image-contained HTTP smoke passed"
+      - "Exact replay/conflict/corruption/retry and non-CORS production legacy 404 verified"
+    limitations:
+      - "Only ProcedureWorkflow; no neighboring consumer, full API catalog, persistent lifecycle/approval, staging/load, or production deployment"
 owners:
   orchestrator: /root
   current_control_files_owner: /root/program_tooling
@@ -545,28 +625,30 @@ owners:
     - WS-11
 branches:
   - name: "program/procedural-intelligence-prod-ready"
-    commit: "4950ba3"
-    upstream: "origin/main"
-    upstream_state: synchronized
+    commit: "deef177"
+    upstream: "origin/program/procedural-intelligence-prod-ready"
+    upstream_state: ahead
     divergence:
-      ahead: 0
+      ahead: 1
       behind: 0
     reconciliation_task: BASE-001
 prs:
   status: not_inspected
   discovery_task: BASE-001
 ci:
-  status: canonical_gate_passed
+  status: local_regression_passed
   baseline_task: WS11-QA-001
   evidence:
-    tests: "371/371 passed"
+    tests: "539/539 passed"
     typecheck: passed
     build: passed
-    source_inventory: "valid; 16 total, 3 verified, 5 missing_source, 0 acquired, 0 ingested"
+    source_inventory: "valid; 17 total, 4 verified, 4 missing_source, 1 acquired, 0 ingested"
     domain_evaluation: "6/6 passed"
     pages_verification: passed
     boundary_docs: "9 canonical documents; 70 links checked; 0 broken"
     pdm_reconciliation: "15/15 focused tests and typecheck passed"
+    procedure_query_v1: "35/35 focused tests; PostgreSQL/HTTP disposable gate passed"
+    dependency_audit: "npm audit --omit=dev found 0 vulnerabilities"
 gates:
   - id: GATE-PROD-001
     status: not_evaluated

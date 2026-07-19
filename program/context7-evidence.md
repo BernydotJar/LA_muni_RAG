@@ -1,6 +1,6 @@
 # Context7 evidence register
 
-Last updated: 2026-07-19T02:48:59Z
+Last updated: 2026-07-19T04:56:52Z
 
 Context7 is the required documentation source for implementation decisions involving APIs, frameworks, SDKs, authentication, PostgreSQL, pgvector, cloud services, Terraform, testing, observability, and security configuration. It is not an authority for legal or municipal claims.
 
@@ -96,6 +96,51 @@ Context7 is the required documentation source for implementation decisions invol
 | limitations | Context7 evidence is pinned to Ajv v8.17.1 while implementation selected ajv 8.20.0 and ajv-formats 3.0.1. Compatibility and any changed defaults or strict-mode behavior must be verified against 8.20.0 before the contract gate passes. |
 | task_id | WS08-CONTRACT-FOUNDATION-001 |
 
+### Docker production-image foundation
+
+| field | value |
+|---|---|
+| library | Docker documentation |
+| library_id | /docker/docs |
+| installed_version | local client and engine 28.5.1; runtime base selected as node:24.12.0-bookworm-slim |
+| query | Dockerfile multi-stage build, non-root USER, and HEALTHCHECK guidance |
+| retrieved_at | 2026-07-19T03:47:35Z |
+| documentation_summary | Docker's primary documentation describes multi-stage builds for separating build-time content from the final image, USER for changing the runtime identity, and HEALTHCHECK for declaring an in-container health probe. |
+| implementation_decision | Use explicit build, production-dependency, and runtime stages; copy only compiled output plus required v1 contract artifacts; run as the image's non-root node user; and probe the public health endpoint without embedding credentials. |
+| source_links | https://docs.docker.com/build/building/multi-stage/ ; https://docs.docker.com/reference/dockerfile/#user ; https://docs.docker.com/reference/dockerfile/#healthcheck |
+| limitations | A local Docker build passed, but the image has not been scanned, signed, published, deployed, or exercised under a production orchestrator. The production platform and immutable base-image digest remain human decisions. |
+| task_id | WS10-OPS-FOUNDATION-001 |
+
+### PostgreSQL logical backup and restore foundation
+
+| field | value |
+|---|---|
+| library | PostgreSQL current |
+| library_id | /websites/postgresql_current |
+| installed_version | production version not selected; local disposable security gate uses PostgreSQL 16 |
+| query | pg_dump custom-format backup, pg_restore isolated restore, archive listing, and verification guidance |
+| retrieved_at | 2026-07-19T03:47:35Z |
+| documentation_summary | PostgreSQL documents custom-format logical dumps as archives intended for pg_restore, archive listing and selective restore behavior, and transaction options for restoring into a target database. pg_verifybackup applies to physical base backups, not to the logical custom-format procedure selected here. |
+| implementation_decision | Define credential-file-based custom-format backups and restores into an isolated target, require archive inspection and application-level verification, and forbid restore tests over the active production database. |
+| source_links | https://www.postgresql.org/docs/current/app-pgdump.html ; https://www.postgresql.org/docs/current/app-pgrestore.html |
+| limitations | No production database, backup destination, retention schedule, encryption/KMS design, RPO/RTO, physical-backup/PITR plan, or completed restore drill exists. This is procedure evidence only. |
+| task_id | WS10-OPS-FOUNDATION-001 |
+
+### pgvector disposable security-gate runtime
+
+| field | value |
+|---|---|
+| library | pgvector |
+| library_id | /pgvector/pgvector |
+| installed_version | disposable gate image pgvector/pgvector:0.8.5-pg16-bookworm at sha256:1d533553fefe4f12e5d80c7b80622ba0c382abb5758856f52983d8789179f0fb |
+| query | pgvector v0.8.5 Docker tags for PostgreSQL 16 and CREATE EXTENSION vector setup |
+| retrieved_at | 2026-07-19T03:47:35Z |
+| documentation_summary | The pgvector primary repository documents PostgreSQL 13+ support, installation through CREATE EXTENSION vector, and versioned Docker tags that combine pgvector releases with PostgreSQL major versions. |
+| implementation_decision | Pin the disposable RLS integration gate to pgvector 0.8.5 on PostgreSQL 16, resolve and record the pulled digest, and create the vector extension before applying repository migrations. Do not treat that local image as the selected production database. |
+| source_links | https://github.com/pgvector/pgvector/blob/v0.8.5/README.md ; https://github.com/pgvector/pgvector/releases/tag/v0.8.5 |
+| limitations | The test container is local and disposable. Production PostgreSQL/pgvector versioning, HA, backups, monitoring, tuning, query plans, upgrade strategy, and image provenance policy remain unresolved. |
+| task_id | WS07-ID-001 |
+
 ## Enforcement policy
 
 For every task in a Context7-required category:
@@ -112,10 +157,10 @@ For every task in a Context7-required category:
 
 | task_id | category | library or service | installed version evidence | required query | status | blocker |
 |---|---|---|---|---|---|---|
-| WS03-ING-001 | PostgreSQL ingestion and idempotency | pg | package.json declares ^8.22.0; exact lockfile version must be confirmed by task owner | Transaction, retry, idempotency, and error handling guidance for the installed node-postgres version | pending | Tool available; task-specific query not yet recorded |
-| WS04-RET-001 | PostgreSQL and pgvector retrieval | PostgreSQL and pgvector | PostgreSQL/pgvector runtime versions not yet established | Vector index, distance operator, filtering, and query-plan guidance for the deployed versions | pending | Runtime versions unknown |
-| WS07-ID-001 | authentication and tenancy | /nodejs/node and /websites/postgresql_current | Node v26.5.0 observed; PostgreSQL runtime unknown | Extend retrieved crypto and RLS evidence to the selected auth/session architecture | in_progress | Node documentation version mismatch and architecture decision pending |
-| WS08-CONTRACT-FOUNDATION-001 | API contract foundation | /oai/openapi-specification/3.1.1, /websites/json-schema_understanding-json-schema, and /ajv-validator/ajv/v8.17.1 | target OpenAPI 3.1.1; selected ajv 8.20.0 and ajv-formats 3.0.1 | Apply bearer/components/strict-object guidance with Ajv2020 strict, allErrors, and addSchema | in_progress | Ajv Context7 docs v8.17.1 must be compatibility-checked against selected package v8.20.0 |
+| WS03-ING-001 | PostgreSQL ingestion and idempotency | pg | lockfile pins pg 8.22.0 | Transaction, retry, idempotency, and error handling guidance for the installed node-postgres version | pending | Provider idempotency is implemented, but ingestion-specific query/evidence is not yet recorded |
+| WS04-RET-001 | PostgreSQL and pgvector retrieval | PostgreSQL and pgvector | disposable gate: PostgreSQL 16.14 and pgvector 0.8.5 | Vector index, distance operator, filtering, and query-plan guidance for the selected production versions | in_progress | Local versions are evidence only; production versions and query plans remain unselected |
+| WS07-ID-001 | authentication and tenancy | /nodejs/node and /websites/postgresql_current | Node v26.5.0 observed; disposable runtime PostgreSQL 16.14 | Apply retrieved crypto/RLS evidence and verify the selected auth/session architecture | completed_with_limitations | Procedure-query v1 passes local DB/HTTP isolation; production topology and Node v26 doc parity remain pending |
+| WS08-CONTRACT-FOUNDATION-001 | API contract foundation | /oai/openapi-specification/3.1.1, /websites/json-schema_understanding-json-schema, and /ajv-validator/ajv/v8.17.1 | OpenAPI 3.1.1; ajv 8.20.0; ajv-formats 3.0.1 | Apply bearer/components/strict-object guidance with Ajv2020 strict, allErrors, and addSchema | completed_with_version_limitation | Executable registry/provider validation passes; Context7 Ajv docs remain v8.17.1 rather than 8.20.0 |
 | WS10-OPS-001 | cloud, Terraform, observability, security | to be discovered | no deployment/IaC version evidence established by this audit | Provider-specific deployment, rollback, logging, metrics, tracing, secrets, backup, and restore guidance | pending | Platform selection pending |
 | WS11-QA-001 | testing | Node.js test runner and TypeScript | Node v26.5.0 observed; exact TypeScript/tsx lockfile versions must be confirmed | Test isolation, coverage, failure diagnostics, and security/eval harness guidance | pending | Task-specific query not yet recorded |
 
