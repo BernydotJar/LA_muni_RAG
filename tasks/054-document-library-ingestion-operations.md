@@ -27,10 +27,13 @@
 - [x] Verify failed indexing cannot mark inventory ingested.
 - [x] Verify same version/different hash fails closed.
 - [x] Verify authority metadata maps through Feature 053 safeguards.
-- [ ] Inspect CI results and correct all failures.
-- [ ] Verify no network acquisition or out-of-scope changes.
+- [x] Inspect CI results and correct type/interface and generated-state failures.
+- [x] Verify no network acquisition or out-of-scope changes.
+- [x] Document non-transactional manifest-write and missing cross-process-lock risks.
 
 ## Independent verifier
+
+Final-head verification pending after release-document commits:
 
 - [ ] `npm run source-inventory:validate`
 - [ ] `npm run typecheck`
@@ -46,8 +49,9 @@
 
 ## Release review
 
-- [ ] Draft PR opened.
-- [ ] Final head CI evidence recorded.
-- [ ] Scope audit completed.
+- [x] Draft PR #21 opened.
+- [ ] Final-head CI evidence recorded.
+- [x] Scope audit completed.
+- [x] Decision log, risk register and requirements traceability added.
 - [ ] Human review requested.
-- [ ] No automatic merge.
+- [x] No automatic merge.
