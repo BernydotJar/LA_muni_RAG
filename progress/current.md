@@ -2,7 +2,7 @@
 
 ## Active Feature
 
-053-municipal-source-corpus-foundation
+054-document-library-ingestion-operations
 
 ## State
 
@@ -14,86 +14,89 @@ SHIP
 
 ## Dependency Resolution
 
-- PR #17 passed the complete reconciliation gate.
-- Human approval was received.
-- PR #17 was merged externally; this session did not perform the merge.
-- Reconciled base: `stack-base/052-case-portfolio-dashboard-reconciled`.
-- Reconciled merge commit: `ed2fa98427e2857956c0ed30b6a7813043ab1bfe`.
+- Feature 053 was approved and merged externally.
+- This session did not perform the merge.
+- Base branch: `stack-base/053-municipal-source-corpus-foundation-merged`.
+- Base merge commit: `aa979ddd3bfb1aa3f0a35f5a3a9b2c91482b52a7`.
+- Feature branch: `feature/054-document-library-ingestion-operations`.
+- Tracking issue: #20.
+- Draft PR: #21.
 
 ## Summary
 
-Feature 053 establishes a declarative, versioned source inventory separate from the operational corpus manifest. It records authority, jurisdiction, discovery, acquisition, extraction and ingestion claims without treating a URL or registration as proof of ingestion.
+Feature 054 adds bounded operator-facing import and ingestion operations on top of the Feature 053 source inventory. It preserves the distinction between source discovery, acquisition, extraction, indexing and publication.
 
 ## Implemented
 
-- source inventory specification and lifecycle contract
-- strict source record and manifest validation
-- explicit target/source jurisdiction and authority metadata
-- declarative-to-operational manifest reconciliation
-- duplicate version and conflicting hash detection
-- Antigua-specific evidence boundary
-- external municipality comparison boundary
-- valid domain-pack authority mapping
-- initial Antigua, national and Mixco inventory
-- validation CLI and npm command
-- deterministic and adversarial tests
-- acquisition and ingestion runbook
-- decision log, risk register and requirements traceability
-- Feature 053 CI gate
-- draft PR #18
+- `specs/054-document-library-ingestion-operations.md`
+- `src/sources/documentLibraryOperations.ts`
+- `src/cli/documentLibrary.ts`
+- `npm run document-library`
+- `src/__tests__/document-library-operations.test.ts`
+- `docs/document-library-operations.md`
+- `docs/decisions/054-document-library-operations.md`
+- `docs/risks/054-document-library-risk-register.md`
+- `docs/traceability/054-requirements-traceability.md`
+- `tasks/054-document-library-ingestion-operations.md`
+- raw-byte SHA-256 hashing for binary artifacts
+- deterministic paths constrained below the configured library root
+- copied-artifact hash verification
+- dry-run import and ingestion
+- idempotent repeated import and ingestion
+- version/hash conflict rejection
+- existing extractor and vector indexer reuse
+- inventory-to-operational-manifest reconciliation
+- sanitized machine-readable operation reports
 
-## Current Inventory Truth
+## Behavioral Guarantees
 
-- acquired documents: 0
-- ingested documents: 0
-- Mixco records are comparative for Antigua
-- priority Antigua documents without confirmed official URLs are `missing_source`
-- verified portal records do not imply acquired individual documents
+- a verified URL does not imply acquisition
+- acquisition requires a copied local artifact and matching raw-byte SHA-256
+- ingestion requires positive extraction and indexing results
+- failed indexing does not mark inventory `ingested`
+- identical repeated operations return `noop`
+- same source/version with a different hash fails closed
+- dry-run does not copy, index or mutate either manifest
+- Mixco and other municipalities remain comparative for Antigua
+- national law does not prove Antigua internal procedure
 
-## Critic Result
+## Critic Findings and Corrections
 
-The Critic found that declarative authority classes were initially being passed directly as domain-pack authority IDs. The implementation now maps each inventory authority/category to a valid domain-pack ID while preserving the original declarative authority in audit tags. Focused coverage verifies the mapping.
+- Added an index signature to `DomainDocumentMetadata` so typed domain metadata can cross the generic vector-indexing boundary safely.
+- Updated CI cleanup so the temporary typecheck diagnostic does not create a false dirty-worktree failure.
+- Documented that inventory and operational-manifest writes are separate file operations rather than a distributed transaction.
+- Documented that cross-process locking is not yet implemented and operator runs must be serialized.
 
 ## Independent Verification
 
-GitHub Actions run `29660134062` completed successfully after the Critic fix:
+GitHub Actions run `29667121105` passed on head `e73b3828daa789060c898febfaa26737415f0375`:
 
 - source inventory validation
 - TypeScript typecheck
 - build
-- source inventory tests
-- authority boundary tests
-- existing source attribution tests
+- focused document-library tests
+- existing source inventory and authority tests
 - domain evaluation
 - complete test suite
-- Pages build
-- Pages artifact verification
+- Pages build and verification
 - diff integrity
-- bounded generated artifact cleanup
+- generated artifact cleanup
 - clean generated state
+
+A final CI run is required for the documentation-complete head before PR #21 leaves draft.
 
 ## Non-Goals Preserved
 
-- no document upload UI
+- no network downloader
 - no background acquisition
-- no corpus or database write
+- no public upload UI
+- no publication or legal approval state
 - no migrations
 - no deployment
+- no auth/RBAC
 - no War Room changes
-- no workflow publication lifecycle
-- no water-project workflow
-- no tenant/auth/RBAC work
 - no political profiling or targeting
-
-## Review Artifacts
-
-- `specs/053-municipal-source-corpus-foundation.md`
-- `docs/municipal-source-inventory.md`
-- `docs/decisions/053-source-inventory-boundaries.md`
-- `docs/risks/053-source-inventory-risk-register.md`
-- `docs/traceability/053-requirements-traceability.md`
-- `tasks/053-municipal-source-corpus-foundation.md`
 
 ## Next Gate
 
-Human review of PR #18. Do not merge automatically.
+Complete the final documentation-head CI run, record immutable evidence in PR #21 and issue #20, and leave the PR ready for human review without merging.
