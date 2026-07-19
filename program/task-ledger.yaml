@@ -1,5 +1,5 @@
 schema_version: 1
-updated_at: "2026-07-19T07:07:41Z"
+updated_at: "2026-07-19T20:37:54Z"
 runtime:
   type: yaml_fallback
   farmtable_available: false
@@ -297,7 +297,8 @@ tasks:
     evidence:
       - "WS03-ARTIFACT-SAFETY-001 completed the local pre-extraction safety and quarantine slice at commit 37ff0ad."
       - "WS03-PDF-EXTRACTION-001 completed bounded isolated raw-PDF extraction, parse-once indexing, and ingestion caps at commit 3a7b531."
-      - "The parent remains partial because authenticated tenant-scoped ingestion, a real scanner, durable storage, distributed jobs, locks, audit, and real tenant-scoped vector writes are absent."
+      - "WS03-TENANT-INGESTION-001 completed tenant-scoped durable job/vector persistence, digest idempotency, leases/fencing/retry, atomic audit, and non-owner RLS gates at commit 9dcc054."
+      - "The parent remains partial because authenticated source/document APIs, a worker dispatcher, real scanner, durable object storage, distributed admission/quotas, production roles/topology, load/HA, and monitoring are absent."
     pr: null
     ci: partial
   - id: WS03-ARTIFACT-SAFETY-001
@@ -393,6 +394,65 @@ tasks:
       - "The real DMP remains acquired only and has no clean malware verdict."
     pr: null
     ci: passed_local_with_platform_limitations
+  - id: WS03-TENANT-INGESTION-001
+    workstream: WS-03
+    title: "Add tenant-scoped vector persistence and durable ingestion job controls"
+    status: completed_with_limitations
+    owner: /root
+    files:
+      - .github/workflows/ci.yml
+      - db/migrations/005_tenant_ingestion_runtime.sql
+      - db/tests/tenant_ingestion_runtime_gate.sql
+      - scripts/tenant-ingestion-postgres-smoke.mjs
+      - src/security/tenant.ts
+      - src/embeddings/chunkPlanner.ts
+      - src/embeddings/indexer.ts
+      - src/embeddings/pgVectorRepository.ts
+      - src/embeddings/tenantPgVectorRepository.ts
+      - src/embeddings/types.ts
+      - src/ingestion/ingestionJobService.ts
+      - src/ingestion/jobIdentity.ts
+      - src/ingestion/jobTypes.ts
+      - src/ingestion/vectorIndexing.ts
+      - src/runtime/evidenceDependencies.ts
+      - specs/056-tenant-vector-ingestion-runtime.md
+      - docs/tenant-ingestion-runtime.md
+      - docs/decisions/056-tenant-vector-ingestion-runtime.md
+      - docs/risks/056-tenant-vector-ingestion-risk-register.md
+      - docs/traceability/056-requirements-traceability.md
+    depends_on:
+      - WS03-PDF-EXTRACTION-001
+      - WS07-FOUNDATION-001
+      - PRG-CTX7-001
+    blockers: []
+    acceptance:
+      - "Every vector and ingestion-job read/write runs in one explicit tenant transaction and is protected by FORCE RLS for a non-owner, non-BYPASSRLS runtime role."
+      - "Raw idempotency material is digested; exact replay is stable, changed payloads conflict, and tenant-wide duplicate work converges under concurrency."
+      - "Claims use SKIP LOCKED leases with opaque tokens, heartbeat, stale-token fencing, bounded retries, terminal exhaustion, and allowlisted audit events."
+      - "Artifact identity is rechecked at enqueue and completion; vectors, version state, job state, stale-row replacement, and audit commit or roll back atomically."
+      - "Legacy unscoped vector rows are never assigned guessed ownership; unsafe migration order stops for explicit reviewed mapping."
+    evidence:
+      - "Commit 9dcc054 implements migration 005, the non-owner SQL gate, the tenant repository, durable job service, bounded planner/provider flow, compiled PostgreSQL smoke, CI service, and Feature 056 governance artifacts."
+      - "Fresh migrations 001,002,003,004,005 and supported legacy migrations 001,002,011,003,004,005 passed on PostgreSQL 16.14 with pgvector 0.8.5."
+      - "An unsafe post-003 legacy fixture with an unscoped vector row exited 3 with an explicit reviewed-tenant-mapping requirement; no ownership was inferred."
+      - "The table-non-owner NOSUPERUSER/NOBYPASSRLS SQL gate proved FORCE RLS, contract-v1 writes, A/B isolation, and zero visibility/write ability under missing or malformed tenant context."
+      - "The compiled smoke converged 50 concurrent idempotent submissions to one job and two concurrent claimers to one lease; stale leases and wrong artifact identity were fenced."
+      - "The compiled smoke also proved same chunk IDs can coexist across tenants, failed finalization rolls back all vectors/state, successful replacement removes stale chunks, and public-successful search is scoped."
+      - "Canonical regression passed 517/517 tests across 91 suites with zero failures, cancellations, or skips; typecheck and build passed."
+      - "Inventory remained valid at 17 total / 4 verified / 4 missing_source / 8 acquisition_pending / 1 acquired / 0 ingested; contracts passed 9/9 schemas and examples plus one OpenAPI document; domain evaluation passed 6/6."
+      - "npm audit --audit-level=high reported zero vulnerabilities; Pages build/verification and all 221 repository Markdown relative-link checks passed."
+      - "GitHub Actions Backend CI run 29702647686 passed commit 9dcc054 in 52 seconds, including the migration/RLS gate and compiled ingestion smoke."
+      - "Every database smoke reported controlledArtifactsRead 0; the DMP remained ignored, acquired only, artifactSafety null, and unscanned/unextracted/unindexed/unmodified."
+    limitations:
+      - "There is no authenticated ingestion API or worker dispatcher, durable object storage, real scanner, tenant quota, total attempt deadline, dead-letter/operator tooling, or production monitoring."
+      - "The migration runtime-shape constraint is NOT VALID for preserved contract-0 legacy rows; a later reviewed inventory/validation migration is still required."
+      - "Vector search remains exact and intentionally unindexed until partition/index recall, plan, and load evidence supports a production design."
+      - "Procedure-query v1 remains keyword/phrase only pending authorization and retrieval-quality evaluation of the tenant vector path."
+      - "Production role provisioning/drift detection, HA, backup/restore, capacity, upgrade/rollback, staging, and deployment are unproved."
+      - "The controlled DMP cannot enter this path until the real scanner, authenticated API/worker, durable storage, and production controls operate."
+    branch: "program/procedural-intelligence-prod-ready"
+    pr: null
+    ci: passed_remote_with_platform_limitations
   - id: WS04-RET-001
     workstream: WS-04
     title: "Measure retrieval quality and citation fidelity"

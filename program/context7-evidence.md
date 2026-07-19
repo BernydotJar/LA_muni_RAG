@@ -1,6 +1,6 @@
 # Context7 evidence register
 
-Last updated: 2026-07-19T07:07:41Z
+Last updated: 2026-07-19T20:37:54Z
 
 Context7 is the required documentation source for implementation decisions involving APIs, frameworks, SDKs, authentication, PostgreSQL, pgvector, cloud services, Terraform, testing, observability, and security configuration. It is not an authority for legal or municipal claims.
 
@@ -186,6 +186,36 @@ Context7 is the required documentation source for implementation decisions invol
 | limitations | Context7 resolved current PDF.js repository snippets rather than immutable 6.1.200 documentation, and an older v3_6_172 documentation corpus was the only versioned Context7 alternative. Exact package metadata and executable tests therefore provide the version-specific check. PDF.js requires a native canvas addon in this Node environment, and neither the library nor the Node permission model supplies a complete OS sandbox, network namespace, seccomp profile, or total native-memory bound. Parser upgrades may change normalized text and hashes. |
 | task_id | WS03-PDF-EXTRACTION-001 |
 
+### node-postgres transaction-bound clients
+
+| field | value |
+|---|---|
+| library | node-postgres |
+| library_id | /brianc/node-postgres |
+| installed_version | exact direct pg 8.22.0, confirmed by package lock and npm ls pg --depth=0 |
+| query | node-postgres Pool connect transaction same client BEGIN COMMIT ROLLBACK release error |
+| retrieved_at | 2026-07-19T20:37:54Z |
+| documentation_summary | The official node-postgres transaction guidance requires every statement in a transaction to use the same checked-out client. It explicitly warns that pool.query cannot be used for transaction statements because PostgreSQL scopes a transaction to one client connection. Transaction control is issued directly with BEGIN, COMMIT, and ROLLBACK. |
+| implementation_decision | Make the tenant transaction helper the only database entry point for job/vector operations, bind the tenant context with SET LOCAL on the checked-out client, and keep every statement through commit or rollback on that client. Preserve the original operation error, attempt rollback, and destroy rather than reuse a client whose rollback fails. Perform embedding-provider work before opening the database transaction. |
+| source_links | https://node-postgres.com/features/transactions ; https://github.com/brianc/node-postgres/tree/master/packages/pg |
+| limitations | Context7 resolved the current official node-postgres repository/docs rather than an immutable pg 8.22.0 manual. Exact-version unit and PostgreSQL integration tests provide the conformance evidence. This transaction discipline does not supply worker admission, provider deadlines, database HA, or production pool sizing. |
+| task_id | WS03-TENANT-INGESTION-001 |
+
+### PostgreSQL conflict and queue locking semantics
+
+| field | value |
+|---|---|
+| library | PostgreSQL current |
+| library_id | /websites/postgresql_current |
+| installed_version | disposable verification runtime PostgreSQL 16.14 with pgvector 0.8.5; production version unselected |
+| query | INSERT ON CONFLICT unique index atomic outcome SELECT FOR UPDATE SKIP LOCKED queue row locks statement_timestamp |
+| retrieved_at | 2026-07-19T20:37:54Z |
+| documentation_summary | PostgreSQL documents ON CONFLICT against unique constraints/indexes as the concurrency-safe alternative to a check-then-insert race. Row-level FOR UPDATE locks block conflicting writers; SKIP LOCKED intentionally provides an inconsistent general view but is suitable for queue-like consumers that should skip already claimed rows. statement_timestamp reports the start of the current statement. |
+| implementation_decision | Back digest idempotency and tenant-wide work identity with unique indexes plus ON CONFLICT/re-read logic. Claim ready jobs in a transaction with FOR UPDATE SKIP LOCKED, issue an opaque lease token, and require that token and unexpired lease on every mutation. Let PostgreSQL assign indexed_at with statement_timestamp. Prelock conflicting vector rows and commit vector replacement, document/job state, and audit atomically. |
+| source_links | https://www.postgresql.org/docs/current/sql-insert.html ; https://www.postgresql.org/docs/current/sql-select.html ; https://www.postgresql.org/docs/current/explicit-locking.html ; https://www.postgresql.org/docs/current/functions-datetime.html |
+| limitations | The disposable runtime proves PostgreSQL 16.14 behavior only. Production versions, partition/index design, query plans, lock duration, pool limits, HA/failover, backup/restore, upgrade/rollback, and load thresholds remain unselected or unproved. SKIP LOCKED is used only for queue claims, not for authoritative user-facing reads. |
+| task_id | WS03-TENANT-INGESTION-001 |
+
 ## Enforcement policy
 
 For every task in a Context7-required category:
@@ -202,7 +232,7 @@ For every task in a Context7-required category:
 
 | task_id | category | library or service | installed version evidence | required query | status | blocker |
 |---|---|---|---|---|---|---|
-| WS03-ING-001 | PostgreSQL ingestion and idempotency | pg | lockfile pins pg 8.22.0 | Transaction, retry, idempotency, and error handling guidance for the installed node-postgres version | pending | Local artifact safety and bounded PDF extraction evidence are complete under WS03-ARTIFACT-SAFETY-001 and WS03-PDF-EXTRACTION-001; tenant-scoped database/job ingestion guidance and implementation remain pending |
+| WS03-ING-001 | PostgreSQL ingestion and idempotency | /brianc/node-postgres and /websites/postgresql_current | pg 8.22.0; disposable PostgreSQL 16.14/pgvector 0.8.5 | Transaction-bound clients, concurrent idempotency, queue locking, fencing, retry, and atomic vector/job/audit handling | completed_with_limitations | WS03-TENANT-INGESTION-001 is implemented and verified locally/remotely; the parent still needs authenticated API/worker, scanner/storage, production topology, monitoring, load, and deployment evidence |
 | WS04-RET-001 | PostgreSQL and pgvector retrieval | PostgreSQL and pgvector | disposable gate: PostgreSQL 16.14 and pgvector 0.8.5 | Vector index, distance operator, filtering, and query-plan guidance for the selected production versions | in_progress | Local versions are evidence only; production versions and query plans remain unselected |
 | WS07-ID-001 | authentication and tenancy | /nodejs/node and /websites/postgresql_current | Node v26.5.0 observed; disposable runtime PostgreSQL 16.14 | Apply retrieved crypto/RLS evidence and verify the selected auth/session architecture | completed_with_limitations | Procedure-query v1 passes local DB/HTTP isolation; production topology and Node v26 doc parity remain pending |
 | WS08-CONTRACT-FOUNDATION-001 | API contract foundation | /oai/openapi-specification/3.1.1, /websites/json-schema_understanding-json-schema, and /ajv-validator/ajv/v8.17.1 | OpenAPI 3.1.1; ajv 8.20.0; ajv-formats 3.0.1 | Apply bearer/components/strict-object guidance with Ajv2020 strict, allErrors, and addSchema | completed_with_version_limitation | Executable registry/provider validation passes; Context7 Ajv docs remain v8.17.1 rather than 8.20.0 |

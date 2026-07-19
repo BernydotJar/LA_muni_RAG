@@ -12,7 +12,7 @@ Regla: un slice verde no convierte un workstream completo en achieved.
 |---|---|---|---|---|---|---|
 | WS-01 Baseline and Architecture | partial | Baseline reconciliado; boundaries, ownership, bounded contexts, ADR y control YAML versionados | Completar el mapeo requisito-por-requisito y mantener graph/ledger alineados con cada slice | Auditoría GAP-001 completa; branch/PR/CI actuales; cero claims obsoletos | P0 | — |
 | WS-02 Corpus and Source Inventory | partial | Inventario válido: 17 fuentes, 4 verificadas, 1 DMP adquirido, 4 missing, 0 ingested; gate local de seguridad disponible | Completar corpus Antigua/Mixco, autoridad/vigencia/licencia, scanner real y storage seguro sin promover comparativos | Hashes/bytes/provenance; veredicto malware real; aprobación; estados honestos; manifest reconciliado | P0 | WS-01 |
-| WS-03 Ingestion and Document Library | partial | Extractores, chunking, embeddings, manifest y CLI local; gate fail-closed de MIME/firma/tamaño/ClamAV/quarantine/retry; snapshot privada verificada; PDF binario en proceso hijo acotado; parse-once y caps de chunks/batches | Biblioteca autenticada, upload/URL acquisition, scanner operativo, aislamiento OS y capacidad aprobados, jobs distribuidos, retries, locking, audit, retention, writes tenant-scoped y APIs | Test corrupt/retry/idempotency; scanner real; sandbox/carga; integración DB/object storage; métricas; runbook | P0 | WS-02, WS-07 |
+| WS-03 Ingestion and Document Library | partial | Gate fail-closed de artefactos; PDF binario acotado; parse-once; jobs durables tenant-scoped con idempotencia por digest, leases/fencing/retry/audit; vectores tenant-scoped atómicos; RLS non-owner y CI PostgreSQL | Biblioteca/API autenticada, worker dispatcher, scanner y object storage operativos, cuotas/admisión distribuida, deadline total, dead-letter, métricas, roles/topología/load/HA productivos y activar retrieval vectorial evaluado | Scanner/storage/API/worker reales; pruebas staging/load/restore; role drift; métricas/SLO; eval de recall/citas/autorización | P0 | WS-02, WS-07 |
 | WS-04 Retrieval and Evidence | partial | Keyword/phrase/hybrid/vector, dedupe, ranking y citas | Filtros completos, reranking evaluado, contradicciones, vigencia, missing-source y groundedness | Eval corpus real con thresholds; citation fidelity; conflict visibility; isolation tests | P0 | WS-02, WS-03, WS-07 |
 | WS-05 Procedure Schema and Compiler | partial | Workflow estructurado preliminar y gaps | Procedure/version/step schema completo; lifecycle; decision gates; approval; water compiler | Workflow JSON versionado; 47 categorías de agua; citas/evidence status por paso; human review | P0 | WS-04 |
 | WS-06 Procedure Cases and Tracking | partial | Workspace/portfolio en LocalStorage | Persistencia tenant-scoped, API, current step, docs, blockers, validation, follow-up, dossier y audit | API/DB integration tests; immutable audit; binding a procedure version; authorization | P0 | WS-05, WS-07 |
@@ -30,7 +30,7 @@ Regla: un slice verde no convierte un workstream completo en achieved.
 | POST /api/v1/sources | missing | Sin auth, tenant, validation, idempotency o audit |
 | GET /api/v1/documents | missing | Sin library API |
 | POST /api/v1/documents | missing | Feature 054 es CLI local, no upload API |
-| GET /api/v1/ingestion-jobs | missing | Tabla declarada, sin service/endpoint |
+| GET /api/v1/ingestion-jobs | missing | Service tenant-scoped disponible; falta endpoint autenticado, paginación y autorización de operador |
 | POST /api/v1/search | missing | Existe GET /api/search MVP sin v1 ni filtros completos |
 | POST /api/v1/evidence-bundles | missing | Tipo interno no cumple EvidenceBundle externo |
 | GET /api/v1/procedures | missing | Sólo GET /api/procedure que compone al vuelo |
@@ -69,9 +69,9 @@ Autenticación, tenant scope, RBAC, validación, idempotencia, audit y rate limi
 | EVAL-OS-INTEGRATION-001 | partial | Provider ProcedureWorkflow y boundary pasan; falta consumer OS Electoral y prueba entre repos |
 | EVAL-CONTENT-INTEGRATION-001 | missing | Requiere ClaimPack y boundary |
 | EVAL-BOUNDARY-001 | partial | Provider rechaza estrategia/movilización/contenido; falta matriz de todos los endpoints/consumers |
-| EVAL-TENANT-001 | partial | Gate PostgreSQL 16.14 + HTTP niega A/B, audita y no filtra; falta topología aprobada y catálogo completo |
+| EVAL-TENANT-001 | partial | Gates PostgreSQL 16.14/pgvector 0.8.5 niegan A/B para procedure-query y job/vector con rol non-owner; faltan topología aprobada, drift y catálogo/API completo |
 | EVAL-CONFLICT-001 | missing | Versiones contradictorias visibles y review |
-| EVAL-CORRUPT-001 | partial | Replay corrupto se invalida/audita/reintenta; artefactos locales corruptos, tampered y scanner-failure se bloquean y admiten quarantine/retry; PDF malformed/encrypted/no-text/timeout/crash/output/stderr/protocol y mutación ABA fallan cerrado; faltan scanner real, sandbox/carga aprobados, job state y DB/object storage |
+| EVAL-CORRUPT-001 | partial | Replay corrupto, artefactos/PDF hostiles, mutación ABA, artifact mismatch, lease stale y rollback vector/job fallan cerrado; jobs/retries/DB ya tienen evidencia sintética; faltan scanner/object storage/API/worker reales y sandbox/carga aprobados |
 
 ## 5. Documentación y tooling obligatorio
 
@@ -88,6 +88,7 @@ Autenticación, tenant scope, RBAC, validación, idempotencia, audit y rate limi
 | docs/data/source-inventory.md | present | P1 |
 | docs/data/ingestion-runbook.md | present; platform controls pending | P1 |
 | docs/raw-pdf-extraction.md | present; OS sandbox, distributed admission, scanner and load approval pending | P0 |
+| docs/tenant-ingestion-runtime.md | present; API/worker/scanner/storage/production topology pending | P0 |
 | docs/security/threat-model.md | present; human review pending | P0 |
 | docs/security/tenancy.md | present; v1 slice verified | P0 |
 | docs/security/rbac.md | present; v1 slice verified | P0 |
@@ -107,7 +108,7 @@ Autenticación, tenant scope, RBAC, validación, idempotencia, audit y rate limi
 2. P0 — reconciliar source inventory, seed y artifact PDM-OT;
 3. P0 — fijar boundaries, ownership, contratos de datos y modelo tenant/RBAC;
 4. P0 — extender el provider v1 probado a documents/procedures/workflows/cases y consumers;
-5. P0 — operar scanner real y controles tenant/job/vector; sólo entonces escanear e ingerir el DMP adquirido y el corpus mínimo restante de Antigua/Mixco;
+5. P0 — conectar los controles tenant/job/vector a API/worker, operar scanner y storage durables, y aprobar roles/load/monitoring; sólo entonces escanear e ingerir el DMP adquirido y el corpus mínimo restante de Antigua/Mixco;
 6. P0 — completar retrieval filtrado y compiler versionado con human approval;
 7. P0 — implementar los nueve hard evals y regression global;
 8. P0 — cerrar plataforma, seguridad, backup/restore, rollback e incident response;
