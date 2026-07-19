@@ -41,6 +41,28 @@ export interface SourceInventoryAcquisitionEvidence {
   byteLength?: number;
 }
 
+export type SourceInventoryArtifactSafetyVerdict = "clean" | "infected" | "rejected" | "error";
+
+export interface SourceInventoryArtifactSafetyEvidence {
+  inspectedAt: string;
+  artifactPath: string;
+  contentSha256: string;
+  byteLength: number;
+  observedContentSha256?: string;
+  observedByteLength: number;
+  declaredMediaType: string;
+  detectedMediaType?: string;
+  signature?: string;
+  scannerEngine: string;
+  scannerVersion: string;
+  scannerDefinitionsVersion?: string;
+  malwareSignature?: string;
+  verdict: SourceInventoryArtifactSafetyVerdict;
+  failureCodes: string[];
+  quarantinePath?: string;
+  originalArtifactPath?: string;
+}
+
 export interface SourceInventoryExtractionEvidence {
   extractedAt: string;
   extractor: string;
@@ -75,6 +97,7 @@ export interface SourceInventoryRecord {
   effectiveFrom?: string;
   effectiveTo?: string;
   acquisition?: SourceInventoryAcquisitionEvidence;
+  artifactSafety?: SourceInventoryArtifactSafetyEvidence;
   extraction?: SourceInventoryExtractionEvidence;
   indexing?: SourceInventoryIndexingEvidence;
   failureCodes?: string[];
@@ -113,8 +136,11 @@ export type SourceInventoryValidationCode =
   | "missing_source_has_evidence"
   | "verified_requires_url_and_timestamp"
   | "acquired_requires_acquisition_evidence"
+  | "artifact_safety_evidence_mismatch"
+  | "artifact_safety_clean_evidence_invalid"
   | "ingestion_pending_requires_acquisition"
   | "ingested_requires_full_evidence"
+  | "ingested_requires_clean_artifact_safety"
   | "failed_requires_failure_code"
   | "superseded_requires_replacement"
   | "duplicate_declared_version"
@@ -181,6 +207,69 @@ const hasAcquisition = (record: SourceInventoryRecord): boolean => Boolean(
   record.acquisition.artifactPath.trim() &&
   /^[a-f0-9]{64}$/i.test(record.acquisition.contentSha256)
 );
+
+const hasArtifactSafetyShape = (value: unknown): value is SourceInventoryArtifactSafetyEvidence => {
+  if (!isObject(value)) return false;
+  const verdicts: SourceInventoryArtifactSafetyVerdict[] = ["clean", "infected", "rejected", "error"];
+  return Boolean(
+    typeof value.inspectedAt === "string" && Number.isFinite(Date.parse(value.inspectedAt)) &&
+    typeof value.artifactPath === "string" && value.artifactPath.trim() &&
+    typeof value.contentSha256 === "string" && /^[a-f0-9]{64}$/i.test(value.contentSha256) &&
+    Number.isSafeInteger(value.byteLength) && Number(value.byteLength) > 0 &&
+    (value.observedContentSha256 === undefined || (
+      typeof value.observedContentSha256 === "string" && /^[a-f0-9]{64}$/i.test(value.observedContentSha256)
+    )) &&
+    Number.isSafeInteger(value.observedByteLength) && Number(value.observedByteLength) >= 0 &&
+    typeof value.declaredMediaType === "string" && value.declaredMediaType.trim() &&
+    (value.detectedMediaType === undefined || (
+      typeof value.detectedMediaType === "string" && value.detectedMediaType.trim()
+    )) &&
+    (value.signature === undefined || (typeof value.signature === "string" && value.signature.trim())) &&
+    typeof value.scannerEngine === "string" && value.scannerEngine.trim() &&
+    typeof value.scannerVersion === "string" && value.scannerVersion.trim() &&
+    (value.scannerDefinitionsVersion === undefined || (
+      typeof value.scannerDefinitionsVersion === "string" && value.scannerDefinitionsVersion.trim()
+    )) &&
+    (value.malwareSignature === undefined || (
+      typeof value.malwareSignature === "string" && value.malwareSignature.trim()
+    )) &&
+    typeof value.verdict === "string" && verdicts.includes(value.verdict as SourceInventoryArtifactSafetyVerdict) &&
+    Array.isArray(value.failureCodes) && value.failureCodes.length <= 16 &&
+    value.failureCodes.every((code) => typeof code === "string" && /^[a-z0-9_]{1,64}$/.test(code)) &&
+    (value.quarantinePath === undefined || (
+      typeof value.quarantinePath === "string" && value.quarantinePath.trim()
+    )) &&
+    (value.originalArtifactPath === undefined || (
+      typeof value.originalArtifactPath === "string" && value.originalArtifactPath.trim()
+    ))
+  );
+};
+
+export const hasCleanArtifactSafety = (record: SourceInventoryRecord): boolean => {
+  const acquisition = record.acquisition;
+  const safety: unknown = record.artifactSafety;
+  if (!acquisition || !hasArtifactSafetyShape(safety) || safety.verdict !== "clean") return false;
+  return Boolean(
+    typeof safety.inspectedAt === "string" && safety.inspectedAt.trim() &&
+    typeof safety.artifactPath === "string" &&
+    safety.artifactPath === acquisition.artifactPath &&
+    typeof safety.contentSha256 === "string" &&
+    safety.contentSha256 === acquisition.contentSha256 &&
+    typeof safety.observedContentSha256 === "string" &&
+    safety.observedContentSha256 === acquisition.contentSha256 &&
+    Number.isSafeInteger(safety.byteLength) &&
+    safety.byteLength > 0 &&
+    acquisition.byteLength === safety.byteLength &&
+    safety.observedByteLength === safety.byteLength &&
+    typeof safety.declaredMediaType === "string" &&
+    acquisition.mediaType?.trim().toLowerCase() === safety.declaredMediaType.trim().toLowerCase() &&
+    typeof safety.detectedMediaType === "string" && safety.detectedMediaType.trim() &&
+    typeof safety.signature === "string" && safety.signature.trim() &&
+    typeof safety.scannerEngine === "string" && safety.scannerEngine.trim() &&
+    typeof safety.scannerVersion === "string" && safety.scannerVersion.trim() &&
+    Array.isArray(safety.failureCodes) && safety.failureCodes.length === 0
+  );
+};
 
 const hasExtraction = (record: SourceInventoryRecord): boolean => Boolean(
   record.extraction?.extractedAt.trim() &&
@@ -271,11 +360,54 @@ export const validateSourceInventoryRecord = (value: unknown): SourceInventoryVa
   if (record.status === "acquired" && !hasAcquisition(record)) {
     failures.push(failure("acquired_requires_acquisition_evidence", "acquired requires artifact and hash evidence.", sourceId));
   }
+  if (record.artifactSafety !== undefined && !hasArtifactSafetyShape(record.artifactSafety)) {
+    failures.push(failure(
+      "artifact_safety_clean_evidence_invalid",
+      "Artifact safety evidence has an invalid shape.",
+      sourceId
+    ));
+  } else if (record.artifactSafety) {
+    if (
+      !record.acquisition ||
+      record.artifactSafety.contentSha256 !== record.acquisition.contentSha256 ||
+      record.artifactSafety.byteLength !== record.acquisition.byteLength
+    ) {
+      failures.push(failure(
+        "artifact_safety_evidence_mismatch",
+        "Artifact safety evidence must match the acquired artifact hash and byte length.",
+        sourceId
+      ));
+    }
+    if (
+      record.artifactSafety.verdict !== "clean" &&
+      (!Array.isArray(record.artifactSafety.failureCodes) || record.artifactSafety.failureCodes.length === 0)
+    ) {
+      failures.push(failure(
+        "artifact_safety_clean_evidence_invalid",
+        "Rejected artifact safety evidence requires at least one stable failure code.",
+        sourceId
+      ));
+    }
+    if (record.artifactSafety.verdict === "clean" && !hasCleanArtifactSafety(record)) {
+      failures.push(failure(
+        "artifact_safety_clean_evidence_invalid",
+        "Clean artifact safety evidence requires matching media, signature, scanner, hash, and size fields.",
+        sourceId
+      ));
+    }
+  }
   if (record.status === "ingestion_pending" && !hasAcquisition(record)) {
     failures.push(failure("ingestion_pending_requires_acquisition", "ingestion_pending requires acquisition evidence.", sourceId));
   }
   if (record.status === "ingested" && (!hasAcquisition(record) || !hasExtraction(record) || !hasIndexing(record))) {
     failures.push(failure("ingested_requires_full_evidence", "ingested requires acquisition, extraction, and indexing evidence.", sourceId));
+  }
+  if (record.status === "ingested" && !hasCleanArtifactSafety(record)) {
+    failures.push(failure(
+      "ingested_requires_clean_artifact_safety",
+      "ingested requires matching clean artifact safety evidence.",
+      sourceId
+    ));
   }
   if (record.status === "failed" && !record.failureCodes?.length) {
     failures.push(failure("failed_requires_failure_code", "failed requires at least one failure code.", sourceId));

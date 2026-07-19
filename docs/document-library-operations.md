@@ -1,8 +1,22 @@
 # Document Library and Ingestion Operations
 
-Feature 054 adds bounded local-artifact operations on top of the Feature 053 source inventory.
+Feature 054 provides a local operator workflow above the source inventory. It is
+not yet an authenticated HTTP document library, URL-acquisition service, durable
+job queue, or production object store.
 
-## Import a local artifact
+The workflow has three separate gates:
+
+1. `import` records controlled acquisition after size, extension, declared MIME,
+   byte-signature, copy, and SHA-256 checks;
+2. `inspect` invokes a configured ClamAV scanner and records versioned safety
+   evidence or moves the artifact to a bounded quarantine root;
+3. `ingest` refuses to call any extractor unless clean evidence matches the
+   current path/hash/size/media type and is no more than 24 hours old by default.
+
+Acquisition is not safety acceptance, and safety acceptance is not extraction,
+legal approval, publication, validity, or ingestion.
+
+## 1. Import a local artifact
 
 Dry-run:
 
@@ -17,21 +31,88 @@ npm run document-library -- import \
   --dry-run
 ```
 
-Apply:
+Apply uses the same command without `--dry-run`.
 
-```bash
-npm run document-library -- import \
-  --inventory .rag/source-inventory.json \
-  --source-id SOURCE_ID \
-  --input /absolute/path/document.pdf \
-  --library-root .rag/library \
-  --document-version VERSION \
-  --media-type application/pdf
+Import requires an explicit media type. It rejects unsupported extensions,
+empty/oversized files, an extension/MIME disagreement, and bytes whose signature
+does not match PDF, DOCX, TXT, or Markdown expectations. PDFs require a header at
+the beginning and an EOF marker; this is structural validation, not malware
+analysis or proof that the document parses correctly.
+
+After validation, import computes SHA-256 over the original bytes, writes that
+validated buffer to a non-overwriting staging file, rereads it, verifies the hash,
+publishes with an atomic no-replace hard link to a deterministic path below the
+library root, removes the staging name, and only then records `acquired`. An
+existing destination is never overwritten. Repeating the same
+source/version/hash returns `noop`; a conflicting hash fails closed.
+
+## 2. Inspect and accept or quarantine
+
+Configure one supported scanner mode:
+
+```dotenv
+DOCUMENT_MALWARE_SCANNER=clamdscan
+DOCUMENT_MAX_ARTIFACT_BYTES=104857600
+DOCUMENT_MALWARE_SCAN_MAX_AGE_SECONDS=86400
+DOCUMENT_MALWARE_SCAN_TIMEOUT_MS=120000
 ```
 
-Import computes SHA-256 over raw bytes, copies the artifact to a deterministic path below the library root, verifies the copied hash, and only then changes the inventory state to `acquired`.
+`clamdscan` is preferred for repeated scans. `clamscan` is also supported. An
+optional executable override must either be the selected executable name or an
+absolute path whose basename is still that scanner; arbitrary binaries, shell
+fragments, and scanner arguments are not accepted.
+The adapter uses Node `execFile` without a shell, bounds output and runtime, and
+maps ClamAV exit codes `0`, `1`, and error states to clean, infected, and failed
+verdicts.
 
-## Ingest an acquired artifact
+Dry-run:
+
+```bash
+npm run document-library -- inspect \
+  --inventory .rag/source-inventory.json \
+  --source-id SOURCE_ID \
+  --library-root .rag/library \
+  --quarantine-root .rag/quarantine \
+  --dry-run
+```
+
+Apply uses the same command without `--dry-run`. A dry-run may invoke the scanner
+but never moves bytes or writes the inventory.
+
+A clean result records:
+
+- current artifact path, expected and observed SHA-256, and expected/observed size;
+- declared and detected media type plus structural-signature rule;
+- scanner engine, engine version, optional definitions version, inspection time,
+  and an empty failure-code list.
+
+Scanner absence, timeout, adapter failure, infection, signature failure, acquired
+hash/size drift, or a file changed during scanning fails closed before extraction.
+On an applied failure, a regular managed file is published with an atomic
+no-replace hard link to a deterministic path below the quarantine root, the
+prior managed name is removed, the inventory becomes `failed`, and
+stable failure codes are recorded. The original acquisition identity is retained;
+observed tampered bytes do not rewrite the expected hash.
+
+For a transient scanner failure with unchanged bytes, rerun `inspect` after the
+scanner is healthy. A clean retry moves the artifact from quarantine back to its
+original bounded library path and restores `acquired`. Changed bytes cannot pass a
+retry under the old source/version/hash; an operator must recover the original
+bytes or register a reviewed new version.
+
+The current production container does not install ClamAV. A future approved
+runtime must provide `clamdscan` plus a reachable, monitored `clamd` service, or a
+reviewed `clamscan` installation with current signed databases. Until then, the
+real scanner gate is intentionally unavailable and inspection fails closed.
+
+ClamAV documents that files exceeding its internal limits may otherwise be
+skipped. The standalone adapter restricts loading to official databases and
+enables encrypted-document and exceeds-limit alerts. For `clamdscan`, equivalent
+database, daemon-limit, and alert policy must be reviewed in the selected
+`clamd.conf`; application byte limits do not replace scanner
+container/decompression limits.
+
+## 3. Ingest an accepted artifact
 
 Dry-run:
 
@@ -43,33 +124,43 @@ npm run document-library -- ingest \
   --dry-run
 ```
 
-Apply:
+Apply uses the same command without `--dry-run`.
 
-```bash
-npm run document-library -- ingest \
-  --inventory .rag/source-inventory.json \
-  --corpus-manifest .rag/corpus-manifest.json \
-  --source-id SOURCE_ID
-```
+Before extraction, ingestion rechecks that the file is regular, within the
+application size policy, identical to acquisition and clean-scan evidence, and
+covered by a non-future scan inside the configured maximum age. Any failure
+returns a stable error and calls neither extractor nor indexer.
 
-Ingestion verifies the artifact hash, extracts sections, invokes the existing vector indexer, writes a matching operational-manifest record, reconciles both manifests, and only then marks the inventory record `ingested`.
+After that gate, the exact verified in-memory buffer is handed to the existing
+extractor/indexer path without rereading the mutable artifact path. That path
+writes an operational corpus-manifest record, reconciles both manifests, and only
+then records `ingested`. A failed index does not mark the inventory ingested.
 
-## Required runtime configuration
+The raw-PDF extraction gap remains open: the current TypeScript `.pdf` adapter
+expects JSONL previously generated by `scripts/extract_pdf_sections.py`, while the
+library passes acquired PDF bytes. Therefore a clean safety result is necessary
+but does not yet make raw PDF ingestion succeed. The isolated generic PDF
+extraction slice must close this before the DMP artifact is extracted or indexed.
 
-A real ingestion requires the same embedding-provider and vector-store configuration as the existing indexing pipeline. Missing configuration returns a failed operation and does not mark the inventory record as ingested.
+## Failure and recovery rules
 
-## Idempotency
+- `artifact_*mismatch`, `artifact_changed_during_scan`, and `malware_*` codes are
+  stable machine-readable outcomes; scanner stdout/stderr and file paths are not
+  copied into failure messages.
+- Quarantine and library roots must be on the same filesystem for no-replace
+  hard-link moves. The operation attempts the same no-replace move in reverse if
+  the inventory write fails.
+- File manifests still lack cross-process locking/CAS. Serialize operators until
+  durable job and locking controls exist.
+- Never delete a quarantined original merely to make a retry green. Preserve
+  provenance and follow incident handling for actual malware detections.
 
-- Reimporting the same source/version/hash returns `noop`.
-- Reingesting an already reconciled source/version/hash returns `noop`.
-- Reusing a source/version with a different hash fails closed.
+See the canonical [ingestion runbook](data/ingestion-runbook.md), the
+[Feature 054 decision log](decisions/054-document-library-operations.md), and the
+[Feature 054 risk register](risks/054-document-library-risk-register.md).
 
-## Safety boundaries
+Primary implementation references:
 
-- No network download is performed.
-- Dry-run does not copy, index, or write manifests.
-- Artifact paths are constrained below the configured library root.
-- A URL does not prove acquisition.
-- Acquisition does not prove ingestion.
-- Ingestion does not prove publication, legal approval, or institutional adoption.
-- Mixco and other municipalities remain comparative for Antigua Guatemala.
+- [Node.js `child_process.execFile`](https://nodejs.org/api/child_process.html#child_processexecfilefile-args-options-callback)
+- [ClamAV one-time scanning](https://docs.clamav.net/manual/Usage/Scanning.html)
+- [ClamAV file-type recognition](https://docs.clamav.net/manual/Signatures/FileTypeMagic.html)

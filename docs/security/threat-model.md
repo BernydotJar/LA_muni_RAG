@@ -1,7 +1,7 @@
 # Threat model
 
 Status: pre-production foundation; security review and production platform selection pending
-Last reviewed: 2026-07-18
+Last reviewed: 2026-07-19
 Scope owner: Product Engineering
 Required approvers before production: named Security owner, Privacy/Legal owner, and municipal Product owner (all pending)
 
@@ -10,6 +10,14 @@ Required approvers before production: named Security owner, Privacy/Legal owner,
 This document is a design-time threat model, not a penetration test, deployment attestation, or certification. No production backend infrastructure, WAF, secret manager, centralized observability stack, on-call integration, or disaster-recovery drill is evidenced in this repository.
 
 The repository now contains backend CI, a container definition, and one authenticated provider slice at `POST /api/v1/procedure-queries`. Static tests plus a disposable PostgreSQL 16.14/pgvector 0.8.5 gate exercised the full migration chain, a non-owner/non-`BYPASSRLS` role, tenant A/B isolation, audit/idempotency, and real HTTP decisions. That is effective local evidence for this route; it is not an image scan/signature, staging test, production role attestation, load test, deployment, or external-consumer proof.
+
+The local document-library path now validates size, extension, MIME and byte
+signature; exposes a fail-closed fixed-argument ClamAV adapter; quarantines
+applied failures; and refuses extraction without matching current clean evidence.
+Forty-three focused tests cover this slice, and the acquired DMP passed a non-mutating
+structural/hash import check. No ClamAV executable/service is installed in the
+current runtime, so the DMP has not received a malware verdict and remains only
+`acquired`.
 
 Known exposed or potentially exposed surfaces remain:
 
@@ -52,7 +60,7 @@ Each arrow crosses a trust boundary. CORS, private network placement, source URL
 | Browser -> Pages | URL parameters, DOM data, configured API URL | scheme/origin validation, no secrets, safe links | static hardening tests exist; Pages remains public |
 | Client -> API | headers, JSON body, query, tenant/resource IDs | TLS, body bounds, authentication, RBAC, tenant match, rate limits, safe errors | implemented/tested for procedure-query v1; TLS/ingress and the remaining API catalog are absent; legacy is production-disabled |
 | API -> PostgreSQL | query parameters and principal/tenant context | parameterized SQL, transaction-local tenant context, RLS, least-privilege DB role | disposable real-DB/HTTP gate passes for procedure-query v1; production provisioning, statement limits, HA and monitoring are absent |
-| Ingestion -> corpus | bytes, MIME type, filenames, URLs, extracted text | size/type/hash validation, malware policy, provenance, quarantine, human promotion | controlled local import and hashing exist; malware scanning/quarantine service absent |
+| Ingestion -> corpus | bytes, MIME type, filenames, URLs, extracted text | size/type/hash validation, malware policy, provenance, quarantine, human promotion | local signature/MIME gate, fail-closed ClamAV adapter, bounded quarantine and pre-extraction enforcement are tested; real scanner service, authenticated library, durable storage and human promotion are absent |
 | API -> logs/audit | identifiers, outcomes, errors | allowlisted fields, redaction, immutable access control, retention | v1 route persists allowlisted tenant audit and bounded tenantless auth aggregates; centralized append-only storage/access review remain absent |
 | Product -> external product | contract envelope and claims | schema validation, authenticated producer, tenant scope, idempotency, provenance | local ProcedureWorkflow provider is tested; consumer identity/interoperability and remaining adapters are absent |
 
@@ -89,7 +97,7 @@ LA Muni RAG is not an owner or storage system for internal campaign strategy, vo
 |---|---|---|---|
 | Spoofing | Client declares another `tenant_id`, role, or producer in JSON | server-derived principal; credential digest lookup; tenant/permission guard | v1 HTTP and real-DB negative tests pass; production credential provisioning/rotation and other endpoints remain required |
 | Spoofing | Forged OS Electoral or Content Agency payload | Bearer/service identity plus versioned schema | adapters and mutual producer verification are absent; contract validity alone is not authenticity |
-| Tampering | Source document changes without a version transition | SHA-256, source/version IDs, controlled import | remote reacquisition policy, malware scanning, and signed provenance are unresolved |
+| Tampering | Source document changes without a version transition | SHA-256, source/version IDs, controlled import, observed-vs-expected quarantine evidence | remote reacquisition policy, signed provenance, durable storage and cross-process locking are unresolved |
 | Tampering | Workflow/approval or ClaimPack modified after review | immutable version IDs, approval state, audit event | persistent approval lifecycle is not complete; never label a draft approved from client input |
 | Tampering | Build dependency or base image compromised | lockfile, `npm ci`, explicit Node image version, separated CI | digest pinning, SBOM, signature verification, registry policy, and dependency scanning remain pending |
 | Repudiation | Operator denies a query, import, approval, or denial | correlation/request IDs and sanitized audit events | centralized append-only audit store, clock guarantees, access review, and retention are absent |
@@ -118,6 +126,13 @@ Imported text instructs the model or workflow compiler to ignore policy, invent 
 ### TM-04: source poisoning or version substitution
 
 An operator imports a file from an unofficial URL, or an official URL later serves different bytes. Import must capture bytes, SHA-256, MIME, acquisition time, authority class, and an immutable version. Promotion to official/active needs human review. A URL alone never proves authenticity.
+
+The local workflow now validates extension/MIME/signature on import, requires a
+current path/hash/size-bound clean ClamAV verdict before extraction, and moves
+applied failures to bounded quarantine without rewriting expected identity. This
+is executable local control logic, not proof of a deployed scanner, fresh
+definitions, object-storage isolation, decompression-bomb resilience, or human
+document approval.
 
 ### TM-05: replay or idempotency collision
 

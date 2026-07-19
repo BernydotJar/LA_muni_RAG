@@ -9,3 +9,4 @@ coverage/
 artifacts/
 data/raw/
 .rag/library/
+.rag/quarantine/

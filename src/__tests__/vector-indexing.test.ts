@@ -85,6 +85,30 @@ describe("vector indexing orchestration", () => {
     assert.equal((await repository.list()).length, 1);
   });
 
+  it("indexes caller-verified bytes without rereading a mutable artifact path", async () => {
+    const verified = Buffer.from("# Verified\n\nExact bytes.", "utf8");
+    let extractedContent: string | Buffer | undefined;
+
+    const result = await indexVectorSource({
+      inputPath: "fixtures/test.md",
+      content: verified,
+      documentKey: "verified-document",
+      documentVersion: "v1",
+    }, {
+      ...baseDependencies(),
+      readFile: async () => {
+        throw new Error("mutable path must not be reread");
+      },
+      extractByPath: async (_sourcePath, input) => {
+        extractedContent = input.content;
+        return normalizedDocument;
+      },
+    });
+
+    assert.equal(result.status, "indexed");
+    assert.strictEqual(extractedContent, verified);
+  });
+
   it("preserves domain document metadata in planned vector chunks", async () => {
     const repository = createRepository();
     const metadata = {

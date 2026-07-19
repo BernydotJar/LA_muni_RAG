@@ -17,7 +17,7 @@ A source inventory record is not proof that a document was downloaded, extracted
 - `acquisition_pending`: source is verified or identified and awaiting controlled acquisition.
 - `acquired`: artifact path and SHA-256 exist.
 - `ingestion_pending`: acquired artifact awaits extraction or indexing.
-- `ingested`: acquisition, extraction, indexing, and matching operational manifest evidence exist.
+- `ingested`: clean current artifact-safety, acquisition, extraction, indexing, and matching operational manifest evidence exist.
 - `failed`: a stable failure code exists.
 - `superseded`: a replacement source record is explicit.
 
@@ -71,20 +71,22 @@ Before changing a record to `acquired`:
 
 Before changing a record to `ingested`:
 
-1. extraction completed successfully;
-2. section count is positive;
-3. index result is successful;
-4. indexed chunk count is positive;
-5. operational corpus manifest has the same document key, version, and hash;
-6. reconciliation passes.
+1. a real malware scanner returned clean for the same path/hash/size/MIME identity and the evidence is current;
+2. extraction completed successfully;
+3. section count is positive;
+4. index result is successful;
+5. indexed chunk count is positive;
+6. operational corpus manifest has the same document key, version, and hash;
+7. reconciliation passes.
 
 ## Current limitations
 
 The inventory contains one controlled local acquisition and no ingested documents. The Mixco
 library landing page, Congress decree index, Antigua PDM-OT PDF identity, and Antigua
 procedure-manual catalog are verified official discovery surfaces. The individual
-Antigua DMP v3 manual is `acquired` with a copied-byte SHA-256, but its safe
-extraction, internal approval, effective date, validity, and indexing remain pending. Other
+Antigua DMP v3 manual is `acquired` with a copied-byte SHA-256 and passed a
+non-mutating structural PDF/MIME/hash check, but no real malware scanner has
+accepted it; extraction, internal approval, effective date, validity, and indexing remain pending. Other
 priority Antigua documents without confirmed official URLs remain `missing_source`.
 
 See [Antigua procedure-manual source verification](./data/antigua-procedure-manuals-source.md)

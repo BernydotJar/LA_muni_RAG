@@ -23,6 +23,7 @@ export type VectorIndexingStatus = "indexed" | "partial" | "failed";
 
 export interface VectorIndexingInput {
   inputPath: string;
+  content?: string | Buffer;
   title?: string;
   documentKey?: string;
   documentVersion?: string;
@@ -210,7 +211,7 @@ export const indexVectorSource = async (
   }
 
   try {
-    const content = await (dependencies.readFile ?? readFile)(input.inputPath);
+    const content = input.content ?? await (dependencies.readFile ?? readFile)(input.inputPath);
     const title = input.title ?? basename(input.inputPath);
     const extract = dependencies.extractByPath ?? extractByPath;
     const document = await extract(input.inputPath, {

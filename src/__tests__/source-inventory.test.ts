@@ -43,6 +43,24 @@ const acquiredRecord = (): SourceInventoryRecord => baseRecord({
     acquiredAt: "2026-07-18T00:00:00.000Z",
     artifactPath: "data/raw/source.pdf",
     contentSha256: "a".repeat(64),
+    mediaType: "application/pdf",
+    byteLength: 100,
+  },
+  artifactSafety: {
+    inspectedAt: "2026-07-18T00:05:00.000Z",
+    artifactPath: "data/raw/source.pdf",
+    contentSha256: "a".repeat(64),
+    byteLength: 100,
+    observedContentSha256: "a".repeat(64),
+    observedByteLength: 100,
+    declaredMediaType: "application/pdf",
+    detectedMediaType: "application/pdf",
+    signature: "pdf-header-eof-v1",
+    scannerEngine: "clamav",
+    scannerVersion: "1.4.3",
+    scannerDefinitionsVersion: "27654",
+    verdict: "clean",
+    failureCodes: [],
   },
   extraction: {
     extractedAt: "2026-07-18T00:10:00.000Z",
@@ -109,6 +127,24 @@ describe("municipal source inventory", () => {
     const validation = validateSourceInventoryRecord(baseRecord({ status: "ingested" }));
     assert.equal(validation.valid, false);
     assert.ok(validation.failures.some((failure) => failure.code === "ingested_requires_full_evidence"));
+  });
+
+  it("rejects ingested state without matching clean artifact safety evidence", () => {
+    const record = acquiredRecord();
+    const validation = validateSourceInventoryRecord({ ...record, artifactSafety: undefined });
+
+    assert.equal(validation.valid, false);
+    assert.ok(validation.failures.some((failure) => failure.code === "ingested_requires_clean_artifact_safety"));
+  });
+
+  it("rejects malformed artifact safety evidence without throwing", () => {
+    const malformed = validateSourceInventoryRecord({
+      ...baseRecord(),
+      artifactSafety: { verdict: "clean", failureCodes: [] },
+    });
+
+    assert.equal(malformed.valid, false);
+    assert.ok(malformed.failures.some((failure) => failure.code === "artifact_safety_clean_evidence_invalid"));
   });
 
   it("detects duplicate versions and conflicting acquired hashes", () => {

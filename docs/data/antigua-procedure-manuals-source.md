@@ -52,6 +52,13 @@ The portable inventory stores the repository-relative artifact path rather than 
 workstation-specific absolute path. This evidence supports `acquired`; it does not
 support `extracted` or `ingested`.
 
+After the artifact-safety gate was added, a read-only `import --dry-run` against
+those same controlled bytes returned `noop`, the same SHA-256, zero sections,
+zero chunks, `mutated: false`, and no failures. This additionally proves the
+current PDF header/trailer, extension, declared MIME, size, and hash checks pass.
+It deliberately returned `artifactSafety: null`: neither `clamdscan` nor
+`clamscan` is installed in the current runtime, so no malware verdict is claimed.
+
 ## Authority and use boundary
 
 The portal is operated under the Municipality of La Antigua Guatemala domain and
@@ -79,11 +86,15 @@ The controlled acquisition completed these steps:
 
 Before extraction or ingestion:
 
-1. inspect the PDF safely and reconcile its internal title, version, approval, and
-   effective-date evidence;
-2. record a positive section count through a supported extractor;
-3. run indexing with configured production-shaped embedding and vector dependencies;
-4. reconcile a matching corpus-manifest document version and hash.
+1. run the document-library `inspect` gate with a real, current ClamAV runtime and
+   require clean evidence bound to the acquired path, hash, size, and MIME type;
+2. reconcile the internal title, version, approval, and effective-date evidence;
+3. record a positive section count through the future isolated raw-PDF extractor;
+4. run indexing with configured production-shaped embedding and tenant-scoped
+   vector dependencies;
+5. reconcile a matching corpus-manifest document version and hash.
 
 Extraction and indexing remain separate gates. Neither follows automatically from
-successful acquisition.
+successful acquisition. The current DMP record has no `artifactSafety` evidence;
+the scanner adapter and quarantine workflow are implemented locally, but a real
+scanner runtime has not evaluated this artifact.

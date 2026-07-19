@@ -34,8 +34,9 @@ Consequently, `antigua-pdm-ot` deliberately has no `acquisition`, `extraction`, 
 
 1. import of the raw PDF through Feature 054 into its bounded library root;
 2. raw-byte hash verification against the recorded SHA-256;
-3. reconciliation of the legacy extraction, or a new extraction through the current boundary;
-4. successful indexing and a matching operational corpus manifest before `ingested` is claimed.
+3. current clean ClamAV evidence bound to the path/hash/size/MIME identity;
+4. reconciliation of the legacy extraction, or a new extraction through the current isolated raw-PDF boundary;
+5. successful tenant-scoped indexing and a matching operational corpus manifest before `ingested` is claimed.
 
 ### Controlled import dry-run evidence
 
