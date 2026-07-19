@@ -78,9 +78,10 @@ jobs:
       - name: Diff integrity
         run: git diff --check "${{ github.event.pull_request.base.sha || github.event.before }}"...HEAD
 
-      - name: Restore and clean generated Pages artifact
+      - name: Restore and clean generated artifacts
         shell: bash
         run: |
+          rm -f typecheck.log
           git restore dist-pages || true
           git clean -nd -- dist-pages/
           git clean -fd -- dist-pages/
