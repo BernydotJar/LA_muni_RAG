@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "targetJurisdiction": "Municipio de La Antigua Guatemala, Sacatepéquez, Guatemala",
-  "generatedAt": "2026-07-18T00:00:00.000Z",
+  "generatedAt": "2026-07-19T03:53:06.000Z",
   "records": [
     {
       "sourceId": "gt-codigo-municipal-index",
@@ -307,10 +307,10 @@
     {
       "sourceId": "antigua-manuales-procedimientos",
       "documentKey": "antigua-manuales-procedimientos",
-      "documentVersion": "unknown",
-      "title": "Manuales de normas, procesos y procedimientos de La Antigua Guatemala",
-      "category": "procedure_manual",
-      "status": "missing_source",
+      "documentVersion": "portal-2026-07-18",
+      "title": "Biblioteca oficial de Manuales de Procedimientos de La Antigua Guatemala",
+      "category": "public_portal",
+      "status": "verified",
       "targetJurisdiction": "Municipio de La Antigua Guatemala, Sacatepéquez, Guatemala",
       "sourceJurisdiction": "Municipio de La Antigua Guatemala, Sacatepéquez, Guatemala",
       "municipality": "antigua guatemala",
@@ -318,9 +318,44 @@
       "authorityLevel": "primary",
       "officialSource": true,
       "officialForTargetJurisdiction": true,
-      "limitations": ["Documento o regla pendiente de localizar y validar."],
-      "provenanceNotes": ["Biblioteca o documentos vigentes no localizados."],
-      "tags": ["antigua", "procedimientos", "missing"]
+      "publicUrl": "https://muniantigua.gob.gt/informacionDetalle/?idinfo=6",
+      "verifiedAt": "2026-07-19T03:53:06.000Z",
+      "limitations": [
+        "El catálogo municipal está verificado, pero sus archivos individuales no se consideran adquiridos ni ingeridos.",
+        "El año y la fecha de publicación del portal no prueban aprobación interna, vigencia ni inmutabilidad de cada manual."
+      ],
+      "provenanceNotes": [
+        "El portal y su API oficial de acceso a información pública enumeraban 89 registros de manuales entre 2022 y 2026 al momento de la verificación.",
+        "Cada PDF requiere adquisición controlada, hash SHA-256 sobre bytes originales y revisión de versión antes de promoción."
+      ],
+      "tags": ["antigua", "procedimientos", "verified", "acquisition-pending"]
+    },
+    {
+      "sourceId": "antigua-mnp-dmp-v3-2026",
+      "documentKey": "antigua-mnp-dmp-v3-2026",
+      "documentVersion": "unacquired-2026-02-17-v3",
+      "title": "Manual de Normas y Procedimientos - Dirección Municipal de Planificación (versión 3)",
+      "category": "procedure_manual",
+      "status": "acquisition_pending",
+      "targetJurisdiction": "Municipio de La Antigua Guatemala, Sacatepéquez, Guatemala",
+      "sourceJurisdiction": "Municipio de La Antigua Guatemala, Sacatepéquez, Guatemala",
+      "municipality": "antigua guatemala",
+      "authorityClass": "official_municipal",
+      "authorityLevel": "primary",
+      "officialSource": true,
+      "officialForTargetJurisdiction": true,
+      "publicUrl": "https://muniantigua.gob.gt/assets/backend/info/6_2026_eu9Z7.pdf",
+      "verifiedAt": "2026-07-19T03:53:06.000Z",
+      "limitations": [
+        "PDF individual pendiente de adquisición controlada, hash, inspección y revisión de vigencia.",
+        "El servidor no publica checksum criptográfico y la fecha Last-Modified posterior a la publicación indica que la URL puede ser mutable.",
+        "No se encontró licencia expresa de redistribución; conservar atribución y exigir revisión jurídica antes de republicar."
+      ],
+      "provenanceNotes": [
+        "La API municipal oficial lo registró para 2026 con publicación 2026-02-17 17:59:00 sin zona horaria declarada.",
+        "HEAD devolvió HTTP 200, application/pdf y Content-Length 49052885; esos metadatos no sustituyen el hash de los bytes adquiridos."
+      ],
+      "tags": ["antigua", "procedimientos", "planificacion", "dmp", "acquisition-pending"]
     }
   ]
 }

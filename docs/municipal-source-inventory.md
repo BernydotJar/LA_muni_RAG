@@ -77,4 +77,12 @@ Before changing a record to `ingested`:
 
 ## Current limitations
 
-The initial inventory intentionally contains no acquired or ingested documents. The Mixco library landing page and the Congress decree index are verified as official portals, but individual artifacts remain pending acquisition. Priority Antigua documents without confirmed official URLs remain `missing_source`.
+The inventory intentionally contains no acquired or ingested documents. The Mixco
+library landing page, Congress decree index, Antigua PDM-OT PDF identity, and Antigua
+procedure-manual catalog are verified official discovery surfaces. The individual
+Antigua DMP v3 manual is queued as `acquisition_pending`, but its bytes, SHA-256,
+internal approval, effective date, and validity have not been inspected. Other
+priority Antigua documents without confirmed official URLs remain `missing_source`.
+
+See [Antigua procedure-manual source verification](./data/antigua-procedure-manuals-source.md)
+for the catalog evidence and exact promotion gate.
