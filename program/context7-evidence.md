@@ -216,6 +216,36 @@ Context7 is the required documentation source for implementation decisions invol
 | limitations | The disposable runtime proves PostgreSQL 16.14 behavior only. Production versions, partition/index design, query plans, lock duration, pool limits, HA/failover, backup/restore, upgrade/rollback, and load thresholds remain unselected or unproved. SKIP LOCKED is used only for queue claims, not for authoritative user-facing reads. |
 | task_id | WS03-TENANT-INGESTION-001 |
 
+### Node.js HTTP request streams and early rejection lifecycle
+
+| field | value |
+|---|---|
+| library | Node.js |
+| library_id | /nodejs/node |
+| installed_version | local runtime v26.5.0; CI and production image Node 24.12.0 |
+| query | IncomingMessage request body as a Readable stream; delaying consumption until authentication; unconsumed paused streams, keep-alive reuse, socket close, and bounded early rejection |
+| retrieved_at | 2026-07-20T00:42:55Z |
+| documentation_summary | Node documents server-side IncomingMessage as a Readable stream separate from the underlying socket so keep-alive connections can carry sequential messages. Readable streams generally remain paused until the application establishes a consumption or discard mechanism. Current Node server source ties IncomingMessage abort state to request/socket close and aborts queued incoming messages when the socket closes. |
+| implementation_decision | Do not attach body data listeners until Bearer authentication and the per-operation rate gate finish. Once admitted, use the existing 16-KiB draining JSON reader. When authentication, permission, admission, request-id, idempotency, or content-type fails before a framed body is consumed, set ServerResponse.shouldKeepAlive false and return Connection: close rather than draining attacker-controlled bytes or reusing a paused request. Reject framed bodies on GET under the same rule. |
+| source_links | https://nodejs.org/api/http.html#class-httpincomingmessage ; https://nodejs.org/api/stream.html#readable-streams ; https://github.com/nodejs/node/blob/main/lib/_http_incoming.js ; https://github.com/nodejs/node/blob/main/lib/_http_server.js |
+| limitations | Context7 returned current-main source and documentation rather than immutable Node 24.12.0 and 26.5.0 pages. Exact local/CI HTTP tests cover both runtime lines, including a raw body-bearing GET, but no ingress/load/slow-client capacity gate or fleet-level connection metric exists. |
+| task_id | WS03-INGESTION-API-WORKER-001 |
+
+### PostgreSQL ingestion API rate state and tenantless audit function
+
+| field | value |
+|---|---|
+| library | PostgreSQL current |
+| library_id | /websites/postgresql_current |
+| installed_version | disposable verification runtime PostgreSQL 16.14 with pgvector 0.8.5; production version unselected |
+| query | SECURITY DEFINER functions with safe fixed search_path and revoked PUBLIC execution; forced row security; INSERT ON CONFLICT counters |
+| retrieved_at | 2026-07-20T00:42:55Z |
+| documentation_summary | PostgreSQL requires SECURITY DEFINER functions to exclude untrusted writable schemas from search_path and recommends placing pg_temp last when unqualified relations are resolved. New functions receive PUBLIC execute by default, so PostgreSQL recommends revoking that access and granting narrowly within the creation transaction. Row-security examples pair ENABLE ROW LEVEL SECURITY with explicit USING/WITH CHECK policies; existing task evidence covers FORCE RLS and ON CONFLICT concurrency semantics. |
+| implementation_decision | Keep per-tenant/principal/operation rate counters in a forced-RLS table using a tenant-leading key and atomic ON CONFLICT increment. Keep anonymous authentication decisions in a separate fully revoked aggregate. Its SECURITY DEFINER function has a fixed trusted search_path, schema-qualifies every table reference, accepts only UUID correlation plus an allowlisted reason, deletes expired aggregates, and has PUBLIC execute revoked in the same migration transaction. |
+| source_links | https://www.postgresql.org/docs/current/sql-createfunction.html#SQL-CREATEFUNCTION-SECURITY ; https://www.postgresql.org/docs/current/ddl-rowsecurity.html ; https://www.postgresql.org/docs/current/sql-insert.html |
+| limitations | The function deliberately resolves no unqualified relation; any future change must preserve schema qualification or explicitly position pg_temp last. The disposable runtime proves PostgreSQL 16.14 only. Production grants, version/topology, migration ledger, traffic/retention capacity, HA/failover, and continuous RLS attestation remain unproved. |
+| task_id | WS03-INGESTION-API-WORKER-001 |
+
 ## Enforcement policy
 
 For every task in a Context7-required category:
@@ -232,7 +262,7 @@ For every task in a Context7-required category:
 
 | task_id | category | library or service | installed version evidence | required query | status | blocker |
 |---|---|---|---|---|---|---|
-| WS03-ING-001 | PostgreSQL ingestion and idempotency | /brianc/node-postgres and /websites/postgresql_current | pg 8.22.0; disposable PostgreSQL 16.14/pgvector 0.8.5 | Transaction-bound clients, concurrent idempotency, queue locking, fencing, retry, and atomic vector/job/audit handling | completed_with_limitations | WS03-TENANT-INGESTION-001 is implemented and verified locally/remotely; the parent still needs authenticated API/worker, scanner/storage, production topology, monitoring, load, and deployment evidence |
+| WS03-ING-001 | PostgreSQL ingestion, idempotency, and Node HTTP admission | /brianc/node-postgres, /websites/postgresql_current, and /nodejs/node | pg 8.22.0; disposable PostgreSQL 16.14/pgvector 0.8.5; local Node 26.5.0 and CI/image Node 24.12.0 | Transaction-bound jobs/vectors, concurrent idempotency/locking/fencing, authenticated API admission/audit, and early request-stream lifecycle | completed_with_limitations | WS03-TENANT-INGESTION-001 and WS03-INGESTION-API-WORKER-001 are verified locally/remotely; the parent still needs real scanner/storage, source administration, a running worker, production topology, quotas/monitoring, load/HA, and deployment evidence |
 | WS04-RET-001 | PostgreSQL and pgvector retrieval | PostgreSQL and pgvector | disposable gate: PostgreSQL 16.14 and pgvector 0.8.5 | Vector index, distance operator, filtering, and query-plan guidance for the selected production versions | in_progress | Local versions are evidence only; production versions and query plans remain unselected |
 | WS07-ID-001 | authentication and tenancy | /nodejs/node and /websites/postgresql_current | Node v26.5.0 observed; disposable runtime PostgreSQL 16.14 | Apply retrieved crypto/RLS evidence and verify the selected auth/session architecture | completed_with_limitations | Procedure-query v1 passes local DB/HTTP isolation; production topology and Node v26 doc parity remain pending |
 | WS08-CONTRACT-FOUNDATION-001 | API contract foundation | /oai/openapi-specification/3.1.1, /websites/json-schema_understanding-json-schema, and /ajv-validator/ajv/v8.17.1 | OpenAPI 3.1.1; ajv 8.20.0; ajv-formats 3.0.1 | Apply bearer/components/strict-object guidance with Ajv2020 strict, allErrors, and addSchema | completed_with_version_limitation | Executable registry/provider validation passes; Context7 Ajv docs remain v8.17.1 rather than 8.20.0 |

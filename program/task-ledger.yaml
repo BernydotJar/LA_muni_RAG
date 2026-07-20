@@ -1,5 +1,5 @@
 schema_version: 1
-updated_at: "2026-07-19T20:37:54Z"
+updated_at: "2026-07-20T00:42:55Z"
 runtime:
   type: yaml_fallback
   farmtable_available: false
@@ -298,7 +298,8 @@ tasks:
       - "WS03-ARTIFACT-SAFETY-001 completed the local pre-extraction safety and quarantine slice at commit 37ff0ad."
       - "WS03-PDF-EXTRACTION-001 completed bounded isolated raw-PDF extraction, parse-once indexing, and ingestion caps at commit 3a7b531."
       - "WS03-TENANT-INGESTION-001 completed tenant-scoped durable job/vector persistence, digest idempotency, leases/fencing/retry, atomic audit, and non-owner RLS gates at commit 9dcc054."
-      - "The parent remains partial because authenticated source/document APIs, a worker dispatcher, real scanner, durable object storage, distributed admission/quotas, production roles/topology, load/HA, and monitoring are absent."
+      - "WS03-INGESTION-API-WORKER-001 completed the authenticated enqueue/status API and callable immutable clean-artifact worker at commits 52ec72d and 50716cc."
+      - "The parent remains partial because source/version/upload APIs, a running worker dispatcher, real scanner, durable object storage, distributed quotas/cancellation, production roles/topology, load/HA, and monitoring are absent."
     pr: null
     ci: partial
   - id: WS03-ARTIFACT-SAFETY-001
@@ -450,6 +451,63 @@ tasks:
       - "Procedure-query v1 remains keyword/phrase only pending authorization and retrieval-quality evaluation of the tenant vector path."
       - "Production role provisioning/drift detection, HA, backup/restore, capacity, upgrade/rollback, staging, and deployment are unproved."
       - "The controlled DMP cannot enter this path until the real scanner, authenticated API/worker, durable storage, and production controls operate."
+    branch: "program/procedural-intelligence-prod-ready"
+    pr: null
+    ci: passed_remote_with_platform_limitations
+  - id: WS03-INGESTION-API-WORKER-001
+    workstream: WS-03
+    title: "Add authenticated ingestion job APIs and a bounded accepted-artifact worker"
+    status: completed_with_limitations
+    owner: /root
+    files:
+      - .github/workflows/ci.yml
+      - contracts/openapi/v1/openapi.json
+      - contracts/schemas/v1/ingestion-job-request.schema.json
+      - contracts/schemas/v1/ingestion-job-response.schema.json
+      - contracts/examples/v1/ingestion-job-request.valid.json
+      - contracts/examples/v1/ingestion-job-response.valid.json
+      - db/migrations/006_ingestion_api_runtime.sql
+      - db/tests/tenant_ingestion_runtime_gate.sql
+      - scripts/ingestion-api-postgres-smoke.mjs
+      - src/api/v1/ingestionContracts.ts
+      - src/api/v1/ingestionHandler.ts
+      - src/api/v1/ingestionIndex.ts
+      - src/api/v1/ingestionPersistence.ts
+      - src/api/v1/ingestionTypes.ts
+      - src/ingestion/acceptedArtifact.ts
+      - src/ingestion/ingestionWorker.ts
+      - specs/057-authenticated-ingestion-api-worker.md
+      - docs/api/ingestion-jobs-v1.md
+      - docs/decisions/057-authenticated-ingestion-api-worker.md
+      - docs/risks/057-authenticated-ingestion-api-worker-risk-register.md
+      - docs/traceability/057-requirements-traceability.md
+    depends_on:
+      - WS03-TENANT-INGESTION-001
+      - WS07-FOUNDATION-001
+      - PRG-CTX7-001
+    blockers: []
+    acceptance:
+      - "POST enqueue and GET status authenticate before body work, apply tenant/principal/operation admission, require document:ingest, and never leak cross-tenant existence."
+      - "The public contract is closed and clients cannot choose extractor, planner, provider, model, dimension, retries, storage location, worker, or lease material."
+      - "Exact replay, tenant-wide duplicate work, conflicts, and status use the durable Feature 056 service; API rate state forces RLS and pre-tenant audit is bounded."
+      - "Early rejected framed bodies are neither drained nor left on reusable sockets; body-bearing GET requests are rejected and the connection closes."
+      - "The worker accepts only injected immutable, exact-digest, current-clean-scan-bound bytes, verifies them before/after extraction, heartbeats, and finalizes through lease fencing."
+    evidence:
+      - "Commit 52ec72d implements migration 006, strict schemas/OpenAPI, the authenticated API, accepted-artifact worker, guarded SQL/compiled HTTP gates, CI integration, and Feature 057 governance artifacts."
+      - "Context7 Node evidence identified the paused unread-request-stream edge; commit 50716cc disables keep-alive and sends Connection: close on early unread-body rejection, with a raw body-bearing GET test and compiled-smoke assertions."
+      - "Fresh 001-006 and supported 001,002,011,003,004,005,006 migrations passed on PostgreSQL 16.14/pgvector 0.8.5; unsafe post-003 unscoped vectors stopped at migration 005 with the row preserved and no tenant column added."
+      - "The non-owner NOSUPERUSER/NOBYPASSRLS SQL gate proved forced API-rate/job/vector RLS, missing/malformed context denial, credential lookup, unreadable tenantless audit storage, and bounded failure aggregation."
+      - "The compiled HTTP smoke observed 401,403,403,202,200,202,409,429,200,404,404; replay/dedup job identity was stable, cross-tenant status did not leak, and raw credential/idempotency/artifact/control data was absent."
+      - "The worker tests prove idle behavior, immutable clean evidence, byte/policy/media bounds, parser mutation detection, pipeline match, provider retry, heartbeat, atomic completion handoff, and lease-loss safety."
+      - "Canonical regression passed 545/545 tests across 95 suites; typecheck/build passed; 11 schemas/examples and one OpenAPI document validated; inventory and 6/6 domain evaluation remained valid."
+      - "npm audit --audit-level=high found zero vulnerabilities; Pages and 227-file Markdown-link verification passed; the exact final source built in the non-root Node 24.12.0 image and loaded all ingestion validators in-container."
+      - "GitHub Actions Backend CI runs 29707579030 and 29709823390 passed commits 52ec72d and 50716cc, including migration/RLS, compiled tenant-service, and compiled ingestion-API smokes."
+      - "Every database/HTTP smoke reported controlledArtifactsRead 0; the DMP remained ignored, acquired only, and unread/unscanned/unextracted/unindexed/unmodified."
+    limitations:
+      - "No upload/source-version administration API, durable object-store resolver, quarantine IAM, persisted real-scanner evidence, scanner runtime, or definitions monitoring exists."
+      - "The worker is not a running/deployed loop; workload identity, tenant routing, total deadline/cancellation, backpressure, shutdown, quotas, dead-letter/repair tools, metrics, and alerts remain absent."
+      - "Parser/container OS isolation, native-memory/load evidence, production role provisioning/drift detection, database topology/migration ledger/restore/HA/failover, staging, and deployment remain unproved."
+      - "Procedure-query v1 does not yet consume tenant vectors; the controlled DMP is not authorized for this path and remains acquired only."
     branch: "program/procedural-intelligence-prod-ready"
     pr: null
     ci: passed_remote_with_platform_limitations
