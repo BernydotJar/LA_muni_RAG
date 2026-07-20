@@ -48,6 +48,11 @@ owns the exact pipeline configuration. If the configured embedding provider is
 absent or not compatible with the 1,536-dimension operational vector schema,
 authenticated requests fail with contract-shaped `503 capability_unavailable`.
 
+An early rejection that deliberately leaves a framed request body unread sets
+`Connection: close` and disables keep-alive after returning the bounded JSON
+error. It does not drain attacker-controlled bytes or leave a paused body on a
+reusable socket. A `GET` carrying a framed body is rejected the same way.
+
 `POST` returns `202` for `new` or `duplicate_work`, `200` for an exact replay,
 and `409` for idempotency reuse with different work or document-version/hash
 conflict. `GET` requires the same permission and returns only a job in the
@@ -152,6 +157,7 @@ reports `workerConfigured: false`. No process starts the callable worker.
 
 - [x] Strict v1 enqueue/status schemas and OpenAPI paths are canonical.
 - [x] Authentication and rate limiting precede request-body parsing.
+- [x] Early body-unread rejections close the connection after the error response.
 - [x] `document:ingest` and credential-tenant matching are enforced.
 - [x] Clients cannot choose pipeline/provider/model/dimension or storage input.
 - [x] Replay, duplicate work, conflict, and status semantics use durable state.

@@ -32,6 +32,10 @@ Both methods require:
 
 Authentication and the tenant/principal/operation rate gate complete before the
 body is parsed. The shared HTTP reader caps JSON bodies at 16 KiB.
+If authentication, authorization, admission, or an early header check rejects a
+request before consuming a framed body, the response sets `Connection: close`;
+the server neither drains unbounded attacker input nor reuses a socket with a
+paused body. `GET` requests with a framed body are rejected on the same rule.
 
 ## Enqueue request
 

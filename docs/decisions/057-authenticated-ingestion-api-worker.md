@@ -86,3 +86,13 @@ artifact reads. The workflow has no deployment permission or step.
 
 Reason: production-readiness evidence must not silently broaden artifact access
 or release authority.
+
+## D-057-12 — Close connections for deliberately unread request bodies
+
+Authentication, permission, rate, and early-header denials do not consume body
+bytes. Their bounded response disables keep-alive and sends `Connection: close`;
+framed bodies on `GET` are rejected under the same rule.
+
+Reason: Node HTTP request bodies are readable streams that can remain paused
+when unconsumed. Draining arbitrary rejected input creates a bandwidth sink,
+while reusing the paused socket can pin request/connection state.

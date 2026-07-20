@@ -161,6 +161,7 @@ try {
   assert.equal(unauthenticated.response.status, 401);
   assert.equal(unauthenticated.body.tenant_id, null);
   assert.equal(unauthenticated.body.error.code, "unauthorized");
+  assert.equal(unauthenticated.response.headers.get("connection"), "close");
   assert.equal(unauthenticated.text.includes("synthetic_secret"), false);
 
   const viewerRequestId = randomUUID();
@@ -171,6 +172,7 @@ try {
   });
   assert.equal(viewerDenied.response.status, 403);
   assert.equal(viewerDenied.body.error.code, "forbidden");
+  assert.equal(viewerDenied.response.headers.get("connection"), "close");
 
   const mismatchRequestId = randomUUID();
   const tenantDenied = await post({
@@ -238,6 +240,7 @@ try {
   assert.equal(limited.response.status, 429);
   assert.equal(limited.body.error.code, "rate_limit_exceeded");
   assert.ok(Number(limited.response.headers.get("retry-after")) >= 1);
+  assert.equal(limited.response.headers.get("connection"), "close");
 
   const ownStatus = await get({ token: TOKEN_A, jobId });
   assert.equal(ownStatus.response.status, 200);

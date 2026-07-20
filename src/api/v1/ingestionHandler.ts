@@ -61,6 +61,14 @@ const contentTypeIsJson = (req: IncomingMessage): boolean => {
   return Boolean(value && /^application\/json(?:\s*;|$)/i.test(value));
 };
 
+const requestMayHaveUnreadBody = (req: IncomingMessage): boolean => {
+  if (req.method === "POST") return true;
+  if (req.headers["transfer-encoding"] !== undefined) return true;
+  const contentLength = req.headers["content-length"];
+  if (Array.isArray(contentLength)) return true;
+  return typeof contentLength === "string" && contentLength.trim() !== "0";
+};
+
 const sendResponse = (res: ServerResponse, response: IngestionApiHttpResponse): void => {
   const headers: Record<string, string | number> = {
     "content-type": "application/json; charset=utf-8",
@@ -70,6 +78,10 @@ const sendResponse = (res: ServerResponse, response: IngestionApiHttpResponse): 
   };
   if (response.wwwAuthenticate) headers["www-authenticate"] = WWW_AUTHENTICATE;
   if (response.retryAfterSeconds) headers["retry-after"] = response.retryAfterSeconds;
+  if (response.closeConnection) {
+    res.shouldKeepAlive = false;
+    headers.connection = "close";
+  }
   res.writeHead(response.statusCode, headers);
   res.end(response.body);
 };
@@ -141,6 +153,7 @@ const knownErrorResponse = async (
     outcome: IngestionApiAuditRecord["outcome"];
     reasonCode: string;
     jobId?: string;
+    closeConnection?: boolean;
   }
 ): Promise<IngestionApiHttpResponse> => {
   const auditId = dependencies.createUuid();
@@ -169,6 +182,7 @@ const knownErrorResponse = async (
       }),
       requestId,
       ...(error.statusCode === 429 ? { retryAfterSeconds: 1 } : {}),
+      ...(event.closeConnection ? { closeConnection: true } : {}),
     };
   } catch {
     const fallbackAuditId = dependencies.createUuid();
@@ -181,6 +195,7 @@ const knownErrorResponse = async (
         auditId: fallbackAuditId,
       }),
       requestId,
+      ...(event.closeConnection ? { closeConnection: true } : {}),
     };
   }
 };
@@ -391,6 +406,7 @@ const handlePost = async (
         eventType: "integration.ingestion_job.request_rejected",
         outcome: "blocked",
         reasonCode: "invalid_idempotency_key",
+        closeConnection: true,
       }
     );
   }
@@ -409,6 +425,7 @@ const handlePost = async (
         eventType: "integration.ingestion_job.request_rejected",
         outcome: "blocked",
         reasonCode: "unsupported_content_type",
+        closeConnection: true,
       }
     );
   }
@@ -662,6 +679,7 @@ const handleAuthenticated = async (
   headerRequestId: { requestId: string; valid: boolean },
   operation: IngestionApiOperation
 ): Promise<IngestionApiHttpResponse> => {
+  const unreadBody = requestMayHaveUnreadBody(req);
   try {
     requirePermission(principal, "document:ingest");
   } catch {
@@ -675,6 +693,7 @@ const handleAuthenticated = async (
         eventType: "integration.ingestion_job.authorization_denied",
         outcome: "blocked",
         reasonCode: "permission_denied",
+        closeConnection: unreadBody,
       }
     );
   }
@@ -689,6 +708,27 @@ const handleAuthenticated = async (
         eventType: "integration.ingestion_job.request_rejected",
         outcome: "blocked",
         reasonCode: "invalid_request_id",
+        closeConnection: unreadBody,
+      }
+    );
+  }
+
+  if (req.method === "GET" && unreadBody) {
+    return knownErrorResponse(
+      dependencies,
+      principal,
+      headerRequestId.requestId,
+      operation,
+      requestInputError(
+        "request_body_not_allowed",
+        "GET ingestion status does not accept a body",
+        "/"
+      ),
+      {
+        eventType: "integration.ingestion_job.request_rejected",
+        outcome: "blocked",
+        reasonCode: "request_body_not_allowed",
+        closeConnection: true,
       }
     );
   }
@@ -710,6 +750,7 @@ const handleAuthenticated = async (
       eventType: "integration.ingestion_job.request_rejected",
       outcome: "blocked",
       reasonCode: "invalid_method",
+      closeConnection: unreadBody,
     }
   );
 };
@@ -750,6 +791,7 @@ export const handleIngestionJobV1 = async (
       }),
       requestId: headerRequestId.requestId,
       wwwAuthenticate: true,
+      closeConnection: requestMayHaveUnreadBody(req),
     });
     return;
   }
@@ -762,7 +804,10 @@ export const handleIngestionJobV1 = async (
       operation
     );
     if (rateResponse) {
-      sendResponse(res, rateResponse);
+      sendResponse(res, {
+        ...rateResponse,
+        ...(requestMayHaveUnreadBody(req) ? { closeConnection: true } : {}),
+      });
       return;
     }
     const response = await handleAuthenticated(

@@ -19,12 +19,14 @@ describe("authenticated ingestion API and worker documentation", () => {
     assert.match(spec, /does not.*start a worker process/is);
     assert.match(spec, /DMP remains\s+`acquired`/);
     assert.match(spec, /controlledArtifactsRead: 0/);
+    assert.match(spec, /Connection: close/);
 
     assert.match(api, /document:ingest/);
     assert.match(api, /not an upload or scanner endpoint/);
     assert.match(api, /workerConfigured: false/);
     assert.match(api, /does not include the artifact digest/);
     assert.match(api, /lease token/);
+    assert.match(api, /paused body/);
     assert.match(runbook, /job request/);
     assert.match(runbook, /no DMP bytes were read/);
   });

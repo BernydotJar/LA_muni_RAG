@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { randomUUID } from "node:crypto";
-import type { Server } from "node:http";
+import { request as httpRequest, type IncomingHttpHeaders, type Server } from "node:http";
 import { describe, it } from "node:test";
 import {
   InMemoryIngestionApiPersistence,
@@ -277,6 +277,42 @@ const get = async (
   return { response, text, json: JSON.parse(text) as Record<string, unknown> };
 };
 
+const getWithBody = async (
+  harness: Harness
+): Promise<{
+  statusCode: number;
+  headers: IncomingHttpHeaders;
+  text: string;
+  json: Record<string, unknown>;
+}> => new Promise((resolve, reject) => {
+  const request = httpRequest(
+    `${harness.baseUrl}/api/v1/ingestion-jobs/${JOB_ID}`,
+    {
+      method: "GET",
+      headers: {
+        authorization: `Bearer ${TOKEN}`,
+        "content-length": "1",
+        "x-request-id": REQUEST_ID,
+      },
+    },
+    (response) => {
+      const chunks: Buffer[] = [];
+      response.on("data", (chunk: Buffer) => chunks.push(chunk));
+      response.on("end", () => {
+        const text = Buffer.concat(chunks).toString("utf8");
+        resolve({
+          statusCode: response.statusCode ?? 0,
+          headers: response.headers,
+          text,
+          json: JSON.parse(text) as Record<string, unknown>,
+        });
+      });
+    }
+  );
+  request.on("error", reject);
+  request.end("x");
+});
+
 const assertApiError = async (
   result: { response: Response; json: Record<string, unknown> },
   status: number,
@@ -296,6 +332,7 @@ describe("ingestion job API v1", () => {
       const result = await post(harness, "{bad json", { raw: true, authorization: null });
       await assertApiError(result, 401, "unauthorized");
       assert.equal(result.response.headers.get("www-authenticate"), 'Bearer realm="la-muni-rag"');
+      assert.equal(result.response.headers.get("connection"), "close");
       assert.equal(result.json.tenant_id, null);
       assert.equal(harness.jobService.enqueueInputs.length, 0);
       const repeated = await post(harness, requestBody(), { authorization: null });
@@ -326,12 +363,13 @@ describe("ingestion job API v1", () => {
     const roleHarness = await startHarness({ roles: ["viewer"] });
     const tenantHarness = await startHarness();
     try {
-      const role = await post(roleHarness, requestBody());
+      const role = await post(roleHarness, "{bad json", { raw: true });
       const tenant = await post(tenantHarness, requestBody({ tenant_id: TENANT_B }));
       await assertApiError(role, 403, "forbidden");
       await assertApiError(tenant, 403, "forbidden");
       assert.deepEqual(role.json.error, tenant.json.error);
       assert.equal(roleHarness.jobService.enqueueInputs.length, 0);
+      assert.equal(role.response.headers.get("connection"), "close");
       assert.equal(tenantHarness.jobService.enqueueInputs.length, 0);
       assert.equal(
         roleHarness.persistence.audits.at(-1)?.eventType,
@@ -350,16 +388,20 @@ describe("ingestion job API v1", () => {
   it("rejects malformed headers, request-id mismatch, and schema extensions before enqueue", async () => {
     const harness = await startHarness();
     try {
+      const invalidKey = await post(harness, requestBody(), { idempotencyKey: "short" });
       await assertApiError(
-        await post(harness, requestBody(), { idempotencyKey: "short" }),
+        invalidKey,
         400,
         "invalid_idempotency_key"
       );
+      assert.equal(invalidKey.response.headers.get("connection"), "close");
+      const invalidContentType = await post(harness, requestBody(), { contentType: "text/plain" });
       await assertApiError(
-        await post(harness, requestBody(), { contentType: "text/plain" }),
+        invalidContentType,
         400,
         "unsupported_content_type"
       );
+      assert.equal(invalidContentType.response.headers.get("connection"), "close");
       await assertApiError(
         await post(harness, requestBody(), { requestId: OTHER_REQUEST_ID }),
         400,
@@ -385,6 +427,7 @@ describe("ingestion job API v1", () => {
       const validators = await validatorsPromise;
       assert.equal(validators.response(created.json), true, JSON.stringify(validators.response.errors));
       assert.equal(created.json.result, "new");
+      assert.notEqual(created.response.headers.get("connection"), "close");
       assert.equal(jobService.enqueueInputs[0]?.principalId, PRINCIPAL_A);
       assert.deepEqual(jobService.enqueueInputs[0]?.pipelineConfig, pipelineConfig);
       assert.equal(jobService.enqueueInputs[0]?.idempotencyKey, IDEMPOTENCY_KEY);
@@ -467,6 +510,21 @@ describe("ingestion job API v1", () => {
     }
   });
 
+  it("rejects a framed GET body and closes the connection without reading job state", async () => {
+    const harness = await startHarness();
+    try {
+      const result = await getWithBody(harness);
+      assert.equal(result.statusCode, 400);
+      assert.equal(result.headers.connection, "close");
+      assert.equal((result.json.error as { code: string }).code, "request_body_not_allowed");
+      const validators = await validatorsPromise;
+      assert.equal(validators.apiError(result.json), true, JSON.stringify(validators.apiError.errors));
+      assert.equal(harness.jobService.getInputs.length, 0);
+    } finally {
+      await stopHarness(harness);
+    }
+  });
+
   it("rate-limits per operation and emits one bounded denial audit", async () => {
     const harness = await startHarness({ enqueueRateLimit: 1 });
     try {
@@ -474,6 +532,7 @@ describe("ingestion job API v1", () => {
       const blocked = await post(harness, requestBody());
       await assertApiError(blocked, 429, "rate_limit_exceeded");
       assert.equal(blocked.response.headers.get("retry-after"), "60");
+      assert.equal(blocked.response.headers.get("connection"), "close");
       const repeated = await post(harness, requestBody());
       await assertApiError(repeated, 429, "rate_limit_exceeded");
       assert.equal(
@@ -482,6 +541,7 @@ describe("ingestion job API v1", () => {
         ).length,
         1
       );
+      assert.equal(harness.jobService.enqueueInputs.length, 1);
     } finally {
       await stopHarness(harness);
     }

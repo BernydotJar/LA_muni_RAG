@@ -4,6 +4,7 @@
 |---|---|---|
 | Canonical enqueue/status contracts | ingestion request/response schemas, examples, OpenAPI paths | strict registry and OpenAPI tests; 11 schemas/examples pass |
 | Authenticate before body parsing | `handleIngestionJobV1` authenticates before `readJsonBody` | malformed unauthenticated body returns uniform 401 |
+| Release early rejected request streams | unread framed-body responses disable keep-alive and send `Connection: close`; body-bearing GET is rejected | 401/403/429/header HTTP assertions and compiled smoke |
 | Apply bounded admission before work | operation-specific `authenticatedRateGate` | unit rate test and real 429/DB counter smoke |
 | Enforce role and tenant | `document:ingest`, `requireTenantMatch` | viewer and body-tenant 403 tests plus real HTTP smoke |
 | Keep pipeline server-owned | closed profile and dependency-owned config | schema extension rejection and enqueue-input assertions |

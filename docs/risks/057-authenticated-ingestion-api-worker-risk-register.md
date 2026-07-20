@@ -4,7 +4,7 @@
 |---|---|---|---|
 | R57-01 | Caller declares another tenant | credential-derived tenant plus exact body match and RLS | Local HTTP/DB denial passes; production identity provisioning pending |
 | R57-02 | Viewer or integration client enqueues work | explicit `document:ingest` permission | Local role-denial test passes; administrative role governance pending |
-| R57-03 | Anonymous/over-limit body triggers expensive work | auth and per-operation rate gate before parsing | Local order test passes; ingress/global abuse controls and load evidence absent |
+| R57-03 | Anonymous/over-limit body triggers expensive work or pins a paused request stream | auth and per-operation rate gate before parsing; early unread-body errors close rather than drain/reuse the connection | Local order/connection tests pass; ingress/global abuse controls and load evidence absent |
 | R57-04 | Caller chooses unsafe/incompatible pipeline | closed profile with server-owned config and 1,536 dimension | Controlled in code; provider approval/capacity and rotation procedure pending |
 | R57-05 | Cross-tenant/missing job IDs become an oracle | same scoped lookup and uniform 404 | Real DB HTTP parity passes; timing/load side-channel review pending |
 | R57-06 | Response leaks artifact/control credentials | closed schema omits digest, raw key, worker, lease, provider/model | Contract/HTTP checks pass; centralized log/trace redaction unproven |

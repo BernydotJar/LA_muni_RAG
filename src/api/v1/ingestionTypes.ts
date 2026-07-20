@@ -151,6 +151,7 @@ export interface IngestionApiHttpResponse {
   requestId: string;
   retryAfterSeconds?: number;
   wwwAuthenticate?: boolean;
+  closeConnection?: boolean;
 }
 
 export interface AuthenticatedIngestionContext {
