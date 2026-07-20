@@ -70,6 +70,8 @@ const durableJob = (
   principalId: PRINCIPAL_A,
   documentVersionId: VERSION_ID,
   artifactSha256: ARTIFACT_SHA256,
+  artifactObjectId: null,
+  artifactScanId: null,
   status: "queued",
   attemptCount: 0,
   maxAttempts: 3,

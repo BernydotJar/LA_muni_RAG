@@ -29,6 +29,9 @@ export interface AcceptedArtifact {
   tenantId: string;
   documentVersionId: string;
   artifactSha256: string;
+  /** Exact persisted object and clean-scan rows bound to the worker lease. */
+  artifactObjectId: string;
+  artifactScanId: string;
   /** Immutable object generation/version, never a mutable latest alias. */
   objectVersion: string;
   originalFilename: string;
@@ -41,6 +44,8 @@ export interface AcceptedArtifactRequest {
   tenantId: string;
   documentVersionId: string;
   artifactSha256: string;
+  artifactObjectId: string;
+  artifactScanId: string;
 }
 
 export interface AcceptedArtifactResolver {
@@ -88,8 +93,12 @@ export const verifyAcceptedArtifact = (
     !isCanonicalUuid(expected.documentVersionId) ||
     typeof expected.artifactSha256 !== "string" ||
     !SHA256_HEX_PATTERN.test(expected.artifactSha256) ||
+    !isCanonicalUuid(expected.artifactObjectId) ||
+    !isCanonicalUuid(expected.artifactScanId) ||
     !isCanonicalUuid(artifact.tenantId) ||
     !isCanonicalUuid(artifact.documentVersionId) ||
+    !isCanonicalUuid(artifact.artifactObjectId) ||
+    !isCanonicalUuid(artifact.artifactScanId) ||
     typeof artifact.artifactSha256 !== "string" ||
     !SHA256_HEX_PATTERN.test(artifact.artifactSha256)
   ) {
@@ -98,6 +107,8 @@ export const verifyAcceptedArtifact = (
   if (
     artifact.tenantId.toLowerCase() !== expected.tenantId.toLowerCase() ||
     artifact.documentVersionId.toLowerCase() !== expected.documentVersionId.toLowerCase() ||
+    artifact.artifactObjectId.toLowerCase() !== expected.artifactObjectId.toLowerCase() ||
+    artifact.artifactScanId.toLowerCase() !== expected.artifactScanId.toLowerCase() ||
     artifact.artifactSha256 !== expected.artifactSha256
   ) {
     throw new AcceptedArtifactError(
@@ -224,6 +235,8 @@ export const verifyAcceptedArtifact = (
     ...artifact,
     tenantId: artifact.tenantId.toLowerCase(),
     documentVersionId: artifact.documentVersionId.toLowerCase(),
+    artifactObjectId: artifact.artifactObjectId.toLowerCase(),
+    artifactScanId: artifact.artifactScanId.toLowerCase(),
     content,
     mediaType: structural.declaredMediaType,
     safety: { ...safety },

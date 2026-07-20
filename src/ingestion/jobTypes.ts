@@ -55,6 +55,9 @@ export interface DurableIngestionJob {
   documentVersionId: string;
   /** Accepted raw-artifact identity; safe to return to the trusted worker. */
   artifactSha256: string;
+  /** Exact persisted acceptance rows. Null until a current clean object is leased. */
+  artifactObjectId: string | null;
+  artifactScanId: string | null;
   status: DurableIngestionJobStatus;
   attemptCount: number;
   maxAttempts: number;
@@ -84,6 +87,8 @@ export interface CompleteIngestionJobInput {
   jobId: string;
   leaseToken: string;
   artifactSha256: string;
+  artifactObjectId: string;
+  artifactScanId: string;
   records: EmbeddingVectorRecord[];
 }
 

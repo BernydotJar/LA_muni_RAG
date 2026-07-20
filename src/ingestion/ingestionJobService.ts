@@ -24,6 +24,8 @@ const JOB_COLUMNS = `
   requested_by_principal_id,
   document_version_id,
   encode(artifact_sha256, 'hex') AS artifact_sha256,
+  artifact_object_id,
+  artifact_scan_id,
   status,
   attempt_count,
   max_attempts,
@@ -45,6 +47,8 @@ const QUALIFIED_JOB_COLUMNS = `
   job.requested_by_principal_id,
   job.document_version_id,
   encode(job.artifact_sha256, 'hex') AS artifact_sha256,
+  job.artifact_object_id,
+  job.artifact_scan_id,
   job.status,
   job.attempt_count,
   job.max_attempts,
@@ -165,18 +169,32 @@ const EXHAUST_EXPIRED_SQL = `
 
 const LEASE_NEXT_SQL = `
   WITH candidate AS (
-    SELECT id
-    FROM rag.ingestion_jobs
-    WHERE tenant_id = $1::uuid
-      AND job_type = '${INGESTION_JOB_TYPE}'
-      AND attempt_count < max_attempts
+    SELECT
+      job.id,
+      object.id AS artifact_object_id,
+      scan.id AS artifact_scan_id
+    FROM rag.ingestion_jobs AS job
+    JOIN rag.artifact_objects AS object
+      ON object.tenant_id = job.tenant_id
+     AND object.document_version_id = job.document_version_id
+     AND object.expected_sha256 = job.artifact_sha256
+     AND object.status = 'accepted'
+     AND object.accepted_until > statement_timestamp()
+    JOIN rag.artifact_scans AS scan
+      ON scan.id = object.accepted_scan_id
+     AND scan.tenant_id = object.tenant_id
+     AND scan.artifact_object_id = object.id
+     AND scan.verdict = 'clean'
+    WHERE job.tenant_id = $1::uuid
+      AND job.job_type = '${INGESTION_JOB_TYPE}'
+      AND job.attempt_count < job.max_attempts
       AND (
-        (status = 'queued' AND available_at <= statement_timestamp())
+        (job.status = 'queued' AND job.available_at <= statement_timestamp())
         OR
-        (status = 'processing' AND lease_expires_at <= statement_timestamp())
+        (job.status = 'processing' AND job.lease_expires_at <= statement_timestamp())
       )
-    ORDER BY available_at, created_at, id
-    FOR UPDATE SKIP LOCKED
+    ORDER BY job.available_at, job.created_at, job.id
+    FOR UPDATE OF job SKIP LOCKED
     LIMIT 1
   )
   UPDATE rag.ingestion_jobs AS job
@@ -189,6 +207,8 @@ const LEASE_NEXT_SQL = `
     lease_token_sha256 = decode($3, 'hex'),
     lease_expires_at = statement_timestamp() + make_interval(secs => $4),
     heartbeat_at = statement_timestamp(),
+    artifact_object_id = candidate.artifact_object_id,
+    artifact_scan_id = candidate.artifact_scan_id,
     last_error_code = NULL,
     last_error_retryable = NULL,
     updated_at = statement_timestamp()
@@ -240,6 +260,24 @@ const LOCK_DOCUMENT_VERSION_SQL = `
     AND version.tenant_id = $2::uuid
     AND document.status = 'active'
   FOR UPDATE OF version;
+`;
+
+const LOCK_ACCEPTED_ARTIFACT_SQL = `
+  SELECT object.id
+  FROM rag.artifact_objects AS object
+  JOIN rag.artifact_scans AS scan
+    ON scan.id = object.accepted_scan_id
+   AND scan.tenant_id = object.tenant_id
+   AND scan.artifact_object_id = object.id
+  WHERE object.id = $1::uuid
+    AND object.tenant_id = $2::uuid
+    AND object.document_version_id = $3::uuid
+    AND object.expected_sha256 = decode($4, 'hex')
+    AND scan.id = $5::uuid
+    AND scan.verdict = 'clean'
+    AND object.status = 'accepted'
+    AND object.accepted_until > statement_timestamp()
+  FOR SHARE OF object, scan;
 `;
 
 const COMPLETE_JOB_SQL = `
@@ -443,6 +481,10 @@ const rowToJob = (row: Record<string, unknown> | undefined): DurableIngestionJob
     !JOB_STATUSES.has(row.status as DurableIngestionJobStatus) ||
     !Number.isSafeInteger(row.attempt_count) ||
     !Number.isSafeInteger(row.max_attempts) ||
+    (row.artifact_object_id !== null && !isCanonicalUuid(row.artifact_object_id)) ||
+    (row.artifact_scan_id !== null && !isCanonicalUuid(row.artifact_scan_id)) ||
+    ((row.status === "processing" || row.status === "processed") &&
+      (!isCanonicalUuid(row.artifact_object_id) || !isCanonicalUuid(row.artifact_scan_id))) ||
     (row.last_error_code !== null && typeof row.last_error_code !== "string") ||
     (row.last_error_retryable !== null && typeof row.last_error_retryable !== "boolean")
   ) {
@@ -454,6 +496,8 @@ const rowToJob = (row: Record<string, unknown> | undefined): DurableIngestionJob
     principalId: row.requested_by_principal_id,
     documentVersionId: row.document_version_id,
     artifactSha256: row.artifact_sha256,
+    artifactObjectId: row.artifact_object_id as string | null,
+    artifactScanId: row.artifact_scan_id as string | null,
     status: row.status as DurableIngestionJobStatus,
     attemptCount: row.attempt_count as number,
     maxAttempts: row.max_attempts as number,
@@ -698,7 +742,11 @@ export class PostgresIngestionJobService {
   }
 
   async complete(input: CompleteIngestionJobInput): Promise<CompleteIngestionJobResult> {
-    if (!SHA256_HEX_PATTERN.test(input.artifactSha256)) {
+    if (
+      !SHA256_HEX_PATTERN.test(input.artifactSha256) ||
+      !isCanonicalUuid(input.artifactObjectId) ||
+      !isCanonicalUuid(input.artifactScanId)
+    ) {
       throw new IngestionJobError(
         "ingestion_artifact_digest_invalid",
         "Completion requires the accepted lowercase SHA-256 artifact identity."
@@ -723,6 +771,15 @@ export class PostgresIngestionJobService {
         );
       }
       if (
+        input.artifactObjectId.toLowerCase() !== job.artifactObjectId ||
+        input.artifactScanId.toLowerCase() !== job.artifactScanId
+      ) {
+        throw new IngestionJobError(
+          "ingestion_artifact_acceptance_mismatch",
+          "Completion acceptance identity does not match the leased job."
+        );
+      }
+      if (
         version.length !== 1 ||
         typeof documentIdentity?.document_key !== "string" ||
         typeof documentIdentity?.document_title !== "string" ||
@@ -734,6 +791,20 @@ export class PostgresIngestionJobService {
         throw new IngestionJobError(
           "ingestion_artifact_identity_mismatch",
           "Locked document version no longer matches the leased artifact identity."
+        );
+      }
+      const acceptance = rowsFrom(await client.query(LOCK_ACCEPTED_ARTIFACT_SQL, [
+        input.artifactObjectId,
+        job.tenantId,
+        job.documentVersionId,
+        job.artifactSha256,
+        input.artifactScanId,
+      ]));
+      if (acceptance.length !== 1) {
+        throw new IngestionJobError(
+          "ingestion_artifact_acceptance_rejected",
+          "Persisted artifact acceptance changed before vector publication.",
+          true
         );
       }
 

@@ -42,6 +42,8 @@ export interface IngestionWorkerJobService {
     jobId: string;
     leaseToken: string;
     artifactSha256: string;
+    artifactObjectId: string;
+    artifactScanId: string;
     records: EmbeddingVectorRecord[];
   }): Promise<CompleteIngestionJobResult>;
   fail(input: {
@@ -238,10 +240,19 @@ export class TenantIngestionWorker {
     lease: LeasedIngestionJob,
     artifact: AcceptedArtifact
   ): AcceptedArtifact {
+    if (!lease.job.artifactObjectId || !lease.job.artifactScanId) {
+      throw new AcceptedArtifactError(
+        "artifact_acceptance_unavailable",
+        "Leased job has no persisted immutable object and clean-scan binding.",
+        true
+      );
+    }
     return verifyAcceptedArtifact({
       tenantId: lease.job.tenantId,
       documentVersionId: lease.job.documentVersionId,
       artifactSha256: lease.job.artifactSha256,
+      artifactObjectId: lease.job.artifactObjectId,
+      artifactScanId: lease.job.artifactScanId,
     }, artifact, {
       now: this.options.now,
       policy: this.options.policy,
@@ -267,12 +278,21 @@ export class TenantIngestionWorker {
     heartbeat.start();
     try {
       assertPipelineMatchesProvider(lease.job, this.embeddingProvider);
+      if (!lease.job.artifactObjectId || !lease.job.artifactScanId) {
+        throw new AcceptedArtifactError(
+          "artifact_acceptance_unavailable",
+          "Leased job has no persisted immutable object and clean-scan binding.",
+          true
+        );
+      }
       const artifact = this.verify(
         lease,
         await this.artifactResolver.resolveAcceptedArtifact({
           tenantId: lease.job.tenantId,
           documentVersionId: lease.job.documentVersionId,
           artifactSha256: lease.job.artifactSha256,
+          artifactObjectId: lease.job.artifactObjectId,
+          artifactScanId: lease.job.artifactScanId,
         })
       );
       await heartbeat.checkpoint();
@@ -323,6 +343,8 @@ export class TenantIngestionWorker {
         jobId: lease.job.jobId,
         leaseToken: lease.leaseToken,
         artifactSha256: lease.job.artifactSha256,
+        artifactObjectId: artifact.artifactObjectId,
+        artifactScanId: artifact.artifactScanId,
         records: prepared.records,
       });
       return {

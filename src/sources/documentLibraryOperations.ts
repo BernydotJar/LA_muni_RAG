@@ -1,6 +1,5 @@
 import { createHash } from "node:crypto";
-import { chmod, link, lstat, mkdir, mkdtemp, readFile, realpath, rename, rm, stat, unlink, writeFile } from "node:fs/promises";
-import { tmpdir } from "node:os";
+import { link, lstat, mkdir, readFile, realpath, rename, stat, unlink, writeFile } from "node:fs/promises";
 import { dirname, extname, isAbsolute, join, relative, resolve, sep } from "node:path";
 import { extractByPath } from "../ingestion/registry.js";
 import type { NormalizedDocument } from "../ingestion/types.js";
@@ -26,6 +25,7 @@ import {
   type MalwareScanResult,
   type MalwareScanner,
 } from "./artifactSafety.js";
+import { scanVerifiedArtifactSnapshot } from "./scanVerifiedArtifact.js";
 import {
   hasCleanArtifactSafety,
   sourceInventoryRecordToDomainMetadata,
@@ -559,39 +559,6 @@ const safetyFailures = (codes: string[]): DocumentLibraryFailure[] => codes.map(
 const resolveScanner = (dependencies: DocumentLibraryDependencies): MalwareScanner | undefined =>
   dependencies.malwareScanner ?? createClamAvScannerFromEnv(dependencies.env);
 
-const scanVerifiedSnapshot = async (
-  buffer: Buffer,
-  originalPath: string,
-  scanner: MalwareScanner
-): Promise<MalwareScanResult> => {
-  const directory = await mkdtemp(join(tmpdir(), "la-muni-artifact-scan-"));
-  try {
-    await chmod(directory, 0o700);
-    const extension = extname(originalPath).toLowerCase().replace(/[^a-z0-9.]/g, "");
-    const snapshotPath = join(directory, `artifact${extension}`);
-    await writeFile(snapshotPath, buffer, { flag: "wx", mode: 0o600 });
-    const expectedHash = sha256Bytes(buffer);
-    const before = await readFile(snapshotPath);
-    if (before.byteLength !== buffer.byteLength || sha256Bytes(before) !== expectedHash) {
-      throw new ArtifactSafetyError(
-        "artifact_scan_snapshot_mismatch",
-        "Private malware-scan snapshot does not match the verified artifact bytes."
-      );
-    }
-    const result = await scanner.scan(snapshotPath);
-    const after = await readFile(snapshotPath);
-    if (after.byteLength !== buffer.byteLength || sha256Bytes(after) !== expectedHash) {
-      throw new ArtifactSafetyError(
-        "artifact_scan_snapshot_changed",
-        "Private malware-scan snapshot changed during inspection."
-      );
-    }
-    return result;
-  } finally {
-    await rm(directory, { recursive: true, force: true });
-  }
-};
-
 const ensureDestinationAbsent = async (
   path: string,
   dependencies: DocumentLibraryDependencies
@@ -665,7 +632,7 @@ export const inspectLibraryArtifact = async (
       try {
         const scanner = resolveScanner(dependencies);
         scan = scanner
-          ? await scanVerifiedSnapshot(buffer!, managed.resolvedPath, scanner)
+          ? await scanVerifiedArtifactSnapshot(buffer!, managed.resolvedPath, scanner)
           : {
               verdict: "error",
               engine: "not_configured",

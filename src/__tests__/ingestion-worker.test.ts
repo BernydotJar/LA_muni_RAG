@@ -24,6 +24,8 @@ const TENANT_ID = "11111111-1111-4111-8111-111111111111";
 const PRINCIPAL_ID = "33333333-3333-4333-8333-333333333333";
 const VERSION_ID = "aaaaaaaa-0000-4000-8000-000000000106";
 const JOB_ID = "88888888-8888-4888-8888-888888888888";
+const ARTIFACT_OBJECT_ID = "99999999-9999-4999-8999-999999999999";
+const ARTIFACT_SCAN_ID = "77777777-7777-4777-8777-777777777777";
 const FIXED_TIME = new Date("2026-07-19T21:00:00.000Z");
 const CONTENT = Buffer.from("Procedimiento municipal verificado para pruebas.", "utf8");
 const DIGEST = artifactSha256(CONTENT);
@@ -34,6 +36,8 @@ const job = (overrides: Partial<DurableIngestionJob> = {}): DurableIngestionJob 
   principalId: PRINCIPAL_ID,
   documentVersionId: VERSION_ID,
   artifactSha256: DIGEST,
+  artifactObjectId: ARTIFACT_OBJECT_ID,
+  artifactScanId: ARTIFACT_SCAN_ID,
   status: "processing",
   attemptCount: 1,
   maxAttempts: 3,
@@ -63,6 +67,8 @@ const artifact = (overrides: Partial<AcceptedArtifact> = {}): AcceptedArtifact =
   tenantId: TENANT_ID,
   documentVersionId: VERSION_ID,
   artifactSha256: DIGEST,
+  artifactObjectId: ARTIFACT_OBJECT_ID,
+  artifactScanId: ARTIFACT_SCAN_ID,
   objectVersion: "object-generation-000001",
   originalFilename: "manual.txt",
   mediaType: "text/plain",
@@ -101,6 +107,8 @@ class StubWorkerService implements IngestionWorkerJobService {
     jobId: string;
     leaseToken: string;
     artifactSha256: string;
+    artifactObjectId: string;
+    artifactScanId: string;
     records: unknown[];
   }> = [];
   failInputs: Array<{
@@ -128,6 +136,8 @@ class StubWorkerService implements IngestionWorkerJobService {
     jobId: string;
     leaseToken: string;
     artifactSha256: string;
+    artifactObjectId: string;
+    artifactScanId: string;
     records: never[];
   }): Promise<CompleteIngestionJobResult> {
     this.completeInputs.push(structuredClone(input));

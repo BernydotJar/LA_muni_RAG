@@ -31,6 +31,8 @@ const storedJob = {
   requested_by_principal_id: OWNER,
   document_version_id: VERSION,
   artifact_sha256: ARTIFACT,
+  artifact_object_id: null,
+  artifact_scan_id: null,
   status: "queued",
   attempt_count: 0,
   max_attempts: 3,
