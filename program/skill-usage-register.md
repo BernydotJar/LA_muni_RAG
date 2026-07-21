@@ -206,6 +206,18 @@ The canonical set contains 70 checked links and 0 broken links.
 - evidence: contracts 11/11, domain eval 8/8, EVAL-OS-INTEGRATION-001 5/5, integrated suite 574/576 with two explicit skips, typecheck/build/Pages/audit passed
 - result: passed locally with remote PostgreSQL/HTTP smoke and consumer interoperability still pending
 
+
+### WS08-CLAIM-PACK-001
+
+- skill: none matched from the installed skill directory; repository execution followed `RTK.md`
+- task: implement and independently harden a dedicated Content Agency ClaimPack provider without adding Content Agency production capabilities
+- inputs: ClaimPack schema, product-boundary ADR/docs, identity/RBAC/RLS foundation, evidence identity mapper, Content Agency integration contract
+- producer evidence: concurrent producer patches were captured under `/tmp` and reviewed; procedure-query request/handler residues were excluded in favor of a dedicated route and request schema
+- outputs: `POST /api/v1/claim-packs`, strict request schema/example/OpenAPI, migration 008, RLS/idempotency/rate/audit persistence, compiled smoke, SQL gate, API/security/privacy docs, and `EVAL-CONTENT-INTEGRATION-001`
+- critic/fixer findings: caller-owned legal disclaimer removed; valid_until changed from same-instant to bounded server-owned expiry; inference/validation-required claims fail closed; uniform 403 preserved; workflow limitations and contradiction caveat retained; expired/corrupt replay invalidated
+- verification: commit `e8ac74f`; ClaimPack eval 7/7; contracts 12/12; contract tests 14/14; integrated suite 588/590 with two explicit skips and zero failures; all eight implemented named eval gates, typecheck, build, Pages verification, and npm audit passed
+- result: provider passed locally with remote PostgreSQL/HTTP gate, external Content Agency consumer, cross-product revocation, staging/load, and deployment still pending
+
 ## AutoSkills dry-run evidence
 
 The exact goal command was constrained to offline mode so npx could not fetch or install a package:

@@ -1,5 +1,5 @@
 schema_version: 1
-generated_at: "2026-07-21T06:46:34Z"
+generated_at: "2026-07-21T07:42:43Z"
 program:
   id: LA-MUNI-RAG-PROD
   objective: "Make LA Muni RAG production-ready within its evidence, procedure, workflow, case-tracking, and integration domain."
@@ -12,26 +12,30 @@ program:
     - SAFETY_STOP
 baseline:
   origin_main_commit: "4950ba3c24dbe7d9891d5cec8d7ba5f57db3ef9c"
-  observed_branch: "program/procedural-intelligence-prod-ready"
-  observed_commit: "ef86c14b07f5e8cb1528ba91a2e2c037aa4a4041"
+  observed_branch: "feature/claim-pack-provider-v1"
+  observed_commit: "e8ac74f53837919a9ed444ab251c3f89ff65187f"
+  local_program_branch_commit: "942669b8d47f1b04f181926beecb6824394d36c4"
   upstream: origin/program/procedural-intelligence-prod-ready
   upstream_commit: "6987f9d78f2d69a96b522ddfb920cd1ed1100437"
   upstream_state: local_ahead_publication_blocked
   divergence:
-    ahead: 4
+    ahead: 13
     behind: 0
   divergence_from_origin_main:
-    ahead: 27
+    ahead: 36
     behind: 0
-  worktree: clean_at_observation
+  local_program_divergence:
+    ahead: 12
+    behind: 0
+  worktree: clean_at_feature_commit
   repository_instructions:
     - README.md
     - RTK.md
   canonical_gate:
-    status: passed_local_with_remote_publication_blocked
+    status: passed_local_with_remote_publication_and_claim_pack_db_blockers
     tests:
-      passed: 550
-      total: 552
+      passed: 588
+      total: 590
       skipped: 2
       failed: 0
     typecheck: passed
@@ -50,7 +54,15 @@ baseline:
     hard_evals:
       EVAL-PROCEDURE-001: passed_with_corpus_and_lifecycle_limitations
       EVAL-WATER-001: passed_with_corpus_and_runtime_limitations
-    pages_verification: not_rerun_on_current_head
+      EVAL-MIXCO-001: passed_with_corpus_and_corroboration_limitations
+      EVAL-OS-INTEGRATION-001: passed_with_external_consumer_and_assessment_limitations
+      EVAL-CONTENT-INTEGRATION-001: passed_with_external_consumer_and_remote_db_limitations
+      EVAL-BOUNDARY-001: passed_for_current_provider_surface
+      EVAL-TENANT-001: passed_for_current_provider_and_disposable_gate_with_topology_limitations
+      EVAL-CONFLICT-001: missing
+      EVAL-CORRUPT-001: passed_for_current_failure_surfaces_with_storage_limitations
+    pages_verification: passed
+    dependency_audit: "0 vulnerabilities"
     remote_ci: blocked_before_publication
 runtime:
   preferred: farmtable
@@ -670,6 +682,47 @@ tasks:
     depends_on:
       - WS05-PROC-001
       - WS07-ID-001
+  - id: WS08-CLAIM-PACK-001
+    workstream: WS-08
+    title: "Implement a secure Content Agency ClaimPack provider"
+    status: completed_with_limitations
+    owner: /root
+    depends_on:
+      - WS07-FOUNDATION-001
+      - WS08-CONTRACT-FOUNDATION-001
+      - WS08-PROCEDURE-QUERY-001
+    blockers:
+      - BLK-CLOUD-PUSH-001
+      - BLK-CLAIM-PACK-DB-001
+    outputs:
+      - contracts/schemas/v1/claim-pack-request.schema.json
+      - contracts/schemas/v1/claim-pack.schema.json
+      - contracts/openapi/v1/openapi.json
+      - src/api/v1/claimPackHandler.ts
+      - src/api/v1/claimPackPersistence.ts
+      - db/migrations/008_claim_pack_api.sql
+      - db/tests/claim_pack_runtime_gate.sql
+      - scripts/claim-pack-postgres-smoke.mjs
+      - src/__tests__/eval-content-integration-001.test.ts
+      - docs/api/claim-packs-v1.md
+    result:
+      commit: e8ac74f
+      endpoint: "POST /api/v1/claim-packs"
+      contract_validation: "12 schemas / 12 examples / 1 OpenAPI 3.1.1 document valid"
+      contract_tests: "14/14 passed"
+      eval_content_integration: "7/7 passed"
+      integrated_tests: "588 passed / 590 total / 2 skipped / 0 failed"
+      supported_output: claim_pack
+      exact_replay: true
+      expiry_regeneration: true
+      evidence_no_promotion: true
+      content_generation: false
+      dependency_audit: "0 vulnerabilities"
+      pages_verification: passed
+      database_gate: "wired, not run on current HEAD because pinned pgvector image layer registration is unsupported in this sandbox"
+    limitations:
+      - "No Content Agency consumer contract, cross-product revocation/supersession, staging/load test, production role/topology, or deployment."
+      - "The remote PostgreSQL/HTTP gate requires publication and Backend CI."
   - id: WS08-INT-001
     workstream: WS-08
     title: "Implement and contract-test versioned OS Electoral and Content Agency interfaces"
@@ -678,14 +731,23 @@ tasks:
     completed_slices:
       - os_electoral_evidence_bundle_provider
       - os_electoral_procedure_workflow_provider
+      - content_agency_claim_pack_provider
     result:
-      provider_commit: 9c9803b
+      os_provider_commits:
+        - 9c9803b
+        - 00f8678
+      claim_pack_provider_commit: e8ac74f
       eval_os_integration: "5/5 passed after critic hardening"
-      external_consumer: pending
-      content_agency_claim_pack_provider: pending
+      eval_content_integration: "7/7 passed after producer/critic/fixer verification"
+      external_consumers: pending
+      procedure_assessment: pending
     limitations:
-      - "ProcedureAssessment and the Content Agency ClaimPack provider remain unavailable."
-      - "No cross-repository consumer contract has run."
+      - "No cross-repository consumer contract has run for OS Electoral or Content Agency."
+      - "ProcedureAssessment, cross-product revocation/supersession, staging/load, and deployment remain absent."
+      - "ClaimPack PostgreSQL/HTTP evidence for the current HEAD awaits remote CI."
+    blockers:
+      - BLK-CLOUD-PUSH-001
+      - BLK-CLAIM-PACK-DB-001
     depends_on:
       - BOUND-001
       - WS04-RET-001
@@ -710,10 +772,10 @@ tasks:
       limitation: "Documentation v8.17.1 differs from implementation v8.20.0; executable strict validation provides compatibility evidence."
     result:
       commit: 2449064
-      json_schemas: 11
-      valid_examples: 11
+      json_schemas: 12
+      valid_examples: 12
       openapi_documents: 1
-      focal_tests: "13/13 passed"
+      focal_tests: "14/14 passed"
       contract_validation: passed
       typecheck: passed
   - id: WS08-PROCEDURE-QUERY-001
@@ -834,9 +896,16 @@ tasks:
     completed_slices:
       - WS11-EVAL-PROCEDURE-001
       - WS05-WATER-001
-    current_state: "Two named hard evals pass focused gates; the integrated local regression passes, but seven named evals or their full corpus/runtime proof remain incomplete."
+      - EVAL-MIXCO-001
+      - EVAL-OS-INTEGRATION-001
+      - EVAL-CONTENT-INTEGRATION-001
+      - EVAL-BOUNDARY-001
+      - EVAL-TENANT-001
+      - EVAL-CORRUPT-001
+    current_state: "Eight of nine named hard evals pass focused gates and the integrated local regression passes; EVAL-CONFLICT-001 plus full corpus/runtime/consumer proof remain incomplete."
     blockers:
       - BLK-CLOUD-PUSH-001
+      - BLK-CLAIM-PACK-DB-001
     depends_on:
       - GAP-001
     integration_dependencies:
@@ -893,15 +962,28 @@ blockers:
       - WS05-WATER-001
       - WS11-EVAL-PROCEDURE-001
       - WS11-QA-001
+      - WS08-CLAIM-PACK-001
       - remote_ci
       - pull_request_publication
     state: blocked_external
     condition: "Cloud Sandbox MCP cannot publish the local program commits through its dedicated git_push operation."
     evidence:
       - "Two dedicated git_push calls failed while the connector attempted to initialize an internal daemon/NAT without the required sandbox network privileges."
-      - "At 2026-07-21T06:46:34Z implementation HEAD ef86c14 was 4 ahead / 0 behind origin/program/procedural-intelligence-prod-ready at 6987f9d before this control reconciliation."
+      - "At 2026-07-21T07:42:43Z feature implementation HEAD e8ac74f was 13 ahead / 0 behind origin/program/procedural-intelligence-prod-ready at 6987f9d; local program branch 942669b was 12 ahead / 0 behind."
       - "No raw git push or privilege escalation was used to bypass the connector boundary."
     next_safe_action: "Retry the dedicated connector after its runtime privilege issue is fixed, then execute remote Backend CI on the exact published HEAD."
+  - id: BLK-CLAIM-PACK-DB-001
+    affects:
+      - WS08-CLAIM-PACK-001
+      - WS08-INT-001
+      - WS11-QA-001
+      - remote_ci
+    state: blocked_external
+    condition: "The current Cloud Sandbox Docker storage driver cannot register the pinned pgvector image layers for the migration-008 SQL/HTTP gate."
+    evidence:
+      - "Pinned pgvector image layer registration failed with operation not supported; no local SQL pass was claimed."
+      - "Migration 008, the non-owner SQL gate, compiled smoke, and CI wiring are committed in e8ac74f."
+    next_safe_action: "Publish the exact feature commit after BLK-CLOUD-PUSH-001 is repaired and run Backend CI with the pinned service."
 critical_path:
   parallel_entry:
     - GAP-001
@@ -929,6 +1011,7 @@ critical_path:
       - REL-VERIFY-001
   current_bottlenecks:
     - BLK-CLOUD-PUSH-001
+    - BLK-CLAIM-PACK-DB-001
 claims:
   - id: CLAIM-PROD-READY
     statement: "LA Muni RAG is production-ready within its defined product domain."
@@ -948,12 +1031,14 @@ claims:
     evidence:
       - program/context7-evidence.md
   - id: CLAIM-CANONICAL-BASELINE
-    statement: "The canonical local branch preserves the origin/main baseline and its current local regression passes."
-    status: supported_with_publication_blocker
+    statement: "The canonical local implementation preserves origin/main and its current global regression passes."
+    status: supported_with_publication_and_remote_runtime_blockers
     evidence:
-      - "origin/main 4950ba3; implementation head ef86c14; local branch remains ahead of origin/main with no reverse divergence"
-      - "550/552 tests passed with 2 explicit skips and 0 failures; typecheck, build, inventory, contracts, audit, and domain evaluation 8/8 passed"
+      - "origin/main 4950ba3; local program branch 942669b; feature implementation head e8ac74f; no reverse divergence"
+      - "588/590 tests passed with 2 explicit skips and 0 failures; eight implemented named eval gates, typecheck, build, inventory, contracts 12/12, audit, Pages, and domain evaluation 8/8 passed"
       - "origin program branch remains 6987f9d because BLK-CLOUD-PUSH-001 prevents publication"
+    limitations:
+      - "Migration-008 SQL/HTTP evidence for this HEAD awaits remote CI because BLK-CLAIM-PACK-DB-001 prevents a local pgvector service."
   - id: CLAIM-GENERIC-PROCEDURE-HARD-EVAL
     statement: "A literal generic procedure query yields conservative, schema-valid research workflow JSON with selective identity-bound citations."
     status: supported_with_corpus_and_lifecycle_limitations
@@ -1036,16 +1121,24 @@ claims:
     limitations:
       - "No upload/source administration, real scanner, durable object-store resolver, running worker process, production roles/topology, quotas, observability, load/HA, or deployment"
       - "The controlled DMP remains acquired only and was not read, scanned, extracted, indexed, promoted, removed, or mutated"
+  - id: CLAIM-CLAIM-PACK-V1
+    statement: "A dedicated Content Agency ClaimPack provider returns citation-preserving evidence bounds without generating content or campaign strategy."
+    status: supported_locally_with_external_consumer_and_remote_database_limitations
+    evidence:
+      - "Commit e8ac74f; EVAL-CONTENT-INTEGRATION-001 7/7; contracts 12/12; contract tests 14/14; integrated regression 588/590 with two explicit skips and zero failures"
+      - "Authentication-before-body, RBAC, tenant/credential binding, exact replay, expiry, corruption invalidation, abstention, Mixco comparison, and uniform product-boundary denial are covered"
+      - "Migration 008, non-owner SQL gate, compiled HTTP smoke, and CI wiring are versioned"
+    limitations:
+      - "No Content Agency consumer contract, current-head PostgreSQL smoke, cross-product revocation, staging/load, or deployment"
   - id: CLAIM-PROCEDURE-QUERY-V1
-    statement: "The ProcedureWorkflow provider slice is implemented with tenant isolation, strict contracts, idempotency, bounded audit, and product-boundary enforcement."
+    statement: "The EvidenceBundle and draft ProcedureWorkflow provider slice is implemented with tenant isolation, strict contracts, idempotency, bounded audit, and product-boundary enforcement."
     status: supported_with_limitations
     evidence:
-      - "Commit deef177; 35/35 focal tests and canonical Node summary 457/457 in a clean detached worktree"
-      - "The prior 539 figure was a reporter marker count and has been corrected"
-      - "Clean PostgreSQL 16.14/pgvector 0.8.5 non-owner RLS gate and image-contained HTTP smoke passed"
+      - "Commits deef177, 9c9803b, and 00f8678; EVAL-OS-INTEGRATION-001 5/5; evidence-use monotonicity verified"
+      - "Clean historical PostgreSQL 16.14/pgvector 0.8.5 non-owner RLS gate and image-contained HTTP smoke passed"
       - "Exact replay/conflict/corruption/retry and non-CORS production legacy 404 verified"
     limitations:
-      - "Only ProcedureWorkflow; no neighboring consumer, full API catalog, persistent lifecycle/approval, staging/load, or production deployment"
+      - "ProcedureAssessment, neighboring consumer, full API catalog, persistent lifecycle/approval, staging/load, and production deployment remain absent"
 owners:
   orchestrator: /root
   current_control_files_owner: /root/program_tooling
@@ -1063,19 +1156,29 @@ owners:
     - WS-11
 branches:
   - name: "program/procedural-intelligence-prod-ready"
-    commit: "ef86c14b07f5e8cb1528ba91a2e2c037aa4a4041"
-    implementation_commits:
-      - "a69fb15f322931f67fc7b52e084d1dbd80add0a2"
-      - "1d129f0f08a04c72f1d5c24aaac5ab5e53bf71f4"
-      - "ef86c14b07f5e8cb1528ba91a2e2c037aa4a4041"
+    commit: "942669b8d47f1b04f181926beecb6824394d36c4"
     upstream: "origin/program/procedural-intelligence-prod-ready"
     upstream_commit: "6987f9d78f2d69a96b522ddfb920cd1ed1100437"
     upstream_state: local_ahead_publication_blocked
     divergence:
-      ahead: 4
+      ahead: 12
       behind: 0
     reconciliation_task: BASE-001
     blocker: BLK-CLOUD-PUSH-001
+  - name: "feature/claim-pack-provider-v1"
+    commit: "e8ac74f53837919a9ed444ab251c3f89ff65187f"
+    base_commit: "942669b8d47f1b04f181926beecb6824394d36c4"
+    implementation_commits:
+      - "e8ac74f53837919a9ed444ab251c3f89ff65187f"
+    divergence_from_origin_program:
+      ahead: 13
+      behind: 0
+    divergence_from_origin_main:
+      ahead: 36
+      behind: 0
+    blockers:
+      - BLK-CLOUD-PUSH-001
+      - BLK-CLAIM-PACK-DB-001
 prs:
   status: no_open_pr_for_current_local_commits
   blocker: BLK-CLOUD-PUSH-001
@@ -1084,22 +1187,25 @@ ci:
   status: local_regression_passed_remote_current_head_blocked
   baseline_task: WS11-QA-001
   evidence:
-    tests: "550 passed / 552 total / 2 skipped / 0 failed across 101 suites"
-    eval_procedure: "4/4 passed; conservative unknown classification; one identity-bound citation per step; canonical v1 mapping"
-    eval_water: "4/4 passed; 47 categories; selective citation; canonical v1 mapping"
-    historical_procedure_query_tests: "457/457 at deef177; prior 539 reporter-marker count corrected"
+    tests: "588 passed / 590 total / 2 skipped / 0 failed across 108 suites"
+    eval_procedure: "4/4 passed"
+    eval_water: "4/4 passed"
+    eval_mixco: "4/4 passed"
+    eval_os_integration: "5/5 passed"
+    eval_content_integration: "7/7 passed"
+    eval_boundary: "4/4 passed"
+    eval_tenant: "4/4 passed"
+    eval_corrupt: "20/20 passed across replay, PDF, job, and worker surfaces"
+    eval_conflict: missing
     typecheck: passed
     build: passed
-    contracts: "11 schemas / 11 examples / 1 OpenAPI 3.1.1 document valid"
+    contracts: "12 schemas / 12 examples / 1 OpenAPI 3.1.1 document valid"
     source_inventory: "valid; 17 total, 4 verified, 4 missing_source, 1 acquired, 0 ingested"
     domain_evaluation: "8/8 passed"
-    pages_verification: "not rerun on current local head; prior remote checkpoint passed"
-    boundary_docs: "9 canonical documents; 70 links checked; 0 broken"
-    procedure_query_v1: "historical 35/35 focused tests; PostgreSQL/HTTP disposable gate passed"
-    artifact_acceptance_alignment: "migration 007 order, accepted object/scan fixtures, artifact RLS checks, and completion binding at a69fb15"
+    pages_verification: passed
+    claim_pack_v1: "provider/eval/static security gates passed; PostgreSQL/HTTP smoke awaits remote CI"
     dependency_audit: "npm audit --audit-level=high found 0 vulnerabilities"
-    remote_history: "Backend CI runs 29707579030 and 29709823390 passed commits 52ec72d and 50716cc"
-    current_remote_ci: "not started because BLK-CLOUD-PUSH-001 prevents publishing the current local program commits"
+    current_remote_ci: "not started because BLK-CLOUD-PUSH-001 prevents publishing e8ac74f"
 gates:
   - id: GATE-PROD-001
     status: not_evaluated
