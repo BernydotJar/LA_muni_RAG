@@ -1,5 +1,5 @@
 schema_version: 1
-updated_at: "2026-07-20T00:42:55Z"
+updated_at: "2026-07-21T06:38:42Z"
 runtime:
   type: yaml_fallback
   farmtable_available: false
@@ -291,7 +291,8 @@ tasks:
       - WS02-CORP-001
       - WS07-ID-001
       - PRG-CTX7-001
-    blockers: []
+    blockers:
+      - BLK-CLOUD-PUSH-001
     acceptance:
       - "Ingestion is tenant-scoped, idempotent, auditable, and stable on corrupt input."
     evidence:
@@ -299,9 +300,10 @@ tasks:
       - "WS03-PDF-EXTRACTION-001 completed bounded isolated raw-PDF extraction, parse-once indexing, and ingestion caps at commit 3a7b531."
       - "WS03-TENANT-INGESTION-001 completed tenant-scoped durable job/vector persistence, digest idempotency, leases/fencing/retry, atomic audit, and non-owner RLS gates at commit 9dcc054."
       - "WS03-INGESTION-API-WORKER-001 completed the authenticated enqueue/status API and callable immutable clean-artifact worker at commits 52ec72d and 50716cc."
+      - "WS03-ARTIFACT-ACCEPTANCE-CI-001 aligns migration 007, persisted clean artifact fixtures, RLS checks, and worker completion smoke parameters at commit a69fb15."
       - "The parent remains partial because source/version/upload APIs, a running worker dispatcher, real scanner, durable object storage, distributed quotas/cancellation, production roles/topology, load/HA, and monitoring are absent."
     pr: null
-    ci: partial
+    ci: passed_local_remote_publication_blocked
   - id: WS03-ARTIFACT-SAFETY-001
     workstream: WS-03
     title: "Add a fail-closed local artifact safety, malware, and quarantine gate"
@@ -511,6 +513,35 @@ tasks:
     branch: "program/procedural-intelligence-prod-ready"
     pr: null
     ci: passed_remote_with_platform_limitations
+  - id: WS03-ARTIFACT-ACCEPTANCE-CI-001
+    workstream: WS-03
+    title: "Bind the ingestion runtime gate to persisted artifact acceptance"
+    status: completed_with_limitations
+    owner: /root
+    files:
+      - .github/workflows/ci.yml
+      - db/tests/tenant_ingestion_runtime_gate.sql
+      - scripts/tenant-ingestion-postgres-smoke.mjs
+      - src/__tests__/operations-readiness-foundation.test.ts
+    depends_on:
+      - WS03-INGESTION-API-WORKER-001
+    blockers:
+      - BLK-CLOUD-PUSH-001
+    acceptance:
+      - "CI applies migration 007 before exercising the tenant ingestion gate."
+      - "Tenant A and B fixtures include exact accepted artifact-object and clean-scan evidence protected by FORCE RLS."
+      - "Compiled completion binds the accepted object and scan identifiers required by the current worker contract."
+    evidence:
+      - "Commit a69fb15 updates migration order, fixture permissions/RLS assertions, accepted artifact and scan rows, cross-tenant visibility checks, and compiled smoke completion parameters."
+      - "Static migration and operations tests, typecheck, contracts, inventory, dependency audit, domain evaluation, global tests, and build passed locally."
+      - "The later integrated regression at 1d129f0 passed 545 of 547 tests with zero failures and two explicit skips."
+    limitations:
+      - "A live PostgreSQL/pgvector rerun of the revised migration gate was not possible in this nested sandbox because its daemon/network privileges are unavailable."
+      - "Remote GitHub Actions verification is pending because Cloud Sandbox publication is externally blocked."
+      - "This repair does not provide a real scanner, durable object store, running worker dispatcher, production topology, or deployment."
+    branch: "program/procedural-intelligence-prod-ready"
+    pr: null
+    ci: passed_local_remote_publication_blocked
   - id: WS04-RET-001
     workstream: WS-04
     title: "Measure retrieval quality and citation fidelity"
@@ -527,23 +558,72 @@ tasks:
     evidence: []
     pr: null
     ci: not_started
+  - id: WS05-WATER-001
+    workstream: WS-05
+    title: "Compile and hard-evaluate the 47-category potable-water research workflow"
+    status: completed_with_limitations
+    owner: /root
+    files:
+      - src/domain/packs/municipal-antigua-water.ts
+      - src/domain/packs/municipal-antigua.ts
+      - src/procedure/procedureComposer.ts
+      - src/procedure/procedureGaps.ts
+      - src/api/v1/mapper.ts
+      - src/__tests__/eval-water-001.test.ts
+      - src/__tests__/operations-readiness-foundation.test.ts
+      - docs/testing/eval-harness.md
+      - program/gap-matrix.md
+      - package.json
+      - .github/workflows/ci.yml
+    depends_on:
+      - BOUND-001
+      - WS08-CONTRACT-FOUNDATION-001
+      - WS08-PROCEDURE-QUERY-001
+    blockers:
+      - BLK-CLOUD-PUSH-001
+    acceptance:
+      - "The golden query classifies as a dedicated Antigua-first potable-water workflow."
+      - "Exactly 47 ordered research categories compile without treating categories as facts."
+      - "Every v1 step exposes the canonical fields and missing evidence; unsupported actors, units, systems, approvals, deadlines, legal bases, and citations remain null or empty."
+      - "A narrow citation supports only its matching step and does not silently promote the other 46 categories."
+    evidence:
+      - "Commit 1d129f0 adds the dedicated domain template, classifier, gaps, canonical missing-evidence wording, EVAL-WATER-001, CI gate, documentation, and gap-matrix reconciliation."
+      - "EVAL-WATER-001 passed 4/4; domain evaluation passed 7/7; focused operations/mapper/workflow tests passed 24/24."
+      - "Contracts validated 11 schemas, 11 examples, and one OpenAPI 3.1.1 document; inventory and npm high-severity audit passed."
+      - "Integrated regression passed 545 of 547 tests with zero failures and two explicit skips; typecheck and build passed."
+    limitations:
+      - "The evaluation uses controlled synthetic evidence and does not prove a complete, current, ingested Antigua Guatemala corpus."
+      - "The sequential graph is a research checklist, not a legally confirmed official ordering."
+      - "Corpus-backed retrieval thresholds, contradiction handling, persistent procedure versions, reviews, approvals, and procedure cases remain open."
+      - "Remote CI and branch publication are pending the Cloud Sandbox push blocker."
+    branch: "program/procedural-intelligence-prod-ready"
+    pr: null
+    ci: passed_local_remote_publication_blocked
   - id: WS05-PROC-001
     workstream: WS-05
     title: "Validate procedure schema, workflow compiler, lifecycle, and approval"
-    status: pending
-    owner: unassigned
-    files: []
+    status: in_progress
+    owner: /root
+    files:
+      - src/domain/packs/municipal-antigua-water.ts
+      - src/procedure/
+      - src/api/v1/mapper.ts
+      - docs/testing/eval-harness.md
     depends_on:
       - BOUND-001
       - WS02-CORP-001
       - WS04-RET-001
-    blockers: []
+    blockers:
+      - BLK-CLOUD-PUSH-001
     acceptance:
       - "Steps, dependencies, documents, citations, evidence state, gaps, versioning, and human approval are represented."
       - "Golden water workflow is Antigua-first and evidence-backed per step."
-    evidence: []
+    evidence:
+      - "WS05-WATER-001 completed the 47-category research compiler and named hard-eval slice at commit 1d129f0."
+      - "The canonical v1 mapper already represents every required operational field and keeps unsupported values null or empty."
+      - "The parent remains partial because durable procedure/version lifecycle, human review/approval persistence, conflict handling, and corpus-backed authority are absent."
     pr: null
-    ci: not_started
+    ci: passed_local_remote_publication_blocked
   - id: WS06-CASE-001
     workstream: WS-06
     title: "Harden tenant-scoped procedure case tracking"
@@ -767,9 +847,22 @@ blockers:
   - id: BLK-BASE-001
     state: resolved
     condition: "The previous branch upstream was gone and RTK.md was pre-existing untracked work."
-    resolution: "Canonical branch program/procedural-intelligence-prod-ready is synchronized 0/0 with origin/main at 4950ba3."
-    residual_limitation: "RTK.md remains pre-existing untracked, untouched, and out of scope."
+    resolution: "The canonical branch was recreated from origin/main at 4950ba3 and subsequent implementation commits were preserved."
+    residual_limitation: "RTK.md remains pre-existing, untouched, and out of scope."
     next_safe_action: "Continue on the canonical branch and preserve RTK.md."
+  - id: BLK-CLOUD-PUSH-001
+    state: blocked_external
+    condition: "Cloud Sandbox MCP cannot publish the two local commits through its dedicated git_push operation."
+    exact_evidence:
+      - "Two Cloud_Sandbox_MCP.git_push calls failed while the connector attempted to initialize its internal daemon/NAT without the required sandbox network privileges."
+      - "At 2026-07-21T06:38:42Z, local HEAD was 1d129f0 and origin/program/procedural-intelligence-prod-ready was 6987f9d: 2 ahead / 0 behind."
+      - "No raw git push or privilege escalation was used to bypass the connector boundary."
+    affects:
+      - WS03-ARTIFACT-ACCEPTANCE-CI-001
+      - WS05-WATER-001
+      - remote_ci
+      - pull_request_publication
+    next_safe_action: "Retry only through the dedicated connector after its daemon/network privilege issue is repaired; then run remote Backend CI on the exact published HEAD."
 farmtable_equivalent_queries:
   GetReadyTasks:
     result:
@@ -782,7 +875,8 @@ farmtable_equivalent_queries:
     source: program/task-graph.yaml
     current_bottlenecks: []
   GetBottlenecks:
-    open: []
+    open:
+      - BLK-CLOUD-PUSH-001
     mitigated:
       - BLK-AUTO-001
       - BLK-FARM-001

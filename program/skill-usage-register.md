@@ -1,25 +1,28 @@
 # Skill usage register
 
-Last updated: 2026-07-19T20:37:54Z
+Last updated: 2026-07-21T06:38:42Z
 
-Program source: /Volumes/Cool HD 2TB/Downloads/goal_la_muni_rag_procedural_intelligence_prod_ready.md
+Program source: attached `goal_la_muni_rag_procedural_intelligence_prod_ready.md` conversation artifact. No local macOS path is assumed.
 
-Repository baseline observed during this audit:
+Repository state observed during this session:
 
-- branch: program/procedural-intelligence-prod-ready
-- base and observed commit: origin/main at 4950ba3
-- divergence from origin/main: 0 ahead / 0 behind
-- canonical gate: 371/371 tests; typecheck, build, inventory validation, domain evaluation, and Pages verification passed
-- source inventory: valid, 16 total documents, 3 verified, 5 missing_source, 0 acquired, and 0 ingested; verification is not acquisition or ingestion
-- current source inventory after controlled DMP acquisition: valid, 17 total, 4 verified, 4 missing_source, 1 acquired, and 0 ingested
-- pre-existing untracked file: RTK.md
+- workspace root: `/workspace`
+- branch: `program/procedural-intelligence-prod-ready`
+- origin/main baseline: `4950ba3c24dbe7d9891d5cec8d7ba5f57db3ef9c`
+- local HEAD at reconciliation: `1d129f0f08a04c72f1d5c24aaac5ab5e53bf71f4`
+- remote program branch: `6987f9d78f2d69a96b522ddfb920cd1ed1100437`
+- divergence from remote program branch: 2 ahead / 0 behind; publication blocked by `BLK-CLOUD-PUSH-001`
+- divergence from origin/main: 25 ahead / 0 behind
+- local canonical gate: 545 passed / 547 total / 2 explicit skips / 0 failures; typecheck, build, contracts, inventory, dependency audit, and domain evaluation 7/7 passed
+- source inventory: valid, 17 total documents, 4 verified, 4 missing_source, 1 acquired, and 0 ingested; acquisition is not ingestion
+- repository instructions read from tracked `README.md` and `RTK.md`
 
 ## Skill-first decision log
 
 | task_id | task | skill considered | decision | inputs | outputs | evidence | result |
 |---|---|---|---|---|---|---|---|
 | PRG-SKILL-001 | Bootstrap the program tooling controls | Current session skill catalog | No listed skill specifically covers AutoSkills, Context7/Farmtable availability auditing, or fallback program ledgers. Manual execution was selected. | Goal sections 12-16 and 20; RTK.md; package.json; current tool inventory | This register, Context7 evidence, task graph, task ledger | Initial API tool inventory search returned an empty array. Candidate skills such as skill-creator and plugin-creator target creation rather than this audit; repository-specific RICE skills target a different repository. Context7 was subsequently resolved through its CLI via npx. | completed |
-| PRG-RTK-001 | Follow repository command-output guidance | RTK repository toolkit | Used as command tooling, not as a Codex skill. No installation or initialization was performed. | RTK.md | Compressed repository inspection output | command -v rtk returned /opt/homebrew/bin/rtk; rtk --version returned rtk 0.34.1 | completed |
+| PRG-RTK-001 | Follow repository command-output guidance | Tracked repository instruction `RTK.md` | Used as repository guidance, not as an installed skill or assumed local executable. | RTK.md | Bounded repository inspection and command-output handling | `RTK.md` was read from `/workspace`; no macOS path or external RTK binary is required. | completed |
 | PRG-AUTO-001 | Run the required AutoSkills dry-run without permitting a fetch or install | AutoSkills CLI 0.3.6 from the existing npm cache | Executed in offline dry-run mode. Installation was rejected pending license and review closure. | package.json; cached AutoSkills registry | Detected stack and six proposed skills listed below | npx --offline autoskills --dry-run exited 0 and ended with “--dry-run: nothing was installed.” | completed_with_limitations |
 | PRG-CTX7-001 | Enable the Context7 evidence workflow | Context7 CLI via npx | CLI fallback activated without requiring a standalone executable. Ten libraries were resolved and queried; task-specific evidence remains mandatory. | Node v26.5.0 runtime; PostgreSQL/RLS/locking; node-postgres transactions; OpenAPI 3.1.1; JSON Schema object validation; Ajv validation; Docker; pgvector; ClamAV scanning; PDF.js | Versioned records and implementation decisions in program/context7-evidence.md | npx ctx7 v0.5.5, MIT, github.com/upstash/context7; current records include /brianc/node-postgres, /websites/postgresql_current, /docker/docs, /pgvector/pgvector, /cisco-talos/clamav, and /mozilla/pdf.js. | completed |
 | PRG-FARM-001 | Initialize Farmtable or its semantic fallback | Farmtable CLI/MCP | Farmtable is unavailable. The required YAML graph and ledger are the active runtime of record. | Current API tool inventory and PATH; goal section 15 | program/task-graph.yaml and program/task-ledger.yaml | No Farmtable-related API tool was present; ft --version exited 127 with “zsh:1: command not found: ft”. | fallback_active |
@@ -31,6 +34,9 @@ Repository baseline observed during this audit:
 | WS03-TENANT-INGESTION-001 | Add tenant-scoped vector persistence and durable ingestion job controls | No listed skill targets this repository's PostgreSQL tenancy migration, job lease/fencing state machine, or pgvector persistence boundary | Followed RTK.md and the repository workflow; used Context7 node-postgres/PostgreSQL evidence plus the three goal-authorized vector database, tenant-security, and test-strategy specialist reviews. | Migrations 001-004 and legacy 011; pg 8.22.0; PostgreSQL 16.14/pgvector 0.8.5; current indexer/job gaps; controlled-DMP prohibition | Migration 005, non-owner RLS SQL gate, tenant repository, durable job service, compiled concurrency/fencing/rollback smoke, CI service, Feature 056 docs/tests | Commit 9dcc054; 517/517 tests across 91 suites; typecheck/build/inventory/contracts/domain/Pages/link/audit gates; fresh/legacy/unsafe migrations; SQL/service smokes; GitHub Actions run 29702647686 passed; DMP untouched. | completed_with_limitations |
 | WS03-INGESTION-API-WORKER-001 | Add authenticated ingestion job APIs and a bounded accepted-artifact worker | No listed skill targets this repository's Node HTTP admission, PostgreSQL API-rate/audit migration, or immutable artifact worker boundary | Followed RTK.md and the repository workflow; used task-specific Context7 Node/PostgreSQL evidence, adversarial HTTP/worker tests, disposable database gates, and exact-commit CI. | Feature 056 durable jobs/vectors; identity/RBAC/RLS; strict v1 contracts; clean artifact evidence; controlled-DMP prohibition | Migration 006, strict enqueue/status API, forced-RLS admission, tenantless audit aggregate, immutable accepted-artifact worker, connection lifecycle hardening, compiled HTTP smoke, Feature 057 docs/tests | Commits 52ec72d and 50716cc; 545/545 tests across 95 suites; typecheck/build/inventory/11-contract/domain/Pages/link/audit/container gates; fresh/legacy/unsafe migrations; GitHub Actions runs 29707579030 and 29709823390 passed; DMP untouched. | completed_with_limitations |
 | WS08-PROCEDURE-QUERY-001 | Implement and adversarially verify the procedure-query v1 provider | No listed skill targets this repository's Node/PostgreSQL API implementation | Used the repository contract/security foundations, Context7 evidence, direct code review, focused adversarial tests, and a guarded disposable PostgreSQL/HTTP gate. | Canonical v1 schemas/OpenAPI; identity/RBAC/RLS foundation; PostgreSQL 16.14/pgvector 0.8.5 disposable runtime | Secure provider, migration 004, public-only scoped retrieval, production legacy gate, DB fixture, HTTP smoke, current docs | Commit deef177; 35/35 focal tests; canonical Node summary 457/457 in a clean detached worktree; prior 539 reporter-marker count corrected; contract/inventory/domain/Pages/build/typecheck gates; 0 production dependency vulnerabilities; DB/HTTP statuses 200/200/409/403/400/401/500/200 and legacy 404. | completed_with_limitations |
+| WS03-ARTIFACT-ACCEPTANCE-CI-001 | Align the ingestion runtime gate with persisted immutable-object and clean-scan acceptance | `skill-creator` was the only listed skill; it creates or updates skills and does not match repository implementation or database fixture repair | Manual repository workflow using the existing migration, RLS, worker, and smoke-test contracts; no unrelated skill was invoked | Migration 007; failed remote CI evidence; ingestion job service; tenant A/B SQL fixtures | Correct migration order, artifact-object/scan RLS checks, accepted fixtures, and completion binding | Commit a69fb15; integrated local regression at 1d129f0 passed 545/547 with 2 skips and 0 failures; live PostgreSQL rerun and remote CI remain blocked by sandbox runtime/publication limits | completed_with_limitations |
+| WS05-WATER-001 | Compile and hard-evaluate the 47-category Antigua-first potable-water research workflow | `skill-creator` was the only listed skill; it does not implement domain compilers, contract mappers, or evaluation suites | Manual domain-model and test-first workflow using existing LA Muni RAG contracts; no new framework/API decision required a Context7 query | Golden water query; existing domain pack; ProcedureWorkflow v1 schema; product-boundary rules | Dedicated classifier/template, 47 research categories, canonical missing-evidence mapping, named hard eval, CI gate, documentation | Commit 1d129f0; EVAL-WATER-001 4/4; domain 7/7; focused 24/24; integrated 545/547 with 2 skips and 0 failures; synthetic/corpus/runtime limitations documented | completed_with_limitations |
+| PRG-CONTROL-RECON-20260721 | Reconcile program controls to current Git, tests, blockers, and product boundaries | No listed skill targets repository program-ledger reconciliation | Manual documentation-as-code update after validating Git state and parsing both YAML files | Local HEAD/upstream divergence; commits a69fb15 and 1d129f0; test evidence; Cloud Sandbox push failures | Updated task graph, ledger, skill register, claims, and external blocker record | Both YAML files parse successfully; macOS source-path assumption removed; production-ready claim remains unproven | completed |
 
 ## Context7 activation evidence
 
@@ -160,6 +166,25 @@ The canonical set contains 70 checked links and 0 broken links.
 - count correction: the prior 539 figure counted reporter markers and was not the Node test summary
 - limitations: no OS Electoral consumer, EvidenceBundle/Assessment provider, lifecycle/approval store, staging/load test, production role/platform, or deployment
 
+### WS03-ARTIFACT-ACCEPTANCE-CI-001
+
+- commit: `a69fb15`
+- scope: CI migration order, accepted immutable-object and clean-scan fixtures, artifact-table FORCE RLS assertions, tenant visibility checks, and worker completion binding
+- local evidence: static migration/operations tests, typecheck, contracts, inventory, audit, domain evaluation, global tests, and build pass; the later integrated regression reports 545/547 with two explicit skips and zero failures
+- limitations: this nested sandbox cannot start the PostgreSQL/pgvector service required for a live rerun, and the dedicated Cloud Sandbox push operation cannot publish the commit for remote CI
+- boundary: no source/upload feature, scanner, object store, deployed worker, OS Electoral capability, or Content Agency capability was added
+
+### WS05-WATER-001
+
+- commit: `1d129f0`
+- classification: `potable_water_project`
+- output: exactly 47 ordered research categories and 46 research dependencies
+- evidence policy: categories are not facts; unsupported operational fields remain null or empty; missing evidence uses `Documento o regla pendiente de localizar y validar.`
+- selectivity control: one synthetic PDM-OT citation supports only the PDM-OT category and leaves the other 46 insufficient
+- verification: EVAL-WATER-001 4/4; domain evaluation 7/7; focused tests 24/24; contracts 11 schemas and examples plus OpenAPI 3.1.1; integrated regression 545/547 with two explicit skips and zero failures; typecheck/build/audit/inventory pass
+- limitations: no complete ingested Antigua corpus, official ordering, retrieval threshold, contradiction review, persistent lifecycle, human approval, or procedure-case instance is claimed
+- boundary: the workflow returns evidence and procedure structure only; it does not design electoral strategy or generate/distribute content
+
 ## AutoSkills dry-run evidence
 
 The exact goal command was constrained to offline mode so npx could not fetch or install a package:
@@ -176,7 +201,7 @@ Observed result:
 - repository writes: none observed
 - skills-lock.json: absent
 - standalone autoskills executable on PATH: absent
-- package source: existing npm npx cache at /Users/eduardosacahui/.npm/_npx/4ee5619d4353c7f4/node_modules/autoskills
+- package source: existing npm npx cache inspected within the active workspace runtime; no macOS path is required or assumed
 - cached package license: CC-BY-NC-4.0
 - cached package package.json SHA-256: 43b3ef91d99553ed3a83e7f7af87c646a8006709ca966952db003a7fe1386781
 - cached registry SHA-256: 12b50d1562e4b84a9e3ae051c0cd64532ff15c3f14202d32ec38a66d440103b0
