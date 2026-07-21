@@ -56,8 +56,11 @@ explicitly supports evidence-bound values. Current v1 never fills them from a
 template. An `EvidenceBundle` is generated from the same compiled workflow and
 identity-bound evidence: only cited steps become claims; unsupported material is
 returned as `missing_evidence`; contradictions remain empty unless an explicit
-conflict record exists. The bundle states that it contains no campaign strategy,
-segmentation, territory, mobilization, or campaign decision.
+conflict record exists. Citation use is monotonic: `inference` can produce at most
+`inferred_for_review`, while `validation_required` produces no claim and an
+explicit evidence gap even when the source authority is official. The bundle
+states that it contains no campaign strategy, segmentation, territory,
+mobilization, or campaign decision.
 
 A retrieved excerpt becomes
 a citation only when document, version, section, and an HTTP(S) source URL are

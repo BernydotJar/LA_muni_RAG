@@ -72,11 +72,12 @@ Implemented acceptance criteria:
 1. The provider accepts the canonical OS Electoral request envelope without importing campaign data ownership or consulting an OS Electoral database.
 2. `requested_output=evidence_bundle` returns a schema-valid bundle from the same internal compilation used by the workflow provider.
 3. Official Antigua evidence preserves document, version, section, source authority, citation identity, and one evidence-backed claim; an evidence-free result returns empty claims and explicit missing evidence.
-4. The EvidenceBundle is byte-exact on idempotent replay, carries the exact allowed OS origin in CORS, and records only allowlisted audit classifications.
-5. `requested_output=procedure_workflow` returns a schema-valid `workflow_version=1.0.0`, `approval_status=draft` artifact with sources, citations, and steps.
-6. Neither output contains campaign strategy, electoral segments, territories, message house, approved message, content calendar, publication tasks, or media spend fields.
-7. `requested_output=procedure_assessment` remains an honest non-retryable `503 capability_unavailable` and never invokes the compiler.
-8. OpenAPI 3.1.1 exposes exactly the implemented 200 variants, and the compiled PostgreSQL/HTTP smoke is wired to exercise EvidenceBundle success, exact replay, and exact-origin CORS when remote CI can run.
+4. An official citation marked `inference` remains `inferred_for_review`; a citation marked `validation_required` is never promoted to a claim and creates an explicit step gap.
+5. The EvidenceBundle is byte-exact on idempotent replay, carries the exact allowed OS origin in CORS, and records only allowlisted audit classifications.
+6. `requested_output=procedure_workflow` returns a schema-valid `workflow_version=1.0.0`, `approval_status=draft` artifact with sources, citations, and steps.
+7. Neither output contains campaign strategy, electoral segments, territories, message house, approved message, content calendar, publication tasks, or media spend fields.
+8. `requested_output=procedure_assessment` remains an honest non-retryable `503 capability_unavailable` and never invokes the compiler.
+9. OpenAPI 3.1.1 exposes exactly the implemented 200 variants, and the compiled PostgreSQL/HTTP smoke is wired to exercise EvidenceBundle success, exact replay, and exact-origin CORS when remote CI can run.
 
 Executable evidence:
 

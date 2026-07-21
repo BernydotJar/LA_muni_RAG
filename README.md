@@ -36,9 +36,11 @@ GET  /api/procedure-feedback
 `/api/procedure-feedback` requires a Bearer token configured through `PROCEDURE_FEEDBACK_API_TOKEN`.
 
 `POST /api/v1/procedure-queries` is the authenticated, tenant-scoped production
-slice. Production disables every pre-v1 `/api/*` route; the legacy routes listed
-above are development-only and must not be exposed with confidential or
-multi-tenant data. The ingestion v1 route family authenticates
+slice. It returns either an identity-bound `EvidenceBundle` or an AI-generated
+`ProcedureWorkflow` draft according to `requested_output`; `ProcedureAssessment`
+remains explicitly unavailable. Production disables every pre-v1 `/api/*` route;
+the legacy routes listed above are development-only and must not be exposed with
+confidential or multi-tenant data. The ingestion v1 route family authenticates
 `document:ingest` and enqueues/reads jobs only for existing registry versions;
 it is not an upload or artifact-acceptance API. A bounded worker class exists,
 but no storage/scanner adapter, worker process, or deployment exists.

@@ -197,6 +197,15 @@ The canonical set contains 70 checked links and 0 broken links.
 - limitations: no complete ingested Antigua corpus, official ordering, retrieval threshold, contradiction review, persistent lifecycle, human approval, or procedure-case instance is claimed
 - boundary: the workflow returns evidence and procedure structure only; it does not design electoral strategy or generate/distribute content
 
+### WS08-OS-PROVIDER-HARDENING-001
+
+- skill: none matched from the installed skill directory; repository execution followed `RTK.md`
+- task: independently critique and harden the OS Electoral EvidenceBundle provider
+- inputs: commit `9c9803b`, canonical v1 schemas, procedure-query handler/mapper, EVAL-OS-INTEGRATION-001
+- outputs: monotonic evidence-use mapping, explicit unsupported-step gaps, five-case OS integration eval, synchronized program evidence
+- evidence: contracts 11/11, domain eval 8/8, EVAL-OS-INTEGRATION-001 5/5, integrated suite 574/576 with two explicit skips, typecheck/build/Pages/audit passed
+- result: passed locally with remote PostgreSQL/HTTP smoke and consumer interoperability still pending
+
 ## AutoSkills dry-run evidence
 
 The exact goal command was constrained to offline mode so npx could not fetch or install a package:

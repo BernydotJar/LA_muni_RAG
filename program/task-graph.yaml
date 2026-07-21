@@ -673,6 +673,19 @@ tasks:
   - id: WS08-INT-001
     workstream: WS-08
     title: "Implement and contract-test versioned OS Electoral and Content Agency interfaces"
+    status: in_progress
+    owner: /root
+    completed_slices:
+      - os_electoral_evidence_bundle_provider
+      - os_electoral_procedure_workflow_provider
+    result:
+      provider_commit: 9c9803b
+      eval_os_integration: "5/5 passed after critic hardening"
+      external_consumer: pending
+      content_agency_claim_pack_provider: pending
+    limitations:
+      - "ProcedureAssessment and the Content Agency ClaimPack provider remain unavailable."
+      - "No cross-repository consumer contract has run."
     depends_on:
       - BOUND-001
       - WS04-RET-001
@@ -697,10 +710,10 @@ tasks:
       limitation: "Documentation v8.17.1 differs from implementation v8.20.0; executable strict validation provides compatibility evidence."
     result:
       commit: 2449064
-      json_schemas: 9
-      valid_examples: 9
+      json_schemas: 11
+      valid_examples: 11
       openapi_documents: 1
-      focal_tests: "12/12 passed"
+      focal_tests: "13/13 passed"
       contract_validation: passed
       typecheck: passed
   - id: WS08-PROCEDURE-QUERY-001
@@ -718,17 +731,22 @@ tasks:
       - scripts/procedure-query-postgres-smoke.mjs
       - docs/api/procedure-queries-v1.md
     result:
-      commit: deef177
-      supported_output: procedure_workflow
-      focal_tests: "35/35 passed"
-      global_tests: "457/457 passed at deef177 in a clean detached worktree"
-      test_count_correction: "539 was the reporter marker count, not the canonical Node test summary."
-      database_gate: "PostgreSQL 16.14 / pgvector 0.8.5 / non-owner non-BYPASSRLS role passed"
-      http_statuses: "200/200/409/403/400/401/500/200"
+      commits:
+        - deef177
+        - 9c9803b
+      supported_outputs:
+        - evidence_bundle
+        - procedure_workflow
+      eval_os_integration: "5/5 passed after critic hardening"
+      global_tests: "574 passed / 576 total / 2 explicit skips / 0 failed"
+      database_gate: "PostgreSQL 16.14 / pgvector 0.8.5 / non-owner non-BYPASSRLS historical workflow gate passed"
+      updated_http_statuses_expected: "200/200/409/403/400/401/500/200/200/200"
       production_legacy_route: "non-CORS 404"
-      dependency_audit: "0 production vulnerabilities"
+      dependency_audit: "0 high vulnerabilities"
+      evidence_monotonicity: "inference is never stronger than inferred_for_review; validation_required never becomes a claim"
     limitations:
-      - "EvidenceBundle, ProcedureAssessment, external consumer, lifecycle/approval, staging/load, and deployment remain absent."
+      - "ProcedureAssessment, external consumer, lifecycle/approval, staging/load, and deployment remain absent."
+      - "The EvidenceBundle PostgreSQL smoke awaits remote CI for the current HEAD."
   - id: WS09-UX-001
     workstream: WS-09
     title: "Audit and harden authenticated, accessible evidence and workflow UX"

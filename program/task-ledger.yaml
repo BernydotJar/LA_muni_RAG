@@ -661,8 +661,8 @@ tasks:
     evidence:
       - "Context7 /ajv-validator/ajv/v8.17.1 query: Ajv2020 strict allErrors addSchema."
       - "Commit 2449064 pins ajv 8.20.0 and ajv-formats 3.0.1."
-      - "Nine draft 2020-12 schemas, nine valid examples, and one OpenAPI 3.1.1 contract validate with zero issues."
-      - "Twelve focal contract tests cover closed objects, identity/error safety, Mixco, AI draft, product boundaries, event discrimination, and OpenAPI controls."
+      - "Eleven draft 2020-12 schemas, eleven valid examples, and one OpenAPI 3.1.1 contract validate with zero issues."
+      - "Thirteen focal contract tests cover closed objects, identity/error safety, Mixco, AI draft, product boundaries, event discrimination, and OpenAPI controls."
     limitations:
       - "Context7 documentation is v8.17.1; compatibility with selected v8.20.0 is evidenced by executable strict validation, not version-matched documentation."
       - "Cross-field equality and provider/consumer interoperability require runtime contract tests."
@@ -691,18 +691,27 @@ tasks:
       - "Commit deef177 implements the provider, migration 004, scoped public-only retrieval, current-contract replay validation, audit/rate controls, product-boundary refusal, and production legacy-route closure."
       - "Focused API/security suites passed 35/35; the canonical Node summary at deef177 passed 457/457 in a clean detached worktree; contracts, inventory, domain evaluation, typecheck, build, Pages verification, and npm production audit passed."
       - "The previously recorded 539 figure counted reporter markers rather than Node tests and is corrected by the clean-worktree 457/457 summary."
-      - "Clean PostgreSQL 16.14/pgvector 0.8.5 migrations and non-owner RLS assertions passed; image-contained HTTP smoke returned 200/200/409/403/400/401/500/200 plus a non-CORS legacy 404."
+      - "Clean PostgreSQL 16.14/pgvector 0.8.5 migrations and non-owner RLS assertions passed; the historical workflow HTTP smoke returned 200/200/409/403/400/401/500/200 plus a non-CORS legacy 404."
+      - "Commit 9c9803b adds the contract-valid EvidenceBundle output, exact replay, OS-origin CORS coverage, and EVAL-OS-INTEGRATION-001."
+      - "The post-commit critic hardening keeps inference at inferred_for_review and suppresses validation_required claims; EVAL-OS-INTEGRATION-001 passes 5/5 and the integrated local suite passes 574/576 with two explicit skips and zero failures."
     limitations:
-      - "Only ProcedureWorkflow is available; EvidenceBundle and ProcedureAssessment return 503 capability_unavailable."
+      - "EvidenceBundle and ProcedureWorkflow are available; ProcedureAssessment still returns 503 capability_unavailable."
       - "No OS Electoral consumer/interoperability, durable workflow lifecycle/approval, staging/load test, production platform/role, or deployment is claimed."
+      - "The updated PostgreSQL EvidenceBundle smoke is wired but requires remote CI for the current HEAD."
     pr: null
-    ci: passed_local
+    ci: passed_local_remote_pending
   - id: WS08-INT-001
     workstream: WS-08
     title: "Implement and test adjacent-product contracts"
-    status: pending
-    owner: unassigned
-    files: []
+    status: in_progress
+    owner: /root
+    files:
+      - src/api/v1/
+      - contracts/schemas/v1/
+      - contracts/openapi/v1/openapi.json
+      - src/__tests__/eval-os-integration-001.test.ts
+      - docs/integrations/os-electoral.md
+      - docs/integrations/content-agency.md
     depends_on:
       - BOUND-001
       - WS04-RET-001
@@ -715,9 +724,12 @@ tasks:
       - "OS Electoral gets evidence/procedures without campaign strategy."
       - "Content Agency gets ClaimPack evidence without content generation."
       - "Both contract suites pass."
-    evidence: []
+    evidence:
+      - "OS Electoral provider slice returns EvidenceBundle and draft ProcedureWorkflow without campaign-owned fields; EVAL-OS-INTEGRATION-001 passes 5/5."
+      - "Inference and validation-required evidence cannot be silently promoted to supported claims."
+      - "Content Agency ClaimPack provider and both external consumers remain pending, so the parent task is not complete."
     pr: null
-    ci: not_started
+    ci: passed_local_partial_remote_pending
   - id: WS09-UX-001
     workstream: WS-09
     title: "Harden authenticated and accessible evidence/workflow UX"
