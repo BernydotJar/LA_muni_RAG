@@ -101,11 +101,37 @@ const officialRecord = (): ScopedSearchResult => ({
   municipalitySlug: "la-antigua-guatemala-sacatepequez",
 });
 
-const officialCompiler = (calls: { count: number }): ProcedureWorkflowCompiler =>
+const compilerForWorkflow = (
+  workflow: ProcedureWorkflow,
+  calls: { count: number }
+): ProcedureWorkflowCompiler =>
   async () => {
     calls.count += 1;
-    return { workflow: officialWorkflow(), evidenceRecords: [officialRecord()] };
+    return { workflow, evidenceRecords: [officialRecord()] };
   };
+
+const officialCompiler = (calls: { count: number }): ProcedureWorkflowCompiler =>
+  compilerForWorkflow(officialWorkflow(), calls);
+
+const workflowWithEvidenceUse = (
+  evidenceUse: ProcedureCitation["evidenceUse"],
+  evidenceStatus: ProcedureWorkflow["steps"][number]["evidenceStatus"]
+): ProcedureWorkflow => {
+  const workflow = officialWorkflow();
+  const citation = { ...officialCitation(), evidenceUse };
+  return {
+    ...workflow,
+    citations: [citation],
+    steps: [
+      {
+        ...workflow.steps[0]!,
+        legalBasis: [citation],
+        sourceEvidence: [citation],
+        evidenceStatus,
+      },
+    ],
+  };
+};
 
 const forbiddenTopLevelKeys = [
   "campaign_strategy",
@@ -216,6 +242,76 @@ describe("EVAL-OS-INTEGRATION-001", () => {
       );
     } finally {
       await stopProcedureQueryHarness(harness);
+    }
+  });
+
+  it("never promotes inference or validation-required citations to supported claims", async () => {
+    const inferenceCalls = { count: 0 };
+    const inferenceHarness = await startProcedureQueryHarness({
+      compiler: compilerForWorkflow(
+        workflowWithEvidenceUse("inference", "inferred"),
+        inferenceCalls
+      ),
+    });
+    try {
+      const inferred = await postProcedureQuery(
+        inferenceHarness,
+        procedureQueryRequest({ requested_output: "evidence_bundle" }),
+        { idempotencyKey: "os-evidence-inference-000001", origin: OS_ORIGIN }
+      );
+      const validators = await procedureQueryValidators;
+      assert.equal(inferred.response.status, 200);
+      assert.equal(
+        validators.evidenceBundle(inferred.json),
+        true,
+        JSON.stringify(validators.evidenceBundle.errors)
+      );
+      assert.equal(
+        (inferred.json.citations as Array<Record<string, unknown>>)[0]?.evidence_status,
+        "inferred_for_review"
+      );
+      assert.equal(
+        (inferred.json.claims as Array<Record<string, unknown>>)[0]?.evidence_status,
+        "inferred_for_review"
+      );
+      assert.equal(inferenceCalls.count, 1);
+    } finally {
+      await stopProcedureQueryHarness(inferenceHarness);
+    }
+
+    const validationCalls = { count: 0 };
+    const validationHarness = await startProcedureQueryHarness({
+      compiler: compilerForWorkflow(
+        workflowWithEvidenceUse("validation_required", "insufficient"),
+        validationCalls
+      ),
+    });
+    try {
+      const validation = await postProcedureQuery(
+        validationHarness,
+        procedureQueryRequest({ requested_output: "evidence_bundle" }),
+        { idempotencyKey: "os-evidence-validation-000001", origin: OS_ORIGIN }
+      );
+      const validators = await procedureQueryValidators;
+      assert.equal(validation.response.status, 200);
+      assert.equal(
+        validators.evidenceBundle(validation.json),
+        true,
+        JSON.stringify(validators.evidenceBundle.errors)
+      );
+      assert.equal(
+        (validation.json.citations as Array<Record<string, unknown>>)[0]?.evidence_status,
+        "missing_evidence"
+      );
+      assert.deepEqual(validation.json.claims, []);
+      assert.ok(
+        (validation.json.missing_evidence as Array<Record<string, unknown>>).some(
+          (gap) => /Recibir y verificar la solicitud/.test(String(gap.subject))
+        )
+      );
+      assert.equal(validationCalls.count, 1);
+    } finally {
+      await stopProcedureQueryHarness(validationHarness);
     }
   });
 

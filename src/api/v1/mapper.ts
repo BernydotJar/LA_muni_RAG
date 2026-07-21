@@ -164,6 +164,20 @@ const evidenceStatusForAuthority = (authority: AuthorityStatus): EvidenceStatus 
   return "missing_evidence";
 };
 
+const evidenceStatusForCitation = (
+  authority: AuthorityStatus,
+  evidenceUse: ProcedureCitation["evidenceUse"]
+): EvidenceStatus => {
+  const authorityStatus = evidenceStatusForAuthority(authority);
+  if (evidenceUse === "validation_required") return "missing_evidence";
+  if (evidenceUse === "inference") {
+    return authorityStatus === "comparative_reference"
+      ? "comparative_reference"
+      : "inferred_for_review";
+  }
+  return authorityStatus;
+};
+
 const sourceLimitations = (authority: AuthorityStatus, mixco: boolean): string[] => {
   if (mixco) return [MIXCO_COMPARATIVE_WARNING];
   if (authority === "official_target_jurisdiction") {
@@ -269,7 +283,7 @@ const mapCitation = (
     page_end: record.pageStart,
     authority_status: authority,
     jurisdiction,
-    evidence_status: evidenceStatusForAuthority(authority),
+    evidence_status: evidenceStatusForCitation(authority, internal.evidenceUse),
   };
   return { internal, source, citation };
 };
@@ -310,7 +324,8 @@ const stepEvidenceStatus = (refs: CitationMapping[]): EvidenceStatus => {
   const statuses = refs.map((ref) => ref.citation.evidence_status);
   if (statuses.includes("supported")) return "supported";
   if (statuses.includes("comparative_reference")) return "comparative_reference";
-  return "inferred_for_review";
+  if (statuses.includes("inferred_for_review")) return "inferred_for_review";
+  return "missing_evidence";
 };
 
 const confidenceFor = (status: EvidenceStatus): number => {
@@ -560,7 +575,7 @@ export const mapProcedureWorkflowV1 = (options: MapProcedureWorkflowOptions): Re
 
 export const mapEvidenceBundleV1 = (options: MapEvidenceBundleOptions): Record<string, unknown> => {
   const { request, workflow } = options;
-  const { mappings, mappingsByKey, sources, citations } = mapEvidenceContext(
+  const { mappingsByKey, sources, citations } = mapEvidenceContext(
     request,
     workflow,
     options.evidenceRecords
@@ -571,6 +586,7 @@ export const mapEvidenceBundleV1 = (options: MapEvidenceBundleOptions): Record<s
     if (refs.length === 0) return [];
     const citationRefs = unique(refs.map((ref) => ref.citation.citation_id));
     const status = stepEvidenceStatus(refs);
+    if (status === "missing_evidence") return [];
     const limitations = unique([
       ...refs.flatMap((ref) => ref.source.limitations),
       "Afirmación documental generada para revisión humana; no constituye una decisión electoral ni una instrucción ejecutable.",
@@ -597,6 +613,21 @@ export const mapEvidenceBundleV1 = (options: MapEvidenceBundleOptions): Record<s
     reason: gap.whyItMatters.trim().slice(0, 1000),
     next_documental_action: gap.requiredToConfirm.trim().slice(0, 1000),
   }));
+  for (const step of workflow.steps) {
+    const refs = stepCitationRefs(step, mappingsByKey);
+    if (stepEvidenceStatus(refs) !== "missing_evidence") continue;
+    missingEvidence.push({
+      gap_id: deterministicUuid(
+        `evidence-gap:${request.tenant_id}:${request.request_id}:step:${step.stepNumber}`
+      ),
+      subject: `${workflow.title} — ${step.title}`.trim().slice(0, 500),
+      missing_document: "Documento o regla que respalde este paso",
+      reason:
+        "El paso no tiene evidencia citable suficiente o la evidencia disponible requiere validación antes de sostener una afirmación.",
+      next_documental_action:
+        "Localizar y validar una fuente aplicable antes de convertir este paso en una afirmación respaldada.",
+    });
+  }
   if (citations.length < workflow.citations.length) {
     missingEvidence.push({
       gap_id: deterministicUuid(
