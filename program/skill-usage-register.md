@@ -273,3 +273,17 @@ Before any installation, require an owner to verify every skill file, license, d
 - This audit did not download source repositories, execute proposed skill content, or infer licenses from repository names.
 - RTK.md was already untracked before the audit and was read only.
 - Context7 availability is resolved through npx, not through a standalone PATH executable or MCP operation.
+
+### WS03-ARTIFACT-VECTOR-HARDENING-001
+
+- skill selection: no installed skill matched repository-level TypeScript/PostgreSQL implementation more specifically than direct repository execution; no skill was invoked or installed
+- AutoSkills: `npx --offline autoskills --dry-run` exited 0 with AutoSkills 0.3.6, detected TypeScript/Node.js, proposed six skills, and wrote no files; installation remained rejected under the existing license/provenance review
+- documentation tooling: Context7 `/websites/postgresql_current` queried for PL/pgSQL `BEFORE` row triggers, `RAISE EXCEPTION`, and transaction behavior at `2026-07-21T17:17:21Z`
+- task: close the exact persisted artifact acceptance, job-lease, and vector-publication boundary without granting the worker artifact-table mutation privileges
+- inputs: migrations 005–007, artifact acceptance repository/service, durable job service, tenant pgvector repository, non-owner SQL gate, compiled ingestion smokes, and Feature 060 spec
+- outputs: migration 011, clean/legacy/corrupt-history PostgreSQL gates, security-definer row-lock function, repeated acceptance predicates, three named eval families, CI wiring, ADR/risk/traceability, and runtime documentation
+- producer evidence: wrong-hash `clean` scan and 30-day acceptance were reproduced against PostgreSQL 15.18 before the fix
+- critic/fixer evidence: direct `FOR SHARE` failed under the intended read-only artifact privilege; replaced with a tenant-bound fixed-search-path boolean security-definer function revoked from `PUBLIC`; accepted coordinate mutation was also closed
+- verification: clean and supported legacy migration paths passed PostgreSQL 15.18/pgvector 0.8.5; corrupt historical state stopped and rolled back; non-owner SQL gates and compiled ingestion/API smokes passed; EVAL-ARTIFACT-001 5/5, EVAL-VECTOR-001 9/9, EVAL-JOB-LEASE-001 13/13; global suite 646/648 with zero failures and two explicit environment skips
+- result: implemented and verified locally; remote CI, production scanner/storage/dispatcher, real-corpus vector quality/load, protected merge, and deployment remain pending
+- product boundary: no electoral strategy, campaign operation, content production, publication, or neighboring-product source of truth was added

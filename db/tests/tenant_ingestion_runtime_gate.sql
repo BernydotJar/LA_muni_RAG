@@ -26,6 +26,8 @@ GRANT EXECUTE ON FUNCTION identity.authenticate_api_credential(BYTEA)
   TO la_muni_ingestion_runtime_test;
 GRANT EXECUTE ON FUNCTION audit.record_ingestion_authentication_failure(UUID, UUID, TEXT)
   TO la_muni_ingestion_runtime_test;
+GRANT EXECUTE ON FUNCTION rag.lock_valid_artifact_acceptance_v1(UUID, UUID, UUID, TEXT, UUID)
+  TO la_muni_ingestion_runtime_test;
 GRANT SELECT ON rag.documents
   TO la_muni_ingestion_runtime_test;
 GRANT SELECT, UPDATE ON rag.document_versions

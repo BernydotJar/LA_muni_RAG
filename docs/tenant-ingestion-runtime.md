@@ -39,6 +39,8 @@ psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -f db/migrations/003_identity_tenancy_rb
 psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -f db/migrations/004_procedure_query_api.sql
 psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -f db/migrations/005_tenant_ingestion_runtime.sql
 psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -f db/migrations/006_ingestion_api_runtime.sql
+psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -f db/migrations/007_persisted_artifact_acceptance.sql
+psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -f db/migrations/011_artifact_vector_runtime_hardening.sql
 ```
 
 Do not apply `migrations/011-production-vector-store.sql` on a fresh database.
@@ -50,12 +52,25 @@ After migration, new vector writes must use contract v1. Forced RLS rejects new
 contract-0 rows even for a correctly scoped runtime tenant; historical rows keep
 contract 0 only for review/migration and are excluded from v1 retrieval.
 
+Migration `011_artifact_vector_runtime_hardening.sql` is distinct from the
+legacy root-level `migrations/011-production-vector-store.sql`. The database
+migration stops if an existing accepted object points to the wrong hash,
+non-clean or stale-generation scan, mismatched media type, or a window longer
+than seven days. A row trigger enforces the same invariant and keeps accepted
+object identity plus scan evidence immutable. Lookup and lease repeat the
+predicates. Finalization calls a tenant-bound, fixed-search-path
+`SECURITY DEFINER` function that validates and row-locks the exact object/scan;
+this avoids granting the worker `UPDATE` on acceptance tables.
+
 The runtime role needs only environment-reviewed privileges and must be a table
 non-owner, non-superuser, and non-`BYPASSRLS` role. It needs the narrow
 credential/auth-failure functions, `SELECT` on active document identity,
 `SELECT/UPDATE` on document versions, job/vector/API-rate mutation, and
-sanitized audit insertion. It cannot read the tenantless authentication-failure
-table and does not need `UPDATE` on `rag.documents`.
+sanitized audit insertion. It also needs `EXECUTE` only on
+`rag.lock_valid_artifact_acceptance_v1(UUID, UUID, UUID, TEXT, UUID)`; it needs
+`SELECT`, but not `UPDATE`, on artifact objects/scans. It cannot read the
+tenantless authentication-failure table and does not need `UPDATE` on
+`rag.documents`.
 
 ## Authenticated API boundary
 
@@ -146,6 +161,8 @@ The guarded SQL fixture accepts only the exact disposable database name
 ```bash
 psql "$DISPOSABLE_ADMIN_URL" -v ON_ERROR_STOP=1 \
   -f db/tests/tenant_ingestion_runtime_gate.sql
+psql "$DISPOSABLE_ADMIN_URL" -v ON_ERROR_STOP=1 \
+  -f db/tests/artifact_vector_runtime_hardening_gate.sql
 npm run build
 DATABASE_URL="$DISPOSABLE_RUNTIME_URL" npm run smoke:tenant-ingestion
 DATABASE_URL="$DISPOSABLE_RUNTIME_URL" npm run smoke:ingestion-api
@@ -156,9 +173,13 @@ the run. The gate is destructive to its named fixture and is not a production
 migration runner. Passing locally does not prove production grants, topology,
 load, backup, or release approval.
 
-The 2026-07-19 gate applied fresh `001..006` and supported historical
-`001,002,011,003,004,005,006` chains on PostgreSQL 16.14/pgvector 0.8.5. The
-compiled HTTP smoke covered authentication, permission/tenant denial,
+The historical 2026-07-19 gate applied fresh `001..006` and supported
+legacy vector-store chains. On 2026-07-21, a fresh PostgreSQL 15.18/pgvector
+0.8.5 database applied `001..007` plus database migration 011, both non-owner
+SQL gates, and both compiled ingestion smokes. The hardening gate rejected a
+wrong-hash clean scan, stale generation, oversized acceptance window, accepted
+identity mutation, and scan update. The compiled HTTP smoke covered
+authentication, permission/tenant denial,
 new/replay/dedup/conflict, rate limiting, scoped status/404, exact CORS, and
 secret minimization. All fixtures were synthetic and every smoke reported zero
 controlled artifact reads.

@@ -202,6 +202,8 @@ psql "$DATABASE_URL" -f db/migrations/006_ingestion_api_runtime.sql
 psql "$DATABASE_URL" -f db/migrations/007_persisted_artifact_acceptance.sql
 psql "$DATABASE_URL" -f db/migrations/008_claim_pack_api.sql
 psql "$DATABASE_URL" -f db/migrations/009_workflow_lifecycle.sql
+psql "$DATABASE_URL" -f db/migrations/010_workflow_lifecycle_api.sql
+psql "$DATABASE_URL" -f db/migrations/011_artifact_vector_runtime_hardening.sql
 ```
 
 Migration `005` is the canonical vector-store migration. Do not apply

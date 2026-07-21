@@ -16,13 +16,16 @@ npm run eval:content-integration
 npm run eval:conflict
 npm run eval:boundary
 npm run eval:corrupt
+npm run eval:artifact
+npm run eval:vector
+npm run eval:job-lease
 npm run eval:tenant
 npm run eval:mixco
 npm run eval:water
 npm test
 ```
 
-`npm run eval:procedure`, `npm run eval:os-integration`, `npm run eval:content-integration`, `npm run eval:conflict`, `npm run eval:boundary`, `npm run eval:corrupt`, `npm run eval:tenant`, `npm run eval:mixco`, and `npm run eval:water` are named CI gates. The complete regression remains `npm test`.
+`npm run eval:procedure`, `npm run eval:os-integration`, `npm run eval:content-integration`, `npm run eval:conflict`, `npm run eval:boundary`, `npm run eval:corrupt`, `npm run eval:artifact`, `npm run eval:vector`, `npm run eval:job-lease`, `npm run eval:tenant`, `npm run eval:mixco`, and `npm run eval:water` are named CI gates. The complete regression remains `npm test`; PostgreSQL behavior additionally requires the guarded SQL and compiled smoke gates.
 
 ## EVAL-PROCEDURE-001
 
@@ -407,6 +410,86 @@ Remaining limitations:
 - workflow review/approval UI, accessibility, notifications, consumer interoperability, semantic conflict resolution, backup/restore, load/HA, and observability remain open;
 - an approved workflow is a governance state, not proof of current legal applicability or institutional execution.
 
+## EVAL-ARTIFACT-001
+
+Primary conditions:
+
+```text
+immutable object coordinates + exact SHA-256 + structural validation + clean scan
+```
+
+Implemented acceptance criteria:
+
+1. The acceptance service reads one exact immutable object generation, enforces a byte ceiling, recalculates SHA-256, and performs structural validation before malware scanning.
+2. Byte mutation fails closed before the scanner and never becomes `accepted`.
+3. A PostgreSQL trigger permits `accepted` only when the referenced current-generation scan is `clean`, proves the exact object hash and media type, and has a future window no longer than seven days.
+4. Accepted object identity and persisted scan evidence are immutable while accepted; a new inspection requires a new generation/scan.
+5. Existing invalid accepted rows stop migration for explicit review.
+6. Signed URLs, credentials, object bodies, raw keys, and lease tokens are not added to the persistence schema or audit boundary.
+
+Executable evidence:
+
+- `src/__tests__/eval-artifact-001.test.ts`;
+- `src/__tests__/artifact-vector-runtime-hardening-migration.test.ts`;
+- `db/migrations/007_persisted_artifact_acceptance.sql`;
+- `db/migrations/011_artifact_vector_runtime_hardening.sql`;
+- `db/tests/artifact_vector_runtime_hardening_gate.sql`.
+
+Current limitations:
+
+- The clean scanner and object reader in focused tests are controlled adapters; no production object store, quarantine IAM, scanner daemon, definitions monitor, or controlled municipal artifact is credited.
+- The real PostgreSQL gate proves state integrity and rejection behavior, not malware-detection quality.
+
+Therefore `EVAL-ARTIFACT-001` is `passed_for_exact_persisted_acceptance_with_external_storage_and_scanner_limitations`.
+
+## EVAL-VECTOR-001
+
+Implemented acceptance criteria:
+
+1. Vector writes require explicit tenant, document-version, ingestion-job, provider, model, and 1,536-dimension identity.
+2. `(tenant_id, chunk_id)` conflicts cannot cross document versions silently.
+3. Replacement installs a complete generation and removes stale chunks through the same transaction-bound client.
+4. Search is capped at 100 and filters exact provider/model/dimension plus processed, active, public, citable state.
+5. The disposable PostgreSQL smoke demonstrates cross-tenant equal chunk IDs, rollback to zero rows, stale-chunk removal, and no partial successful job state.
+
+Executable evidence:
+
+- `src/__tests__/eval-vector-001.test.ts`;
+- `src/__tests__/tenant-pg-vector-repository.test.ts`;
+- `src/embeddings/tenantPgVectorRepository.ts`;
+- `scripts/tenant-ingestion-postgres-smoke.mjs`.
+
+Current limitations:
+
+- Exact vector retrieval is verified only with synthetic records. Real-corpus recall, reranking, query plans, load, tenant-partitioned approximation, and production statement-timeout evidence remain open.
+
+Therefore `EVAL-VECTOR-001` is `passed_for_tenant_atomic_vector_persistence_with_real_corpus_and_load_limitations`.
+
+## EVAL-JOB-LEASE-001
+
+Implemented acceptance criteria:
+
+1. Eligible jobs are claimed with `FOR UPDATE ... SKIP LOCKED`, bounded attempts, a fresh digest-only fencing token, heartbeat, and expiry.
+2. Every heartbeat, completion, and failure mutation requires the current unexpired token.
+3. Expired work is reclaimed with a different token; the stale worker is rejected.
+4. Fifty concurrent identical submissions produce one job and two concurrent claimers produce one lease in the PostgreSQL smoke.
+5. Retry delay and attempts are bounded; terminal failure and atomic completion remain distinct.
+6. Completion uses a narrow tenant-bound `SECURITY DEFINER` function to validate and lock exact artifact acceptance without granting artifact-table mutation privileges.
+
+Executable evidence:
+
+- `src/__tests__/eval-job-lease-001.test.ts`;
+- `src/__tests__/ingestion-job-service.test.ts`;
+- `src/__tests__/ingestion-worker.test.ts`;
+- `src/ingestion/ingestionJobService.ts`;
+- `scripts/tenant-ingestion-postgres-smoke.mjs`.
+
+Current limitations:
+
+- There is no deployed dispatcher, queue, workload identity, attempt-wide cancellation, graceful shutdown, dead-letter operator UI, lease metrics, or HA/failover exercise.
+
+Therefore `EVAL-JOB-LEASE-001` is `passed_for_disposable_postgres_fencing_with_deployment_and_operations_limitations`.
+
 ## Required hard-eval matrix
 
 | Evaluation | Current executable status | Remaining proof |
@@ -420,6 +503,9 @@ Remaining limitations:
 | EVAL-TENANT-001 | passed_for_current_provider_and_disposable_db_gate_with_topology_limitations | Non-leaking HTTP denial, authenticated-tenant audit, transaction-local context, FORCE-RLS assertions, SQL gates, and compiled smokes pass locally; the full catalog and production topology remain open. |
 | EVAL-CONFLICT-001 | passed_for_explicit_version_text_conflicts_with_lifecycle_and_corpus_limitations | 8/8 proves visibility, review_required, downgrade, a blocking gap, ClaimPack abstention, and anti-false-positive behavior; real corpus conflicts, semantic comparison, and persisted resolution lifecycle remain open. |
 | EVAL-CORRUPT-001 | passed_for_current_replay_and_ingestion_failure_surfaces_with_storage_limitations | Corrupt replay invalidation, failed-compilation release/retry, stable PDFs, worker no-completion failure paths, and durable job retry/failure suites pass; real scanner, storage, dispatcher, load, and recovery remain open. |
+| EVAL-ARTIFACT-001 | passed_for_exact_persisted_acceptance_with_external_storage_and_scanner_limitations | Exact bytes, SHA-256, MIME/structure, bounded clean scan, immutable acceptance, historical corruption stop, and PostgreSQL trigger rejection pass; production storage/scanner operation remains open. |
+| EVAL-VECTOR-001 | passed_for_tenant_atomic_vector_persistence_with_real_corpus_and_load_limitations | Tenant/model/dimension identity, conflict fencing, atomic replacement, rollback, stale deletion, public eligibility, and bounded search pass; real-corpus quality/load remain open. |
+| EVAL-JOB-LEASE-001 | passed_for_disposable_postgres_fencing_with_deployment_and_operations_limitations | SKIP LOCKED, single claim, fresh fencing token, heartbeat/expiry, stale rejection, bounded retry, and concurrent PostgreSQL smoke pass; dispatcher/metrics/HA remain open. |
 
 ## Release rule
 

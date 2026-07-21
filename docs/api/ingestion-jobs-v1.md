@@ -129,7 +129,10 @@ inject an `AcceptedArtifactResolver` that supplies the exact leased tenant,
 version, digest, immutable object generation, private bytes, and current clean
 scan evidence. `TenantIngestionWorker` verifies this evidence and the bytes,
 heartbeats, parses/embeds outside the final transaction, and calls the durable
-fenced completion service.
+fenced completion service. Finalization invokes a tenant-bound, fixed-search-path
+boolean function that validates and row-locks the exact accepted object/scan.
+The runtime receives no artifact-table mutation privilege or private object
+coordinates from that function.
 
 No resolver, object-store adapter, scanner, worker loop, or deployment is
 configured in this feature. `/health` therefore reports
@@ -138,14 +141,19 @@ and the [ingestion runbook](../data/ingestion-runbook.md).
 
 ## Disposable verification
 
-After building and applying migrations `001..006` plus the guarded SQL fixture:
+After building and applying migrations `001..007`,
+`011_artifact_vector_runtime_hardening.sql`, and both guarded ingestion SQL
+fixtures:
 
 ```bash
 DATABASE_URL="$DISPOSABLE_RUNTIME_URL" npm run smoke:tenant-ingestion
 DATABASE_URL="$DISPOSABLE_RUNTIME_URL" npm run smoke:ingestion-api
 ```
 
-The compiled API smoke uses synthetic records only and covers 401/403/404/409,
+The SQL gates also prove exact clean-scan/hash/generation binding, accepted
+identity immutability, scan-update denial, least-privilege row locking, forced
+RLS, and supported legacy vector convergence. The compiled API smoke uses
+synthetic records only and covers 401/403/404/409,
 new/replay/dedup, 429, exact CORS, RLS-scoped persistence, and response secrecy.
 It reports `controlledArtifactsRead: 0`. This is local evidence, not staging,
 load, scanner/storage, deployed-worker, or production authorization.

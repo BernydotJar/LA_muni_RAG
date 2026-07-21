@@ -317,3 +317,20 @@ Copy this section for each resolved decision.
 ## Version and authority boundary
 
 Context7 is now available, but every record must still name the official publisher, source URL, retrieval time, installed version, and any version mismatch. Context7 evidence does not by itself prove implementation conformance or pass a production gate. Legal and municipal claims continue to require authoritative legal or municipal sources.
+
+## 2026-07-21 — Feature 060 artifact acceptance trigger boundary
+
+```yaml
+- task_id: WS03-ARTIFACT-VECTOR-HARDENING-001
+  library: PostgreSQL
+  library_id: /websites/postgresql_current
+  installed_version: "15.18 local disposable gate; CI target PostgreSQL 16"
+  query: "CREATE TRIGGER BEFORE UPDATE PL/pgSQL trigger function RAISE EXCEPTION and transaction atomicity"
+  retrieved_at: "2026-07-21T17:17:21Z"
+  documentation_summary: "Official PostgreSQL trigger documentation shows BEFORE row triggers validating NEW values and raising exceptions to reject invalid writes within the surrounding transaction."
+  implementation_decision: "Use a BEFORE INSERT OR UPDATE trigger for accepted-artifact invariants; use a fixed-search-path tenant-bound SECURITY DEFINER function only for exact validation plus row locking, so the runtime never receives artifact-table UPDATE privileges."
+  source_links:
+    - "https://www.postgresql.org/docs/current/plpgsql-trigger.html"
+    - "https://www.postgresql.org/docs/current/sql-createtrigger.html"
+  limitations: "Context7 returned current PostgreSQL documentation; local behavior is additionally verified on PostgreSQL 15.18, while remote CI remains pinned to PostgreSQL 16/pgvector 0.8.5."
+```

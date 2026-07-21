@@ -74,6 +74,15 @@ jobs:
       - name: Run EVAL-CORRUPT-001
         run: npm run eval:corrupt
 
+      - name: Run EVAL-ARTIFACT-001
+        run: npm run eval:artifact
+
+      - name: Run EVAL-VECTOR-001
+        run: npm run eval:vector
+
+      - name: Run EVAL-JOB-LEASE-001
+        run: npm run eval:job-lease
+
       - name: Run EVAL-TENANT-001
         run: npm run eval:tenant
 
@@ -145,10 +154,71 @@ jobs:
             db/migrations/005_tenant_ingestion_runtime.sql \
             db/migrations/006_ingestion_api_runtime.sql \
             db/migrations/007_persisted_artifact_acceptance.sql \
-            db/tests/tenant_ingestion_runtime_gate.sql
+            db/migrations/011_artifact_vector_runtime_hardening.sql \
+            db/tests/tenant_ingestion_runtime_gate.sql \
+            db/tests/artifact_vector_runtime_hardening_gate.sql
           do
             docker exec -i "$POSTGRES_CONTAINER" \
               psql -U postgres -d la_muni_rag_ingestion_test \
+              -v ON_ERROR_STOP=1 < "$sql_file"
+          done
+
+      - name: Verify corrupt historical artifact acceptance blocks migration
+        env:
+          POSTGRES_CONTAINER: ${{ job.services.postgres.id }}
+        run: |
+          docker exec "$POSTGRES_CONTAINER" \
+            createdb -U postgres la_muni_rag_invalid_artifact_test
+          for sql_file in \
+            db/migrations/001_initial_rag_schema.sql \
+            db/migrations/002_procedure_feedback.sql \
+            db/migrations/003_identity_tenancy_rbac.sql \
+            db/migrations/004_procedure_query_api.sql \
+            db/migrations/005_tenant_ingestion_runtime.sql \
+            db/migrations/006_ingestion_api_runtime.sql \
+            db/migrations/007_persisted_artifact_acceptance.sql \
+            db/tests/artifact_vector_invalid_history_fixture.sql
+          do
+            docker exec -i "$POSTGRES_CONTAINER" \
+              psql -U postgres -d la_muni_rag_invalid_artifact_test \
+              -v ON_ERROR_STOP=1 < "$sql_file"
+          done
+          if docker exec -i "$POSTGRES_CONTAINER" \
+            psql -U postgres -d la_muni_rag_invalid_artifact_test \
+            -v ON_ERROR_STOP=1 \
+            < db/migrations/011_artifact_vector_runtime_hardening.sql \
+            > invalid-artifact-migration.log 2>&1
+          then
+            echo "corrupt historical acceptance unexpectedly migrated"
+            exit 1
+          fi
+          grep -q \
+            "existing accepted artifact rows violate the exact clean-scan boundary" \
+            invalid-artifact-migration.log
+          test "$(docker exec "$POSTGRES_CONTAINER" \
+            psql -U postgres -d la_muni_rag_invalid_artifact_test -Atc \
+            "SELECT to_regprocedure('rag.validate_artifact_acceptance_v1()') IS NULL")" = "t"
+
+      - name: Verify supported legacy vector upgrade
+        env:
+          POSTGRES_CONTAINER: ${{ job.services.postgres.id }}
+        run: |
+          docker exec "$POSTGRES_CONTAINER" \
+            createdb -U postgres la_muni_rag_legacy_ingestion_test
+          for sql_file in \
+            db/migrations/001_initial_rag_schema.sql \
+            db/migrations/002_procedure_feedback.sql \
+            migrations/011-production-vector-store.sql \
+            db/migrations/003_identity_tenancy_rbac.sql \
+            db/migrations/004_procedure_query_api.sql \
+            db/migrations/005_tenant_ingestion_runtime.sql \
+            db/migrations/006_ingestion_api_runtime.sql \
+            db/migrations/007_persisted_artifact_acceptance.sql \
+            db/migrations/011_artifact_vector_runtime_hardening.sql \
+            db/tests/artifact_vector_legacy_upgrade_gate.sql
+          do
+            docker exec -i "$POSTGRES_CONTAINER" \
+              psql -U postgres -d la_muni_rag_legacy_ingestion_test \
               -v ON_ERROR_STOP=1 < "$sql_file"
           done
 

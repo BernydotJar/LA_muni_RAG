@@ -185,6 +185,11 @@ const LEASE_NEXT_SQL = `
      AND scan.tenant_id = object.tenant_id
      AND scan.artifact_object_id = object.id
      AND scan.verdict = 'clean'
+     AND scan.inspection_generation = object.inspection_generation
+     AND scan.content_sha256 = object.expected_sha256
+     AND scan.detected_media_type = object.declared_media_type
+     AND object.accepted_until > scan.inspected_at
+     AND object.accepted_until <= scan.inspected_at + interval '7 days'
     WHERE job.tenant_id = $1::uuid
       AND job.job_type = '${INGESTION_JOB_TYPE}'
       AND job.attempt_count < job.max_attempts
@@ -263,21 +268,13 @@ const LOCK_DOCUMENT_VERSION_SQL = `
 `;
 
 const LOCK_ACCEPTED_ARTIFACT_SQL = `
-  SELECT object.id
-  FROM rag.artifact_objects AS object
-  JOIN rag.artifact_scans AS scan
-    ON scan.id = object.accepted_scan_id
-   AND scan.tenant_id = object.tenant_id
-   AND scan.artifact_object_id = object.id
-  WHERE object.id = $1::uuid
-    AND object.tenant_id = $2::uuid
-    AND object.document_version_id = $3::uuid
-    AND object.expected_sha256 = decode($4, 'hex')
-    AND scan.id = $5::uuid
-    AND scan.verdict = 'clean'
-    AND object.status = 'accepted'
-    AND object.accepted_until > statement_timestamp()
-  FOR SHARE OF object, scan;
+  SELECT rag.lock_valid_artifact_acceptance_v1(
+    $1::uuid,
+    $2::uuid,
+    $3::uuid,
+    $4,
+    $5::uuid
+  ) AS accepted;
 `;
 
 const COMPLETE_JOB_SQL = `
@@ -800,7 +797,7 @@ export class PostgresIngestionJobService {
         job.artifactSha256,
         input.artifactScanId,
       ]));
-      if (acceptance.length !== 1) {
+      if (acceptance.length !== 1 || acceptance[0]?.accepted !== true) {
         throw new IngestionJobError(
           "ingestion_artifact_acceptance_rejected",
           "Persisted artifact acceptance changed before vector publication.",

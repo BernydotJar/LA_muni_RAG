@@ -36,7 +36,10 @@
     "test": "node --import tsx --test src/__tests__/*.test.ts",
     "test:workflow-lifecycle": "node --import tsx --test src/__tests__/workflow-lifecycle-state-machine.test.ts src/__tests__/workflow-lifecycle-migration.test.ts src/__tests__/workflow-lifecycle-api-migration.test.ts src/__tests__/workflow-lifecycle-api-v1.test.ts",
     "typecheck": "tsc -p tsconfig.json --noEmit",
-    "workflow:validate": "tsx src/cli/validateWorkflowTemplate.ts"
+    "workflow:validate": "tsx src/cli/validateWorkflowTemplate.ts",
+    "eval:artifact": "node --import tsx --test src/__tests__/eval-artifact-001.test.ts src/__tests__/artifact-vector-runtime-hardening-migration.test.ts",
+    "eval:vector": "node --import tsx --test src/__tests__/eval-vector-001.test.ts src/__tests__/tenant-pg-vector-repository.test.ts",
+    "eval:job-lease": "node --import tsx --test src/__tests__/eval-job-lease-001.test.ts src/__tests__/ingestion-job-service.test.ts src/__tests__/ingestion-worker.test.ts"
   },
   "keywords": [],
   "author": "",

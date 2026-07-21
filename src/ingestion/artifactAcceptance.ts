@@ -220,7 +220,12 @@ const SELECT_ACCEPTED_BINDING_SQL = `
     AND scan.id = $5::uuid
     AND object.status = 'accepted'
     AND object.accepted_until > statement_timestamp()
-    AND scan.verdict = 'clean';
+    AND object.accepted_until > scan.inspected_at
+    AND object.accepted_until <= scan.inspected_at + interval '7 days'
+    AND scan.verdict = 'clean'
+    AND scan.inspection_generation = object.inspection_generation
+    AND scan.content_sha256 = object.expected_sha256
+    AND scan.detected_media_type = object.declared_media_type;
 `;
 
 const INSERT_AUDIT_SQL = `

@@ -35,6 +35,9 @@ describe("operations readiness foundation", () => {
       "npm run eval:conflict",
       "npm run eval:boundary",
       "npm run eval:corrupt",
+      "npm run eval:artifact",
+      "npm run eval:vector",
+      "npm run eval:job-lease",
       "npm run eval:tenant",
       "npm run eval:mixco",
       "npm run eval:water",
@@ -56,9 +59,16 @@ describe("operations readiness foundation", () => {
     assert.match(workflow, /db\/migrations\/008_claim_pack_api\.sql/);
     assert.match(workflow, /db\/migrations\/009_workflow_lifecycle\.sql/);
     assert.match(workflow, /db\/migrations\/010_workflow_lifecycle_api\.sql/);
+    assert.match(workflow, /db\/migrations\/011_artifact_vector_runtime_hardening\.sql/);
+    assert.match(workflow, /migrations\/011-production-vector-store\.sql/);
     assert.match(workflow, /db\/tests\/claim_pack_runtime_gate\.sql/);
     assert.match(workflow, /db\/tests\/workflow_lifecycle_runtime_gate\.sql/);
     assert.match(workflow, /db\/tests\/tenant_ingestion_runtime_gate\.sql/);
+    assert.match(workflow, /db\/tests\/artifact_vector_runtime_hardening_gate\.sql/);
+    assert.match(workflow, /db\/tests\/artifact_vector_legacy_upgrade_gate\.sql/);
+    assert.match(workflow, /db\/tests\/artifact_vector_invalid_history_fixture\.sql/);
+    assert.match(workflow, /corrupt historical artifact acceptance blocks migration/);
+    assert.match(workflow, /existing accepted artifact rows violate the exact clean-scan boundary/);
     assert.match(workflow, /run: npm run smoke:tenant-ingestion/);
     assert.match(workflow, /run: npm run smoke:ingestion-api/);
     assert.match(workflow, /run: npm run smoke:claim-pack/);
@@ -166,6 +176,27 @@ describe("operations readiness foundation", () => {
     assert.match(evaluation, /never call completion/);
     assert.match(evaluation, /passed_for_current_replay_and_ingestion_failure_surfaces_with_storage_limitations/);
     assert.match(evaluation, /do not prove a deployed malware scanner/);
+  });
+
+  it("keeps artifact, vector, and job-lease hard evals executable and honestly bounded", async () => {
+    const [packageJson, evaluation, workflow] = await Promise.all([
+      read("package.json"),
+      read("docs/testing/eval-harness.md"),
+      read(".github/workflows/ci.yml"),
+    ]);
+
+    assert.match(packageJson, /"eval:artifact":/);
+    assert.match(packageJson, /"eval:vector":/);
+    assert.match(packageJson, /"eval:job-lease":/);
+    assert.match(evaluation, /## EVAL-ARTIFACT-001/);
+    assert.match(evaluation, /## EVAL-VECTOR-001/);
+    assert.match(evaluation, /## EVAL-JOB-LEASE-001/);
+    assert.match(evaluation, /production object store/);
+    assert.match(evaluation, /Real-corpus recall/);
+    assert.match(evaluation, /no deployed dispatcher/);
+    assert.match(workflow, /Run EVAL-ARTIFACT-001/);
+    assert.match(workflow, /Run EVAL-VECTOR-001/);
+    assert.match(workflow, /Run EVAL-JOB-LEASE-001/);
   });
 
   it("keeps the named tenant-isolation hard eval and PostgreSQL gate executable", async () => {
