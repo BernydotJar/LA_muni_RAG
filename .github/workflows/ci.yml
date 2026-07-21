@@ -101,6 +101,9 @@ jobs:
       - name: Run EVAL-ACCESSIBILITY-001
         run: npm run eval:accessibility
 
+      - name: Run EVAL-CASE-001
+        run: npm run eval:case
+
       - name: Typecheck
         run: npm run typecheck
 

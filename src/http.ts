@@ -62,7 +62,7 @@ export const handleV1Cors = (
   req: IncomingMessage,
   res: ServerResponse,
   allowedOrigins: readonly string[],
-  allowedMethods: readonly ("GET" | "POST")[] = ["POST"]
+  allowedMethods: readonly ("GET" | "POST" | "PATCH")[] = ["POST"]
 ): boolean => {
   appendVary(res, "Origin");
   const origin = singleHeaderValue(req.headers.origin);

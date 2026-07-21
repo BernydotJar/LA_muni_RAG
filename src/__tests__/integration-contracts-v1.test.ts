@@ -32,8 +32,8 @@ describe("integration contracts v1", () => {
       status: "valid",
       schemaDialect: JSON_SCHEMA_DIALECT,
       openapiVersion: OPENAPI_VERSION,
-      schemasValidated: 17,
-      examplesValidated: 17,
+      schemasValidated: 19,
+      examplesValidated: 19,
       openapiDocumentsValidated: 1,
       issues: [],
     });
@@ -368,6 +368,8 @@ describe("integration contracts v1", () => {
       "/api/v1/workflow-reviews",
       "/api/v1/workflow-approvals",
       "/api/v1/workflows/{workflow_version_id}",
+      "/api/v1/procedure-cases",
+      "/api/v1/procedure-cases/{case_id}",
     ]);
     assert.deepEqual(Object.keys(openapi.paths["/api/v1/claim-packs"]), ["post"]);
     assert.deepEqual(Object.keys(openapi.paths["/api/v1/evidence-gap-requests"]), ["post"]);
@@ -378,10 +380,15 @@ describe("integration contracts v1", () => {
     assert.deepEqual(Object.keys(openapi.paths["/api/v1/workflow-reviews"]), ["post"]);
     assert.deepEqual(Object.keys(openapi.paths["/api/v1/workflow-approvals"]), ["post"]);
     assert.deepEqual(Object.keys(openapi.paths["/api/v1/workflows/{workflow_version_id}"]), ["get"]);
+    assert.deepEqual(Object.keys(openapi.paths["/api/v1/procedure-cases"]), ["post"]);
+    assert.deepEqual(Object.keys(openapi.paths["/api/v1/procedure-cases/{case_id}"]), ["get", "patch"]);
 
     const claimPack = openapi.paths["/api/v1/claim-packs"].post;
     const evidenceGap = openapi.paths["/api/v1/evidence-gap-requests"].post;
     const operation = openapi.paths["/api/v1/procedure-queries"].post;
+    const procedureCaseCreate = openapi.paths["/api/v1/procedure-cases"].post;
+    const procedureCaseGet = openapi.paths["/api/v1/procedure-cases/{case_id}"].get;
+    const procedureCasePatch = openapi.paths["/api/v1/procedure-cases/{case_id}"].patch;
     assert.deepEqual(claimPack.security, [{ bearerAuth: [] }]);
     assert.deepEqual(
       claimPack.parameters.map((parameter: { name: string }) => parameter.name),
@@ -427,6 +434,22 @@ describe("integration contracts v1", () => {
         "../../schemas/v1/procedure-assessment.schema.json",
       ]
     );
+    assert.deepEqual(procedureCaseCreate.security, [{ bearerAuth: [] }]);
+    assert.equal(
+      procedureCaseCreate.requestBody.content["application/json"].schema.$ref,
+      "../../schemas/v1/procedure-case-request.schema.json"
+    );
+    assert.equal(
+      procedureCaseCreate.responses["201"].content["application/json"].schema.$ref,
+      "../../schemas/v1/procedure-case.schema.json"
+    );
+    assert.deepEqual(procedureCaseGet.security, [{ bearerAuth: [] }]);
+    assert.deepEqual(procedureCasePatch.security, [{ bearerAuth: [] }]);
+    assert.equal(
+      procedureCasePatch.requestBody.content["application/json"].schema.$ref,
+      "../../schemas/v1/procedure-case-request.schema.json"
+    );
+
     assert.deepEqual(operation.security, [{ bearerAuth: [] }]);
     assert.deepEqual(
       operation.parameters.map((parameter: { name: string }) => parameter.name),

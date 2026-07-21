@@ -28,6 +28,13 @@ import {
   type ProcedureQueryV1Options,
 } from "./api/v1/index.js";
 import {
+  createProcedureCaseV1Dependencies,
+  handleProcedureCaseV1,
+  PROCEDURE_CASES_ROUTE,
+  PROCEDURE_CASES_ROUTE_PREFIX,
+  type ProcedureCaseV1Options,
+} from "./api/v1/procedureCaseIndex.js";
+import {
   createWorkflowLifecycleV1Dependencies,
   handleWorkflowLifecycleV1,
   WORKFLOW_APPROVALS_ROUTE,
@@ -83,6 +90,7 @@ export interface ServerOptions {
   procedureFeedbackDependencies?: ProcedureFeedbackDependencies;
   domainPack?: DomainPack;
   procedureQueryV1?: ProcedureQueryV1Options;
+  procedureCaseV1?: ProcedureCaseV1Options;
   claimPackV1?: ClaimPackV1Options;
   evidenceGapV1?: EvidenceGapV1Options;
   ingestionJobV1?: IngestionJobV1Options;
@@ -142,6 +150,9 @@ export const createRequestHandler = (options: ServerOptions = {}): RequestListen
     options.procedureQueryV1,
     domainPack
   );
+  const procedureCaseV1Dependencies = createProcedureCaseV1Dependencies(
+    options.procedureCaseV1
+  );
   const claimPackV1Dependencies = createClaimPackV1Dependencies(
     options.claimPackV1,
     domainPack
@@ -184,6 +195,18 @@ export const createRequestHandler = (options: ServerOptions = {}): RequestListen
         if (handleV1Cors(req, res, v1CorsAllowedOrigins)) return;
         await handleProcedureQueryV1(req, res, procedureQueryV1Dependencies);
         return;
+      }
+
+      if (
+        url.pathname === PROCEDURE_CASES_ROUTE ||
+        url.pathname.startsWith(PROCEDURE_CASES_ROUTE_PREFIX)
+      ) {
+        const caseMethods = url.pathname === PROCEDURE_CASES_ROUTE
+          ? (["POST"] as const)
+          : (["GET", "PATCH"] as const);
+        if (handleV1Cors(req, res, v1CorsAllowedOrigins, caseMethods)) return;
+        if (await handleProcedureCaseV1(req, res, url, procedureCaseV1Dependencies)) return;
+        throw new HttpError(404, "not_found", "Route not found");
       }
 
       if (
@@ -243,6 +266,11 @@ export const createRequestHandler = (options: ServerOptions = {}): RequestListen
           workflowLifecycleApi: {
             enabled: true,
             humanApprovalRequired: true,
+          },
+          procedureCaseApi: {
+            enabled: true,
+            approvedWorkflowRequired: true,
+            legalStatusClaims: false,
           },
           domainPack: domainPackSummary,
         });

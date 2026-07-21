@@ -30,6 +30,8 @@ export const CONTRACT_SCHEMA_FILES = [
   "workflow-review-request.schema.json",
   "workflow-approval-request.schema.json",
   "workflow-version.schema.json",
+  "procedure-case-request.schema.json",
+  "procedure-case.schema.json",
   "event-envelope.schema.json",
   "api-error.schema.json",
 ] as const;
@@ -49,6 +51,8 @@ export const CONTRACT_EXAMPLE_BINDINGS = [
   { contractName: "workflow-review-request", schemaFile: "workflow-review-request.schema.json", exampleFile: "workflow-review-request.valid.json" },
   { contractName: "workflow-approval-request", schemaFile: "workflow-approval-request.schema.json", exampleFile: "workflow-approval-request.valid.json" },
   { contractName: "workflow-version", schemaFile: "workflow-version.schema.json", exampleFile: "workflow-version.valid.json" },
+  { contractName: "procedure-case-request", schemaFile: "procedure-case-request.schema.json", exampleFile: "procedure-case-request.valid.json" },
+  { contractName: "procedure-case", schemaFile: "procedure-case.schema.json", exampleFile: "procedure-case.valid.json" },
   { contractName: "event-envelope", schemaFile: "event-envelope.schema.json", exampleFile: "event-envelope.valid.json" },
   { contractName: "api-error", schemaFile: "api-error.schema.json", exampleFile: "api-error.valid.json" },
   { contractName: "api-error-unauthorized", schemaFile: "api-error.schema.json", exampleFile: "api-error-unauthorized.valid.json" },
@@ -212,6 +216,8 @@ const validateOpenApiDocument = async (
     "/api/v1/workflow-reviews",
     "/api/v1/workflow-approvals",
     "/api/v1/workflows/{workflow_version_id}",
+    "/api/v1/procedure-cases",
+    "/api/v1/procedure-cases/{case_id}",
   ];
   if (!equalStringSets(Object.keys(paths), expectedPaths)) {
     recordIssue("invalid_path_scope", "OpenAPI path scope does not match implemented v1 routes");
@@ -244,6 +250,12 @@ const validateOpenApiDocument = async (
   const workflowItemPath = isJsonObject(paths["/api/v1/workflows/{workflow_version_id}"])
     ? paths["/api/v1/workflows/{workflow_version_id}"]
     : {};
+  const procedureCasePath = isJsonObject(paths["/api/v1/procedure-cases"])
+    ? paths["/api/v1/procedure-cases"]
+    : {};
+  const procedureCaseItemPath = isJsonObject(paths["/api/v1/procedure-cases/{case_id}"])
+    ? paths["/api/v1/procedure-cases/{case_id}"]
+    : {};
   if (!equalStringSets(Object.keys(claimPackPath), ["post"])) {
     recordIssue("invalid_method_scope", "ClaimPack path must describe only POST");
   }
@@ -264,10 +276,14 @@ const validateOpenApiDocument = async (
     ["Workflow review", workflowReviewPath, "post"],
     ["Workflow approval", workflowApprovalPath, "post"],
     ["Workflow item", workflowItemPath, "get"],
+    ["Procedure case collection", procedureCasePath, "post"],
   ] as const) {
     if (!equalStringSets(Object.keys(path), [method])) {
       recordIssue("invalid_method_scope", label + " path must describe only " + method.toUpperCase());
     }
+  }
+  if (!equalStringSets(Object.keys(procedureCaseItemPath), ["get", "patch"])) {
+    recordIssue("invalid_method_scope", "Procedure case item path must describe GET and PATCH");
   }
 
   const claimPackOperation = isJsonObject(claimPackPath.post) ? claimPackPath.post : {};
@@ -279,6 +295,9 @@ const validateOpenApiDocument = async (
   const workflowReviewOperation = isJsonObject(workflowReviewPath.post) ? workflowReviewPath.post : {};
   const workflowApprovalOperation = isJsonObject(workflowApprovalPath.post) ? workflowApprovalPath.post : {};
   const workflowGetOperation = isJsonObject(workflowItemPath.get) ? workflowItemPath.get : {};
+  const procedureCaseCreateOperation = isJsonObject(procedureCasePath.post) ? procedureCasePath.post : {};
+  const procedureCaseGetOperation = isJsonObject(procedureCaseItemPath.get) ? procedureCaseItemPath.get : {};
+  const procedureCasePatchOperation = isJsonObject(procedureCaseItemPath.patch) ? procedureCaseItemPath.patch : {};
   const operations = [
     ["POST /api/v1/claim-packs", claimPackOperation],
     ["POST /api/v1/evidence-gap-requests", evidenceGapOperation],
@@ -289,6 +308,9 @@ const validateOpenApiDocument = async (
     ["POST /api/v1/workflow-reviews", workflowReviewOperation],
     ["POST /api/v1/workflow-approvals", workflowApprovalOperation],
     ["GET /api/v1/workflows/{workflow_version_id}", workflowGetOperation],
+    ["POST /api/v1/procedure-cases", procedureCaseCreateOperation],
+    ["GET /api/v1/procedure-cases/{case_id}", procedureCaseGetOperation],
+    ["PATCH /api/v1/procedure-cases/{case_id}", procedureCasePatchOperation],
   ] as const;
   for (const [label, operation] of operations) {
     const security = Array.isArray(operation.security) ? operation.security : [];
@@ -318,6 +340,9 @@ const validateOpenApiDocument = async (
     ["workflow review", workflowReviewOperation, ["idempotency-key", "x-request-id"]],
     ["workflow approval", workflowApprovalOperation, ["idempotency-key", "x-request-id"]],
     ["workflow read", workflowGetOperation, ["x-request-id"]],
+    ["procedure case create", procedureCaseCreateOperation, ["idempotency-key", "x-request-id"]],
+    ["procedure case read", procedureCaseGetOperation, ["x-request-id"]],
+    ["procedure case update", procedureCasePatchOperation, ["idempotency-key", "x-request-id"]],
   ] as const) {
     const headerNames = requiredHeaders(operation);
     for (const requiredHeader of expectedHeaders) {
@@ -337,6 +362,9 @@ const validateOpenApiDocument = async (
     ["workflow review", workflowReviewOperation, ["200", "400", "401", "403", "404", "409", "429", "500"]],
     ["workflow approval", workflowApprovalOperation, ["200", "400", "401", "403", "404", "409", "429", "500"]],
     ["workflow read", workflowGetOperation, ["200", "400", "401", "403", "404", "429", "500"]],
+    ["procedure case create", procedureCaseCreateOperation, ["201", "400", "401", "403", "409", "429", "500"]],
+    ["procedure case read", procedureCaseGetOperation, ["200", "400", "401", "403", "404", "429", "500"]],
+    ["procedure case update", procedureCasePatchOperation, ["200", "400", "401", "403", "404", "409", "429", "500"]],
   ] as const) {
     const responses = isJsonObject(operation.responses) ? operation.responses : {};
     if (!equalStringSets(Object.keys(responses), [...expectedResponses])) {

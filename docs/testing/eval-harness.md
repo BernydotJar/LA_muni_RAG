@@ -605,6 +605,7 @@ Therefore `EVAL-JOB-LEASE-001` is `passed_for_disposable_postgres_fencing_with_d
 
 
 | EVAL-ACCESSIBILITY-001 | passed_for_static_training_surface_with_browser_screen_reader_auth_and_full_product_limitations | 11/11 checks cover Academy semantics, contrast, focus, keyboard, responsive CSS, reduced motion, forced colors, storage/rendering security and Pages; supported-browser E2E, screen readers, human WCAG review, authenticated shell and whole-product audit remain open. |
+| EVAL-CASE-001 | passed_for_tenant_approved_workflow_case_system_with_ui_privacy_load_restore_and_deployment_limitations | API, contracts, exact aggregate replay, concurrent convergence, role-separated documentary validation, document-version identity, append-only audit, forced RLS, SQL gate and compiled PostgreSQL HTTP smoke pass; browser UI, approved retention, load, restore, staging and deployment remain open. |
 
 ## Release rule
 
@@ -651,3 +652,32 @@ Limitations:
 
 Therefore `EVAL-ACCESSIBILITY-001` is
 `passed_for_static_training_surface_with_browser_screen_reader_auth_and_full_product_limitations`.
+
+## EVAL-CASE-001
+
+Current scope: server-side, tenant-scoped procedure case system of record.
+
+Proved:
+
+- creation only from a workflow version that is approved at insertion;
+- immutable workflow ID/version and canonical create identity;
+- exact transport and aggregate replay across distinct keys;
+- concurrent create convergence under PostgreSQL advisory fencing;
+- server-side `case:read`, `case:write` and separate `procedure:review` checks;
+- optimistic revision, bounded step/document/blocker/follow-up/closure actions;
+- tenant document-version identity for received/reviewed evidence;
+- append-only case events and minimized audit details;
+- forced RLS, composite tenant FKs and non-owner runtime execution;
+- explicit limitations against legal, approval, procurement, reception, payment,
+  liquidation or institutional-closure claims.
+
+Not proved:
+
+- authenticated human browser session and case UX;
+- approved purpose, retention, deletion/legal-hold and privacy operations;
+- production object store/source viewer, telemetry, load, restore or staging;
+- legal applicability of any workflow to an individual case;
+- production deployment.
+
+Therefore `EVAL-CASE-001` is
+`passed_for_tenant_approved_workflow_case_system_with_ui_privacy_load_restore_and_deployment_limitations`.
