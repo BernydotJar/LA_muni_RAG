@@ -132,6 +132,7 @@ export const municipalAntiguaDomainPack: DomainPack = {
     "¿Cómo funciona una contratación de obra según un manual externo como Mixco?",
   ],
   evaluationCases: [
+    { id: "generic-procedure-research", query: "¿Cuál es el procedimiento para realizar X?", expectedWorkflowType: "unknown", notes: "Must remain procedural but unclassified until X and its governing evidence are identified." },
     { id: "water-community-procedure", query: "¿Qué se necesita para llevar agua potable a una comunidad de Antigua Guatemala y cómo se le da seguimiento?", expectedWorkflowType: "potable_water_project", notes: "Must compile the Antigua-first 47-category research workflow without treating categories as facts." },
     { id: "stadium-public-works", query: "¿Qué hay que hacer para construir un estadio municipal?", expectedWorkflowType: "public_works", notes: "Must stay Antigua-first." },
     { id: "mixco-external-reference", query: "Usa el manual de Mixco para explicar contratación de obra", expectedWorkflowType: "procurement", expectedAuthorityClass: "external_reference", notes: "Must be comparative only." },

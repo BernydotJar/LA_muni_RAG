@@ -29,6 +29,7 @@ describe("operations readiness foundation", () => {
       "npm run source-inventory:validate",
       "npm audit --audit-level=high",
       "npm run domain:evaluate",
+      "npm run eval:procedure",
       "npm run eval:water",
       "npm run typecheck",
       "npm test",
@@ -52,6 +53,21 @@ describe("operations readiness foundation", () => {
     assert.doesNotMatch(workflow, /^\s*(?:pages|id-token|actions|checks): write$/m);
     assert.doesNotMatch(workflow, /^\s*environment:/m);
     assert.doesNotMatch(workflow, /\$\{\{\s*secrets\./);
+  });
+
+  it("keeps the named general-procedure hard eval executable and honestly documented", async () => {
+    const [packageJson, evaluation] = await Promise.all([
+      read("package.json"),
+      read("docs/testing/eval-harness.md"),
+    ]);
+
+    assert.match(packageJson, /"eval:procedure": "node --import tsx --test src\/__tests__\/eval-procedure-001\.test\.ts"/);
+    assert.match(evaluation, /## EVAL-PROCEDURE-001/);
+    assert.match(evaluation, /recognized as procedural but remains `unknown`/);
+    assert.match(evaluation, /three distinct sources support exactly one matching step each/);
+    assert.match(evaluation, /passed_with_corpus_and_lifecycle_limitations/);
+    assert.match(evaluation, /controlled synthetic fixtures/);
+    assert.match(evaluation, /not an executable instruction/);
   });
 
   it("keeps the named water hard eval executable and honestly documented", async () => {

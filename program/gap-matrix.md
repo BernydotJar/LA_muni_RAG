@@ -63,7 +63,7 @@ Autenticación, tenant scope, RBAC, validación, idempotencia, audit y rate limi
 
 | Eval requerido | Estado | Gap de cierre |
 |---|---|---|
-| EVAL-PROCEDURE-001 | missing | Validar classification, steps, dependencies, docs, citations, state, gaps y workflow JSON |
+| EVAL-PROCEDURE-001 | passed_with_corpus_and_lifecycle_limitations | 4/4 prueba clasificación conservadora, workflow sin evidencia, citas municipales identity-bound por paso y JSON v1; faltan corpus real, retrieval thresholds, conflictos, lifecycle, aprobación y casos |
 | EVAL-WATER-001 | passed_with_corpus_and_runtime_limitations | 47 categorías, contrato completo, missing evidence y citation selectivity pasan; faltan corpus real ingerido, conflictos, lifecycle y caso persistido |
 | EVAL-MIXCO-001 | partial | Existe caso sintético de authority; falta flujo/corpus/warning end-to-end |
 | EVAL-OS-INTEGRATION-001 | partial | Provider ProcedureWorkflow y boundary pasan; falta consumer OS Electoral y prueba entre repos |

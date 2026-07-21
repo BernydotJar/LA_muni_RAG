@@ -84,7 +84,12 @@ export const classifyProcedureQuery = (
     caseName ? `${caseName} expediente contrato acta recepción liquidación` : "",
     communityName ? `${communityName} COCODE COMUDE comunidad obra` : "",
     municipalityName ? `${municipalityName} manual normas procedimientos adquisiciones contrataciones obra` : "",
-  ].filter((value) => value.trim().length > 0);
+  ]
+    .map((value) => value.trim())
+    .filter((value) => value.length > 0)
+    .filter((value, index, values) =>
+      values.findIndex((candidate) => normalize(candidate) === normalize(value)) === index
+    );
 
   return {
     isProcedural,

@@ -56,6 +56,9 @@ jobs:
       - name: Evaluate domain packs
         run: npm run domain:evaluate
 
+      - name: Run EVAL-PROCEDURE-001
+        run: npm run eval:procedure
+
       - name: Run EVAL-WATER-001
         run: npm run eval:water
 
