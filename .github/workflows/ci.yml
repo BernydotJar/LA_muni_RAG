@@ -59,6 +59,9 @@ jobs:
       - name: Run EVAL-PROCEDURE-001
         run: npm run eval:procedure
 
+      - name: Run EVAL-BOUNDARY-001
+        run: npm run eval:boundary
+
       - name: Run EVAL-MIXCO-001
         run: npm run eval:mixco
 

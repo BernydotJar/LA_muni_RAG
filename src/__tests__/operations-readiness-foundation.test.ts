@@ -30,6 +30,7 @@ describe("operations readiness foundation", () => {
       "npm audit --audit-level=high",
       "npm run domain:evaluate",
       "npm run eval:procedure",
+      "npm run eval:boundary",
       "npm run eval:mixco",
       "npm run eval:water",
       "npm run typecheck",
@@ -69,6 +70,21 @@ describe("operations readiness foundation", () => {
     assert.match(evaluation, /passed_with_corpus_and_lifecycle_limitations/);
     assert.match(evaluation, /controlled synthetic fixtures/);
     assert.match(evaluation, /not an executable instruction/);
+  });
+
+  it("keeps the named product-boundary hard eval executable and honestly documented", async () => {
+    const [packageJson, evaluation] = await Promise.all([
+      read("package.json"),
+      read("docs/testing/eval-harness.md"),
+    ]);
+
+    assert.match(packageJson, /"eval:boundary": "node --import tsx --test src\/__tests__\/eval-boundary-001\.test\.ts"/);
+    assert.match(evaluation, /## EVAL-BOUNDARY-001/);
+    assert.match(evaluation, /rejected before the procedure compiler runs/);
+    assert.match(evaluation, /names both downstream owners/);
+    assert.match(evaluation, /does not retain the raw question, facts, or constraints/);
+    assert.match(evaluation, /passed_for_current_provider_surface/);
+    assert.match(evaluation, /Every future endpoint and external consumer/);
   });
 
   it("keeps the named Mixco hard eval executable and honestly documented", async () => {

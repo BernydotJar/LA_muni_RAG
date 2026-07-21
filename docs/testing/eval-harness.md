@@ -11,12 +11,13 @@ A green synthetic evaluation is not evidence that the municipal corpus is comple
 ```bash
 npm run domain:evaluate
 npm run eval:procedure
+npm run eval:boundary
 npm run eval:mixco
 npm run eval:water
 npm test
 ```
 
-`npm run eval:procedure`, `npm run eval:mixco`, and `npm run eval:water` are named CI gates. The complete regression remains `npm test`.
+`npm run eval:procedure`, `npm run eval:boundary`, `npm run eval:mixco`, and `npm run eval:water` are named CI gates. The complete regression remains `npm test`.
 
 ## EVAL-PROCEDURE-001
 
@@ -53,6 +54,42 @@ Current limitations:
 - A valid `draft` workflow is not an executable instruction and does not authorize municipal action.
 
 Therefore `EVAL-PROCEDURE-001` is `passed_with_corpus_and_lifecycle_limitations`, while the parent procedure workstream and production gate remain open.
+
+## EVAL-BOUNDARY-001
+
+Primary input:
+
+```text
+Diseña la estrategia electoral y el calendario de contenido.
+```
+
+Implemented acceptance criteria:
+
+1. A request that combines electoral strategy and a content calendar is rejected before the procedure compiler runs.
+2. The contract-valid `product_boundary_violation` error names both downstream owners while routing the primary electoral violation to OS Electoral.
+3. A content-only editorial-calendar and social-publication request is routed to Content Agency and never reaches the compiler.
+4. Boundary inspection covers the question, facts, and constraints so an out-of-scope instruction cannot be hidden in case context.
+5. Rejections return no workflow, sources, citations, claims, or content artifacts.
+6. The audit event is `integration.procedure_query.boundary_rejected`, records only the allowlisted reason code, and does not retain the raw question, facts, or constraints.
+7. A legitimate evidence-and-procedure request reaches the compiler exactly once and returns only a schema-valid `draft` workflow with `product_boundary=evidence_and_procedure_only`.
+8. The accepted artifact contains no campaign strategy, electoral segments, content calendar, publication tasks, paid media, or social-publication capability.
+
+Executable evidence:
+
+- `src/__tests__/eval-boundary-001.test.ts`
+- `src/__tests__/helpers/procedure-query-v1-harness.ts`
+- `src/api/v1/boundary.ts`
+- `src/api/v1/handler.ts`
+- `contracts/schemas/v1/api-error.schema.json`
+- `contracts/schemas/v1/procedure-workflow.schema.json`
+
+Current limitations:
+
+- This hard eval covers the implemented `POST /api/v1/procedure-queries` provider. Every future endpoint and external consumer must preserve the same product boundary.
+- Pattern detection is a deterministic policy gate, not a complete semantic classifier; adversarial language review remains necessary as the API catalog grows.
+- The test harness uses controlled in-memory identity, persistence, and compiler dependencies and does not prove a deployed cross-product topology.
+
+Therefore `EVAL-BOUNDARY-001` is `passed_for_current_provider_surface`, while program-wide boundary assurance remains open for future APIs and external consumers.
 
 ## EVAL-MIXCO-001
 
@@ -136,7 +173,7 @@ Therefore `EVAL-WATER-001` is `passed_with_corpus_and_runtime_limitations`, whil
 | EVAL-MIXCO-001 | passed_with_corpus_and_corroboration_limitations | End-to-end classification, composition, mapping, warning, anti-promotion schema checks, and corroboration gaps pass; real corpus and Antigua corroboration remain open. |
 | EVAL-OS-INTEGRATION-001 | partial | Provider contract and boundary exist; external consumer interoperability is not proven. |
 | EVAL-CONTENT-INTEGRATION-001 | missing | ClaimPack provider and contract tests are not implemented. |
-| EVAL-BOUNDARY-001 | partial | Procedure-query refusal is tested; all future endpoints and consumers must preserve it. |
+| EVAL-BOUNDARY-001 | passed_for_current_provider_surface | Mixed and single-owner requests, hidden context violations, non-compilation, safe audit, and allowed evidence/procedure output pass; future APIs and consumers remain in scope. |
 | EVAL-TENANT-001 | partial | Procedure-query and ingestion database gates exist; the full API catalog and production topology remain open. |
 | EVAL-CONFLICT-001 | missing | Conflicting versions, review, and non-silent promotion are not implemented end to end. |
 | EVAL-CORRUPT-001 | partial | Corrupt replay and ingestion failures fail closed; real scanner/object storage and recovery drills remain open. |
