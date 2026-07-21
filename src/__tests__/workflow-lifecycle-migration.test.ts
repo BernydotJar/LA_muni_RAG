@@ -46,7 +46,8 @@ describe("workflow lifecycle migration", () => {
     assert.match(sql, /invalid superseded workflow transition/);
     assert.match(sql, /archived workflow versions are terminal/);
     assert.match(sql, /approved, superseded, and archived workflow content is immutable/);
-    assert.match(sql, /replacement workflow must belong to the same procedure/);
+    assert.match(sql, /replacement workflow must be an in_review version of the same procedure/);
+    assert.match(sql, /SELECT procedure_id, lifecycle_status[\s\S]*FOR UPDATE/);
     assert.match(
       sql,
       /CREATE UNIQUE INDEX procedure_versions_one_approved_idx[\s\S]*WHERE lifecycle_status = 'approved'/

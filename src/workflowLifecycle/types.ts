@@ -95,3 +95,13 @@ export interface WorkflowSupersessionInput {
   replacementWorkflowVersionId: string;
   now: string;
 }
+
+export interface WorkflowSupersessionApprovalInput extends WorkflowSupersessionInput {
+  approvalId: string;
+  notes: string;
+}
+
+export interface WorkflowSupersessionResult {
+  superseded: WorkflowVersionRecord;
+  replacement: WorkflowVersionRecord;
+}

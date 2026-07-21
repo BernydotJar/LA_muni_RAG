@@ -55,11 +55,14 @@ describe("operations readiness foundation", () => {
     assert.match(workflow, /db\/migrations\/007_persisted_artifact_acceptance\.sql/);
     assert.match(workflow, /db\/migrations\/008_claim_pack_api\.sql/);
     assert.match(workflow, /db\/migrations\/009_workflow_lifecycle\.sql/);
+    assert.match(workflow, /db\/migrations\/010_workflow_lifecycle_api\.sql/);
     assert.match(workflow, /db\/tests\/claim_pack_runtime_gate\.sql/);
+    assert.match(workflow, /db\/tests\/workflow_lifecycle_runtime_gate\.sql/);
     assert.match(workflow, /db\/tests\/tenant_ingestion_runtime_gate\.sql/);
     assert.match(workflow, /run: npm run smoke:tenant-ingestion/);
     assert.match(workflow, /run: npm run smoke:ingestion-api/);
     assert.match(workflow, /run: npm run smoke:claim-pack/);
+    assert.match(workflow, /run: npm run smoke:workflow-lifecycle/);
 
     assert.doesNotMatch(workflow, /build:pages|configure-pages|upload-pages|deploy-pages/i);
     assert.doesNotMatch(workflow, /^\s*(?:pages|id-token|actions|checks): write$/m);
@@ -95,7 +98,7 @@ describe("operations readiness foundation", () => {
     assert.match(evaluation, /same internal compilation used by the workflow provider/);
     assert.match(evaluation, /passed_for_workflow_and_evidence_bundle_provider_with_assessment_and_external_consumer_limitations/);
     assert.match(evaluation, /No consumer contract test has run inside the OS Electoral repository/);
-    assert.match(openapi, /claim_pack_evidence_bundle_procedure_workflow_and_ingestion_job_providers_implemented_with_limits/);
+    assert.match(openapi, /claim_pack_evidence_procedure_ingestion_and_governed_workflow_lifecycle_providers_implemented_with_limits/);
     assert.match(smoke, /evidenceBundleValidated: true/);
     assert.match(smoke, /requested_output: "evidence_bundle"/);
   });

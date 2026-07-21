@@ -113,7 +113,13 @@ export const requireQueryParam = (url: URL, name: string): string => {
 const MAX_BODY_BYTES = 16_384; // 16 KB
 
 /** Read and parse a JSON request body. */
-export const readJsonBody = async <T = unknown>(req: IncomingMessage): Promise<T> => {
+export const readJsonBody = async <T = unknown>(
+  req: IncomingMessage,
+  maxBodyBytes = MAX_BODY_BYTES
+): Promise<T> => {
+  if (!Number.isSafeInteger(maxBodyBytes) || maxBodyBytes < 1 || maxBodyBytes > 4 * 1024 * 1024) {
+    throw new Error("JSON body limit is outside policy");
+  }
   return new Promise((resolve, reject) => {
     const chunks: Buffer[] = [];
     let size = 0;
@@ -122,7 +128,7 @@ export const readJsonBody = async <T = unknown>(req: IncomingMessage): Promise<T
     req.on("data", (chunk: Buffer) => {
       if (tooLarge) return;
       size += chunk.length;
-      if (size > MAX_BODY_BYTES) {
+      if (size > maxBodyBytes) {
         tooLarge = true;
         chunks.length = 0;
         // Keep draining the socket. Destroying it here can prevent the caller

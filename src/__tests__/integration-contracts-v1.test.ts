@@ -32,8 +32,8 @@ describe("integration contracts v1", () => {
       status: "valid",
       schemaDialect: JSON_SCHEMA_DIALECT,
       openapiVersion: OPENAPI_VERSION,
-      schemasValidated: 12,
-      examplesValidated: 12,
+      schemasValidated: 16,
+      examplesValidated: 16,
       openapiDocumentsValidated: 1,
       issues: [],
     });
@@ -113,6 +113,43 @@ describe("integration contracts v1", () => {
     const leakedJob = leakedLease.job as Record<string, unknown>;
     leakedJob.lease_token = "must-never-cross-the-api";
     assert.equal(validateResponse(leakedLease), false);
+  });
+
+  it("keeps workflow lifecycle requests action-bound and every AI draft unapproved", async () => {
+    const draftValidate = await schemaValidator("workflow-draft-request.schema.json");
+    const reviewValidate = await schemaValidator("workflow-review-request.schema.json");
+    const approvalValidate = await schemaValidator("workflow-approval-request.schema.json");
+    const versionValidate = await schemaValidator("workflow-version.schema.json");
+    const draft = await readContractExample(projectRoot, "workflow-draft-request.valid.json");
+    const review = await readContractExample(projectRoot, "workflow-review-request.valid.json");
+    const approval = await readContractExample(projectRoot, "workflow-approval-request.valid.json");
+    const version = await readContractExample(projectRoot, "workflow-version.valid.json");
+    assert.equal(draftValidate(draft), true);
+    assert.equal(reviewValidate(review), true);
+    assert.equal(approvalValidate(approval), true);
+    assert.equal(versionValidate(version), true);
+
+    const promotedDraft = clone(draft);
+    const promotedDefinition = promotedDraft.workflow_definition as Record<string, unknown>;
+    promotedDefinition.approval_status = "approved";
+    assert.equal(draftValidate(promotedDraft), false);
+
+    const submitWithDecision = clone(review);
+    submitWithDecision.action = "submit_for_review";
+    assert.equal(reviewValidate(submitWithDecision), false);
+
+    const reviewWithoutDecision = clone(review);
+    delete reviewWithoutDecision.decision;
+    assert.equal(reviewValidate(reviewWithoutDecision), false);
+
+    const supersedeWithoutReplacement = clone(approval);
+    supersedeWithoutReplacement.action = "supersede";
+    assert.equal(approvalValidate(supersedeWithoutReplacement), false);
+
+    const approveWithReplacement = clone(approval);
+    approveWithReplacement.replacement_workflow_version_id =
+      "99999999-9999-4999-8999-999999999999";
+    assert.equal(approvalValidate(approveWithReplacement), false);
   });
 
   it("models unknown authentication identity only for 401 errors", async () => {
@@ -292,11 +329,19 @@ describe("integration contracts v1", () => {
       "/api/v1/procedure-queries",
       "/api/v1/ingestion-jobs",
       "/api/v1/ingestion-jobs/{job_id}",
+      "/api/v1/workflow-drafts",
+      "/api/v1/workflow-reviews",
+      "/api/v1/workflow-approvals",
+      "/api/v1/workflows/{workflow_version_id}",
     ]);
     assert.deepEqual(Object.keys(openapi.paths["/api/v1/claim-packs"]), ["post"]);
     assert.deepEqual(Object.keys(openapi.paths["/api/v1/procedure-queries"]), ["post"]);
     assert.deepEqual(Object.keys(openapi.paths["/api/v1/ingestion-jobs"]), ["post"]);
     assert.deepEqual(Object.keys(openapi.paths["/api/v1/ingestion-jobs/{job_id}"]), ["get"]);
+    assert.deepEqual(Object.keys(openapi.paths["/api/v1/workflow-drafts"]), ["post"]);
+    assert.deepEqual(Object.keys(openapi.paths["/api/v1/workflow-reviews"]), ["post"]);
+    assert.deepEqual(Object.keys(openapi.paths["/api/v1/workflow-approvals"]), ["post"]);
+    assert.deepEqual(Object.keys(openapi.paths["/api/v1/workflows/{workflow_version_id}"]), ["get"]);
 
     const claimPack = openapi.paths["/api/v1/claim-packs"].post;
     const operation = openapi.paths["/api/v1/procedure-queries"].post;
@@ -349,6 +394,51 @@ describe("integration contracts v1", () => {
       Object.keys(status.responses),
       ["200", "400", "401", "403", "404", "429", "500"]
     );
+    const workflowDraft = openapi.paths["/api/v1/workflow-drafts"].post;
+    const workflowReview = openapi.paths["/api/v1/workflow-reviews"].post;
+    const workflowApproval = openapi.paths["/api/v1/workflow-approvals"].post;
+    const workflowRead = openapi.paths["/api/v1/workflows/{workflow_version_id}"].get;
+    for (const lifecycleOperation of [workflowDraft, workflowReview, workflowApproval, workflowRead]) {
+      assert.deepEqual(lifecycleOperation.security, [{ bearerAuth: [] }]);
+    }
+    for (const lifecycleOperation of [workflowDraft, workflowReview, workflowApproval]) {
+      assert.deepEqual(
+        lifecycleOperation.parameters.map((parameter: { name: string }) => parameter.name),
+        ["Idempotency-Key", "X-Request-Id"]
+      );
+    }
+    assert.deepEqual(
+      workflowRead.parameters.map((parameter: { name: string }) => parameter.name),
+      ["workflow_version_id", "X-Request-Id"]
+    );
+    assert.equal(
+      workflowDraft.requestBody.content["application/json"].schema.$ref,
+      "../../schemas/v1/workflow-draft-request.schema.json"
+    );
+    assert.equal(
+      workflowReview.requestBody.content["application/json"].schema.$ref,
+      "../../schemas/v1/workflow-review-request.schema.json"
+    );
+    assert.equal(
+      workflowApproval.requestBody.content["application/json"].schema.$ref,
+      "../../schemas/v1/workflow-approval-request.schema.json"
+    );
+    assert.deepEqual(
+      Object.keys(workflowDraft.responses),
+      ["201", "400", "401", "403", "409", "429", "500"]
+    );
+    assert.deepEqual(
+      Object.keys(workflowReview.responses),
+      ["200", "400", "401", "403", "404", "409", "429", "500"]
+    );
+    assert.deepEqual(
+      Object.keys(workflowApproval.responses),
+      ["200", "400", "401", "403", "404", "409", "429", "500"]
+    );
+    assert.deepEqual(
+      Object.keys(workflowRead.responses),
+      ["200", "400", "401", "403", "404", "429", "500"]
+    );
     assert.equal(openapi.components.securitySchemes.bearerAuth.type, "http");
     assert.equal(openapi.components.securitySchemes.bearerAuth.scheme, "bearer");
     assert.equal(
@@ -365,7 +455,7 @@ describe("integration contracts v1", () => {
     );
     assert.equal(
       openapi["x-implementation-status"],
-      "claim_pack_evidence_bundle_procedure_workflow_and_ingestion_job_providers_implemented_with_limits"
+      "claim_pack_evidence_procedure_ingestion_and_governed_workflow_lifecycle_providers_implemented_with_limits"
     );
   });
 });

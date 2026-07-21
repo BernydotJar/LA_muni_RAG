@@ -21,6 +21,15 @@ import {
   handleProcedureQueryV1,
   type ProcedureQueryV1Options,
 } from "./api/v1/index.js";
+import {
+  createWorkflowLifecycleV1Dependencies,
+  handleWorkflowLifecycleV1,
+  WORKFLOW_APPROVALS_ROUTE,
+  WORKFLOW_DRAFTS_ROUTE,
+  WORKFLOW_REVIEWS_ROUTE,
+  WORKFLOWS_ROUTE_PREFIX,
+  type WorkflowLifecycleV1Options,
+} from "./api/v1/workflowLifecycleIndex.js";
 import { processChatWithDependencies } from "./chat.js";
 import { closeDb } from "./db.js";
 import {
@@ -70,6 +79,7 @@ export interface ServerOptions {
   procedureQueryV1?: ProcedureQueryV1Options;
   claimPackV1?: ClaimPackV1Options;
   ingestionJobV1?: IngestionJobV1Options;
+  workflowLifecycleV1?: WorkflowLifecycleV1Options;
   v1CorsAllowedOrigins?: readonly string[];
   legacyApiEnabled?: boolean;
   requestTimeoutMs?: number;
@@ -132,6 +142,9 @@ export const createRequestHandler = (options: ServerOptions = {}): RequestListen
   const ingestionJobV1Dependencies = createIngestionJobV1Dependencies(
     options.ingestionJobV1
   );
+  const workflowLifecycleV1Dependencies = createWorkflowLifecycleV1Dependencies(
+    options.workflowLifecycleV1
+  );
   const v1CorsAllowedOrigins =
     options.v1CorsAllowedOrigins ??
     (process.env.V1_CORS_ALLOWED_ORIGINS ?? "")
@@ -166,6 +179,20 @@ export const createRequestHandler = (options: ServerOptions = {}): RequestListen
         return;
       }
 
+      if (
+        url.pathname === WORKFLOW_DRAFTS_ROUTE ||
+        url.pathname === WORKFLOW_REVIEWS_ROUTE ||
+        url.pathname === WORKFLOW_APPROVALS_ROUTE ||
+        url.pathname.startsWith(WORKFLOWS_ROUTE_PREFIX)
+      ) {
+        const workflowMethods = url.pathname.startsWith(WORKFLOWS_ROUTE_PREFIX)
+          ? (["GET"] as const)
+          : (["POST"] as const);
+        if (handleV1Cors(req, res, v1CorsAllowedOrigins, workflowMethods)) return;
+        await handleWorkflowLifecycleV1(req, res, url, workflowLifecycleV1Dependencies);
+        return;
+      }
+
       // The pre-v1 API uses global-pool queries and demo-oriented wildcard
       // CORS. It is intentionally unavailable in production until every route
       // is migrated to authenticated tenant transactions and bounded abuse
@@ -192,6 +219,10 @@ export const createRequestHandler = (options: ServerOptions = {}): RequestListen
           claimPackApi: {
             enabled: true,
             validitySeconds: claimPackV1Dependencies.validitySeconds,
+          },
+          workflowLifecycleApi: {
+            enabled: true,
+            humanApprovalRequired: true,
           },
           domainPack: domainPackSummary,
         });

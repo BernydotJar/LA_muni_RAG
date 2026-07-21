@@ -79,7 +79,7 @@ Implemented acceptance criteria:
 6. `requested_output=procedure_workflow` returns a schema-valid `workflow_version=1.0.0`, `approval_status=draft` artifact with sources, citations, and steps.
 7. Neither output contains campaign strategy, electoral segments, territories, message house, approved message, content calendar, publication tasks, or media spend fields.
 8. `requested_output=procedure_assessment` remains an honest non-retryable `503 capability_unavailable` and never invokes the compiler.
-9. OpenAPI 3.1.1 exposes exactly the implemented 200 variants, and the compiled PostgreSQL/HTTP smoke is wired to exercise EvidenceBundle success, exact replay, and exact-origin CORS when remote CI can run.
+9. OpenAPI 3.1.1 exposes exactly the implemented 200 variants, and the compiled PostgreSQL/HTTP smoke passed locally against PostgreSQL 15.18/pgvector 0.8.5 with EvidenceBundle success, exact replay, and exact-origin CORS.
 
 Executable evidence:
 
@@ -95,9 +95,9 @@ Executable evidence:
 Current limitations:
 
 - The focused provider test uses controlled identity-bound Antigua evidence. It proves contract mapping, CORS, idempotency, audit minimization, and product boundaries, not a complete or current municipal corpus.
-- The compiled PostgreSQL/HTTP smoke update is wired but cannot run in the nested Cloud Sandbox; remote execution is pending `BLK-CLOUD-PUSH-001`.
+- The compiled PostgreSQL/HTTP smoke and non-owner SQL gate passed locally on the current tree; remote CI on the published commit remains pending.
 - No consumer contract test has run inside the OS Electoral repository, so cross-repository interoperability, consumer persistence, and consumer-side draft/comparative handling remain unproved.
-- `ProcedureAssessment`, procedure lifecycle persistence, human approval, and distributed production topology remain unavailable.
+- `ProcedureAssessment`, the external consumer, lifecycle UI/accessibility, and distributed production topology remain unavailable or unproved. Governed lifecycle persistence and human approval APIs now exist as a separate verified slice.
 
 Therefore `EVAL-OS-INTEGRATION-001` is `passed_for_workflow_and_evidence_bundle_provider_with_assessment_and_external_consumer_limitations`.
 
@@ -120,7 +120,7 @@ Implemented acceptance criteria:
 7. Mixco remains `comparative_reference` and carries the canonical warning; it is never promoted to official Antigua evidence.
 8. Missing role, cross-tenant scope, mismatched credential provenance, content generation, and electoral strategy return uniform `403 forbidden`; detailed ownership classification remains audit-only.
 9. Migration 008 creates separate forced-RLS idempotency/rate tables and a sanitized pre-tenant authentication sink; no Bearer token, request body, brief, copy, or publication artifact is stored.
-10. OpenAPI 3.1.1, a non-owner SQL gate, and a compiled HTTP smoke are wired as required CI evidence.
+10. OpenAPI 3.1.1, the non-owner SQL gate, and the compiled HTTP smoke passed locally against PostgreSQL 15.18/pgvector 0.8.5 and remain wired as required remote-CI evidence.
 
 Executable evidence:
 
@@ -138,11 +138,11 @@ Executable evidence:
 Current limitations:
 
 - Focused provider tests use controlled identity-bound evidence and do not prove corpus completeness or current legal effect.
-- The pinned pgvector image could not register its layers inside the current Cloud Sandbox (`operation not supported`); the SQL/HTTP gates are wired for remote CI but are not credited as passed for this HEAD.
+- Docker-in-Docker could not register the pinned image layers, so the local gate used PostgreSQL 15.18 plus pgvector 0.8.5 built from the verified official v0.8.5 commit. SQL and compiled HTTP smokes passed; remote CI still uses the pinned PostgreSQL 16/pgvector service.
 - No consumer contract has run inside the Content Agency repository, so downstream ID/evidence preservation, Greenlight handling, and expiry/supersession behavior remain unproved.
 - `valid_until` is a bounded reuse control, not a legal-validity determination, and cross-product revocation remains pending.
 
-Therefore `EVAL-CONTENT-INTEGRATION-001` is `passed_for_claim_pack_provider_with_external_consumer_and_remote_db_limitations`.
+Therefore `EVAL-CONTENT-INTEGRATION-001` is `passed_for_claim_pack_provider_with_external_consumer_and_remote_ci_limitations`.
 
 ## EVAL-CONFLICT-001
 
@@ -251,7 +251,7 @@ Current limitations:
 
 - Procedure replay tests use controlled in-memory persistence; PostgreSQL invalidation and rollback remain covered by disposable runtime gates rather than this focused harness.
 - Ingestion tests use controlled artifact, scanner-evidence, provider, and transaction adapters. They do not prove a deployed malware scanner, durable object store, worker dispatcher, load behavior, or disaster recovery.
-- The nested Cloud Sandbox cannot execute the restored live PostgreSQL service gate or publish the branch; current remote verification is blocked by `BLK-CLOUD-PUSH-001`.
+- The disposable PostgreSQL gates now execute locally, including corrupt workflow replay invalidation and recovery. Remote CI and publication evidence remain separate requirements.
 
 Therefore `EVAL-CORRUPT-001` is `passed_for_current_replay_and_ingestion_failure_surfaces_with_storage_limitations`.
 
@@ -286,7 +286,7 @@ Executable evidence:
 Current limitations:
 
 - The HTTP hard eval uses controlled in-memory persistence and transaction clients; the PostgreSQL gate remains a separate disposable CI control.
-- The restored PostgreSQL/HTTP CI steps cannot be executed in this nested Cloud Sandbox because it cannot start the required service or publish the branch; remote verification is pending `BLK-CLOUD-PUSH-001`.
+- The restored PostgreSQL/HTTP gates passed locally with a non-owner, non-superuser, non-`BYPASSRLS` role. Remote CI on the published commit and production topology remain pending.
 - This result covers the implemented procedure-query and historical ingestion surfaces, not every endpoint required by the final API catalog or a production deployment topology.
 - Tenant isolation under backup, restore, analytics, observability, object storage, and future procedure-case APIs remains unproved.
 
@@ -360,22 +360,64 @@ Current limitations:
 - The test uses controlled synthetic evidence to prove classification, field completeness, evidence downgrading, and citation selectivity.
 - It does not prove that all Antigua Guatemala sources have been located, acquired, scanned, ingested, indexed, or validated for current legal effect.
 - It does not prove a real end-to-end retrieval threshold, contradiction policy, actor assignment, deadline, external system, approval route, or official step ordering.
-- It does not create a persistent procedure version, approval record, or procedure-case instance.
+- The focused water eval itself does not create an approved corpus-backed procedure version or a procedure-case instance. Governed lifecycle persistence is verified separately, but official water-workflow approval still requires real corpus and human review.
 - Mixco remains comparative only and requires separate corroboration for Antigua Guatemala.
 
 Therefore `EVAL-WATER-001` is `passed_with_corpus_and_runtime_limitations`, while the parent WS-05 and production gate remain open.
+
+## Governed workflow lifecycle API gate
+
+This is a deterministic production-shaped gate, not a legal-validity declaration.
+
+Implemented acceptance criteria:
+
+1. `POST /api/v1/workflow-drafts`, `POST /api/v1/workflow-reviews`, `POST /api/v1/workflow-approvals`, and `GET /api/v1/workflows/{workflow_version_id}` are authenticated, tenant-scoped, rate-limited, audited, and contract-valid.
+2. Authentication and coarse RBAC complete before body parsing; request, tenant, nested workflow, and credential provenance identities are bound server-side.
+3. Every generated/imported version starts `draft`; creator, reviewer, and approver remain distinct.
+4. Exact idempotent replay returns exact bytes; changed payload conflicts; a concurrent in-progress request cannot lose its claim.
+5. Invalid stored replay is committed as invalidated before the handler emits a generic non-leaking error, and the next request can regenerate safely.
+6. Missing and cross-tenant workflow identifiers share the same `404` shape without metadata leakage.
+7. Supersession atomically approves a reviewed same-procedure replacement, supersedes the former approved version, and leaves exactly one approved row.
+8. Forced RLS, non-owner execution, append-only review/approval evidence, approved-content immutability, and pre-tenant authentication aggregation pass the disposable SQL gate.
+
+Executable evidence:
+
+- `src/__tests__/workflow-lifecycle-state-machine.test.ts`
+- `src/__tests__/workflow-lifecycle-api-v1.test.ts`
+- `src/__tests__/workflow-lifecycle-migration.test.ts`
+- `src/__tests__/workflow-lifecycle-api-migration.test.ts`
+- `db/migrations/009_workflow_lifecycle.sql`
+- `db/migrations/010_workflow_lifecycle_api.sql`
+- `db/tests/workflow_lifecycle_runtime_gate.sql`
+- `scripts/workflow-lifecycle-postgres-smoke.mjs`
+- `contracts/schemas/v1/workflow-*.schema.json`
+- `contracts/openapi/v1/openapi.json`
+
+Current local evidence:
+
+- lifecycle-focused tests: 35/35;
+- contract registry: 16 schemas, 16 examples, one OpenAPI 3.1.1 document;
+- fresh non-owner database path: PostgreSQL 15.18, pgvector 0.8.5, migrations/gates 001–004 + 008–010;
+- compiled ProcedureQuery, ClaimPack, and lifecycle HTTP smokes: pass;
+- full regression: 636 tests, 634 pass, 0 fail, 2 explicit environment skips.
+
+Remaining limitations:
+
+- remote CI on the published commit, protected merge, and deployment are not yet credited;
+- workflow review/approval UI, accessibility, notifications, consumer interoperability, semantic conflict resolution, backup/restore, load/HA, and observability remain open;
+- an approved workflow is a governance state, not proof of current legal applicability or institutional execution.
 
 ## Required hard-eval matrix
 
 | Evaluation | Current executable status | Remaining proof |
 |---|---|---|
-| EVAL-PROCEDURE-001 | passed_with_corpus_and_lifecycle_limitations | Synthetic identity-bound citations and workflow JSON pass; real corpus retrieval, conflicts, lifecycle, approvals, and cases remain open. |
+| EVAL-PROCEDURE-001 | passed_with_corpus_and_case_limitations | Synthetic identity-bound citations and workflow JSON pass; governed lifecycle is verified separately; real corpus retrieval, conflict resolution, and cases remain open. |
 | EVAL-WATER-001 | passed_with_corpus_and_runtime_limitations | Real Antigua corpus, retrieval thresholds, contradictions, approvals, and persistent case tracking. |
 | EVAL-MIXCO-001 | passed_with_corpus_and_corroboration_limitations | End-to-end classification, composition, mapping, warning, anti-promotion schema checks, and corroboration gaps pass; real corpus and Antigua corroboration remain open. |
 | EVAL-OS-INTEGRATION-001 | passed_for_workflow_and_evidence_bundle_provider_with_assessment_and_external_consumer_limitations | EvidenceBundle and ProcedureWorkflow providers, replay, CORS, authority/citation identity, no-evidence gaps, boundary, OpenAPI, and compiled smoke wiring pass; assessment and OS-repository consumer proof remain open. |
-| EVAL-CONTENT-INTEGRATION-001 | passed_for_claim_pack_provider_with_external_consumer_and_remote_db_limitations | Provider, contract, replay, abstention, RBAC/tenant, Mixco, no-promotion, OpenAPI, migration and smoke wiring pass locally/static; remote DB gate and Content Agency consumer remain open. |
+| EVAL-CONTENT-INTEGRATION-001 | passed_for_claim_pack_provider_with_external_consumer_and_remote_ci_limitations | Provider, contract, replay, abstention, RBAC/tenant, Mixco, no-promotion, OpenAPI, non-owner SQL and compiled HTTP smoke pass locally; remote CI and the Content Agency consumer remain open. |
 | EVAL-BOUNDARY-001 | passed_for_current_provider_surface | Mixed and single-owner requests, hidden context violations, non-compilation, safe audit, and allowed evidence/procedure output pass; future APIs and consumers remain in scope. |
-| EVAL-TENANT-001 | passed_for_current_provider_and_disposable_db_gate_with_topology_limitations | Non-leaking HTTP denial, authenticated-tenant audit, transaction-local context, FORCE-RLS assertions, restored SQL gate, and compiled smoke wiring pass locally/static; full catalog and topology remain open. |
+| EVAL-TENANT-001 | passed_for_current_provider_and_disposable_db_gate_with_topology_limitations | Non-leaking HTTP denial, authenticated-tenant audit, transaction-local context, FORCE-RLS assertions, SQL gates, and compiled smokes pass locally; the full catalog and production topology remain open. |
 | EVAL-CONFLICT-001 | passed_for_explicit_version_text_conflicts_with_lifecycle_and_corpus_limitations | 8/8 proves visibility, review_required, downgrade, a blocking gap, ClaimPack abstention, and anti-false-positive behavior; real corpus conflicts, semantic comparison, and persisted resolution lifecycle remain open. |
 | EVAL-CORRUPT-001 | passed_for_current_replay_and_ingestion_failure_surfaces_with_storage_limitations | Corrupt replay invalidation, failed-compilation release/retry, stable PDFs, worker no-completion failure paths, and durable job retry/failure suites pass; real scanner, storage, dispatcher, load, and recovery remain open. |
 

@@ -5,7 +5,9 @@ import type {
   WorkflowApprovalInput,
   WorkflowLifecycleActor,
   WorkflowReviewInput,
+  WorkflowSupersessionApprovalInput,
   WorkflowSupersessionInput,
+  WorkflowSupersessionResult,
   WorkflowVersionRecord,
 } from "./types.js";
 
@@ -324,6 +326,35 @@ export const supersedeWorkflowVersion = (
   updated.supersededByWorkflowVersionId = replacement;
   updated.updatedAt = canonicalTime(input.now, "now");
   return updated;
+};
+
+export const approveReplacementAndSupersede = (
+  current: WorkflowVersionRecord,
+  replacement: WorkflowVersionRecord,
+  actor: WorkflowLifecycleActor,
+  input: WorkflowSupersessionApprovalInput
+): WorkflowSupersessionResult => {
+  requireTenant(current, actor);
+  requireTenant(replacement, actor);
+  if (
+    current.procedureId !== replacement.procedureId ||
+    replacement.workflowVersionId !== canonicalUuid(
+      input.replacementWorkflowVersionId,
+      "replacementWorkflowVersionId"
+    )
+  ) {
+    throw new WorkflowLifecycleError(
+      "workflow_supersession_invalid",
+      "Replacement workflow must be the requested version of the same procedure"
+    );
+  }
+  const approvedReplacement = approveWorkflowVersion(replacement, actor, {
+    approvalId: input.approvalId,
+    notes: input.notes,
+    now: input.now,
+  });
+  const superseded = supersedeWorkflowVersion(current, actor, input);
+  return { superseded, replacement: approvedReplacement };
 };
 
 export const archiveWorkflowVersion = (

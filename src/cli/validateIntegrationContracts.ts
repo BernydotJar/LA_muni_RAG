@@ -25,6 +25,10 @@ export const CONTRACT_SCHEMA_FILES = [
   "evidence-gap-request.schema.json",
   "claim-pack.schema.json",
   "claim-pack-request.schema.json",
+  "workflow-draft-request.schema.json",
+  "workflow-review-request.schema.json",
+  "workflow-approval-request.schema.json",
+  "workflow-version.schema.json",
   "event-envelope.schema.json",
   "api-error.schema.json",
 ] as const;
@@ -39,6 +43,10 @@ export const CONTRACT_EXAMPLE_BINDINGS = [
   { contractName: "evidence-gap-request", schemaFile: "evidence-gap-request.schema.json", exampleFile: "evidence-gap-request.valid.json" },
   { contractName: "claim-pack", schemaFile: "claim-pack.schema.json", exampleFile: "claim-pack.valid.json" },
   { contractName: "claim-pack-request", schemaFile: "claim-pack-request.schema.json", exampleFile: "claim-pack-request.valid.json" },
+  { contractName: "workflow-draft-request", schemaFile: "workflow-draft-request.schema.json", exampleFile: "workflow-draft-request.valid.json" },
+  { contractName: "workflow-review-request", schemaFile: "workflow-review-request.schema.json", exampleFile: "workflow-review-request.valid.json" },
+  { contractName: "workflow-approval-request", schemaFile: "workflow-approval-request.schema.json", exampleFile: "workflow-approval-request.valid.json" },
+  { contractName: "workflow-version", schemaFile: "workflow-version.schema.json", exampleFile: "workflow-version.valid.json" },
   { contractName: "event-envelope", schemaFile: "event-envelope.schema.json", exampleFile: "event-envelope.valid.json" },
   { contractName: "api-error", schemaFile: "api-error.schema.json", exampleFile: "api-error.valid.json" },
   { contractName: "api-error-unauthorized", schemaFile: "api-error.schema.json", exampleFile: "api-error-unauthorized.valid.json" },
@@ -197,6 +205,10 @@ const validateOpenApiDocument = async (
     "/api/v1/procedure-queries",
     "/api/v1/ingestion-jobs",
     "/api/v1/ingestion-jobs/{job_id}",
+    "/api/v1/workflow-drafts",
+    "/api/v1/workflow-reviews",
+    "/api/v1/workflow-approvals",
+    "/api/v1/workflows/{workflow_version_id}",
   ];
   if (!equalStringSets(Object.keys(paths), expectedPaths)) {
     recordIssue("invalid_path_scope", "OpenAPI path scope does not match implemented v1 routes");
@@ -214,6 +226,18 @@ const validateOpenApiDocument = async (
   const ingestionItemPath = isJsonObject(paths["/api/v1/ingestion-jobs/{job_id}"])
     ? paths["/api/v1/ingestion-jobs/{job_id}"]
     : {};
+  const workflowDraftPath = isJsonObject(paths["/api/v1/workflow-drafts"])
+    ? paths["/api/v1/workflow-drafts"]
+    : {};
+  const workflowReviewPath = isJsonObject(paths["/api/v1/workflow-reviews"])
+    ? paths["/api/v1/workflow-reviews"]
+    : {};
+  const workflowApprovalPath = isJsonObject(paths["/api/v1/workflow-approvals"])
+    ? paths["/api/v1/workflow-approvals"]
+    : {};
+  const workflowItemPath = isJsonObject(paths["/api/v1/workflows/{workflow_version_id}"])
+    ? paths["/api/v1/workflows/{workflow_version_id}"]
+    : {};
   if (!equalStringSets(Object.keys(claimPackPath), ["post"])) {
     recordIssue("invalid_method_scope", "ClaimPack path must describe only POST");
   }
@@ -226,16 +250,34 @@ const validateOpenApiDocument = async (
   if (!equalStringSets(Object.keys(ingestionItemPath), ["get"])) {
     recordIssue("invalid_method_scope", "Ingestion item path must describe only GET");
   }
+  for (const [label, path, method] of [
+    ["Workflow draft", workflowDraftPath, "post"],
+    ["Workflow review", workflowReviewPath, "post"],
+    ["Workflow approval", workflowApprovalPath, "post"],
+    ["Workflow item", workflowItemPath, "get"],
+  ] as const) {
+    if (!equalStringSets(Object.keys(path), [method])) {
+      recordIssue("invalid_method_scope", label + " path must describe only " + method.toUpperCase());
+    }
+  }
 
   const claimPackOperation = isJsonObject(claimPackPath.post) ? claimPackPath.post : {};
   const procedureOperation = isJsonObject(procedurePath.post) ? procedurePath.post : {};
   const ingestionPostOperation = isJsonObject(ingestionPath.post) ? ingestionPath.post : {};
   const ingestionGetOperation = isJsonObject(ingestionItemPath.get) ? ingestionItemPath.get : {};
+  const workflowDraftOperation = isJsonObject(workflowDraftPath.post) ? workflowDraftPath.post : {};
+  const workflowReviewOperation = isJsonObject(workflowReviewPath.post) ? workflowReviewPath.post : {};
+  const workflowApprovalOperation = isJsonObject(workflowApprovalPath.post) ? workflowApprovalPath.post : {};
+  const workflowGetOperation = isJsonObject(workflowItemPath.get) ? workflowItemPath.get : {};
   const operations = [
     ["POST /api/v1/claim-packs", claimPackOperation],
     ["POST /api/v1/procedure-queries", procedureOperation],
     ["POST /api/v1/ingestion-jobs", ingestionPostOperation],
     ["GET /api/v1/ingestion-jobs/{job_id}", ingestionGetOperation],
+    ["POST /api/v1/workflow-drafts", workflowDraftOperation],
+    ["POST /api/v1/workflow-reviews", workflowReviewOperation],
+    ["POST /api/v1/workflow-approvals", workflowApprovalOperation],
+    ["GET /api/v1/workflows/{workflow_version_id}", workflowGetOperation],
   ] as const;
   for (const [label, operation] of operations) {
     const security = Array.isArray(operation.security) ? operation.security : [];
@@ -260,6 +302,10 @@ const validateOpenApiDocument = async (
     ["procedure query", procedureOperation, ["idempotency-key", "x-request-id"]],
     ["ingestion enqueue", ingestionPostOperation, ["idempotency-key", "x-request-id"]],
     ["ingestion status", ingestionGetOperation, ["x-request-id"]],
+    ["workflow draft", workflowDraftOperation, ["idempotency-key", "x-request-id"]],
+    ["workflow review", workflowReviewOperation, ["idempotency-key", "x-request-id"]],
+    ["workflow approval", workflowApprovalOperation, ["idempotency-key", "x-request-id"]],
+    ["workflow read", workflowGetOperation, ["x-request-id"]],
   ] as const) {
     const headerNames = requiredHeaders(operation);
     for (const requiredHeader of expectedHeaders) {
@@ -274,6 +320,10 @@ const validateOpenApiDocument = async (
     ["procedure query", procedureOperation, ["200", "400", "401", "403", "409", "429", "500", "503"]],
     ["ingestion enqueue", ingestionPostOperation, ["200", "202", "400", "401", "403", "409", "429", "500", "503"]],
     ["ingestion status", ingestionGetOperation, ["200", "400", "401", "403", "404", "429", "500"]],
+    ["workflow draft", workflowDraftOperation, ["201", "400", "401", "403", "409", "429", "500"]],
+    ["workflow review", workflowReviewOperation, ["200", "400", "401", "403", "404", "409", "429", "500"]],
+    ["workflow approval", workflowApprovalOperation, ["200", "400", "401", "403", "404", "409", "429", "500"]],
+    ["workflow read", workflowGetOperation, ["200", "400", "401", "403", "404", "429", "500"]],
   ] as const) {
     const responses = isJsonObject(operation.responses) ? operation.responses : {};
     if (!equalStringSets(Object.keys(responses), [...expectedResponses])) {

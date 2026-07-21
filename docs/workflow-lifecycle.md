@@ -1,6 +1,8 @@
 # Governed Procedure Workflow Lifecycle
 
-Feature 058 establishes the publication boundary for procedure workflows.
+Feature 058 establishes the publication boundary for procedure workflows. Feature
+059 exposes that boundary through authenticated v1 APIs without changing the
+ownership or human-approval model.
 
 ## States
 
@@ -34,20 +36,36 @@ OS Electoral and Content Agency receive stable workflow/version references throu
 versioned APIs. They must not write these tables or maintain independent official
 workflow copies.
 
+## API boundary
+
+```text
+POST /api/v1/workflow-drafts
+POST /api/v1/workflow-reviews
+POST /api/v1/workflow-approvals
+GET  /api/v1/workflows/{workflow_version_id}
+```
+
+Authentication and coarse permission checks run before body parsing. Mutations use
+SHA-256-scoped idempotency, exact validated replay, action-specific RBAC, forced
+RLS, bounded audit, and server-owned transitions. Missing and cross-tenant IDs use
+the same non-enumerating `404` response.
+
+See [Workflow Lifecycle API v1](api/workflow-lifecycle-v1.md).
+
 ## Local verification
 
 ```bash
 npm run typecheck
-node --import tsx --test \
-  src/__tests__/workflow-lifecycle-state-machine.test.ts \
-  src/__tests__/workflow-lifecycle-migration.test.ts
+npm run test:workflow-lifecycle
+npm run contracts:validate
+npm run build
+DATABASE_URL=postgresql://... npm run smoke:workflow-lifecycle
 git diff --check
 ```
 
 ## Not yet credited
 
-- authenticated lifecycle API endpoints;
-- non-owner PostgreSQL execution of migration 009;
-- lifecycle audit events in `audit.events`;
+- remote CI on the published API commit, protected merge, or deployment;
 - review/approval UI and accessibility;
-- concurrency, backup/restore, staging, and deployment evidence.
+- consumer interoperability, semantic conflict resolution, backup/restore,
+  concurrency load, staging, HA, and observability evidence.

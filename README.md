@@ -1,9 +1,9 @@
 # LA Muni RAG
 
-Last updated: 2026-07-19
+Last updated: 2026-07-21
 Status: Pre-production hardening in progress; controlled artifact, bounded
-raw-PDF, tenant-query, authenticated ingestion API, and durable tenant
-ingestion/vector worker foundations implemented
+raw-PDF, tenant-query, authenticated ingestion, durable tenant ingestion/vector,
+and governed workflow lifecycle API foundations implemented
 
 LA Muni RAG is an evidence-first RAG and procedural workflow system configured by default for the Municipality of La Antigua Guatemala, Sacatepéquez. Its core supports validated domain packs so the same architecture can be reused for HR, finance, sales SOPs, and custom procedural assistants.
 
@@ -23,6 +23,10 @@ POST /api/v1/procedure-queries
 POST /api/v1/claim-packs
 POST /api/v1/ingestion-jobs
 GET  /api/v1/ingestion-jobs/{job_id}
+POST /api/v1/workflow-drafts
+POST /api/v1/workflow-reviews
+POST /api/v1/workflow-approvals
+GET  /api/v1/workflows/{workflow_version_id}
 GET  /api/search
 GET  /api/evidence
 GET  /api/agent
@@ -45,8 +49,12 @@ rejects copy, assets, channels, publication tasks, and campaign strategy. Produc
 the legacy routes listed above are development-only and must not be exposed with
 confidential or multi-tenant data. The ingestion v1 route family authenticates
 `document:ingest` and enqueues/reads jobs only for existing registry versions;
-it is not an upload or artifact-acceptance API. A bounded worker class exists,
-but no storage/scanner adapter, worker process, or deployment exists.
+it is not an upload or artifact-acceptance API. The workflow lifecycle route
+family persists tenant-owned drafts, reviews, approvals, supersession, and archival
+with action-specific RBAC, human separation of duties, exact replay, and
+non-enumerating reads. Approval state does not prove legal validity or institutional
+execution. A bounded ingestion worker class exists, but no storage/scanner adapter,
+worker process, workflow UI, or deployment exists.
 
 ## Domain Packs
 
@@ -273,8 +281,9 @@ Reusable today:
   versions, with server-owned pipeline policy and non-leaking status reads;
 - explicit visibility for same-document citation slots whose distinct versions
   contain different text, with review-required contradictions and no silent promotion;
-- tenant-scoped workflow lifecycle tables and a deterministic draft/review/approval/
-  supersession/archive state machine with human separation of duties;
+- tenant-scoped workflow lifecycle tables and authenticated v1 draft/review/
+  approval/read APIs with deterministic transitions, exact replay, forced RLS,
+  bounded audit, and human separation of duties;
 - a callable worker that accepts only injected immutable, clean-scan-bound bytes
   and rechecks their identity before atomic completion.
 
@@ -289,7 +298,8 @@ Still intentionally incomplete:
   cancellation/deadline, backpressure, monitoring, and graceful shutdown;
 - production DB role attestation, queue/observability, load/HA, and reviewed
   tenant-partitioned approximate-vector strategy if scale requires it;
-- authenticated workflow draft/review/approval APIs and lifecycle UI;
+- authenticated lifecycle UI, accessibility, external consumer interoperability,
+  and production-shaped load/HA/observability evidence;
 - automatic workflow-template publication;
 - visual workflow-template editor;
 - real customer HR, finance, or sales policy corpora;
@@ -300,4 +310,6 @@ Starter packs and generated scaffolds are templates. They must not be treated as
 See [Tenant Vector and Ingestion Runtime](docs/tenant-ingestion-runtime.md) for
 the durable job/vector contract, local PostgreSQL gate, and remaining production
 boundary, and [Ingestion jobs API v1](docs/api/ingestion-jobs-v1.md) for the
-authenticated enqueue/status contract.
+authenticated enqueue/status contract, and
+[Workflow Lifecycle API v1](docs/api/workflow-lifecycle-v1.md) for the governed
+version/review/approval boundary.

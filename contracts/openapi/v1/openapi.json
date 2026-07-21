@@ -3,10 +3,10 @@
   "jsonSchemaDialect": "https://json-schema.org/draft/2020-12/schema",
   "info": {
     "title": "LA Muni RAG v1 API Contract",
-    "version": "1.0.0",
-    "description": "Contract for the implemented evidence-bundle and procedure-workflow providers plus authenticated ingestion-job submission/status slices. ProcedureAssessment, document upload, and a deployed worker/storage/scanner remain unavailable; this document does not claim deployment."
+    "version": "1.1.0",
+    "description": "Contract for implemented evidence, procedure-query, ingestion-job, and governed workflow lifecycle providers. Workflow versions always enter as draft and require distinct human review and approval. ProcedureAssessment, document upload, deployment, and production scanner/storage remain outside this contract; this document does not claim deployment."
   },
-  "x-implementation-status": "claim_pack_evidence_bundle_procedure_workflow_and_ingestion_job_providers_implemented_with_limits",
+  "x-implementation-status": "claim_pack_evidence_procedure_ingestion_and_governed_workflow_lifecycle_providers_implemented_with_limits",
   "paths": {
     "/api/v1/claim-packs": {
       "post": {
@@ -324,6 +324,324 @@
                 }
               }
             }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        }
+      }
+    },
+    "/api/v1/workflow-drafts": {
+      "post": {
+        "operationId": "createWorkflowDraft",
+        "summary": "Create a governed workflow draft",
+        "description": "Creates a tenant-scoped workflow version. AI, human, and imported definitions all enter the lifecycle as draft; callers cannot create an approved version.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "description": "Stable key for safely replaying the same tenant-scoped request.",
+            "schema": {
+              "type": "string",
+              "minLength": 16,
+              "maxLength": 128,
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{15,127}$"
+            }
+          },
+          {
+            "name": "X-Request-Id",
+            "in": "header",
+            "required": true,
+            "description": "UUID that must equal request_id in the body.",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "../../schemas/v1/workflow-draft-request.schema.json"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "headers": {
+              "X-Request-Id": {
+                "$ref": "#/components/headers/RequestId"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../../schemas/v1/workflow-version.schema.json"
+                }
+              }
+            },
+            "description": "A new draft workflow version was created and audited."
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        }
+      }
+    },
+    "/api/v1/workflow-reviews": {
+      "post": {
+        "operationId": "reviewWorkflowVersion",
+        "summary": "Submit or review a workflow version",
+        "description": "Authors may submit drafts for review. Distinct reviewers may record changes_requested or recommended_for_approval decisions. Action-specific RBAC is enforced server-side.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "description": "Stable key for safely replaying the same tenant-scoped request.",
+            "schema": {
+              "type": "string",
+              "minLength": 16,
+              "maxLength": 128,
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{15,127}$"
+            }
+          },
+          {
+            "name": "X-Request-Id",
+            "in": "header",
+            "required": true,
+            "description": "UUID that must equal request_id in the body.",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "../../schemas/v1/workflow-review-request.schema.json"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "headers": {
+              "X-Request-Id": {
+                "$ref": "#/components/headers/RequestId"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../../schemas/v1/workflow-version.schema.json"
+                }
+              }
+            },
+            "description": "The review transition was applied and the current workflow version is returned."
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        }
+      }
+    },
+    "/api/v1/workflow-approvals": {
+      "post": {
+        "operationId": "governWorkflowApproval",
+        "summary": "Approve, supersede, or archive a workflow version",
+        "description": "A distinct authorized approver may approve only after a recommended human review. Approved content is immutable; replacement requires a new version and explicit supersession.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "description": "Stable key for safely replaying the same tenant-scoped request.",
+            "schema": {
+              "type": "string",
+              "minLength": 16,
+              "maxLength": 128,
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{15,127}$"
+            }
+          },
+          {
+            "name": "X-Request-Id",
+            "in": "header",
+            "required": true,
+            "description": "UUID that must equal request_id in the body.",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "../../schemas/v1/workflow-approval-request.schema.json"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "headers": {
+              "X-Request-Id": {
+                "$ref": "#/components/headers/RequestId"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../../schemas/v1/workflow-version.schema.json"
+                }
+              }
+            },
+            "description": "The approval, supersession, or archival transition was applied."
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        }
+      }
+    },
+    "/api/v1/workflows/{workflow_version_id}": {
+      "get": {
+        "operationId": "getWorkflowVersion",
+        "summary": "Read a tenant-scoped workflow version",
+        "description": "Returns a workflow version visible to the authenticated tenant. Missing and cross-tenant identifiers share the same non-leaking 404 semantics.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "workflow_version_id",
+            "in": "path",
+            "required": true,
+            "description": "Tenant-scoped workflow version UUID.",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "X-Request-Id",
+            "in": "header",
+            "required": true,
+            "description": "UUID that must equal request_id in the body.",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "headers": {
+              "X-Request-Id": {
+                "$ref": "#/components/headers/RequestId"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../../schemas/v1/workflow-version.schema.json"
+                }
+              }
+            },
+            "description": "Tenant-scoped workflow version and current lifecycle evidence."
           },
           "400": {
             "$ref": "#/components/responses/BadRequest"

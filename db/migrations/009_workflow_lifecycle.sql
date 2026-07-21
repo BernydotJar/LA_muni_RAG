@@ -150,6 +150,7 @@ DECLARE
   v_reviewer UUID;
   v_review_decision TEXT;
   v_replacement_procedure UUID;
+  v_replacement_status TEXT;
 BEGIN
   IF TG_OP = 'INSERT' THEN
     IF NEW.lifecycle_status <> 'draft' THEN
@@ -229,13 +230,15 @@ BEGIN
     IF NEW.superseded_by_workflow_version_id IS NULL THEN
       RAISE EXCEPTION 'supersession requires a replacement workflow version';
     END IF;
-    SELECT procedure_id
-    INTO v_replacement_procedure
+    SELECT procedure_id, lifecycle_status
+    INTO v_replacement_procedure, v_replacement_status
     FROM rag.procedure_versions
     WHERE tenant_id = NEW.tenant_id
-      AND id = NEW.superseded_by_workflow_version_id;
-    IF v_replacement_procedure IS DISTINCT FROM NEW.procedure_id THEN
-      RAISE EXCEPTION 'replacement workflow must belong to the same procedure';
+      AND id = NEW.superseded_by_workflow_version_id
+    FOR UPDATE;
+    IF v_replacement_procedure IS DISTINCT FROM NEW.procedure_id
+       OR v_replacement_status IS DISTINCT FROM 'in_review' THEN
+      RAISE EXCEPTION 'replacement workflow must be an in_review version of the same procedure';
     END IF;
   END IF;
 
