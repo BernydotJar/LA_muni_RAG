@@ -29,6 +29,7 @@ describe("operations readiness foundation", () => {
       "npm run source-inventory:validate",
       "npm audit --audit-level=high",
       "npm run domain:evaluate",
+      "npm run eval:water",
       "npm run typecheck",
       "npm test",
       "npm run build",
@@ -51,6 +52,21 @@ describe("operations readiness foundation", () => {
     assert.doesNotMatch(workflow, /^\s*(?:pages|id-token|actions|checks): write$/m);
     assert.doesNotMatch(workflow, /^\s*environment:/m);
     assert.doesNotMatch(workflow, /\$\{\{\s*secrets\./);
+  });
+
+  it("keeps the named water hard eval executable and honestly documented", async () => {
+    const [packageJson, evaluation] = await Promise.all([
+      read("package.json"),
+      read("docs/testing/eval-harness.md"),
+    ]);
+
+    assert.match(packageJson, /"eval:water": "node --import tsx --test src\/__tests__\/eval-water-001\.test\.ts"/);
+    assert.match(evaluation, /## EVAL-WATER-001/);
+    assert.match(evaluation, /exactly 47 ordered research categories/);
+    assert.match(evaluation, /Documento o regla pendiente de localizar y validar\./);
+    assert.match(evaluation, /passed_with_corpus_and_runtime_limitations/);
+    assert.match(evaluation, /does not prove that all Antigua Guatemala sources have been located/);
+    assert.match(evaluation, /No evaluation result authorizes deployment/);
   });
 
   it("builds an explicit, multi-stage, non-root production container", async () => {

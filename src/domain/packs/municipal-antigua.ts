@@ -1,5 +1,6 @@
 import type { DomainPack } from "../types.js";
 import { commonFeedbackTypes, unknownAuthority } from "./common.js";
+import { potableWaterWorkflowTemplate } from "./municipal-antigua-water.js";
 
 export const municipalAntiguaDomainPack: DomainPack = {
   id: "municipal-antigua",
@@ -13,6 +14,12 @@ export const municipalAntiguaDomainPack: DomainPack = {
     primaryLabel: "Antigua-first",
   },
   workflowTypes: [
+    { id: "potable_water_project", label: "Agua potable comunitaria", description: "Investigación documental y seguimiento de un proyecto de agua potable para una comunidad.", retrievalHints: [
+      "agua potable comunidad solicitud COCODE COMUDE planificación diagnóstico fuente caudal calidad terreno servidumbre topografía hidráulica demanda",
+      "PDM-OT POM POA costo financiamiento inversión pública ambiente salud dictámenes Concejo expediente",
+      "contratación ofertas adjudicación contrato inicio ejecución supervisión bitácora estimaciones cambios recepción liquidación pagos",
+      "operación mantenimiento cierre continuidad calidad del servicio",
+    ] },
     { id: "public_works", label: "Obra pública", description: "Construcción, ampliación o mejora municipal.", retrievalHints: ["obra pública proyecto municipal SNIP presupuesto contratación ejecución recepción liquidación"] },
     { id: "procurement", label: "Contratación", description: "Compras, adquisiciones, cotización o licitación.", retrievalHints: ["adquisiciones contrataciones licitación cotización junta contrato obra SNIP"] },
     { id: "project_execution", label: "Ejecución de proyecto", description: "Supervisión, estimaciones y avance de obra.", retrievalHints: ["ejecución obra supervisión estimaciones avance contrato proyecto"] },
@@ -40,6 +47,17 @@ export const municipalAntiguaDomainPack: DomainPack = {
     unknownAuthority,
   ],
   classifierRules: [
+    {
+      id: "potable-water-community",
+      workflowType: "potable_water_project",
+      keywords: ["agua potable", "llevar agua", "agua a una comunidad", "abastecimiento de agua", "sistema de agua", "servicio de agua", "proyecto de agua", "red de agua", "agua entubada", "acueducto", "pozo de agua", "captacion de agua"],
+      retrievalQueries: [
+        "agua potable comunidad solicitud COCODE COMUDE planificación diagnóstico fuente caudal calidad terreno servidumbre topografía hidráulica demanda",
+        "PDM-OT POM POA costo financiamiento inversión pública sistema nacional ambiente salud dictámenes Concejo expediente",
+        "contratación ofertas adjudicación contrato inicio ejecución supervisión bitácora estimaciones cambios recepción liquidación pagos",
+        "operación mantenimiento cierre continuidad calidad del servicio",
+      ],
+    },
     { id: "closure", workflowType: "project_closure", keywords: ["cierre", "cerrar", "liquidacion", "recepcion final", "acta de recepcion"], retrievalQueries: ["cierre obra recepción final acta recepción liquidación contrato supervisión estimaciones"] },
     { id: "procurement", workflowType: "procurement", keywords: ["licitacion", "cotizacion", "contratacion", "compras", "adquisicion", "adquisiciones"], retrievalQueries: ["adquisiciones contrataciones licitación cotización junta contrato obra SNIP"] },
     { id: "public-works", workflowType: "public_works", keywords: ["construir", "construccion", "estadio", "obra publica", "obra municipal", "escuela", "proyecto snip"], retrievalQueries: ["obra pública proyecto municipal SNIP presupuesto contratación ejecución recepción liquidación"] },
@@ -50,6 +68,7 @@ export const municipalAntiguaDomainPack: DomainPack = {
     { id: "generic", workflowType: "unknown", keywords: ["paso", "procedimiento", "flujo", "tramite", "requisito", "documentos"], retrievalQueries: ["procedimiento municipal requisitos documentos responsables aprobación"] },
   ],
   workflowTemplates: [
+    potableWaterWorkflowTemplate,
     {
       workflowType: "public_works",
       title: "Flujo procedimental para obra pública municipal",
@@ -107,11 +126,13 @@ export const municipalAntiguaDomainPack: DomainPack = {
   ],
   feedbackTypes: commonFeedbackTypes,
   exampleQueries: [
+    "¿Qué se necesita para llevar agua potable a una comunidad de Antigua Guatemala y cómo se le da seguimiento?",
     "¿Qué hay que hacer para construir un estadio municipal?",
     "¿Qué falta para cerrar la obra de la escuela de San Mateo?",
     "¿Cómo funciona una contratación de obra según un manual externo como Mixco?",
   ],
   evaluationCases: [
+    { id: "water-community-procedure", query: "¿Qué se necesita para llevar agua potable a una comunidad de Antigua Guatemala y cómo se le da seguimiento?", expectedWorkflowType: "potable_water_project", notes: "Must compile the Antigua-first 47-category research workflow without treating categories as facts." },
     { id: "stadium-public-works", query: "¿Qué hay que hacer para construir un estadio municipal?", expectedWorkflowType: "public_works", notes: "Must stay Antigua-first." },
     { id: "mixco-external-reference", query: "Usa el manual de Mixco para explicar contratación de obra", expectedWorkflowType: "procurement", expectedAuthorityClass: "external_reference", notes: "Must be comparative only." },
   ],

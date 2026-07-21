@@ -1,6 +1,6 @@
 # Matriz de gaps hacia production-ready
 
-Fecha de corte: 2026-07-19
+Fecha de corte: 2026-07-21
 
 Baseline relacionado: program/baseline-audit.md
 
@@ -14,7 +14,7 @@ Regla: un slice verde no convierte un workstream completo en achieved.
 | WS-02 Corpus and Source Inventory | partial | Inventario válido: 17 fuentes, 4 verificadas, 1 DMP adquirido, 4 missing, 0 ingested; gate local de seguridad disponible | Completar corpus Antigua/Mixco, autoridad/vigencia/licencia, scanner real y storage seguro sin promover comparativos | Hashes/bytes/provenance; veredicto malware real; aprobación; estados honestos; manifest reconciliado | P0 | WS-01 |
 | WS-03 Ingestion and Document Library | partial | Gate fail-closed de artefactos; PDF binario acotado; parse-once; jobs durables tenant-scoped con idempotencia por digest, leases/fencing/retry/audit; vectores tenant-scoped atómicos; RLS non-owner y CI PostgreSQL | Biblioteca/API autenticada, worker dispatcher, scanner y object storage operativos, cuotas/admisión distribuida, deadline total, dead-letter, métricas, roles/topología/load/HA productivos y activar retrieval vectorial evaluado | Scanner/storage/API/worker reales; pruebas staging/load/restore; role drift; métricas/SLO; eval de recall/citas/autorización | P0 | WS-02, WS-07 |
 | WS-04 Retrieval and Evidence | partial | Keyword/phrase/hybrid/vector, dedupe, ranking y citas | Filtros completos, reranking evaluado, contradicciones, vigencia, missing-source y groundedness | Eval corpus real con thresholds; citation fidelity; conflict visibility; isolation tests | P0 | WS-02, WS-03, WS-07 |
-| WS-05 Procedure Schema and Compiler | partial | Workflow estructurado preliminar y gaps | Procedure/version/step schema completo; lifecycle; decision gates; approval; water compiler | Workflow JSON versionado; 47 categorías de agua; citas/evidence status por paso; human review | P0 | WS-04 |
+| WS-05 Procedure Schema and Compiler | partial | Workflow estructurado; contrato v1 completo por paso; clasificador y checklist Antigua-first de 47 categorías para agua; missing evidence explícita | Persistencia de procedure/version, lifecycle, decision gates con evidencia, review/approval y corpus real para asignar actores, sistemas, plazos y autoridad | Workflow versionado y persistido; citas/evidence status por paso contra corpus real; human review | P0 | WS-04 |
 | WS-06 Procedure Cases and Tracking | partial | Workspace/portfolio en LocalStorage | Persistencia tenant-scoped, API, current step, docs, blockers, validation, follow-up, dossier y audit | API/DB integration tests; immutable audit; binding a procedure version; authorization | P0 | WS-05, WS-07 |
 | WS-07 Identity, Tenancy and RBAC | partial | Identity, tenants, 10 roles, credential digest, RLS y procedure-query v1 con gate PostgreSQL/HTTP | Provisioning/rotation productivos y extender el control a todo endpoint requerido | Staging/production-shaped negative tests por endpoint; audit/access review; EVAL-TENANT completo | P0 | WS-01 |
 | WS-08 Integration Contracts | partial | 9 schemas/ejemplos, OpenAPI 3.1.1 y provider `ProcedureWorkflow` v1 seguro/idempotente | EvidenceBundle/Assessment/Gap/ClaimPack providers, consumers vecinos y pruebas entre repos | Provider/consumer contract tests; timeout/retry; boundary; refs/versiones preservadas | P0 | WS-01, WS-05, WS-07 |
@@ -49,22 +49,22 @@ Autenticación, tenant scope, RBAC, validación, idempotencia, audit y rate limi
 
 | Requisito | Estado | Evidencia actual | Cierre |
 |---|---|---|---|
-| Clasificación específica de agua | missing | Sólo keywords de demo/retrieval; no workflow type agua | Añadir clasificación gobernada y pruebas |
-| 47 categorías de investigación | missing | Template public_works tiene 6 pasos genéricos | Modelo de investigación completo sin convertir categorías en hechos |
-| Campos completos por paso | partial | action/docs/citations/confidence disponibles parcialmente | Añadir actors, unit, preconditions, systems, approvals, deadlines, criteria, cadence, risks, unknowns |
-| Citas por paso | partial | Match heurístico por texto | Citation fidelity eval y vínculo a document version/section |
-| Evidencia faltante explícita | partial | Usa insufficient y gaps | Adoptar missing_evidence y texto canónico requerido |
+| Clasificación específica de agua | implemented_with_limits | `potable_water_project`, regla prioritaria y domain eval 7/7 | Validar recall/precision contra consultas y corpus reales |
+| 47 categorías de investigación | implemented_with_limits | Template dedicado con 47 categorías ordenadas y prueba exacta | Validar orden/dependencias oficiales con corpus y revisión humana |
+| Campos completos por paso | partial | El contrato v1 devuelve todos los campos; unsupported actors/unit/system/approval/deadline/cadence quedan nulos o vacíos | Poblar sólo desde evidencia citable y persistir revisiones/aprobaciones |
+| Citas por paso | partial | Identidad document/version/section y prueba selectiva: una cita PDM-OT no promueve los otros 46 pasos | Medir citation fidelity contra corpus real y resolver contradicciones |
+| Evidencia faltante explícita | implemented | Mapper v1 usa `missing_evidence` y `Documento o regla pendiente de localizar y validar.` | Mantener el control en nuevos endpoints y UI |
 | Antigua-first | partial | Governance rule y tests sintéticos | Probar contra corpus real y conflictos |
 | Mixco comparativo | partial | Metadata remota y tests de autoridad | Adquirir manuales y conservar warning en todo contrato/UI |
 | Seguimiento de caso | partial | LocalStorage | Crear instancia persistente y tenant-scoped |
-| EVAL-WATER-001 | missing | No existe suite con ese id | Hard eval end-to-end requerido |
+| EVAL-WATER-001 | passed_with_corpus_and_runtime_limitations | Suite nombrada, gate CI y documentación; 4/4 pruebas focales | Corpus real, retrieval thresholds, conflictos, lifecycle y caso persistido |
 
 ## 4. Hard eval matrix
 
 | Eval requerido | Estado | Gap de cierre |
 |---|---|---|
 | EVAL-PROCEDURE-001 | missing | Validar classification, steps, dependencies, docs, citations, state, gaps y workflow JSON |
-| EVAL-WATER-001 | partial | Smoke DB/HTTP devuelve workflow Antigua-first sin fuga; faltan corpus real ingerido y 47 categorías |
+| EVAL-WATER-001 | passed_with_corpus_and_runtime_limitations | 47 categorías, contrato completo, missing evidence y citation selectivity pasan; faltan corpus real ingerido, conflictos, lifecycle y caso persistido |
 | EVAL-MIXCO-001 | partial | Existe caso sintético de authority; falta flujo/corpus/warning end-to-end |
 | EVAL-OS-INTEGRATION-001 | partial | Provider ProcedureWorkflow y boundary pasan; falta consumer OS Electoral y prueba entre repos |
 | EVAL-CONTENT-INTEGRATION-001 | missing | Requiere ClaimPack y boundary |
