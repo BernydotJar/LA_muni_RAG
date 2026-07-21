@@ -42,6 +42,7 @@ describe("operations readiness foundation", () => {
     );
     assert.match(workflow, /db\/migrations\/005_tenant_ingestion_runtime\.sql/);
     assert.match(workflow, /db\/migrations\/006_ingestion_api_runtime\.sql/);
+    assert.match(workflow, /db\/migrations\/007_persisted_artifact_acceptance\.sql/);
     assert.match(workflow, /db\/tests\/tenant_ingestion_runtime_gate\.sql/);
     assert.match(workflow, /run: npm run smoke:tenant-ingestion/);
     assert.match(workflow, /run: npm run smoke:ingestion-api/);

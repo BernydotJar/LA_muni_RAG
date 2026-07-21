@@ -30,6 +30,8 @@ GRANT SELECT ON rag.documents
   TO la_muni_ingestion_runtime_test;
 GRANT SELECT, UPDATE ON rag.document_versions
   TO la_muni_ingestion_runtime_test;
+GRANT SELECT ON rag.artifact_objects, rag.artifact_scans
+  TO la_muni_ingestion_runtime_test;
 GRANT SELECT, INSERT, UPDATE, DELETE ON
   rag.ingestion_jobs,
   rag.embedding_vectors,
@@ -49,6 +51,10 @@ DECLARE
   jobs_force BOOLEAN;
   api_rate_rls BOOLEAN;
   api_rate_force BOOLEAN;
+  artifact_objects_rls BOOLEAN;
+  artifact_objects_force BOOLEAN;
+  artifact_scans_rls BOOLEAN;
+  artifact_scans_force BOOLEAN;
   vector_write_policy TEXT;
 BEGIN
   SELECT rolsuper, rolbypassrls
@@ -66,6 +72,8 @@ BEGIN
       'embedding_vectors',
       'ingestion_jobs',
       'ingestion_api_rate_limits',
+      'artifact_objects',
+      'artifact_scans',
       'document_versions',
       'documents'
     )
@@ -87,10 +95,20 @@ BEGIN
   INTO api_rate_rls, api_rate_force
   FROM pg_class
   WHERE oid = 'integration.ingestion_api_rate_limits'::regclass;
+  SELECT relrowsecurity, relforcerowsecurity
+  INTO artifact_objects_rls, artifact_objects_force
+  FROM pg_class
+  WHERE oid = 'rag.artifact_objects'::regclass;
+  SELECT relrowsecurity, relforcerowsecurity
+  INTO artifact_scans_rls, artifact_scans_force
+  FROM pg_class
+  WHERE oid = 'rag.artifact_scans'::regclass;
   IF NOT vector_rls OR NOT vector_force
      OR NOT jobs_rls OR NOT jobs_force
-     OR NOT api_rate_rls OR NOT api_rate_force THEN
-    RAISE EXCEPTION 'vector, job, and ingestion API rate tables must enable and force RLS';
+     OR NOT api_rate_rls OR NOT api_rate_force
+     OR NOT artifact_objects_rls OR NOT artifact_objects_force
+     OR NOT artifact_scans_rls OR NOT artifact_scans_force THEN
+    RAISE EXCEPTION 'vector, job, ingestion API rate, and artifact acceptance tables must enable and force RLS';
   END IF;
 
   SELECT pg_get_expr(polwithcheck, polrelid)
@@ -286,6 +304,66 @@ VALUES
     repeat('7', 64),
     'queued'
   );
+
+INSERT INTO rag.artifact_objects (
+  id,
+  tenant_id,
+  document_version_id,
+  registered_by_principal_id,
+  store_name,
+  object_namespace,
+  object_key,
+  object_version,
+  original_filename,
+  declared_media_type,
+  expected_sha256,
+  inspection_generation,
+  status
+)
+VALUES
+  ('aaaaaaaa-1000-4000-8000-000000000101', 'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa', 'aaaaaaaa-0000-4000-8000-000000000101', '11111111-1111-4111-8111-111111111111', 'fixture_store', 'tenant-a-private', 'versions/a101.pdf', 'generation-0001', 'runtime-a101.pdf', 'application/pdf', decode(repeat('1', 64), 'hex'), 1, 'scanning'),
+  ('aaaaaaaa-1000-4000-8000-000000000102', 'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa', 'aaaaaaaa-0000-4000-8000-000000000102', '11111111-1111-4111-8111-111111111111', 'fixture_store', 'tenant-a-private', 'versions/a102.pdf', 'generation-0001', 'runtime-a102.pdf', 'application/pdf', decode(repeat('2', 64), 'hex'), 1, 'scanning'),
+  ('aaaaaaaa-1000-4000-8000-000000000103', 'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa', 'aaaaaaaa-0000-4000-8000-000000000103', '11111111-1111-4111-8111-111111111111', 'fixture_store', 'tenant-a-private', 'versions/a103.pdf', 'generation-0001', 'runtime-a103.pdf', 'application/pdf', decode(repeat('3', 64), 'hex'), 1, 'scanning'),
+  ('aaaaaaaa-1000-4000-8000-000000000104', 'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa', 'aaaaaaaa-0000-4000-8000-000000000104', '11111111-1111-4111-8111-111111111111', 'fixture_store', 'tenant-a-private', 'versions/a104.pdf', 'generation-0001', 'runtime-a104.pdf', 'application/pdf', decode(repeat('4', 64), 'hex'), 1, 'scanning'),
+  ('aaaaaaaa-1000-4000-8000-000000000105', 'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa', 'aaaaaaaa-0000-4000-8000-000000000105', '11111111-1111-4111-8111-111111111111', 'fixture_store', 'tenant-a-private', 'versions/a105.pdf', 'generation-0001', 'runtime-a105.pdf', 'application/pdf', decode(repeat('5', 64), 'hex'), 1, 'scanning'),
+  ('aaaaaaaa-1000-4000-8000-000000000106', 'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa', 'aaaaaaaa-0000-4000-8000-000000000106', '11111111-1111-4111-8111-111111111111', 'fixture_store', 'tenant-a-private', 'versions/a106.pdf', 'generation-0001', 'runtime-a106.pdf', 'application/pdf', decode(repeat('6', 64), 'hex'), 1, 'scanning'),
+  ('aaaaaaaa-1000-4000-8000-000000000107', 'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa', 'aaaaaaaa-0000-4000-8000-000000000107', '11111111-1111-4111-8111-111111111111', 'fixture_store', 'tenant-a-private', 'versions/a107.pdf', 'generation-0001', 'runtime-a107.pdf', 'application/pdf', decode(repeat('7', 64), 'hex'), 1, 'scanning');
+
+INSERT INTO rag.artifact_scans (
+  id,
+  tenant_id,
+  artifact_object_id,
+  inspection_generation,
+  inspected_by_principal_id,
+  verdict,
+  content_sha256,
+  byte_length,
+  detected_media_type,
+  structural_signature,
+  inspected_at,
+  scanner_engine,
+  scanner_engine_version,
+  scanner_definitions_version
+)
+VALUES
+  ('aaaaaaaa-2000-4000-8000-000000000101', 'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa', 'aaaaaaaa-1000-4000-8000-000000000101', 1, '11111111-1111-4111-8111-111111111111', 'clean', decode(repeat('1', 64), 'hex'), 1024, 'application/pdf', 'pdf-1.4', statement_timestamp() - interval '1 minute', 'fixture_scanner', '1.0.0', '20990101.1'),
+  ('aaaaaaaa-2000-4000-8000-000000000102', 'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa', 'aaaaaaaa-1000-4000-8000-000000000102', 1, '11111111-1111-4111-8111-111111111111', 'clean', decode(repeat('2', 64), 'hex'), 1024, 'application/pdf', 'pdf-1.4', statement_timestamp() - interval '1 minute', 'fixture_scanner', '1.0.0', '20990101.1'),
+  ('aaaaaaaa-2000-4000-8000-000000000103', 'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa', 'aaaaaaaa-1000-4000-8000-000000000103', 1, '11111111-1111-4111-8111-111111111111', 'clean', decode(repeat('3', 64), 'hex'), 1024, 'application/pdf', 'pdf-1.4', statement_timestamp() - interval '1 minute', 'fixture_scanner', '1.0.0', '20990101.1'),
+  ('aaaaaaaa-2000-4000-8000-000000000104', 'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa', 'aaaaaaaa-1000-4000-8000-000000000104', 1, '11111111-1111-4111-8111-111111111111', 'clean', decode(repeat('4', 64), 'hex'), 1024, 'application/pdf', 'pdf-1.4', statement_timestamp() - interval '1 minute', 'fixture_scanner', '1.0.0', '20990101.1'),
+  ('aaaaaaaa-2000-4000-8000-000000000105', 'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa', 'aaaaaaaa-1000-4000-8000-000000000105', 1, '11111111-1111-4111-8111-111111111111', 'clean', decode(repeat('5', 64), 'hex'), 1024, 'application/pdf', 'pdf-1.4', statement_timestamp() - interval '1 minute', 'fixture_scanner', '1.0.0', '20990101.1'),
+  ('aaaaaaaa-2000-4000-8000-000000000106', 'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa', 'aaaaaaaa-1000-4000-8000-000000000106', 1, '11111111-1111-4111-8111-111111111111', 'clean', decode(repeat('6', 64), 'hex'), 1024, 'application/pdf', 'pdf-1.4', statement_timestamp() - interval '1 minute', 'fixture_scanner', '1.0.0', '20990101.1'),
+  ('aaaaaaaa-2000-4000-8000-000000000107', 'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa', 'aaaaaaaa-1000-4000-8000-000000000107', 1, '11111111-1111-4111-8111-111111111111', 'clean', decode(repeat('7', 64), 'hex'), 1024, 'application/pdf', 'pdf-1.4', statement_timestamp() - interval '1 minute', 'fixture_scanner', '1.0.0', '20990101.1');
+
+UPDATE rag.artifact_objects AS object
+SET status = 'accepted',
+    accepted_scan_id = scan.id,
+    accepted_until = statement_timestamp() + interval '1 day',
+    updated_at = statement_timestamp()
+FROM rag.artifact_scans AS scan
+WHERE object.tenant_id = 'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa'::uuid
+  AND scan.tenant_id = object.tenant_id
+  AND scan.artifact_object_id = object.id
+  AND scan.inspection_generation = object.inspection_generation;
 COMMIT;
 
 BEGIN;
@@ -338,6 +416,81 @@ VALUES (
   repeat('1', 64),
   'queued'
 );
+
+INSERT INTO rag.artifact_objects (
+  id,
+  tenant_id,
+  document_version_id,
+  registered_by_principal_id,
+  store_name,
+  object_namespace,
+  object_key,
+  object_version,
+  original_filename,
+  declared_media_type,
+  expected_sha256,
+  inspection_generation,
+  status
+)
+VALUES (
+  'bbbbbbbb-1000-4000-8000-000000000101',
+  'bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb',
+  'bbbbbbbb-0000-4000-8000-000000000101',
+  '22222222-2222-4222-8222-222222222222',
+  'fixture_store',
+  'tenant-b-private',
+  'versions/b101.pdf',
+  'generation-0001',
+  'runtime-b101.pdf',
+  'application/pdf',
+  decode(repeat('1', 64), 'hex'),
+  1,
+  'scanning'
+);
+
+INSERT INTO rag.artifact_scans (
+  id,
+  tenant_id,
+  artifact_object_id,
+  inspection_generation,
+  inspected_by_principal_id,
+  verdict,
+  content_sha256,
+  byte_length,
+  detected_media_type,
+  structural_signature,
+  inspected_at,
+  scanner_engine,
+  scanner_engine_version,
+  scanner_definitions_version
+)
+VALUES (
+  'bbbbbbbb-2000-4000-8000-000000000101',
+  'bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb',
+  'bbbbbbbb-1000-4000-8000-000000000101',
+  1,
+  '22222222-2222-4222-8222-222222222222',
+  'clean',
+  decode(repeat('1', 64), 'hex'),
+  1024,
+  'application/pdf',
+  'pdf-1.4',
+  statement_timestamp() - interval '1 minute',
+  'fixture_scanner',
+  '1.0.0',
+  '20990101.1'
+);
+
+UPDATE rag.artifact_objects AS object
+SET status = 'accepted',
+    accepted_scan_id = scan.id,
+    accepted_until = statement_timestamp() + interval '1 day',
+    updated_at = statement_timestamp()
+FROM rag.artifact_scans AS scan
+WHERE object.tenant_id = 'bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb'::uuid
+  AND scan.tenant_id = object.tenant_id
+  AND scan.artifact_object_id = object.id
+  AND scan.inspection_generation = object.inspection_generation;
 COMMIT;
 
 SET ROLE la_muni_ingestion_runtime_test;
@@ -347,11 +500,19 @@ DECLARE
   visible_jobs INTEGER;
   visible_vectors INTEGER;
   visible_api_rates INTEGER;
+  visible_artifact_objects INTEGER;
+  visible_artifact_scans INTEGER;
 BEGIN
   SELECT count(*) INTO visible_jobs FROM rag.ingestion_jobs;
   SELECT count(*) INTO visible_vectors FROM rag.embedding_vectors;
   SELECT count(*) INTO visible_api_rates FROM integration.ingestion_api_rate_limits;
-  IF visible_jobs <> 0 OR visible_vectors <> 0 OR visible_api_rates <> 0 THEN
+  SELECT count(*) INTO visible_artifact_objects FROM rag.artifact_objects;
+  SELECT count(*) INTO visible_artifact_scans FROM rag.artifact_scans;
+  IF visible_jobs <> 0
+     OR visible_vectors <> 0
+     OR visible_api_rates <> 0
+     OR visible_artifact_objects <> 0
+     OR visible_artifact_scans <> 0 THEN
     RAISE EXCEPTION 'missing tenant context exposed ingestion state';
   END IF;
 
@@ -359,8 +520,30 @@ BEGIN
   SELECT count(*) INTO visible_jobs FROM rag.ingestion_jobs;
   SELECT count(*) INTO visible_vectors FROM rag.embedding_vectors;
   SELECT count(*) INTO visible_api_rates FROM integration.ingestion_api_rate_limits;
-  IF visible_jobs <> 0 OR visible_vectors <> 0 OR visible_api_rates <> 0 THEN
+  SELECT count(*) INTO visible_artifact_objects FROM rag.artifact_objects;
+  SELECT count(*) INTO visible_artifact_scans FROM rag.artifact_scans;
+  IF visible_jobs <> 0
+     OR visible_vectors <> 0
+     OR visible_api_rates <> 0
+     OR visible_artifact_objects <> 0
+     OR visible_artifact_scans <> 0 THEN
     RAISE EXCEPTION 'malformed tenant context exposed ingestion state';
+  END IF;
+  RESET app.tenant_id;
+
+  PERFORM set_config('app.tenant_id', 'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa', false);
+  SELECT count(*) INTO visible_artifact_objects FROM rag.artifact_objects;
+  SELECT count(*) INTO visible_artifact_scans FROM rag.artifact_scans;
+  IF visible_artifact_objects <> 7 OR visible_artifact_scans <> 7 THEN
+    RAISE EXCEPTION 'tenant A artifact acceptance evidence leaked or was incomplete';
+  END IF;
+  RESET app.tenant_id;
+
+  PERFORM set_config('app.tenant_id', 'bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb', false);
+  SELECT count(*) INTO visible_artifact_objects FROM rag.artifact_objects;
+  SELECT count(*) INTO visible_artifact_scans FROM rag.artifact_scans;
+  IF visible_artifact_objects <> 1 OR visible_artifact_scans <> 1 THEN
+    RAISE EXCEPTION 'tenant B artifact acceptance evidence leaked or was incomplete';
   END IF;
   RESET app.tenant_id;
 END;

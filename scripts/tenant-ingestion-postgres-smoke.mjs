@@ -99,6 +99,15 @@ const expectCode = async (operation, code) => {
   await assert.rejects(operation, (error) => error?.code === code);
 };
 
+const acceptedBinding = (lease) => {
+  assert.ok(lease?.job.artifactObjectId, "leased job must bind an immutable artifact object");
+  assert.ok(lease?.job.artifactScanId, "leased job must bind a clean artifact scan");
+  return {
+    artifactObjectId: lease.job.artifactObjectId,
+    artifactScanId: lease.job.artifactScanId,
+  };
+};
+
 const tenantCount = async (tenantId, sql, values = []) => withTenantTransaction(
   pool,
   tenantId,
@@ -153,6 +162,7 @@ try {
       jobId: leaseA.job.jobId,
       leaseToken: leaseA.leaseToken,
       artifactSha256: "9".repeat(64),
+      ...acceptedBinding(leaseA),
       records: [vectorRecord({ chunkId: "wrong-artifact-chunk", ordinal: 1, text: "Wrong artifact." })],
     }),
     "ingestion_artifact_identity_mismatch"
@@ -163,6 +173,7 @@ try {
     jobId: leaseA.job.jobId,
     leaseToken: leaseA.leaseToken,
     artifactSha256: "1".repeat(64),
+    ...acceptedBinding(leaseA),
     records: [
       vectorRecord({ chunkId: "shared-runtime-chunk", ordinal: 1, text: "Tenant A current chunk." }),
       vectorRecord({ chunkId: "tenant-a-stale-chunk", ordinal: 2, text: "Tenant A stale chunk." }),
@@ -176,6 +187,7 @@ try {
       jobId: leaseA.job.jobId,
       leaseToken: leaseA.leaseToken,
       artifactSha256: "1".repeat(64),
+      ...acceptedBinding(leaseA),
       records: [vectorRecord({ chunkId: "shared-runtime-chunk", ordinal: 1, text: "stale worker" })],
     }),
     "ingestion_lease_rejected"
@@ -204,6 +216,7 @@ try {
     jobId: replacementLease.job.jobId,
     leaseToken: replacementLease.leaseToken,
     artifactSha256: "1".repeat(64),
+    ...acceptedBinding(replacementLease),
     records: [vectorRecord({ chunkId: "shared-runtime-chunk", ordinal: 1, text: "Tenant A replacement chunk." })],
   });
   assert.equal(replaced.vectors.updatedCount, 1);
@@ -220,6 +233,7 @@ try {
     jobId: leaseB.job.jobId,
     leaseToken: leaseB.leaseToken,
     artifactSha256: "1".repeat(64),
+    ...acceptedBinding(leaseB),
     records: [vectorRecord({
       chunkId: "shared-runtime-chunk",
       ordinal: 1,
@@ -380,6 +394,7 @@ try {
     crossTenantChunkIdsCoexist: true,
     rollbackVectorCount: 0,
     replacementDeletedStaleChunks: replaced.vectors.deletedCount,
+    persistedAcceptanceBound: true,
     controlledArtifactsRead: 0,
   })}\n`);
 } finally {

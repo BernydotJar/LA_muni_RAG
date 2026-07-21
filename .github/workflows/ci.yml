@@ -76,6 +76,7 @@ jobs:
             db/migrations/004_procedure_query_api.sql \
             db/migrations/005_tenant_ingestion_runtime.sql \
             db/migrations/006_ingestion_api_runtime.sql \
+            db/migrations/007_persisted_artifact_acceptance.sql \
             db/tests/tenant_ingestion_runtime_gate.sql
           do
             docker exec -i "$POSTGRES_CONTAINER" \
