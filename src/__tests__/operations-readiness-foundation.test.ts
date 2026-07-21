@@ -422,7 +422,9 @@ describe("operations readiness foundation", () => {
     assert.match(backup, /--dbname="service=la_muni_restore"/);
     assert.match(backup, /--single-transaction/);
     assert.match(backup, /Never test a restore over the active production database/);
-    assert.match(backup, /Current drill evidence: none/);
+    assert.match(backup, /one disposable logical database restore is recorded for 2026-07-21/i);
+    assert.match(backup, /not production recovery evidence/i);
+    assert.match(backup, /does not cover external objects, encryption\/KMS recovery, physical\/PITR/i);
     assert.match(backup, /npx ctx7 docs \/websites\/postgresql_current/);
     assert.doesNotMatch(backup, /LA_MUNI_(?:RESTORE_)?DATABASE_URL/);
   });

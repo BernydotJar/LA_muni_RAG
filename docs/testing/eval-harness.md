@@ -606,6 +606,7 @@ Therefore `EVAL-JOB-LEASE-001` is `passed_for_disposable_postgres_fencing_with_d
 
 | EVAL-ACCESSIBILITY-001 | passed_for_static_training_surface_with_browser_screen_reader_auth_and_full_product_limitations | 11/11 checks cover Academy semantics, contrast, focus, keyboard, responsive CSS, reduced motion, forced colors, storage/rendering security and Pages; supported-browser E2E, screen readers, human WCAG review, authenticated shell and whole-product audit remain open. |
 | EVAL-CASE-001 | passed_for_tenant_approved_workflow_case_system_with_ui_privacy_load_restore_and_deployment_limitations | API, contracts, exact aggregate replay, concurrent convergence, role-separated documentary validation, document-version identity, append-only audit, forced RLS, SQL gate and compiled PostgreSQL HTTP smoke pass; browser UI, approved retention, load, restore, staging and deployment remain open. |
+| EVAL-RESTORE-001 | passed_for_disposable_logical_database_restore_with_object_pitr_staging_rpo_rto_and_human_limitations | Custom dump/checksum, empty isolated target, transactional restore, equal catalog/RLS and bounded table-data fingerprints, post-restore runtime grants, cross-tenant denial and compiled HTTP smoke pass; external objects, encryption/KMS recovery, PITR, production RPO/RTO, staging/load and human sign-off remain open. |
 
 ## Release rule
 
@@ -681,3 +682,31 @@ Not proved:
 
 Therefore `EVAL-CASE-001` is
 `passed_for_tenant_approved_workflow_case_system_with_ui_privacy_load_restore_and_deployment_limitations`.
+
+## EVAL-RESTORE-001
+
+Current scope: isolated disposable PostgreSQL logical database restore.
+
+Proved:
+
+- source and target service aliases were distinct and the target was empty;
+- custom-format dump, mode-`0600` artifacts, SHA-256 and manifest validation;
+- `--exit-on-error --single-transaction --no-owner --no-acl` restore;
+- equal source/target extensions, application schemas, table/RLS state,
+  constraints, policies, indexes and function catalog fingerprints;
+- equal bounded table counts/content fingerprints without row content in logs;
+- reviewed post-restore runtime grants, `NOSUPERUSER`/`NOBYPASSRLS`, forced RLS
+  and cross-tenant denial;
+- compiled authenticated ProcedureCase HTTP smoke against the restored target.
+
+Not proved:
+
+- external object/document restore or coordinated database/object recovery;
+- physical backup or point-in-time recovery;
+- production backup storage, encryption/KMS/key recovery or immutability;
+- approved/measured production RPO/RTO;
+- large-corpus capacity, staging topology or disaster-recovery cutover;
+- required human review/sign-off.
+
+Therefore `EVAL-RESTORE-001` is
+`passed_for_disposable_logical_database_restore_with_object_pitr_staging_rpo_rto_and_human_limitations`.

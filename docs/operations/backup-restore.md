@@ -1,7 +1,7 @@
 # Backup and restore runbook
 
-Status: pre-production procedure; no production backup or restore drill has been completed
-Last reviewed: 2026-07-18
+Status: pre-production procedure; one disposable logical database restore was verified on 2026-07-21, but no production/staging backup, object restore, PITR, RPO/RTO or human-approved recovery drill has been completed
+Last reviewed: 2026-07-21
 Service owner: Platform/Operations owner pending
 Data approval owner: Database owner and Privacy/Legal owner pending
 
@@ -20,6 +20,20 @@ Production is blocked until authorized humans approve measurable objectives and 
 | Encryption/key recovery | key owner, rotation, break-glass, escrow/recovery | pending |
 
 This runbook does not invent RPO/RTO values. A backup job that has not been restored and verified is not recovery evidence.
+
+## Current executable evidence
+
+On 2026-07-21 the repository's `scripts/postgres-restore-drill.mjs` completed a
+disposable logical database restore into a distinct empty PostgreSQL target. The
+dump checksum, custom manifest, transactional restore, application schemas,
+extensions, catalog/RLS fingerprint and bounded table-data fingerprint matched.
+Reviewed disposable runtime grants were then re-applied and an authenticated
+ProcedureCase HTTP smoke passed against the restored database.
+
+See [Disposable logical restore drill — 2026-07-21](./restore-drill-2026-07-21.md).
+This is executable development evidence, not production recovery evidence. It
+does not cover external objects, encryption/KMS recovery, physical/PITR,
+production RPO/RTO, staging topology, load/capacity or human sign-off.
 
 ## Recovery scope
 
@@ -164,7 +178,7 @@ Every drill or real restore records:
 - measured RPO/RTO result against approved targets;
 - follow-up owners and dates.
 
-Current drill evidence: none. Do not mark this runbook “validated” until a production-like isolated restore has been completed and reviewed.
+Current drill evidence: one disposable logical database restore is recorded for 2026-07-21. Do not mark this runbook “validated for production” until a production-like isolated database and object restore has been completed, measured and reviewed by the required humans.
 
 ## Context7 primary-source evidence
 

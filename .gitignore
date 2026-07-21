@@ -10,3 +10,8 @@ artifacts/
 data/raw/
 .rag/library/
 .rag/quarantine/
+
+# Local database recovery artifacts must never enter Git.
+.restore-artifacts/
+*.pgdump
+*.dump

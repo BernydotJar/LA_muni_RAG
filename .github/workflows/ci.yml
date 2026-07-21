@@ -104,6 +104,9 @@ jobs:
       - name: Run EVAL-CASE-001
         run: npm run eval:case
 
+      - name: Run EVAL-RESTORE-001
+        run: npm run eval:restore
+
       - name: Typecheck
         run: npm run typecheck
 
