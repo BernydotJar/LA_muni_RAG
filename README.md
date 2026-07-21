@@ -20,6 +20,7 @@ LA Muni RAG is an evidence-first RAG and procedural workflow system configured b
 ```text
 GET  /health
 POST /api/v1/procedure-queries
+POST /api/v1/evidence-gap-requests
 POST /api/v1/claim-packs
 POST /api/v1/ingestion-jobs
 GET  /api/v1/ingestion-jobs/{job_id}
@@ -46,6 +47,10 @@ slice. According to `requested_output`, it returns an identity-bound
 `ProcedureAssessment` of that draft and the caller's case context. The assessment
 never treats opaque provided-document IDs as validated completion and does not
 prove legal compliance, approval, budget, procurement, or execution.
+`POST /api/v1/evidence-gap-requests` records an immutable, tenant-scoped `open`
+documentary research need from OS Electoral. It supports exact replay and
+aggregate dedupe but never declares a source official, current, applicable,
+acquired, ingested, or resolved.
 `POST /api/v1/claim-packs` is a separate
 Content-Agency-facing provider that emits claims/citations/usage limits only and
 rejects copy, assets, channels, publication tasks, and campaign strategy. Production disables every pre-v1 `/api/*` route;
@@ -289,6 +294,9 @@ Reusable today:
 - tenant-scoped workflow lifecycle tables and authenticated v1 draft/review/
   approval/read APIs with deterministic transitions, exact replay, forced RLS,
   bounded audit, and human separation of duties;
+- immutable tenant-scoped EvidenceGapRequest intake with dedicated replay/rate
+  state, aggregate identity conflict handling, canonical response validation and
+  non-owner PostgreSQL gates;
 - a callable worker that accepts only injected immutable, clean-scan-bound bytes
   and rechecks their identity before atomic completion.
 
@@ -317,4 +325,6 @@ the durable job/vector contract, local PostgreSQL gate, and remaining production
 boundary, and [Ingestion jobs API v1](docs/api/ingestion-jobs-v1.md) for the
 authenticated enqueue/status contract, and
 [Workflow Lifecycle API v1](docs/api/workflow-lifecycle-v1.md) for the governed
-version/review/approval boundary.
+version/review/approval boundary, and
+[EvidenceGapRequest API v1](docs/api/evidence-gap-requests-v1.md) for unresolved
+documentary research intake.

@@ -11,6 +11,12 @@ import {
   type ClaimPackV1Options,
 } from "./api/v1/claimPackIndex.js";
 import {
+  createEvidenceGapV1Dependencies,
+  EVIDENCE_GAP_ROUTE,
+  handleEvidenceGapV1,
+  type EvidenceGapV1Options,
+} from "./api/v1/evidenceGapIndex.js";
+import {
   createIngestionJobV1Dependencies,
   handleIngestionJobV1,
   INGESTION_JOBS_ROUTE,
@@ -78,6 +84,7 @@ export interface ServerOptions {
   domainPack?: DomainPack;
   procedureQueryV1?: ProcedureQueryV1Options;
   claimPackV1?: ClaimPackV1Options;
+  evidenceGapV1?: EvidenceGapV1Options;
   ingestionJobV1?: IngestionJobV1Options;
   workflowLifecycleV1?: WorkflowLifecycleV1Options;
   v1CorsAllowedOrigins?: readonly string[];
@@ -139,6 +146,9 @@ export const createRequestHandler = (options: ServerOptions = {}): RequestListen
     options.claimPackV1,
     domainPack
   );
+  const evidenceGapV1Dependencies = createEvidenceGapV1Dependencies(
+    options.evidenceGapV1
+  );
   const ingestionJobV1Dependencies = createIngestionJobV1Dependencies(
     options.ingestionJobV1
   );
@@ -161,6 +171,12 @@ export const createRequestHandler = (options: ServerOptions = {}): RequestListen
       if (url.pathname === CLAIM_PACK_ROUTE) {
         if (handleV1Cors(req, res, v1CorsAllowedOrigins)) return;
         await handleClaimPackV1(req, res, claimPackV1Dependencies);
+        return;
+      }
+
+      if (url.pathname === EVIDENCE_GAP_ROUTE) {
+        if (handleV1Cors(req, res, v1CorsAllowedOrigins)) return;
+        await handleEvidenceGapV1(req, res, evidenceGapV1Dependencies);
         return;
       }
 
@@ -219,6 +235,10 @@ export const createRequestHandler = (options: ServerOptions = {}): RequestListen
           claimPackApi: {
             enabled: true,
             validitySeconds: claimPackV1Dependencies.validitySeconds,
+          },
+          evidenceGapApi: {
+            enabled: true,
+            initialStatus: "open",
           },
           workflowLifecycleApi: {
             enabled: true,

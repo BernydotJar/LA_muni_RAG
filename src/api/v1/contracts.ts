@@ -5,6 +5,7 @@ import type {
   ProcedureQueryContractValidators,
 } from "./types.js";
 import type { ClaimPackContractValidators } from "./claimPackTypes.js";
+import type { EvidenceGapContractValidators } from "./evidenceGapTypes.js";
 
 const requiredValidator = (
   schemas: Awaited<ReturnType<typeof loadIntegrationContractRegistry>>["schemasByFile"],
@@ -58,6 +59,17 @@ export const loadClaimPackContractValidators = async (
   return {
     request: requiredValidator(registry.schemasByFile, "claim-pack-request.schema.json"),
     claimPack: requiredValidator(registry.schemasByFile, "claim-pack.schema.json"),
+    apiError: requiredValidator(registry.schemasByFile, "api-error.schema.json"),
+  };
+};
+
+export const loadEvidenceGapContractValidators = async (
+  projectRoot = process.cwd()
+): Promise<EvidenceGapContractValidators> => {
+  const registry = await loadIntegrationContractRegistry(projectRoot);
+  return {
+    request: requiredValidator(registry.schemasByFile, "evidence-gap-request.schema.json"),
+    response: requiredValidator(registry.schemasByFile, "evidence-gap-response.schema.json"),
     apiError: requiredValidator(registry.schemasByFile, "api-error.schema.json"),
   };
 };

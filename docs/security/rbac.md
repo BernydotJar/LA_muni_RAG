@@ -1,7 +1,8 @@
 # Identity and RBAC Foundation
 
-Status: implemented and enforced by procedure-query v1 and ingestion-job v1;
-broader API migration pending.
+Status: implemented and enforced by procedure-query, EvidenceGapRequest,
+ClaimPack, ingestion-job, and governed workflow lifecycle v1 slices; broader API
+migration pending.
 
 ## Authentication
 
@@ -92,12 +93,13 @@ Protected handlers must apply controls in this order:
 5. the repository executes only inside that transaction;
 6. the decision is recorded as a sanitized security audit event.
 
-The procedure-query and ClaimPack v1 routes authenticate before reading body bytes
-and apply their per-principal rate gates immediately after authentication, before
-permission, header/body validation, replay, or compilation. Both require
-`integration:query`, bind tenant and credential provenance server-side, and then
-follow the transaction and audit controls above. ClaimPack additionally refuses
-content production/electoral strategy and emits only claims/citations/usage bounds.
+The procedure-query, EvidenceGapRequest, and ClaimPack v1 routes authenticate
+before reading body bytes and apply per-principal rate gates immediately after
+authentication, before permission, header/body validation or replay. All require
+`integration:query` and bind tenant and credential provenance server-side.
+ProcedureQuery compiles evidence/procedure artifacts; EvidenceGap performs only
+immutable open intake; ClaimPack emits claims/citations/usage bounds. EvidenceGap
+and ClaimPack reject their respective product-boundary violations.
 
 The ingestion-job v1 route follows the same pre-body authentication/rate order,
 then requires `document:ingest`. `tenant_admin` and `document_manager` have this
@@ -143,5 +145,9 @@ allowlisted `integration.ingestion_job.*` decisions and uses the distinct
 tenantless `audit.ingestion_authentication_failures` aggregate. ClaimPack uses
 allowlisted `integration.claim_pack.*` events and its distinct tenantless
 `audit.claim_pack_authentication_failures` aggregate; question, facts, briefs,
-copy, headers, and raw credentials are excluded. Other protected endpoints must
+copy, headers, and raw credentials are excluded. EvidenceGap uses allowlisted
+`integration.evidence_gap.*` events and its distinct
+`audit.evidence_gap_authentication_failures` aggregate; subject, missing-document
+text, reason, campaign reference, headers, raw keys, and credentials are excluded
+from audit. Other protected endpoints must
 provide equivalent persistence without weakening the uniform client response.

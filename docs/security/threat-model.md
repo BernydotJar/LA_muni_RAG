@@ -69,8 +69,9 @@ Public Internet
                               +--> document/object storage [adapter/service absent]
 
 OS Electoral / Content Agency
-  +--> EvidenceBundle / ProcedureWorkflow providers  [local providers tested]
-  +--> ClaimPack provider                            [local provider tested; remote DB gate pending]
+  +--> EvidenceBundle / ProcedureWorkflow / Assessment providers [local providers tested]
+  +--> EvidenceGapRequest intake                     [local provider + DB gates tested]
+  +--> ClaimPack provider                            [local provider tested]
   +--> external consumers / remaining contracts      [adapters absent]
 ```
 
@@ -81,11 +82,11 @@ Each arrow crosses a trust boundary. CORS, private network placement, source URL
 | Boundary | Untrusted input | Required control | Current evidence |
 |---|---|---|---|
 | Browser -> Pages | URL parameters, DOM data, configured API URL | scheme/origin validation, no secrets, safe links | static hardening tests exist; Pages remains public |
-| Client -> API | headers, JSON body, query, tenant/resource IDs | TLS, body bounds, authentication, RBAC, tenant match, rate limits, safe errors | implemented/tested for procedure-query, ClaimPack, and ingestion-job v1; TLS/ingress and the remaining API catalog are absent; legacy is production-disabled |
-| API -> PostgreSQL | query parameters and principal/tenant context | parameterized SQL, transaction-local tenant context, RLS, least-privilege DB role | disposable real-DB/HTTP gates pass for procedure-query and ingestion; ClaimPack SQL/HTTP gates are wired but remote execution for this HEAD is pending; production provisioning, statement limits, HA and monitoring are absent |
+| Client -> API | headers, JSON body, query, tenant/resource IDs | TLS, body bounds, authentication, RBAC, tenant match, rate limits, safe errors | implemented/tested for procedure-query, EvidenceGapRequest, ClaimPack, ingestion-job, and workflow lifecycle v1; TLS/ingress and the remaining API catalog are absent; legacy is production-disabled |
+| API -> PostgreSQL | query parameters and principal/tenant context | parameterized SQL, transaction-local tenant context, RLS, least-privilege DB role | disposable real-DB/HTTP gates pass for procedure-query, EvidenceGapRequest, ClaimPack, workflow lifecycle and ingestion; remote CI for the EvidenceGap HEAD plus production provisioning, statement limits, HA and monitoring remain absent |
 | Ingestion -> corpus | bytes, MIME type, filenames, URLs, extracted text | size/type/hash validation, malware policy, provenance, parser isolation, resource bounds, quarantine, durable leases, tenant vectors, human promotion | local signature/MIME gate, private-snapshot ClamAV adapter, bounded raw-PDF child, authenticated job API, accepted-artifact worker boundary, rollback/replacement and pre-extraction enforcement are tested; real scanner/storage adapter, deployed worker, approved OS sandbox, load/HA and human promotion are absent |
-| API -> logs/audit | identifiers, outcomes, errors | allowlisted fields, redaction, immutable access control, retention | both v1 families persist allowlisted tenant audit and bounded route-specific tenantless auth aggregates; centralized append-only storage/access review remain absent |
-| Product -> external product | contract envelope and claims | schema validation, authenticated producer, tenant scope, idempotency, provenance, expiry | local EvidenceBundle, ProcedureWorkflow, and ClaimPack providers are tested; consumer identity/interoperability, cross-product revocation, and remaining adapters are absent |
+| API -> logs/audit | identifiers, outcomes, errors | allowlisted fields, redaction, immutable access control, retention | procedure-query, EvidenceGapRequest, ClaimPack, ingestion and workflow slices persist allowlisted tenant audit and bounded route-specific tenantless auth aggregates; centralized append-only storage/access review remain absent |
+| Product -> external product | contract envelope and claims | schema validation, authenticated producer, tenant scope, idempotency, provenance, expiry | local EvidenceBundle, ProcedureWorkflow, ProcedureAssessment, EvidenceGapRequest and ClaimPack providers are tested; consumer identity/interoperability, cross-product revocation, and remaining adapters are absent |
 
 ## Assets and security objectives
 
@@ -121,7 +122,7 @@ LA Muni RAG is not an owner or storage system for internal campaign strategy, vo
 | Spoofing | Client declares another `tenant_id`, role, or producer in JSON | server-derived principal; credential digest lookup; tenant/permission guard | v1 HTTP and real-DB negative tests pass; production credential provisioning/rotation and other endpoints remain required |
 | Spoofing | Forged OS Electoral or Content Agency payload | Bearer/service identity plus versioned schema | adapters and mutual producer verification are absent; contract validity alone is not authenticity |
 | Tampering | Source document changes without a version transition | SHA-256, source/version IDs, controlled import, observed-vs-expected quarantine evidence | remote reacquisition policy, signed provenance, durable storage and cross-process locking are unresolved |
-| Tampering | Workflow/approval or ClaimPack modified after review | immutable version IDs, approval state, audit event | persistent approval lifecycle is not complete; never label a draft approved from client input |
+| Tampering | Workflow/approval, EvidenceGap acknowledgement, or ClaimPack modified after review | immutable version/aggregate IDs, response hashes, canonical replay validation, approval state, audit event | local lifecycle and EvidenceGap gates pass; production role/backup/log tamper resistance remains unproved |
 | Tampering | Build dependency or base image compromised | lockfile, `npm ci`, explicit Node image version, separated CI | digest pinning, SBOM, signature verification, registry policy, and dependency scanning remain pending |
 | Repudiation | Operator denies a query, import, approval, or denial | correlation/request IDs and sanitized audit events | centralized append-only audit store, clock guarantees, access review, and retention are absent |
 | Information disclosure | Cross-tenant search or direct object reference | tenant-bound authorization plus PostgreSQL RLS | v1 gate passes and production disables legacy routes; guard `NODE_ENV`, protect future routes, and repeat in staging/production topology |
@@ -173,7 +174,19 @@ production timeout evidence.
 
 ### TM-06: boundary-violating electoral request
 
-A caller asks LA Muni RAG to generate campaign strategy, voter segmentation, political messaging, copy, assets, channels, publication tasks, or a content calendar. The service must refuse the out-of-scope work and may return only approved procedural evidence or a bounded ClaimPack. The ClaimPack request is closed and its audit excludes question, facts, briefs, copy, and publication data. Internal electoral/content context must not enter the corpus, ordinary logs, replay state, or backups.
+A caller asks LA Muni RAG to generate campaign strategy, voter segmentation, political messaging, copy, assets, channels, publication tasks, or a content calendar. The service must refuse the out-of-scope work and may return only bounded procedural evidence/intake or a ClaimPack. EvidenceGapRequest additionally refuses attempts to declare a source official/current/applicable. ClaimPack and EvidenceGap audits exclude their documentary/content bodies and raw transport credentials. Internal electoral/content context must not enter the corpus, ordinary logs, replay state, or backups.
+
+
+### TM-09: evidence-gap authority laundering or semantic replay tampering
+
+An integration submits a gap whose real instruction is to declare a supplied
+document official, or a database actor replaces a previously valid acknowledgement
+with schema-valid text that silently promotes authority. The provider uses a closed
+request, explicit authority-promotion refusal, product-boundary checks, SHA-256
+constraints and exact canonical response reconstruction before replay. The aggregate
+remains `open` and immutable. This does not replace human source/jurisdiction review,
+production privilege monitoring, backup integrity or a future append-only resolution
+lifecycle.
 
 ### TM-07: denial-of-wallet and resource exhaustion
 

@@ -23,6 +23,7 @@ export const CONTRACT_SCHEMA_FILES = [
   "ingestion-job-request.schema.json",
   "ingestion-job-response.schema.json",
   "evidence-gap-request.schema.json",
+  "evidence-gap-response.schema.json",
   "claim-pack.schema.json",
   "claim-pack-request.schema.json",
   "workflow-draft-request.schema.json",
@@ -41,6 +42,7 @@ export const CONTRACT_EXAMPLE_BINDINGS = [
   { contractName: "ingestion-job-request", schemaFile: "ingestion-job-request.schema.json", exampleFile: "ingestion-job-request.valid.json" },
   { contractName: "ingestion-job-response", schemaFile: "ingestion-job-response.schema.json", exampleFile: "ingestion-job-response.valid.json" },
   { contractName: "evidence-gap-request", schemaFile: "evidence-gap-request.schema.json", exampleFile: "evidence-gap-request.valid.json" },
+  { contractName: "evidence-gap-response", schemaFile: "evidence-gap-response.schema.json", exampleFile: "evidence-gap-response.valid.json" },
   { contractName: "claim-pack", schemaFile: "claim-pack.schema.json", exampleFile: "claim-pack.valid.json" },
   { contractName: "claim-pack-request", schemaFile: "claim-pack-request.schema.json", exampleFile: "claim-pack-request.valid.json" },
   { contractName: "workflow-draft-request", schemaFile: "workflow-draft-request.schema.json", exampleFile: "workflow-draft-request.valid.json" },
@@ -202,6 +204,7 @@ const validateOpenApiDocument = async (
   const paths = isJsonObject(openapi.paths) ? openapi.paths : {};
   const expectedPaths = [
     "/api/v1/claim-packs",
+    "/api/v1/evidence-gap-requests",
     "/api/v1/procedure-queries",
     "/api/v1/ingestion-jobs",
     "/api/v1/ingestion-jobs/{job_id}",
@@ -216,6 +219,9 @@ const validateOpenApiDocument = async (
 
   const claimPackPath = isJsonObject(paths["/api/v1/claim-packs"])
     ? paths["/api/v1/claim-packs"]
+    : {};
+  const evidenceGapPath = isJsonObject(paths["/api/v1/evidence-gap-requests"])
+    ? paths["/api/v1/evidence-gap-requests"]
     : {};
   const procedurePath = isJsonObject(paths["/api/v1/procedure-queries"])
     ? paths["/api/v1/procedure-queries"]
@@ -241,6 +247,9 @@ const validateOpenApiDocument = async (
   if (!equalStringSets(Object.keys(claimPackPath), ["post"])) {
     recordIssue("invalid_method_scope", "ClaimPack path must describe only POST");
   }
+  if (!equalStringSets(Object.keys(evidenceGapPath), ["post"])) {
+    recordIssue("invalid_method_scope", "Evidence gap path must describe only POST");
+  }
   if (!equalStringSets(Object.keys(procedurePath), ["post"])) {
     recordIssue("invalid_method_scope", "Procedure query path must describe only POST");
   }
@@ -262,6 +271,7 @@ const validateOpenApiDocument = async (
   }
 
   const claimPackOperation = isJsonObject(claimPackPath.post) ? claimPackPath.post : {};
+  const evidenceGapOperation = isJsonObject(evidenceGapPath.post) ? evidenceGapPath.post : {};
   const procedureOperation = isJsonObject(procedurePath.post) ? procedurePath.post : {};
   const ingestionPostOperation = isJsonObject(ingestionPath.post) ? ingestionPath.post : {};
   const ingestionGetOperation = isJsonObject(ingestionItemPath.get) ? ingestionItemPath.get : {};
@@ -271,6 +281,7 @@ const validateOpenApiDocument = async (
   const workflowGetOperation = isJsonObject(workflowItemPath.get) ? workflowItemPath.get : {};
   const operations = [
     ["POST /api/v1/claim-packs", claimPackOperation],
+    ["POST /api/v1/evidence-gap-requests", evidenceGapOperation],
     ["POST /api/v1/procedure-queries", procedureOperation],
     ["POST /api/v1/ingestion-jobs", ingestionPostOperation],
     ["GET /api/v1/ingestion-jobs/{job_id}", ingestionGetOperation],
@@ -299,6 +310,7 @@ const validateOpenApiDocument = async (
   );
   for (const [label, operation, expectedHeaders] of [
     ["claim pack", claimPackOperation, ["idempotency-key", "x-request-id"]],
+    ["evidence gap", evidenceGapOperation, ["idempotency-key", "x-request-id"]],
     ["procedure query", procedureOperation, ["idempotency-key", "x-request-id"]],
     ["ingestion enqueue", ingestionPostOperation, ["idempotency-key", "x-request-id"]],
     ["ingestion status", ingestionGetOperation, ["x-request-id"]],
@@ -317,6 +329,7 @@ const validateOpenApiDocument = async (
 
   for (const [label, operation, expectedResponses] of [
     ["claim pack", claimPackOperation, ["200", "400", "401", "403", "409", "429", "500"]],
+    ["evidence gap", evidenceGapOperation, ["200", "400", "401", "403", "409", "429", "500"]],
     ["procedure query", procedureOperation, ["200", "400", "401", "403", "409", "429", "500"]],
     ["ingestion enqueue", ingestionPostOperation, ["200", "202", "400", "401", "403", "409", "429", "500", "503"]],
     ["ingestion status", ingestionGetOperation, ["200", "400", "401", "403", "404", "429", "500"]],
@@ -332,6 +345,50 @@ const validateOpenApiDocument = async (
         label + " responses must be exactly " + expectedResponses.join(", ")
       );
     }
+  }
+
+  const schemaRef = (value: unknown): string | null => {
+    if (!isJsonObject(value)) return null;
+    return typeof value.$ref === "string" ? value.$ref : null;
+  };
+  const evidenceGapRequestBody = isJsonObject(evidenceGapOperation.requestBody)
+    ? evidenceGapOperation.requestBody
+    : {};
+  const evidenceGapRequestContent = isJsonObject(evidenceGapRequestBody.content)
+    ? evidenceGapRequestBody.content
+    : {};
+  const evidenceGapRequestJson = isJsonObject(evidenceGapRequestContent["application/json"])
+    ? evidenceGapRequestContent["application/json"]
+    : {};
+  if (
+    schemaRef(evidenceGapRequestJson.schema) !==
+    "../../schemas/v1/evidence-gap-request.schema.json"
+  ) {
+    recordIssue(
+      "invalid_request_schema",
+      "Evidence gap requestBody must reference evidence-gap-request.schema.json"
+    );
+  }
+  const evidenceGapResponses = isJsonObject(evidenceGapOperation.responses)
+    ? evidenceGapOperation.responses
+    : {};
+  const evidenceGapOk = isJsonObject(evidenceGapResponses["200"])
+    ? evidenceGapResponses["200"]
+    : {};
+  const evidenceGapOkContent = isJsonObject(evidenceGapOk.content)
+    ? evidenceGapOk.content
+    : {};
+  const evidenceGapOkJson = isJsonObject(evidenceGapOkContent["application/json"])
+    ? evidenceGapOkContent["application/json"]
+    : {};
+  if (
+    schemaRef(evidenceGapOkJson.schema) !==
+    "../../schemas/v1/evidence-gap-response.schema.json"
+  ) {
+    recordIssue(
+      "invalid_response_schema",
+      "Evidence gap 200 response must reference evidence-gap-response.schema.json"
+    );
   }
 
   const components = isJsonObject(openapi.components) ? openapi.components : {};

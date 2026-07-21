@@ -32,6 +32,7 @@ describe("operations readiness foundation", () => {
       "npm run eval:procedure",
       "npm run eval:os-integration",
       "npm run eval:assessment",
+      "npm run eval:evidence-gap",
       "npm run eval:content-integration",
       "npm run eval:conflict",
       "npm run eval:boundary",
@@ -61,9 +62,11 @@ describe("operations readiness foundation", () => {
     assert.match(workflow, /db\/migrations\/009_workflow_lifecycle\.sql/);
     assert.match(workflow, /db\/migrations\/010_workflow_lifecycle_api\.sql/);
     assert.match(workflow, /db\/migrations\/011_artifact_vector_runtime_hardening\.sql/);
+    assert.match(workflow, /db\/migrations\/012_evidence_gap_requests\.sql/);
     assert.match(workflow, /migrations\/011-production-vector-store\.sql/);
     assert.match(workflow, /db\/tests\/claim_pack_runtime_gate\.sql/);
     assert.match(workflow, /db\/tests\/workflow_lifecycle_runtime_gate\.sql/);
+    assert.match(workflow, /db\/tests\/evidence_gap_runtime_gate\.sql/);
     assert.match(workflow, /db\/tests\/tenant_ingestion_runtime_gate\.sql/);
     assert.match(workflow, /db\/tests\/artifact_vector_runtime_hardening_gate\.sql/);
     assert.match(workflow, /db\/tests\/artifact_vector_legacy_upgrade_gate\.sql/);
@@ -74,6 +77,7 @@ describe("operations readiness foundation", () => {
     assert.match(workflow, /run: npm run smoke:ingestion-api/);
     assert.match(workflow, /run: npm run smoke:claim-pack/);
     assert.match(workflow, /run: npm run smoke:workflow-lifecycle/);
+    assert.match(workflow, /run: npm run smoke:evidence-gap/);
 
     assert.doesNotMatch(workflow, /build:pages|configure-pages|upload-pages|deploy-pages/i);
     assert.doesNotMatch(workflow, /^\s*(?:pages|id-token|actions|checks): write$/m);
@@ -109,7 +113,7 @@ describe("operations readiness foundation", () => {
     assert.match(evaluation, /same internal compilation used by the workflow provider/);
     assert.match(evaluation, /passed_for_bundle_workflow_and_conservative_assessment_provider_with_external_consumer_limitations/);
     assert.match(evaluation, /No consumer contract test has run inside the OS Electoral repository/);
-    assert.match(openapi, /claim_pack_evidence_procedure_ingestion_and_governed_workflow_lifecycle_providers_implemented_with_limits/);
+    assert.match(openapi, /claim_pack_evidence_gap_procedure_ingestion_and_governed_workflow_lifecycle_providers_implemented_with_limits/);
     assert.match(smoke, /evidenceBundleValidated: true/);
     assert.match(smoke, /procedureAssessmentValidated: true/);
     assert.match(smoke, /requested_output: "evidence_bundle"/);
@@ -138,6 +142,35 @@ describe("operations readiness foundation", () => {
     assert.match(handler, /const canonicalWorkflow = mapProcedureWorkflowV1\(mappingOptions\)/);
     assert.match(handler, /validators\.workflow\(canonicalWorkflow\)/);
     assert.match(handler, /validators\.assessment\(mapped\)/);
+  });
+
+  it("keeps the named EvidenceGap intake eval executable, immutable and honestly bounded", async () => {
+    const [packageJson, evaluation, workflow, openapi, smoke, migration] = await Promise.all([
+      read("package.json"),
+      read("docs/testing/eval-harness.md"),
+      read(".github/workflows/ci.yml"),
+      read("contracts/openapi/v1/openapi.json"),
+      read("scripts/evidence-gap-postgres-smoke.mjs"),
+      read("db/migrations/012_evidence_gap_requests.sql"),
+    ]);
+
+    assert.match(packageJson, /"eval:evidence-gap": "node --import tsx --test src\/__tests__\/eval-evidence-gap-001\.test\.ts src\/__tests__\/evidence-gap-runtime-migration\.test\.ts"/);
+    assert.match(packageJson, /"smoke:evidence-gap": "node scripts\/evidence-gap-postgres-smoke\.mjs"/);
+    assert.match(evaluation, /## EVAL-EVIDENCE-GAP-001/);
+    assert.match(evaluation, /passed_for_immutable_open_intake_with_consumer_privacy_and_operations_limitations/);
+    assert.match(evaluation, /no deployed research queue/);
+    assert.match(workflow, /Run EVAL-EVIDENCE-GAP-001/);
+    assert.match(workflow, /db\/migrations\/012_evidence_gap_requests\.sql/);
+    assert.match(workflow, /db\/tests\/evidence_gap_runtime_gate\.sql/);
+    assert.match(workflow, /npm run smoke:evidence-gap/);
+    assert.match(openapi, /\/api\/v1\/evidence-gap-requests/);
+    assert.match(openapi, /evidence-gap-response\.schema\.json/);
+    assert.match(smoke, /evidence_gap_postgres_http_smoke_passed/);
+    assert.match(smoke, /concurrentAggregateConvergence: true/);
+    assert.match(smoke, /sourceAuthorityPromoted: false/);
+    assert.match(migration, /FORCE ROW LEVEL SECURITY/);
+    assert.match(migration, /evidence_gap_requests_immutable_v1/);
+    assert.match(migration, /response_sha256 = digest\(response_body, 'sha256'\)/);
   });
 
   it("keeps the named Content Agency ClaimPack eval executable and bounded to evidence", async () => {

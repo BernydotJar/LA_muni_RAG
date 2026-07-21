@@ -13,6 +13,7 @@ npm run domain:evaluate
 npm run eval:procedure
 npm run eval:os-integration
 npm run eval:assessment
+npm run eval:evidence-gap
 npm run eval:content-integration
 npm run eval:conflict
 npm run eval:boundary
@@ -26,7 +27,7 @@ npm run eval:water
 npm test
 ```
 
-`npm run eval:procedure`, `npm run eval:os-integration`, `npm run eval:assessment`, `npm run eval:content-integration`, `npm run eval:conflict`, `npm run eval:boundary`, `npm run eval:corrupt`, `npm run eval:artifact`, `npm run eval:vector`, `npm run eval:job-lease`, `npm run eval:tenant`, `npm run eval:mixco`, and `npm run eval:water` are named CI gates. The complete regression remains `npm test`; PostgreSQL behavior additionally requires the guarded SQL and compiled smoke gates.
+`npm run eval:procedure`, `npm run eval:os-integration`, `npm run eval:assessment`, `npm run eval:evidence-gap`, `npm run eval:content-integration`, `npm run eval:conflict`, `npm run eval:boundary`, `npm run eval:corrupt`, `npm run eval:artifact`, `npm run eval:vector`, `npm run eval:job-lease`, `npm run eval:tenant`, `npm run eval:mixco`, and `npm run eval:water` are named CI gates. The complete regression remains `npm test`; PostgreSQL behavior additionally requires the guarded SQL and compiled smoke gates.
 
 ## EVAL-PROCEDURE-001
 
@@ -143,6 +144,59 @@ Current limitations:
 - Controlled fixtures and a disposable database do not prove corpus completeness, current legal effect, OS-repository interoperability, load, staging, or deployment.
 
 Therefore `EVAL-PROCEDURE-ASSESSMENT-001` is `passed_for_conservative_draft_bound_assessment_with_case_consumer_and_corpus_limitations`.
+
+## EVAL-EVIDENCE-GAP-001
+
+Primary request:
+
+```text
+OS Electoral -> POST /api/v1/evidence-gap-requests
+```
+
+Implemented acceptance criteria:
+
+1. Authentication completes before body parsing and every unauthenticated failure remains the same contract-valid `401` without parsing or leaking malformed input.
+2. The authenticated rate gate runs before permission, schema validation and mutation; repeated denials share one bounded audit identity per window.
+3. `integration:query`, authenticated tenant, credential provenance, `X-Request-Id`, closed JSON Schema, CORS and bounded request fields are enforced server-side.
+4. One accepted request creates one immutable tenant-owned `open` aggregate whose echoed request fields are explicitly `requester_supplied_unverified`; it performs no retrieval or compiler work and claims no source authority, applicability, acquisition, ingestion or resolution.
+5. Same key + same request returns exact bytes; a simultaneous same-key duplicate is fenced as `request_in_progress`; same key + changed request is `idempotency_conflict`.
+6. Distinct transport keys for the same canonical `gap_request_id` converge on the original response, including under concurrent PostgreSQL execution; changed aggregate identity is `gap_request_conflict`.
+7. Replay bytes require status 200, SHA-256, current schema, tenant/request/gap/credential/audit identity and exact canonical response reconstruction. Corrupt or schema-valid-but-noncanonical bytes are never emitted.
+8. Unknown authority fields, imperative requests to declare a source official/current/applicable, cross-tenant input, electoral strategy and content-production work are rejected before aggregate mutation.
+9. Tenant audit stores only allowlisted IDs, outcome, reason and key digest; Bearer, raw key, subject, missing-document text, reason and campaign reference are absent.
+10. Migration 012, forced RLS, composite tenant foreign keys, aggregate immutability, response-hash constraints, non-owner/NOBYPASSRLS execution, OpenAPI, CI wiring and compiled HTTP smoke pass.
+
+Executable evidence:
+
+- `src/__tests__/eval-evidence-gap-001.test.ts`;
+- `src/__tests__/evidence-gap-runtime-migration.test.ts`;
+- `src/api/v1/evidenceGapHandler.ts`;
+- `src/api/v1/evidenceGapPersistence.ts`;
+- `contracts/schemas/v1/evidence-gap-request.schema.json`;
+- `contracts/schemas/v1/evidence-gap-response.schema.json`;
+- `db/migrations/012_evidence_gap_requests.sql`;
+- `db/tests/evidence_gap_runtime_gate.sql`;
+- `scripts/evidence-gap-postgres-smoke.mjs`.
+
+Current local evidence:
+
+```text
+focused provider eval: 11/11
+migration/contract boundary: 3/3
+contract registry: 17 schemas / 17 examples / OpenAPI 3.1.1
+PostgreSQL 15.18 / pgvector 0.8.5 non-owner gate: pass
+compiled HTTP statuses: 401/200/200/200/200/200/409/409/403/400/400/500/200
+concurrent aggregate convergence: one row, exact shared response
+```
+
+Current limitations:
+
+- The endpoint records intake only; no deployed research queue, assignment, resolution lifecycle or notification exists.
+- Documentary subject/reason fields may contain personal or confidential context. Purpose, retention, deletion, legal hold and tenant-facing lifecycle require a named Privacy/Legal decision before production.
+- The OS Electoral repository has not run a consumer contract, so producer identity, retries, exact ID preservation and consumer-side authority warnings remain unproved.
+- Local PostgreSQL and HTTP gates do not prove staging, load/HA, observability, backup/restore or deployment.
+
+Therefore `EVAL-EVIDENCE-GAP-001` is `passed_for_immutable_open_intake_with_consumer_privacy_and_operations_limitations`.
 
 ## EVAL-CONTENT-INTEGRATION-001
 
@@ -439,10 +493,10 @@ Executable evidence:
 Current local evidence:
 
 - lifecycle-focused tests: 35/35;
-- contract registry: 16 schemas, 16 examples, one OpenAPI 3.1.1 document;
-- fresh non-owner database path: PostgreSQL 15.18, pgvector 0.8.5, migrations/gates 001–004 + 008–010;
-- compiled ProcedureQuery, ClaimPack, and lifecycle HTTP smokes: pass;
-- full regression: 636 tests, 634 pass, 0 fail, 2 explicit environment skips.
+- contract registry: 17 schemas, 17 examples, one OpenAPI 3.1.1 document;
+- fresh non-owner database path: PostgreSQL 15.18, pgvector 0.8.5, migrations/gates 001–004 + 008–010 + 012;
+- compiled ProcedureQuery, ClaimPack, lifecycle, and EvidenceGap HTTP smokes: pass;
+- full regression: 669 tests, 667 pass, 0 fail, 2 explicit environment skips.
 
 Remaining limitations:
 
@@ -539,6 +593,7 @@ Therefore `EVAL-JOB-LEASE-001` is `passed_for_disposable_postgres_fencing_with_d
 | EVAL-MIXCO-001 | passed_with_corpus_and_corroboration_limitations | End-to-end classification, composition, mapping, warning, anti-promotion schema checks, and corroboration gaps pass; real corpus and Antigua corroboration remain open. |
 | EVAL-OS-INTEGRATION-001 | passed_for_bundle_workflow_and_conservative_assessment_provider_with_external_consumer_limitations | Three provider outputs, replay, CORS, authority/citation identity, no-evidence gaps, conservative assessment, boundary, OpenAPI, and compiled smoke pass; OS-repository consumer proof remains open. |
 | EVAL-PROCEDURE-ASSESSMENT-001 | passed_for_conservative_draft_bound_assessment_with_case_consumer_and_corpus_limitations | Opaque document refs cannot complete requirements, cited existence stays review-only, blocked/missing/unknown state, exact/corrupt replay and provenance pass; case binding, consumer, real corpus and legal applicability remain open. |
+| EVAL-EVIDENCE-GAP-001 | passed_for_immutable_open_intake_with_consumer_privacy_and_operations_limitations | 11 provider behaviors plus 3 migration/contract checks, exact/concurrent replay, aggregate conflict, anti-authority, audit minimization, FORCE RLS and compiled PostgreSQL HTTP pass; research resolution, consumer, privacy retention, staging/load/restore and deployment remain open. |
 | EVAL-CONTENT-INTEGRATION-001 | passed_for_claim_pack_provider_with_external_consumer_and_remote_ci_limitations | Provider, contract, replay, abstention, RBAC/tenant, Mixco, no-promotion, OpenAPI, non-owner SQL and compiled HTTP smoke pass locally; remote CI and the Content Agency consumer remain open. |
 | EVAL-BOUNDARY-001 | passed_for_current_provider_surface | Mixed and single-owner requests, hidden context violations, non-compilation, safe audit, and allowed evidence/procedure output pass; future APIs and consumers remain in scope. |
 | EVAL-TENANT-001 | passed_for_current_provider_and_disposable_db_gate_with_topology_limitations | Non-leaking HTTP denial, authenticated-tenant audit, transaction-local context, FORCE-RLS assertions, SQL gates, and compiled smokes pass locally; the full catalog and production topology remain open. |

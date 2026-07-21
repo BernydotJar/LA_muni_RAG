@@ -32,8 +32,8 @@ describe("integration contracts v1", () => {
       status: "valid",
       schemaDialect: JSON_SCHEMA_DIALECT,
       openapiVersion: OPENAPI_VERSION,
-      schemasValidated: 16,
-      examplesValidated: 16,
+      schemasValidated: 17,
+      examplesValidated: 17,
       openapiDocumentsValidated: 1,
       issues: [],
     });
@@ -360,6 +360,7 @@ describe("integration contracts v1", () => {
     assert.equal(openapi.jsonSchemaDialect, JSON_SCHEMA_DIALECT);
     assert.deepEqual(Object.keys(openapi.paths), [
       "/api/v1/claim-packs",
+      "/api/v1/evidence-gap-requests",
       "/api/v1/procedure-queries",
       "/api/v1/ingestion-jobs",
       "/api/v1/ingestion-jobs/{job_id}",
@@ -369,6 +370,7 @@ describe("integration contracts v1", () => {
       "/api/v1/workflows/{workflow_version_id}",
     ]);
     assert.deepEqual(Object.keys(openapi.paths["/api/v1/claim-packs"]), ["post"]);
+    assert.deepEqual(Object.keys(openapi.paths["/api/v1/evidence-gap-requests"]), ["post"]);
     assert.deepEqual(Object.keys(openapi.paths["/api/v1/procedure-queries"]), ["post"]);
     assert.deepEqual(Object.keys(openapi.paths["/api/v1/ingestion-jobs"]), ["post"]);
     assert.deepEqual(Object.keys(openapi.paths["/api/v1/ingestion-jobs/{job_id}"]), ["get"]);
@@ -378,6 +380,7 @@ describe("integration contracts v1", () => {
     assert.deepEqual(Object.keys(openapi.paths["/api/v1/workflows/{workflow_version_id}"]), ["get"]);
 
     const claimPack = openapi.paths["/api/v1/claim-packs"].post;
+    const evidenceGap = openapi.paths["/api/v1/evidence-gap-requests"].post;
     const operation = openapi.paths["/api/v1/procedure-queries"].post;
     assert.deepEqual(claimPack.security, [{ bearerAuth: [] }]);
     assert.deepEqual(
@@ -396,6 +399,24 @@ describe("integration contracts v1", () => {
       Object.keys(claimPack.responses),
       ["200", "400", "401", "403", "409", "429", "500"]
     );
+    assert.deepEqual(evidenceGap.security, [{ bearerAuth: [] }]);
+    assert.deepEqual(
+      evidenceGap.parameters.map((parameter: { name: string }) => parameter.name),
+      ["Idempotency-Key", "X-Request-Id"]
+    );
+    assert.equal(
+      evidenceGap.requestBody.content["application/json"].schema.$ref,
+      "../../schemas/v1/evidence-gap-request.schema.json"
+    );
+    assert.equal(
+      evidenceGap.responses["200"].content["application/json"].schema.$ref,
+      "../../schemas/v1/evidence-gap-response.schema.json"
+    );
+    assert.deepEqual(
+      Object.keys(evidenceGap.responses),
+      ["200", "400", "401", "403", "409", "429", "500"]
+    );
+    assert.match(evidenceGap.description, /does not declare any source official/);
     assert.deepEqual(
       operation.responses["200"].content["application/json"].schema.oneOf.map(
         (schema: { $ref: string }) => schema.$ref
@@ -499,7 +520,7 @@ describe("integration contracts v1", () => {
     );
     assert.equal(
       openapi["x-implementation-status"],
-      "claim_pack_evidence_procedure_ingestion_and_governed_workflow_lifecycle_providers_implemented_with_limits"
+      "claim_pack_evidence_gap_procedure_ingestion_and_governed_workflow_lifecycle_providers_implemented_with_limits"
     );
   });
 });

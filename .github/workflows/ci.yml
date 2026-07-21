@@ -65,6 +65,9 @@ jobs:
       - name: Run EVAL-PROCEDURE-ASSESSMENT-001
         run: npm run eval:assessment
 
+      - name: Run EVAL-EVIDENCE-GAP-001
+        run: npm run eval:evidence-gap
+
       - name: Run EVAL-CONTENT-INTEGRATION-001
         run: npm run eval:content-integration
 
@@ -123,7 +126,9 @@ jobs:
             db/tests/claim_pack_runtime_gate.sql \
             db/migrations/009_workflow_lifecycle.sql \
             db/migrations/010_workflow_lifecycle_api.sql \
-            db/tests/workflow_lifecycle_runtime_gate.sql
+            db/tests/workflow_lifecycle_runtime_gate.sql \
+            db/migrations/012_evidence_gap_requests.sql \
+            db/tests/evidence_gap_runtime_gate.sql
           do
             docker exec -i "$POSTGRES_CONTAINER" \
               psql -U postgres -d la_muni_rag_test \
@@ -144,6 +149,11 @@ jobs:
         env:
           DATABASE_URL: postgresql://la_muni_runtime_test:disposable-runtime-password-20260718@127.0.0.1:5432/la_muni_rag_test
         run: npm run smoke:workflow-lifecycle
+
+      - name: Verify compiled EvidenceGap API
+        env:
+          DATABASE_URL: postgresql://la_muni_runtime_test:disposable-runtime-password-20260718@127.0.0.1:5432/la_muni_rag_test
+        run: npm run smoke:evidence-gap
 
       - name: Verify tenant ingestion migrations and non-owner RLS
         env:

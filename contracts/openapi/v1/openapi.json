@@ -3,10 +3,10 @@
   "jsonSchemaDialect": "https://json-schema.org/draft/2020-12/schema",
   "info": {
     "title": "LA Muni RAG v1 API Contract",
-    "version": "1.1.0",
-    "description": "Contract for implemented evidence, procedure-query, ingestion-job, and governed workflow lifecycle providers. Workflow versions always enter as draft and require distinct human review and approval. ProcedureAssessment, document upload, deployment, and production scanner/storage remain outside this contract; this document does not claim deployment."
+    "version": "1.2.0",
+    "description": "Contract for implemented ClaimPack, EvidenceGapRequest intake, evidence/procedure-query, ingestion-job, and governed workflow lifecycle providers. Procedure queries can return EvidenceBundle, draft ProcedureWorkflow, or conservative ProcedureAssessment. Workflow versions always enter as draft and require distinct human review and approval. Document upload, deployment, production scanner/storage, external consumers, and legal applicability remain outside this contract; this document does not claim deployment."
   },
-  "x-implementation-status": "claim_pack_evidence_procedure_ingestion_and_governed_workflow_lifecycle_providers_implemented_with_limits",
+  "x-implementation-status": "claim_pack_evidence_gap_procedure_ingestion_and_governed_workflow_lifecycle_providers_implemented_with_limits",
   "paths": {
     "/api/v1/claim-packs": {
       "post": {
@@ -64,6 +64,87 @@
               "application/json": {
                 "schema": {
                   "$ref": "../../schemas/v1/claim-pack.schema.json"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        }
+      }
+    },
+    "/api/v1/evidence-gap-requests": {
+      "post": {
+        "operationId": "submitEvidenceGapRequest",
+        "summary": "Register an unresolved documentary evidence need",
+        "description": "Accepts a tenant-scoped EvidenceGapRequest from OS Electoral and returns an immutable open research-intake acknowledgement. Echoed requester fields are explicitly requester_supplied_unverified. Acceptance does not declare any source official, current, applicable, acquired, ingested, or resolved.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "description": "Stable key for safely replaying the same tenant-scoped request.",
+            "schema": {
+              "type": "string",
+              "minLength": 16,
+              "maxLength": 128,
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{15,127}$"
+            }
+          },
+          {
+            "name": "X-Request-Id",
+            "in": "header",
+            "required": true,
+            "description": "UUID that must equal request_id in the body.",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "../../schemas/v1/evidence-gap-request.schema.json"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Contract-valid immutable open EvidenceGapRequest acknowledgement.",
+            "headers": {
+              "X-Request-Id": {
+                "$ref": "#/components/headers/RequestId"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../../schemas/v1/evidence-gap-response.schema.json"
                 }
               }
             }

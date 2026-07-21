@@ -1,8 +1,8 @@
 # Tenant Isolation Foundation
 
-Status: implemented for procedure-query v1, ingestion-job v1, and the durable
-ingestion/vector core; deployed worker/storage/scanner wiring and broader API
-migration pending.
+Status: implemented for procedure-query, EvidenceGapRequest, ClaimPack,
+ingestion-job and workflow lifecycle v1 slices plus the durable ingestion/vector
+core; deployed worker/storage/scanner wiring and broader API migration pending.
 
 ## Boundary
 
@@ -67,7 +67,9 @@ transaction-expired values return `NULL`; every tenant policy then denies access
   procedure feedback;
 - `audit.events`;
 - `rag.embedding_vectors` (created or converged by migration `005`).
-- `integration.ingestion_api_rate_limits` (created by migration `006`).
+- `integration.ingestion_api_rate_limits` (created by migration `006`);
+- `rag.evidence_gap_requests`, `integration.evidence_gap_idempotency`, and
+  `integration.evidence_gap_rate_limits` (created by migration `012`).
 
 Each policy applies the same predicate to reads and writes:
 
@@ -109,10 +111,12 @@ Direct vector indexing no longer constructs a global repository from
 over an authenticated tenant transaction and otherwise reports
 `tenant_vector_context_required`.
 
-`POST /api/v1/procedure-queries` and `POST /api/v1/claim-packs` authenticate before
-body parsing, verify `integration:query`, match credential provenance and body
-tenant, and perform retrieval, rate/idempotency state, and tenant audit through
-this contract. ClaimPack uses dedicated migration-008 tables rather than sharing
+`POST /api/v1/procedure-queries`, `POST /api/v1/evidence-gap-requests`, and
+`POST /api/v1/claim-packs` authenticate before body parsing, verify
+`integration:query`, match credential provenance and body tenant, and perform
+rate/idempotency state and tenant audit through this contract. EvidenceGap adds
+an immutable tenant-owned aggregate without retrieval; ProcedureQuery and
+ClaimPack retain their scoped retrieval behavior. ClaimPack uses dedicated migration-008 tables rather than sharing
 procedure-query keys or response state. Its
 keyword/phrase SQL repeats explicit tenant predicates and admits only public,
 active documents with processed versions. Calls on the single transaction-bound
@@ -158,9 +162,10 @@ missing/malformed context denial, scoped uniqueness, authentication, sanitized
 audit, cross-tenant equal vector ids, concurrent job/work deduplication, one
 lease winner, stale/artifact fencing, atomic vector rollback/replacement, and
 eligible public retrieval. The compiled procedure handler, ingestion service,
-and ingestion HTTP handler ran over real non-owner connections. ClaimPack has a
-dedicated SQL gate and compiled HTTP smoke wired to CI, but the pinned pgvector
-image could not register in the current sandbox and this HEAD has no remote result. The latter also
+and ingestion HTTP handler ran over real non-owner connections. ClaimPack and EvidenceGap have dedicated SQL gates and compiled HTTP smokes wired
+to CI. The local EvidenceGap gate ran on PostgreSQL 15.18/pgvector 0.8.5 and
+proved A/B isolation, response hashes, aggregate inmutability and non-owner
+execution; its HEAD still requires remote CI. The latter also
 proved viewer/tenant denial, stable replay/dedup, rate state, own/cross-tenant
 status parity, and exact CORS without exposing artifact/control secrets.
 

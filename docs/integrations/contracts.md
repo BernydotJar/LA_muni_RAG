@@ -1,13 +1,13 @@
 # Contratos entre productos
 
 Estado: foundation v1; providers `ClaimPack`, `EvidenceBundle`, `ProcedureWorkflow`,
-`ProcedureAssessment` y API operacional de ingestion jobs implementados; consumers y demás artifacts pendientes
+`ProcedureAssessment`, intake `EvidenceGapRequest` y API operacional de ingestion jobs implementados localmente; consumers y demás artifacts pendientes
 
 Fecha de corte: 2026-07-21
 
 ## Alcance
 
-Este documento define la semántica común para integrar LA Muni RAG, OS Electoral y Content Agency sin compartir storage. Los artifacts canónicos están en [`contracts/schemas/v1`](../../contracts/schemas/v1), [`contracts/openapi/v1/openapi.json`](../../contracts/openapi/v1/openapi.json) y [`contracts/examples/v1`](../../contracts/examples/v1). La ruta `POST /api/v1/procedure-queries` implementa los slices provider de `EvidenceBundle` y `ProcedureWorkflow`. La ruta separada `POST /api/v1/claim-packs` acepta únicamente un request de Content Agency y entrega claims/citations/usage bounds sin producir contenido. Sus validaciones y smoke desechables no demuestran interoperabilidad con consumers vecinos ni despliegue productivo. El mismo registry contiene los contratos operacionales cerrados `IngestionJobRequest` y `IngestionJobResponse` para `POST/GET /api/v1/ingestion-jobs`; no son artifacts cross-product ni un API de upload.
+Este documento define la semántica común para integrar LA Muni RAG, OS Electoral y Content Agency sin compartir storage. Los artifacts canónicos están en [`contracts/schemas/v1`](../../contracts/schemas/v1), [`contracts/openapi/v1/openapi.json`](../../contracts/openapi/v1/openapi.json) y [`contracts/examples/v1`](../../contracts/examples/v1). La ruta `POST /api/v1/procedure-queries` implementa los slices provider de `EvidenceBundle`, `ProcedureWorkflow` y `ProcedureAssessment`. `POST /api/v1/evidence-gap-requests` registra un intake documental inmutable `open`, marcado `requester_supplied_unverified`, sin afirmar autoridad ni resolución. La ruta separada `POST /api/v1/claim-packs` acepta únicamente un request de Content Agency y entrega claims/citations/usage bounds sin producir contenido. Sus validaciones y smoke desechables no demuestran interoperabilidad con consumers vecinos ni despliegue productivo. El mismo registry contiene los contratos operacionales cerrados `IngestionJobRequest` y `IngestionJobResponse` para `POST/GET /api/v1/ingestion-jobs`; no son artifacts cross-product ni un API de upload.
 
 La decisión de arquitectura está en [ADR-0001](../adr/0001-product-boundaries-and-data-ownership.md) y el ownership en [Ownership de datos](../architecture/data-ownership.md).
 
@@ -16,7 +16,7 @@ La decisión de arquitectura está en [ADR-0001](../adr/0001-product-boundaries-
 | Payload | Product owner | Producer -> consumer | Propósito | Estado al corte |
 |---|---|---|---|---|
 | `ProcedureQueryRequest` | OS Electoral | OS Electoral -> LA Muni RAG | Solicitar inteligencia procedimental con jurisdiction y case context. | Provider HTTP implementado para bundle, workflow y assessment; consumer OS Electoral pendiente. |
-| `EvidenceGapRequest` | OS Electoral (request); LA Muni RAG (investigación resultante) | OS Electoral -> LA Muni RAG | Solicitar localización/validación de evidencia faltante. | Schema y ejemplo implementados; endpoint/adapter pendientes. |
+| `EvidenceGapRequest` | OS Electoral (request); LA Muni RAG (intake/investigación resultante) | OS Electoral -> LA Muni RAG | Solicitar localización/validación de evidencia faltante. | Provider HTTP local, aggregate inmutable, replay/dedupe, FORCE RLS, OpenAPI y gates PostgreSQL implementados; consumer y resolución de investigación pendientes. |
 | `EvidenceBundle` | LA Muni RAG | LA Muni RAG -> OS Electoral | Entregar claims/citations/contradictions/gaps de una consulta. | Mapper/provider y conflicto explícito de versiones implementados con identidades document/version/section; corpus completo, semantic conflicts, lifecycle de resolución y consumer pendientes. |
 | `ProcedureWorkflow` | LA Muni RAG | LA Muni RAG -> OS Electoral | Entregar workflow y versión con autoridad/aprobación explícitas. | Mapper/provider draft-only implementado y validado; lifecycle/versioning persistente y aprobación humana ausentes. |
 | `ProcedureAssessment` | LA Muni RAG | LA Muni RAG -> OS Electoral | Evaluar conservadoramente case context contra el draft generado. | Mapper/provider/replay/OpenAPI/eval implementados; case binding, consumer y persistencia de assessment pendientes. |
@@ -217,11 +217,11 @@ Cada test debe ejecutar los artifacts machine-readable canónicos, no una copia 
 
 Al corte:
 
-- existen dieciséis schemas draft 2020-12, dieciséis ejemplos y un OpenAPI 3.1.1 con los providers implementados y límites explícitos;
-- `npm run contracts:validate` valida el registry completo con Ajv; los handlers vuelven a validar sus requests, `ClaimPack`, `EvidenceBundle`, `ProcedureWorkflow`, `ProcedureAssessment`, `IngestionJobResponse` y `ApiError` en runtime;
-- pruebas focales cubren igualdad header/body, identidad/tenant/RBAC, boundary, CORS, public-only retrieval, conflicto explícito de versiones y anti-falsos-positivos, ClaimPack abstention/no-promotion/expiry, replay/conflicto de idempotencia/corrupción, ingestion new/dedup/status/404, rate limit y rutas legacy cerradas en producción;
+- existen diecisiete schemas draft 2020-12, diecisiete ejemplos y un OpenAPI 3.1.1 con los providers implementados y límites explícitos;
+- `npm run contracts:validate` valida el registry completo con Ajv; los handlers vuelven a validar sus requests, `ClaimPack`, `EvidenceBundle`, `ProcedureWorkflow`, `ProcedureAssessment`, `EvidenceGapRequest`, `EvidenceGapResponse`, `IngestionJobResponse` y `ApiError` en runtime;
+- pruebas focales cubren igualdad header/body, identidad/tenant/RBAC, boundary, CORS, public-only retrieval, conflicto explícito de versiones y anti-falsos-positivos, ClaimPack abstention/no-promotion/expiry, EvidenceGap exact replay/aggregate replay/conflicts/anti-authority, replay corrupto, ingestion new/dedup/status/404, rate limit y rutas legacy cerradas en producción;
 - gates desechables históricos sobre PostgreSQL 16.14/pgvector 0.8.5 y roles no propietarios ejecutaron migraciones/aislamiento A/B; el smoke procedural actualizado espera `200/200/409/403/400/401/500/200/200/200` incluyendo bundle/replay, pero su ejecución para el HEAD actual está pendiente de CI remoto; el smoke ingestion `401/403/403/202/200/202/409/429/200/404/404`;
-- los gates PostgreSQL/HTTP de ClaimPack están cableados, pero la imagen pgvector fijada no pudo registrarse en el sandbox actual y el HEAD requiere CI remoto;
+- los gates PostgreSQL/HTTP de ClaimPack, ProcedureQuery, workflow lifecycle y EvidenceGap pasan localmente con rol no propietario; el HEAD de EvidenceGap aún requiere publicación y CI remoto;
 - el catálogo mínimo completo de `/api/v1/*` todavía no implementa transversalmente estas reglas;
 - el control plane v1 observado de Content Agency es su API interna de misiones/runs/approvals, no este contrato;
 - los contratos read-only observados de OS Electoral son internos a sus bounded contexts, no este contrato.

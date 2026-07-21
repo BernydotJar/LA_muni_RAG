@@ -1,6 +1,6 @@
 # Integración con OS Electoral
 
-Estado: providers `EvidenceBundle`, `ProcedureWorkflow` y `ProcedureAssessment` implementados; consumer OS Electoral pendiente
+Estado: providers `EvidenceBundle`, `ProcedureWorkflow`, `ProcedureAssessment` y intake `EvidenceGapRequest` implementados localmente; consumer OS Electoral pendiente
 
 Fecha de corte: 2026-07-21
 Producer/consumer vecino: [`BernydotJar/OS-Electoral`](https://github.com/BernydotJar/OS-Electoral)
@@ -76,7 +76,7 @@ priority
 campaign_reference
 ```
 
-La solicitud entra a la cola/proceso propio de investigación de LA Muni RAG cuando éste exista. Debe conservar producer, tenant, correlation y tiempo. Un título o URL enviado por OS Electoral permanece `identified`/pendiente hasta validar autoridad, jurisdicción, versión, bytes y provenance.
+`POST /api/v1/evidence-gap-requests` registra la solicitud como aggregate tenant-owned, inmutable, `open` y `requester_supplied_unverified`, conservando producer, tenant, correlation y tiempo. El intake no ejecuta retrieval ni promete una cola desplegada. Un título o referencia enviada por OS Electoral permanece pendiente hasta validar autoridad, jurisdicción, versión, bytes y provenance. La respuesta no contiene `official_source` ni `source_url`.
 
 ## LA Muni RAG -> OS Electoral
 
@@ -143,7 +143,7 @@ El assessment describe encaje documental contra el draft generado por la misma c
 - Foreign campaign/community IDs se validan como opacos y se auditan, pero LA Muni RAG no los autoriza consultando DB de OS Electoral.
 - Errores de tenant o authorization no revelan existencia, título, authority o metadata del recurso.
 
-La foundation de identity, diez roles y RLS tenant-scoped protege `POST /api/v1/procedure-queries`. Un gate desechable con rol PostgreSQL no propietario demostró aislamiento A/B y denial HTTP; esto no equivale a provisioning de producción. Las rutas legacy no son tenant-aware y por eso quedan en 404 por defecto cuando `NODE_ENV=production`.
+La foundation de identity, diez roles y RLS tenant-scoped protege `POST /api/v1/procedure-queries` y `POST /api/v1/evidence-gap-requests`. Gates desechables con rol PostgreSQL no propietario demostraron aislamiento A/B, aggregate inmutable, response hash y denial HTTP; esto no equivale a provisioning de producción. Las rutas legacy no son tenant-aware y por eso quedan en 404 por defecto cuando `NODE_ENV=production`.
 
 ### Idempotencia y correlation
 
@@ -181,13 +181,14 @@ Un fallo de red se reintenta con la misma key. OS Electoral no debe fabricar una
 | “¿Qué requisitos documentales tiene este proyecto?” | Puede devolver `EvidenceBundle`, `ProcedureWorkflow` draft o un `ProcedureAssessment` conservador con requisitos faltantes, pasos bloqueados y siguiente acción documental. |
 | “¿Debemos prometer este proyecto en campaña?” | Devuelve sólo factibilidad/evidencia relevante y declara que la decisión pertenece a OS Electoral. |
 | “Prioriza comunidades para movilización.” | Refusal de boundary; no produce territorio o segmento. |
-| “Encontramos este manual, decláralo oficial.” | Registra/acepta gap para validación; no promueve la fuente por solicitud del consumidor. |
+| “Encontramos este manual, decláralo oficial.” | Rechaza la promoción de autoridad. Una solicitud documental separada puede registrarse `open`, pero nunca convierte el manual en fuente oficial. |
 
 ## Estado real al corte
 
-- LA Muni RAG tiene dieciséis schemas draft 2020-12, dieciséis ejemplos y OpenAPI 3.1.1; ClaimPack usa un request dedicado de Content Agency y los contratos de ingestion siguen siendo operacionales internos, sin ampliar el payload compartido con OS Electoral.
+- LA Muni RAG tiene diecisiete schemas draft 2020-12, diecisiete ejemplos y OpenAPI 3.1.1; ClaimPack usa un request dedicado de Content Agency y los contratos de ingestion siguen siendo operacionales internos, sin ampliar el payload compartido con OS Electoral.
 - `POST /api/v1/procedure-queries` autentica por digest, exige `integration:query`, verifica tenant/credential, valida schema, limita tráfico, conserva idempotencia y audit, recupera sólo corpus público/activo/procesado y devuelve `EvidenceBundle`, `ProcedureWorkflow` o `ProcedureAssessment` nuevamente validado según `requested_output`.
 - `EvidenceBundle` conserva document/version/section IDs, source authority, claims con citation refs, gaps, limitaciones y replay exacto; no incluye campaign decision fields. Sin evidencia devuelve claims vacíos y brechas explícitas.
+- `POST /api/v1/evidence-gap-requests` conserva un intake `open`, diferencia replay de transporte y dedupe por aggregate, rechaza promoción de autoridad y pasa FORCE RLS + smoke HTTP local; no resuelve el gap ni demuestra que exista un worker de investigación desplegado.
 - Pruebas focales cubren los tres outputs, exact-origin CORS, replay exacto, conflicto, tenant mismatch, boundary, 401, replay corrupto y reintento; el smoke PostgreSQL compilado incluye assessment success/replay y no existe consumer probado dentro del repositorio OS Electoral.
 - La respuesta workflow fija `workflow_version=1.0.0` y `approval_status=draft`; lifecycle/version store/aprobación existen en el slice gobernado, mientras `ProcedureAssessment` sigue siendo un snapshot del draft y no un caso persistente.
 - OS Electoral documenta bounded contexts de campaign/governance y contratos internos read-only; no se observó cliente de LA Muni RAG.
