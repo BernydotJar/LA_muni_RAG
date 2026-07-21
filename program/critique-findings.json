@@ -1,0 +1,95 @@
+{
+  "updated_at": "2026-07-21T15:40:38Z",
+  "slice": "governed_workflow_lifecycle_api_v1",
+  "functional_head": "c6e110cd4ffe01cb8192cc1701f64827784ba240",
+  "summary": {
+    "critical_open_in_slice": 0,
+    "high_open_in_slice": 0,
+    "global_production_readiness_unproved": true
+  },
+  "findings": [
+    {
+      "id": "WLAPI-CRIT-001",
+      "severity": "critical",
+      "status": "resolved",
+      "description": "Supersession could not satisfy the one-approved-version invariant because the replacement could not already be approved.",
+      "repair": "Approve a reviewed same-procedure replacement and supersede the former approved version in one transaction; lock and validate replacement status; record approval and supersession audits.",
+      "evidence": [
+        "state-machine success and rejection tests",
+        "HTTP lifecycle test",
+        "non-owner SQL gate",
+        "compiled PostgreSQL smoke"
+      ]
+    },
+    {
+      "id": "WLAPI-CRIT-002",
+      "severity": "critical",
+      "status": "resolved",
+      "description": "Invalid replay cleanup and error emission occurred in the same transaction, so the cleanup would roll back.",
+      "repair": "Commit invalidation and audit first, then emit generic 500 outside the transaction.",
+      "evidence": [
+        "compiled PostgreSQL corrupt-replay smoke",
+        "recovery retry"
+      ]
+    },
+    {
+      "id": "WLAPI-HIGH-003",
+      "severity": "high",
+      "status": "resolved",
+      "description": "A request observing another request's processing claim could release that claim on error.",
+      "repair": "Release idempotency state only when the current request obtained a new claim.",
+      "evidence": [
+        "concurrent in-memory HTTP regression"
+      ]
+    },
+    {
+      "id": "WLAPI-HIGH-004",
+      "severity": "high",
+      "status": "resolved",
+      "description": "Lifecycle audit SQL referenced a nonexistent principal_id column.",
+      "repair": "Use canonical actor_external_id and add a static schema-drift regression.",
+      "evidence": [
+        "fresh PostgreSQL smoke",
+        "static migration/repository test"
+      ]
+    },
+    {
+      "id": "XPROV-HIGH-005",
+      "severity": "high",
+      "status": "resolved",
+      "description": "ClaimPack rate-limit SQL contained an unbalanced retry-after expression that mocks did not execute.",
+      "repair": "Correct the SQL expression and require a production-shaped PostgreSQL smoke plus static balance assertion.",
+      "evidence": [
+        "ClaimPack compiled smoke",
+        "claim-pack runtime migration test"
+      ]
+    },
+    {
+      "id": "XPROV-MED-006",
+      "severity": "medium",
+      "status": "resolved",
+      "description": "ProcedureQuery and ClaimPack positive fixtures did not preserve a step-level evidence phrase in the generated excerpt, encouraging unsupported claim expectations.",
+      "repair": "Strengthen only the disposable official fixture and require explicit missing_evidence when no claim is citable.",
+      "evidence": [
+        "ProcedureQuery smoke",
+        "ClaimPack smoke",
+        "one supported cited step and 46 explicit gaps"
+      ]
+    },
+    {
+      "id": "WLAPI-MED-007",
+      "severity": "medium",
+      "status": "resolved",
+      "description": "Lifecycle preflight advertised GET and POST on every route.",
+      "repair": "Advertise only POST for mutation routes and GET for item reads.",
+      "evidence": [
+        "CORS preflight HTTP regression"
+      ]
+    }
+  ],
+  "open_global_findings": [
+    "Corpus completeness and real ingestion are unproved.",
+    "ProcedureAssessment, procedure cases, lifecycle UI/accessibility, external consumers, and platform operations remain incomplete.",
+    "Remote CI, PR review state, protected merge, and deployment remain unproved."
+  ]
+}

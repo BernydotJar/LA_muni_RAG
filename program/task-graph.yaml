@@ -1,5 +1,5 @@
 schema_version: 1
-generated_at: "2026-07-21T07:48:28Z"
+generated_at: "2026-07-21T15:40:38Z"
 program:
   id: LA-MUNI-RAG-PROD
   objective: "Make LA Muni RAG production-ready within its evidence, procedure, workflow, case-tracking, and integration domain."
@@ -12,31 +12,32 @@ program:
     - SAFETY_STOP
 baseline:
   origin_main_commit: "4950ba3c24dbe7d9891d5cec8d7ba5f57db3ef9c"
-  observed_branch: "feature/claim-pack-provider-v1"
-  observed_commit: "83d1e83aecf497fe586b85afbaf7d065fd8e268b"
-  feature_implementation_commit: "e8ac74f53837919a9ed444ab251c3f89ff65187f"
+  observed_branch: "feature/workflow-lifecycle-v1"
+  observed_commit: "c6e110cd4ffe01cb8192cc1701f64827784ba240"
+  feature_implementation_commit: "c6e110cd4ffe01cb8192cc1701f64827784ba240"
   local_program_branch_commit: "942669b8d47f1b04f181926beecb6824394d36c4"
   upstream: origin/program/procedural-intelligence-prod-ready
-  upstream_commit: "6987f9d78f2d69a96b522ddfb920cd1ed1100437"
-  upstream_state: local_ahead_publication_blocked
+  upstream_commit: "942669b8d47f1b04f181926beecb6824394d36c4"
+  upstream_state: feature_branch_published_exact_remote_ci_unverified
   divergence:
-    ahead: 14
+    ahead: 7
     behind: 0
   divergence_from_origin_main:
-    ahead: 37
+    ahead: 42
     behind: 0
   local_program_divergence:
-    ahead: 12
+    ahead: 0
     behind: 0
-  worktree: clean_at_evidence_commit
+  worktree: checkpoint_changes_pending_commit
   repository_instructions:
-    - README.md
+    - AGENTS.md
     - RTK.md
+    - README.md
   canonical_gate:
-    status: passed_local_with_remote_publication_and_claim_pack_db_blockers
+    status: passed_local_and_postgres_feature_published_remote_ci_pending
     tests:
-      passed: 588
-      total: 590
+      passed: 634
+      total: 636
       skipped: 2
       failed: 0
     typecheck: passed
@@ -57,14 +58,14 @@ baseline:
       EVAL-WATER-001: passed_with_corpus_and_runtime_limitations
       EVAL-MIXCO-001: passed_with_corpus_and_corroboration_limitations
       EVAL-OS-INTEGRATION-001: passed_with_external_consumer_and_assessment_limitations
-      EVAL-CONTENT-INTEGRATION-001: passed_with_external_consumer_and_remote_db_limitations
+      EVAL-CONTENT-INTEGRATION-001: passed_with_external_consumer_and_remote_ci_limitations
       EVAL-BOUNDARY-001: passed_for_current_provider_surface
       EVAL-TENANT-001: passed_for_current_provider_and_disposable_gate_with_topology_limitations
-      EVAL-CONFLICT-001: missing
+      EVAL-CONFLICT-001: passed_with_lifecycle_and_corpus_limitations
       EVAL-CORRUPT-001: passed_for_current_failure_surfaces_with_storage_limitations
     pages_verification: passed
     dependency_audit: "0 vulnerabilities"
-    remote_ci: blocked_before_publication
+    remote_ci: feature_published_status_unverified
 runtime:
   preferred: farmtable
   selected: yaml_fallback
@@ -592,8 +593,7 @@ tasks:
     owner: /root
     depends_on:
       - WS03-INGESTION-API-WORKER-001
-    blockers:
-      - BLK-CLOUD-PUSH-001
+    blockers: []
     outputs:
       - .github/workflows/ci.yml
       - db/tests/tenant_ingestion_runtime_gate.sql
@@ -609,8 +609,8 @@ tasks:
       typecheck: passed
       build: passed
     limitations:
-      - "The revised SQL/runtime gate was not executed against live PostgreSQL in this nested sandbox because daemon/network privileges are unavailable."
-      - "Remote CI remains unexecuted because branch publication is blocked by BLK-CLOUD-PUSH-001."
+      - "The historical revised gate was later covered by fresh non-owner PostgreSQL regression; deployed scanner/storage/worker evidence remains absent."
+      - "The feature branch is published; remote CI status remains unverified."
       - "No real scanner, durable object storage, running worker dispatcher, production topology, or deployment is provided."
     parent_completion_effect: "WS03-ING-001 remains in_progress and partial."
   - id: WS04-RET-001
@@ -629,8 +629,7 @@ tasks:
       - BOUND-001
       - WS08-CONTRACT-FOUNDATION-001
       - WS08-PROCEDURE-QUERY-001
-    blockers:
-      - BLK-CLOUD-PUSH-001
+    blockers: []
     outputs:
       - src/domain/packs/municipal-antigua-water.ts
       - src/domain/packs/municipal-antigua.ts
@@ -658,8 +657,8 @@ tasks:
     limitations:
       - "Controlled synthetic evidence does not prove a complete, current, ingested Antigua Guatemala corpus."
       - "The sequential graph is a research checklist, not a legally confirmed official ordering."
-      - "Retrieval thresholds, contradictions, persistent procedure versions, reviews, approvals, and procedure cases remain open."
-      - "Remote CI and publication remain blocked by BLK-CLOUD-PUSH-001."
+      - "Retrieval thresholds, semantic applicability/conflict resolution, procedure cases, and corpus-backed approval evidence remain open."
+      - "The feature branch is published; remote CI status remains unverified."
     parent_completion_effect: "WS05-PROC-001 is now in_progress and remains partial."
   - id: WS05-PROC-001
     workstream: WS-05
@@ -692,9 +691,7 @@ tasks:
       - WS07-FOUNDATION-001
       - WS08-CONTRACT-FOUNDATION-001
       - WS08-PROCEDURE-QUERY-001
-    blockers:
-      - BLK-CLOUD-PUSH-001
-      - BLK-CLAIM-PACK-DB-001
+    blockers: []
     outputs:
       - contracts/schemas/v1/claim-pack-request.schema.json
       - contracts/schemas/v1/claim-pack.schema.json
@@ -707,23 +704,21 @@ tasks:
       - src/__tests__/eval-content-integration-001.test.ts
       - docs/api/claim-packs-v1.md
     result:
-      commit: e8ac74f
+      provider_commit: e8ac74f
+      postgres_repair_commit: f3a1450
       endpoint: "POST /api/v1/claim-packs"
-      contract_validation: "12 schemas / 12 examples / 1 OpenAPI 3.1.1 document valid"
-      contract_tests: "14/14 passed"
+      contract_validation: "16 schemas / 16 examples / 1 OpenAPI 3.1.1 document valid"
       eval_content_integration: "7/7 passed"
-      integrated_tests: "588 passed / 590 total / 2 skipped / 0 failed"
-      supported_output: claim_pack
+      integrated_tests: "634 passed / 636 total / 2 skipped / 0 failed"
       exact_replay: true
       expiry_regeneration: true
+      corrupt_replay_regeneration: true
       evidence_no_promotion: true
       content_generation: false
+      database_gate: "fresh PostgreSQL 15.18 / pgvector 0.8.5 non-owner SQL and compiled HTTP smoke passed"
       dependency_audit: "0 vulnerabilities"
-      pages_verification: passed
-      database_gate: "wired, not run on current HEAD because pinned pgvector image layer registration is unsupported in this sandbox"
     limitations:
-      - "No Content Agency consumer contract, cross-product revocation/supersession, staging/load test, production role/topology, or deployment."
-      - "The remote PostgreSQL/HTTP gate requires publication and Backend CI."
+      - "No Content Agency consumer contract, cross-product revocation/supersession, staging/load test, production role/topology, remote CI, or deployment."
   - id: WS08-INT-001
     workstream: WS-08
     title: "Implement and contract-test versioned OS Electoral and Content Agency interfaces"
@@ -746,9 +741,7 @@ tasks:
       - "No cross-repository consumer contract has run for OS Electoral or Content Agency."
       - "ProcedureAssessment, cross-product revocation/supersession, staging/load, and deployment remain absent."
       - "ClaimPack PostgreSQL/HTTP evidence for the current HEAD awaits remote CI."
-    blockers:
-      - BLK-CLOUD-PUSH-001
-      - BLK-CLAIM-PACK-DB-001
+    blockers: []
     depends_on:
       - BOUND-001
       - WS04-RET-001
@@ -862,8 +855,7 @@ tasks:
       - BOUND-001
       - WS08-CONTRACT-FOUNDATION-001
       - WS08-PROCEDURE-QUERY-001
-    blockers:
-      - BLK-CLOUD-PUSH-001
+    blockers: []
     outputs:
       - src/__tests__/eval-procedure-001.test.ts
       - src/procedure/procedureClassifier.ts
@@ -886,8 +878,8 @@ tasks:
     limitations:
       - "Controlled synthetic sources do not prove a complete or current Antigua corpus."
       - "X intentionally remains unknown; retrieval thresholds and conflicts are not proven."
-      - "Persistent lifecycle, review, approval, supersession, and procedure cases remain open."
-      - "Remote CI and publication remain blocked by BLK-CLOUD-PUSH-001."
+      - "Lifecycle, review, approval, and supersession are implemented locally; procedure cases and semantic applicability remain open."
+      - "The feature branch is published; remote CI status remains unverified."
     parent_completion_effect: "WS11-QA-001 is now in_progress; two of nine named hard evals have executable focused gates."
   - id: WS11-QA-001
     workstream: WS-11
@@ -900,13 +892,13 @@ tasks:
       - EVAL-MIXCO-001
       - EVAL-OS-INTEGRATION-001
       - EVAL-CONTENT-INTEGRATION-001
+      - EVAL-CONFLICT-001
       - EVAL-BOUNDARY-001
       - EVAL-TENANT-001
       - EVAL-CORRUPT-001
-    current_state: "Eight of nine named hard evals pass focused gates and the integrated local regression passes; EVAL-CONFLICT-001 plus full corpus/runtime/consumer proof remain incomplete."
-    blockers:
-      - BLK-CLOUD-PUSH-001
-      - BLK-CLAIM-PACK-DB-001
+      - WS05-LIFECYCLE-API-001
+    current_state: "All nine named hard evals and the integrated local/PostgreSQL regression pass; corpus/runtime/consumer/UI/platform proof and remote CI remain incomplete."
+    blockers: []
     depends_on:
       - GAP-001
     integration_dependencies:
@@ -919,6 +911,49 @@ tasks:
       - WS08-INT-001
       - WS09-UX-001
       - WS10-OPS-001
+  - id: WS05-LIFECYCLE-API-001
+    workstream: WS-05
+    title: "Expose governed workflow lifecycle API v1"
+    status: completed_with_limitations
+    owner: /root
+    outputs:
+      - src/workflowLifecycle/stateMachine.ts
+      - src/workflowLifecycle/repository.ts
+      - src/api/v1/workflowLifecycleHandler.ts
+      - src/api/v1/workflowLifecycleContracts.ts
+      - src/api/v1/workflowLifecycleIndex.ts
+      - src/api/v1/workflowLifecycleTypes.ts
+      - db/migrations/009_workflow_lifecycle.sql
+      - db/migrations/010_workflow_lifecycle_api.sql
+      - db/tests/workflow_lifecycle_runtime_gate.sql
+      - scripts/workflow-lifecycle-postgres-smoke.mjs
+      - contracts/schemas/v1/workflow-draft-request.schema.json
+      - contracts/schemas/v1/workflow-review-request.schema.json
+      - contracts/schemas/v1/workflow-approval-request.schema.json
+      - contracts/schemas/v1/workflow-version.schema.json
+      - contracts/openapi/v1/openapi.json
+      - docs/api/workflow-lifecycle-v1.md
+      - specs/059-governed-workflow-lifecycle-api-v1.md
+    depends_on:
+      - WS05-PROC-001
+      - WS07-FOUNDATION-001
+      - WS08-CONTRACT-FOUNDATION-001
+    blockers: []
+    acceptance:
+      - "Every version enters draft and only distinct authorized humans can review and approve."
+      - "Four authenticated tenant-scoped routes enforce validation, action RBAC, idempotency, audit, rate limits, and non-enumerating reads."
+      - "Atomic supersession leaves exactly one approved reviewed replacement."
+      - "Forced RLS and compiled PostgreSQL smokes pass as a non-owner role."
+    evidence:
+      - "Foundation commit d842b4e and API commit c6e110c."
+      - "Lifecycle focused tests passed 35/35; HTTP adversarial tests include auth-before-body, RBAC, tenant isolation, replay/conflict/concurrency, transitions, CORS, and metadata leakage."
+      - "Fresh PostgreSQL 15.18/pgvector 0.8.5 SQL gate and compiled smoke passed exact replay, human separation, atomic supersession, cross-tenant denial, corrupt replay invalidation, and recovery."
+      - "Contract registry passed 16 schemas, 16 examples, and OpenAPI 3.1.1."
+    limitations:
+      - "No review/approval UI, accessibility evidence, external consumer interoperability, semantic applicability service, remote CI, merge, or deployment."
+    branch: "feature/workflow-lifecycle-v1"
+    pr: null
+    ci: passed_local_postgres_remote_pending
   - id: REL-VERIFY-001
     workstream: WS-11
     title: "Perform requirement-by-requirement completion audit and human deploy approval"
@@ -958,33 +993,21 @@ blockers:
     condition: "The previous branch upstream was gone before the canonical program branch was established."
     resolution: "The program branch was based on origin/main at 4950ba3 and all subsequent implementation commits were preserved; RTK.md is now tracked and remains the repository command-output instruction."
   - id: BLK-CLOUD-PUSH-001
-    affects:
-      - WS03-ARTIFACT-ACCEPTANCE-CI-001
-      - WS05-WATER-001
-      - WS11-EVAL-PROCEDURE-001
-      - WS11-QA-001
-      - WS08-CLAIM-PACK-001
-      - remote_ci
-      - pull_request_publication
-    state: blocked_external
-    condition: "Cloud Sandbox MCP cannot publish the local program commits through its dedicated git_push operation."
-    evidence:
-      - "Three dedicated git_push calls failed while the connector attempted to initialize an internal daemon/NAT without the required sandbox network privileges; the third targeted feature/claim-pack-provider-v1 at 83d1e83."
-      - "At 2026-07-21T07:48:28Z feature branch HEAD 83d1e83 was 14 ahead / 0 behind origin/program/procedural-intelligence-prod-ready and 37 ahead / 0 behind origin/main; implementation commit e8ac74f and local program base 942669b remain preserved."
-      - "No raw git push or privilege escalation was used to bypass the connector boundary."
-    next_safe_action: "Retry the dedicated connector after its runtime privilege issue is fixed, then execute remote Backend CI on the exact published HEAD."
+    affects: []
+    state: resolved
+    condition: "The dedicated connector previously failed before Git while initializing Docker networking."
+    resolution: "The remote feature/workflow-lifecycle-v1 ref now exists at exact commit c6e110cd4ffe01cb8192cc1701f64827784ba240."
+    exact_evidence:
+      - "git ls-remote returned c6e110cd4ffe01cb8192cc1701f64827784ba240 for refs/heads/feature/workflow-lifecycle-v1."
+      - "origin/main remains 4950ba3; no merge is claimed."
+    residual_limitation: "Remote CI and PR state are not verified by the available connector."
+    next_safe_action: "Commit and push the policy/checkpoint update, verify the new remote SHA, then continue the highest-value ready product task."
   - id: BLK-CLAIM-PACK-DB-001
-    affects:
-      - WS08-CLAIM-PACK-001
-      - WS08-INT-001
-      - WS11-QA-001
-      - remote_ci
-    state: blocked_external
-    condition: "The current Cloud Sandbox Docker storage driver cannot register the pinned pgvector image layers for the migration-008 SQL/HTTP gate."
-    evidence:
-      - "Pinned pgvector image layer registration failed with operation not supported; no local SQL pass was claimed."
-      - "Migration 008, the non-owner SQL gate, compiled smoke, and CI wiring are committed in e8ac74f."
-    next_safe_action: "Publish the exact feature commit after BLK-CLOUD-PUSH-001 is repaired and run Backend CI with the pinned service."
+    affects: []
+    state: resolved
+    condition: "Nested Docker layer registration was unsupported."
+    resolution: "Fresh PostgreSQL 15.18/pgvector 0.8.5 non-owner SQL gates and compiled ProcedureQuery, ClaimPack, and lifecycle smokes passed from a clean database."
+    residual_limitation: "Remote CI remains unverified on the published feature head."
 critical_path:
   parallel_entry:
     - GAP-001
@@ -1010,9 +1033,7 @@ critical_path:
       - WS10-OPS-001
       - WS11-QA-001
       - REL-VERIFY-001
-  current_bottlenecks:
-    - BLK-CLOUD-PUSH-001
-    - BLK-CLAIM-PACK-DB-001
+  current_bottlenecks: []
 claims:
   - id: CLAIM-PROD-READY
     statement: "LA Muni RAG is production-ready within its defined product domain."
@@ -1032,14 +1053,14 @@ claims:
     evidence:
       - program/context7-evidence.md
   - id: CLAIM-CANONICAL-BASELINE
-    statement: "The canonical local implementation preserves origin/main and its current global regression passes."
-    status: supported_with_publication_and_remote_runtime_blockers
+    statement: "The canonical feature implementation preserves origin/main and its current local regression passes."
+    status: supported_with_remote_ci_and_global_readiness_limitations
     evidence:
-      - "origin/main 4950ba3; local program branch 942669b; feature implementation e8ac74f; feature evidence head 83d1e83; no reverse divergence"
-      - "588/590 tests passed with 2 explicit skips and 0 failures; eight implemented named eval gates, typecheck, build, inventory, contracts 12/12, audit, Pages, and domain evaluation 8/8 passed"
-      - "origin program branch remains 6987f9d because BLK-CLOUD-PUSH-001 prevents publication"
+      - "origin/main 4950ba3; program base 942669b; lifecycle feature head c6e110c; no reverse divergence"
+      - "634/636 tests passed with 2 explicit environment skips and 0 failures; all nine hard evals, typecheck, build, inventory, contracts 16/16, audit, Pages, and domain evaluation 8/8 passed"
+      - "feature/workflow-lifecycle-v1 is published remotely at exact commit c6e110c"
     limitations:
-      - "Migration-008 SQL/HTTP evidence for this HEAD awaits remote CI because BLK-CLAIM-PACK-DB-001 prevents a local pgvector service."
+      - "Remote CI status, protected merge, deployment, and the global production gate remain unproved."
   - id: CLAIM-GENERIC-PROCEDURE-HARD-EVAL
     statement: "A literal generic procedure query yields conservative, schema-valid research workflow JSON with selective identity-bound citations."
     status: supported_with_corpus_and_lifecycle_limitations
@@ -1065,7 +1086,7 @@ claims:
       - "Commit a69fb15; migration 007 order, artifact RLS, tenant fixtures, and accepted object/scan completion binding"
       - "Integrated local regression at 1d129f0 passed 545/547 with zero failures"
     limitations:
-      - "No live PostgreSQL rerun on this nested sandbox and no remote CI because publication is blocked"
+      - "No live PostgreSQL rerun covers this historical artifact-acceptance slice; remote CI status remains unverified"
   - id: CLAIM-BOUNDARIES-CANONICAL
     statement: "The product-boundary and architecture foundation is complete."
     status: supported
@@ -1124,13 +1145,13 @@ claims:
       - "The controlled DMP remains acquired only and was not read, scanned, extracted, indexed, promoted, removed, or mutated"
   - id: CLAIM-CLAIM-PACK-V1
     statement: "A dedicated Content Agency ClaimPack provider returns citation-preserving evidence bounds without generating content or campaign strategy."
-    status: supported_locally_with_external_consumer_and_remote_database_limitations
+    status: supported_locally_with_external_consumer_and_remote_ci_limitations
     evidence:
-      - "Commit e8ac74f; EVAL-CONTENT-INTEGRATION-001 7/7; contracts 12/12; contract tests 14/14; integrated regression 588/590 with two explicit skips and zero failures"
+      - "Commits e8ac74f and f3a1450; EVAL-CONTENT-INTEGRATION-001 7/7; contracts 16/16; integrated regression 634/636 with two explicit skips and zero failures"
       - "Authentication-before-body, RBAC, tenant/credential binding, exact replay, expiry, corruption invalidation, abstention, Mixco comparison, and uniform product-boundary denial are covered"
       - "Migration 008, non-owner SQL gate, compiled HTTP smoke, and CI wiring are versioned"
     limitations:
-      - "No Content Agency consumer contract, current-head PostgreSQL smoke, cross-product revocation, staging/load, or deployment"
+      - "No Content Agency consumer contract, remote CI confirmation, cross-product revocation, staging/load, or deployment"
   - id: CLAIM-PROCEDURE-QUERY-V1
     statement: "The EvidenceBundle and draft ProcedureWorkflow provider slice is implemented with tenant isolation, strict contracts, idempotency, bounded audit, and product-boundary enforcement."
     status: supported_with_limitations
@@ -1139,7 +1160,16 @@ claims:
       - "Clean historical PostgreSQL 16.14/pgvector 0.8.5 non-owner RLS gate and image-contained HTTP smoke passed"
       - "Exact replay/conflict/corruption/retry and non-CORS production legacy 404 verified"
     limitations:
-      - "ProcedureAssessment, neighboring consumer, full API catalog, persistent lifecycle/approval, staging/load, and production deployment remain absent"
+      - "ProcedureAssessment, neighboring consumer, full API catalog, staging/load, and production deployment remain absent; lifecycle/approval is implemented locally and published as a feature branch"
+  - id: CLAIM-WORKFLOW-LIFECYCLE-V1
+    statement: "Governed workflow versions support tenant-scoped draft, review, approval, atomic supersession, archive, replay, audit, and non-enumerating reads."
+    status: supported_locally_and_published_remote_ci_pending
+    evidence:
+      - "Commits d842b4e, f3a1450, and c6e110c; remote feature ref equals c6e110c"
+      - "35/35 focused tests; 16 schemas/examples; non-owner PostgreSQL SQL gate and compiled HTTP smoke passed"
+      - "Authentication-before-body, action RBAC, tenant isolation, exact replay, metadata non-leakage, corrupt replay recovery, and human separation are covered"
+    limitations:
+      - "Remote CI, review/approval UI, accessibility, external consumers, semantic applicability, merge, and deployment remain unproved"
 owners:
   orchestrator: /root
   current_control_files_owner: /root/program_tooling
@@ -1158,57 +1188,48 @@ owners:
 branches:
   - name: "program/procedural-intelligence-prod-ready"
     commit: "942669b8d47f1b04f181926beecb6824394d36c4"
-    upstream: "origin/program/procedural-intelligence-prod-ready"
-    upstream_commit: "6987f9d78f2d69a96b522ddfb920cd1ed1100437"
-    upstream_state: local_ahead_publication_blocked
-    divergence:
-      ahead: 12
+    remote_commit: "942669b8d47f1b04f181926beecb6824394d36c4"
+    upstream_state: published_program_base
+  - name: "feature/workflow-lifecycle-v1"
+    commit: "c6e110cd4ffe01cb8192cc1701f64827784ba240"
+    remote_commit: "c6e110cd4ffe01cb8192cc1701f64827784ba240"
+    upstream_state: exact_feature_head_published
+    divergence_from_program:
+      ahead: 7
       behind: 0
-    reconciliation_task: BASE-001
-    blocker: BLK-CLOUD-PUSH-001
-  - name: "feature/claim-pack-provider-v1"
-    commit: "83d1e83aecf497fe586b85afbaf7d065fd8e268b"
-    base_commit: "942669b8d47f1b04f181926beecb6824394d36c4"
-    implementation_commits:
-      - "e8ac74f53837919a9ed444ab251c3f89ff65187f"
-    evidence_commits:
-      - "83d1e83aecf497fe586b85afbaf7d065fd8e268b"
-    divergence_from_origin_program:
-      ahead: 14
+    divergence_from_main:
+      ahead: 42
       behind: 0
-    divergence_from_origin_main:
-      ahead: 37
-      behind: 0
-    blockers:
-      - BLK-CLOUD-PUSH-001
-      - BLK-CLAIM-PACK-DB-001
 prs:
-  status: no_open_pr_for_current_local_commits
-  blocker: BLK-CLOUD-PUSH-001
+  status: remote_branch_published_no_pull_ref_observed
+  blocker: null
   discovery_task: BASE-001
 ci:
-  status: local_regression_passed_remote_current_head_blocked
+  status: local_full_regression_and_postgres_gates_passed_remote_pending
   baseline_task: WS11-QA-001
   evidence:
-    tests: "588 passed / 590 total / 2 skipped / 0 failed across 108 suites"
+    tests: "634 passed / 636 total / 2 skipped / 0 failed"
+    workflow_lifecycle: "35/35 focused; non-owner SQL and compiled HTTP smoke passed"
     eval_procedure: "4/4 passed"
     eval_water: "4/4 passed"
     eval_mixco: "4/4 passed"
     eval_os_integration: "5/5 passed"
     eval_content_integration: "7/7 passed"
+    eval_conflict: "8/8 passed"
     eval_boundary: "4/4 passed"
     eval_tenant: "4/4 passed"
-    eval_corrupt: "20/20 passed across replay, PDF, job, and worker surfaces"
-    eval_conflict: missing
+    eval_corrupt: "20/20 passed"
     typecheck: passed
     build: passed
-    contracts: "12 schemas / 12 examples / 1 OpenAPI 3.1.1 document valid"
+    contracts: "16 schemas / 16 examples / 1 OpenAPI 3.1.1 document valid"
     source_inventory: "valid; 17 total, 4 verified, 4 missing_source, 1 acquired, 0 ingested"
     domain_evaluation: "8/8 passed"
     pages_verification: passed
-    claim_pack_v1: "provider/eval/static security gates passed; PostgreSQL/HTTP smoke awaits remote CI"
+    procedure_query_postgres_smoke: passed
+    claim_pack_postgres_smoke: passed
+    workflow_lifecycle_postgres_smoke: passed
     dependency_audit: "npm audit --audit-level=high found 0 vulnerabilities"
-    current_remote_ci: "not started because BLK-CLOUD-PUSH-001 prevents publishing 83d1e83/e8ac74f"
+    current_remote_ci: "feature head published; remote CI status unverified"
 gates:
   - id: GATE-PROD-001
     status: not_evaluated

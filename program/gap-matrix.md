@@ -14,13 +14,13 @@ Regla: un slice verde no convierte un workstream completo en achieved.
 | WS-02 Corpus and Source Inventory | partial | Inventario válido: 17 fuentes, 4 verificadas, 1 DMP adquirido, 4 missing, 0 ingested; gate local de seguridad disponible | Completar corpus Antigua/Mixco, autoridad/vigencia/licencia, scanner real y storage seguro sin promover comparativos | Hashes/bytes/provenance; veredicto malware real; aprobación; estados honestos; manifest reconciliado | P0 | WS-01 |
 | WS-03 Ingestion and Document Library | partial | Gate fail-closed de artefactos; PDF binario acotado; parse-once; jobs durables tenant-scoped con idempotencia por digest, leases/fencing/retry/audit; vectores tenant-scoped atómicos; RLS non-owner y CI PostgreSQL | Biblioteca/API autenticada, worker dispatcher, scanner y object storage operativos, cuotas/admisión distribuida, deadline total, dead-letter, métricas, roles/topología/load/HA productivos y activar retrieval vectorial evaluado | Scanner/storage/API/worker reales; pruebas staging/load/restore; role drift; métricas/SLO; eval de recall/citas/autorización | P0 | WS-02, WS-07 |
 | WS-04 Retrieval and Evidence | partial | Keyword/phrase/hybrid/vector, dedupe, ranking y citas | Filtros completos, reranking evaluado, contradicciones, vigencia, missing-source y groundedness | Eval corpus real con thresholds; citation fidelity; conflict visibility; isolation tests | P0 | WS-02, WS-03, WS-07 |
-| WS-05 Procedure Schema and Compiler | partial | Workflow estructurado; contrato v1 completo por paso; clasificador y checklist Antigua-first de 47 categorías para agua; missing evidence explícita | Persistencia de procedure/version, lifecycle, decision gates con evidencia, review/approval y corpus real para asignar actores, sistemas, plazos y autoridad | Workflow versionado y persistido; citas/evidence status por paso contra corpus real; human review | P0 | WS-04 |
+| WS-05 Procedure Schema and Compiler | partial | Workflow estructurado; contrato v1 completo por paso; checklist Antigua-first de 47 categorías; lifecycle persistente con draft, review, approval, supersession y archive; cuatro rutas v1 verificadas con RLS e idempotencia | Resolver aplicabilidad/conflictos semánticos, completar UI humana y usar corpus real para actores, sistemas, plazos y autoridad | Citas/evidence status contra corpus real; revisión de aplicabilidad; UI/accessibility; consumer y CI remotos | P0 | WS-04 |
 | WS-06 Procedure Cases and Tracking | partial | Workspace/portfolio en LocalStorage | Persistencia tenant-scoped, API, current step, docs, blockers, validation, follow-up, dossier y audit | API/DB integration tests; immutable audit; binding a procedure version; authorization | P0 | WS-05, WS-07 |
 | WS-07 Identity, Tenancy and RBAC | partial | Identity, tenants, 10 roles, credential digest, RLS y procedure-query v1 con gate PostgreSQL/HTTP | Provisioning/rotation productivos y extender el control a todo endpoint requerido | Staging/production-shaped negative tests por endpoint; audit/access review; EVAL-TENANT completo | P0 | WS-01 |
-| WS-08 Integration Contracts | partial | 12 schemas/ejemplos, OpenAPI 3.1.1 y providers seguros/idempotentes para `EvidenceBundle`, draft `ProcedureWorkflow` y `ClaimPack` | ProcedureAssessment/EvidenceGap providers, consumers vecinos, revocation/supersession cross-product y pruebas entre repos; ClaimPack DB gate remoto pendiente | Provider/consumer contract tests; timeout/retry; boundary; refs/versiones preservadas | P0 | WS-01, WS-05, WS-07 |
+| WS-08 Integration Contracts | partial | 16 schemas/ejemplos, OpenAPI 3.1.1 y providers seguros/idempotentes para `EvidenceBundle`, `ProcedureWorkflow`, `ClaimPack` y workflow lifecycle; gates PostgreSQL locales pasan | ProcedureAssessment/EvidenceGap providers, consumers vecinos, revocation/supersession cross-product, pruebas entre repos y CI remoto | Provider/consumer contract tests; timeout/retry; boundary; refs/versiones preservadas | P0 | WS-01, WS-05, WS-07 |
 | WS-09 Frontend and UX | partial | Demo Pages, widget, workflow/deep-dive/cases locales | Admin autenticado, library/source viewer, reviews/approvals, cases server-side, estados y a11y | Browser E2E desktop/mobile; WCAG 2.2 AA; auth/error/empty-state tests | P1 | WS-03, WS-05, WS-06, WS-07 |
 | WS-10 Security, Platform and Ops | partial | Backend CI, imagen no-root, runbooks, threat/privacy y gate local PostgreSQL/API | Plataforma/Terraform/secrets/observabilidad, scans, backup/restore real, rollback, incident y límites distribuidos | Zero high/critical; staging; restore/rollback drill; SLO/alerts; imagen firmada por digest | P0 | WS-07 y todos los servicios |
-| WS-11 Quality, Evals and Docs | partial | 588/590 tests locales, 12/12 contratos, 8/8 domain eval y ocho de nueve hard evals con gates nombrados; docs obligatorias presentes | EVAL-CONFLICT-001, DB remoto ClaimPack, corpus/runtime semántico, consumers, E2E/browser/a11y/load, CI required y freshness automática | Todos hard evals y CI remotos verdes; docs lint/link; evidence register actualizado | P0 | Todos |
+| WS-11 Quality, Evals and Docs | partial | 634/636 tests locales con 2 skips explícitos, 16/16 contratos, 8/8 domain eval, nueve de nueve hard evals, lifecycle 35/35 y tres smokes PostgreSQL locales; docs y evidence register actualizados | Corpus/runtime semántico, consumers, E2E/browser/a11y/load, CI remoto required y freshness automática | CI remoto verde; corpus real; consumers; docs lint/link; browser/a11y/load evidence | P0 | Todos |
 
 ## 2. Gaps de API v1
 
@@ -30,16 +30,16 @@ Regla: un slice verde no convierte un workstream completo en achieved.
 | POST /api/v1/sources | missing | Sin auth, tenant, validation, idempotency o audit |
 | GET /api/v1/documents | missing | Sin library API |
 | POST /api/v1/documents | missing | Feature 054 es CLI local, no upload API |
-| GET /api/v1/ingestion-jobs | missing | Service tenant-scoped disponible; falta endpoint autenticado, paginación y autorización de operador |
+| GET /api/v1/ingestion-jobs | implemented_with_limits | Endpoint autenticado y tenant-scoped disponible; falta operación desplegada, observabilidad, load/HA y storage/scanner productivos |
 | POST /api/v1/search | missing | Existe GET /api/search MVP sin v1 ni filtros completos |
 | POST /api/v1/evidence-bundles | missing_as_dedicated_route | `EvidenceBundle` externo se produce mediante `/api/v1/procedure-queries`; falta la ruta dedicada requerida |
-| POST /api/v1/claim-packs | implemented_with_limits | Provider Content Agency, replay/expiry/abstention/boundary y contratos pasan localmente; consumer externo y DB smoke remoto pendientes |
+| POST /api/v1/claim-packs | implemented_with_limits | Provider, replay/expiry/corrupt-replay recovery/abstention/boundary y gate PostgreSQL local pasan; consumer externo y CI remoto pendientes |
 | GET /api/v1/procedures | missing | Sólo GET /api/procedure que compone al vuelo |
-| POST /api/v1/procedure-queries | implemented_with_limits | `EvidenceBundle` y draft `ProcedureWorkflow` pasan contrato/evals; `ProcedureAssessment`, consumers externos, staging y lifecycle faltan |
-| GET /api/v1/workflows/:id | missing | Workflows no persistidos/versionados |
-| POST /api/v1/workflow-drafts | missing | Sin lifecycle |
-| POST /api/v1/workflow-reviews | missing | Sin review service |
-| POST /api/v1/workflow-approvals | missing | Sin approval/audit |
+| POST /api/v1/procedure-queries | implemented_with_limits | `EvidenceBundle` y draft `ProcedureWorkflow` pasan contrato/evals; `ProcedureAssessment`, consumers externos y staging faltan |
+| GET /api/v1/workflows/:id | implemented_with_limits | Lectura tenant-scoped, no enumerante y auditada; faltan UI/consumer/CI remoto |
+| POST /api/v1/workflow-drafts | implemented_with_limits | Draft server-owned, auth-before-body, RBAC, validation, idempotencia, audit y RLS pasan localmente |
+| POST /api/v1/workflow-reviews | implemented_with_limits | Review humana separada y append-only pasa localmente; faltan UI/accessibility y CI remoto |
+| POST /api/v1/workflow-approvals | implemented_with_limits | Approval/supersession/archive con separación humana y transacción atómica pasan localmente; falta aplicabilidad semántica y operación remota |
 | POST /api/v1/procedure-cases | missing | Sólo LocalStorage |
 | GET /api/v1/procedure-cases/:id | missing | Sin case service |
 | POST /api/v1/evidence-gap-requests | missing | Gaps sólo se calculan en respuesta |
@@ -68,10 +68,10 @@ Autenticación, tenant scope, RBAC, validación, idempotencia, audit y rate limi
 | EVAL-WATER-001 | passed_with_corpus_and_runtime_limitations | 47 categorías, contrato completo, missing evidence y citation selectivity pasan; faltan corpus real ingerido, conflictos, lifecycle y caso persistido |
 | EVAL-MIXCO-001 | passed_with_corpus_and_corroboration_limitations | 4/4 prueba clasificación, autoridad comparativa, warning canónico, gaps de corroboración, mapping v1 y rechazo de promoción silenciosa; faltan corpus real y corroboración Antigua |
 | EVAL-OS-INTEGRATION-001 | passed_for_workflow_and_evidence_bundle_provider_with_assessment_and_external_consumer_limitations | 5/5 prueba EvidenceBundle identity-bound, no promoción de inference/validation_required, bundle sin evidencia, ProcedureWorkflow draft, replay exacto, CORS OS, audit mínimo y assessment 503; OpenAPI/smoke actualizados; faltan CI remoto y consumer en repo OS Electoral |
-| EVAL-CONTENT-INTEGRATION-001 | passed_for_claim_pack_provider_with_external_consumer_and_remote_db_limitations | 7/7 prueba pack identity-bound, replay/expiry, abstention, RBAC/tenant, Mixco, no-promotion y boundary; 12/12 contratos, OpenAPI, migración/gate/smoke versionados; faltan DB remoto, consumer Content Agency y revocation cross-product |
+| EVAL-CONTENT-INTEGRATION-001 | passed_for_claim_pack_provider_with_external_consumer_and_remote_ci_limitations | 7/7 prueba pack identity-bound, replay/expiry, abstention, RBAC/tenant, Mixco, no-promotion y boundary; 16/16 contratos y gate PostgreSQL local pasan; faltan CI remoto, consumer Content Agency y revocation cross-product |
 | EVAL-BOUNDARY-001 | passed_for_current_provider_surface | 4/4 prueba solicitud mixta, contenido puro, violación oculta en contexto, no-compilación, audit sin payload y consulta procedimental permitida; futuros endpoints/consumers deben preservar el boundary |
 | EVAL-TENANT-001 | passed_for_current_provider_and_disposable_db_gate_with_topology_limitations | 4/4 prueba 403 indistinguible, audit tenant A sin payload B, transacciones set_config locales y wiring restaurado del gate SQL/smoke; faltan ejecución remota actual, topología, backups/observability y catálogo completo |
-| EVAL-CONFLICT-001 | missing | Versiones contradictorias visibles y review |
+| EVAL-CONFLICT-001 | passed_for_explicit_version_text_conflicts_with_lifecycle_and_corpus_limitations | 8/8 hace visible divergencia documental, exige review, degrada workflow y bloquea ClaimPack; faltan resolución persistente de aplicabilidad, conflictos semánticos y corpus real |
 | EVAL-CORRUPT-001 | passed_for_current_replay_and_ingestion_failure_surfaces_with_storage_limitations | Replay inválido se invalida sin emitir bytes, compilación fallida libera reserva y permite retry, PDFs fallan estable, worker no completa en evidencia/bytes/lease inválidos y jobs aplican retry/fail; faltan scanner, object storage, dispatcher, carga y recovery reales |
 
 ## 5. Documentación y tooling obligatorio
@@ -96,7 +96,7 @@ Autenticación, tenant scope, RBAC, validación, idempotencia, audit y rate limi
 | docs/operations/deployment.md | present; no deployment | P0 |
 | docs/operations/backup-restore.md | present; no restore drill | P0 |
 | docs/operations/incident-response.md | present; roster/exercise pending | P0 |
-| docs/testing/eval-harness.md | present; hard evals incomplete | P0 |
+| docs/testing/eval-harness.md | present; nueve hard evals documentados, proof global pendiente | P0 |
 | program/skill-usage-register.md | present | P1 |
 | program/context7-evidence.md | present | P1 |
 | program/task-graph.yaml | present; active | P0 |
@@ -108,10 +108,10 @@ Autenticación, tenant scope, RBAC, validación, idempotencia, audit y rate limi
 1. P0 — reconciliar Git y declarar origin/main como base canónica sin perder los dos commits locales válidos;
 2. P0 — reconciliar source inventory, seed y artifact PDM-OT;
 3. P0 — fijar boundaries, ownership, contratos de datos y modelo tenant/RBAC;
-4. P0 — extender los providers v1 probados a documents/procedures/workflows/cases, ProcedureAssessment/EvidenceGap y consumers externos;
-5. P0 — publicar e integrar el ClaimPack provider para ejecutar su gate DB remoto; conectar controles tenant/job/vector a API/worker, operar scanner y storage durables, y aprobar roles/load/monitoring; sólo entonces escanear e ingerir el DMP adquirido y el corpus mínimo restante de Antigua/Mixco;
-6. P0 — completar retrieval filtrado y compiler versionado con human approval;
-7. P0 — implementar los nueve hard evals y regression global;
+4. P0 — publicar el lifecycle API y ejecutar CI remoto; extender providers a documents/procedures/cases, ProcedureAssessment/EvidenceGap y consumers externos;
+5. P0 — conectar controles tenant/job/vector a operación desplegada, scanner y storage durables, y aprobar roles/load/monitoring; sólo entonces escanear e ingerir el DMP adquirido y el corpus mínimo restante de Antigua/Mixco;
+6. P0 — completar retrieval filtrado, resolución de aplicabilidad/conflictos y UI de human approval;
+7. P0 — mantener los nueve hard evals verdes y ampliar regression a corpus real, consumers, browser, a11y y load;
 8. P0 — cerrar plataforma, seguridad, backup/restore, rollback e incident response;
 9. P1 — completar UX autenticada, accessibility y documentación-as-code.
 

@@ -1,0 +1,123 @@
+{
+  "updated_at": "2026-07-21T15:40:38Z",
+  "branch": "feature/workflow-lifecycle-v1",
+  "functional_head": "c6e110cd4ffe01cb8192cc1701f64827784ba240",
+  "status": "local_gates_passed_feature_published_remote_ci_unverified",
+  "deterministic": {
+    "typecheck": "pass",
+    "build": "pass",
+    "workflow_lifecycle_focused": {
+      "total": 35,
+      "passed": 35,
+      "failed": 0
+    },
+    "contracts": {
+      "schemas": 16,
+      "examples": 16,
+      "openapi_documents": 1,
+      "contract_tests_passed": 15,
+      "contract_tests_failed": 0
+    },
+    "global_tests": {
+      "total": 636,
+      "passed": 634,
+      "failed": 0,
+      "skipped": 2,
+      "skip_reason": "explicit environment-gated database tests"
+    },
+    "source_inventory": {
+      "total": 17,
+      "valid": 17,
+      "verified": 4,
+      "missing_source": 4,
+      "acquired": 1,
+      "ingested": 0
+    },
+    "domain_evaluation": {
+      "total": 8,
+      "passed": 8
+    },
+    "pages": "pass",
+    "dependency_audit": {
+      "command": "npm audit --audit-level=high",
+      "vulnerabilities": 0
+    },
+    "actionlint": {
+      "version": "1.7.11",
+      "result": "pass"
+    },
+    "diff_check": "pass"
+  },
+  "database": {
+    "postgres_version": "15.18",
+    "pgvector_version": "0.8.5",
+    "pgvector_source_commit": "159b7900f6246c7fe3d3b87232f2731b9e0ea597",
+    "fresh_database": true,
+    "runtime_role": "non_owner_nosuperuser_nobypassrls",
+    "procedure_query_sql_gate": "pass",
+    "claim_pack_sql_gate": "pass",
+    "workflow_lifecycle_sql_gate": "pass",
+    "procedure_query_compiled_smoke": "pass",
+    "claim_pack_compiled_smoke": "pass",
+    "workflow_lifecycle_compiled_smoke": "pass"
+  },
+  "hard_evals": {
+    "EVAL-PROCEDURE-001": {
+      "passed": 4,
+      "total": 4
+    },
+    "EVAL-WATER-001": {
+      "passed": 4,
+      "total": 4
+    },
+    "EVAL-MIXCO-001": {
+      "passed": 4,
+      "total": 4
+    },
+    "EVAL-OS-INTEGRATION-001": {
+      "passed": 5,
+      "total": 5
+    },
+    "EVAL-CONTENT-INTEGRATION-001": {
+      "passed": 7,
+      "total": 7
+    },
+    "EVAL-CONFLICT-001": {
+      "passed": 8,
+      "total": 8
+    },
+    "EVAL-BOUNDARY-001": {
+      "passed": 4,
+      "total": 4
+    },
+    "EVAL-TENANT-001": {
+      "passed": 4,
+      "total": 4
+    },
+    "EVAL-CORRUPT-001": {
+      "passed": 20,
+      "total": 20
+    }
+  },
+  "lifecycle_smoke_assertions": {
+    "exact_replay": true,
+    "human_separation": true,
+    "atomic_supersession": true,
+    "cross_tenant_metadata_leaked": false,
+    "corrupt_replay_recovered": true
+  },
+  "limitations": [
+    "Remote CI and PR state have not been verified for the published lifecycle feature.",
+    "Green fixture gates do not prove corpus completeness or current legal applicability.",
+    "The global production-readiness gate remains unproved."
+  ],
+  "publication": {
+    "remote_branch": "feature/workflow-lifecycle-v1",
+    "remote_commit": "c6e110cd4ffe01cb8192cc1701f64827784ba240",
+    "main_commit": "4950ba3c24dbe7d9891d5cec8d7ba5f57db3ef9c",
+    "pr_state": "unverified",
+    "remote_ci": "unverified",
+    "merged": false,
+    "deployed": false
+  }
+}
