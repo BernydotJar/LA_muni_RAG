@@ -1,6 +1,6 @@
 # Plan — 062 EvidenceGapRequest Provider v1
 
-Status: implemented locally; remote publication verification pending
+Status: implemented, verified, published and remote CI passed; external/release gates pending
 
 ## Architecture
 
@@ -63,9 +63,9 @@ from identity conflict under concurrency. The application role has no aggregate
 
 ## Rollout plan
 
-1. publish feature branch and verify exact remote SHA;
-2. require Backend CI with PostgreSQL 16/pgvector service;
-3. open/update draft PR when an authorized connector exists;
+1. published feature branch and verified exact remote SHA — complete;
+2. Backend CI with PostgreSQL 16/pgvector service — complete;
+3. open/update draft PR when an authorized connector exists — pending;
 4. complete external OS Electoral consumer contract tests;
 5. approve retention, resolution lifecycle and operational ownership;
 6. stage with metrics/alerts/load/backup/restore evidence;

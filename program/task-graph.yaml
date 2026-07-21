@@ -1,5 +1,5 @@
 schema_version: 1
-generated_at: "2026-07-21T18:01:44Z"
+generated_at: "2026-07-21T19:39:56Z"
 program:
   id: LA-MUNI-RAG-PROD
   objective: "Make LA Muni RAG production-ready within its evidence, procedure, workflow, case-tracking, and integration domain."
@@ -12,18 +12,18 @@ program:
     - SAFETY_STOP
 baseline:
   origin_main_commit: "4950ba3c24dbe7d9891d5cec8d7ba5f57db3ef9c"
-  observed_branch: "feature/procedure-assessment-v1"
-  observed_commit: "56b9866988f080c10fafe1542038410e3b3f3e9d"
-  feature_implementation_commit: "56b9866988f080c10fafe1542038410e3b3f3e9d"
-  local_program_branch_commit: "942669b8d47f1b04f181926beecb6824394d36c4"
-  upstream: origin/feature/procedure-assessment-v1
-  upstream_commit: "56b9866988f080c10fafe1542038410e3b3f3e9d"
+  observed_branch: "feature/evidence-gap-request-v1"
+  observed_commit: "66b41b943242d9c4317d35f125de1cd617ebb6e4"
+  feature_implementation_commit: "66b41b943242d9c4317d35f125de1cd617ebb6e4"
+  local_program_branch_commit: "66b41b943242d9c4317d35f125de1cd617ebb6e4"
+  upstream: origin/feature/evidence-gap-request-v1
+  upstream_commit: "66b41b943242d9c4317d35f125de1cd617ebb6e4"
   upstream_state: exact_feature_head_published_remote_ci_passed
   divergence:
     ahead: 0
     behind: 0
   divergence_from_origin_main:
-    ahead: 45
+    ahead: 49
     behind: 0
   worktree: clean_at_functional_commit
   repository_instructions:
@@ -33,8 +33,8 @@ baseline:
   canonical_gate:
     status: passed_local_detached_postgres_and_remote_ci
     tests:
-      passed: 652
-      total: 654
+      passed: 667
+      total: 669
       skipped: 2
       failed: 0
     typecheck: passed
@@ -56,6 +56,7 @@ baseline:
       EVAL-MIXCO-001: passed_with_corpus_and_corroboration_limitations
       EVAL-OS-INTEGRATION-001: passed_for_three_provider_outputs_with_external_consumer_limitations
       EVAL-PROCEDURE-ASSESSMENT-001: passed_with_case_consumer_and_corpus_limitations
+      EVAL-EVIDENCE-GAP-001: passed_for_immutable_open_intake_with_consumer_privacy_and_operations_limitations
       EVAL-CONTENT-INTEGRATION-001: passed_with_external_consumer_limitations
       EVAL-BOUNDARY-001: passed_for_current_provider_surface
       EVAL-TENANT-001: passed_with_topology_limitations
@@ -75,10 +76,10 @@ baseline:
     pages_verification: passed
     dependency_audit: "0 vulnerabilities"
     remote_ci:
-      run_id: 29855067232
+      run_id: 29861888791
       status: completed
       conclusion: success
-      check_run_id: 88717220160
+      check_run_id: 88740409681
 runtime:
   preferred: farmtable
   selected: yaml_fallback
@@ -802,6 +803,45 @@ tasks:
       remote_ci_check: 88717220160
     limitations:
       - "No case/document validation service, external OS Electoral consumer, real-corpus applicability proof, PR, merge or deployment."
+  - id: WS08-EVIDENCE-GAP-001
+    workstream: WS-08
+    title: "Implement immutable EvidenceGapRequest provider v1"
+    status: completed_with_limitations
+    owner: /root
+    depends_on:
+      - WS07-FOUNDATION-001
+      - WS08-CONTRACT-FOUNDATION-001
+    outputs:
+      - src/api/v1/evidenceGapTypes.ts
+      - src/api/v1/evidenceGapMapper.ts
+      - src/api/v1/evidenceGapPersistence.ts
+      - src/api/v1/evidenceGapHandler.ts
+      - src/api/v1/evidenceGapIndex.ts
+      - contracts/schemas/v1/evidence-gap-request.schema.json
+      - contracts/schemas/v1/evidence-gap-response.schema.json
+      - contracts/openapi/v1/openapi.json
+      - db/migrations/012_evidence_gap_requests.sql
+      - db/tests/evidence_gap_runtime_gate.sql
+      - scripts/evidence-gap-postgres-smoke.mjs
+      - src/__tests__/eval-evidence-gap-001.test.ts
+      - specs/062-evidence-gap-request-v1.md
+      - docs/api/evidence-gap-requests-v1.md
+    result:
+      commit: 66b41b943242d9c4317d35f125de1cd617ebb6e4
+      remote_sha: 66b41b943242d9c4317d35f125de1cd617ebb6e4
+      endpoint: "POST /api/v1/evidence-gap-requests"
+      eval_evidence_gap: "14/14"
+      contracts: "17 schemas / 17 examples / OpenAPI 3.1.1"
+      global_tests: "667/669, two explicit skips, zero failures"
+      clean_postgres_sequence: passed
+      evidence_gap_sql_gate: passed
+      evidence_gap_compiled_smoke: passed
+      concurrent_aggregate_convergence: one_row_exact_response
+      remote_ci_run: 29861888791
+      remote_ci_status: completed_success
+      remote_ci_check: 88740409681
+    limitations:
+      - "Intake only: no research assignment/resolution lifecycle, notification, external consumer, approved retention/legal-hold, staging/load/restore, PR, merge or deployment."
   - id: WS08-INT-001
     workstream: WS-08
     title: "Implement and contract-test versioned OS Electoral and Content Agency interfaces"
@@ -811,6 +851,7 @@ tasks:
       - os_electoral_evidence_bundle_provider
       - os_electoral_procedure_workflow_provider
       - os_electoral_procedure_assessment_provider
+      - os_electoral_evidence_gap_request_provider
       - content_agency_claim_pack_provider
     result:
       os_provider_commits:
@@ -819,14 +860,15 @@ tasks:
       claim_pack_provider_commit: e8ac74f
       eval_os_integration: "5/5 passed after critic hardening"
       eval_content_integration: "7/7 passed after producer/critic/fixer verification"
-      external_consumers: pending
       procedure_assessment_commit: 56b9866
       procedure_assessment_eval: "4/4 passed"
-      procedure_assessment_postgres_smoke: passed
+      evidence_gap_commit: 66b41b9
+      evidence_gap_eval: "14/14 passed"
+      evidence_gap_postgres_smoke: passed_with_concurrent_aggregate_convergence
+      external_consumers: pending
     limitations:
       - "No cross-repository consumer contract has run for OS Electoral or Content Agency."
-      - "EvidenceGapRequest, cross-product revocation/supersession, staging/load, and deployment remain absent."
-      - "No cross-repository consumer contract has run for OS Electoral or Content Agency."
+      - "EvidenceGap resolution lifecycle, cross-product revocation/supersession, staging/load, PR, merge and deployment remain open."
     blockers: []
     depends_on:
       - BOUND-001
@@ -978,6 +1020,7 @@ tasks:
       - EVAL-MIXCO-001
       - EVAL-OS-INTEGRATION-001
       - EVAL-PROCEDURE-ASSESSMENT-001
+      - EVAL-EVIDENCE-GAP-001
       - EVAL-CONTENT-INTEGRATION-001
       - EVAL-CONFLICT-001
       - EVAL-BOUNDARY-001
@@ -987,7 +1030,7 @@ tasks:
       - EVAL-VECTOR-001
       - EVAL-JOB-LEASE-001
       - WS05-LIFECYCLE-API-001
-    current_state: "Thirteen named eval families, detached global regression and PostgreSQL gates pass; seven required dedicated eval families and production/runtime proof remain incomplete."
+    current_state: "Fourteen named eval families, detached global regression, clean PostgreSQL gates and remote CI pass; seven required dedicated eval families and global production/runtime proof remain incomplete."
     blockers: []
     depends_on:
       - GAP-001
@@ -1271,6 +1314,16 @@ claims:
       - "Contract requires facts/constraints empty; opaque document IDs never enter completed requirements and cited existence stays inferred_for_review."
     limitations:
       - "No case/document validation service, external consumer, legal applicability selection, PR, merge or deployment."
+  - id: CLAIM-EVIDENCE-GAP-V1
+    statement: "OS Electoral can register an immutable tenant-scoped open documentary research intake without source-authority promotion, campaign strategy or content production."
+    status: supported_locally_published_and_remote_ci_passed
+    evidence:
+      - "Commit/remote SHA 66b41b9; EVAL-EVIDENCE-GAP plus migration boundary 14/14; detached global 667/669; contracts 17/17."
+      - "Clean PostgreSQL 15.18/pgvector 0.8.5 non-owner gate and compiled HTTP smoke pass exact/concurrent replay, aggregate conflicts, anti-authority, cross-tenant denial, corruption and recovery."
+      - "Response labels requester text requester_supplied_unverified; audit excludes documentary text and raw credentials/keys."
+      - "Backend CI 29861888791/check 88740409681 passed the exact functional SHA."
+    limitations:
+      - "No research assignment/resolution lifecycle, approved retention/legal-hold, OS Electoral consumer, staging/load/restore, PR, merge or deployment."
 owners:
   orchestrator: /root
   current_control_files_owner: /root/program_tooling
@@ -1304,33 +1357,38 @@ branches:
     commit: "56b9866988f080c10fafe1542038410e3b3f3e9d"
     remote_commit: "56b9866988f080c10fafe1542038410e3b3f3e9d"
     upstream_state: exact_functional_head_published
+  - name: "feature/evidence-gap-request-v1"
+    commit: "66b41b943242d9c4317d35f125de1cd617ebb6e4"
+    remote_commit: "66b41b943242d9c4317d35f125de1cd617ebb6e4"
+    upstream_state: exact_functional_head_published_remote_ci_passed
 prs:
   status: no_pull_request_for_current_feature
   current_feature_pr: null
   blocker: authorized_pr_creation_tool_unavailable
   discovery_task: BASE-001
 ci:
-  status: local_detached_postgres_and_remote_passed
+  status: local_detached_clean_postgres_and_remote_passed
   baseline_task: WS11-QA-001
   evidence:
-    tests: "652 passed / 654 total / 2 skipped / 0 failed"
-    eval_procedure_assessment: "4/4"
-    eval_os_integration: "5/5"
+    tests: "667 passed / 669 total / 2 skipped / 0 failed"
+    eval_evidence_gap: "14/14"
     typecheck: passed
     build: passed
-    contracts: "16 schemas / 16 examples / 1 OpenAPI 3.1.1 document valid"
+    contracts: "17 schemas / 17 examples / 1 OpenAPI 3.1.1 document valid"
     source_inventory: "valid; 17 total, 4 verified, 4 missing_source, 1 acquired, 0 ingested"
     domain_evaluation: "8/8 passed"
     pages_verification: passed
-    procedure_query_postgres_smoke: passed_with_assessment_success_and_replay
+    procedure_query_postgres_smoke: passed
     claim_pack_postgres_smoke: passed
     workflow_lifecycle_postgres_smoke: passed
+    evidence_gap_postgres_smoke: passed_with_concurrent_aggregate_convergence
     dependency_audit: "0 vulnerabilities"
     current_remote_ci:
-      run_id: 29855067232
+      run_id: 29861888791
       status: completed
       conclusion: success
-      check_run_id: 88717220160
+      check_run_id: 88740409681
+      head_sha: "66b41b943242d9c4317d35f125de1cd617ebb6e4"
 gates:
   - id: GATE-PROD-001
     status: not_evaluated

@@ -813,6 +813,52 @@ tasks:
     branch: "feature/procedure-assessment-v1"
     pr: null
     ci: passed_local_detached_postgres_and_remote
+  - id: WS08-EVIDENCE-GAP-001
+    workstream: WS-08
+    title: "Implement immutable EvidenceGapRequest provider v1"
+    status: completed_with_limitations
+    owner: /root
+    files:
+      - src/api/v1/evidenceGapTypes.ts
+      - src/api/v1/evidenceGapMapper.ts
+      - src/api/v1/evidenceGapPersistence.ts
+      - src/api/v1/evidenceGapHandler.ts
+      - src/api/v1/evidenceGapIndex.ts
+      - contracts/schemas/v1/evidence-gap-request.schema.json
+      - contracts/schemas/v1/evidence-gap-response.schema.json
+      - contracts/openapi/v1/openapi.json
+      - db/migrations/012_evidence_gap_requests.sql
+      - db/tests/evidence_gap_runtime_gate.sql
+      - scripts/evidence-gap-postgres-smoke.mjs
+      - src/__tests__/eval-evidence-gap-001.test.ts
+      - src/__tests__/evidence-gap-runtime-migration.test.ts
+      - specs/062-evidence-gap-request-v1.md
+      - specs/062-evidence-gap-request-v1-plan.md
+      - specs/062-evidence-gap-request-v1-tasks.md
+      - docs/api/evidence-gap-requests-v1.md
+      - docs/decisions/062-evidence-gap-request-v1.md
+      - docs/risks/062-evidence-gap-request-v1-risk-register.md
+      - docs/traceability/062-requirements-traceability.md
+    depends_on:
+      - WS07-FOUNDATION-001
+      - WS08-CONTRACT-FOUNDATION-001
+    blockers: []
+    acceptance:
+      - "Auth, rate, RBAC, tenant/credential binding, closed contracts, boundary refusal and audit minimization pass."
+      - "Transport replay and aggregate identity replay/conflict remain distinct, exact and concurrency-safe."
+      - "The tenant-owned aggregate is immutable, open, requester-supplied-unverified, and never promotes source authority or resolution."
+      - "Non-owner FORCE-RLS SQL gate, clean shared database sequence, compiled HTTP smoke and remote CI pass."
+    evidence:
+      - "Commit and exact remote SHA 66b41b943242d9c4317d35f125de1cd617ebb6e4."
+      - "EVAL-EVIDENCE-GAP-001 plus migration/contract boundary passed 14/14; detached global regression passed 667/669 with two explicit skips and zero failures."
+      - "Contract registry passed 17 schemas, 17 examples and OpenAPI 3.1.1; typecheck/build/inventory/domain/Pages/audit/diff/secret gates passed."
+      - "Clean PostgreSQL 15.18/pgvector 0.8.5 sequence passed ProcedureQuery, ClaimPack, lifecycle and EvidenceGap SQL/compiled HTTP smokes; distinct concurrent keys converged on one row."
+      - "Backend CI run 29861888791 and check 88740409681 passed on the exact functional SHA."
+    limitations:
+      - "Intake only: no research assignment/resolution lifecycle, notification, OS Electoral consumer, approved retention/legal-hold, staging/load/restore, PR, merge or deployment."
+    branch: "feature/evidence-gap-request-v1"
+    pr: null
+    ci: passed_local_detached_clean_postgres_and_remote
   - id: WS08-INT-001
     workstream: WS-08
     title: "Implement and test adjacent-product contracts"
@@ -823,6 +869,7 @@ tasks:
       - contracts/schemas/v1/
       - contracts/openapi/v1/openapi.json
       - src/__tests__/eval-os-integration-001.test.ts
+      - src/__tests__/eval-evidence-gap-001.test.ts
       - src/__tests__/eval-content-integration-001.test.ts
       - docs/integrations/os-electoral.md
       - docs/integrations/content-agency.md
@@ -835,17 +882,19 @@ tasks:
       - WS08-CONTRACT-FOUNDATION-001
     blockers: []
     acceptance:
-      - "OS Electoral gets evidence/procedures without campaign strategy."
+      - "OS Electoral gets evidence/procedures/intake without campaign strategy or source-authority promotion."
       - "Content Agency gets ClaimPack evidence without content generation."
       - "Both provider and external consumer suites pass."
     evidence:
-      - "OS Electoral provider slice returns EvidenceBundle, draft ProcedureWorkflow and conservative ProcedureAssessment without campaign-owned fields; EVAL-OS-INTEGRATION-001 passes 5/5."
+      - "OS Electoral provider slices return EvidenceBundle, draft ProcedureWorkflow and conservative ProcedureAssessment without campaign-owned fields; EVAL-OS-INTEGRATION-001 passes 5/5."
+      - "EvidenceGapRequest commit 66b41b9 provides immutable open/unverified intake, replay/dedupe/conflicts, anti-authority, FORCE RLS and compiled HTTP; focused/migration gate passes 14/14 and remote CI passes."
       - "Inference and validation-required evidence cannot be silently promoted to supported claims."
-      - "Content Agency ClaimPack provider commit e8ac74f passes EVAL-CONTENT-INTEGRATION-001 7/7, strict contracts 12/12, and local global regression 588/590 with two explicit skips."
-      - "ProcedureAssessment commit 56b9866 passes assessment 4/4, detached regression 652/654 and compiled PostgreSQL success/replay; EvidenceGapRequest and external consumers remain pending."
+      - "Content Agency ClaimPack provider passes EVAL-CONTENT-INTEGRATION-001 7/7 with strict contracts, replay/expiry/abstention and local PostgreSQL gates."
       - "External OS Electoral and Content Agency consumers have not run cross-repository contract tests."
+    limitations:
+      - "EvidenceGap resolution lifecycle, consumer interoperability, cross-product revocation/supersession, staging/load, PR, merge and deployment remain open."
     pr: null
-    ci: providers_pass_local_and_assessment_remote
+    ci: providers_published_remote_ci_passed_external_consumers_pending
   - id: WS09-UX-001
     workstream: WS-09
     title: "Harden authenticated and accessible evidence/workflow UX"
@@ -976,12 +1025,12 @@ tasks:
       - "Every required named eval and cross-workstream gate has scope-equivalent evidence."
       - "Documentation and program state match current runtime truth."
     evidence:
-      - "Thirteen named eval families pass, including ProcedureAssessment 4/4; seven goal-required dedicated families remain missing."
-      - "Detached 56b9866 regression passed 652/654 with two explicit skips and zero failures; typecheck, build, contracts 16/16, inventory 17, domain 8/8, Pages and audit passed."
-      - "Current PostgreSQL ProcedureQuery, ClaimPack and workflow lifecycle SQL gates/smokes passed; artifact/vector clean/legacy/corrupt-history evidence remains preserved from Feature 060."
-      - "Corpus, consumers, cases, browser/accessibility, restore, load/HA, PR and deployment remain unproved."
+      - "Fourteen named eval families pass, including EvidenceGap 14/14; seven goal-required dedicated families remain missing."
+      - "Detached 66b41b9 regression passed 667/669 with two explicit skips and zero failures; typecheck, build, contracts 17/17, inventory 17, domain 8/8, Pages and audit passed."
+      - "A clean PostgreSQL database passed ProcedureQuery, ClaimPack, workflow lifecycle and EvidenceGap SQL gates/compiled smokes; Feature 060 clean/legacy/corrupt-history evidence remains preserved."
+      - "Backend CI 29861888791/check 88740409681 passed; corpus, consumers, cases, authenticated browser/accessibility, restore, load/HA, PR and deployment remain unproved."
     pr: null
-    ci: passed_local_detached_postgres_and_remote
+    ci: passed_local_detached_clean_postgres_and_remote
   - id: WS05-LIFECYCLE-API-001
     workstream: WS-05
     title: "Expose governed workflow lifecycle API v1"

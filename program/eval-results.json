@@ -1,21 +1,21 @@
 {
-  "updated_at": "2026-07-21T18:01:44Z",
-  "branch": "feature/procedure-assessment-v1",
-  "functional_head": "56b9866988f080c10fafe1542038410e3b3f3e9d",
-  "status": "local_detached_postgres_and_remote_ci_passed_feature_published",
+  "updated_at": "2026-07-21T19:37:19Z",
+  "branch": "feature/evidence-gap-request-v1",
+  "functional_head": "66b41b943242d9c4317d35f125de1cd617ebb6e4",
+  "status": "local_detached_clean_postgres_and_remote_ci_passed_feature_published",
   "deterministic": {
     "typecheck": "pass",
     "build": "pass",
     "contracts": {
-      "schemas": 16,
-      "examples": 16,
+      "schemas": 17,
+      "examples": 17,
       "openapi_documents": 1,
-      "contract_tests_passed": 16,
-      "contract_tests_failed": 0
+      "contract_suite_passed": 16,
+      "contract_suite_failed": 0
     },
     "global_tests": {
-      "total": 654,
-      "passed": 652,
+      "total": 669,
+      "passed": 667,
       "failed": 0,
       "skipped": 2,
       "skip_reason": "explicit environment-gated database tests"
@@ -38,72 +38,39 @@
       "vulnerabilities": 0
     },
     "diff_check": "pass",
+    "secret_scan": "pass",
     "detached_lockfile_install": "pass"
   },
   "database": {
     "postgres_version": "15.18",
     "pgvector_version": "0.8.5",
     "runtime_role": "non_owner_nosuperuser_nobypassrls",
+    "clean_database_recreated": true,
     "procedure_query_sql_gate": "pass",
     "claim_pack_sql_gate": "pass",
     "workflow_lifecycle_sql_gate": "pass",
-    "procedure_query_compiled_smoke": "pass_with_assessment_success_and_replay",
+    "evidence_gap_sql_gate": "pass",
+    "procedure_query_compiled_smoke": "pass",
     "claim_pack_compiled_smoke": "pass",
-    "workflow_lifecycle_compiled_smoke": "pass"
+    "workflow_lifecycle_compiled_smoke": "pass",
+    "evidence_gap_compiled_smoke": "pass",
+    "evidence_gap_statuses": [401, 200, 200, 200, 200, 200, 409, 409, 403, 400, 400, 500, 200]
   },
   "hard_evals": {
-    "EVAL-PROCEDURE-001": {
-      "passed": 4,
-      "total": 4
-    },
-    "EVAL-WATER-001": {
-      "passed": 4,
-      "total": 4
-    },
-    "EVAL-MIXCO-001": {
-      "passed": 4,
-      "total": 4
-    },
-    "EVAL-OS-INTEGRATION-001": {
-      "passed": 5,
-      "total": 5
-    },
-    "EVAL-PROCEDURE-ASSESSMENT-001": {
-      "passed": 4,
-      "total": 4
-    },
-    "EVAL-CONTENT-INTEGRATION-001": {
-      "passed": 7,
-      "total": 7
-    },
-    "EVAL-CONFLICT-001": {
-      "passed": 8,
-      "total": 8
-    },
-    "EVAL-BOUNDARY-001": {
-      "passed": 4,
-      "total": 4
-    },
-    "EVAL-TENANT-001": {
-      "passed": 4,
-      "total": 4
-    },
-    "EVAL-CORRUPT-001": {
-      "passed": 20,
-      "total": 20
-    },
-    "EVAL-ARTIFACT-001": {
-      "passed": 5,
-      "total": 5
-    },
-    "EVAL-VECTOR-001": {
-      "passed": 9,
-      "total": 9
-    },
-    "EVAL-JOB-LEASE-001": {
-      "passed": 13,
-      "total": 13
-    }
+    "EVAL-PROCEDURE-001": { "passed": 4, "total": 4 },
+    "EVAL-WATER-001": { "passed": 4, "total": 4 },
+    "EVAL-MIXCO-001": { "passed": 4, "total": 4 },
+    "EVAL-OS-INTEGRATION-001": { "passed": 5, "total": 5 },
+    "EVAL-PROCEDURE-ASSESSMENT-001": { "passed": 4, "total": 4 },
+    "EVAL-EVIDENCE-GAP-001": { "passed": 14, "total": 14 },
+    "EVAL-CONTENT-INTEGRATION-001": { "passed": 7, "total": 7 },
+    "EVAL-CONFLICT-001": { "passed": 8, "total": 8 },
+    "EVAL-BOUNDARY-001": { "passed": 4, "total": 4 },
+    "EVAL-TENANT-001": { "passed": 4, "total": 4 },
+    "EVAL-CORRUPT-001": { "passed": 20, "total": 20 },
+    "EVAL-ARTIFACT-001": { "passed": 5, "total": 5 },
+    "EVAL-VECTOR-001": { "passed": 9, "total": 9 },
+    "EVAL-JOB-LEASE-001": { "passed": 13, "total": 13 }
   },
   "missing_dedicated_evals": [
     "EVAL-SOURCE-001",
@@ -114,35 +81,40 @@
     "EVAL-ACCESSIBILITY-001",
     "EVAL-RESTORE-001"
   ],
-  "assessment_assertions": {
-    "opaque_documents_completed": false,
-    "cited_requirement_case_completion": false,
-    "narrative_facts_persisted": false,
-    "narrative_constraints_persisted": false,
-    "canonical_workflow_validated": true,
-    "exact_replay": true,
+  "evidence_gap_assertions": {
+    "initial_status": "open",
+    "request_assertion_status": "requester_supplied_unverified",
+    "retrieval_or_compiler_invoked": false,
+    "source_authority_promoted": false,
+    "exact_key_replay": true,
+    "exact_aggregate_replay": true,
+    "concurrent_aggregate_convergence": true,
+    "response_hash_enforced": true,
+    "canonical_response_reconstructed": true,
+    "cross_tenant_marker_leaked": false,
     "corrupt_replay_marker_leaked": false,
-    "campaign_fields": false
+    "documentary_text_in_audit": false
   },
   "publication": {
-    "remote_branch": "feature/procedure-assessment-v1",
-    "remote_commit": "56b9866988f080c10fafe1542038410e3b3f3e9d",
+    "remote_branch": "feature/evidence-gap-request-v1",
+    "remote_commit": "66b41b943242d9c4317d35f125de1cd617ebb6e4",
     "main_commit": "4950ba3c24dbe7d9891d5cec8d7ba5f57db3ef9c",
     "pr_state": "absent",
     "remote_ci": {
-      "run_id": 29855067232,
+      "run_id": 29861888791,
       "workflow": "Backend CI",
       "status": "completed",
       "conclusion": "success",
-      "check_run_id": 88717220160
+      "check_run_id": 88740409681,
+      "head_sha": "66b41b943242d9c4317d35f125de1cd617ebb6e4"
     },
     "merged": false,
-    "deployed": false,
-    "connector_result": "reported_error_but_remote_ref_advanced"
+    "deployed": false
   },
   "limitations": [
-    "Remote CI passed; no PR exists.",
-    "Assessment does not validate case documents or completed requirements.",
+    "EvidenceGap is intake-only; no research resolution lifecycle or queue is deployed.",
+    "Immutable request text lacks approved retention/deletion/legal-hold policy.",
+    "No OS Electoral consumer contract has run.",
     "Global production readiness remains unproved."
   ]
 }

@@ -81,3 +81,39 @@ Decision: the response contract requires empty `facts` and `constraints`; only o
 ## 2026-07-21T18:01:44Z — Remote CI accepted Feature 061
 
 Backend CI run `29855067232` and check `88717220160` completed successfully on exact SHA `56b9866988f080c10fafe1542038410e3b3f3e9d`. This proves remote CI execution, not PR, merge or deployment.
+
+## 2026-07-21T19:40:48Z — EvidenceGap is immutable intake, not research resolution
+
+Decision: `POST /api/v1/evidence-gap-requests` records one tenant-owned
+`open` aggregate and does not invoke retrieval or the procedure compiler. OS
+Electoral owns the opaque request/campaign reference; LA Muni RAG owns source
+authority, validation and any future resolution. Intake never promotes a source.
+
+## 2026-07-21T19:40:48Z — Requester text is machine-labeled unverified
+
+Decision: every acknowledgement fixes
+`request_assertion_status=requester_supplied_unverified`. This prevents a
+frontend or consumer from presenting repeated subject/reason text as a finding
+of LA Muni RAG. Imperative source-authority promotion is rejected before mutation.
+
+## 2026-07-21T19:40:48Z — Transport replay and aggregate identity remain distinct
+
+Decision: `Idempotency-Key` controls tenant/principal transport replay, while
+`gap_request_id` and `request_id` control the immutable domain aggregate.
+Same-key concurrent work is fenced; distinct keys for the same canonical
+aggregate converge on the original response; changed identity/payload conflicts.
+
+## 2026-07-21T19:40:48Z — EvidenceGap replay requires canonical reconstruction
+
+Decision: a stored acknowledgement is emitted only when status, SHA-256, current
+schema, tenant/request/gap/credential/audit identities and exact canonical mapper
+reconstruction all match. Merely being valid JSON Schema is insufficient because
+schema-valid limitations could silently change authority semantics.
+
+## 2026-07-21T19:40:48Z — Feature 062 publication and CI receipt
+
+`feature/evidence-gap-request-v1` is published at exact SHA
+`66b41b943242d9c4317d35f125de1cd617ebb6e4`. Backend CI run
+`29861888791` and check `88740409681` completed successfully on that SHA.
+This proves feature publication and remote CI, not PR, protected merge,
+production deployment, research operations or consumer interoperability.

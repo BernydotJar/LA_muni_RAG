@@ -37,10 +37,10 @@
 
 ## Publication and external gates
 
-- [ ] Commit functional implementation.
-- [ ] Verify detached checkout from the functional commit.
-- [ ] Push `feature/evidence-gap-request-v1` and verify exact remote SHA.
-- [ ] Verify Backend CI conclusion for the exact functional SHA.
+- [x] Commit functional implementation (`66b41b943242d9c4317d35f125de1cd617ebb6e4`).
+- [x] Verify detached checkout from the functional commit.
+- [x] Push `feature/evidence-gap-request-v1` and verify exact remote SHA.
+- [x] Verify Backend CI `29861888791` / check `88740409681` success for the exact functional SHA.
 - [ ] Create/update draft PR when an authorized PR action is available.
 - [ ] Run OS Electoral consumer contract and retry/ID-preservation tests.
 - [ ] Approve Privacy/Legal retention and immutable-resolution policy.

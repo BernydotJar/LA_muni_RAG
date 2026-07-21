@@ -302,3 +302,39 @@ Before any installation, require an owner to verify every skill file, license, d
 - verification: EVAL-PROCEDURE-ASSESSMENT-001 4/4; EVAL-OS-INTEGRATION-001 5/5; procedure-query API, contract and operations suites 50/50; contract registry 16/16; global 652/654 with zero failures and two explicit environment skips; PostgreSQL 15.18/pgvector 0.8.5 non-owner gates and compiled ProcedureQuery, ClaimPack and lifecycle smokes pass
 - result: implemented, verified in a detached checkout and PostgreSQL, published at exact SHA 56b9866, and Backend CI run 29855067232 passed; case/document binding, OS consumer, PR, merge and deployment remain pending
 - product boundary: no campaign strategy, campaign mutation, content generation, publication, case completion, legal compliance or institutional approval was added
+
+### WS08-EVIDENCE-GAP-001
+
+- skill selection: no installed session skill matched repository-level
+  TypeScript/OpenAPI/PostgreSQL provider implementation more specifically than
+  direct repository execution; no skill was installed or invoked
+- AutoSkills: no new installation attempt; the previously reviewed AutoSkills
+  0.3.6 proposals remain uninstalled because license/provenance and review
+  evidence are insufficient for this commercial product
+- task: implement immutable EvidenceGapRequest intake with dual replay/aggregate
+  identity, forced RLS, anti-authority controls and exact canonical replay
+- producer evidence: closed schemas, dedicated handler/persistence, migration 012,
+  named eval, OpenAPI and compiled smoke
+- critic/fixer evidence: repaired nonexistent credential FK, priority mismatch,
+  nonexistent schema definition, ClaimPack scaffold contamination, semantic replay
+  tampering, authority laundering and concurrent-key convergence
+- independent verification: detached real lockfile install; 14/14 focused gate;
+  667/669 global; 17/17 registry; clean PostgreSQL 15.18/pgvector 0.8.5
+  non-owner sequence; four compiled provider smokes; Backend CI 29861888791 passed
+- result: implemented, verified, published and remote-CI green; external consumer,
+  privacy retention/legal hold, research resolution, PR, merge and deployment remain open
+- product boundary: no retrieval resolution, legal applicability, electoral
+  strategy, content generation, publication or fake source-authority claim was added
+
+### WS09-PROCEDURE-TRAINING-001 — selection checkpoint
+
+- requested product direction: a beautiful training workflow for municipal
+  procedures plus eventual SaaS delivery
+- current frontend finding: public/demo static surfaces and browser-local case
+  state exist; no human-browser authentication/session/BFF exists
+- security decision: do not place integration Bearer credentials in browser code,
+  LocalStorage or public Pages; any immediate training surface must remain clearly
+  read-only/demo until the identity/session architecture is approved
+- external design skills: not installed; prior supply-chain/license review remains
+  unresolved, so the next UI slice will use repository-native HTML/CSS/JS and
+  existing design tokens with direct accessibility tests

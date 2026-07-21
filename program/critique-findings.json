@@ -1,74 +1,93 @@
 {
-  "updated_at": "2026-07-21T17:58:29Z",
-  "slice": "conservative_procedure_assessment_v1",
-  "functional_head": "56b9866988f080c10fafe1542038410e3b3f3e9d",
+  "updated_at": "2026-07-21T19:37:19Z",
+  "slice": "immutable_evidence_gap_request_v1",
+  "functional_head": "66b41b943242d9c4317d35f125de1cd617ebb6e4",
   "summary": {
-    "critical_open_in_slice": 0,
-    "high_open_in_slice": 0,
+    "critical_open_in_slice_code": 0,
+    "high_open_in_slice_code": 0,
+    "external_or_governance_high_open": 3,
     "global_production_readiness_unproved": true
   },
   "findings": [
     {
-      "id": "PA-CRIT-001",
+      "id": "EG-CRIT-001",
       "severity": "critical",
       "status": "resolved",
-      "description": "Caller-owned opaque document IDs could be mistaken for completed requirements.",
-      "repair": "completed_requirements remains empty until a future tenant-scoped case/document binding validates evidence.",
-      "evidence": [
-        "mapper eval",
-        "HTTP eval",
-        "schema-valid response"
-      ]
+      "description": "The initial migration referenced a nonexistent identity.integration_credentials table.",
+      "repair": "Use the tenant-composite foreign key to identity.api_credentials and add a regression that rejects the nonexistent table name.",
+      "evidence": ["migration test", "clean PostgreSQL migration/gate"]
     },
     {
-      "id": "PA-HIGH-002",
+      "id": "EG-HIGH-002",
       "severity": "high",
       "status": "resolved",
-      "description": "Cited requirement existence could be promoted to case satisfaction.",
-      "repair": "supported document requirements are downgraded to inferred_for_review and steps remain blocked.",
-      "evidence": [
-        "cited-evidence eval"
-      ]
+      "description": "The request contract used priority critical while the initial persistence check used urgent.",
+      "repair": "Align the request, response, TypeScript and PostgreSQL enum to low/medium/high/critical and reject urgent.",
+      "evidence": ["contract tests", "SQL check violation gate"]
     },
     {
-      "id": "PA-HIGH-003",
+      "id": "EG-HIGH-003",
       "severity": "high",
       "status": "resolved",
-      "description": "Assessment replay needed output-specific validation and corruption handling.",
-      "repair": "assessment validator selected for replay; corrupt bytes invalidated without marker leakage.",
-      "evidence": [
-        "corrupt replay eval",
-        "exact replay HTTP and PostgreSQL smoke"
-      ]
+      "description": "The initial response schema referenced a nonexistent EvidenceGapPriority definition and omitted request/jurisdiction identity.",
+      "repair": "Create a closed canonical response with direct priority enum, request_id, jurisdiction and server provenance.",
+      "evidence": ["17/17 contract registry", "OpenAPI tests"]
     },
     {
-      "id": "PA-HIGH-004",
+      "id": "EG-HIGH-004",
       "severity": "high",
       "status": "resolved",
-      "description": "Narrative facts and constraints would have been persisted in response replay.",
-      "repair": "response schema and mapper require empty narrative arrays and preserve only opaque references.",
-      "evidence": [
-        "contract minimization test",
-        "marker non-persistence eval",
-        "privacy review"
-      ]
+      "description": "Copied ClaimPack scaffolding could have introduced compiler, expiry and content semantics into documentary intake.",
+      "repair": "Replace the scaffold with dedicated types, mapper, handler, persistence and no compiler dependency.",
+      "evidence": ["ClaimPack residue scan", "focused provider eval"]
     },
     {
-      "id": "PA-HIGH-005",
+      "id": "EG-HIGH-005",
       "severity": "high",
       "status": "resolved",
-      "description": "A valid assessment might conceal an invalid intermediate workflow.",
-      "repair": "handler validates canonical ProcedureWorkflow before mapping/validating assessment.",
-      "evidence": [
-        "operations readiness regression",
-        "focused API suite"
-      ]
+      "description": "A stored acknowledgement could remain schema-valid while changing limitations or silently promoting source authority.",
+      "repair": "Require response SHA-256 and exact canonical mapper reconstruction before any transport or aggregate replay.",
+      "evidence": ["semantic corruption eval", "PostgreSQL wrong-hash gate", "compiled corrupt replay recovery"]
+    },
+    {
+      "id": "EG-HIGH-006",
+      "severity": "high",
+      "status": "resolved",
+      "description": "Requester text could be displayed as a RAG finding or used to launder an authority declaration.",
+      "repair": "Fix request_assertion_status=requester_supplied_unverified and reject imperative authority promotion across subject and reason.",
+      "evidence": ["contract assertion test", "authority refusal eval", "compiled smoke"]
+    },
+    {
+      "id": "EG-HIGH-007",
+      "severity": "high",
+      "status": "resolved",
+      "description": "Transport idempotency alone did not prove convergence for concurrent distinct keys targeting one aggregate.",
+      "repair": "Add aggregate identity claim/replay/conflict semantics and prove one-row exact-response convergence in memory and PostgreSQL.",
+      "evidence": ["concurrency eval", "compiled PostgreSQL smoke"]
+    }
+  ],
+  "open_external_or_governance_findings": [
+    {
+      "id": "EG-OPEN-PRIVACY-001",
+      "severity": "high",
+      "category": "human_decision",
+      "description": "Immutable documentary request text lacks an approved purpose, retention, deletion exception and legal-hold policy."
+    },
+    {
+      "id": "EG-OPEN-CONSUMER-002",
+      "severity": "high",
+      "category": "external_service",
+      "description": "The OS Electoral repository has not run producer/consumer contract, retry and authority-warning tests."
+    },
+    {
+      "id": "EG-OPEN-OPERATIONS-003",
+      "severity": "high",
+      "category": "infrastructure",
+      "description": "No research assignment/resolution lifecycle, staging, load/HA, observability, backup/restore or deployment is proved."
     }
   ],
   "open_global_findings": [
-    "No case/document validation service exists.",
-    "OS Electoral consumer interoperability is unproved.",
-    "Corpus, retrieval quality, cases, frontend/accessibility and platform operations remain incomplete.",
-    "No protected merge or deployment."
+    "Corpus, retrieval quality, procedure cases, authenticated frontend/accessibility and platform operations remain incomplete.",
+    "No protected merge or production deployment."
   ]
 }

@@ -1,7 +1,7 @@
 # EvidenceGapRequest API v1
 
-Estado: provider implementado y verificado localmente; publicación, consumer
-externo y deployment pendientes.
+Estado: provider implementado, verificado, publicado y con CI remoto verde;
+consumer externo, PR, merge y deployment pendientes.
 
 Fecha de corte: 2026-07-21
 

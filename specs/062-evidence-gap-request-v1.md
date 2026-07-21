@@ -1,6 +1,6 @@
 # 062 — EvidenceGapRequest Provider v1
 
-Status: implemented and verified locally; publication and remote CI pending
+Status: implemented, verified, published, and remote CI passed; PR/merge/deployment pending
 
 Related artifacts:
 

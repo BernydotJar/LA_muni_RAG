@@ -1,31 +1,35 @@
 {
-  "updated_at": "2026-07-21T18:01:44Z",
-  "branch": "feature/procedure-assessment-v1",
-  "head": "56b9866988f080c10fafe1542038410e3b3f3e9d",
+  "updated_at": "2026-07-21T19:37:19Z",
+  "branch": "feature/evidence-gap-request-v1",
+  "head": "66b41b943242d9c4317d35f125de1cd617ebb6e4",
   "source": "observed command outputs only",
   "tests": {
-    "global_total": 654,
-    "global_passed": 652,
+    "global_total": 669,
+    "global_passed": 667,
     "global_failed": 0,
     "global_skipped": 2,
-    "eval_assessment_passed": 4,
-    "eval_os_integration_passed": 5,
-    "api_contract_operations_passed": 50
+    "eval_evidence_gap_passed": 14,
+    "contract_suite_passed": 16,
+    "contract_schemas": 17,
+    "contract_examples": 17
   },
   "database": {
     "postgres": "15.18",
     "pgvector": "0.8.5",
-    "procedure_query_smoke": "pass_with_assessment",
+    "clean_database_recreated": true,
+    "procedure_query_smoke": "pass",
     "claim_pack_smoke": "pass",
-    "workflow_lifecycle_smoke": "pass"
+    "workflow_lifecycle_smoke": "pass",
+    "evidence_gap_smoke": "pass",
+    "evidence_gap_concurrent_aggregate_convergence": true
   },
   "publication": {
     "remote_sha_verified": true,
     "pr_open": false,
-    "ci_run_id": 29855067232,
+    "ci_run_id": 29861888791,
     "ci_status": "completed",
     "ci_conclusion": "success",
-    "check_run_id": 88717220160
+    "check_run_id": 88740409681
   },
   "cost": null,
   "duration_seconds": null,
