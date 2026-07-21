@@ -30,6 +30,7 @@ describe("operations readiness foundation", () => {
       "npm audit --audit-level=high",
       "npm run domain:evaluate",
       "npm run eval:procedure",
+      "npm run eval:os-integration",
       "npm run eval:boundary",
       "npm run eval:corrupt",
       "npm run eval:tenant",
@@ -72,6 +73,24 @@ describe("operations readiness foundation", () => {
     assert.match(evaluation, /passed_with_corpus_and_lifecycle_limitations/);
     assert.match(evaluation, /controlled synthetic fixtures/);
     assert.match(evaluation, /not an executable instruction/);
+  });
+
+  it("keeps the named OS Electoral provider eval executable and honestly bounded", async () => {
+    const [packageJson, evaluation, openapi, smoke] = await Promise.all([
+      read("package.json"),
+      read("docs/testing/eval-harness.md"),
+      read("contracts/openapi/v1/openapi.json"),
+      read("scripts/procedure-query-postgres-smoke.mjs"),
+    ]);
+
+    assert.match(packageJson, /"eval:os-integration": "node --import tsx --test src\/__tests__\/eval-os-integration-001\.test\.ts"/);
+    assert.match(evaluation, /## EVAL-OS-INTEGRATION-001/);
+    assert.match(evaluation, /same internal compilation used by the workflow provider/);
+    assert.match(evaluation, /passed_for_workflow_and_evidence_bundle_provider_with_assessment_and_external_consumer_limitations/);
+    assert.match(evaluation, /No consumer contract test has run inside the OS Electoral repository/);
+    assert.match(openapi, /evidence_bundle_procedure_workflow_and_ingestion_job_providers_implemented_with_limits/);
+    assert.match(smoke, /evidenceBundleValidated: true/);
+    assert.match(smoke, /requested_output: "evidence_bundle"/);
   });
 
   it("keeps the named product-boundary hard eval executable and honestly documented", async () => {

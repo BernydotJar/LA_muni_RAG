@@ -1,16 +1,17 @@
 # Procedure query API v1
 
 `POST /api/v1/procedure-queries` is the tenant-isolated server-to-server entry
-point for OS Electoral to request documentary procedure analysis. The runtime
-implements only `requested_output: "procedure_workflow"`. Valid contract values
-`evidence_bundle` and `procedure_assessment` receive a structured, non-retryable
-`503 capability_unavailable`; the service does not imply that unimplemented
-products exist.
+point for OS Electoral to request documentary evidence or procedure analysis. The
+runtime implements `requested_output: "evidence_bundle"` and
+`requested_output: "procedure_workflow"`. The valid contract value
+`procedure_assessment` receives a structured, non-retryable
+`503 capability_unavailable`; the service does not imply that the unimplemented
+assessment lifecycle exists.
 
 The canonical request, response, and error definitions are the draft 2020-12
 schemas in `contracts/schemas/v1/`. Runtime validation loads that registry with
-Ajv before accepting a request and validates the generated workflow again before
-it can be audited, cached, or returned.
+Ajv before accepting a request and validates the generated artifact against the
+schema selected by `requested_output` before it can be audited, cached, or returned.
 
 ## Required headers
 
@@ -48,10 +49,17 @@ Although the legacy retriever fans out logical searches, the v1 compiler
 serializes database calls on that single transaction-bound `pg` client. This
 avoids unsupported concurrent query execution on one PostgreSQL connection.
 
-The response is always `workflow_version: "1.0.0"`, `approval_status: "draft"`,
-and `generated_by: "ai"`. Actor, unit, deadline, external system, and follow-up
-cadence remain `null` unless a later contract explicitly supports evidence-bound
-values. Current v1 never fills them from a template. A retrieved excerpt becomes
+A `ProcedureWorkflow` response is always `workflow_version: "1.0.0"`,
+`approval_status: "draft"`, and `generated_by: "ai"`. Actor, unit, deadline,
+external system, and follow-up cadence remain `null` unless a later contract
+explicitly supports evidence-bound values. Current v1 never fills them from a
+template. An `EvidenceBundle` is generated from the same compiled workflow and
+identity-bound evidence: only cited steps become claims; unsupported material is
+returned as `missing_evidence`; contradictions remain empty unless an explicit
+conflict record exists. The bundle states that it contains no campaign strategy,
+segmentation, territory, mobilization, or campaign decision.
+
+A retrieved excerpt becomes
 a citation only when document, version, section, and an HTTP(S) source URL are
 all present. The document must also carry the exact
 `metadata.confidentiality = "public"` classification; missing or non-public
@@ -78,9 +86,10 @@ Completed replay records expire after 24 hours. Cleanup is opportunistic for
 the authenticated tenant/principal/operation; the rate table retains at most
 the current and immediately preceding logical windows for an active caller.
 This is not a global retention scheduler. A replay is never emitted merely
-because bytes exist in PostgreSQL: it must still be status 200, valid current
-`ProcedureWorkflow` JSON, and match tenant, request, credential, and original
-audit identities. A corrupt completed record is deleted, audited once as
+because bytes exist in PostgreSQL: it must still be status 200, validate as the
+current requested `EvidenceBundle` or `ProcedureWorkflow`, and match tenant,
+request, credential, and original audit identities. A corrupt completed record is
+deleted, audited once as
 `idempotency_corrupt`, and returned as a non-leaking 500; the next identical
 request can safely recompute.
 

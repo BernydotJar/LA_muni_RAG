@@ -540,16 +540,36 @@ describe("POST /api/v1/procedure-queries", () => {
     }
   });
 
-  it("reports unavailable contract capabilities honestly without invoking the compiler", async () => {
-    for (const requested_output of ["evidence_bundle", "procedure_assessment"] as const) {
-      const harness = await startHarness();
-      try {
-        const result = await post(harness, requestBody({ requested_output }));
-        await assertApiError(result, 503, "capability_unavailable");
-        assert.equal(harness.compilerCalls.count, 0);
-      } finally {
-        await stopHarness(harness);
-      }
+  it("returns an evidence bundle and keeps procedure assessment honestly unavailable", async () => {
+    const evidenceHarness = await startHarness();
+    try {
+      const result = await post(
+        evidenceHarness,
+        requestBody({ requested_output: "evidence_bundle" })
+      );
+      const validators = await validatorsPromise;
+      assert.equal(result.response.status, 200);
+      assert.equal(
+        validators.evidenceBundle(result.json),
+        true,
+        JSON.stringify(validators.evidenceBundle.errors)
+      );
+      assert.equal(result.json.response_type, "evidence_bundle");
+      assert.equal(evidenceHarness.compilerCalls.count, 1);
+    } finally {
+      await stopHarness(evidenceHarness);
+    }
+
+    const assessmentHarness = await startHarness();
+    try {
+      const result = await post(
+        assessmentHarness,
+        requestBody({ requested_output: "procedure_assessment" })
+      );
+      await assertApiError(result, 503, "capability_unavailable");
+      assert.equal(assessmentHarness.compilerCalls.count, 0);
+    } finally {
+      await stopHarness(assessmentHarness);
     }
   });
 

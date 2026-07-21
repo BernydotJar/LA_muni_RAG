@@ -69,6 +69,7 @@ export interface ApiErrorV1 {
 
 export interface ProcedureQueryContractValidators {
   request: ValidateFunction;
+  evidenceBundle: ValidateFunction;
   workflow: ValidateFunction;
   apiError: ValidateFunction;
 }

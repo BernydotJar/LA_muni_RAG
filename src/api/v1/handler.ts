@@ -22,7 +22,7 @@ import {
   serializeValidatedApiError,
   unauthorizedError,
 } from "./errors.js";
-import { mapProcedureWorkflowV1 } from "./mapper.js";
+import { mapEvidenceBundleV1, mapProcedureWorkflowV1 } from "./mapper.js";
 import {
   PROCEDURE_QUERY_OPERATION,
   type IdempotencyScope,
@@ -227,7 +227,15 @@ const validStoredReplay = async (
     return false;
   }
   const validators = await dependencies.validators;
-  if (!validators.workflow(parsed) || !parsed || typeof parsed !== "object") return false;
+  const responseValidator =
+    request.requested_output === "evidence_bundle"
+      ? validators.evidenceBundle
+      : request.requested_output === "procedure_workflow"
+        ? validators.workflow
+        : null;
+  if (!responseValidator || !responseValidator(parsed) || !parsed || typeof parsed !== "object") {
+    return false;
+  }
   const response = parsed as {
     tenant_id?: unknown;
     request_id?: unknown;
@@ -339,38 +347,50 @@ const executeProcedureQuery = async (
         }
 
         const auditId = dependencies.createUuid();
-      const compiled = await dependencies.compiler(request, client);
-      const mapped = mapProcedureWorkflowV1({
-        request,
-        workflow: compiled.workflow,
-        evidenceRecords: compiled.evidenceRecords,
-        auditId,
-        credentialId: principal.credentialId,
-        createdAt: dependencies.now().toISOString(),
-      });
-      const validators = await dependencies.validators;
-      if (!validators.workflow(mapped)) {
-        throw new Error("Generated ProcedureWorkflow failed the canonical v1 contract");
-      }
-      const body = JSON.stringify(mapped);
-      await dependencies.persistence.recordAudit(
-        client,
-        auditRecord(
-          principal,
-          request.request_id,
+        const compiled = await dependencies.compiler(request, client);
+        const mappingOptions = {
+          request,
+          workflow: compiled.workflow,
+          evidenceRecords: compiled.evidenceRecords,
           auditId,
-          "integration.procedure_query.succeeded",
-          "success",
-          "workflow_generated",
-          { requestedOutput: request.requested_output, idempotencyKeySha256 }
-        )
-      );
-      await dependencies.persistence.completeIdempotency(client, scope, {
-        statusCode: 200,
-        responseBody: body,
-        auditId,
-      });
-      return { statusCode: 200, body, requestId: request.request_id };
+          credentialId: principal.credentialId,
+          createdAt: dependencies.now().toISOString(),
+        };
+        const mapped =
+          request.requested_output === "evidence_bundle"
+            ? mapEvidenceBundleV1(mappingOptions)
+            : mapProcedureWorkflowV1(mappingOptions);
+        const validators = await dependencies.validators;
+        const responseIsValid =
+          request.requested_output === "evidence_bundle"
+            ? validators.evidenceBundle(mapped)
+            : validators.workflow(mapped);
+        if (!responseIsValid) {
+          throw new Error(
+            `Generated ${request.requested_output} failed the canonical v1 contract`
+          );
+        }
+        const body = JSON.stringify(mapped);
+        await dependencies.persistence.recordAudit(
+          client,
+          auditRecord(
+            principal,
+            request.request_id,
+            auditId,
+            "integration.procedure_query.succeeded",
+            "success",
+            request.requested_output === "evidence_bundle"
+              ? "evidence_bundle_generated"
+              : "workflow_generated",
+            { requestedOutput: request.requested_output, idempotencyKeySha256 }
+          )
+        );
+        await dependencies.persistence.completeIdempotency(client, scope, {
+          statusCode: 200,
+          responseBody: body,
+          auditId,
+        });
+        return { statusCode: 200, body, requestId: request.request_id };
       }
     );
   } catch {
@@ -684,7 +704,7 @@ const handleAuthenticatedRequest = async (
     );
   }
 
-  if (request.requested_output !== "procedure_workflow") {
+  if (request.requested_output === "procedure_assessment") {
     return knownErrorResponse(
       dependencies,
       principal,
@@ -696,7 +716,8 @@ const handleAuthenticatedRequest = async (
         [
           {
             field: "/requested_output",
-            issue: "Only procedure_workflow is currently available",
+            issue:
+              "procedure_assessment is not currently available; request evidence_bundle or procedure_workflow",
           },
         ],
         false

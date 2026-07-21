@@ -340,19 +340,47 @@ export interface MapProcedureWorkflowOptions {
   createdAt: string;
 }
 
-export const mapProcedureWorkflowV1 = (options: MapProcedureWorkflowOptions): Record<string, unknown> => {
-  const { request, workflow } = options;
+export type MapEvidenceBundleOptions = MapProcedureWorkflowOptions;
+
+interface MappedEvidenceContext {
+  mappings: CitationMapping[];
+  mappingsByKey: Map<string, CitationMapping>;
+  sources: MappedSource[];
+  citations: MappedCitation[];
+}
+
+const mapEvidenceContext = (
+  request: ProcedureQueryRequestV1,
+  workflow: ProcedureWorkflow,
+  evidenceRecords: readonly ScopedSearchResult[]
+): MappedEvidenceContext => {
   const mappings = workflow.citations
     .map((citation) => {
-      const record = findEvidenceRecord(citation, options.evidenceRecords);
+      const record = findEvidenceRecord(citation, evidenceRecords);
       return record ? mapCitation(citation, record, request) : null;
     })
     .filter((item): item is CitationMapping => Boolean(item));
-  const mappingsByKey = new Map(mappings.map((item) => [citationKey(item.internal), item]));
-  const sources = [...new Map(mappings.map((item) => [item.source.source_id, item.source])).values()];
-  const citations = [
-    ...new Map(mappings.map((item) => [item.citation.citation_id, item.citation])).values(),
-  ];
+  return {
+    mappings,
+    mappingsByKey: new Map(mappings.map((item) => [citationKey(item.internal), item])),
+    sources: [
+      ...new Map(mappings.map((item) => [item.source.source_id, item.source])).values(),
+    ],
+    citations: [
+      ...new Map(
+        mappings.map((item) => [item.citation.citation_id, item.citation])
+      ).values(),
+    ],
+  };
+};
+
+export const mapProcedureWorkflowV1 = (options: MapProcedureWorkflowOptions): Record<string, unknown> => {
+  const { request, workflow } = options;
+  const { mappings, mappingsByKey, sources, citations } = mapEvidenceContext(
+    request,
+    workflow,
+    options.evidenceRecords
+  );
   const stepIds = new Map(
     workflow.steps.map((step) => [
       step.stepNumber,
@@ -518,6 +546,109 @@ export const mapProcedureWorkflowV1 = (options: MapProcedureWorkflowOptions): Re
     sources,
     citations,
     gaps,
+    limitations,
+    provenance: {
+      source_product: "la_muni_rag",
+      generated_by: "ai",
+      created_at: options.createdAt,
+      source_refs: sources.map((source) => `source:${source.source_id}`),
+      credential_id: options.credentialId.toLowerCase(),
+      audit_id: options.auditId.toLowerCase(),
+    },
+  };
+};
+
+export const mapEvidenceBundleV1 = (options: MapEvidenceBundleOptions): Record<string, unknown> => {
+  const { request, workflow } = options;
+  const { mappings, mappingsByKey, sources, citations } = mapEvidenceContext(
+    request,
+    workflow,
+    options.evidenceRecords
+  );
+
+  const claims = workflow.steps.flatMap((step) => {
+    const refs = stepCitationRefs(step, mappingsByKey);
+    if (refs.length === 0) return [];
+    const citationRefs = unique(refs.map((ref) => ref.citation.citation_id));
+    const status = stepEvidenceStatus(refs);
+    const limitations = unique([
+      ...refs.flatMap((ref) => ref.source.limitations),
+      "Afirmación documental generada para revisión humana; no constituye una decisión electoral ni una instrucción ejecutable.",
+    ]);
+    return [
+      {
+        claim_id: deterministicUuid(
+          `claim:${request.tenant_id}:${request.request_id}:${step.stepNumber}`
+        ),
+        text: `${step.title}: ${step.action}`.trim().slice(0, 3000),
+        citation_refs: citationRefs,
+        evidence_status: status,
+        limitations,
+      },
+    ];
+  });
+
+  const missingEvidence = workflow.gaps.map((gap, index) => ({
+    gap_id: deterministicUuid(
+      `evidence-gap:${request.tenant_id}:${request.request_id}:${index}:${gap.missingItem}`
+    ),
+    subject: workflow.title.trim().slice(0, 500),
+    missing_document: gap.missingItem.trim().slice(0, 500),
+    reason: gap.whyItMatters.trim().slice(0, 1000),
+    next_documental_action: gap.requiredToConfirm.trim().slice(0, 1000),
+  }));
+  if (citations.length < workflow.citations.length) {
+    missingEvidence.push({
+      gap_id: deterministicUuid(
+        `evidence-gap:${request.tenant_id}:${request.request_id}:provenance`
+      ),
+      subject: workflow.title.trim().slice(0, 500),
+      missing_document: "Identidad documental y URL verificable de la evidencia recuperada",
+      reason:
+        "Una o más evidencias no pueden citarse porque carecen de document_id, document_version_id, section_id o source_url verificable.",
+      next_documental_action:
+        "Completar y validar la identidad documental antes de usar la evidencia en una afirmación.",
+    });
+  }
+  if (citations.length === 0 && missingEvidence.length === 0) {
+    missingEvidence.push({
+      gap_id: deterministicUuid(
+        `evidence-gap:${request.tenant_id}:${request.request_id}:missing-evidence`
+      ),
+      subject: workflow.title.trim().slice(0, 500),
+      missing_document: "Fuente oficial aplicable a la jurisdicción objetivo",
+      reason: "No se localizó evidencia citable suficiente para respaldar una afirmación.",
+      next_documental_action:
+        "Localizar, adquirir, validar e ingerir una fuente oficial antes de afirmar el procedimiento.",
+    });
+  }
+
+  const hasMixcoReference = options.evidenceRecords.some(isMixco);
+  const limitations = unique([
+    "Artefacto documental para consumo de OS Electoral; no contiene estrategia, segmentación, territorio, movilización ni decisiones de campaña.",
+    "Las afirmaciones requieren revisión humana de vigencia, jurisdicción y aplicación al caso concreto.",
+    "La ausencia de contradicciones registradas no demuestra que las fuentes sean consistentes o completas.",
+    workflow.validationWarning,
+    ...(hasMixcoReference ? [MIXCO_COMPARATIVE_WARNING] : []),
+  ].filter(Boolean));
+
+  return {
+    schema_version: "v1",
+    response_type: "evidence_bundle",
+    product_boundary: "evidence_and_procedure_only",
+    evidence_bundle_id: deterministicUuid(
+      `evidence-bundle:${request.tenant_id}:${request.request_id}`
+    ),
+    tenant_id: request.tenant_id.toLowerCase(),
+    request_id: request.request_id.toLowerCase(),
+    query: request.question,
+    jurisdiction: request.jurisdiction,
+    generated_at: options.createdAt,
+    sources,
+    claims,
+    citations,
+    contradictions: [],
+    missing_evidence: missingEvidence,
     limitations,
     provenance: {
       source_product: "la_muni_rag",

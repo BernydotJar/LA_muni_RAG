@@ -96,6 +96,36 @@ Context7 is the required documentation source for implementation decisions invol
 | limitations | Context7 evidence is pinned to Ajv v8.17.1 while implementation selected ajv 8.20.0 and ajv-formats 3.0.1. Compatibility and any changed defaults or strict-mode behavior must be verified against 8.20.0 before the contract gate passes. |
 | task_id | WS08-CONTRACT-FOUNDATION-001 |
 
+### Ajv output-specific response and replay validation
+
+| field | value |
+|---|---|
+| library | Ajv |
+| library_id | /ajv-validator/ajv/v8.17.1 |
+| installed_version | ajv 8.20.0; ajv-formats 3.0.1 |
+| query | Ajv2020 validating oneOf response variants and selecting validators by requested output; strict validation and separate compiled schemas |
+| retrieved_at | 2026-07-21T07:05:00Z |
+| documentation_summary | Ajv2020 is the dedicated JSON Schema 2020-12 validator. Strict mode and allErrors are explicit options. `oneOf` validates alternatives, while discriminator-based shortcut selection requires opt-in and a discriminator property. Composition with closed objects must be tested deliberately. |
+| implementation_decision | Keep independently compiled strict validators for EvidenceBundle and ProcedureWorkflow, select the validator from the authenticated request's `requested_output`, and revalidate stored idempotent bytes with the same selected schema before replay. Do not enable Ajv discriminator or mutate data during validation. |
+| source_links | https://github.com/ajv-validator/ajv/blob/v8.17.1/docs/json-schema.md ; https://github.com/ajv-validator/ajv/blob/v8.17.1/docs/faq.md ; https://github.com/ajv-validator/ajv/blob/master/lib/2020.ts |
+| limitations | Context7 evidence is pinned to Ajv 8.17.1 while the lockfile uses 8.20.0. Executable schema compilation and provider tests are the conformance evidence; documentation alone does not prove 8.20.0 behavior. |
+| task_id | WS08-OS-INTEGRATION-001 |
+
+### OpenAPI multiple implemented response variants
+
+| field | value |
+|---|---|
+| library | OpenAPI Specification 3.1.1 |
+| library_id | /oai/openapi-specification/3.1.1 |
+| installed_version | target contract version 3.1.1 |
+| query | operation response content schema oneOf multiple JSON response variants OpenAPI 3.1.1 |
+| retrieved_at | 2026-07-21T07:05:00Z |
+| documentation_summary | A response schema can use `oneOf` to require exactly one of several response shapes. Without a discriminator, validators evaluate the alternatives. The response contract should list only payloads that the operation can actually return successfully. |
+| implementation_decision | The procedure-query 200 response lists exactly EvidenceBundle and ProcedureWorkflow. ProcedureAssessment is excluded from the success union and remains a structured 503 until implemented. Both implemented schemas use distinct `response_type` constants, so the oneOf alternatives are unambiguous. |
+| source_links | https://github.com/OAI/OpenAPI-Specification/blob/3.1.1/versions/3.1.1.md |
+| limitations | The retrieved Context7 examples were drawn from earlier OpenAPI 3.0.x text within the 3.1.1 library. The repository's OpenAPI 3.1.1 document and JSON Schema registry are validated executably; Context7 examples are design guidance, not conformance proof. |
+| task_id | WS08-OS-INTEGRATION-001 |
+
 ### Docker production-image foundation
 
 | field | value |

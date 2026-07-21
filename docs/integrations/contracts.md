@@ -1,13 +1,13 @@
 # Contratos entre productos
 
-Estado: foundation v1, provider `ProcedureWorkflow` y API operacional de
-ingestion jobs implementados; consumers y demás artifacts pendientes
+Estado: foundation v1, providers `EvidenceBundle`/`ProcedureWorkflow` y API
+operacional de ingestion jobs implementados; consumers y demás artifacts pendientes
 
-Fecha de corte: 2026-07-19
+Fecha de corte: 2026-07-21
 
 ## Alcance
 
-Este documento define la semántica común para integrar LA Muni RAG, OS Electoral y Content Agency sin compartir storage. Los artifacts canónicos están en [`contracts/schemas/v1`](../../contracts/schemas/v1), [`contracts/openapi/v1/openapi.json`](../../contracts/openapi/v1/openapi.json) y [`contracts/examples/v1`](../../contracts/examples/v1). La ruta `POST /api/v1/procedure-queries` implementa el slice provider de `ProcedureWorkflow`; su validación y smoke local no demuestran interoperabilidad con un consumer vecino ni despliegue productivo. El mismo registry contiene los contratos operacionales cerrados `IngestionJobRequest` y `IngestionJobResponse` para `POST/GET /api/v1/ingestion-jobs`; no son artifacts cross-product ni un API de upload.
+Este documento define la semántica común para integrar LA Muni RAG, OS Electoral y Content Agency sin compartir storage. Los artifacts canónicos están en [`contracts/schemas/v1`](../../contracts/schemas/v1), [`contracts/openapi/v1/openapi.json`](../../contracts/openapi/v1/openapi.json) y [`contracts/examples/v1`](../../contracts/examples/v1). La ruta `POST /api/v1/procedure-queries` implementa los slices provider de `EvidenceBundle` y `ProcedureWorkflow`; su validación y smoke desechable no demuestran interoperabilidad con un consumer vecino ni despliegue productivo. El mismo registry contiene los contratos operacionales cerrados `IngestionJobRequest` y `IngestionJobResponse` para `POST/GET /api/v1/ingestion-jobs`; no son artifacts cross-product ni un API de upload.
 
 La decisión de arquitectura está en [ADR-0001](../adr/0001-product-boundaries-and-data-ownership.md) y el ownership en [Ownership de datos](../architecture/data-ownership.md).
 
@@ -15,9 +15,9 @@ La decisión de arquitectura está en [ADR-0001](../adr/0001-product-boundaries-
 
 | Payload | Product owner | Producer -> consumer | Propósito | Estado al corte |
 |---|---|---|---|---|
-| `ProcedureQueryRequest` | OS Electoral | OS Electoral -> LA Muni RAG | Solicitar inteligencia procedimental con jurisdiction y case context. | Provider HTTP implementado para `requested_output=procedure_workflow`; consumer OS Electoral pendiente. |
+| `ProcedureQueryRequest` | OS Electoral | OS Electoral -> LA Muni RAG | Solicitar inteligencia procedimental con jurisdiction y case context. | Provider HTTP implementado para `requested_output=evidence_bundle` y `procedure_workflow`; consumer OS Electoral pendiente. |
 | `EvidenceGapRequest` | OS Electoral (request); LA Muni RAG (investigación resultante) | OS Electoral -> LA Muni RAG | Solicitar localización/validación de evidencia faltante. | Schema y ejemplo implementados; endpoint/adapter pendientes. |
-| `EvidenceBundle` | LA Muni RAG | LA Muni RAG -> OS Electoral | Entregar claims/citations/contradictions/gaps de una consulta. | Schema y ejemplo implementados; mapper/provider pendientes. |
+| `EvidenceBundle` | LA Muni RAG | LA Muni RAG -> OS Electoral | Entregar claims/citations/contradictions/gaps de una consulta. | Mapper/provider implementado y validado con identidades document/version/section; corpus completo, conflict model y consumer pendientes. |
 | `ProcedureWorkflow` | LA Muni RAG | LA Muni RAG -> OS Electoral | Entregar workflow y versión con autoridad/aprobación explícitas. | Mapper/provider draft-only implementado y validado; lifecycle/versioning persistente y aprobación humana ausentes. |
 | `ProcedureAssessment` | LA Muni RAG | LA Muni RAG -> OS Electoral | Evaluar case context contra requisitos de una procedure version. | Schema y ejemplo implementados; assessment service ausente. |
 | `ApprovedCommunicationBrief` | OS Electoral | OS Electoral -> Content Agency | Entregar decisión comunicacional aprobada y evidence refs. | Boundary documentado aquí; no pertenece al runtime de LA Muni RAG. |
@@ -217,12 +217,11 @@ Cada test debe ejecutar los artifacts machine-readable canónicos, no una copia 
 
 Al corte:
 
-- existen once schemas draft 2020-12, once ejemplos y un OpenAPI 3.1.1 que declara honestamente `procedure_workflow_and_ingestion_job_providers_implemented_with_limits`;
-- `npm run contracts:validate` valida el registry completo con Ajv; los handlers vuelven a validar sus requests, `ProcedureWorkflow` o `IngestionJobResponse`, y `ApiError` en runtime;
+- existen once schemas draft 2020-12, once ejemplos y un OpenAPI 3.1.1 que declara honestamente `evidence_bundle_procedure_workflow_and_ingestion_job_providers_implemented_with_limits`;
+- `npm run contracts:validate` valida el registry completo con Ajv; los handlers vuelven a validar sus requests, `EvidenceBundle`, `ProcedureWorkflow`, `IngestionJobResponse` y `ApiError` en runtime;
 - pruebas focales cubren igualdad header/body, identidad/tenant/RBAC, boundary, CORS, public-only retrieval, replay/conflicto/corrupción, ingestion new/dedup/status/404, rate limit y rutas legacy cerradas en producción;
-- gates desechables sobre PostgreSQL 16.14/pgvector 0.8.5 y roles no propietarios ejecutaron migraciones/aislamiento A/B, el smoke procedural `200/200/409/403/400/401/500/200` y el smoke ingestion `401/403/403/202/200/202/409/429/200/404/404`;
+- gates desechables históricos sobre PostgreSQL 16.14/pgvector 0.8.5 y roles no propietarios ejecutaron migraciones/aislamiento A/B; el smoke procedural actualizado espera `200/200/409/403/400/401/500/200/200/200` incluyendo bundle/replay, pero su ejecución para el HEAD actual está pendiente de CI remoto; el smoke ingestion `401/403/403/202/200/202/409/429/200/404/404`;
 - el catálogo mínimo completo de `/api/v1/*` todavía no implementa transversalmente estas reglas;
-- `ProcedureEvidenceBundle` actual no cumple `EvidenceBundle`;
 - el control plane v1 observado de Content Agency es su API interna de misiones/runs/approvals, no este contrato;
 - los contratos read-only observados de OS Electoral son internos a sus bounded contexts, no este contrato.
 

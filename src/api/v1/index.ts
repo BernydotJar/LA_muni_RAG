@@ -71,5 +71,5 @@ export {
   bindScopedEvidenceRecord,
   evidenceIdentityFromCitationLabel,
 } from "./evidenceIdentity.js";
-export { mapProcedureWorkflowV1, deterministicUuid, MIXCO_COMPARATIVE_WARNING } from "./mapper.js";
+export { mapEvidenceBundleV1, mapProcedureWorkflowV1, deterministicUuid, MIXCO_COMPARATIVE_WARNING } from "./mapper.js";
 export type * from "./types.js";

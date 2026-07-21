@@ -328,7 +328,7 @@ describe("integration contracts v1", () => {
     );
     assert.equal(
       openapi["x-implementation-status"],
-      "procedure_workflow_and_ingestion_job_providers_implemented_with_limits"
+      "evidence_bundle_procedure_workflow_and_ingestion_job_providers_implemented_with_limits"
     );
   });
 });

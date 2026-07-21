@@ -4,9 +4,9 @@
   "info": {
     "title": "LA Muni RAG v1 API Contract",
     "version": "1.0.0",
-    "description": "Contract for the implemented procedure-workflow provider and authenticated ingestion-job submission/status slices. EvidenceBundle, ProcedureAssessment, document upload, and a deployed worker/storage/scanner remain unavailable; this document does not claim deployment."
+    "description": "Contract for the implemented evidence-bundle and procedure-workflow providers plus authenticated ingestion-job submission/status slices. ProcedureAssessment, document upload, and a deployed worker/storage/scanner remain unavailable; this document does not claim deployment."
   },
-  "x-implementation-status": "procedure_workflow_and_ingestion_job_providers_implemented_with_limits",
+  "x-implementation-status": "evidence_bundle_procedure_workflow_and_ingestion_job_providers_implemented_with_limits",
   "paths": {
     "/api/v1/procedure-queries": {
       "post": {
@@ -28,7 +28,7 @@
               "type": "string",
               "minLength": 16,
               "maxLength": 128,
-            "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{15,127}$"
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{15,127}$"
             }
           },
           {
@@ -54,7 +54,7 @@
         },
         "responses": {
           "200": {
-            "description": "Evidence-backed ProcedureWorkflow response. Other contract-valid requested_output values currently return 503 capability_unavailable.",
+            "description": "Contract-valid EvidenceBundle or draft ProcedureWorkflow response. ProcedureAssessment currently returns 503 capability_unavailable.",
             "headers": {
               "X-Request-Id": {
                 "$ref": "#/components/headers/RequestId"
@@ -69,9 +69,6 @@
                     },
                     {
                       "$ref": "../../schemas/v1/procedure-workflow.schema.json"
-                    },
-                    {
-                      "$ref": "../../schemas/v1/procedure-assessment.schema.json"
                     }
                   ]
                 }

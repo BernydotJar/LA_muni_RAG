@@ -24,6 +24,7 @@ export const loadProcedureQueryContractValidators = async (
   const registry = await loadIntegrationContractRegistry(projectRoot);
   return {
     request: requiredValidator(registry.schemasByFile, "procedure-query-request.schema.json"),
+    evidenceBundle: requiredValidator(registry.schemasByFile, "evidence-bundle.schema.json"),
     workflow: requiredValidator(registry.schemasByFile, "procedure-workflow.schema.json"),
     apiError: requiredValidator(registry.schemasByFile, "api-error.schema.json"),
   };

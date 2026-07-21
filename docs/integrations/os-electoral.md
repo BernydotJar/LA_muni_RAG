@@ -1,8 +1,8 @@
 # Integración con OS Electoral
 
-Estado: provider `ProcedureWorkflow` implementado y probado localmente; consumer OS Electoral pendiente
+Estado: providers `EvidenceBundle` y `ProcedureWorkflow` implementados y probados localmente; `ProcedureAssessment` y consumer OS Electoral pendientes
 
-Fecha de corte: 2026-07-18  
+Fecha de corte: 2026-07-21
 Producer/consumer vecino: [`BernydotJar/OS-Electoral`](https://github.com/BernydotJar/OS-Electoral)
 
 ## Propósito
@@ -96,7 +96,7 @@ missing_evidence[]
 limitations[]
 ```
 
-Es un snapshot inmutable. `claims[]` no es una lista libre de recomendaciones; cada claim enlaza citations/authority o queda tipado como no soportado. Contradicciones, missing evidence y limitaciones nunca se omiten sólo porque el consumidor prefiera una respuesta concluyente.
+Es un snapshot inmutable. El provider v1 lo deriva de la misma compilación interna usada por `ProcedureWorkflow`: sólo pasos con citas identity-bound se convierten en `claims[]`; la falta de respaldo se expresa en `missing_evidence[]`; `contradictions[]` permanece vacío salvo que exista un conflicto explícito. No es una lista libre de recomendaciones y no contiene decisión, estrategia, segmentación, territorio ni movilización electoral.
 
 ### `ProcedureWorkflow`
 
@@ -178,18 +178,18 @@ Un fallo de red se reintenta con la misma key. OS Electoral no debe fabricar una
 
 | Solicitud | Respuesta de LA Muni RAG |
 |---|---|
-| “¿Qué requisitos documentales tiene este proyecto?” | Actualmente puede devolver un `ProcedureWorkflow` draft con gaps; bundle/assessment responden `503 capability_unavailable`. |
+| “¿Qué requisitos documentales tiene este proyecto?” | Puede devolver un `EvidenceBundle` con claims/citations/gaps o un `ProcedureWorkflow` draft; `ProcedureAssessment` responde `503 capability_unavailable`. |
 | “¿Debemos prometer este proyecto en campaña?” | Devuelve sólo factibilidad/evidencia relevante y declara que la decisión pertenece a OS Electoral. |
 | “Prioriza comunidades para movilización.” | Refusal de boundary; no produce territorio o segmento. |
 | “Encontramos este manual, decláralo oficial.” | Registra/acepta gap para validación; no promueve la fuente por solicitud del consumidor. |
 
 ## Estado real al corte
 
-- LA Muni RAG tiene once schemas draft 2020-12, once ejemplos y OpenAPI 3.1.1 con estado `procedure_workflow_and_ingestion_job_providers_implemented_with_limits`; los dos contratos de ingestion son operacionales internos y no amplían el payload compartido con OS Electoral.
-- `POST /api/v1/procedure-queries` autentica por digest, exige `integration:query`, verifica tenant/credential, valida schema, limita tráfico, conserva idempotencia y audit, recupera sólo corpus público/activo/procesado y devuelve un workflow draft nuevamente validado.
-- Pruebas focales y un smoke real sobre PostgreSQL 16.14/pgvector 0.8.5 cubren éxito, replay exacto, conflicto, tenant mismatch, boundary, 401, replay corrupto y reintento; no hay consumer de OS Electoral ni evidencia end-to-end entre repositorios.
-- El tipo interno actual `ProcedureEvidenceBundle` contiene sólo query/mode/evidence y no equivale a `EvidenceBundle`.
-- La respuesta provider fija `workflow_version=1.0.0` y `approval_status=draft`, pero carece de lifecycle, version store y aprobación persistente.
+- LA Muni RAG tiene once schemas draft 2020-12, once ejemplos y OpenAPI 3.1.1 con estado `evidence_bundle_procedure_workflow_and_ingestion_job_providers_implemented_with_limits`; los contratos de ingestion son operacionales internos y no amplían el payload compartido con OS Electoral.
+- `POST /api/v1/procedure-queries` autentica por digest, exige `integration:query`, verifica tenant/credential, valida schema, limita tráfico, conserva idempotencia y audit, recupera sólo corpus público/activo/procesado y devuelve un `EvidenceBundle` o `ProcedureWorkflow` nuevamente validado según `requested_output`.
+- `EvidenceBundle` conserva document/version/section IDs, source authority, claims con citation refs, gaps, limitaciones y replay exacto; no incluye campaign decision fields. Sin evidencia devuelve claims vacíos y brechas explícitas.
+- Pruebas focales cubren ambos outputs, exact-origin CORS, replay exacto, conflicto, tenant mismatch, boundary, 401, replay corrupto y reintento; el gate PostgreSQL/HTTP restaurado requiere CI remoto para el HEAD actual y no existe consumer probado dentro del repositorio OS Electoral.
+- La respuesta workflow fija `workflow_version=1.0.0` y `approval_status=draft`, pero carece de lifecycle, version store y aprobación persistente. `ProcedureAssessment` sigue no disponible.
 - OS Electoral documenta bounded contexts de campaign/governance y contratos internos read-only; no se observó cliente de LA Muni RAG.
 - Por tanto, este documento no autoriza tráfico de producción ni afirma interoperabilidad.
 

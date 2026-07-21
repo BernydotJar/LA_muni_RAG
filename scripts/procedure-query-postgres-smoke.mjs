@@ -71,6 +71,7 @@ const post = async (body, options = {}) => {
     "x-request-id": requestId,
   };
   if (options.authorization === null) delete headers.authorization;
+  if (options.origin) headers.origin = options.origin;
   const response = await fetch(endpoint, {
     method: "POST",
     headers,
@@ -177,11 +178,41 @@ try {
   assert.equal(recovered.response.status, 200);
   assert.equal(recovered.body.request_id, requestId);
 
+  const evidenceBundleId = randomUUID();
+  const evidenceBundleRequest = requestBody(evidenceBundleId, {
+    requested_output: "evidence_bundle",
+  });
+  const evidenceBundleKey = `postgres-evidence-bundle-${randomUUID()}`;
+  const evidenceBundle = await post(evidenceBundleRequest, {
+    idempotencyKey: evidenceBundleKey,
+    origin: "https://os-electoral.example",
+  });
+  assert.equal(evidenceBundle.response.status, 200);
+  assert.equal(
+    evidenceBundle.response.headers.get("access-control-allow-origin"),
+    "https://os-electoral.example"
+  );
+  assert.equal(evidenceBundle.body.response_type, "evidence_bundle");
+  assert.equal(evidenceBundle.body.tenant_id, TENANT_A);
+  assert.equal(evidenceBundle.body.request_id, evidenceBundleId);
+  assert.ok(evidenceBundle.body.sources.length >= 1);
+  assert.ok(evidenceBundle.body.citations.length >= 1);
+  assert.ok(evidenceBundle.body.claims.length >= 1);
+  assert.equal(evidenceBundle.body.campaign_strategy, undefined);
+  assert.equal(evidenceBundle.body.content_calendar, undefined);
+  const evidenceBundleReplay = await post(evidenceBundleRequest, {
+    idempotencyKey: evidenceBundleKey,
+    origin: "https://os-electoral.example",
+  });
+  assert.equal(evidenceBundleReplay.response.status, 200);
+  assert.equal(evidenceBundleReplay.text, evidenceBundle.text);
+
   process.stdout.write(
     `${JSON.stringify({
       result: "procedure_query_postgres_http_smoke_passed",
       legacyProductionStatus: 404,
-      statuses: [200, 200, 409, 403, 400, 401, 500, 200],
+      statuses: [200, 200, 409, 403, 400, 401, 500, 200, 200, 200],
+      evidenceBundleValidated: true,
       tenantIsolationMarkerLeaked: false,
       corruptReplayMarkerLeaked: false,
     })}\n`
