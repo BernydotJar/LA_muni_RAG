@@ -22,7 +22,11 @@ import {
   serializeValidatedApiError,
   unauthorizedError,
 } from "./errors.js";
-import { mapEvidenceBundleV1, mapProcedureWorkflowV1 } from "./mapper.js";
+import {
+  mapEvidenceBundleV1,
+  mapProcedureAssessmentV1,
+  mapProcedureWorkflowV1,
+} from "./mapper.js";
 import {
   PROCEDURE_QUERY_OPERATION,
   type IdempotencyScope,
@@ -232,8 +236,8 @@ const validStoredReplay = async (
       ? validators.evidenceBundle
       : request.requested_output === "procedure_workflow"
         ? validators.workflow
-        : null;
-  if (!responseValidator || !responseValidator(parsed) || !parsed || typeof parsed !== "object") {
+        : validators.assessment;
+  if (!responseValidator(parsed) || !parsed || typeof parsed !== "object") {
     return false;
   }
   const response = parsed as {
@@ -356,15 +360,25 @@ const executeProcedureQuery = async (
           credentialId: principal.credentialId,
           createdAt: dependencies.now().toISOString(),
         };
-        const mapped =
-          request.requested_output === "evidence_bundle"
-            ? mapEvidenceBundleV1(mappingOptions)
-            : mapProcedureWorkflowV1(mappingOptions);
         const validators = await dependencies.validators;
-        const responseIsValid =
-          request.requested_output === "evidence_bundle"
-            ? validators.evidenceBundle(mapped)
-            : validators.workflow(mapped);
+        let mapped: Record<string, unknown>;
+        let responseIsValid: boolean;
+        if (request.requested_output === "evidence_bundle") {
+          mapped = mapEvidenceBundleV1(mappingOptions);
+          responseIsValid = validators.evidenceBundle(mapped);
+        } else if (request.requested_output === "procedure_workflow") {
+          mapped = mapProcedureWorkflowV1(mappingOptions);
+          responseIsValid = validators.workflow(mapped);
+        } else {
+          const canonicalWorkflow = mapProcedureWorkflowV1(mappingOptions);
+          if (!validators.workflow(canonicalWorkflow)) {
+            throw new Error(
+              "Generated workflow source for procedure_assessment failed the canonical v1 contract"
+            );
+          }
+          mapped = mapProcedureAssessmentV1(mappingOptions);
+          responseIsValid = validators.assessment(mapped);
+        }
         if (!responseIsValid) {
           throw new Error(
             `Generated ${request.requested_output} failed the canonical v1 contract`
@@ -381,7 +395,9 @@ const executeProcedureQuery = async (
             "success",
             request.requested_output === "evidence_bundle"
               ? "evidence_bundle_generated"
-              : "workflow_generated",
+              : request.requested_output === "procedure_workflow"
+                ? "workflow_generated"
+                : "assessment_generated",
             { requestedOutput: request.requested_output, idempotencyKeySha256 }
           )
         );
@@ -698,34 +714,6 @@ const handleAuthenticatedRequest = async (
         eventType: "integration.procedure_query.request_rejected",
         outcome: "blocked",
         reasonCode: "community_id_mismatch",
-        requestedOutput: request.requested_output,
-        idempotencyKeySha256,
-      }
-    );
-  }
-
-  if (request.requested_output === "procedure_assessment") {
-    return knownErrorResponse(
-      dependencies,
-      principal,
-      request.request_id,
-      new ApiV1Error(
-        503,
-        "capability_unavailable",
-        "The requested output is not available from this endpoint",
-        [
-          {
-            field: "/requested_output",
-            issue:
-              "procedure_assessment is not currently available; request evidence_bundle or procedure_workflow",
-          },
-        ],
-        false
-      ),
-      {
-        eventType: "integration.procedure_query.capability_unavailable",
-        outcome: "blocked",
-        reasonCode: "requested_output_unavailable",
         requestedOutput: request.requested_output,
         idempotencyKeySha256,
       }

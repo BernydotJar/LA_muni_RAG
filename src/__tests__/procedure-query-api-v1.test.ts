@@ -540,7 +540,7 @@ describe("POST /api/v1/procedure-queries", () => {
     }
   });
 
-  it("returns an evidence bundle and keeps procedure assessment honestly unavailable", async () => {
+  it("returns contract-valid evidence bundle and conservative procedure assessment", async () => {
     const evidenceHarness = await startHarness();
     try {
       const result = await post(
@@ -564,10 +564,21 @@ describe("POST /api/v1/procedure-queries", () => {
     try {
       const result = await post(
         assessmentHarness,
-        requestBody({ requested_output: "procedure_assessment" })
+        requestBody({ requested_output: "procedure_assessment" }),
+        { idempotencyKey: "procedure-assessment-api-v1-000001" }
       );
-      await assertApiError(result, 503, "capability_unavailable");
-      assert.equal(assessmentHarness.compilerCalls.count, 0);
+      const validators = await validatorsPromise;
+      assert.equal(result.response.status, 200);
+      assert.equal(
+        validators.assessment(result.json),
+        true,
+        JSON.stringify(validators.assessment.errors)
+      );
+      assert.equal(result.json.response_type, "procedure_assessment");
+      assert.deepEqual(result.json.completed_requirements, []);
+      assert.ok((result.json.missing_requirements as unknown[]).length >= 1);
+      assert.ok((result.json.blocked_steps as unknown[]).length >= 1);
+      assert.equal(assessmentHarness.compilerCalls.count, 1);
     } finally {
       await stopHarness(assessmentHarness);
     }

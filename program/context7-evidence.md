@@ -334,3 +334,19 @@ Context7 is now available, but every record must still name the official publish
     - "https://www.postgresql.org/docs/current/sql-createtrigger.html"
   limitations: "Context7 returned current PostgreSQL documentation; local behavior is additionally verified on PostgreSQL 15.18, while remote CI remains pinned to PostgreSQL 16/pgvector 0.8.5."
 ```
+
+## 2026-07-21 — Feature 061 three-variant OpenAPI response
+
+```yaml
+- task_id: WS08-PROCEDURE-ASSESSMENT-001
+  library: OpenAPI Specification
+  library_id: /oai/openapi-specification/3.1.1
+  installed_version: "OpenAPI document 3.1.1"
+  query: "response schema oneOf external JSON Schema references and discriminator-independent constant response_type variants"
+  retrieved_at: "2026-07-21T17:48:55Z"
+  documentation_summary: "OpenAPI supports a response schema composed with oneOf and external schema references; a discriminator is optional when alternatives validate unambiguously."
+  implementation_decision: "Keep three external draft-2020-12 response schemas in the procedure-query 200 oneOf. Each closed schema has a distinct response_type const, so runtime validates the selected output explicitly rather than relying on implicit discriminator mapping."
+  source_links:
+    - "https://github.com/oai/openapi-specification/blob/3.1.1/versions/3.0.3.md"
+  limitations: "Context7 surfaced discriminator examples from compatible OpenAPI text; executable Ajv/OpenAPI contract validation remains the acceptance evidence for this 3.1.1 document."
+```

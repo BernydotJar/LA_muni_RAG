@@ -218,12 +218,41 @@ try {
   assert.equal(evidenceBundleReplay.response.status, 200);
   assert.equal(evidenceBundleReplay.text, evidenceBundle.text);
 
+  const assessmentId = randomUUID();
+  const assessmentRequest = requestBody(assessmentId, {
+    requested_output: "procedure_assessment",
+  });
+  const assessmentKey = `postgres-procedure-assessment-${randomUUID()}`;
+  const assessment = await post(assessmentRequest, {
+    idempotencyKey: assessmentKey,
+    origin: "https://os-electoral.example",
+  });
+  assert.equal(assessment.response.status, 200);
+  assert.equal(assessment.body.response_type, "procedure_assessment");
+  assert.equal(assessment.body.tenant_id, TENANT_A);
+  assert.equal(assessment.body.request_id, assessmentId);
+  assert.deepEqual(assessment.body.completed_requirements, []);
+  assert.ok(Array.isArray(assessment.body.missing_requirements));
+  assert.ok(assessment.body.missing_requirements.length >= 1);
+  assert.ok(Array.isArray(assessment.body.blocked_steps));
+  assert.ok(assessment.body.blocked_steps.length >= 1);
+  assert.ok(Array.isArray(assessment.body.evidence_refs));
+  assert.equal(assessment.body.campaign_strategy, undefined);
+  assert.equal(assessment.body.content_calendar, undefined);
+  const assessmentReplay = await post(assessmentRequest, {
+    idempotencyKey: assessmentKey,
+    origin: "https://os-electoral.example",
+  });
+  assert.equal(assessmentReplay.response.status, 200);
+  assert.equal(assessmentReplay.text, assessment.text);
+
   process.stdout.write(
     `${JSON.stringify({
       result: "procedure_query_postgres_http_smoke_passed",
       legacyProductionStatus: 404,
-      statuses: [200, 200, 409, 403, 400, 401, 500, 200, 200, 200],
+      statuses: [200, 200, 409, 403, 400, 401, 500, 200, 200, 200, 200, 200],
       evidenceBundleValidated: true,
+      procedureAssessmentValidated: true,
       tenantIsolationMarkerLeaked: false,
       corruptReplayMarkerLeaked: false,
     })}\n`

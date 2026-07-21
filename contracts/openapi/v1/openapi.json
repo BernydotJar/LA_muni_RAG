@@ -135,7 +135,7 @@
         },
         "responses": {
           "200": {
-            "description": "Contract-valid EvidenceBundle or draft ProcedureWorkflow response. ProcedureAssessment currently returns 503 capability_unavailable.",
+            "description": "Contract-valid EvidenceBundle, draft ProcedureWorkflow, or conservative ProcedureAssessment response.",
             "headers": {
               "X-Request-Id": {
                 "$ref": "#/components/headers/RequestId"
@@ -150,6 +150,9 @@
                     },
                     {
                       "$ref": "../../schemas/v1/procedure-workflow.schema.json"
+                    },
+                    {
+                      "$ref": "../../schemas/v1/procedure-assessment.schema.json"
                     }
                   ]
                 }
@@ -173,9 +176,6 @@
           },
           "500": {
             "$ref": "#/components/responses/InternalError"
-          },
-          "503": {
-            "$ref": "#/components/responses/Unavailable"
           }
         }
       }

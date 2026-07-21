@@ -41,9 +41,12 @@ GET  /api/procedure-feedback
 `/api/procedure-feedback` requires a Bearer token configured through `PROCEDURE_FEEDBACK_API_TOKEN`.
 
 `POST /api/v1/procedure-queries` is the authenticated, tenant-scoped production
-slice. It returns either an identity-bound `EvidenceBundle` or an AI-generated
-`ProcedureWorkflow` draft according to `requested_output`; `ProcedureAssessment`
-remains explicitly unavailable. `POST /api/v1/claim-packs` is a separate
+slice. According to `requested_output`, it returns an identity-bound
+`EvidenceBundle`, an AI-generated `ProcedureWorkflow` draft, or a conservative
+`ProcedureAssessment` of that draft and the caller's case context. The assessment
+never treats opaque provided-document IDs as validated completion and does not
+prove legal compliance, approval, budget, procurement, or execution.
+`POST /api/v1/claim-packs` is a separate
 Content-Agency-facing provider that emits claims/citations/usage limits only and
 rejects copy, assets, channels, publication tasks, and campaign strategy. Production disables every pre-v1 `/api/*` route;
 the legacy routes listed above are development-only and must not be exposed with

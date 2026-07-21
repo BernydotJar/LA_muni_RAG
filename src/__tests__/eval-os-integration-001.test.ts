@@ -373,7 +373,7 @@ describe("EVAL-OS-INTEGRATION-001", () => {
     }
   });
 
-  it("keeps procedure assessment honestly unavailable and never invokes the compiler", async () => {
+  it("returns a conservative identity-bound ProcedureAssessment without campaign decisions", async () => {
     const harness = await startProcedureQueryHarness();
     try {
       const result = await postProcedureQuery(
@@ -381,18 +381,26 @@ describe("EVAL-OS-INTEGRATION-001", () => {
         procedureQueryRequest({ requested_output: "procedure_assessment" }),
         { idempotencyKey: "os-procedure-assessment-000001", origin: OS_ORIGIN }
       );
+      const validators = await procedureQueryValidators;
 
-      await assertContractApiError(result, 503, "capability_unavailable");
-      assert.match(
-        JSON.stringify((result.json.error as Record<string, unknown>).details),
-        /procedure_assessment is not currently available/
+      assert.equal(result.response.status, 200);
+      assert.equal(
+        validators.assessment(result.json),
+        true,
+        JSON.stringify(validators.assessment.errors)
       );
-      assert.equal(harness.compilerCalls.count, 0);
+      assert.equal(result.json.response_type, "procedure_assessment");
+      assert.deepEqual(result.json.completed_requirements, []);
+      assert.ok((result.json.missing_requirements as unknown[]).length >= 1);
+      assert.ok((result.json.blocked_steps as unknown[]).length >= 1);
+      assert.equal(harness.compilerCalls.count, 1);
       assert.equal(
         harness.persistence.audits[0]?.eventType,
-        "integration.procedure_query.capability_unavailable"
+        "integration.procedure_query.succeeded"
       );
+      assert.equal(harness.persistence.audits[0]?.reasonCode, "assessment_generated");
       assert.equal(harness.persistence.audits[0]?.requestedOutput, "procedure_assessment");
+      assertNoForeignOwnershipFields(result.json);
     } finally {
       await stopProcedureQueryHarness(harness);
     }

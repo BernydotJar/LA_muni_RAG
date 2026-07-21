@@ -112,3 +112,15 @@ Production approval remains blocked until all of these have named evidence:
 - tenant isolation and safe logging verified end to end;
 - incident contacts and notification decision path exercised;
 - residual risks explicitly accepted by authorized humans.
+
+## ProcedureAssessment replay minimization
+
+`ProcedureAssessment` is replayable through the shared procedure-query
+idempotency store. To prevent that replay table from becoming an implicit case
+notes database, the response keeps only opaque `subject_reference`,
+`community_id`, and `provided_documents` references. Narrative `facts` and
+`constraints` from the request are not copied to the response bytes. The request
+body is still parsed transiently and contributes to the scoped request digest,
+but raw narratives are not audited or persisted by this provider. A future
+procedure-case service must define its own lawful purpose, retention, access,
+redaction, and deletion controls before storing narrative case context.

@@ -317,7 +317,7 @@ const validateOpenApiDocument = async (
 
   for (const [label, operation, expectedResponses] of [
     ["claim pack", claimPackOperation, ["200", "400", "401", "403", "409", "429", "500"]],
-    ["procedure query", procedureOperation, ["200", "400", "401", "403", "409", "429", "500", "503"]],
+    ["procedure query", procedureOperation, ["200", "400", "401", "403", "409", "429", "500"]],
     ["ingestion enqueue", ingestionPostOperation, ["200", "202", "400", "401", "403", "409", "429", "500", "503"]],
     ["ingestion status", ingestionGetOperation, ["200", "400", "401", "403", "404", "429", "500"]],
     ["workflow draft", workflowDraftOperation, ["201", "400", "401", "403", "409", "429", "500"]],

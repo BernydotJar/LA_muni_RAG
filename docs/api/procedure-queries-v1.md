@@ -2,11 +2,11 @@
 
 `POST /api/v1/procedure-queries` is the tenant-isolated server-to-server entry
 point for OS Electoral to request documentary evidence or procedure analysis. The
-runtime implements `requested_output: "evidence_bundle"` and
-`requested_output: "procedure_workflow"`. The valid contract value
-`procedure_assessment` receives a structured, non-retryable
-`503 capability_unavailable`; the service does not imply that the unimplemented
-assessment lifecycle exists.
+runtime implements `requested_output: "evidence_bundle"`,
+`requested_output: "procedure_workflow"`, and
+`requested_output: "procedure_assessment"`. The assessment is a conservative
+snapshot derived from the same draft workflow; it is not a persisted case,
+approved procedure, legal conclusion, or institutional completion record.
 
 The canonical request, response, and error definitions are the draft 2020-12
 schemas in `contracts/schemas/v1/`. Runtime validation loads that registry with
@@ -67,6 +67,20 @@ versions, different excerpts within one version, and different documents are not
 classified as version conflicts. The bundle states that it contains no campaign
 strategy, segmentation, territory, mobilization, or campaign decision.
 
+A `ProcedureAssessment` reuses the canonical procedure/workflow IDs, evidence
+states, citations, gaps, credential provenance, and audit identity. To avoid
+turning idempotency replay into implicit case-note storage, the artifact retains
+opaque subject/community/document references but emits empty `facts` and
+`constraints`; the consumer correlates its original context by `request_id`. It keeps
+`completed_requirements` empty because `case_context.provided_documents` contains
+caller-owned opaque references rather than validated tenant document bindings.
+A citation may support that a requirement exists, but the case requirement remains
+`inferred_for_review` or weaker until a future case/document service validates it.
+Steps with unsupported evidence or unvalidated required documents appear in
+`blocked_steps`; the response preserves unknowns and one bounded next documentary
+action. The result never asserts legal compliance, approval, funding,
+procurement, execution, or campaign decisions.
+
 A retrieved excerpt becomes
 a citation only when document, version, section, and an HTTP(S) source URL are
 all present. The document must also carry the exact
@@ -95,7 +109,8 @@ the authenticated tenant/principal/operation; the rate table retains at most
 the current and immediately preceding logical windows for an active caller.
 This is not a global retention scheduler. A replay is never emitted merely
 because bytes exist in PostgreSQL: it must still be status 200, validate as the
-current requested `EvidenceBundle` or `ProcedureWorkflow`, and match tenant,
+current requested `EvidenceBundle`, `ProcedureWorkflow`, or
+`ProcedureAssessment`, and match tenant,
 request, credential, and original audit identities. A corrupt completed record is
 deleted, audited once as
 `idempotency_corrupt`, and returned as a non-leaking 500; the next identical

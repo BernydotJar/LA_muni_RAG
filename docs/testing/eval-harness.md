@@ -12,6 +12,7 @@ A green synthetic evaluation is not evidence that the municipal corpus is comple
 npm run domain:evaluate
 npm run eval:procedure
 npm run eval:os-integration
+npm run eval:assessment
 npm run eval:content-integration
 npm run eval:conflict
 npm run eval:boundary
@@ -25,7 +26,7 @@ npm run eval:water
 npm test
 ```
 
-`npm run eval:procedure`, `npm run eval:os-integration`, `npm run eval:content-integration`, `npm run eval:conflict`, `npm run eval:boundary`, `npm run eval:corrupt`, `npm run eval:artifact`, `npm run eval:vector`, `npm run eval:job-lease`, `npm run eval:tenant`, `npm run eval:mixco`, and `npm run eval:water` are named CI gates. The complete regression remains `npm test`; PostgreSQL behavior additionally requires the guarded SQL and compiled smoke gates.
+`npm run eval:procedure`, `npm run eval:os-integration`, `npm run eval:assessment`, `npm run eval:content-integration`, `npm run eval:conflict`, `npm run eval:boundary`, `npm run eval:corrupt`, `npm run eval:artifact`, `npm run eval:vector`, `npm run eval:job-lease`, `npm run eval:tenant`, `npm run eval:mixco`, and `npm run eval:water` are named CI gates. The complete regression remains `npm test`; PostgreSQL behavior additionally requires the guarded SQL and compiled smoke gates.
 
 ## EVAL-PROCEDURE-001
 
@@ -70,6 +71,7 @@ Primary requests:
 ```text
 OS Electoral -> ProcedureQueryRequest(requested_output=evidence_bundle)
 OS Electoral -> ProcedureQueryRequest(requested_output=procedure_workflow)
+OS Electoral -> ProcedureQueryRequest(requested_output=procedure_assessment)
 ```
 
 Implemented acceptance criteria:
@@ -80,9 +82,10 @@ Implemented acceptance criteria:
 4. An official citation marked `inference` remains `inferred_for_review`; a citation marked `validation_required` is never promoted to a claim and creates an explicit step gap.
 5. The EvidenceBundle is byte-exact on idempotent replay, carries the exact allowed OS origin in CORS, and records only allowlisted audit classifications.
 6. `requested_output=procedure_workflow` returns a schema-valid `workflow_version=1.0.0`, `approval_status=draft` artifact with sources, citations, and steps.
-7. Neither output contains campaign strategy, electoral segments, territories, message house, approved message, content calendar, publication tasks, or media spend fields.
-8. `requested_output=procedure_assessment` remains an honest non-retryable `503 capability_unavailable` and never invokes the compiler.
-9. OpenAPI 3.1.1 exposes exactly the implemented 200 variants, and the compiled PostgreSQL/HTTP smoke passed locally against PostgreSQL 15.18/pgvector 0.8.5 with EvidenceBundle success, exact replay, and exact-origin CORS.
+7. None of the three outputs contains campaign strategy, electoral segments, territories, message house, approved message, content calendar, publication tasks, or media spend fields.
+8. `requested_output=procedure_assessment` returns a schema-valid conservative snapshot from the same scoped compilation. Opaque `provided_documents` never become completed requirements; cited requirement existence remains `inferred_for_review` or weaker.
+9. Assessment replay is byte-exact, corrupt stored assessment bytes are invalidated before emission, and audit records only the allowlisted `assessment_generated` classification.
+10. OpenAPI 3.1.1 exposes exactly the three implemented 200 variants, and the compiled PostgreSQL/HTTP smoke exercises assessment success and replay in addition to bundle/workflow behavior.
 
 Executable evidence:
 
@@ -100,9 +103,46 @@ Current limitations:
 - The focused provider test uses controlled identity-bound Antigua evidence. It proves contract mapping, CORS, idempotency, audit minimization, and product boundaries, not a complete or current municipal corpus.
 - The compiled PostgreSQL/HTTP smoke and non-owner SQL gate passed locally on the current tree; remote CI on the published commit remains pending.
 - No consumer contract test has run inside the OS Electoral repository, so cross-repository interoperability, consumer persistence, and consumer-side draft/comparative handling remain unproved.
-- `ProcedureAssessment`, the external consumer, lifecycle UI/accessibility, and distributed production topology remain unavailable or unproved. Governed lifecycle persistence and human approval APIs now exist as a separate verified slice.
+- The assessment is bound to the generated draft and intentionally proves no case completion, legal compliance, approval, budget, procurement, or execution.
+- The external consumer, lifecycle UI/accessibility, case persistence, and distributed production topology remain unavailable or unproved. Governed lifecycle persistence and human approval APIs exist as a separate verified slice.
 
-Therefore `EVAL-OS-INTEGRATION-001` is `passed_for_workflow_and_evidence_bundle_provider_with_assessment_and_external_consumer_limitations`.
+Therefore `EVAL-OS-INTEGRATION-001` is `passed_for_bundle_workflow_and_conservative_assessment_provider_with_external_consumer_limitations`.
+
+## EVAL-PROCEDURE-ASSESSMENT-001
+
+Primary request:
+
+```text
+OS Electoral -> ProcedureQueryRequest(requested_output=procedure_assessment)
+```
+
+Implemented acceptance criteria:
+
+1. The provider uses the same authenticated, tenant-scoped compilation and the same idempotency, rate-limit, audit, CORS, response-size, and product-boundary controls as the other procedure-query outputs.
+2. The result validates against the closed `ProcedureAssessment` v1 schema and preserves procedure/workflow, tenant, request, credential, audit, citation, and source identities.
+3. Caller-owned opaque `provided_documents` never enter `completed_requirements`; without a validated case/document binding the completed list remains empty.
+4. A citation may support that a document requirement exists, but the case requirement remains `inferred_for_review` or weaker and the affected step remains blocked.
+5. Missing or conflicting evidence remains explicit through `missing_requirements`, `blocked_steps`, `unknowns`, limitations, and one bounded next documentary action.
+6. Exact replay returns identical bytes and invokes the compiler once.
+7. A corrupt assessment replay is invalidated, its secret marker is not emitted, and the client receives a contract-valid generic error.
+8. The output contains no campaign decision, strategy, segmentation, territory, content calendar, publication, budget approval, procurement approval, or legal-compliance claim.
+
+Executable evidence:
+
+- `src/__tests__/eval-procedure-assessment-001.test.ts`;
+- `src/api/v1/mapper.ts`;
+- `src/api/v1/handler.ts`;
+- `contracts/schemas/v1/procedure-assessment.schema.json`;
+- `contracts/openapi/v1/openapi.json`;
+- `scripts/procedure-query-postgres-smoke.mjs`.
+
+Current limitations:
+
+- The assessment evaluates the generated draft, not an approved persisted procedure selected by legal applicability review.
+- No procedure-case service validates provided documents or records completed requirements, so zero completion is deliberate and fail-closed.
+- Controlled fixtures and a disposable database do not prove corpus completeness, current legal effect, OS-repository interoperability, load, staging, or deployment.
+
+Therefore `EVAL-PROCEDURE-ASSESSMENT-001` is `passed_for_conservative_draft_bound_assessment_with_case_consumer_and_corpus_limitations`.
 
 ## EVAL-CONTENT-INTEGRATION-001
 
@@ -497,7 +537,8 @@ Therefore `EVAL-JOB-LEASE-001` is `passed_for_disposable_postgres_fencing_with_d
 | EVAL-PROCEDURE-001 | passed_with_corpus_and_case_limitations | Synthetic identity-bound citations and workflow JSON pass; governed lifecycle is verified separately; real corpus retrieval, conflict resolution, and cases remain open. |
 | EVAL-WATER-001 | passed_with_corpus_and_runtime_limitations | Real Antigua corpus, retrieval thresholds, contradictions, approvals, and persistent case tracking. |
 | EVAL-MIXCO-001 | passed_with_corpus_and_corroboration_limitations | End-to-end classification, composition, mapping, warning, anti-promotion schema checks, and corroboration gaps pass; real corpus and Antigua corroboration remain open. |
-| EVAL-OS-INTEGRATION-001 | passed_for_workflow_and_evidence_bundle_provider_with_assessment_and_external_consumer_limitations | EvidenceBundle and ProcedureWorkflow providers, replay, CORS, authority/citation identity, no-evidence gaps, boundary, OpenAPI, and compiled smoke wiring pass; assessment and OS-repository consumer proof remain open. |
+| EVAL-OS-INTEGRATION-001 | passed_for_bundle_workflow_and_conservative_assessment_provider_with_external_consumer_limitations | Three provider outputs, replay, CORS, authority/citation identity, no-evidence gaps, conservative assessment, boundary, OpenAPI, and compiled smoke pass; OS-repository consumer proof remains open. |
+| EVAL-PROCEDURE-ASSESSMENT-001 | passed_for_conservative_draft_bound_assessment_with_case_consumer_and_corpus_limitations | Opaque document refs cannot complete requirements, cited existence stays review-only, blocked/missing/unknown state, exact/corrupt replay and provenance pass; case binding, consumer, real corpus and legal applicability remain open. |
 | EVAL-CONTENT-INTEGRATION-001 | passed_for_claim_pack_provider_with_external_consumer_and_remote_ci_limitations | Provider, contract, replay, abstention, RBAC/tenant, Mixco, no-promotion, OpenAPI, non-owner SQL and compiled HTTP smoke pass locally; remote CI and the Content Agency consumer remain open. |
 | EVAL-BOUNDARY-001 | passed_for_current_provider_surface | Mixed and single-owner requests, hidden context violations, non-compilation, safe audit, and allowed evidence/procedure output pass; future APIs and consumers remain in scope. |
 | EVAL-TENANT-001 | passed_for_current_provider_and_disposable_db_gate_with_topology_limitations | Non-leaking HTTP denial, authenticated-tenant audit, transaction-local context, FORCE-RLS assertions, SQL gates, and compiled smokes pass locally; the full catalog and production topology remain open. |

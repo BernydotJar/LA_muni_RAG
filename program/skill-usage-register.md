@@ -287,3 +287,18 @@ Before any installation, require an owner to verify every skill file, license, d
 - verification: clean and supported legacy migration paths passed PostgreSQL 15.18/pgvector 0.8.5; corrupt historical state stopped and rolled back; non-owner SQL gates and compiled ingestion/API smokes passed; EVAL-ARTIFACT-001 5/5, EVAL-VECTOR-001 9/9, EVAL-JOB-LEASE-001 13/13; global suite 646/648 with zero failures and two explicit environment skips
 - result: implemented and verified locally; remote CI, production scanner/storage/dispatcher, real-corpus vector quality/load, protected merge, and deployment remain pending
 - product boundary: no electoral strategy, campaign operation, content production, publication, or neighboring-product source of truth was added
+
+
+### WS08-PROCEDURE-ASSESSMENT-001
+
+- skill selection: no installed session skill matched repository-level TypeScript/OpenAPI/PostgreSQL provider implementation more specifically than direct repository execution; no skill was installed or invoked
+- AutoSkills: no second installation attempt; the session-level 0.3.6 dry-run remained unchanged and untrusted proposals stayed uninstalled under the existing license/provenance gate
+- documentation tooling: Context7 `/oai/openapi-specification/3.1.1` queried for `oneOf`, external schema references, and constant response variants at `2026-07-21T17:48:55Z`
+- task: implement a conservative `ProcedureAssessment` as the third `POST /api/v1/procedure-queries` output
+- inputs: existing ProcedureAssessment schema/example, ProcedureQuery auth/idempotency/audit provider, canonical workflow mapper, OS integration tests, OpenAPI, non-owner PostgreSQL gate and compiled smoke
+- outputs: draft-bound assessment mapper, runtime/replay validator, OpenAPI three-variant response, named eval, compiled smoke, ADR/risk/traceability and current integration docs
+- producer evidence: assessment success/replay and schema validation; caller-owned opaque document IDs never enter completed requirements
+- critic/fixer evidence: requirement-existence citations remain `inferred_for_review`; corrupt assessment replay is invalidated without marker leakage; old 503 contract/docs removed
+- verification: EVAL-PROCEDURE-ASSESSMENT-001 4/4; EVAL-OS-INTEGRATION-001 5/5; procedure-query API, contract and operations suites 50/50; contract registry 16/16; global 652/654 with zero failures and two explicit environment skips; PostgreSQL 15.18/pgvector 0.8.5 non-owner gates and compiled ProcedureQuery, ClaimPack and lifecycle smokes pass
+- result: implemented and verified in the working tree with PostgreSQL; detached regression, remote CI, case/document binding, OS consumer, merge and deployment remain pending
+- product boundary: no campaign strategy, campaign mutation, content generation, publication, case completion, legal compliance or institutional approval was added

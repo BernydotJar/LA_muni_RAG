@@ -11,13 +11,9 @@
   "case_context": {
     "subject_reference": "water-case-san-mateo",
     "community_id": "community-san-mateo",
-    "facts": [
-      "La comunidad solicitó orientación documental."
-    ],
+    "facts": [],
     "provided_documents": [],
-    "constraints": [
-      "No se dispone de expediente municipal validado."
-    ]
+    "constraints": []
   },
   "completed_requirements": [],
   "missing_requirements": [

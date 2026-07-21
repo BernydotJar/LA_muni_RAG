@@ -62,6 +62,9 @@ jobs:
       - name: Run EVAL-OS-INTEGRATION-001
         run: npm run eval:os-integration
 
+      - name: Run EVAL-PROCEDURE-ASSESSMENT-001
+        run: npm run eval:assessment
+
       - name: Run EVAL-CONTENT-INTEGRATION-001
         run: npm run eval:content-integration
 

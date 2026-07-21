@@ -74,6 +74,16 @@ export interface EvidenceArtifactRequestV1 {
   jurisdiction: string;
 }
 
+export interface ProcedureAssessmentRequestV1 extends EvidenceArtifactRequestV1 {
+  case_context: {
+    subject_reference: string;
+    community_id: string;
+    facts: string[];
+    provided_documents: string[];
+    constraints: string[];
+  };
+}
+
 const normalized = (value: string | null | undefined): string =>
   (value ?? "")
     .normalize("NFD")
@@ -437,6 +447,11 @@ export interface MapProcedureWorkflowOptions {
 
 export type MapEvidenceBundleOptions = MapProcedureWorkflowOptions;
 
+export interface MapProcedureAssessmentOptions
+  extends Omit<MapProcedureWorkflowOptions, "request"> {
+  request: ProcedureAssessmentRequestV1;
+}
+
 export interface MapClaimPackOptions extends MapEvidenceBundleOptions {
   validUntil: string;
 }
@@ -683,6 +698,145 @@ export const mapProcedureWorkflowV1 = (options: MapProcedureWorkflowOptions): Re
       generated_by: "ai",
       created_at: options.createdAt,
       source_refs: sources.map((source) => `source:${source.source_id}`),
+      credential_id: options.credentialId.toLowerCase(),
+      audit_id: options.auditId.toLowerCase(),
+    },
+  };
+};
+
+interface AssessmentDocumentReference {
+  document_requirement_id: string;
+  name: string;
+  evidence_status: EvidenceStatus;
+  citation_refs: string[];
+}
+
+interface AssessmentWorkflowStep {
+  step_id: string;
+  evidence_status: EvidenceStatus;
+  required_documents: AssessmentDocumentReference[];
+  citation_refs: string[];
+  unknowns: string[];
+}
+
+interface AssessmentWorkflowGap {
+  description: string;
+  severity: "blocking" | "important" | "informational";
+  next_documental_action: string;
+}
+
+interface AssessmentMappedWorkflow {
+  procedure_id: string;
+  workflow_version: string;
+  steps: AssessmentWorkflowStep[];
+  required_documents: AssessmentDocumentReference[];
+  citations: Array<{ citation_id: string }>;
+  gaps: AssessmentWorkflowGap[];
+  limitations: string[];
+  provenance: {
+    source_refs: string[];
+  };
+}
+
+const boundedUniqueText = (values: readonly string[], maxItems = 256): string[] =>
+  unique(values.map((value) => value.trim().slice(0, 1000)).filter(Boolean)).slice(0, maxItems);
+
+/**
+ * Produces a documentary readiness snapshot from the same canonical draft
+ * workflow used by the other provider outputs. Caller-owned opaque document
+ * references are never treated as validated case completion.
+ */
+export const mapProcedureAssessmentV1 = (
+  options: MapProcedureAssessmentOptions
+): Record<string, unknown> => {
+  const mapped = mapProcedureWorkflowV1(options) as unknown as AssessmentMappedWorkflow;
+  const missingById = new Map<string, AssessmentDocumentReference>();
+  for (const reference of mapped.required_documents) {
+    if (reference.evidence_status === "not_applicable") continue;
+    missingById.set(reference.document_requirement_id, {
+      ...reference,
+      evidence_status:
+        reference.evidence_status === "supported"
+          ? "inferred_for_review"
+          : reference.evidence_status,
+      citation_refs: unique(reference.citation_refs),
+    });
+  }
+  const missingRequirements = [...missingById.values()];
+  const blockedSteps = unique(
+    mapped.steps
+      .filter(
+        (step) =>
+          step.evidence_status !== "supported" ||
+          step.required_documents.some(
+            (reference) => reference.evidence_status !== "not_applicable"
+          )
+      )
+      .map((step) => step.step_id)
+  );
+  const evidenceRefs = unique([
+    ...mapped.citations.map((citation) => citation.citation_id),
+    ...mapped.steps.flatMap((step) => step.citation_refs),
+    ...missingRequirements.flatMap((reference) => reference.citation_refs),
+  ]);
+  const unknowns = boundedUniqueText([
+    ...mapped.steps.flatMap((step) => step.unknowns),
+    ...mapped.gaps.map((gap) => gap.description),
+    ...(options.request.case_context.provided_documents.length > 0
+      ? [
+          "Las referencias opacas de documentos proporcionadas por el consumidor están pendientes de vinculación y validación tenant-scoped.",
+        ]
+      : []),
+  ]);
+  const firstBlockingGap = mapped.gaps.find((gap) => gap.severity === "blocking");
+  const nextDocumentalAction = (
+    firstBlockingGap?.next_documental_action ??
+    (missingRequirements[0]
+      ? `Vincular y validar «${missingRequirements[0].name}» contra un documento tenant-scoped antes de considerar completo el requisito.`
+      : "Realizar revisión humana del expediente y validar documentalmente cada requisito antes de continuar.")
+  ).trim().slice(0, 1000);
+  const limitations = boundedUniqueText(
+    [
+      ...mapped.limitations,
+      "Evaluación documental de un workflow draft generado; no acredita cumplimiento legal, aprobación institucional, presupuesto, contratación ni ejecución.",
+      "Las referencias en case_context.provided_documents son opacas y no completan requisitos sin un vínculo documental validado por LA Muni RAG.",
+      "Los facts y constraints narrativos no se copian al artifact ni al replay; el consumidor conserva el contexto original asociado al request_id.",
+      "El resultado requiere revisión humana y no contiene estrategia electoral ni instrucciones de producción de contenido.",
+    ],
+    64
+  );
+
+  return {
+    schema_version: "v1",
+    response_type: "procedure_assessment",
+    product_boundary: "evidence_and_procedure_only",
+    assessment_id: deterministicUuid(
+      `assessment:${options.request.tenant_id}:${options.request.request_id}:${mapped.procedure_id}:${mapped.workflow_version}`
+    ),
+    procedure_id: mapped.procedure_id,
+    workflow_version: mapped.workflow_version,
+    tenant_id: options.request.tenant_id.toLowerCase(),
+    request_id: options.request.request_id.toLowerCase(),
+    jurisdiction: options.request.jurisdiction,
+    case_context: {
+      subject_reference: options.request.case_context.subject_reference,
+      community_id: options.request.case_context.community_id,
+      facts: [],
+      provided_documents: [...options.request.case_context.provided_documents],
+      constraints: [],
+    },
+    completed_requirements: [],
+    missing_requirements: missingRequirements,
+    blocked_steps: blockedSteps,
+    unknowns,
+    evidence_refs: evidenceRefs,
+    next_documental_action: nextDocumentalAction,
+    limitations,
+    provenance: {
+      source_product: "la_muni_rag",
+      generated_by: "ai",
+      created_at: options.createdAt,
+      source_refs: [...mapped.provenance.source_refs],
       credential_id: options.credentialId.toLowerCase(),
       audit_id: options.auditId.toLowerCase(),
     },

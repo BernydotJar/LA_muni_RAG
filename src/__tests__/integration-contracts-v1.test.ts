@@ -115,6 +115,40 @@ describe("integration contracts v1", () => {
     assert.equal(validateResponse(leakedLease), false);
   });
 
+  it("minimizes ProcedureAssessment narrative case context at the contract boundary", async () => {
+    const assessmentSchema = JSON.parse(
+      await readFile(
+        new URL("../../contracts/schemas/v1/procedure-assessment.schema.json", import.meta.url),
+        "utf8"
+      )
+    ) as {
+      properties: {
+        case_context: {
+          allOf: Array<Record<string, unknown>>;
+        };
+      };
+    };
+    const minimization = assessmentSchema.properties.case_context.allOf[1] as {
+      properties: {
+        facts: { type: string; maxItems: number };
+        constraints: { type: string; maxItems: number };
+      };
+    };
+    const example = JSON.parse(
+      await readFile(
+        new URL("../../contracts/examples/v1/procedure-assessment.valid.json", import.meta.url),
+        "utf8"
+      )
+    ) as { case_context: { facts: unknown[]; constraints: unknown[] } };
+
+    assert.equal(minimization.properties.facts.type, "array");
+    assert.equal(minimization.properties.facts.maxItems, 0);
+    assert.equal(minimization.properties.constraints.type, "array");
+    assert.equal(minimization.properties.constraints.maxItems, 0);
+    assert.deepEqual(example.case_context.facts, []);
+    assert.deepEqual(example.case_context.constraints, []);
+  });
+
   it("keeps workflow lifecycle requests action-bound and every AI draft unapproved", async () => {
     const draftValidate = await schemaValidator("workflow-draft-request.schema.json");
     const reviewValidate = await schemaValidator("workflow-review-request.schema.json");
@@ -362,6 +396,16 @@ describe("integration contracts v1", () => {
       Object.keys(claimPack.responses),
       ["200", "400", "401", "403", "409", "429", "500"]
     );
+    assert.deepEqual(
+      operation.responses["200"].content["application/json"].schema.oneOf.map(
+        (schema: { $ref: string }) => schema.$ref
+      ),
+      [
+        "../../schemas/v1/evidence-bundle.schema.json",
+        "../../schemas/v1/procedure-workflow.schema.json",
+        "../../schemas/v1/procedure-assessment.schema.json",
+      ]
+    );
     assert.deepEqual(operation.security, [{ bearerAuth: [] }]);
     assert.deepEqual(
       operation.parameters.map((parameter: { name: string }) => parameter.name),
@@ -372,7 +416,7 @@ describe("integration contracts v1", () => {
     );
     assert.deepEqual(
       Object.keys(operation.responses),
-      ["200", "400", "401", "403", "409", "429", "500", "503"]
+      ["200", "400", "401", "403", "409", "429", "500"]
     );
     const enqueue = openapi.paths["/api/v1/ingestion-jobs"].post;
     const status = openapi.paths["/api/v1/ingestion-jobs/{job_id}"].get;

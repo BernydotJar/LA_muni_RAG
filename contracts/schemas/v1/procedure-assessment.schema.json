@@ -53,7 +53,24 @@
       "$ref": "common.schema.json#/$defs/Jurisdiction"
     },
     "case_context": {
-      "$ref": "common.schema.json#/$defs/CaseContext"
+      "allOf": [
+        {
+          "$ref": "common.schema.json#/$defs/CaseContext"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "facts": {
+              "type": "array",
+              "maxItems": 0
+            },
+            "constraints": {
+              "type": "array",
+              "maxItems": 0
+            }
+          }
+        }
+      ]
     },
     "completed_requirements": {
       "type": "array",

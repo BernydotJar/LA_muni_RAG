@@ -31,6 +31,7 @@ describe("operations readiness foundation", () => {
       "npm run domain:evaluate",
       "npm run eval:procedure",
       "npm run eval:os-integration",
+      "npm run eval:assessment",
       "npm run eval:content-integration",
       "npm run eval:conflict",
       "npm run eval:boundary",
@@ -106,11 +107,37 @@ describe("operations readiness foundation", () => {
     assert.match(packageJson, /"eval:os-integration": "node --import tsx --test src\/__tests__\/eval-os-integration-001\.test\.ts"/);
     assert.match(evaluation, /## EVAL-OS-INTEGRATION-001/);
     assert.match(evaluation, /same internal compilation used by the workflow provider/);
-    assert.match(evaluation, /passed_for_workflow_and_evidence_bundle_provider_with_assessment_and_external_consumer_limitations/);
+    assert.match(evaluation, /passed_for_bundle_workflow_and_conservative_assessment_provider_with_external_consumer_limitations/);
     assert.match(evaluation, /No consumer contract test has run inside the OS Electoral repository/);
     assert.match(openapi, /claim_pack_evidence_procedure_ingestion_and_governed_workflow_lifecycle_providers_implemented_with_limits/);
     assert.match(smoke, /evidenceBundleValidated: true/);
+    assert.match(smoke, /procedureAssessmentValidated: true/);
     assert.match(smoke, /requested_output: "evidence_bundle"/);
+    assert.match(smoke, /requested_output: "procedure_assessment"/);
+  });
+
+  it("keeps the named conservative procedure-assessment eval executable and honestly bounded", async () => {
+    const [packageJson, evaluation, workflow, openapi, smoke] = await Promise.all([
+      read("package.json"),
+      read("docs/testing/eval-harness.md"),
+      read(".github/workflows/ci.yml"),
+      read("contracts/openapi/v1/openapi.json"),
+      read("scripts/procedure-query-postgres-smoke.mjs"),
+    ]);
+
+    assert.match(packageJson, /"eval:assessment": "node --import tsx --test src\/__tests__\/eval-procedure-assessment-001\.test\.ts"/);
+    assert.match(evaluation, /## EVAL-PROCEDURE-ASSESSMENT-001/);
+    assert.match(evaluation, /opaque `provided_documents` never enter `completed_requirements`/);
+    assert.match(evaluation, /passed_for_conservative_draft_bound_assessment_with_case_consumer_and_corpus_limitations/);
+    assert.match(evaluation, /do not prove corpus completeness/);
+    assert.match(workflow, /Run EVAL-PROCEDURE-ASSESSMENT-001/);
+    assert.match(openapi, /procedure-assessment\.schema\.json/);
+    assert.doesNotMatch(openapi, /capability_unavailable/);
+    assert.match(smoke, /procedureAssessmentValidated: true/);
+    const handler = await read("src/api/v1/handler.ts");
+    assert.match(handler, /const canonicalWorkflow = mapProcedureWorkflowV1\(mappingOptions\)/);
+    assert.match(handler, /validators\.workflow\(canonicalWorkflow\)/);
+    assert.match(handler, /validators\.assessment\(mapped\)/);
   });
 
   it("keeps the named Content Agency ClaimPack eval executable and bounded to evidence", async () => {

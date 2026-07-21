@@ -71,6 +71,7 @@ export interface ProcedureQueryContractValidators {
   request: ValidateFunction;
   evidenceBundle: ValidateFunction;
   workflow: ValidateFunction;
+  assessment: ValidateFunction;
   apiError: ValidateFunction;
 }
 

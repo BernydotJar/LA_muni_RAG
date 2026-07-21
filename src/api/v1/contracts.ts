@@ -27,6 +27,7 @@ export const loadProcedureQueryContractValidators = async (
     request: requiredValidator(registry.schemasByFile, "procedure-query-request.schema.json"),
     evidenceBundle: requiredValidator(registry.schemasByFile, "evidence-bundle.schema.json"),
     workflow: requiredValidator(registry.schemasByFile, "procedure-workflow.schema.json"),
+    assessment: requiredValidator(registry.schemasByFile, "procedure-assessment.schema.json"),
     apiError: requiredValidator(registry.schemasByFile, "api-error.schema.json"),
   };
 };
