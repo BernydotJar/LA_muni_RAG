@@ -1,6 +1,6 @@
 # PostgreSQL Setup
 
-Last updated: 2026-07-19
+Last updated: 2026-07-21
 
 Owner: Product Engineering
 
@@ -52,6 +52,11 @@ psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -f db/migrations/006_ingestion_api_runti
 psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -f db/migrations/007_persisted_artifact_acceptance.sql
 psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -f db/migrations/008_claim_pack_api.sql
 psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -f db/migrations/009_workflow_lifecycle.sql
+psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -f db/migrations/010_workflow_lifecycle_api.sql
+psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -f db/migrations/011_artifact_vector_runtime_hardening.sql
+psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -f db/migrations/012_evidence_gap_requests.sql
+psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -f db/migrations/013_procedure_cases.sql
+psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -f db/migrations/014_catalog_api.sql
 ```
 
 Migration `005` is the canonical vector-store migration for fresh databases.
@@ -93,7 +98,12 @@ privileges required by the application. It must:
 - run tenant-owned work through `withTenantTransaction`, which sets
   `app.tenant_id` transaction-locally;
 - use transaction-bound ingestion/vector repositories; it does not need
-  `UPDATE` on `rag.documents` for the ingestion v1 flow.
+  `UPDATE` on `rag.documents` for the ingestion v1 flow;
+- grant catalog access by explicit columns: the catalog runtime must not receive
+  artifact object namespace/key, scanner internals, job lease/fencing material,
+  pipeline configuration or workflow-definition columns;
+- receive `EXECUTE` on `identity.record_catalog_auth_failure(uuid, text)` only
+  when the catalog API is enabled, without direct access to its failure buckets.
 
 Grant statements are environment-specific and intentionally absent until the
 runtime role name and platform are approved. Do not weaken RLS to make a grant
@@ -117,9 +127,11 @@ execute a database integration gate with the non-owner runtime role:
 7. run the compiled authenticated ingestion HTTP surface and prove role/tenant
    denial, new/replay/dedup/conflict, rate limit, own/cross-tenant status, and
    exact CORS;
-8. confirm denial/job audit records contain no credential, raw key/token, source
-   body, query text, or exception text;
-9. record PostgreSQL and pgvector versions plus the executed evidence.
+8. confirm denial/job audit records contain no raw credential, key/token, source
+   body, query text, URL or exception text;
+9. run source/document/job/procedure catalog registration/listing under the same
+   non-owner role and prove no authority promotion or private metadata exposure;
+10. record PostgreSQL and pgvector versions plus the executed evidence.
 
 The guarded disposable ingestion gate passed locally on PostgreSQL 16.14 and
 pgvector 0.8.5 with a table-non-owner, non-superuser, non-`BYPASSRLS` role. That

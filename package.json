@@ -52,7 +52,10 @@
     "eval:source": "node --import tsx --test src/__tests__/eval-source-001.test.ts src/__tests__/source-inventory.test.ts src/__tests__/source-inventory-domain-metadata.test.ts src/__tests__/source-inventory-missing.test.ts src/__tests__/source-inventory-acquisition.test.ts src/__tests__/source-authority-freshness.test.ts",
     "eval:missing": "node --import tsx --test src/__tests__/eval-missing-001.test.ts src/__tests__/procedure-query-mapper-v1.test.ts src/__tests__/procedure-query-api-v1.test.ts src/__tests__/evidence-gap-api-v1.test.ts",
     "eval:rbac": "node --import tsx --test src/__tests__/eval-rbac-001.test.ts src/__tests__/identity-tenancy-rbac.test.ts src/__tests__/tenant-ingestion-runtime-migration.test.ts src/__tests__/procedure-case-api-v1.test.ts",
-    "eval:ingest": "node --import tsx --test src/__tests__/eval-ingest-001.test.ts src/__tests__/eval-artifact-001.test.ts src/__tests__/eval-vector-001.test.ts src/__tests__/eval-job-lease-001.test.ts src/__tests__/ingestion-job-api-v1.test.ts src/__tests__/ingestion-job-service.test.ts src/__tests__/ingestion-worker.test.ts src/__tests__/tenant-ingestion-runtime-migration.test.ts"
+    "eval:ingest": "node --import tsx --test src/__tests__/eval-ingest-001.test.ts src/__tests__/eval-artifact-001.test.ts src/__tests__/eval-vector-001.test.ts src/__tests__/eval-job-lease-001.test.ts src/__tests__/ingestion-job-api-v1.test.ts src/__tests__/ingestion-job-service.test.ts src/__tests__/ingestion-worker.test.ts src/__tests__/tenant-ingestion-runtime-migration.test.ts",
+    "eval:source-api": "node --import tsx --test src/__tests__/eval-source-api-001.test.ts src/__tests__/catalog-api-v1.test.ts src/__tests__/catalog-api-runtime-migration.test.ts",
+    "eval:document-api": "node --import tsx --test src/__tests__/eval-document-api-001.test.ts src/__tests__/catalog-api-v1.test.ts src/__tests__/catalog-api-runtime-migration.test.ts",
+    "smoke:catalog-api": "node scripts/catalog-api-postgres-smoke.mjs"
   },
   "keywords": [],
   "author": "",

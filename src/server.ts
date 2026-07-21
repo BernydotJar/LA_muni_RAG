@@ -11,6 +11,14 @@ import {
   type ClaimPackV1Options,
 } from "./api/v1/claimPackIndex.js";
 import {
+  createCatalogV1Dependencies,
+  DOCUMENTS_ROUTE,
+  handleCatalogV1,
+  PROCEDURES_ROUTE,
+  SOURCES_ROUTE,
+  type CatalogV1Options,
+} from "./api/v1/catalogIndex.js";
+import {
   createEvidenceGapV1Dependencies,
   EVIDENCE_GAP_ROUTE,
   handleEvidenceGapV1,
@@ -90,6 +98,7 @@ export interface ServerOptions {
   procedureFeedbackDependencies?: ProcedureFeedbackDependencies;
   domainPack?: DomainPack;
   procedureQueryV1?: ProcedureQueryV1Options;
+  catalogV1?: CatalogV1Options;
   procedureCaseV1?: ProcedureCaseV1Options;
   claimPackV1?: ClaimPackV1Options;
   evidenceGapV1?: EvidenceGapV1Options;
@@ -150,6 +159,7 @@ export const createRequestHandler = (options: ServerOptions = {}): RequestListen
     options.procedureQueryV1,
     domainPack
   );
+  const catalogV1Dependencies = createCatalogV1Dependencies(options.catalogV1);
   const procedureCaseV1Dependencies = createProcedureCaseV1Dependencies(
     options.procedureCaseV1
   );
@@ -195,6 +205,20 @@ export const createRequestHandler = (options: ServerOptions = {}): RequestListen
         if (handleV1Cors(req, res, v1CorsAllowedOrigins)) return;
         await handleProcedureQueryV1(req, res, procedureQueryV1Dependencies);
         return;
+      }
+
+      if (
+        url.pathname === SOURCES_ROUTE ||
+        url.pathname === DOCUMENTS_ROUTE ||
+        url.pathname === PROCEDURES_ROUTE ||
+        (url.pathname === INGESTION_JOBS_ROUTE && req.method === "GET")
+      ) {
+        const catalogMethods = url.pathname === PROCEDURES_ROUTE
+          ? (["GET"] as const)
+          : (["GET", "POST"] as const);
+        if (handleV1Cors(req, res, v1CorsAllowedOrigins, catalogMethods)) return;
+        if (await handleCatalogV1(req, res, url, catalogV1Dependencies)) return;
+        throw new HttpError(404, "not_found", "Route not found");
       }
 
       if (

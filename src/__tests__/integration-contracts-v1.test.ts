@@ -32,8 +32,8 @@ describe("integration contracts v1", () => {
       status: "valid",
       schemaDialect: JSON_SCHEMA_DIALECT,
       openapiVersion: OPENAPI_VERSION,
-      schemasValidated: 19,
-      examplesValidated: 19,
+      schemasValidated: 27,
+      examplesValidated: 27,
       openapiDocumentsValidated: 1,
       issues: [],
     });
@@ -370,11 +370,14 @@ describe("integration contracts v1", () => {
       "/api/v1/workflows/{workflow_version_id}",
       "/api/v1/procedure-cases",
       "/api/v1/procedure-cases/{case_id}",
+      "/api/v1/sources",
+      "/api/v1/documents",
+      "/api/v1/procedures",
     ]);
     assert.deepEqual(Object.keys(openapi.paths["/api/v1/claim-packs"]), ["post"]);
     assert.deepEqual(Object.keys(openapi.paths["/api/v1/evidence-gap-requests"]), ["post"]);
     assert.deepEqual(Object.keys(openapi.paths["/api/v1/procedure-queries"]), ["post"]);
-    assert.deepEqual(Object.keys(openapi.paths["/api/v1/ingestion-jobs"]), ["post"]);
+    assert.deepEqual(Object.keys(openapi.paths["/api/v1/ingestion-jobs"]), ["post", "get"]);
     assert.deepEqual(Object.keys(openapi.paths["/api/v1/ingestion-jobs/{job_id}"]), ["get"]);
     assert.deepEqual(Object.keys(openapi.paths["/api/v1/workflow-drafts"]), ["post"]);
     assert.deepEqual(Object.keys(openapi.paths["/api/v1/workflow-reviews"]), ["post"]);
@@ -382,6 +385,27 @@ describe("integration contracts v1", () => {
     assert.deepEqual(Object.keys(openapi.paths["/api/v1/workflows/{workflow_version_id}"]), ["get"]);
     assert.deepEqual(Object.keys(openapi.paths["/api/v1/procedure-cases"]), ["post"]);
     assert.deepEqual(Object.keys(openapi.paths["/api/v1/procedure-cases/{case_id}"]), ["get", "patch"]);
+    assert.deepEqual(Object.keys(openapi.paths["/api/v1/sources"]), ["get", "post"]);
+    assert.deepEqual(Object.keys(openapi.paths["/api/v1/documents"]), ["get", "post"]);
+    assert.deepEqual(Object.keys(openapi.paths["/api/v1/procedures"]), ["get"]);
+
+    const sourceCreate = openapi.paths["/api/v1/sources"].post;
+    const sourceList = openapi.paths["/api/v1/sources"].get;
+    const documentCreate = openapi.paths["/api/v1/documents"].post;
+    const documentList = openapi.paths["/api/v1/documents"].get;
+    const ingestionList = openapi.paths["/api/v1/ingestion-jobs"].get;
+    const procedureList = openapi.paths["/api/v1/procedures"].get;
+    for (const catalogOperation of [sourceCreate, sourceList, documentCreate, documentList, ingestionList, procedureList]) {
+      assert.deepEqual(catalogOperation.security, [{ bearerAuth: [] }]);
+    }
+    assert.equal(sourceCreate.requestBody.content["application/json"].schema.$ref, "../../schemas/v1/source-create-request.schema.json");
+    assert.equal(sourceCreate.responses["201"].content["application/json"].schema.$ref, "../../schemas/v1/source-response.schema.json");
+    assert.equal(documentCreate.requestBody.content["application/json"].schema.$ref, "../../schemas/v1/document-create-request.schema.json");
+    assert.equal(documentCreate.responses["201"].content["application/json"].schema.$ref, "../../schemas/v1/document-response.schema.json");
+    assert.equal(sourceList.responses["200"].content["application/json"].schema.$ref, "../../schemas/v1/source-list-response.schema.json");
+    assert.equal(documentList.responses["200"].content["application/json"].schema.$ref, "../../schemas/v1/document-list-response.schema.json");
+    assert.equal(ingestionList.responses["200"].content["application/json"].schema.$ref, "../../schemas/v1/ingestion-job-list-response.schema.json");
+    assert.equal(procedureList.responses["200"].content["application/json"].schema.$ref, "../../schemas/v1/procedure-list-response.schema.json");
 
     const claimPack = openapi.paths["/api/v1/claim-packs"].post;
     const evidenceGap = openapi.paths["/api/v1/evidence-gap-requests"].post;

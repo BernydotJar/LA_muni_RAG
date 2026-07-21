@@ -1,0 +1,72 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://contracts.la-muni-rag.invalid/v1/document-response.schema.json",
+  "title": "DocumentResponse v1",
+  "$defs": {
+    "DocumentItem": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["document_id", "source_id", "title", "document_type", "document_scope", "issuing_authority", "official_source", "document_status", "confidentiality", "registered_by_principal_id", "created_at", "updated_at", "version", "artifact_acceptance", "ingestion_state", "retrieval_state"],
+      "properties": {
+        "document_id": { "$ref": "common.schema.json#/$defs/Uuid" },
+        "source_id": { "$ref": "common.schema.json#/$defs/Uuid" },
+        "title": { "type": "string", "minLength": 1, "maxLength": 500 },
+        "document_type": { "type": "string", "enum": ["constitution", "law", "decree", "regulation", "municipal_agreement", "council_minutes", "plan", "manual", "procedure", "form", "guide", "jurisprudence", "other"] },
+        "document_scope": { "type": "string", "enum": ["national", "departmental", "municipal", "heritage", "administrative", "internal"] },
+        "issuing_authority": { "type": ["string", "null"], "minLength": 1, "maxLength": 500 },
+        "official_source": { "type": "boolean" },
+        "document_status": { "type": "string", "enum": ["draft", "active", "superseded", "repealed", "archived", "unknown"] },
+        "confidentiality": { "type": "string", "enum": ["public", "internal", "confidential", "restricted"] },
+        "registered_by_principal_id": { "$ref": "common.schema.json#/$defs/Uuid" },
+        "created_at": { "type": "string", "format": "date-time" },
+        "updated_at": { "type": "string", "format": "date-time" },
+        "version": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["document_version_id", "version_label", "source_url", "original_filename", "mime_type", "content_sha256", "page_count", "extraction_state", "created_at"],
+          "properties": {
+            "document_version_id": { "$ref": "common.schema.json#/$defs/Uuid" },
+            "version_label": { "type": "string", "minLength": 1, "maxLength": 200 },
+            "source_url": { "oneOf": [{ "type": "string", "format": "uri", "pattern": "^https?://", "maxLength": 2048 }, { "type": "null" }] },
+            "original_filename": { "type": ["string", "null"], "minLength": 1, "maxLength": 255 },
+            "mime_type": { "type": ["string", "null"], "maxLength": 256 },
+            "content_sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+            "page_count": { "type": ["integer", "null"], "minimum": 1, "maximum": 100000 },
+            "extraction_state": { "type": "string", "enum": ["queued", "processing", "processed", "failed", "superseded"] },
+            "created_at": { "type": "string", "format": "date-time" }
+          }
+        },
+        "artifact_acceptance": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["state", "artifact_object_id", "artifact_scan_id", "accepted_until"],
+          "properties": {
+            "state": { "type": "string", "enum": ["not_accepted", "scanning", "accepted", "rejected", "superseded"] },
+            "artifact_object_id": { "oneOf": [{ "$ref": "common.schema.json#/$defs/Uuid" }, { "type": "null" }] },
+            "artifact_scan_id": { "oneOf": [{ "$ref": "common.schema.json#/$defs/Uuid" }, { "type": "null" }] },
+            "accepted_until": { "oneOf": [{ "type": "string", "format": "date-time" }, { "type": "null" }] }
+          },
+          "allOf": [{
+            "if": { "properties": { "state": { "const": "accepted" } }, "required": ["state"] },
+            "then": { "properties": { "artifact_object_id": { "$ref": "common.schema.json#/$defs/Uuid" }, "artifact_scan_id": { "$ref": "common.schema.json#/$defs/Uuid" }, "accepted_until": { "type": "string", "format": "date-time" } } },
+            "else": { "properties": { "artifact_scan_id": { "type": ["string", "null"], "format": "uuid" } } }
+          }]
+        },
+        "ingestion_state": { "type": "string", "enum": ["not_started", "queued", "processing", "retry_wait", "processed", "failed", "cancelled", "superseded"] },
+        "retrieval_state": { "type": "string", "enum": ["not_indexed", "indexing", "indexed", "failed"] }
+      }
+    }
+  },
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "response_type", "request_id", "tenant_id", "document", "limitations", "provenance"],
+  "properties": {
+    "schema_version": { "$ref": "common.schema.json#/$defs/SchemaVersion" },
+    "response_type": { "const": "document_catalog_item" },
+    "request_id": { "$ref": "common.schema.json#/$defs/Uuid" },
+    "tenant_id": { "$ref": "common.schema.json#/$defs/Uuid" },
+    "document": { "$ref": "#/$defs/DocumentItem" },
+    "limitations": { "type": "array", "minItems": 1, "maxItems": 8, "uniqueItems": true, "items": { "type": "string", "minLength": 1, "maxLength": 1000 } },
+    "provenance": { "$ref": "common.schema.json#/$defs/Provenance" }
+  }
+}

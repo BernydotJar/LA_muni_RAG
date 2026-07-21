@@ -1,0 +1,39 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://contracts.la-muni-rag.invalid/v1/document-create-request.schema.json",
+  "title": "DocumentCreateRequest v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "operation", "request_id", "tenant_id", "source_id", "title", "document_type", "document_scope", "issuing_authority", "confidentiality", "version", "provenance"],
+  "properties": {
+    "schema_version": { "$ref": "common.schema.json#/$defs/SchemaVersion" },
+    "operation": { "const": "document_create" },
+    "request_id": { "$ref": "common.schema.json#/$defs/Uuid" },
+    "tenant_id": { "$ref": "common.schema.json#/$defs/Uuid" },
+    "source_id": { "$ref": "common.schema.json#/$defs/Uuid" },
+    "title": { "type": "string", "minLength": 1, "maxLength": 500 },
+    "document_type": { "type": "string", "enum": ["constitution", "law", "decree", "regulation", "municipal_agreement", "council_minutes", "plan", "manual", "procedure", "form", "guide", "jurisprudence", "other"] },
+    "document_scope": { "type": "string", "enum": ["national", "departmental", "municipal", "heritage", "administrative", "internal"] },
+    "issuing_authority": { "type": ["string", "null"], "minLength": 1, "maxLength": 500 },
+    "confidentiality": { "type": "string", "enum": ["public", "internal", "confidential", "restricted"] },
+    "version": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["version_label", "source_url", "original_filename", "mime_type", "content_sha256", "page_count"],
+      "properties": {
+        "version_label": { "type": "string", "minLength": 1, "maxLength": 200 },
+        "source_url": { "oneOf": [{ "type": "string", "format": "uri", "pattern": "^https?://", "maxLength": 2048 }, { "type": "null" }] },
+        "original_filename": { "type": ["string", "null"], "minLength": 1, "maxLength": 255, "pattern": "^[^/\\\\\\u0000-\\u001f]+$" },
+        "mime_type": { "type": "string", "enum": ["application/pdf", "application/vnd.openxmlformats-officedocument.wordprocessingml.document", "text/plain", "text/markdown"] },
+        "content_sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+        "page_count": { "type": ["integer", "null"], "minimum": 1, "maximum": 100000 }
+      }
+    },
+    "provenance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["credential_id"],
+      "properties": { "credential_id": { "$ref": "common.schema.json#/$defs/Uuid" } }
+    }
+  }
+}

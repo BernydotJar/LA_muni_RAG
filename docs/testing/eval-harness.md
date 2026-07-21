@@ -815,3 +815,60 @@ Not proved:
 
 Therefore `EVAL-INGEST-001` is
 `passed_for_disposable_postgres_artifact_job_vector_pipeline_with_production_object_scanner_dispatcher_load_and_operations_limitations`.
+
+## EVAL-SOURCE-API-001
+
+Current scope: authenticated tenant source discovery registration and collection
+semantics.
+
+Proved:
+
+- registration is closed-schema and server-owned `unreviewed`;
+- the caller cannot set official/target-official, validation, acquisition,
+  ingestion or retrieval-completion state;
+- comparative sources receive the canonical non-Antigua warning;
+- `missing_source` cannot carry an artifact/discovery URL;
+- embedded credentials and common temporary signatures are rejected at HTTP and
+  PostgreSQL boundaries;
+- exact replay, digest conflict, schema-valid semantic corruption cleanup,
+  permission/tenant denial, rate limiting and keyset pagination pass;
+- fresh PostgreSQL 15.18/pgvector 0.8.5 runs under a non-owner
+  `NOSUPERUSER`/`NOBYPASSRLS` role with `FORCE RLS`.
+
+Not proved:
+
+- human source validation, official status or legal applicability;
+- durable acquisition, scan, extraction, ingestion or retrieval;
+- complete Antigua-first corpus or production deployment.
+
+Therefore `EVAL-SOURCE-API-001` is
+`passed_for_unreviewed_tenant_source_catalog_with_validation_acquisition_retrieval_and_deployment_limitations`.
+
+## EVAL-DOCUMENT-API-001
+
+Current scope: authenticated tenant document/version registration, safe collection
+projection, ingestion-job monitoring and procedure summaries.
+
+Proved:
+
+- an existing tenant source is required;
+- the server persists new documents as `draft`, extraction as `queued`, artifact
+  acceptance as `not_accepted`, ingestion as `not_started` and retrieval as
+  `not_indexed`;
+- the caller cannot submit artifact/scan/ingestion/retrieval completion fields;
+- exact SHA-256 and version identity are preserved;
+- object namespaces/keys, signed URLs, scanner internals, lease/fencing tokens,
+  pipeline config, raw errors and workflow definitions are excluded through both
+  explicit SQL projections and column-level grants;
+- safe ingestion states include derived `retry_wait`;
+- exact replay, semantic corruption cleanup, permission/tenant denial, pagination,
+  `FORCE RLS`, SQL gate and compiled HTTP smoke pass.
+
+Not proved:
+
+- durable object possession or current clean scan;
+- extraction, embeddings, real-corpus retrieval quality or citation review;
+- human SaaS UI, production topology, merge or deployment.
+
+Therefore `EVAL-DOCUMENT-API-001` is
+`passed_for_safe_tenant_document_registration_and_catalog_monitoring_with_artifact_ingestion_retrieval_ui_and_deployment_limitations`.

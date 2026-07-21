@@ -32,6 +32,14 @@ export const CONTRACT_SCHEMA_FILES = [
   "workflow-version.schema.json",
   "procedure-case-request.schema.json",
   "procedure-case.schema.json",
+  "source-create-request.schema.json",
+  "source-response.schema.json",
+  "source-list-response.schema.json",
+  "document-create-request.schema.json",
+  "document-response.schema.json",
+  "document-list-response.schema.json",
+  "ingestion-job-list-response.schema.json",
+  "procedure-list-response.schema.json",
   "event-envelope.schema.json",
   "api-error.schema.json",
 ] as const;
@@ -53,6 +61,14 @@ export const CONTRACT_EXAMPLE_BINDINGS = [
   { contractName: "workflow-version", schemaFile: "workflow-version.schema.json", exampleFile: "workflow-version.valid.json" },
   { contractName: "procedure-case-request", schemaFile: "procedure-case-request.schema.json", exampleFile: "procedure-case-request.valid.json" },
   { contractName: "procedure-case", schemaFile: "procedure-case.schema.json", exampleFile: "procedure-case.valid.json" },
+  { contractName: "source-create-request", schemaFile: "source-create-request.schema.json", exampleFile: "source-create-request.valid.json" },
+  { contractName: "source-response", schemaFile: "source-response.schema.json", exampleFile: "source-response.valid.json" },
+  { contractName: "source-list-response", schemaFile: "source-list-response.schema.json", exampleFile: "source-list-response.valid.json" },
+  { contractName: "document-create-request", schemaFile: "document-create-request.schema.json", exampleFile: "document-create-request.valid.json" },
+  { contractName: "document-response", schemaFile: "document-response.schema.json", exampleFile: "document-response.valid.json" },
+  { contractName: "document-list-response", schemaFile: "document-list-response.schema.json", exampleFile: "document-list-response.valid.json" },
+  { contractName: "ingestion-job-list-response", schemaFile: "ingestion-job-list-response.schema.json", exampleFile: "ingestion-job-list-response.valid.json" },
+  { contractName: "procedure-list-response", schemaFile: "procedure-list-response.schema.json", exampleFile: "procedure-list-response.valid.json" },
   { contractName: "event-envelope", schemaFile: "event-envelope.schema.json", exampleFile: "event-envelope.valid.json" },
   { contractName: "api-error", schemaFile: "api-error.schema.json", exampleFile: "api-error.valid.json" },
   { contractName: "api-error-unauthorized", schemaFile: "api-error.schema.json", exampleFile: "api-error-unauthorized.valid.json" },
@@ -218,6 +234,9 @@ const validateOpenApiDocument = async (
     "/api/v1/workflows/{workflow_version_id}",
     "/api/v1/procedure-cases",
     "/api/v1/procedure-cases/{case_id}",
+    "/api/v1/sources",
+    "/api/v1/documents",
+    "/api/v1/procedures",
   ];
   if (!equalStringSets(Object.keys(paths), expectedPaths)) {
     recordIssue("invalid_path_scope", "OpenAPI path scope does not match implemented v1 routes");
@@ -256,6 +275,15 @@ const validateOpenApiDocument = async (
   const procedureCaseItemPath = isJsonObject(paths["/api/v1/procedure-cases/{case_id}"])
     ? paths["/api/v1/procedure-cases/{case_id}"]
     : {};
+  const sourcesPath = isJsonObject(paths["/api/v1/sources"])
+    ? paths["/api/v1/sources"]
+    : {};
+  const documentsPath = isJsonObject(paths["/api/v1/documents"])
+    ? paths["/api/v1/documents"]
+    : {};
+  const proceduresPath = isJsonObject(paths["/api/v1/procedures"])
+    ? paths["/api/v1/procedures"]
+    : {};
   if (!equalStringSets(Object.keys(claimPackPath), ["post"])) {
     recordIssue("invalid_method_scope", "ClaimPack path must describe only POST");
   }
@@ -265,8 +293,8 @@ const validateOpenApiDocument = async (
   if (!equalStringSets(Object.keys(procedurePath), ["post"])) {
     recordIssue("invalid_method_scope", "Procedure query path must describe only POST");
   }
-  if (!equalStringSets(Object.keys(ingestionPath), ["post"])) {
-    recordIssue("invalid_method_scope", "Ingestion collection path must describe only POST");
+  if (!equalStringSets(Object.keys(ingestionPath), ["get", "post"])) {
+    recordIssue("invalid_method_scope", "Ingestion collection path must describe GET and POST");
   }
   if (!equalStringSets(Object.keys(ingestionItemPath), ["get"])) {
     recordIssue("invalid_method_scope", "Ingestion item path must describe only GET");
@@ -285,11 +313,21 @@ const validateOpenApiDocument = async (
   if (!equalStringSets(Object.keys(procedureCaseItemPath), ["get", "patch"])) {
     recordIssue("invalid_method_scope", "Procedure case item path must describe GET and PATCH");
   }
+  if (!equalStringSets(Object.keys(sourcesPath), ["get", "post"])) {
+    recordIssue("invalid_method_scope", "Sources path must describe GET and POST");
+  }
+  if (!equalStringSets(Object.keys(documentsPath), ["get", "post"])) {
+    recordIssue("invalid_method_scope", "Documents path must describe GET and POST");
+  }
+  if (!equalStringSets(Object.keys(proceduresPath), ["get"])) {
+    recordIssue("invalid_method_scope", "Procedures path must describe only GET");
+  }
 
   const claimPackOperation = isJsonObject(claimPackPath.post) ? claimPackPath.post : {};
   const evidenceGapOperation = isJsonObject(evidenceGapPath.post) ? evidenceGapPath.post : {};
   const procedureOperation = isJsonObject(procedurePath.post) ? procedurePath.post : {};
   const ingestionPostOperation = isJsonObject(ingestionPath.post) ? ingestionPath.post : {};
+  const ingestionListOperation = isJsonObject(ingestionPath.get) ? ingestionPath.get : {};
   const ingestionGetOperation = isJsonObject(ingestionItemPath.get) ? ingestionItemPath.get : {};
   const workflowDraftOperation = isJsonObject(workflowDraftPath.post) ? workflowDraftPath.post : {};
   const workflowReviewOperation = isJsonObject(workflowReviewPath.post) ? workflowReviewPath.post : {};
@@ -298,6 +336,11 @@ const validateOpenApiDocument = async (
   const procedureCaseCreateOperation = isJsonObject(procedureCasePath.post) ? procedureCasePath.post : {};
   const procedureCaseGetOperation = isJsonObject(procedureCaseItemPath.get) ? procedureCaseItemPath.get : {};
   const procedureCasePatchOperation = isJsonObject(procedureCaseItemPath.patch) ? procedureCaseItemPath.patch : {};
+  const sourceCreateOperation = isJsonObject(sourcesPath.post) ? sourcesPath.post : {};
+  const sourceListOperation = isJsonObject(sourcesPath.get) ? sourcesPath.get : {};
+  const documentCreateOperation = isJsonObject(documentsPath.post) ? documentsPath.post : {};
+  const documentListOperation = isJsonObject(documentsPath.get) ? documentsPath.get : {};
+  const procedureListOperation = isJsonObject(proceduresPath.get) ? proceduresPath.get : {};
   const operations = [
     ["POST /api/v1/claim-packs", claimPackOperation],
     ["POST /api/v1/evidence-gap-requests", evidenceGapOperation],
@@ -311,6 +354,12 @@ const validateOpenApiDocument = async (
     ["POST /api/v1/procedure-cases", procedureCaseCreateOperation],
     ["GET /api/v1/procedure-cases/{case_id}", procedureCaseGetOperation],
     ["PATCH /api/v1/procedure-cases/{case_id}", procedureCasePatchOperation],
+    ["POST /api/v1/sources", sourceCreateOperation],
+    ["GET /api/v1/sources", sourceListOperation],
+    ["POST /api/v1/documents", documentCreateOperation],
+    ["GET /api/v1/documents", documentListOperation],
+    ["GET /api/v1/ingestion-jobs", ingestionListOperation],
+    ["GET /api/v1/procedures", procedureListOperation],
   ] as const;
   for (const [label, operation] of operations) {
     const security = Array.isArray(operation.security) ? operation.security : [];
@@ -343,6 +392,12 @@ const validateOpenApiDocument = async (
     ["procedure case create", procedureCaseCreateOperation, ["idempotency-key", "x-request-id"]],
     ["procedure case read", procedureCaseGetOperation, ["x-request-id"]],
     ["procedure case update", procedureCasePatchOperation, ["idempotency-key", "x-request-id"]],
+    ["source create", sourceCreateOperation, ["idempotency-key", "x-request-id"]],
+    ["source list", sourceListOperation, ["x-request-id"]],
+    ["document create", documentCreateOperation, ["idempotency-key", "x-request-id"]],
+    ["document list", documentListOperation, ["x-request-id"]],
+    ["ingestion list", ingestionListOperation, ["x-request-id"]],
+    ["procedure list", procedureListOperation, ["x-request-id"]],
   ] as const) {
     const headerNames = requiredHeaders(operation);
     for (const requiredHeader of expectedHeaders) {
@@ -365,6 +420,12 @@ const validateOpenApiDocument = async (
     ["procedure case create", procedureCaseCreateOperation, ["201", "400", "401", "403", "409", "429", "500"]],
     ["procedure case read", procedureCaseGetOperation, ["200", "400", "401", "403", "404", "429", "500"]],
     ["procedure case update", procedureCasePatchOperation, ["200", "400", "401", "403", "404", "409", "429", "500"]],
+    ["source create", sourceCreateOperation, ["201", "400", "401", "403", "409", "429", "500"]],
+    ["source list", sourceListOperation, ["200", "400", "401", "403", "429", "500"]],
+    ["document create", documentCreateOperation, ["201", "400", "401", "403", "404", "409", "429", "500"]],
+    ["document list", documentListOperation, ["200", "400", "401", "403", "429", "500"]],
+    ["ingestion list", ingestionListOperation, ["200", "400", "401", "403", "429", "500"]],
+    ["procedure list", procedureListOperation, ["200", "400", "401", "403", "429", "500"]],
   ] as const) {
     const responses = isJsonObject(operation.responses) ? operation.responses : {};
     if (!equalStringSets(Object.keys(responses), [...expectedResponses])) {
