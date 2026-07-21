@@ -274,13 +274,15 @@
       const participantEvidenceStatus = String(
         step?.participant_evidence_status ?? step?.participantEvidenceStatus ?? ""
       );
-      if (participantEvidenceStatus !== "supported" || stepCitations.length === 0) return [];
-      return [
-        step?.responsible_actor,
-        step?.responsibleActor,
-        step?.responsible_unit,
-        step?.responsibleUnit,
-      ];
+      if (participantEvidenceStatus === "supported" && stepCitations.length > 0) {
+        return [
+          step?.responsible_actor,
+          step?.responsibleActor,
+          step?.responsible_unit,
+          step?.responsibleUnit,
+        ];
+      }
+      return [];
     }));
     const required = uniqueText(evidence.flatMap(({ step }) => [
       ...safeArray(step?.requiredDocuments).map((item) => {

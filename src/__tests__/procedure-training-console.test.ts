@@ -59,7 +59,7 @@ describe("procedure training console", () => {
     assert.match(script, /categoryEvidence/);
     assert.match(script, /card\.dataset\.evidenceStatus = evidence\.status/);
     assert.match(script, /raw === "missing_evidence" \|\| citations\.length > 0 \? raw : "missing_evidence"/);
-    assert.match(script, /participantEvidenceStatus === "supported" && citations\.length > 0/);
+    assert.match(script, /participantEvidenceStatus === "supported" && stepCitations\.length > 0/);
     assert.match(script, /Documento o regla pendiente de localizar y validar\./);
     assert.match(script, /textContent =/);
     assert.doesNotMatch(script, /\.innerHTML\s*=|insertAdjacentHTML|document\.write/);

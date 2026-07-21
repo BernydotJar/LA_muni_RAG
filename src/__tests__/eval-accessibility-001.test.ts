@@ -88,6 +88,6 @@ describe("EVAL-ACCESSIBILITY-001 — procedure training preview", () => {
     assert.match(evaluation, /static training surface/);
     assert.match(evaluation, /screen-reader/);
     assert.match(spec, /human WCAG review/);
-    assert.match(spec, /not the authenticated SaaS application/);
+    assert.match(spec, /not the authenticated SaaS\s+application/);
   });
 });
