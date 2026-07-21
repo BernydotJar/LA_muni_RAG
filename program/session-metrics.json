@@ -1,32 +1,31 @@
 {
-  "updated_at": "2026-07-21T17:31:36Z",
-  "branch": "feature/artifact-vector-runtime-hardening-v1",
-  "head": "f539db3aa910dbf57328602daf19fec2ed3e9677",
+  "updated_at": "2026-07-21T18:01:44Z",
+  "branch": "feature/procedure-assessment-v1",
+  "head": "56b9866988f080c10fafe1542038410e3b3f3e9d",
   "source": "observed command outputs only",
   "tests": {
-    "global_total": 648,
-    "global_passed": 646,
+    "global_total": 654,
+    "global_passed": 652,
     "global_failed": 0,
     "global_skipped": 2,
-    "eval_artifact_passed": 5,
-    "eval_vector_passed": 9,
-    "eval_job_lease_passed": 13
+    "eval_assessment_passed": 4,
+    "eval_os_integration_passed": 5,
+    "api_contract_operations_passed": 50
   },
   "database": {
     "postgres": "15.18",
     "pgvector": "0.8.5",
-    "fresh_path": "pass",
-    "legacy_path": "pass",
-    "invalid_history_expected_failure": "pass",
-    "compiled_smokes": 2
+    "procedure_query_smoke": "pass_with_assessment",
+    "claim_pack_smoke": "pass",
+    "workflow_lifecycle_smoke": "pass"
   },
   "publication": {
     "remote_sha_verified": true,
     "pr_open": false,
-    "ci_run_id": 29852618726,
+    "ci_run_id": 29855067232,
     "ci_status": "completed",
     "ci_conclusion": "success",
-    "check_run_id": 88709014203
+    "check_run_id": 88717220160
   },
   "cost": null,
   "duration_seconds": null,

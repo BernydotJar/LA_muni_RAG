@@ -1,6 +1,6 @@
 # 061 — Conservative ProcedureAssessment Provider v1
 
-Status: implemented and verified locally with PostgreSQL; remote CI pending
+Status: implemented, independently verified, published, and remote CI passed; PR/merge/deployment pending
 
 ## Objective
 
@@ -76,7 +76,7 @@ stored procedure-query idempotency or audit schema.
 - [x] OpenAPI three-variant response and strict contract validation;
 - [x] PostgreSQL non-owner gates and compiled ProcedureQuery/ClaimPack/lifecycle smokes;
 - [x] named eval, CI wiring, ADR, risk and traceability documentation;
-- [ ] detached clean-checkout regression;
-- [ ] remote Backend CI on the published commit;
+- [x] detached clean-checkout regression;
+- [x] remote Backend CI on the published commit;
 - [ ] external OS Electoral consumer contract;
 - [ ] human protected merge/deployment approval.

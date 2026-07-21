@@ -1,5 +1,5 @@
 schema_version: 1
-updated_at: "2026-07-21T17:31:36Z"
+updated_at: "2026-07-21T18:01:44Z"
 runtime:
   type: yaml_fallback
   farmtable_available: false
@@ -732,9 +732,9 @@ tasks:
       - "Commit 9c9803b adds the contract-valid EvidenceBundle output, exact replay, OS-origin CORS coverage, and EVAL-OS-INTEGRATION-001."
       - "The post-commit critic hardening keeps inference at inferred_for_review and suppresses validation_required claims; EVAL-OS-INTEGRATION-001 passes 5/5 and the integrated local suite passes 574/576 with two explicit skips and zero failures."
     limitations:
-      - "EvidenceBundle and ProcedureWorkflow are available; ProcedureAssessment still returns 503 capability_unavailable."
-      - "No OS Electoral consumer/interoperability, durable workflow lifecycle/approval, staging/load test, production platform/role, or deployment is claimed."
-      - "The updated PostgreSQL EvidenceBundle smoke is wired but requires remote CI for the current HEAD."
+      - "EvidenceBundle and ProcedureWorkflow were the original outputs; descendant commit 56b9866 adds conservative ProcedureAssessment success/replay without case-completion claims."
+      - "No OS Electoral consumer/interoperability, staging/load test, production platform/role, or deployment is claimed; governed workflow lifecycle/approval exists as a separate descendant slice."
+      - "Descendant 56b9866 passed Backend CI and compiled PostgreSQL smoke for bundle, workflow and assessment; this original task remains limited by consumer and production topology."
     pr: null
     ci: passed_local_remote_pending
   - id: WS08-CLAIM-PACK-001
@@ -774,6 +774,45 @@ tasks:
     branch: "feature/workflow-lifecycle-v1"
     pr: null
     ci: passed_local_postgres_remote_pending
+  - id: WS08-PROCEDURE-ASSESSMENT-001
+    workstream: WS-08
+    title: "Implement conservative ProcedureAssessment provider v1"
+    status: completed_with_limitations
+    owner: /root
+    files:
+      - src/api/v1/mapper.ts
+      - src/api/v1/handler.ts
+      - src/api/v1/contracts.ts
+      - contracts/schemas/v1/procedure-assessment.schema.json
+      - contracts/examples/v1/procedure-assessment.valid.json
+      - contracts/openapi/v1/openapi.json
+      - scripts/procedure-query-postgres-smoke.mjs
+      - src/__tests__/eval-procedure-assessment-001.test.ts
+      - specs/061-procedure-assessment-v1.md
+      - docs/decisions/061-conservative-procedure-assessment-v1.md
+      - docs/risks/061-procedure-assessment-v1-risk-register.md
+      - docs/traceability/061-requirements-traceability.md
+    depends_on:
+      - WS08-PROCEDURE-QUERY-001
+      - WS05-LIFECYCLE-API-001
+      - WS07-FOUNDATION-001
+    blockers: []
+    acceptance:
+      - "Assessment uses the same scoped compilation and validated canonical workflow as the other procedure-query outputs."
+      - "Opaque provided-document IDs and cited requirement existence never become completed case requirements."
+      - "Missing requirements, blocked steps, unknowns, next action and provenance remain contract-valid and replay-safe."
+      - "Narrative facts/constraints are excluded from response replay and the output contains no adjacent-product decisions."
+    evidence:
+      - "Commit and exact remote SHA 56b9866988f080c10fafe1542038410e3b3f3e9d."
+      - "EVAL-PROCEDURE-ASSESSMENT-001 4/4; EVAL-OS-INTEGRATION-001 5/5; API/contract/operations 50/50."
+      - "Detached global regression 652/654 with two explicit environment skips and zero failures."
+      - "PostgreSQL 15.18/pgvector 0.8.5 non-owner gates and compiled ProcedureQuery assessment success/replay plus ClaimPack/lifecycle smokes passed."
+    limitations:
+      - "No case/document validation service, OS Electoral consumer, real-corpus applicability proof, PR, merge or deployment."
+      - "Backend CI run 29855067232 and check 88717220160 passed; no PR, merge or deployment exists."
+    branch: "feature/procedure-assessment-v1"
+    pr: null
+    ci: passed_local_detached_postgres_and_remote
   - id: WS08-INT-001
     workstream: WS-08
     title: "Implement and test adjacent-product contracts"
@@ -800,12 +839,13 @@ tasks:
       - "Content Agency gets ClaimPack evidence without content generation."
       - "Both provider and external consumer suites pass."
     evidence:
-      - "OS Electoral provider slice returns EvidenceBundle and draft ProcedureWorkflow without campaign-owned fields; EVAL-OS-INTEGRATION-001 passes 5/5."
+      - "OS Electoral provider slice returns EvidenceBundle, draft ProcedureWorkflow and conservative ProcedureAssessment without campaign-owned fields; EVAL-OS-INTEGRATION-001 passes 5/5."
       - "Inference and validation-required evidence cannot be silently promoted to supported claims."
       - "Content Agency ClaimPack provider commit e8ac74f passes EVAL-CONTENT-INTEGRATION-001 7/7, strict contracts 12/12, and local global regression 588/590 with two explicit skips."
-      - "External OS Electoral and Content Agency consumers have not run cross-repository contract tests, and ProcedureAssessment remains unavailable."
+      - "ProcedureAssessment commit 56b9866 passes assessment 4/4, detached regression 652/654 and compiled PostgreSQL success/replay; EvidenceGapRequest and external consumers remain pending."
+      - "External OS Electoral and Content Agency consumers have not run cross-repository contract tests."
     pr: null
-    ci: passed_local_partial_remote_pending
+    ci: providers_pass_local_and_assessment_remote
   - id: WS09-UX-001
     workstream: WS-09
     title: "Harden authenticated and accessible evidence/workflow UX"
@@ -936,9 +976,9 @@ tasks:
       - "Every required named eval and cross-workstream gate has scope-equivalent evidence."
       - "Documentation and program state match current runtime truth."
     evidence:
-      - "Twelve named eval families pass; seven goal-required dedicated families remain missing."
-      - "Detached f539db3 regression passed 646/648 with two explicit skips and zero failures; typecheck, build, contracts 16/16, inventory 17, domain 8/8, Pages and audit passed."
-      - "Fresh/legacy/corrupt-history PostgreSQL paths and compiled tenant-ingestion/API smokes passed."
+      - "Thirteen named eval families pass, including ProcedureAssessment 4/4; seven goal-required dedicated families remain missing."
+      - "Detached 56b9866 regression passed 652/654 with two explicit skips and zero failures; typecheck, build, contracts 16/16, inventory 17, domain 8/8, Pages and audit passed."
+      - "Current PostgreSQL ProcedureQuery, ClaimPack and workflow lifecycle SQL gates/smokes passed; artifact/vector clean/legacy/corrupt-history evidence remains preserved from Feature 060."
       - "Corpus, consumers, cases, browser/accessibility, restore, load/HA, PR and deployment remain unproved."
     pr: null
     ci: passed_local_detached_postgres_and_remote

@@ -1,25 +1,27 @@
 # Open Program Issues
 
-Updated: 2026-07-21T17:30:46Z
+Updated: 2026-07-21T18:00:57Z
 
 ## Publication and CI
 
-`feature/artifact-vector-runtime-hardening-v1` is published at exact SHA `f539db3aa910dbf57328602daf19fec2ed3e9677`. `origin/main` remains `4950ba3`;
+`feature/procedure-assessment-v1` is published at exact SHA `56b9866988f080c10fafe1542038410e3b3f3e9d`. `origin/main` remains `4950ba3`;
 no merge or deployment is claimed. The public GitHub API reports no PR. Backend
-CI run `29852618726` completed successfully; check `Verify backend` was green.
+CI run `29855067232` and check `88717220160` completed successfully.
 
-The connector reported a Docker/NAT error although the remote ref advanced.
+The connector again reported Docker/NAT failure although the remote ref advanced.
 Always verify remote SHA before retrying.
 
 ## Ready product work
 
-### WS08-PROCEDURE-ASSESSMENT-001
-Versioned `ProcedureAssessment` and EvidenceGap contracts/provider with
-RBAC/tenant/idempotency/audit and consumer tests.
+### WS08-EVIDENCE-GAP-001
+Implement persistent `POST /api/v1/evidence-gap-requests` with auth, RBAC, tenant
+binding, validation, idempotency, audit, rate limit, lifecycle, OpenAPI, SQL gate
+and consumer contract semantics. It must not allow OS Electoral to declare a
+source official.
 
 ### WS06-CASE-LIFECYCLE-001
 Server system of record for approved procedure version, steps, documents,
-blockers, follow-up, dossier and audit.
+blockers, follow-up, dossier, audit and validated requirement completion.
 
 ### WS04-RETRIEVAL-EVAL-001
 Authorize tenant vector retrieval, complete filters/reranking, and measure recall,

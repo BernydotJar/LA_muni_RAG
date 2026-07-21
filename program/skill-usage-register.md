@@ -300,5 +300,5 @@ Before any installation, require an owner to verify every skill file, license, d
 - producer evidence: assessment success/replay and schema validation; caller-owned opaque document IDs never enter completed requirements
 - critic/fixer evidence: requirement-existence citations remain `inferred_for_review`; corrupt assessment replay is invalidated without marker leakage; old 503 contract/docs removed
 - verification: EVAL-PROCEDURE-ASSESSMENT-001 4/4; EVAL-OS-INTEGRATION-001 5/5; procedure-query API, contract and operations suites 50/50; contract registry 16/16; global 652/654 with zero failures and two explicit environment skips; PostgreSQL 15.18/pgvector 0.8.5 non-owner gates and compiled ProcedureQuery, ClaimPack and lifecycle smokes pass
-- result: implemented and verified in the working tree with PostgreSQL; detached regression, remote CI, case/document binding, OS consumer, merge and deployment remain pending
+- result: implemented, verified in a detached checkout and PostgreSQL, published at exact SHA 56b9866, and Backend CI run 29855067232 passed; case/document binding, OS consumer, PR, merge and deployment remain pending
 - product boundary: no campaign strategy, campaign mutation, content generation, publication, case completion, legal compliance or institutional approval was added

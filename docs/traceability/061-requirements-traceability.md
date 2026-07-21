@@ -13,4 +13,5 @@
 | Narrative context minimization | assessment response emits empty facts/constraints and only opaque refs | marker non-persistence eval | verified local |
 | Product boundary | closed schema and no foreign fields | OS eval | verified local |
 | PostgreSQL compiled smoke | updated script | ProcedureQuery success/replay plus ClaimPack/lifecycle regression on PostgreSQL 15.18/pgvector 0.8.5 | verified local |
+| Remote CI | Backend CI workflow | run 29855067232 / check 88717220160 on SHA 56b9866 | verified remote |
 | OS consumer interoperability | external repository | consumer contract suite | pending |

@@ -1,6 +1,6 @@
 # Decision 061 — ProcedureAssessment is conservative and draft-bound
 
-Status: accepted for the feature branch; PostgreSQL smoke passed; remote CI pending.
+Status: accepted; PostgreSQL smoke and remote CI passed; PR/merge/deployment pending.
 
 ## Decision
 

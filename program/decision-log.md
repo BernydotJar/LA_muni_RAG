@@ -65,3 +65,19 @@ A Docker/NAT connector error is not a publication result. `git ls-remote` is aut
 ## 2026-07-21T17:31:36Z — Remote CI accepted Feature 060
 
 Backend CI run `29852618726` and check `88709014203` completed successfully on exact SHA `f539db3aa910dbf57328602daf19fec2ed3e9677`. This proves CI execution, not merge or deployment.
+
+## 2026-07-21T18:00:57Z — ProcedureAssessment is draft-bound and fail-closed
+
+Decision: the provider uses the same scoped compilation as bundle/workflow, validates the canonical workflow, never trusts opaque provided-document IDs as completion, and keeps cited requirement existence at review-only. It is not a case, approval or legal conclusion.
+
+## 2026-07-21T18:00:57Z — Assessment replay minimizes narrative context
+
+Decision: the response contract requires empty `facts` and `constraints`; only opaque subject/community/document references remain. The idempotency replay table is not a case-note store.
+
+## 2026-07-21T18:00:57Z — Feature 061 publication receipt
+
+`feature/procedure-assessment-v1` is published at exact SHA `56b9866988f080c10fafe1542038410e3b3f3e9d` despite a connector Docker/NAT error. Backend CI run `29855067232` is tracked separately; no PR, merge or deployment is claimed.
+
+## 2026-07-21T18:01:44Z — Remote CI accepted Feature 061
+
+Backend CI run `29855067232` and check `88717220160` completed successfully on exact SHA `56b9866988f080c10fafe1542038410e3b3f3e9d`. This proves remote CI execution, not PR, merge or deployment.
