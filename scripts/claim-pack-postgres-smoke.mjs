@@ -26,7 +26,7 @@ const requestBody = (requestId, overrides = {}) => ({
   request_id: requestId,
   tenant_id: TENANT_A,
   question:
-    "¿Qué afirmaciones documentales están respaldadas para llevar agua potable a una comunidad y dar seguimiento a la solicitud?",
+    "¿Qué se necesita para llevar agua potable a una comunidad de Antigua Guatemala y cómo se le da seguimiento?",
   jurisdiction: "Municipio de La Antigua Guatemala, Sacatepéquez, Guatemala",
   case_context: {
     subject_reference: "runtime-claim-pack-water",

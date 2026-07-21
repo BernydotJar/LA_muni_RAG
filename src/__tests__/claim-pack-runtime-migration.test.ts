@@ -7,6 +7,14 @@ const persistencePath = new URL("../api/v1/claimPackPersistence.ts", import.meta
 const handlerPath = new URL("../api/v1/claimPackHandler.ts", import.meta.url);
 
 describe("ClaimPack provider persistence and security boundary", () => {
+  it("keeps the PostgreSQL retry-after expression syntactically balanced", async () => {
+    const persistence = await readFile(persistencePath, "utf8");
+    assert.match(
+      persistence,
+      /ceil\(extract\(epoch FROM \([\s\S]*statement_timestamp\(\)[\s\S]*\)\)\)[\s\S]*\)::integer AS retry_after_seconds/
+    );
+  });
+
   it("defines dedicated tenant-RLS idempotency and rate state without Content Agency artifacts", async () => {
     const sql = await readFile(migrationPath, "utf8");
     assert.match(sql, /CREATE TABLE integration\.claim_pack_idempotency/);

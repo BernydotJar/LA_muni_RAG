@@ -143,7 +143,7 @@ const CONSUME_RATE_LIMIT_SQL = `
       1,
       ceil(extract(epoch FROM (
         window_started_at + make_interval(secs => $3::integer) - statement_timestamp()
-      ))
+      )))
     )::integer AS retry_after_seconds,
     blocked_audit_id,
     blocked_audit_id = $5::uuid AS should_audit;

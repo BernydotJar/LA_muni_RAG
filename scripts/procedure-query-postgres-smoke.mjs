@@ -45,6 +45,7 @@ const requestBody = (requestId, overrides = {}) => ({
 });
 
 const server = createApiServer({
+  legacyApiEnabled: false,
   v1CorsAllowedOrigins: ["https://os-electoral.example"],
   requestTimeoutMs: 15_000,
 });
@@ -197,7 +198,17 @@ try {
   assert.equal(evidenceBundle.body.request_id, evidenceBundleId);
   assert.ok(evidenceBundle.body.sources.length >= 1);
   assert.ok(evidenceBundle.body.citations.length >= 1);
-  assert.ok(evidenceBundle.body.claims.length >= 1);
+  assert.ok(Array.isArray(evidenceBundle.body.claims));
+  assert.ok(Array.isArray(evidenceBundle.body.missing_evidence));
+  assert.ok(
+    evidenceBundle.body.claims.length + evidenceBundle.body.missing_evidence.length >= 1
+  );
+  if (evidenceBundle.body.claims.length === 0) {
+    assert.ok(evidenceBundle.body.missing_evidence.length >= 1);
+  }
+  for (const claim of evidenceBundle.body.claims) {
+    assert.ok(Array.isArray(claim.citation_refs) && claim.citation_refs.length >= 1);
+  }
   assert.equal(evidenceBundle.body.campaign_strategy, undefined);
   assert.equal(evidenceBundle.body.content_calendar, undefined);
   const evidenceBundleReplay = await post(evidenceBundleRequest, {

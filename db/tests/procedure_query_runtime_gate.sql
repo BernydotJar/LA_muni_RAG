@@ -188,10 +188,10 @@ VALUES (
   'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa',
   '55555555-5555-4555-8555-555555555555',
   'section',
-  'Manual comunitario, sección de solicitud y seguimiento',
+  'Solicitud de agua comunitaria y seguimiento',
   2,
   2,
-  'Agua potable comunidad solicitud obra aldea COCODE COMUDE priorización, planificación municipal, perfil, diagnóstico, fuente de agua, disponibilidad, calidad, terreno, propiedad, servidumbres, seguimiento y evidencia documental.',
+  'Solicitud de agua comunitaria: qué se necesita para llevar agua potable a una comunidad de Antigua Guatemala y cómo se le da seguimiento. COCODE, COMUDE, priorización, planificación municipal, perfil, diagnóstico, fuente de agua, disponibilidad, calidad, terreno, propiedad, servidumbres y evidencia documental.',
   'dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd'
 );
 COMMIT;
