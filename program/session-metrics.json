@@ -1,31 +1,37 @@
 {
-  "updated_at": "2026-07-21T19:37:19Z",
-  "branch": "feature/evidence-gap-request-v1",
-  "head": "66b41b943242d9c4317d35f125de1cd617ebb6e4",
+  "updated_at": "2026-07-21T23:20:48Z",
+  "branch": "feature/catalog-api-v1",
+  "head": "9da29720c23d64bc73bdb24e92e67707834f4f84",
   "source": "observed command outputs only",
   "tests": {
-    "total": 724,
-    "pass": 722,
-    "fail": 0,
-    "skip": 2
+    "global_total": 749,
+    "global_passed": 747,
+    "global_failed": 0,
+    "global_skipped": 2,
+    "eval_source_api_passed": 18,
+    "eval_document_api_passed": 18,
+    "contract_schemas": 27,
+    "contract_examples": 27
   },
   "database": {
     "postgres": "15.18",
     "pgvector": "0.8.5",
     "clean_database_recreated": true,
-    "procedure_query_smoke": "pass",
-    "claim_pack_smoke": "pass",
-    "workflow_lifecycle_smoke": "pass",
-    "evidence_gap_smoke": "pass",
-    "evidence_gap_concurrent_aggregate_convergence": true
+    "migrations": "001-014",
+    "catalog_sql_gate": "pass",
+    "catalog_compiled_http_smoke": "pass",
+    "corrupt_replay_cleanup_committed": true,
+    "source_authority_promoted": false,
+    "cross_tenant_leak": false
   },
   "publication": {
     "remote_sha_verified": true,
     "pr_open": false,
-    "ci_run_id": 29861888791,
-    "ci_status": "completed",
-    "ci_conclusion": "success",
-    "check_run_id": 88740409681
+    "ci_run_id": 29876782983,
+    "ci_status": "in_progress",
+    "ci_conclusion": null,
+    "merged": false,
+    "deployed": false
   },
   "cost": null,
   "duration_seconds": null,
@@ -60,5 +66,10 @@
   "openPullRequests": 0,
   "merged": false,
   "deployed": false,
-  "productionReady": false
+  "productionReady": false,
+  "dependency_audit": {
+    "fast_uri": "3.1.4",
+    "all_vulnerabilities": 0,
+    "production_vulnerabilities": 0
+  }
 }

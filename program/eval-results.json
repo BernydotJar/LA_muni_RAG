@@ -1,21 +1,21 @@
 {
-  "updated_at": "2026-07-21T19:37:19Z",
-  "branch": "feature/evidence-gap-request-v1",
-  "functional_head": "66b41b943242d9c4317d35f125de1cd617ebb6e4",
-  "status": "local_detached_clean_postgres_and_remote_ci_passed_feature_published",
+  "updated_at": "2026-07-21T23:20:48Z",
+  "branch": "feature/catalog-api-v1",
+  "functional_head": "9da29720c23d64bc73bdb24e92e67707834f4f84",
+  "status": "detached_clean_postgres_passed_feature_published_remote_ci_in_progress",
   "deterministic": {
     "typecheck": "pass",
     "build": "pass",
     "contracts": {
-      "schemas": 17,
-      "examples": 17,
+      "schemas": 27,
+      "examples": 27,
       "openapi_documents": 1,
-      "contract_suite_passed": 16,
+      "contract_suite_passed": 27,
       "contract_suite_failed": 0
     },
     "global_tests": {
-      "total": 669,
-      "passed": 667,
+      "total": 749,
+      "passed": 747,
       "failed": 0,
       "skipped": 2,
       "skip_reason": "explicit environment-gated database tests"
@@ -25,7 +25,7 @@
       "valid": 17,
       "verified": 4,
       "missing_source": 4,
-      "acquired": 1,
+      "acquisition_metadata": 1,
       "ingested": 0
     },
     "domain_evaluation": {
@@ -34,8 +34,9 @@
     },
     "pages": "pass",
     "dependency_audit": {
-      "command": "npm audit --audit-level=high",
-      "vulnerabilities": 0
+      "all_vulnerabilities": 0,
+      "production_vulnerabilities": 0,
+      "fast_uri_version": "3.1.4"
     },
     "diff_check": "pass",
     "secret_scan": "pass",
@@ -68,7 +69,29 @@
       400,
       500,
       200
-    ]
+    ],
+    "catalog_sql_gate": "pass",
+    "catalog_compiled_smoke": "pass",
+    "catalog_migrations": "001-014",
+    "catalog_statuses": [
+      401,
+      201,
+      201,
+      409,
+      500,
+      400,
+      201,
+      201,
+      200,
+      200,
+      200,
+      200,
+      403,
+      200
+    ],
+    "catalog_corrupt_replay_cleanup_committed": true,
+    "catalog_cross_tenant_leak": false,
+    "catalog_private_artifact_columns_granted": false
   },
   "hard_evals": {
     "EVAL-PROCEDURE-001": {
@@ -126,17 +149,19 @@
     "EVAL-JOB-LEASE-001": {
       "passed": 13,
       "total": 13
+    },
+    "EVAL-SOURCE-API-001": {
+      "passed": 18,
+      "total": 18,
+      "status": "passed_for_unreviewed_tenant_source_catalog_with_validation_acquisition_retrieval_and_deployment_limitations"
+    },
+    "EVAL-DOCUMENT-API-001": {
+      "passed": 18,
+      "total": 18,
+      "status": "passed_for_safe_tenant_document_registration_and_catalog_monitoring_with_artifact_ingestion_retrieval_ui_and_deployment_limitations"
     }
   },
-  "missing_dedicated_evals": [
-    "EVAL-SOURCE-001",
-    "EVAL-MISSING-001",
-    "EVAL-RBAC-001",
-    "EVAL-INGEST-001",
-    "EVAL-CASE-001",
-    "EVAL-ACCESSIBILITY-001",
-    "EVAL-RESTORE-001"
-  ],
+  "missing_dedicated_evals": [],
   "evidence_gap_assertions": {
     "initial_status": "open",
     "request_assertion_status": "requester_supplied_unverified",
@@ -152,26 +177,25 @@
     "documentary_text_in_audit": false
   },
   "publication": {
-    "remote_branch": "feature/evidence-gap-request-v1",
-    "remote_commit": "66b41b943242d9c4317d35f125de1cd617ebb6e4",
+    "remote_branch": "feature/catalog-api-v1",
+    "remote_commit": "9da29720c23d64bc73bdb24e92e67707834f4f84",
     "main_commit": "4950ba3c24dbe7d9891d5cec8d7ba5f57db3ef9c",
     "pr_state": "absent",
     "remote_ci": {
-      "run_id": 29861888791,
+      "run_id": 29876782983,
       "workflow": "Backend CI",
-      "status": "completed",
-      "conclusion": "success",
-      "check_run_id": 88740409681,
-      "head_sha": "66b41b943242d9c4317d35f125de1cd617ebb6e4"
+      "status": "in_progress",
+      "conclusion": null,
+      "head_sha": "9da29720c23d64bc73bdb24e92e67707834f4f84"
     },
     "merged": false,
     "deployed": false
   },
   "limitations": [
-    "EvidenceGap is intake-only; no research resolution lifecycle or queue is deployed.",
-    "Immutable request text lacks approved retention/deletion/legal-hold policy.",
-    "No OS Electoral consumer contract has run.",
-    "Global production readiness remains unproved."
+    "Source validation, durable acquisition, scan, ingestion and real retrieval quality remain unproved.",
+    "Dedicated Search and EvidenceBundle routes remain unimplemented.",
+    "Human SaaS identity/session and authenticated product UI remain unimplemented.",
+    "Production infrastructure, external consumers, protected merge and deployment remain unproved."
   ],
   "generatedAt": "2026-07-21T21:53:16Z",
   "summary": {
@@ -244,5 +268,18 @@
       "summary": "40/40 plus PostgreSQL/pgvector gates and HTTP smokes; production object/scanner/dispatcher/load/operations remain open.",
       "verifiedAt": "2026-07-21T21:53:16Z"
     }
-  ]
+  ],
+  "catalog_assertions": {
+    "source_registration_unreviewed": true,
+    "source_authority_promoted": false,
+    "document_initial_draft": true,
+    "artifact_acceptance_fabricated": false,
+    "exact_source_replay": true,
+    "exact_document_replay": true,
+    "semantic_corruption_rejected": true,
+    "cleanup_committed_before_error": true,
+    "signed_url_rejected": true,
+    "private_object_or_job_internals_returned": false,
+    "cross_tenant_marker_leaked": false
+  }
 }

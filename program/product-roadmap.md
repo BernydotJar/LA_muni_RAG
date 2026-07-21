@@ -19,7 +19,8 @@ procedure cases without unsupported legal or institutional claims.
 - tenant ProcedureCase create/read/update lifecycle;
 - public evidence-first Procedure Academy;
 - disposable logical database restore drill;
-- all nineteen required named hard-eval families.
+- all nineteen required named hard-eval families;
+- governed source/document catalogs, safe ingestion-job monitoring and procedure list.
 
 These capabilities are not merged/deployed and do not establish production readiness.
 
@@ -27,14 +28,14 @@ These capabilities are not merged/deployed and do not establish production readi
 
 ### Phase A — Complete the minimum product API
 
-1. source catalog create/list;
-2. document registration/library create/list;
-3. ingestion-job list/monitor;
-4. dedicated retrieval search;
-5. dedicated EvidenceBundle endpoint;
-6. procedure catalog list;
-7. OpenAPI/contracts, tenant RBAC, audit, rate limits, pagination/idempotency and
-   PostgreSQL runtime gates for every endpoint.
+1. source catalog create/list — verified with limits at Feature 067;
+2. document registration/library create/list — verified with limits at Feature 067;
+3. ingestion-job list/monitor — verified with limits at Feature 067;
+4. procedure catalog list — verified with limits at Feature 067;
+5. dedicated retrieval search — ready;
+6. dedicated EvidenceBundle endpoint — ready;
+7. preserve OpenAPI/contracts, tenant RBAC, audit, rate limits, pagination,
+   idempotency and PostgreSQL runtime gates for both remaining endpoints.
 
 ### Phase B — Acquire and validate a useful Antigua-first corpus
 
@@ -73,7 +74,7 @@ These capabilities are not merged/deployed and do not establish production readi
 | Milestone | Exit condition | State |
 |---|---|---|
 | M1 Production-shaped backend foundation | core providers, cases, DB gates, required evals | achieved on cumulative feature branches |
-| M2 Minimum catalog API | all goal-minimum endpoints contract/runtime proven | ready work |
+| M2 Minimum catalog API | all goal-minimum endpoints contract/runtime proven | partial: catalogs complete; Search/EvidenceBundle ready |
 | M3 Real Antigua evidence path | durable corpus ingested and retrieval/citations human evaluated | blocked by storage/data/human review |
 | M4 Authenticated SaaS beta | human identity plus role-aware accessible product surfaces | blocked by IdP/session decisions |
 | M5 Production candidate | staging, telemetry, load/HA, coordinated recovery, no critical/high findings | not started |

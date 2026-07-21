@@ -347,3 +347,20 @@ Before any installation, require an owner to verify every skill file, license, d
 - New external skill/package installation: none.
 - Supply-chain changes: none; existing lockfile reused with `npm ci --ignore-scripts --prefer-offline`.
 - Validation: `npm audit --audit-level=high` reported zero vulnerabilities.
+
+### WS08-CATALOG-API-001
+
+- skill selection: no installed skill matched repository-level TypeScript,
+  OpenAPI and PostgreSQL catalog implementation; direct repository execution was used;
+- task: implement source/document/job/procedure catalog routes without allowing
+  authority, artifact, ingestion or retrieval-state promotion;
+- outputs: migration 014, six route operations, eight schemas/examples, OpenAPI,
+  non-owner SQL gate, compiled smoke, two named evals and documentation;
+- critic/fixer findings: canonical replay reconstruction, committed corruption
+  cleanup, signed-URL rejection, explicit SQL projections, server-owned document
+  authority binding, rate-limit audit collision and a transitive dependency advisory;
+- verification: detached 747/749 with zero failures, 27/27 contracts, fresh
+  PostgreSQL 15.18/pgvector 0.8.5 migrations 001-014, compiled HTTP smoke and
+  zero-vulnerability all/production audits;
+- result: implemented, verified and published at exact SHA `9da2972`; remote CI,
+  Search/EvidenceBundle, corpus ingestion, human SaaS, merge and deployment remain open.

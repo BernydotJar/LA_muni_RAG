@@ -1,173 +1,127 @@
 {
-  "updated_at": "2026-07-21T19:37:19Z",
-  "slice": "immutable_evidence_gap_request_v1",
-  "functional_head": "66b41b943242d9c4317d35f125de1cd617ebb6e4",
+  "updated_at": "2026-07-21T23:20:48Z",
+  "slice": "governed_catalog_api_v1",
+  "functional_head": "9da29720c23d64bc73bdb24e92e67707834f4f84",
   "summary": {
     "critical_open_in_slice_code": 0,
     "high_open_in_slice_code": 0,
-    "external_or_governance_high_open": 3,
+    "resolved_critical_or_high": 7,
+    "external_or_governance_high_open": 5,
     "global_production_readiness_unproved": true
   },
   "findings": [
     {
-      "id": "EG-CRIT-001",
+      "id": "CAT-CRIT-001",
       "severity": "critical",
       "status": "resolved",
-      "description": "The initial migration referenced a nonexistent identity.integration_credentials table.",
-      "repair": "Use the tenant-composite foreign key to identity.api_credentials and add a regression that rejects the nonexistent table name.",
+      "description": "Schema-valid replay could alter authority or artifact state.",
+      "repair": "Require response hash, identity, persisted aggregate lookup and exact canonical reconstruction; commit cleanup before emitting replay_invalid.",
+      "evidence": [
+        "semantic replay corruption tests",
+        "compiled PostgreSQL cleanup receipt"
+      ]
+    },
+    {
+      "id": "CAT-CRIT-002",
+      "severity": "critical",
+      "status": "resolved",
+      "description": "Public URL fields could persist embedded credentials or temporary signatures.",
+      "repair": "Reject userinfo and credential/signature query parameters in HTTP and PostgreSQL constraints.",
+      "evidence": [
+        "HTTP negative tests",
+        "SQL check-violation gate"
+      ]
+    },
+    {
+      "id": "CAT-HIGH-003",
+      "severity": "high",
+      "status": "resolved",
+      "description": "SELECT-star lateral queries required private columns despite minimum grants.",
+      "repair": "Use explicit projections and column-level grants for artifact, job, procedure and version state.",
+      "evidence": [
+        "non-owner SQL gate",
+        "compiled document-list smoke"
+      ]
+    },
+    {
+      "id": "CAT-HIGH-004",
+      "severity": "high",
+      "status": "resolved",
+      "description": "Legacy document status defaulted to unknown for new catalog registrations.",
+      "repair": "Set migration default to draft and derive official_source/status in a server-owned trigger.",
       "evidence": [
         "migration test",
-        "clean PostgreSQL migration/gate"
+        "fresh PostgreSQL document response"
       ]
     },
     {
-      "id": "EG-HIGH-002",
+      "id": "CAT-HIGH-005",
       "severity": "high",
       "status": "resolved",
-      "description": "The request contract used priority critical while the initial persistence check used urgent.",
-      "repair": "Align the request, response, TypeScript and PostgreSQL enum to low/medium/high/critical and reject urgent.",
+      "description": "Repeated rate denials could reuse one audit UUID and degrade to 500.",
+      "repair": "Persist at most one blocked audit per window inside the rate transaction and return subsequent 429s without duplicate inserts.",
       "evidence": [
-        "contract tests",
-        "SQL check violation gate"
+        "third-request regression",
+        "HTTP suite"
       ]
     },
     {
-      "id": "EG-HIGH-003",
+      "id": "CAT-HIGH-006",
       "severity": "high",
       "status": "resolved",
-      "description": "The initial response schema referenced a nonexistent EvidenceGapPriority definition and omitted request/jurisdiction identity.",
-      "repair": "Create a closed canonical response with direct priority enum, request_id, jurisdiction and server provenance.",
+      "description": "PostgreSQL idempotency claim inferred new ownership from timestamp equality.",
+      "repair": "Use INSERT rowCount as the only new-claim signal.",
       "evidence": [
-        "17/17 contract registry",
-        "OpenAPI tests"
+        "repository review",
+        "exact replay smoke"
       ]
     },
     {
-      "id": "EG-HIGH-004",
+      "id": "CAT-HIGH-007",
       "severity": "high",
       "status": "resolved",
-      "description": "Copied ClaimPack scaffolding could have introduced compiler, expiry and content semantics into documentary intake.",
-      "repair": "Replace the scaffold with dedicated types, mapper, handler, persistence and no compiler dependency.",
+      "description": "Transitive fast-uri 3.1.3 triggered a high advisory.",
+      "repair": "Update lockfile-only resolution to fast-uri 3.1.4 and run clean npm ci plus all/prod audits.",
       "evidence": [
-        "ClaimPack residue scan",
-        "focused provider eval"
+        "npm ls fast-uri",
+        "two zero-vulnerability audits"
       ]
-    },
-    {
-      "id": "EG-HIGH-005",
-      "severity": "high",
-      "status": "resolved",
-      "description": "A stored acknowledgement could remain schema-valid while changing limitations or silently promoting source authority.",
-      "repair": "Require response SHA-256 and exact canonical mapper reconstruction before any transport or aggregate replay.",
-      "evidence": [
-        "semantic corruption eval",
-        "PostgreSQL wrong-hash gate",
-        "compiled corrupt replay recovery"
-      ]
-    },
-    {
-      "id": "EG-HIGH-006",
-      "severity": "high",
-      "status": "resolved",
-      "description": "Requester text could be displayed as a RAG finding or used to launder an authority declaration.",
-      "repair": "Fix request_assertion_status=requester_supplied_unverified and reject imperative authority promotion across subject and reason.",
-      "evidence": [
-        "contract assertion test",
-        "authority refusal eval",
-        "compiled smoke"
-      ]
-    },
-    {
-      "id": "EG-HIGH-007",
-      "severity": "high",
-      "status": "resolved",
-      "description": "Transport idempotency alone did not prove convergence for concurrent distinct keys targeting one aggregate.",
-      "repair": "Add aggregate identity claim/replay/conflict semantics and prove one-row exact-response convergence in memory and PostgreSQL.",
-      "evidence": [
-        "concurrency eval",
-        "compiled PostgreSQL smoke"
-      ]
-    },
-    {
-      "findingId": "F064-AGGREGATE-REPLAY",
-      "feature": "064",
-      "severity": "high",
-      "status": "resolved",
-      "description": "Distinct transport keys could compete to create duplicate cases.",
-      "resolution": "Canonical create hash, transaction advisory lock, unique aggregate identity and sealed initial acknowledgement; concurrent PostgreSQL/HTTP proof passes."
-    },
-    {
-      "findingId": "F064-REPLAY-BYTES",
-      "feature": "064",
-      "severity": "high",
-      "status": "resolved",
-      "description": "JSONB transport replay would not preserve exact response bytes.",
-      "resolution": "TEXT response body plus SHA-256 and canonical aggregate acknowledgement."
-    },
-    {
-      "findingId": "F065-ARTIFACT-PERMISSIONS",
-      "feature": "065",
-      "severity": "high",
-      "status": "resolved",
-      "description": "Initial pg_dump artifact inherited mode 0644.",
-      "resolution": "umask 077, explicit chmod 0600, owner/non-symlink checks and artifacts outside repository."
-    },
-    {
-      "findingId": "F066-SOURCE-DURABILITY",
-      "feature": "066",
-      "severity": "high",
-      "status": "open_global",
-      "description": "One inventory record has acquisition metadata but its ignored bytes are absent from this checkout.",
-      "resolution": "Do not credit ingestion or durable possession; require authorized object storage, current scan and human review."
-    },
-    {
-      "findingId": "GLOBAL-MISSING-CATALOG-APIS",
-      "feature": "program",
-      "severity": "high",
-      "status": "open_global",
-      "description": "Source/document/search/evidence/procedure catalog endpoints required by the goal remain missing.",
-      "resolution": "Ready task WS08-CATALOG-API-001."
-    },
-    {
-      "findingId": "GLOBAL-NO-HUMAN-IDP",
-      "feature": "program",
-      "severity": "critical",
-      "status": "open_global",
-      "description": "Current credentials do not implement human SaaS authentication/session/provisioning.",
-      "resolution": "Human-gated IdP/session/BFF decision and implementation."
-    },
-    {
-      "findingId": "GLOBAL-NO-PRODUCTION-RUNTIME",
-      "feature": "program",
-      "severity": "critical",
-      "status": "open_global",
-      "description": "No staging/production deployment, observability, load/HA, object recovery or runtime observation exists.",
-      "resolution": "WS10 platform work and human release approval."
     }
   ],
   "open_external_or_governance_findings": [
     {
-      "id": "EG-OPEN-PRIVACY-001",
+      "id": "CAT-OPEN-CORPUS-001",
+      "severity": "critical",
+      "category": "external_data",
+      "description": "No durable acquired, scanned, ingested and retrieval-validated Antigua-first corpus exists."
+    },
+    {
+      "id": "CAT-OPEN-SEARCH-002",
       "severity": "high",
+      "category": "product",
+      "description": "Dedicated Search and EvidenceBundle APIs are still missing."
+    },
+    {
+      "id": "CAT-OPEN-IDP-003",
+      "severity": "critical",
       "category": "human_decision",
-      "description": "Immutable documentary request text lacks an approved purpose, retention, deletion exception and legal-hold policy."
+      "description": "Human IdP/OIDC/BFF/session architecture is not approved or implemented."
     },
     {
-      "id": "EG-OPEN-CONSUMER-002",
-      "severity": "high",
-      "category": "external_service",
-      "description": "The OS Electoral repository has not run producer/consumer contract, retry and authority-warning tests."
-    },
-    {
-      "id": "EG-OPEN-OPERATIONS-003",
-      "severity": "high",
+      "id": "CAT-OPEN-OPS-004",
+      "severity": "critical",
       "category": "infrastructure",
-      "description": "No research assignment/resolution lifecycle, staging, load/HA, observability, backup/restore or deployment is proved."
+      "description": "No production object store/scanner/dispatcher/observability/staging/load/HA exists."
+    },
+    {
+      "id": "CAT-OPEN-RELEASE-005",
+      "severity": "high",
+      "category": "human_gate",
+      "description": "No PR, protected merge, deployment or production observation exists."
     }
   ],
   "open_global_findings": [
-    "Corpus, retrieval quality, procedure cases, authenticated frontend/accessibility and platform operations remain incomplete.",
-    "No protected merge or production deployment."
-  ],
-  "updatedAt": "2026-07-21T21:53:16Z"
+    "Zero documents are credited as ingested or real-corpus retrieval-validated.",
+    "External consumers, browser accessibility, privacy operations and production recovery remain incomplete."
+  ]
 }

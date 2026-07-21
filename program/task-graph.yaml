@@ -1110,8 +1110,11 @@ tasks:
   - EVAL-CASE-001
   - EVAL-ACCESSIBILITY-001
   - EVAL-RESTORE-001
-  current_state: All 19 required named hard-eval families, detached 724/726 regression, 19/19 contracts, database
-    gates and remote CI pass; real corpus, browsers, consumers, load/HA and production observation remain incomplete.
+  - EVAL-SOURCE-API-001
+  - EVAL-DOCUMENT-API-001
+  current_state: All required named hard-eval families plus Source/Document API, detached 747/749 regression,
+    27/27 contracts and fresh PostgreSQL 001-014 gates pass; real corpus, browsers, consumers, load/HA and
+    production observation remain incomplete.
   blockers: []
   depends_on:
   - GAP-001
@@ -1211,13 +1214,38 @@ tasks:
   - WS07-ID-001
 - id: WS08-CATALOG-API-001
   workstream: WS-08
-  title: Source document search evidence and procedure catalog APIs
-  status: ready
-  owner: unassigned
+  title: Ship governed tenant Catalog API v1
+  status: completed_with_limitations
+  owner: /root
   depends_on:
-  - WS02-CORP-001
-  - WS03-ING-001
-  - WS07-ID-001
+  - WS07-FOUNDATION-001
+  - WS08-CONTRACT-FOUNDATION-001
+  result:
+    commit: 9da29720c23d64bc73bdb24e92e67707834f4f84
+    branch: feature/catalog-api-v1
+    routes:
+    - GET/POST /api/v1/sources
+    - GET/POST /api/v1/documents
+    - GET /api/v1/ingestion-jobs
+    - GET /api/v1/procedures
+    eval_source_api: 18/18
+    eval_document_api: 18/18
+    detached_tests: 747/749; zero failures; two skips
+    contracts: 27 schemas / 27 examples / OpenAPI 3.1.1
+    postgres: fresh 001-014, forced RLS, non-owner SQL and compiled HTTP pass
+    remote_ci: 29876782983 in_progress
+  limitations:
+  - Search/dedicated EvidenceBundle, corpus acquisition/ingestion, human SaaS, production operations, merge and deployment remain open.
+- id: WS05-SEARCH-EVIDENCE-API-001
+  workstream: WS-04
+  title: Implement dedicated tenant Search and EvidenceBundle APIs
+  status: ready
+  owner: /root
+  depends_on:
+  - WS08-CATALOG-API-001
+  - WS03-TENANT-INGESTION-001
+  - WS07-FOUNDATION-001
+  blockers: []
 blockers:
 - id: BLK-CTX7-001
   affects:

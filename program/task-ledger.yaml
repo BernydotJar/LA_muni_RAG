@@ -1194,9 +1194,9 @@ tasks:
   evidence:
   - All 19 goal-required named hard evals plus ProcedureAssessment and EvidenceGap now have dedicated executable
     gates.
-  - Detached e39ad77 regression passed 724/726 with 722 pass, 0 fail and 2 explicit environment skips; typecheck,
-    build, 19/19 contracts, 8/8 domain and npm audit pass.
-  - Feature 066 CI 29871698536 succeeded.
+  - Detached 9da2972 regression passed 747/749 with 0 fail and 2 explicit environment skips; typecheck,
+    build, 27/27 contracts, 8/8 domain and both npm audits pass.
+  - Catalog fresh PostgreSQL 001-014 non-owner gate and compiled smoke pass; Feature 067 CI 29876782983 is in progress.
   pr: null
   ci: passed_local_detached_postgres_and_remote
 - id: WS05-LIFECYCLE-API-001
@@ -1345,6 +1345,55 @@ tasks:
   - e39ad7740324895c914e15106746f453e213de77; Backend CI 29871698536 success.
   pr: null
   ci: passed_remote
+- id: WS08-CATALOG-API-001
+  workstream: WS-08
+  title: Ship governed tenant Catalog API v1
+  status: completed_with_limitations
+  owner: /root
+  files:
+  - db/migrations/014_catalog_api.sql
+  - src/api/v1/catalogHandler.ts
+  - src/catalog/repository.ts
+  - contracts/openapi/v1/openapi.json
+  - docs/api/catalog-v1.md
+  depends_on:
+  - WS07-FOUNDATION-001
+  - WS08-CONTRACT-FOUNDATION-001
+  blockers: []
+  acceptance:
+  - Sources, documents, ingestion-job collection and procedures are authenticated, tenant-scoped and paginated.
+  - Source registration cannot promote authority, acquisition, ingestion or retrieval state.
+  - Private artifact/job/workflow fields are excluded by projections, grants and closed schemas.
+  - Exact replay, semantic-corruption cleanup, rate limits, forced RLS and compiled PostgreSQL HTTP pass.
+  evidence:
+  - Functional commit and exact remote SHA 9da29720c23d64bc73bdb24e92e67707834f4f84.
+  - Detached 747/749 regression with 0 failures and 2 explicit skips; 27/27 contracts; both npm audits zero.
+  - Fresh PostgreSQL 15.18/pgvector 0.8.5 migrations 001-014, non-owner SQL gate and compiled HTTP smoke pass.
+  - EVAL-SOURCE-API-001 18/18 and EVAL-DOCUMENT-API-001 18/18.
+  limitations:
+  - Search and dedicated EvidenceBundle routes remain missing.
+  - No durable source acquisition, real ingestion/retrieval, human SaaS, production topology, PR, merge or deployment.
+  branch: feature/catalog-api-v1
+  pr: null
+  ci: remote_in_progress_run_29876782983
+- id: WS05-SEARCH-EVIDENCE-API-001
+  workstream: WS-04
+  title: Implement dedicated tenant Search and EvidenceBundle APIs
+  status: ready
+  owner: /root
+  files: []
+  depends_on:
+  - WS08-CATALOG-API-001
+  - WS03-TENANT-INGESTION-001
+  - WS07-FOUNDATION-001
+  blockers: []
+  acceptance:
+  - POST search supports bounded keyword, phrase, semantic and hybrid modes with tenant/authority/jurisdiction/confidentiality filters.
+  - POST evidence-bundles preserves identity-bound citations, authority and explicit gaps without promotion.
+  - Closed contracts, adversarial HTTP, forced-RLS PostgreSQL and compiled smokes pass.
+  evidence: []
+  pr: null
+  ci: not_started
 blockers:
 - id: BLK-CTX7-001
   state: resolved

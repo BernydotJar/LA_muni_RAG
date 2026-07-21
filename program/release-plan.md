@@ -25,10 +25,11 @@ remote CI gates. It is still a development checkpoint, not a releasable product.
 | ProcedureCase lifecycle | `cf9449dde7d41d5ecdb5b34996bf73ee6ea803ef` | 29866907067 success |
 | Disposable logical restore drill | `5d4541000d234c6ccf23155f5eeab70b467dd0c6` | 29867846337 success |
 | Remaining required named evals | `e39ad7740324895c914e15106746f453e213de77` | 29871698536 success |
+| Governed Catalog API v1 | `9da29720c23d64bc73bdb24e92e67707834f4f84` | 29876782983 in progress |
 
 ## Required before release candidate
 
-- minimum catalog APIs complete;
+- dedicated Search and EvidenceBundle routes complete;
 - durable official corpus bytes, current scan, extraction, ingestion and human review;
 - real-corpus retrieval/citation/refusal thresholds;
 - human identity/session/provisioning and authenticated UI;

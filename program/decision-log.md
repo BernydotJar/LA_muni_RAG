@@ -151,3 +151,41 @@ Evidence: commit `e39ad77`, CI 29871698536 and `docs/testing/eval-harness.md`.
 Decision: prioritize source/document/job-list/search/evidence/procedure catalog
 APIs before expanding visual surfaces. These endpoints are required to make the
 existing data and providers operable as a coherent SaaS backend.
+
+## 2026-07-21T23:20:48Z — Catalog registration cannot establish authority or processing completion
+
+Decision: `POST /api/v1/sources` creates only unreviewed discovery metadata and
+`POST /api/v1/documents` creates only a draft declared version. Official status,
+validity, acquisition, scan acceptance, ingestion, retrieval quality and legal
+applicability remain separate server/human-owned lifecycles.
+
+Evidence: migration 014 defaults and column grants, closed request schemas,
+EVAL-SOURCE-API-001, EVAL-DOCUMENT-API-001 and fresh non-owner PostgreSQL gate.
+
+## 2026-07-21T23:20:48Z — Catalog projections are privilege-minimized, not presentation-only
+
+Decision: do not rely on response mappers alone to hide object keys, scanner
+internals, job lease/fencing state, pipeline configuration or workflow
+definitions. The runtime receives explicit column grants and repositories use
+explicit projections.
+
+Reason: a future mapper bug must not turn broad table privilege into a metadata leak.
+
+## 2026-07-21T23:20:48Z — Catalog replay requires canonical reconstruction and committed cleanup
+
+Decision: exact replay is accepted only after SHA-256, schema, tenant/request/
+credential/audit identity, persisted aggregate identity and canonical response
+reconstruction match. Schema-valid semantic corruption is deleted in a committed
+transaction before a generic `replay_invalid` response is emitted.
+
+## 2026-07-21T23:20:48Z — Public catalog URLs may not contain credentials or temporary signatures
+
+Decision: discovery/source URLs reject userinfo and common token/signature query
+parameters at HTTP and PostgreSQL boundaries. Object coordinates and signed URLs
+remain owned by the artifact adapter and are never persisted in catalog fields.
+
+## 2026-07-21T23:20:48Z — Feature 067 publication receipt
+
+`feature/catalog-api-v1` is published at exact functional SHA
+`9da29720c23d64bc73bdb24e92e67707834f4f84`. Backend CI run `29876782983`
+is tracked separately. No PR, merge, deployment or production observation is claimed.
