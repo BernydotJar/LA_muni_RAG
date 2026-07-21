@@ -1,0 +1,37 @@
+{
+  "updated_at": "2026-07-21T17:31:36Z",
+  "branch": "feature/artifact-vector-runtime-hardening-v1",
+  "head": "f539db3aa910dbf57328602daf19fec2ed3e9677",
+  "source": "observed command outputs only",
+  "tests": {
+    "global_total": 648,
+    "global_passed": 646,
+    "global_failed": 0,
+    "global_skipped": 2,
+    "eval_artifact_passed": 5,
+    "eval_vector_passed": 9,
+    "eval_job_lease_passed": 13
+  },
+  "database": {
+    "postgres": "15.18",
+    "pgvector": "0.8.5",
+    "fresh_path": "pass",
+    "legacy_path": "pass",
+    "invalid_history_expected_failure": "pass",
+    "compiled_smokes": 2
+  },
+  "publication": {
+    "remote_sha_verified": true,
+    "pr_open": false,
+    "ci_run_id": 29852618726,
+    "ci_status": "completed",
+    "ci_conclusion": "success",
+    "check_run_id": 88709014203
+  },
+  "cost": null,
+  "duration_seconds": null,
+  "token_usage": null,
+  "limitations": [
+    "Billing, wall-clock duration and token telemetry unavailable; fields remain null."
+  ]
+}

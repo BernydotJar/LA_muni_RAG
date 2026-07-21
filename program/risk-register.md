@@ -1,18 +1,19 @@
 # Program Risk Register
 
-Updated: 2026-07-21
+Updated: 2026-07-21T17:30:46Z
 
 | ID | Risk | Severity | State | Evidence/control | Next action |
 |---|---|---:|---|---|---|
-| PRG-RISK-001 | Stale Cloud Sandbox metadata reports `error` for a fully usable workspace | medium | open external | container running; exec, filesystem, Git, tests, DB gates all succeed | deploy the control-plane readiness reconciliation fix; do not use persisted state alone as repository truth |
-| PRG-RISK-002 | Connector may report push failure after remote mutation | high | open tooling risk; publication succeeded | connector returned ownership/Docker error, but `git ls-remote` proves remote checkpoint `f12ee17`; main remains `4950ba3` | treat remote ref as source of truth, verify every SHA, and do not retry blindly after an error |
-| PRG-RISK-003 | Minimum Antigua/Mixco corpus is incomplete and zero documents are credited as ingested | critical | open | source inventory is structurally valid but only 4 verified, 1 acquired, 4 missing, 0 ingested | acquire, accept, scan, ingest, retrieve, and evaluate minimum corpus without inventing missing sources |
-| PRG-RISK-004 | Approved workflow status may be misunderstood as legal applicability | high | mitigated, global governance open | response limitations, lifecycle docs, human separation, no automatic promotion | add UI warnings, applicability/conflict review, training, and consumer contract enforcement |
-| PRG-RISK-005 | External consumers may lose IDs, expiry, revocation, or boundary semantics | high | open | provider contracts and local tests pass; cross-repository consumers not executed | run OS Electoral and Content Agency consumer contract suites on published versioned artifacts |
-| PRG-RISK-006 | Procedure cases remain browser-local rather than an authoritative tenant-scoped system | high | open | LocalStorage workspace exists; server API/DB absent | implement procedure-case schema, repository, API, audit, authorization, and migrations |
-| PRG-RISK-007 | Platform operations are not production-shaped | critical | open | local CI/runbooks exist; Terraform, secrets topology, observability, restore/load/HA evidence incomplete | select platform architecture, implement IaC and monitoring, execute backup/restore and load/HA drills |
-| PRG-RISK-008 | Semantic documentary conflicts and version applicability remain unresolved | critical | open | conflict visibility eval passes; no persistent resolution/applicability service | implement conflict review records, version applicability decisions, and human resolution workflow |
-| PRG-RISK-009 | Nested Docker limitations hide SQL defects when mocks are used alone | high | mitigated | ClaimPack syntax and lifecycle audit drift were found by real PostgreSQL; fresh SQL/smoke gates now pass | retain non-owner SQL and compiled HTTP smokes as required CI gates |
-| PRG-RISK-010 | Workflow UI and accessibility are absent | high | open | API is implemented; no authenticated review/approval UI or WCAG evidence | implement role-aware UI and browser/a11y gates |
+| PRG-RISK-001 | Stale workspace state reports `error` for usable runtime | medium | open external | container/exec/Git/DB/tests/push work | capability probes; separate control-plane fix |
+| PRG-RISK-002 | Connector reports failure after remote mutation | high | mitigated tooling | exact remote `f539db3aa910dbf57328602daf19fec2ed3e9677` verified | verify SHA before every retry |
+| PRG-RISK-003 | Minimum corpus incomplete; zero documents credited ingested | critical | open | inventory 17, verified 4, acquired 1, ingested 0 | acquire/scan/ingest/retrieve/evaluate official corpus |
+| PRG-RISK-004 | Production scanner/storage/dispatcher absent | critical | open | Feature 060 proves boundaries, not adapters | deploy immutable storage, quarantine IAM, scanner and worker |
+| PRG-RISK-005 | Real-corpus vector quality/load unproved | high | open | tenant atomic synthetic smoke passes | measure recall, citation fidelity, plans/timeouts/load |
+| PRG-RISK-006 | Procedure cases browser-local | high | open | server API/DB absent | implement case lifecycle system of record |
+| PRG-RISK-007 | Approved workflow confused with legal applicability | high | mitigated/global open | human separation and limitations | persistent applicability review and UI/consumer warnings |
+| PRG-RISK-008 | External consumers may lose provenance/revocation | high | open | provider contracts only | cross-repository consumer suites |
+| PRG-RISK-009 | Platform operations not production-shaped | critical | open | runbooks/local CI only | Terraform, secrets, telemetry, restore/rollback/load/HA/staging |
+| PRG-RISK-010 | Workflow/document UI and accessibility absent | high | open | backend slices only | role-aware UI and WCAG browser gates |
+| PRG-RISK-011 | Required dedicated eval families missing | high | open | 12 pass; 7 absent | SOURCE/MISSING/RBAC/INGEST/CASE/ACCESSIBILITY/RESTORE |
 
-No critical or high finding remains unresolved inside the governed workflow lifecycle API slice itself. This statement does not apply to the global production-readiness program.
+Feature 060 has zero open critical/high findings. This does not apply globally.

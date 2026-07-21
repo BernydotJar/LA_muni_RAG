@@ -49,3 +49,19 @@ Decision: a citable source without a step-level evidence link must produce expli
 ## 2026-07-21 — Publication remains connector-owned
 
 Decision: do not extract credentials, invoke raw `git push`, force-push, or escalate privileges after the dedicated connector fails before Git execution. Preserve the exact commit graph and retry only through an authorized, repaired publication path.
+
+## 2026-07-21T17:30:46Z — Exact artifact acceptance is a database invariant
+
+Object acceptance must prove current clean scan, exact SHA-256, MIME and generation with a future window no longer than seven days. Accepted identity and scan evidence are immutable; corrupt history stops migration instead of being silently repaired.
+
+## 2026-07-21T17:30:46Z — Finalization uses a narrow privileged lock boundary
+
+The runtime receives no artifact-table UPDATE. A fixed-search-path, tenant-bound, PUBLIC-revoked SECURITY DEFINER function returns only a boolean while locking exact rows until transaction completion.
+
+## 2026-07-21T17:30:46Z — Connector errors require remote-SHA reconciliation
+
+A Docker/NAT connector error is not a publication result. `git ls-remote` is authoritative; `feature/artifact-vector-runtime-hardening-v1` is published at `f539db3aa910dbf57328602daf19fec2ed3e9677`.
+
+## 2026-07-21T17:31:36Z — Remote CI accepted Feature 060
+
+Backend CI run `29852618726` and check `88709014203` completed successfully on exact SHA `f539db3aa910dbf57328602daf19fec2ed3e9677`. This proves CI execution, not merge or deployment.

@@ -1,41 +1,49 @@
 # Open Program Issues
 
-Updated: 2026-07-21
+Updated: 2026-07-21T17:30:46Z
 
-## Publication status
+## Publication and CI
 
-`feature/workflow-lifecycle-v1` contains functional commit `c6e110c` and is published at exact policy/evidence checkpoint `f12ee17`. `main` remains `4950ba3`; no merge or deployment is claimed. Git pull refs did not expose a matching PR ref, so PR and remote CI state remain unverified rather than assumed. The connector reported an error despite the successful remote mutation; remote refs must be checked before retrying.
+`feature/artifact-vector-runtime-hardening-v1` is published at exact SHA `f539db3aa910dbf57328602daf19fec2ed3e9677`. `origin/main` remains `4950ba3`;
+no merge or deployment is claimed. The public GitHub API reports no PR. Backend
+CI run `29852618726` completed successfully; check `Verify backend` was green.
+
+The connector reported a Docker/NAT error although the remote ref advanced.
+Always verify remote SHA before retrying.
 
 ## Ready product work
 
-### WS04-CONFLICT-RESOLUTION-001
-
-Persist conflict/version applicability decisions, retain both documentary positions, require human resolution, and prevent silent promotion into approved procedures or ClaimPacks.
-
 ### WS08-PROCEDURE-ASSESSMENT-001
-
-Implement versioned `ProcedureAssessment` and dedicated evidence-gap request/provider contracts with authentication, RBAC, tenancy, idempotency, audit, and consumer tests.
+Versioned `ProcedureAssessment` and EvidenceGap contracts/provider with
+RBAC/tenant/idempotency/audit and consumer tests.
 
 ### WS06-CASE-LIFECYCLE-001
+Server system of record for approved procedure version, steps, documents,
+blockers, follow-up, dossier and audit.
 
-Replace browser-local procedure tracking with a tenant-scoped server-side system of record for cases, steps, documents, blockers, follow-up, dossier, and immutable audit.
-
-### WS09-WORKFLOW-UI-001
-
-Implement authenticated, role-aware workflow review/approval UI, source inspection, error/empty/loading states, and WCAG 2.2 AA evidence.
+### WS04-RETRIEVAL-EVAL-001
+Authorize tenant vector retrieval, complete filters/reranking, and measure recall,
+citation fidelity, groundedness and load on real corpus.
 
 ### WS02-CORPUS-ACQUISITION-001
+Acquire, hash, classify, scan, ingest and retrieve minimum Antigua-first plus
+Mixco/Guatemala comparative sources without inventing missing documents.
 
-Acquire and validate the minimum Antigua and Mixco corpus, preserve hashes/provenance/authority, run real artifact acceptance, ingest, retrieve, and evaluate without claiming missing sources.
+### WS09-WORKFLOW-UI-001
+Authenticated role-aware document/evidence/workflow/case UI with WCAG evidence.
 
 ### WS10-PLATFORM-001
+Terraform, secrets, observability/SLOs, backup/restore, rollback, load/HA,
+staging and incident exercise.
 
-Select and document the production platform; implement Terraform, secrets boundaries, logs/metrics/traces, rate-limit topology, backup/restore, rollback, incident response, load/HA, and staging evidence.
+## Missing dedicated evals
 
-## Human gates
+`EVAL-SOURCE-001`, `EVAL-MISSING-001`, `EVAL-RBAC-001`, `EVAL-INGEST-001`,
+`EVAL-CASE-001`, `EVAL-ACCESSIBILITY-001`, and `EVAL-RESTORE-001`.
 
-- protected merge;
-- production deployment;
-- external publication;
-- production credentials or billing changes;
-- conclusions about legal applicability of an approved workflow.
+## Human/tool gates
+
+- current Cloud Sandbox exposes no authorized PR-creation action;
+- protected merge and production deployment;
+- external infrastructure/spending/credentials;
+- legal applicability conclusions.

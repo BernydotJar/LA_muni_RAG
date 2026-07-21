@@ -1,5 +1,5 @@
 schema_version: 1
-updated_at: "2026-07-21T15:44:58Z"
+updated_at: "2026-07-21T17:31:36Z"
 runtime:
   type: yaml_fallback
   farmtable_available: false
@@ -293,16 +293,17 @@ tasks:
       - PRG-CTX7-001
     blockers: []
     acceptance:
-      - "Ingestion is tenant-scoped, idempotent, auditable, and stable on corrupt input."
+      - "Ingestion is tenant-scoped, idempotent, auditable, stable on corrupt input, and exact artifact acceptance is enforced at every boundary."
     evidence:
-      - "WS03-ARTIFACT-SAFETY-001 completed the local pre-extraction safety and quarantine slice at commit 37ff0ad."
-      - "WS03-PDF-EXTRACTION-001 completed bounded isolated raw-PDF extraction, parse-once indexing, and ingestion caps at commit 3a7b531."
-      - "WS03-TENANT-INGESTION-001 completed tenant-scoped durable job/vector persistence, digest idempotency, leases/fencing/retry, atomic audit, and non-owner RLS gates at commit 9dcc054."
-      - "WS03-INGESTION-API-WORKER-001 completed the authenticated enqueue/status API and callable immutable clean-artifact worker at commits 52ec72d and 50716cc."
-      - "WS03-ARTIFACT-ACCEPTANCE-CI-001 aligns migration 007, persisted clean artifact fixtures, RLS checks, and worker completion smoke parameters at commit a69fb15."
-      - "The parent remains partial because source/version/upload APIs, a running worker dispatcher, real scanner, durable object storage, distributed quotas/cancellation, production roles/topology, load/HA, and monitoring are absent."
+      - "WS03-ARTIFACT-SAFETY-001 completed local safety/quarantine at 37ff0ad."
+      - "WS03-PDF-EXTRACTION-001 completed bounded isolated raw-PDF extraction at 3a7b531."
+      - "WS03-TENANT-INGESTION-001 completed tenant job/vector persistence, leases/fencing/retry and atomic replacement at 9dcc054."
+      - "WS03-INGESTION-API-WORKER-001 completed authenticated enqueue/status and callable clean-artifact worker at 52ec72d/50716cc."
+      - "WS03-ARTIFACT-ACCEPTANCE-CI-001 aligned migration-007 fixtures at a69fb15."
+      - "WS03-ARTIFACT-VECTOR-HARDENING-001 at f539db3 adds exact acceptance triggers, least-privilege row locking, clean/legacy/corrupt-history PostgreSQL gates and three named evals."
+      - "The parent remains partial because source/version/upload APIs, deployed scanner/storage/dispatcher, distributed cancellation/quotas, monitoring, load/HA and production roles/topology are absent."
     pr: null
-    ci: passed_local_feature_published_remote_ci_unverified
+    ci: passed_local_detached_postgres_and_remote
   - id: WS03-ARTIFACT-SAFETY-001
     workstream: WS-03
     title: "Add a fail-closed local artifact safety, malware, and quarantine gate"
@@ -540,6 +541,46 @@ tasks:
     branch: "program/procedural-intelligence-prod-ready"
     pr: null
     ci: passed_local_feature_published_remote_ci_unverified
+  - id: WS03-ARTIFACT-VECTOR-HARDENING-001
+    workstream: WS-03
+    title: "Enforce exact artifact acceptance and lease/vector publication fencing"
+    status: completed_with_limitations
+    owner: /root
+    files:
+      - db/migrations/011_artifact_vector_runtime_hardening.sql
+      - db/tests/artifact_vector_runtime_hardening_gate.sql
+      - db/tests/artifact_vector_invalid_history_fixture.sql
+      - db/tests/artifact_vector_legacy_upgrade_gate.sql
+      - src/ingestion/artifactAcceptance.ts
+      - src/ingestion/ingestionJobService.ts
+      - src/__tests__/eval-artifact-001.test.ts
+      - src/__tests__/eval-vector-001.test.ts
+      - src/__tests__/eval-job-lease-001.test.ts
+      - specs/060-artifact-vector-runtime-hardening.md
+      - docs/decisions/060-artifact-vector-runtime-hardening.md
+      - docs/risks/060-artifact-vector-runtime-hardening-risk-register.md
+      - docs/traceability/060-requirements-traceability.md
+    depends_on:
+      - WS03-ARTIFACT-ACCEPTANCE-CI-001
+      - WS03-TENANT-INGESTION-001
+      - WS07-FOUNDATION-001
+    blockers: []
+    acceptance:
+      - "Accepted state proves exact current clean scan, hash, MIME, generation and a future window no longer than seven days."
+      - "Accepted identity and scan evidence are immutable; corrupt historical state stops migration."
+      - "Completion row-locks exact acceptance without artifact UPDATE and denies cross-tenant validation."
+      - "Fresh, supported legacy and corrupt-history PostgreSQL paths plus compiled ingestion smokes pass."
+    evidence:
+      - "Commit and exact remote SHA f539db3aa910dbf57328602daf19fec2ed3e9677."
+      - "EVAL-ARTIFACT 5/5, EVAL-VECTOR 9/9 and EVAL-JOB-LEASE 13/13."
+      - "Detached global regression 646/648 with two explicit environment skips and zero failures."
+      - "PostgreSQL 15.18/pgvector 0.8.5 gates, 50-submit concurrency, lease fencing, rollback and stale replacement passed."
+    limitations:
+      - "No production object store, scanner/definitions monitor, deployed dispatcher, metrics, load/HA or real-corpus vector quality is proved."
+      - "Backend CI run 29852618726 passed; no PR, merge or deployment exists at this checkpoint."
+    branch: "feature/artifact-vector-runtime-hardening-v1"
+    pr: null
+    ci: passed_local_detached_postgres_and_remote
   - id: WS04-RET-001
     workstream: WS-04
     title: "Measure retrieval quality and citation fidelity"
@@ -592,7 +633,7 @@ tasks:
       - "The evaluation uses controlled synthetic evidence and does not prove a complete, current, ingested Antigua Guatemala corpus."
       - "The sequential graph is a research checklist, not a legally confirmed official ordering."
       - "Corpus-backed retrieval thresholds, contradiction handling, persistent procedure versions, reviews, approvals, and procedure cases remain open."
-      - "The feature branch is published; remote CI status remains unverified."
+      - "Descendant f539db3 passed Backend CI; no merge or deployment is claimed."
     branch: "program/procedural-intelligence-prod-ready"
     pr: null
     ci: passed_local_feature_published_remote_ci_unverified
@@ -863,7 +904,7 @@ tasks:
       - "Supporting records are controlled synthetic fixtures, not proof of a complete or current Antigua Guatemala corpus."
       - "The placeholder X intentionally remains unknown; production retrieval thresholds and contradiction handling are not proved."
       - "Procedure lifecycle, review, approval, and supersession are implemented locally; procedure-case tracking and semantic applicability remain open."
-      - "The feature branch is published; remote CI status remains unverified."
+      - "Descendant f539db3 passed Backend CI; no merge or deployment is claimed."
     branch: "program/procedural-intelligence-prod-ready"
     pr: null
     ci: passed_local_feature_published_remote_ci_unverified
@@ -892,15 +933,15 @@ tasks:
       - WS10-OPS-001
     blockers: []
     acceptance:
-      - "All nine named hard evals, required tests, and cross-workstream regression pass."
-      - "Mandatory documentation exists and matches runtime truth."
+      - "Every required named eval and cross-workstream gate has scope-equivalent evidence."
+      - "Documentation and program state match current runtime truth."
     evidence:
-      - "All nine named eval gates pass: procedure 4/4, water 4/4, Mixco 4/4, OS integration 5/5, Content integration 7/7, conflict 8/8, boundary 4/4, tenant 4/4, and corrupt/recovery 20/20."
-      - "Current regression passed 634/636 with two explicit environment skips and zero failures; lifecycle focused 35/35; contracts 16 schemas/16 examples/OpenAPI 3.1.1; inventory, domain 8/8, typecheck, build, Pages, actionlint, diff check, and npm audit passed."
-      - "Fresh non-owner PostgreSQL gates and compiled ProcedureQuery, ClaimPack, and workflow lifecycle smokes passed on PostgreSQL 15.18/pgvector 0.8.5."
-      - "Corpus completeness, external consumers, cases, UI/accessibility, platform/load/HA/restore, remote CI, and deployment remain unproved; green focused gates do not prove production readiness."
+      - "Twelve named eval families pass; seven goal-required dedicated families remain missing."
+      - "Detached f539db3 regression passed 646/648 with two explicit skips and zero failures; typecheck, build, contracts 16/16, inventory 17, domain 8/8, Pages and audit passed."
+      - "Fresh/legacy/corrupt-history PostgreSQL paths and compiled tenant-ingestion/API smokes passed."
+      - "Corpus, consumers, cases, browser/accessibility, restore, load/HA, PR and deployment remain unproved."
     pr: null
-    ci: passed_local_full_feature_published_remote_ci_unverified
+    ci: passed_local_detached_postgres_and_remote
   - id: WS05-LIFECYCLE-API-001
     workstream: WS-05
     title: "Expose governed workflow lifecycle API v1"
@@ -987,13 +1028,13 @@ blockers:
   - id: BLK-CLOUD-PUSH-001
     affects: []
     state: resolved
-    condition: "The dedicated connector previously failed before Git while initializing Docker networking."
-    resolution: "The remote feature/workflow-lifecycle-v1 ref now exists at exact commit c6e110cd4ffe01cb8192cc1701f64827784ba240."
+    condition: "The connector may report Docker/NAT error after a successful remote mutation."
+    resolution: "Both affected branches were reconciled with git ls-remote; the current exact remote SHA is f539db3."
     exact_evidence:
-      - "git ls-remote returned c6e110cd4ffe01cb8192cc1701f64827784ba240 for refs/heads/feature/workflow-lifecycle-v1."
+      - "feature/artifact-vector-runtime-hardening-v1 -> f539db3aa910dbf57328602daf19fec2ed3e9677"
       - "origin/main remains 4950ba3; no merge is claimed."
-    residual_limitation: "Remote CI and PR state are not verified by the available connector."
-    next_safe_action: "Commit and push the policy/checkpoint update, verify the new remote SHA, then continue the highest-value ready product task."
+    residual_limitation: "Connector prose alone is not a publication receipt."
+    next_safe_action: "Check the remote ref before retrying, then inspect CI/PR separately."
   - id: BLK-CLAIM-PACK-DB-001
     state: resolved
     condition: "Nested Docker could not register the pinned pgvector image layers."

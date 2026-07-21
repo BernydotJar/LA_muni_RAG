@@ -1,7 +1,7 @@
 {
-  "updated_at": "2026-07-21T15:40:38Z",
-  "slice": "governed_workflow_lifecycle_api_v1",
-  "functional_head": "c6e110cd4ffe01cb8192cc1701f64827784ba240",
+  "updated_at": "2026-07-21T17:28:04Z",
+  "slice": "artifact_vector_runtime_hardening_v1",
+  "functional_head": "f539db3aa910dbf57328602daf19fec2ed3e9677",
   "summary": {
     "critical_open_in_slice": 0,
     "high_open_in_slice": 0,
@@ -9,87 +9,76 @@
   },
   "findings": [
     {
-      "id": "WLAPI-CRIT-001",
+      "id": "AVRH-CRIT-001",
       "severity": "critical",
       "status": "resolved",
-      "description": "Supersession could not satisfy the one-approved-version invariant because the replacement could not already be approved.",
-      "repair": "Approve a reviewed same-procedure replacement and supersede the former approved version in one transaction; lock and validate replacement status; record approval and supersession audits.",
+      "description": "Accepted state allowed a clean scan for different bytes and a 30-day window.",
+      "repair": "Preflight and trigger require exact current clean scan/hash/MIME and at most seven days.",
       "evidence": [
-        "state-machine success and rejection tests",
-        "HTTP lifecycle test",
-        "non-owner SQL gate",
-        "compiled PostgreSQL smoke"
+        "real PostgreSQL reproduction",
+        "invalid-history rollback gate",
+        "fresh SQL gate"
       ]
     },
     {
-      "id": "WLAPI-CRIT-002",
-      "severity": "critical",
-      "status": "resolved",
-      "description": "Invalid replay cleanup and error emission occurred in the same transaction, so the cleanup would roll back.",
-      "repair": "Commit invalidation and audit first, then emit generic 500 outside the transaction.",
-      "evidence": [
-        "compiled PostgreSQL corrupt-replay smoke",
-        "recovery retry"
-      ]
-    },
-    {
-      "id": "WLAPI-HIGH-003",
+      "id": "AVRH-HIGH-002",
       "severity": "high",
       "status": "resolved",
-      "description": "A request observing another request's processing claim could release that claim on error.",
-      "repair": "Release idempotency state only when the current request obtained a new claim.",
+      "description": "Direct row locking required an unacceptable artifact mutation privilege.",
+      "repair": "Tenant-bound fixed-search-path boolean SECURITY DEFINER function, PUBLIC revoked, no artifact UPDATE.",
       "evidence": [
-        "concurrent in-memory HTTP regression"
+        "role gate",
+        "own/foreign tenant gate",
+        "compiled smoke"
       ]
     },
     {
-      "id": "WLAPI-HIGH-004",
+      "id": "AVRH-HIGH-003",
       "severity": "high",
       "status": "resolved",
-      "description": "Lifecycle audit SQL referenced a nonexistent principal_id column.",
-      "repair": "Use canonical actor_external_id and add a static schema-drift regression.",
+      "description": "Accepted object identity could mutate without rescanning.",
+      "repair": "All-row trigger makes accepted identity immutable.",
       "evidence": [
-        "fresh PostgreSQL smoke",
-        "static migration/repository test"
+        "object-key/generation rejection"
       ]
     },
     {
-      "id": "XPROV-HIGH-005",
+      "id": "AVRH-HIGH-004",
       "severity": "high",
       "status": "resolved",
-      "description": "ClaimPack rate-limit SQL contained an unbalanced retry-after expression that mocks did not execute.",
-      "repair": "Correct the SQL expression and require a production-shaped PostgreSQL smoke plus static balance assertion.",
+      "description": "Scan evidence could be edited.",
+      "repair": "Append-only update trigger.",
       "evidence": [
-        "ClaimPack compiled smoke",
-        "claim-pack runtime migration test"
+        "SQLSTATE 55000 gate"
       ]
     },
     {
-      "id": "XPROV-MED-006",
-      "severity": "medium",
+      "id": "AVRH-HIGH-005",
+      "severity": "high",
       "status": "resolved",
-      "description": "ProcedureQuery and ClaimPack positive fixtures did not preserve a step-level evidence phrase in the generated excerpt, encouraging unsupported claim expectations.",
-      "repair": "Strengthen only the disposable official fixture and require explicit missing_evidence when no claim is citable.",
+      "description": "Corrupt history lacked an automated migration-stop gate.",
+      "repair": "CI requires exact failure and verifies rollback.",
       "evidence": [
-        "ProcedureQuery smoke",
-        "ClaimPack smoke",
-        "one supported cited step and 46 explicit gaps"
+        "local invalid-history path",
+        "CI wiring"
       ]
     },
     {
-      "id": "WLAPI-MED-007",
-      "severity": "medium",
+      "id": "VERIFY-INFO-006",
+      "severity": "info",
       "status": "resolved",
-      "description": "Lifecycle preflight advertised GET and POST on every route.",
-      "repair": "Advertise only POST for mutation routes and GET for item reads.",
+      "description": "Symlinked node_modules changed the PDF worker permission boundary.",
+      "repair": "Detached verifier uses npm ci from the lockfile.",
       "evidence": [
-        "CORS preflight HTTP regression"
+        "PDF 8/8",
+        "global 646/648"
       ]
     }
   ],
   "open_global_findings": [
-    "Corpus completeness and real ingestion are unproved.",
-    "ProcedureAssessment, procedure cases, lifecycle UI/accessibility, external consumers, and platform operations remain incomplete.",
-    "Remote CI, PR review state, protected merge, and deployment remain unproved."
+    "Production scanner/storage/dispatcher/observability/load/HA absent.",
+    "Real corpus retrieval/citation quality unproved.",
+    "Cases, APIs, frontend/accessibility, consumers and platform operations incomplete.",
+    "No protected merge or deployment."
   ]
 }

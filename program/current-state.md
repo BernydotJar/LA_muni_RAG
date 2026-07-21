@@ -1,192 +1,152 @@
 # LA Muni RAG — Current Program State
 
-Updated: 2026-07-21T11:35:00Z
+Updated: 2026-07-21T17:28:04Z
 
-Program status: **PARTIAL — active implementation; production readiness is not yet proven**
+Program status: **PARTIAL — active implementation; global production readiness is not proven**
 
-## Persistent session policy
+## Policy and checkout
 
-`AGENTS.md` is now the authoritative execution policy. Every resumed session must begin by checking workspace health and command execution, reconciling Git/root/upstream, reading runtime policy and checkpoints, preserving uncommitted work, and classifying blockers. Normal feature-branch commits, pushes, and draft PRs are authorized; merge, production deployment, force-push, spending, protected-branch mutation, external infrastructure, package publication, and destructive migration remain human-gated.
-
-## Authoritative checkout
+`AGENTS.md` is authoritative. Feature-branch edits, tests, disposable databases,
+commits, pushes, remote-SHA verification, and draft PR creation are authorized.
+Protected merge, production deployment, force-push, destructive migration,
+spending, external infrastructure, package publication, and legal conclusions
+remain human-gated.
 
 ```text
 workspace_id: 601929eb-4bf6-4900-8170-c15bf3a11ea0
 root: /workspace
-branch: feature/workflow-lifecycle-v1
-functional_head: c6e110cd4ffe01cb8192cc1701f64827784ba240
-published_checkpoint_head: f12ee178696b77af1b3b8b75246d4ae38c69fd3c
-remote_feature_ref: f12ee178696b77af1b3b8b75246d4ae38c69fd3c
+branch: feature/artifact-vector-runtime-hardening-v1
+functional_head: f539db3aa910dbf57328602daf19fec2ed3e9677
+remote_feature_ref: f539db3aa910dbf57328602daf19fec2ed3e9677
+origin_main: 4950ba3c24dbe7d9891d5cec8d7ba5f57db3ef9c
+worktree: clean
 pushed: true
+PR_open: false
 merged: false
 deployed: false
+remote_ci_run: 29852618726
+remote_ci_status_at_checkpoint: completed_success
 ```
 
-The Cloud Sandbox workspace record still says `error`, but its real capabilities are available: the container is running, filesystem and command execution work, Git is available, and all implementation/verification commands below executed successfully. The stale workspace state is a control-plane defect, not a repository failure.
+The workspace control plane still reports stale `error` metadata, but container,
+exec, filesystem, Git, PostgreSQL, pgvector, tests and publication work. The
+connector again reported Docker/NAT failure after the remote branch advanced;
+`git ls-remote`, not connector prose, is the publication receipt.
 
-## Commits produced in this slice
+## Feature 060 — artifact, lease and vector runtime hardening
 
 ```text
-d842b4e70bb68bdd547fb05d5547faf469208e1b  feat: add governed workflow lifecycle foundation
-f3a145024a89ae92e4dab047d4c6b949ae611dfb  fix: harden postgres provider smokes
-c6e110cd4ffe01cb8192cc1701f64827784ba240  feat: expose governed workflow lifecycle API v1
+f539db3aa910dbf57328602daf19fec2ed3e9677  feat: harden artifact vector runtime boundary
 ```
 
-The state/report commit containing this file is intentionally separate from the functional commits.
+Implemented and verified:
 
-## Implemented and verified
+- migration 011 stops over accepted history whose scan does not prove exact
+  bytes/current generation/clean verdict/MIME or exceeds a seven-day window;
+- accepted artifact identity is immutable and scan evidence append-only;
+- lookup and lease acquisition repeat exact acceptance predicates;
+- final publication uses a tenant-bound, fixed-search-path, PUBLIC-revoked
+  `SECURITY DEFINER` boolean lock boundary;
+- the runtime has no artifact-object or scan `UPDATE` privilege;
+- fresh and supported-legacy migration paths converge;
+- corrupt historical acceptance fails and migration rollback is complete;
+- vector replacement remains tenant/model/dimension scoped, atomic, bounded and
+  stale-chunk removing;
+- jobs retain digest-only idempotency, `SKIP LOCKED`, leases, heartbeat, fencing,
+  bounded retry, crash recovery and atomic completion.
 
-### Governed workflow lifecycle
+## Independent verification
 
-Implemented HTTP routes:
-
-```http
-POST /api/v1/workflow-drafts
-POST /api/v1/workflow-reviews
-POST /api/v1/workflow-approvals
-GET  /api/v1/workflows/{workflow_version_id}
-```
-
-Verified invariants:
-
-- authentication and coarse RBAC complete before body parsing;
-- request ID, tenant, nested workflow tenant, and credential provenance are bound server-side;
-- every AI, human, or imported version starts `draft`;
-- creator, reviewer, and approver are distinct;
-- action-specific permissions protect submit, review, approve, supersede, archive, and read;
-- exact idempotent replay returns exact bytes;
-- changed payload conflicts and concurrent processing cannot lose another request's claim;
-- invalid stored replay is committed as invalidated before a generic non-leaking error, and retry can regenerate safely;
-- missing and cross-tenant identifiers return the same non-enumerating `404` form;
-- approved content is immutable;
-- atomic supersession approves a reviewed same-procedure replacement while superseding the former version and leaves exactly one approved row;
-- forced RLS, composite tenant keys, append-only review/approval records, rate limits, and bounded audits are enforced in PostgreSQL.
-
-### Cross-provider repairs
-
-The production-shaped database pass found and repaired defects outside the lifecycle handler:
-
-- ClaimPack retry-after SQL had an unbalanced `ceil(extract(...))` expression;
-- ProcedureQuery smoke depended implicitly on `NODE_ENV` for legacy API disabling;
-- ProcedureQuery/ClaimPack positive fixtures did not preserve a step-level citation pattern in the generated excerpt;
-- EvidenceBundle smoke incorrectly required a claim even when the correct response was explicit `missing_evidence` abstention;
-- workflow lifecycle audit persistence used the nonexistent `principal_id` column instead of canonical `actor_external_id`.
-
-## Database evidence
-
-Docker-in-Docker could download but not register the pinned pgvector image layers. The local gate therefore used an independently installed disposable runtime:
-
-```text
-PostgreSQL: 15.18
-pgvector:   0.8.5
-pgvector official tag commit: 159b7900f6246c7fe3d3b87232f2731b9e0ea597
-cluster: /tmp/la-muni-workflow-pgdata
-port: 55443
-```
-
-A fresh database and disposable roles were recreated from zero before final verification. The exact Backend-CI lifecycle path passed:
-
-```text
-001_initial_rag_schema.sql
-002_procedure_feedback.sql
-003_identity_tenancy_rbac.sql
-004_procedure_query_api.sql
-procedure_query_runtime_gate.sql
-008_claim_pack_api.sql
-claim_pack_runtime_gate.sql
-009_workflow_lifecycle.sql
-010_workflow_lifecycle_api.sql
-workflow_lifecycle_runtime_gate.sql
-```
-
-Compiled HTTP smokes passed on that database for ProcedureQuery, ClaimPack, and workflow lifecycle. The workflow smoke demonstrated exact replay, human separation, atomic supersession, zero cross-tenant metadata leakage, corrupt-replay invalidation, and successful regeneration.
-
-## Final local verification
+A detached checkout at `f539db3aa910dbf57328602daf19fec2ed3e9677` used `npm ci --ignore-scripts --prefer-offline`.
+A first symlink-based verifier altered the PDF worker filesystem permission
+boundary and caused three false failures; a real lockfile install restored the
+intended isolation and all focused/global tests passed.
 
 ```text
 typecheck: pass
 build: pass
-workflow lifecycle focused tests: 35/35
-contract registry: 16 schemas, 16 examples, 1 OpenAPI 3.1.1 document
-integration contract tests: 15/15
-global suite: 636 total, 634 pass, 0 fail, 2 explicit environment skips
-source inventory: 17/17 structurally valid
+contracts: 16 schemas / 16 examples / OpenAPI 3.1.1
+EVAL-ARTIFACT-001: 5/5
+EVAL-VECTOR-001: 9/9
+EVAL-JOB-LEASE-001: 13/13
+global suite: 648 total / 646 pass / 0 fail / 2 explicit environment skips
+source inventory: 17 valid / 4 verified / 1 acquired / 0 ingested
 domain evaluation: 8/8
-Pages build and verifier: pass
+Pages: pass
 npm audit --audit-level=high: 0 vulnerabilities
-actionlint 1.7.11: pass
 git diff --check: pass
 ```
 
-Named hard evals:
+Disposable PostgreSQL 15.18 / pgvector 0.8.5:
 
 ```text
-EVAL-PROCEDURE-001            4/4
-EVAL-WATER-001                4/4
-EVAL-MIXCO-001                4/4
-EVAL-OS-INTEGRATION-001       5/5
-EVAL-CONTENT-INTEGRATION-001  7/7
-EVAL-CONFLICT-001             8/8
-EVAL-BOUNDARY-001             4/4
-EVAL-TENANT-001               4/4
-EVAL-CORRUPT-001             20/20
+fresh 001..007 + database migration 011: pass
+non-owner/NOSUPERUSER/NOBYPASSRLS gate: pass
+artifact/vector privilege and rejection gate: pass
+compiled tenant-ingestion smoke: pass
+compiled ingestion-API smoke: pass
+corrupt historical acceptance: expected failure + rollback
+supported legacy vector path: pass
 ```
 
-These gates prove their fixtures and covered surfaces. They do not prove corpus completeness, current legal applicability, production deployment, or the full global Definition of Done.
+The smoke observed 50 identical submissions converging to one job, two claimers
+producing one lease, stale-worker fencing, cross-tenant equal chunk IDs,
+rollback to zero vectors, and stale-chunk removal.
 
-## Independent critique and repairs
+## Evals
 
-The producer/critic/verifier loop found and repaired:
-
-1. impossible supersession semantics under the one-approved-version invariant;
-2. an idempotency race that could release another request's active claim;
-3. corrupt replay invalidation that would have rolled back with the emitted error;
-4. lifecycle audit SQL drift from the canonical audit table;
-5. ClaimPack PostgreSQL syntax not exercised by mocks;
-6. CORS preflight advertising methods not supported by the specific route;
-7. stale documentation and regression assertions after expanding OpenAPI;
-8. a smoke fixture that encouraged unsupported claim expectations instead of fail-closed abstention.
-
-No unresolved critical or high finding remains inside the lifecycle API slice. Global critical/high readiness remains unproved because independent workstreams are still incomplete.
-
-## Publication state
-
-A later authorized publication path succeeded. `git ls-remote` now reports:
+Passing named families:
 
 ```text
-f12ee178696b77af1b3b8b75246d4ae38c69fd3c refs/heads/feature/workflow-lifecycle-v1
+PROCEDURE 4/4; WATER 4/4; MIXCO 4/4; OS-INTEGRATION 5/5;
+CONTENT-INTEGRATION 7/7; CONFLICT 8/8; BOUNDARY 4/4; TENANT 4/4;
+CORRUPT 20/20; ARTIFACT 5/5; VECTOR 9/9; JOB-LEASE 13/13.
 ```
 
-The remote feature branch contains the functional head and exactly matches the published policy/evidence checkpoint `f12ee17`. `origin/main` remains `4950ba3`; no merge or deployment is claimed. No pull-request ref was observed through Git, and remote CI status remains unverified. The connector returned an ownership-helper error even though the remote ref advanced; this false-negative result is retained as a tooling risk, not an active publication blocker.
+Still missing as dedicated scope-equivalent gates:
 
-## Global gaps still open
+```text
+EVAL-SOURCE-001; EVAL-MISSING-001; EVAL-RBAC-001; EVAL-INGEST-001;
+EVAL-CASE-001; EVAL-ACCESSIBILITY-001; EVAL-RESTORE-001.
+```
 
-- minimum Antigua corpus is not fully acquired, accepted, ingested, and evaluated;
-- Mixco comparative corpus is incomplete;
-- `ProcedureAssessment` and dedicated evidence-gap provider are missing;
-- procedure cases are not yet a tenant-scoped server-side system of record;
-- workflow review/approval UI, authenticated document library UI, and accessibility proof are incomplete;
-- semantic conflict resolution and version applicability remain human-review gaps;
-- external OS Electoral and Content Agency consumers have not passed cross-repository contract tests;
-- production observability, load/HA, Terraform, secrets architecture, backup/restore drill, rollback drill, and staging evidence are incomplete;
-- protected merge and deployment require human approval.
+Partial coverage elsewhere is not promoted to a passing named gate.
+
+## Resolved slice findings
+
+1. Critical: a wrong-hash clean scan and arbitrary 30-day window could be accepted.
+2. High: direct `FOR SHARE` pushed the runtime toward artifact mutation privilege.
+3. High: accepted object coordinates/version could change without rescan.
+4. High: scan evidence could be edited after acceptance.
+5. High: corrupt historical state lacked an automated migration-stop gate.
+
+No critical/high finding remains open inside Feature 060. Global readiness still
+has critical/high gaps.
+
+## Global gaps
+
+- incomplete Antigua-first and comparative corpus; zero documents credited ingested;
+- no production object store, scanner/definitions monitor, dispatcher, quotas,
+  cancellation, dead-letter UI, observability, load or HA;
+- procedure queries do not use evaluated tenant-vector retrieval;
+- source/document/search/EvidenceBundle/ProcedureAssessment/EvidenceGap/procedure
+  catalog/case APIs remain incomplete;
+- procedure cases remain browser-local;
+- authenticated UI and WCAG evidence are incomplete;
+- external consumers, semantic applicability review, Terraform, secrets, SLOs,
+  staging, restore/rollback and incident drills remain incomplete.
 
 ## Ready work
 
-Highest-value independent ready tasks:
-
-1. `WS04-CONFLICT-RESOLUTION-001` — persistent conflict/version applicability review service;
-2. `WS08-PROCEDURE-ASSESSMENT-001` — ProcedureAssessment and EvidenceGap APIs;
-3. `WS06-CASE-LIFECYCLE-001` — tenant-scoped procedure case persistence and API;
-4. `WS09-WORKFLOW-UI-001` — authenticated review/approval UI with accessibility gates;
-5. `WS02-CORPUS-ACQUISITION-001` — acquire, validate, accept, and ingest the minimum Antigua/Mixco corpus;
-6. `WS10-PLATFORM-001` — production topology, Terraform, observability, backup/restore, and release runbooks.
+1. WS08-PROCEDURE-ASSESSMENT-001 — ProcedureAssessment and EvidenceGap APIs.
+2. WS06-CASE-LIFECYCLE-001 — server-side procedure cases.
+3. WS04-RETRIEVAL-EVAL-001 — authorized vector retrieval and real-corpus quality.
+4. WS02-CORPUS-ACQUISITION-001 — official Antigua/comparative corpus.
+5. WS09-WORKFLOW-UI-001 — authenticated accessible review/approval UI.
+6. WS10-PLATFORM-001 — Terraform, observability, restore, load/HA and staging.
 
 ## Exact resume condition
 
-1. read `AGENTS.md` and `RTK.md`, then verify workspace status, command execution, `pwd`, branch, clean worktree, local HEAD, remote refs, and upstream;
-2. confirm the remote feature ref matches the local checkpoint HEAD;
-3. push only through the authorized connector when the checkpoint advances;
-4. inspect remote CI and PR state when an available tool can prove them;
-5. do not merge or deploy automatically;
-6. claim the highest-value ready task above and repeat producer → critic → repair → independent verification.
+Verify workspace/exec/Git/remote SHA; read policy and program files; confirm successful CI run `29852618726` and inspect PR state; never retry a reported push failure before checking the
+remote ref; do not merge/deploy automatically; claim the highest-value ready
+slice with exclusive ownership and repeat producer → critic → repair → verifier.
