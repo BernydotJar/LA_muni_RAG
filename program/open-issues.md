@@ -4,7 +4,7 @@ Updated: 2026-07-21
 
 ## Publication status
 
-`feature/workflow-lifecycle-v1` is published at exact commit `c6e110c`. `main` remains `4950ba3`; no merge or deployment is claimed. Git pull refs did not expose a matching PR ref, so PR and remote CI state remain unverified rather than assumed.
+`feature/workflow-lifecycle-v1` contains functional commit `c6e110c` and is published at exact policy/evidence checkpoint `f12ee17`. `main` remains `4950ba3`; no merge or deployment is claimed. Git pull refs did not expose a matching PR ref, so PR and remote CI state remain unverified rather than assumed. The connector reported an error despite the successful remote mutation; remote refs must be checked before retrying.
 
 ## Ready product work
 

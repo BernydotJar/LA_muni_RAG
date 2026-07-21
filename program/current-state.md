@@ -15,7 +15,8 @@ workspace_id: 601929eb-4bf6-4900-8170-c15bf3a11ea0
 root: /workspace
 branch: feature/workflow-lifecycle-v1
 functional_head: c6e110cd4ffe01cb8192cc1701f64827784ba240
-remote_feature_ref: c6e110cd4ffe01cb8192cc1701f64827784ba240
+published_checkpoint_head: f12ee178696b77af1b3b8b75246d4ae38c69fd3c
+remote_feature_ref: f12ee178696b77af1b3b8b75246d4ae38c69fd3c
 pushed: true
 merged: false
 deployed: false
@@ -153,10 +154,10 @@ No unresolved critical or high finding remains inside the lifecycle API slice. G
 A later authorized publication path succeeded. `git ls-remote` now reports:
 
 ```text
-c6e110cd4ffe01cb8192cc1701f64827784ba240 refs/heads/feature/workflow-lifecycle-v1
+f12ee178696b77af1b3b8b75246d4ae38c69fd3c refs/heads/feature/workflow-lifecycle-v1
 ```
 
-The remote feature branch exactly matches the functional local HEAD. `origin/main` remains `4950ba3`; no merge or deployment is claimed. No pull-request ref was observed through Git, and remote CI status remains unverified. The earlier connector failure is retained as resolved historical evidence rather than an active blocker.
+The remote feature branch contains the functional head and exactly matches the published policy/evidence checkpoint `f12ee17`. `origin/main` remains `4950ba3`; no merge or deployment is claimed. No pull-request ref was observed through Git, and remote CI status remains unverified. The connector returned an ownership-helper error even though the remote ref advanced; this false-negative result is retained as a tooling risk, not an active publication blocker.
 
 ## Global gaps still open
 

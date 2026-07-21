@@ -1,5 +1,10 @@
 # Program Decision Log
 
+## 2026-07-21 — Remote refs override false-negative push responses
+
+Decision: after any connector push error, inspect the exact remote ref before retrying. The connector reported an ownership/Docker failure while `feature/workflow-lifecycle-v1` nevertheless advanced to `f12ee17`; therefore the remote SHA is authoritative and blind retries are prohibited.
+
+
 ## 2026-07-21 — Publication is proven only by the exact remote ref
 
 Decision: treat `feature/workflow-lifecycle-v1` as pushed because `git ls-remote` returns exact commit `c6e110c`. Do not infer PR creation, merge, or CI from branch publication; `main` remains `4950ba3`.
