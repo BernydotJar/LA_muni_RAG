@@ -12,13 +12,14 @@ A green synthetic evaluation is not evidence that the municipal corpus is comple
 npm run domain:evaluate
 npm run eval:procedure
 npm run eval:boundary
+npm run eval:corrupt
 npm run eval:tenant
 npm run eval:mixco
 npm run eval:water
 npm test
 ```
 
-`npm run eval:procedure`, `npm run eval:boundary`, `npm run eval:tenant`, `npm run eval:mixco`, and `npm run eval:water` are named CI gates. The complete regression remains `npm test`.
+`npm run eval:procedure`, `npm run eval:boundary`, `npm run eval:corrupt`, `npm run eval:tenant`, `npm run eval:mixco`, and `npm run eval:water` are named CI gates. The complete regression remains `npm test`.
 
 ## EVAL-PROCEDURE-001
 
@@ -91,6 +92,46 @@ Current limitations:
 - The test harness uses controlled in-memory identity, persistence, and compiler dependencies and does not prove a deployed cross-product topology.
 
 Therefore `EVAL-BOUNDARY-001` is `passed_for_current_provider_surface`, while program-wide boundary assurance remains open for future APIs and external consumers.
+
+## EVAL-CORRUPT-001
+
+Primary conditions:
+
+```text
+A completed idempotency record contains an invalid stored response.
+A first compilation attempt fails before the workflow is completed.
+A malformed or text-free document reaches the controlled ingestion surface.
+```
+
+Implemented acceptance criteria:
+
+1. A corrupt stored replay is schema-validated before emission, invalidated on failure, and replaced with a contract-valid retryable `500 internal_error`.
+2. Corrupt stored bytes and their secret marker never appear in the HTTP response or audit records, and the procedure compiler is not invoked for the invalid replay.
+3. Reusing the same idempotency key after invalidation performs one trusted compilation, stores a valid draft workflow, and then replays the exact trusted bytes without recompiling.
+4. A compilation exception produces a stable retryable internal error, records only `execution_failed`, releases the processing reservation, and does not preserve the exception message.
+5. Reusing the same key after the failed compilation succeeds, is not reported as conflict or in-progress, and becomes a stable replay.
+6. The named gate also runs the existing PDF, tenant-worker, and durable job-service suites.
+7. Malformed and text-free PDFs map to stable non-retryable ingestion failures.
+8. Stale/mismatched acceptance evidence, byte mutation, invalid media/policy, and lease loss never call completion; provider failures enter the bounded retry path; non-retryable failures update jobs and document versions to `failed`, not `processed`.
+
+Executable evidence:
+
+- `src/__tests__/eval-corrupt-001.test.ts`
+- `src/__tests__/ingestion-pdf.test.ts`
+- `src/__tests__/ingestion-worker.test.ts`
+- `src/__tests__/ingestion-job-service.test.ts`
+- `src/api/v1/handler.ts`
+- `src/api/v1/persistence.ts`
+- `src/ingestion/ingestionWorker.ts`
+- `src/ingestion/ingestionJobService.ts`
+
+Current limitations:
+
+- Procedure replay tests use controlled in-memory persistence; PostgreSQL invalidation and rollback remain covered by disposable runtime gates rather than this focused harness.
+- Ingestion tests use controlled artifact, scanner-evidence, provider, and transaction adapters. They do not prove a deployed malware scanner, durable object store, worker dispatcher, load behavior, or disaster recovery.
+- The nested Cloud Sandbox cannot execute the restored live PostgreSQL service gate or publish the branch; current remote verification is blocked by `BLK-CLOUD-PUSH-001`.
+
+Therefore `EVAL-CORRUPT-001` is `passed_for_current_replay_and_ingestion_failure_surfaces_with_storage_limitations`.
 
 ## EVAL-TENANT-001
 
@@ -214,7 +255,7 @@ Therefore `EVAL-WATER-001` is `passed_with_corpus_and_runtime_limitations`, whil
 | EVAL-BOUNDARY-001 | passed_for_current_provider_surface | Mixed and single-owner requests, hidden context violations, non-compilation, safe audit, and allowed evidence/procedure output pass; future APIs and consumers remain in scope. |
 | EVAL-TENANT-001 | passed_for_current_provider_and_disposable_db_gate_with_topology_limitations | Non-leaking HTTP denial, authenticated-tenant audit, transaction-local context, FORCE-RLS assertions, restored SQL gate, and compiled smoke wiring pass locally/static; full catalog and topology remain open. |
 | EVAL-CONFLICT-001 | missing | Conflicting versions, review, and non-silent promotion are not implemented end to end. |
-| EVAL-CORRUPT-001 | partial | Corrupt replay and ingestion failures fail closed; real scanner/object storage and recovery drills remain open. |
+| EVAL-CORRUPT-001 | passed_for_current_replay_and_ingestion_failure_surfaces_with_storage_limitations | Corrupt replay invalidation, failed-compilation release/retry, stable PDFs, worker no-completion failure paths, and durable job retry/failure suites pass; real scanner, storage, dispatcher, load, and recovery remain open. |
 
 ## Release rule
 

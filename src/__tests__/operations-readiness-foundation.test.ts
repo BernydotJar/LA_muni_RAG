@@ -31,6 +31,7 @@ describe("operations readiness foundation", () => {
       "npm run domain:evaluate",
       "npm run eval:procedure",
       "npm run eval:boundary",
+      "npm run eval:corrupt",
       "npm run eval:tenant",
       "npm run eval:mixco",
       "npm run eval:water",
@@ -86,6 +87,21 @@ describe("operations readiness foundation", () => {
     assert.match(evaluation, /does not retain the raw question, facts, or constraints/);
     assert.match(evaluation, /passed_for_current_provider_surface/);
     assert.match(evaluation, /Every future endpoint and external consumer/);
+  });
+
+  it("keeps the named corrupt-input and recovery hard eval executable and honestly bounded", async () => {
+    const [packageJson, evaluation] = await Promise.all([
+      read("package.json"),
+      read("docs/testing/eval-harness.md"),
+    ]);
+
+    assert.match(packageJson, /"eval:corrupt": "node --import tsx --test src\/__tests__\/eval-corrupt-001\.test\.ts src\/__tests__\/ingestion-pdf\.test\.ts src\/__tests__\/ingestion-worker\.test\.ts src\/__tests__\/ingestion-job-service\.test\.ts"/);
+    assert.match(evaluation, /## EVAL-CORRUPT-001/);
+    assert.match(evaluation, /invalidated on failure/);
+    assert.match(evaluation, /releases the processing reservation/);
+    assert.match(evaluation, /never call completion/);
+    assert.match(evaluation, /passed_for_current_replay_and_ingestion_failure_surfaces_with_storage_limitations/);
+    assert.match(evaluation, /do not prove a deployed malware scanner/);
   });
 
   it("keeps the named tenant-isolation hard eval and PostgreSQL gate executable", async () => {

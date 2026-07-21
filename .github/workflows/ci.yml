@@ -62,6 +62,9 @@ jobs:
       - name: Run EVAL-BOUNDARY-001
         run: npm run eval:boundary
 
+      - name: Run EVAL-CORRUPT-001
+        run: npm run eval:corrupt
+
       - name: Run EVAL-TENANT-001
         run: npm run eval:tenant
 

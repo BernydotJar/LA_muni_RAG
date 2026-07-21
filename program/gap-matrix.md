@@ -71,7 +71,7 @@ Autenticación, tenant scope, RBAC, validación, idempotencia, audit y rate limi
 | EVAL-BOUNDARY-001 | passed_for_current_provider_surface | 4/4 prueba solicitud mixta, contenido puro, violación oculta en contexto, no-compilación, audit sin payload y consulta procedimental permitida; futuros endpoints/consumers deben preservar el boundary |
 | EVAL-TENANT-001 | passed_for_current_provider_and_disposable_db_gate_with_topology_limitations | 4/4 prueba 403 indistinguible, audit tenant A sin payload B, transacciones set_config locales y wiring restaurado del gate SQL/smoke; faltan ejecución remota actual, topología, backups/observability y catálogo completo |
 | EVAL-CONFLICT-001 | missing | Versiones contradictorias visibles y review |
-| EVAL-CORRUPT-001 | partial | Replay corrupto, artefactos/PDF hostiles, mutación ABA, artifact mismatch, lease stale y rollback vector/job fallan cerrado; jobs/retries/DB ya tienen evidencia sintética; faltan scanner/object storage/API/worker reales y sandbox/carga aprobados |
+| EVAL-CORRUPT-001 | passed_for_current_replay_and_ingestion_failure_surfaces_with_storage_limitations | Replay inválido se invalida sin emitir bytes, compilación fallida libera reserva y permite retry, PDFs fallan estable, worker no completa en evidencia/bytes/lease inválidos y jobs aplican retry/fail; faltan scanner, object storage, dispatcher, carga y recovery reales |
 
 ## 5. Documentación y tooling obligatorio
 
