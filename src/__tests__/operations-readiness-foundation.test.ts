@@ -39,6 +39,7 @@ describe("operations readiness foundation", () => {
       "npm run eval:mixco",
       "npm run eval:water",
       "npm run typecheck",
+      "npm run test:workflow-lifecycle",
       "npm test",
       "npm run build",
     ]) {
@@ -53,6 +54,7 @@ describe("operations readiness foundation", () => {
     assert.match(workflow, /db\/migrations\/006_ingestion_api_runtime\.sql/);
     assert.match(workflow, /db\/migrations\/007_persisted_artifact_acceptance\.sql/);
     assert.match(workflow, /db\/migrations\/008_claim_pack_api\.sql/);
+    assert.match(workflow, /db\/migrations\/009_workflow_lifecycle\.sql/);
     assert.match(workflow, /db\/tests\/claim_pack_runtime_gate\.sql/);
     assert.match(workflow, /db\/tests\/tenant_ingestion_runtime_gate\.sql/);
     assert.match(workflow, /run: npm run smoke:tenant-ingestion/);

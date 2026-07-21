@@ -86,6 +86,9 @@ jobs:
       - name: Typecheck
         run: npm run typecheck
 
+      - name: Verify governed workflow lifecycle foundation
+        run: npm run test:workflow-lifecycle
+
       - name: Test
         run: npm test
 
@@ -105,7 +108,8 @@ jobs:
             db/migrations/004_procedure_query_api.sql \
             db/tests/procedure_query_runtime_gate.sql \
             db/migrations/008_claim_pack_api.sql \
-            db/tests/claim_pack_runtime_gate.sql
+            db/tests/claim_pack_runtime_gate.sql \
+            db/migrations/009_workflow_lifecycle.sql
           do
             docker exec -i "$POSTGRES_CONTAINER" \
               psql -U postgres -d la_muni_rag_test \

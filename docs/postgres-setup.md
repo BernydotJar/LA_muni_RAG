@@ -51,6 +51,7 @@ psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -f db/migrations/005_tenant_ingestion_ru
 psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -f db/migrations/006_ingestion_api_runtime.sql
 psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -f db/migrations/007_persisted_artifact_acceptance.sql
 psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -f db/migrations/008_claim_pack_api.sql
+psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -f db/migrations/009_workflow_lifecycle.sql
 ```
 
 Migration `005` is the canonical vector-store migration for fresh databases.

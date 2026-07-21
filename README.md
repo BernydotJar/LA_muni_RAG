@@ -193,6 +193,7 @@ psql "$DATABASE_URL" -f db/migrations/005_tenant_ingestion_runtime.sql
 psql "$DATABASE_URL" -f db/migrations/006_ingestion_api_runtime.sql
 psql "$DATABASE_URL" -f db/migrations/007_persisted_artifact_acceptance.sql
 psql "$DATABASE_URL" -f db/migrations/008_claim_pack_api.sql
+psql "$DATABASE_URL" -f db/migrations/009_workflow_lifecycle.sql
 ```
 
 Migration `005` is the canonical vector-store migration. Do not apply
@@ -272,6 +273,8 @@ Reusable today:
   versions, with server-owned pipeline policy and non-leaking status reads;
 - explicit visibility for same-document citation slots whose distinct versions
   contain different text, with review-required contradictions and no silent promotion;
+- tenant-scoped workflow lifecycle tables and a deterministic draft/review/approval/
+  supersession/archive state machine with human separation of duties;
 - a callable worker that accepts only injected immutable, clean-scan-bound bytes
   and rechecks their identity before atomic completion.
 
@@ -286,6 +289,7 @@ Still intentionally incomplete:
   cancellation/deadline, backpressure, monitoring, and graceful shutdown;
 - production DB role attestation, queue/observability, load/HA, and reviewed
   tenant-partitioned approximate-vector strategy if scale requires it;
+- authenticated workflow draft/review/approval APIs and lifecycle UI;
 - automatic workflow-template publication;
 - visual workflow-template editor;
 - real customer HR, finance, or sales policy corpora;

@@ -146,3 +146,15 @@ Estas diferencias son gaps de implementación; no reducen la política. Deben ce
 - [Límites del producto](../product/product-boundaries.md)
 - [Contratos entre productos](../integrations/contracts.md)
 - [ADR-0001](../adr/0001-product-boundaries-and-data-ownership.md)
+
+## Governed procedure workflow lifecycle
+
+LA Muni RAG exclusively owns `rag.procedures`, `rag.procedure_versions`,
+`rag.workflow_reviews`, and `rag.workflow_approvals`. Adjacent products consume
+stable procedure/workflow version IDs and evidence references; they do not update
+these tables or create an independent approved-workflow source of truth.
+
+Every version begins as draft. Review and approval evidence is append-only, and
+approved content is immutable. Operational approval records a human governance
+decision inside LA Muni RAG; it does not by itself prove legal sufficiency, budget,
+procurement compliance, or project completion.

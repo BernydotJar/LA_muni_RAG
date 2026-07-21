@@ -33,6 +33,7 @@
     "source-inventory:validate": "node --import tsx src/cli/validateSourceInventory.ts --manifest .rag/source-inventory.json",
     "start": "node dist/server.js",
     "test": "node --import tsx --test src/__tests__/*.test.ts",
+    "test:workflow-lifecycle": "node --import tsx --test src/__tests__/workflow-lifecycle-state-machine.test.ts src/__tests__/workflow-lifecycle-migration.test.ts",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "workflow:validate": "tsx src/cli/validateWorkflowTemplate.ts"
   },
