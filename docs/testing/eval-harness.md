@@ -11,11 +11,12 @@ A green synthetic evaluation is not evidence that the municipal corpus is comple
 ```bash
 npm run domain:evaluate
 npm run eval:procedure
+npm run eval:mixco
 npm run eval:water
 npm test
 ```
 
-`npm run eval:procedure` and `npm run eval:water` are named CI gates. The complete regression remains `npm test`.
+`npm run eval:procedure`, `npm run eval:mixco`, and `npm run eval:water` are named CI gates. The complete regression remains `npm test`.
 
 ## EVAL-PROCEDURE-001
 
@@ -52,6 +53,42 @@ Current limitations:
 - A valid `draft` workflow is not an executable instruction and does not authorize municipal action.
 
 Therefore `EVAL-PROCEDURE-001` is `passed_with_corpus_and_lifecycle_limitations`, while the parent procedure workstream and production gate remain open.
+
+## EVAL-MIXCO-001
+
+Input:
+
+```text
+Usa el manual de Mixco para explicar contratación de obra
+```
+
+Implemented acceptance criteria:
+
+1. The query is procedural, classifies as `procurement`, and identifies `Mixco` as an external municipality.
+2. The controlled source is official for Mixco but is classified `external_reference`/`comparative`; it is never local or official for Antigua Guatemala.
+3. The internal workflow jurisdiction is `external reference`, confidence remains low, and only the matching `Definir modalidad` step receives the comparative citation.
+4. The workflow retains a blocking gap for an official Antigua source and an important gap for validation against Antigua documents and applicable national law.
+5. The v1 artifact validates as an AI `draft`, reports top-level authority `comparative`, and emits the exact warning: `Referencia comparativa de la Municipalidad de Mixco. No define por sí sola el procedimiento oficial de Antigua Guatemala.`
+6. Source metadata states `municipality=mixco`, `official_source=true`, `official_for_target_jurisdiction=false`, and distinguishes source from target jurisdiction.
+7. The Mixco-backed step is `comparative_reference`; unsupported steps remain `missing_evidence`, and actors, units, systems, and deadlines remain null.
+8. The canonical schema rejects both silent promotion to `official_target_jurisdiction` and replacement of the mandatory warning with a generic label.
+
+Executable evidence:
+
+- `src/__tests__/eval-mixco-001.test.ts`
+- `src/procedure/procedureAuthorities.ts`
+- `src/procedure/procedureComposer.ts`
+- `src/api/v1/mapper.ts`
+- `contracts/schemas/v1/common.schema.json`
+- `contracts/schemas/v1/procedure-workflow.schema.json`
+
+Current limitations:
+
+- The Mixco record is a controlled synthetic fixture. It proves authority mapping and contract behavior, not acquisition, clean scanning, ingestion, current validity, or completeness of the real Mixco corpus.
+- No Mixco procedure is promoted to Antigua, and the evaluation does not prove that a corroborating Antigua source has been located.
+- The evaluation does not prove production retrieval thresholds, conflict handling, lifecycle, human approval, or procedure-case tracking.
+
+Therefore `EVAL-MIXCO-001` is `passed_with_corpus_and_corroboration_limitations`.
 
 ## EVAL-WATER-001
 
@@ -96,7 +133,7 @@ Therefore `EVAL-WATER-001` is `passed_with_corpus_and_runtime_limitations`, whil
 |---|---|---|
 | EVAL-PROCEDURE-001 | passed_with_corpus_and_lifecycle_limitations | Synthetic identity-bound citations and workflow JSON pass; real corpus retrieval, conflicts, lifecycle, approvals, and cases remain open. |
 | EVAL-WATER-001 | passed_with_corpus_and_runtime_limitations | Real Antigua corpus, retrieval thresholds, contradictions, approvals, and persistent case tracking. |
-| EVAL-MIXCO-001 | partial | Comparative authority and warning are tested; acquired/ingested corpus and end-to-end corroboration remain open. |
+| EVAL-MIXCO-001 | passed_with_corpus_and_corroboration_limitations | End-to-end classification, composition, mapping, warning, anti-promotion schema checks, and corroboration gaps pass; real corpus and Antigua corroboration remain open. |
 | EVAL-OS-INTEGRATION-001 | partial | Provider contract and boundary exist; external consumer interoperability is not proven. |
 | EVAL-CONTENT-INTEGRATION-001 | missing | ClaimPack provider and contract tests are not implemented. |
 | EVAL-BOUNDARY-001 | partial | Procedure-query refusal is tested; all future endpoints and consumers must preserve it. |

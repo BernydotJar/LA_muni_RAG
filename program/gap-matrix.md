@@ -65,7 +65,7 @@ Autenticación, tenant scope, RBAC, validación, idempotencia, audit y rate limi
 |---|---|---|
 | EVAL-PROCEDURE-001 | passed_with_corpus_and_lifecycle_limitations | 4/4 prueba clasificación conservadora, workflow sin evidencia, citas municipales identity-bound por paso y JSON v1; faltan corpus real, retrieval thresholds, conflictos, lifecycle, aprobación y casos |
 | EVAL-WATER-001 | passed_with_corpus_and_runtime_limitations | 47 categorías, contrato completo, missing evidence y citation selectivity pasan; faltan corpus real ingerido, conflictos, lifecycle y caso persistido |
-| EVAL-MIXCO-001 | partial | Existe caso sintético de authority; falta flujo/corpus/warning end-to-end |
+| EVAL-MIXCO-001 | passed_with_corpus_and_corroboration_limitations | 4/4 prueba clasificación, autoridad comparativa, warning canónico, gaps de corroboración, mapping v1 y rechazo de promoción silenciosa; faltan corpus real y corroboración Antigua |
 | EVAL-OS-INTEGRATION-001 | partial | Provider ProcedureWorkflow y boundary pasan; falta consumer OS Electoral y prueba entre repos |
 | EVAL-CONTENT-INTEGRATION-001 | missing | Requiere ClaimPack y boundary |
 | EVAL-BOUNDARY-001 | partial | Provider rechaza estrategia/movilización/contenido; falta matriz de todos los endpoints/consumers |

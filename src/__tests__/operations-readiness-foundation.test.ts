@@ -30,6 +30,7 @@ describe("operations readiness foundation", () => {
       "npm audit --audit-level=high",
       "npm run domain:evaluate",
       "npm run eval:procedure",
+      "npm run eval:mixco",
       "npm run eval:water",
       "npm run typecheck",
       "npm test",
@@ -68,6 +69,21 @@ describe("operations readiness foundation", () => {
     assert.match(evaluation, /passed_with_corpus_and_lifecycle_limitations/);
     assert.match(evaluation, /controlled synthetic fixtures/);
     assert.match(evaluation, /not an executable instruction/);
+  });
+
+  it("keeps the named Mixco hard eval executable and honestly documented", async () => {
+    const [packageJson, evaluation] = await Promise.all([
+      read("package.json"),
+      read("docs/testing/eval-harness.md"),
+    ]);
+
+    assert.match(packageJson, /"eval:mixco": "node --import tsx --test src\/__tests__\/eval-mixco-001\.test\.ts"/);
+    assert.match(evaluation, /## EVAL-MIXCO-001/);
+    assert.match(evaluation, /official for Mixco but is classified `external_reference`\/`comparative`/);
+    assert.match(evaluation, /official_for_target_jurisdiction=false/);
+    assert.match(evaluation, /No define por sí sola el procedimiento oficial de Antigua Guatemala/);
+    assert.match(evaluation, /passed_with_corpus_and_corroboration_limitations/);
+    assert.match(evaluation, /controlled synthetic fixture/);
   });
 
   it("keeps the named water hard eval executable and honestly documented", async () => {
