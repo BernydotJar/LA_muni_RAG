@@ -12,12 +12,13 @@ A green synthetic evaluation is not evidence that the municipal corpus is comple
 npm run domain:evaluate
 npm run eval:procedure
 npm run eval:boundary
+npm run eval:tenant
 npm run eval:mixco
 npm run eval:water
 npm test
 ```
 
-`npm run eval:procedure`, `npm run eval:boundary`, `npm run eval:mixco`, and `npm run eval:water` are named CI gates. The complete regression remains `npm test`.
+`npm run eval:procedure`, `npm run eval:boundary`, `npm run eval:tenant`, `npm run eval:mixco`, and `npm run eval:water` are named CI gates. The complete regression remains `npm test`.
 
 ## EVAL-PROCEDURE-001
 
@@ -90,6 +91,43 @@ Current limitations:
 - The test harness uses controlled in-memory identity, persistence, and compiler dependencies and does not prove a deployed cross-product topology.
 
 Therefore `EVAL-BOUNDARY-001` is `passed_for_current_provider_surface`, while program-wide boundary assurance remains open for future APIs and external consumers.
+
+## EVAL-TENANT-001
+
+Primary condition:
+
+```text
+A credential authenticated for tenant A submits a procedure query whose tenant_id is tenant B.
+```
+
+Implemented acceptance criteria:
+
+1. Cross-tenant denial and missing-role denial return the same contract-valid `403 forbidden` shape with empty details.
+2. The response is scoped to the authenticated tenant and contains neither the requested tenant identifier nor a tenant-existence or mismatch explanation.
+3. The compiler is not invoked for either denial.
+4. Rate-limit and audit work runs only inside transaction-local `app.tenant_id` contexts for the authenticated tenant; no transaction is opened under the requested foreign tenant.
+5. The cross-tenant denial produces `integration.procedure_query.tenant_access_denied`, but the audit stores only allowlisted metadata and does not retain foreign-tenant facts, document references, constraints, or secret markers.
+6. A valid same-tenant request returns a schema-valid draft workflow and completes its persistence work in transaction-local tenant A contexts.
+7. Migration 004 enables and forces RLS on procedure-query idempotency and rate-limit tables.
+8. CI now recreates the disposable `la_muni_rag_test` database, runs the non-owner procedure-query RLS gate, and executes the compiled PostgreSQL/HTTP smoke test in addition to the ingestion gates.
+
+Executable evidence:
+
+- `src/__tests__/eval-tenant-001.test.ts`
+- `src/__tests__/helpers/procedure-query-v1-harness.ts`
+- `db/migrations/004_procedure_query_api.sql`
+- `db/tests/procedure_query_runtime_gate.sql`
+- `scripts/procedure-query-postgres-smoke.mjs`
+- `.github/workflows/ci.yml`
+
+Current limitations:
+
+- The HTTP hard eval uses controlled in-memory persistence and transaction clients; the PostgreSQL gate remains a separate disposable CI control.
+- The restored PostgreSQL/HTTP CI steps cannot be executed in this nested Cloud Sandbox because it cannot start the required service or publish the branch; remote verification is pending `BLK-CLOUD-PUSH-001`.
+- This result covers the implemented procedure-query and historical ingestion surfaces, not every endpoint required by the final API catalog or a production deployment topology.
+- Tenant isolation under backup, restore, analytics, observability, object storage, and future procedure-case APIs remains unproved.
+
+Therefore `EVAL-TENANT-001` is `passed_for_current_provider_and_disposable_db_gate_with_topology_limitations`.
 
 ## EVAL-MIXCO-001
 
@@ -174,7 +212,7 @@ Therefore `EVAL-WATER-001` is `passed_with_corpus_and_runtime_limitations`, whil
 | EVAL-OS-INTEGRATION-001 | partial | Provider contract and boundary exist; external consumer interoperability is not proven. |
 | EVAL-CONTENT-INTEGRATION-001 | missing | ClaimPack provider and contract tests are not implemented. |
 | EVAL-BOUNDARY-001 | passed_for_current_provider_surface | Mixed and single-owner requests, hidden context violations, non-compilation, safe audit, and allowed evidence/procedure output pass; future APIs and consumers remain in scope. |
-| EVAL-TENANT-001 | partial | Procedure-query and ingestion database gates exist; the full API catalog and production topology remain open. |
+| EVAL-TENANT-001 | passed_for_current_provider_and_disposable_db_gate_with_topology_limitations | Non-leaking HTTP denial, authenticated-tenant audit, transaction-local context, FORCE-RLS assertions, restored SQL gate, and compiled smoke wiring pass locally/static; full catalog and topology remain open. |
 | EVAL-CONFLICT-001 | missing | Conflicting versions, review, and non-silent promotion are not implemented end to end. |
 | EVAL-CORRUPT-001 | partial | Corrupt replay and ingestion failures fail closed; real scanner/object storage and recovery drills remain open. |
 

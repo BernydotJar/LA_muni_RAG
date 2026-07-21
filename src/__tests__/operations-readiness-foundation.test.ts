@@ -31,6 +31,7 @@ describe("operations readiness foundation", () => {
       "npm run domain:evaluate",
       "npm run eval:procedure",
       "npm run eval:boundary",
+      "npm run eval:tenant",
       "npm run eval:mixco",
       "npm run eval:water",
       "npm run typecheck",
@@ -85,6 +86,23 @@ describe("operations readiness foundation", () => {
     assert.match(evaluation, /does not retain the raw question, facts, or constraints/);
     assert.match(evaluation, /passed_for_current_provider_surface/);
     assert.match(evaluation, /Every future endpoint and external consumer/);
+  });
+
+  it("keeps the named tenant-isolation hard eval and PostgreSQL gate executable", async () => {
+    const [packageJson, evaluation, workflow] = await Promise.all([
+      read("package.json"),
+      read("docs/testing/eval-harness.md"),
+      read(".github/workflows/ci.yml"),
+    ]);
+
+    assert.match(packageJson, /"eval:tenant": "node --import tsx --test src\/__tests__\/eval-tenant-001\.test\.ts"/);
+    assert.match(evaluation, /## EVAL-TENANT-001/);
+    assert.match(evaluation, /same contract-valid `403 forbidden` shape/);
+    assert.match(evaluation, /does not retain foreign-tenant facts/);
+    assert.match(evaluation, /passed_for_current_provider_and_disposable_db_gate_with_topology_limitations/);
+    assert.match(workflow, /db\/tests\/procedure_query_runtime_gate\.sql/);
+    assert.match(workflow, /npm run smoke:postgres-api/);
+    assert.match(workflow, /la_muni_rag_test/);
   });
 
   it("keeps the named Mixco hard eval executable and honestly documented", async () => {

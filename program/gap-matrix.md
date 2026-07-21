@@ -69,7 +69,7 @@ Autenticación, tenant scope, RBAC, validación, idempotencia, audit y rate limi
 | EVAL-OS-INTEGRATION-001 | partial | Provider ProcedureWorkflow y boundary pasan; falta consumer OS Electoral y prueba entre repos |
 | EVAL-CONTENT-INTEGRATION-001 | missing | Requiere ClaimPack y boundary |
 | EVAL-BOUNDARY-001 | passed_for_current_provider_surface | 4/4 prueba solicitud mixta, contenido puro, violación oculta en contexto, no-compilación, audit sin payload y consulta procedimental permitida; futuros endpoints/consumers deben preservar el boundary |
-| EVAL-TENANT-001 | partial | Gates PostgreSQL 16.14/pgvector 0.8.5 niegan A/B para procedure-query y job/vector con rol non-owner; faltan topología aprobada, drift y catálogo/API completo |
+| EVAL-TENANT-001 | passed_for_current_provider_and_disposable_db_gate_with_topology_limitations | 4/4 prueba 403 indistinguible, audit tenant A sin payload B, transacciones set_config locales y wiring restaurado del gate SQL/smoke; faltan ejecución remota actual, topología, backups/observability y catálogo completo |
 | EVAL-CONFLICT-001 | missing | Versiones contradictorias visibles y review |
 | EVAL-CORRUPT-001 | partial | Replay corrupto, artefactos/PDF hostiles, mutación ABA, artifact mismatch, lease stale y rollback vector/job fallan cerrado; jobs/retries/DB ya tienen evidencia sintética; faltan scanner/object storage/API/worker reales y sandbox/carga aprobados |
 
