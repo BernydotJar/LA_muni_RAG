@@ -15,7 +15,10 @@
       "status": "resolved",
       "description": "The initial migration referenced a nonexistent identity.integration_credentials table.",
       "repair": "Use the tenant-composite foreign key to identity.api_credentials and add a regression that rejects the nonexistent table name.",
-      "evidence": ["migration test", "clean PostgreSQL migration/gate"]
+      "evidence": [
+        "migration test",
+        "clean PostgreSQL migration/gate"
+      ]
     },
     {
       "id": "EG-HIGH-002",
@@ -23,7 +26,10 @@
       "status": "resolved",
       "description": "The request contract used priority critical while the initial persistence check used urgent.",
       "repair": "Align the request, response, TypeScript and PostgreSQL enum to low/medium/high/critical and reject urgent.",
-      "evidence": ["contract tests", "SQL check violation gate"]
+      "evidence": [
+        "contract tests",
+        "SQL check violation gate"
+      ]
     },
     {
       "id": "EG-HIGH-003",
@@ -31,7 +37,10 @@
       "status": "resolved",
       "description": "The initial response schema referenced a nonexistent EvidenceGapPriority definition and omitted request/jurisdiction identity.",
       "repair": "Create a closed canonical response with direct priority enum, request_id, jurisdiction and server provenance.",
-      "evidence": ["17/17 contract registry", "OpenAPI tests"]
+      "evidence": [
+        "17/17 contract registry",
+        "OpenAPI tests"
+      ]
     },
     {
       "id": "EG-HIGH-004",
@@ -39,7 +48,10 @@
       "status": "resolved",
       "description": "Copied ClaimPack scaffolding could have introduced compiler, expiry and content semantics into documentary intake.",
       "repair": "Replace the scaffold with dedicated types, mapper, handler, persistence and no compiler dependency.",
-      "evidence": ["ClaimPack residue scan", "focused provider eval"]
+      "evidence": [
+        "ClaimPack residue scan",
+        "focused provider eval"
+      ]
     },
     {
       "id": "EG-HIGH-005",
@@ -47,7 +59,11 @@
       "status": "resolved",
       "description": "A stored acknowledgement could remain schema-valid while changing limitations or silently promoting source authority.",
       "repair": "Require response SHA-256 and exact canonical mapper reconstruction before any transport or aggregate replay.",
-      "evidence": ["semantic corruption eval", "PostgreSQL wrong-hash gate", "compiled corrupt replay recovery"]
+      "evidence": [
+        "semantic corruption eval",
+        "PostgreSQL wrong-hash gate",
+        "compiled corrupt replay recovery"
+      ]
     },
     {
       "id": "EG-HIGH-006",
@@ -55,7 +71,11 @@
       "status": "resolved",
       "description": "Requester text could be displayed as a RAG finding or used to launder an authority declaration.",
       "repair": "Fix request_assertion_status=requester_supplied_unverified and reject imperative authority promotion across subject and reason.",
-      "evidence": ["contract assertion test", "authority refusal eval", "compiled smoke"]
+      "evidence": [
+        "contract assertion test",
+        "authority refusal eval",
+        "compiled smoke"
+      ]
     },
     {
       "id": "EG-HIGH-007",
@@ -63,7 +83,66 @@
       "status": "resolved",
       "description": "Transport idempotency alone did not prove convergence for concurrent distinct keys targeting one aggregate.",
       "repair": "Add aggregate identity claim/replay/conflict semantics and prove one-row exact-response convergence in memory and PostgreSQL.",
-      "evidence": ["concurrency eval", "compiled PostgreSQL smoke"]
+      "evidence": [
+        "concurrency eval",
+        "compiled PostgreSQL smoke"
+      ]
+    },
+    {
+      "findingId": "F064-AGGREGATE-REPLAY",
+      "feature": "064",
+      "severity": "high",
+      "status": "resolved",
+      "description": "Distinct transport keys could compete to create duplicate cases.",
+      "resolution": "Canonical create hash, transaction advisory lock, unique aggregate identity and sealed initial acknowledgement; concurrent PostgreSQL/HTTP proof passes."
+    },
+    {
+      "findingId": "F064-REPLAY-BYTES",
+      "feature": "064",
+      "severity": "high",
+      "status": "resolved",
+      "description": "JSONB transport replay would not preserve exact response bytes.",
+      "resolution": "TEXT response body plus SHA-256 and canonical aggregate acknowledgement."
+    },
+    {
+      "findingId": "F065-ARTIFACT-PERMISSIONS",
+      "feature": "065",
+      "severity": "high",
+      "status": "resolved",
+      "description": "Initial pg_dump artifact inherited mode 0644.",
+      "resolution": "umask 077, explicit chmod 0600, owner/non-symlink checks and artifacts outside repository."
+    },
+    {
+      "findingId": "F066-SOURCE-DURABILITY",
+      "feature": "066",
+      "severity": "high",
+      "status": "open_global",
+      "description": "One inventory record has acquisition metadata but its ignored bytes are absent from this checkout.",
+      "resolution": "Do not credit ingestion or durable possession; require authorized object storage, current scan and human review."
+    },
+    {
+      "findingId": "GLOBAL-MISSING-CATALOG-APIS",
+      "feature": "program",
+      "severity": "high",
+      "status": "open_global",
+      "description": "Source/document/search/evidence/procedure catalog endpoints required by the goal remain missing.",
+      "resolution": "Ready task WS08-CATALOG-API-001."
+    },
+    {
+      "findingId": "GLOBAL-NO-HUMAN-IDP",
+      "feature": "program",
+      "severity": "critical",
+      "status": "open_global",
+      "description": "Current credentials do not implement human SaaS authentication/session/provisioning.",
+      "resolution": "Human-gated IdP/session/BFF decision and implementation."
+    },
+    {
+      "findingId": "GLOBAL-NO-PRODUCTION-RUNTIME",
+      "feature": "program",
+      "severity": "critical",
+      "status": "open_global",
+      "description": "No staging/production deployment, observability, load/HA, object recovery or runtime observation exists.",
+      "resolution": "WS10 platform work and human release approval."
     }
   ],
   "open_external_or_governance_findings": [
@@ -89,5 +168,6 @@
   "open_global_findings": [
     "Corpus, retrieval quality, procedure cases, authenticated frontend/accessibility and platform operations remain incomplete.",
     "No protected merge or production deployment."
-  ]
+  ],
+  "updatedAt": "2026-07-21T21:53:16Z"
 }

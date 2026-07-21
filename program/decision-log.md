@@ -117,3 +117,37 @@ schema-valid limitations could silently change authority semantics.
 `29861888791` and check `88740409681` completed successfully on that SHA.
 This proves feature publication and remote CI, not PR, protected merge,
 production deployment, research operations or consumer interoperability.
+
+## 2026-07-21 — Procedure cases are operational records, not legal status
+
+Decision: bind every new case immutably to a workflow version approved at
+creation, require document-version identity for received/reviewed evidence, use
+optimistic revisions and append-only events, and exclude legal/compliance/payment
+status from the contract. Case validation requires `procedure:review`, separate
+from ordinary `case:write`.
+
+Evidence: ADR 064, commit `cf9449d`, EVAL-CASE-001, PostgreSQL SQL gate and
+compiled HTTP smoke.
+
+## 2026-07-21 — Logical restore excludes source ownership and ACLs
+
+Decision: use custom `pg_dump --no-owner --no-acl`, restore transactionally into
+a distinct empty target, and reapply reviewed runtime grants through provisioning.
+This avoids silently inheriting source privileges.
+
+Evidence: ADR 065, commit `5d45410`, EVAL-RESTORE-001 and restored runtime/HTTP gates.
+
+## 2026-07-21 — All required eval names retain scope-specific limitations
+
+Decision: add SOURCE, MISSING, RBAC and INGEST as dedicated executable families
+and record all nineteen goal-required names, but never treat named green gates as
+global readiness. Source metadata is not durable possession; server RBAC is not
+human login; disposable ingestion/restore is not production operation.
+
+Evidence: commit `e39ad77`, CI 29871698536 and `docs/testing/eval-harness.md`.
+
+## 2026-07-21 — Next critical path is the missing catalog API, not another demo
+
+Decision: prioritize source/document/job-list/search/evidence/procedure catalog
+APIs before expanding visual surfaces. These endpoints are required to make the
+existing data and providers operable as a coherent SaaS backend.

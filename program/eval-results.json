@@ -54,23 +54,79 @@
     "claim_pack_compiled_smoke": "pass",
     "workflow_lifecycle_compiled_smoke": "pass",
     "evidence_gap_compiled_smoke": "pass",
-    "evidence_gap_statuses": [401, 200, 200, 200, 200, 200, 409, 409, 403, 400, 400, 500, 200]
+    "evidence_gap_statuses": [
+      401,
+      200,
+      200,
+      200,
+      200,
+      200,
+      409,
+      409,
+      403,
+      400,
+      400,
+      500,
+      200
+    ]
   },
   "hard_evals": {
-    "EVAL-PROCEDURE-001": { "passed": 4, "total": 4 },
-    "EVAL-WATER-001": { "passed": 4, "total": 4 },
-    "EVAL-MIXCO-001": { "passed": 4, "total": 4 },
-    "EVAL-OS-INTEGRATION-001": { "passed": 5, "total": 5 },
-    "EVAL-PROCEDURE-ASSESSMENT-001": { "passed": 4, "total": 4 },
-    "EVAL-EVIDENCE-GAP-001": { "passed": 14, "total": 14 },
-    "EVAL-CONTENT-INTEGRATION-001": { "passed": 7, "total": 7 },
-    "EVAL-CONFLICT-001": { "passed": 8, "total": 8 },
-    "EVAL-BOUNDARY-001": { "passed": 4, "total": 4 },
-    "EVAL-TENANT-001": { "passed": 4, "total": 4 },
-    "EVAL-CORRUPT-001": { "passed": 20, "total": 20 },
-    "EVAL-ARTIFACT-001": { "passed": 5, "total": 5 },
-    "EVAL-VECTOR-001": { "passed": 9, "total": 9 },
-    "EVAL-JOB-LEASE-001": { "passed": 13, "total": 13 }
+    "EVAL-PROCEDURE-001": {
+      "passed": 4,
+      "total": 4
+    },
+    "EVAL-WATER-001": {
+      "passed": 4,
+      "total": 4
+    },
+    "EVAL-MIXCO-001": {
+      "passed": 4,
+      "total": 4
+    },
+    "EVAL-OS-INTEGRATION-001": {
+      "passed": 5,
+      "total": 5
+    },
+    "EVAL-PROCEDURE-ASSESSMENT-001": {
+      "passed": 4,
+      "total": 4
+    },
+    "EVAL-EVIDENCE-GAP-001": {
+      "passed": 14,
+      "total": 14
+    },
+    "EVAL-CONTENT-INTEGRATION-001": {
+      "passed": 7,
+      "total": 7
+    },
+    "EVAL-CONFLICT-001": {
+      "passed": 8,
+      "total": 8
+    },
+    "EVAL-BOUNDARY-001": {
+      "passed": 4,
+      "total": 4
+    },
+    "EVAL-TENANT-001": {
+      "passed": 4,
+      "total": 4
+    },
+    "EVAL-CORRUPT-001": {
+      "passed": 20,
+      "total": 20
+    },
+    "EVAL-ARTIFACT-001": {
+      "passed": 5,
+      "total": 5
+    },
+    "EVAL-VECTOR-001": {
+      "passed": 9,
+      "total": 9
+    },
+    "EVAL-JOB-LEASE-001": {
+      "passed": 13,
+      "total": 13
+    }
   },
   "missing_dedicated_evals": [
     "EVAL-SOURCE-001",
@@ -116,5 +172,77 @@
     "Immutable request text lacks approved retention/deletion/legal-hold policy.",
     "No OS Electoral consumer contract has run.",
     "Global production readiness remains unproved."
+  ],
+  "generatedAt": "2026-07-21T21:53:16Z",
+  "summary": {
+    "status": "partial_production_readiness",
+    "requiredNamedFamilies": 19,
+    "requiredNamedFamiliesWithDedicatedGates": 19,
+    "additionalNamedFamilies": [
+      "EVAL-PROCEDURE-ASSESSMENT-001",
+      "EVAL-EVIDENCE-GAP-001"
+    ],
+    "detachedTests": {
+      "total": 724,
+      "passed": 722,
+      "failed": 0,
+      "skipped": 2
+    },
+    "contracts": {
+      "schemas": 19,
+      "examples": 19,
+      "openapi": "3.1.1"
+    },
+    "sourceInventory": {
+      "total": 17,
+      "verified": 4,
+      "acquisitionMetadata": 1,
+      "ingested": 0
+    },
+    "productionReady": false
+  },
+  "evaluations": [
+    {
+      "evalId": "EVAL-CASE-001",
+      "status": "pass_with_limitations",
+      "summary": "17/17 plus disposable PostgreSQL SQL gate and compiled HTTP smoke; authenticated UI, privacy, load, restore and deployment remain open.",
+      "verifiedAt": "2026-07-21T21:53:16Z"
+    },
+    {
+      "evalId": "EVAL-ACCESSIBILITY-001",
+      "status": "pass_with_limitations",
+      "summary": "11/11 static Academy checks; supported-browser E2E, screen readers, human WCAG and authenticated application remain open.",
+      "verifiedAt": "2026-07-21T21:53:16Z"
+    },
+    {
+      "evalId": "EVAL-RESTORE-001",
+      "status": "pass_with_limitations",
+      "summary": "5/5 plus real isolated logical restore and restored HTTP smoke; objects, PITR, RPO/RTO, staging/load and human sign-off remain open.",
+      "verifiedAt": "2026-07-21T21:53:16Z"
+    },
+    {
+      "evalId": "EVAL-SOURCE-001",
+      "status": "pass_with_limitations",
+      "summary": "15/15 inventory semantics; durable acquired bytes absent in checkout and zero records ingested.",
+      "verifiedAt": "2026-07-21T21:53:16Z"
+    },
+    {
+      "evalId": "EVAL-MISSING-001",
+      "status": "pass_with_limitations",
+      "summary": "25/25 explicit no-evidence/gap behavior; real-corpus research and resolution lifecycle remain open.",
+      "verifiedAt": "2026-07-21T21:53:16Z"
+    },
+    {
+      "evalId": "EVAL-RBAC-001",
+      "status": "pass_with_limitations",
+      "summary": "32/32 current server role/tenant surface; human IdP/provisioning/access review remain open.",
+      "verifiedAt": "2026-07-21T21:53:16Z"
+    },
+    {
+      "evalId": "EVAL-INGEST-001",
+      "status": "pass_with_limitations",
+      "summary": "40/40 plus PostgreSQL/pgvector gates and HTTP smokes; production object/scanner/dispatcher/load/operations remain open.",
+      "verifiedAt": "2026-07-21T21:53:16Z"
+    }
   ]
 }
