@@ -20,6 +20,7 @@ LA Muni RAG is an evidence-first RAG and procedural workflow system configured b
 ```text
 GET  /health
 POST /api/v1/procedure-queries
+POST /api/v1/claim-packs
 POST /api/v1/ingestion-jobs
 GET  /api/v1/ingestion-jobs/{job_id}
 GET  /api/search
@@ -38,7 +39,9 @@ GET  /api/procedure-feedback
 `POST /api/v1/procedure-queries` is the authenticated, tenant-scoped production
 slice. It returns either an identity-bound `EvidenceBundle` or an AI-generated
 `ProcedureWorkflow` draft according to `requested_output`; `ProcedureAssessment`
-remains explicitly unavailable. Production disables every pre-v1 `/api/*` route;
+remains explicitly unavailable. `POST /api/v1/claim-packs` is a separate
+Content-Agency-facing provider that emits claims/citations/usage limits only and
+rejects copy, assets, channels, publication tasks, and campaign strategy. Production disables every pre-v1 `/api/*` route;
 the legacy routes listed above are development-only and must not be exposed with
 confidential or multi-tenant data. The ingestion v1 route family authenticates
 `document:ingest` and enqueues/reads jobs only for existing registry versions;
@@ -188,6 +191,8 @@ psql "$DATABASE_URL" -f db/migrations/003_identity_tenancy_rbac.sql
 psql "$DATABASE_URL" -f db/migrations/004_procedure_query_api.sql
 psql "$DATABASE_URL" -f db/migrations/005_tenant_ingestion_runtime.sql
 psql "$DATABASE_URL" -f db/migrations/006_ingestion_api_runtime.sql
+psql "$DATABASE_URL" -f db/migrations/007_persisted_artifact_acceptance.sql
+psql "$DATABASE_URL" -f db/migrations/008_claim_pack_api.sql
 ```
 
 Migration `005` is the canonical vector-store migration. Do not apply

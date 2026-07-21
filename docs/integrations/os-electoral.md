@@ -185,7 +185,7 @@ Un fallo de red se reintenta con la misma key. OS Electoral no debe fabricar una
 
 ## Estado real al corte
 
-- LA Muni RAG tiene once schemas draft 2020-12, once ejemplos y OpenAPI 3.1.1 con estado `evidence_bundle_procedure_workflow_and_ingestion_job_providers_implemented_with_limits`; los contratos de ingestion son operacionales internos y no amplían el payload compartido con OS Electoral.
+- LA Muni RAG tiene doce schemas draft 2020-12, doce ejemplos y OpenAPI 3.1.1 con estado `claim_pack_evidence_bundle_procedure_workflow_and_ingestion_job_providers_implemented_with_limits`; ClaimPack usa un request dedicado de Content Agency y los contratos de ingestion siguen siendo operacionales internos, sin ampliar el payload compartido con OS Electoral.
 - `POST /api/v1/procedure-queries` autentica por digest, exige `integration:query`, verifica tenant/credential, valida schema, limita tráfico, conserva idempotencia y audit, recupera sólo corpus público/activo/procesado y devuelve un `EvidenceBundle` o `ProcedureWorkflow` nuevamente validado según `requested_output`.
 - `EvidenceBundle` conserva document/version/section IDs, source authority, claims con citation refs, gaps, limitaciones y replay exacto; no incluye campaign decision fields. Sin evidencia devuelve claims vacíos y brechas explícitas.
 - Pruebas focales cubren ambos outputs, exact-origin CORS, replay exacto, conflicto, tenant mismatch, boundary, 401, replay corrupto y reintento; el gate PostgreSQL/HTTP restaurado requiere CI remoto para el HEAD actual y no existe consumer probado dentro del repositorio OS Electoral.

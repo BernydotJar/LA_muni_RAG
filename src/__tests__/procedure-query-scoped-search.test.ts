@@ -81,32 +81,9 @@ describe("procedure query tenant-scoped retrieval", () => {
     const compiler = createDefaultProcedureWorkflowCompiler();
     await compiler(
       {
-        schema_version: "v1",
-        direction: "inbound",
-        product_boundary: "evidence_and_procedure_request_only",
-        request_id: "22222222-2222-4222-8222-222222222222",
         tenant_id: TENANT_ID,
-        campaign_id: "campaign-one",
-        community_id: "community-one",
         question: "¿Qué procedimiento documental aplica a una solicitud comunitaria?",
-        jurisdiction: "Municipio de La Antigua Guatemala, Guatemala",
-        case_context: {
-          subject_reference: "case-one",
-          community_id: "community-one",
-          facts: [],
-          provided_documents: [],
-          constraints: [],
-        },
         requested_depth: "deep_dive",
-        requested_output: "procedure_workflow",
-        provenance: {
-          source_product: "os_electoral",
-          generated_by: "integration_client",
-          created_at: "2026-07-18T18:00:00.000Z",
-          source_refs: [],
-          credential_id: "33333333-3333-4333-8333-333333333333",
-          audit_id: "44444444-4444-4444-8444-444444444444",
-        },
       },
       client
     );

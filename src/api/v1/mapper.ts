@@ -6,7 +6,6 @@ import type {
 } from "../../procedure/index.js";
 import { isCanonicalUuid } from "../../security/index.js";
 import type { ScopedSearchResult } from "../../search.js";
-import type { ProcedureQueryRequestV1 } from "./types.js";
 import { evidenceIdentityFromCitationLabel } from "./evidenceIdentity.js";
 
 export const MIXCO_COMPARATIVE_WARNING =
@@ -61,6 +60,13 @@ interface CitationMapping {
   internal: ProcedureCitation;
   source: MappedSource;
   citation: MappedCitation;
+}
+
+export interface EvidenceArtifactRequestV1 {
+  tenant_id: string;
+  request_id: string;
+  question: string;
+  jurisdiction: string;
 }
 
 const normalized = (value: string | null | undefined): string =>
@@ -122,7 +128,7 @@ const metadataJurisdiction = (record: ScopedSearchResult): string | null => {
 
 const sourceAuthority = (
   record: ScopedSearchResult,
-  request: ProcedureQueryRequestV1
+  request: EvidenceArtifactRequestV1
 ): AuthorityStatus => {
   if (isMixco(record)) return "comparative";
   if (
@@ -143,7 +149,7 @@ const sourceAuthority = (
 
 const sourceJurisdiction = (
   record: ScopedSearchResult,
-  request: ProcedureQueryRequestV1,
+  request: EvidenceArtifactRequestV1,
   authority: AuthorityStatus
 ): string => {
   const declared = metadataJurisdiction(record);
@@ -229,7 +235,7 @@ const excerptForRecord = (record: ScopedSearchResult, citation: ProcedureCitatio
 const mapCitation = (
   internal: ProcedureCitation,
   record: ScopedSearchResult,
-  request: ProcedureQueryRequestV1
+  request: EvidenceArtifactRequestV1
 ): CitationMapping | null => {
   const sourceUrl = httpUrl(record.sourceUrl);
   if (
@@ -347,7 +353,7 @@ const documentReference = (
 });
 
 export interface MapProcedureWorkflowOptions {
-  request: ProcedureQueryRequestV1;
+  request: EvidenceArtifactRequestV1;
   workflow: ProcedureWorkflow;
   evidenceRecords: readonly ScopedSearchResult[];
   auditId: string;
@@ -357,6 +363,10 @@ export interface MapProcedureWorkflowOptions {
 
 export type MapEvidenceBundleOptions = MapProcedureWorkflowOptions;
 
+export interface MapClaimPackOptions extends MapEvidenceBundleOptions {
+  validUntil: string;
+}
+
 interface MappedEvidenceContext {
   mappings: CitationMapping[];
   mappingsByKey: Map<string, CitationMapping>;
@@ -365,7 +375,7 @@ interface MappedEvidenceContext {
 }
 
 const mapEvidenceContext = (
-  request: ProcedureQueryRequestV1,
+  request: EvidenceArtifactRequestV1,
   workflow: ProcedureWorkflow,
   evidenceRecords: readonly ScopedSearchResult[]
 ): MappedEvidenceContext => {
@@ -686,6 +696,95 @@ export const mapEvidenceBundleV1 = (options: MapEvidenceBundleOptions): Record<s
       generated_by: "ai",
       created_at: options.createdAt,
       source_refs: sources.map((source) => `source:${source.source_id}`),
+      credential_id: options.credentialId.toLowerCase(),
+      audit_id: options.auditId.toLowerCase(),
+    },
+  };
+};
+
+export const mapClaimPackV1 = (
+  options: MapClaimPackOptions
+): Record<string, unknown> | null => {
+  const evidenceBundle = mapEvidenceBundleV1(options);
+  const rawClaims = evidenceBundle.claims as Array<{
+    claim_id: string;
+    text: string;
+    citation_refs: string[];
+    evidence_status: EvidenceStatus;
+    limitations: string[];
+  }>;
+  const rawCitations = evidenceBundle.citations as MappedCitation[];
+
+  const claims = rawClaims
+    .filter(
+      (claim) =>
+        claim.evidence_status === "supported" ||
+        claim.evidence_status === "comparative_reference"
+    )
+    .map((claim) => ({
+      ...claim,
+      limitations: unique([
+        ...claim.limitations,
+        "No autoriza generación de contenido, estrategia de campaña ni publicación sin revisión humana.",
+      ]),
+    }));
+  const referencedCitationIds = new Set(claims.flatMap((claim) => claim.citation_refs));
+  const citations = rawCitations.filter((citation) =>
+    referencedCitationIds.has(citation.citation_id)
+  );
+  const validCitationIds = new Set(citations.map((citation) => citation.citation_id));
+  const boundedClaims = claims
+    .map((claim) => ({
+      ...claim,
+      citation_refs: claim.citation_refs.filter((citationId) => validCitationIds.has(citationId)),
+    }))
+    .filter((claim) => claim.citation_refs.length > 0);
+  const sourceLinks = unique(
+    citations.map((citation) => citation.source_url).filter(Boolean)
+  );
+
+  if (boundedClaims.length === 0 || citations.length === 0 || sourceLinks.length === 0) {
+    return null;
+  }
+
+  const hasComparativeReference = boundedClaims.some(
+    (claim) => claim.evidence_status === "comparative_reference"
+  );
+  return {
+    schema_version: "v1",
+    response_type: "claim_pack",
+    product_boundary: "claims_and_evidence_only",
+    claim_pack_id: deterministicUuid(
+      `claim-pack:${options.request.tenant_id}:${options.request.request_id}`
+    ),
+    tenant_id: options.request.tenant_id.toLowerCase(),
+    request_id: options.request.request_id.toLowerCase(),
+    jurisdiction: options.request.jurisdiction,
+    claims: boundedClaims,
+    citations,
+    allowed_paraphrase_scope: {
+      mode: "faithful_paraphrase_only",
+      allowed_operations: ["paraphrase", "summarize", "translate"],
+      content_generation_allowed: false,
+      campaign_strategy_allowed: false,
+    },
+    legal_disclaimer:
+      "Este paquete conserva claims y evidencia; no genera contenido ni sustituye revisión legal.",
+    valid_until: options.validUntil,
+    source_links: sourceLinks,
+    limitations: unique([
+      "No contiene copy, piezas, calendario editorial, canales, publicación ni recomendaciones de campaña.",
+      "valid_until es un límite operativo de reutilización y no prueba por sí solo la vigencia jurídica de las fuentes.",
+      "Las afirmaciones requieren revisión humana de vigencia, jurisdicción, contexto y alcance antes de su uso.",
+      "La ausencia de contradicciones registradas no demuestra que las fuentes sean consistentes o completas.",
+      options.workflow.validationWarning,
+      ...(hasComparativeReference ? [MIXCO_COMPARATIVE_WARNING] : []),
+    ].filter(Boolean)),
+    provenance: {
+      source_product: "la_muni_rag",
+      generated_by: "system",
+      created_at: options.createdAt,
+      source_refs: unique(citations.map((citation) => `citation:${citation.citation_id}`)),
       credential_id: options.credentialId.toLowerCase(),
       audit_id: options.auditId.toLowerCase(),
     },

@@ -92,10 +92,12 @@ Protected handlers must apply controls in this order:
 5. the repository executes only inside that transaction;
 6. the decision is recorded as a sanitized security audit event.
 
-The procedure-query v1 route authenticates before reading body bytes and applies
-its per-principal rate gate immediately after authentication, before permission,
-header/body validation, replay, or compilation. It then follows the permission,
-contracted tenant, transaction, and audit controls above.
+The procedure-query and ClaimPack v1 routes authenticate before reading body bytes
+and apply their per-principal rate gates immediately after authentication, before
+permission, header/body validation, replay, or compilation. Both require
+`integration:query`, bind tenant and credential provenance server-side, and then
+follow the transaction and audit controls above. ClaimPack additionally refuses
+content production/electoral strategy and emits only claims/citations/usage bounds.
 
 The ingestion-job v1 route follows the same pre-body authentication/rate order,
 then requires `document:ingest`. `tenant_admin` and `document_manager` have this
@@ -138,6 +140,8 @@ procedure-query route persists its more specific, allowlisted
 tenant failures use the separate bounded aggregate
 `audit.authentication_failures` sink. Ingestion-job v1 similarly persists
 allowlisted `integration.ingestion_job.*` decisions and uses the distinct
-tenantless `audit.ingestion_authentication_failures` aggregate. Other protected
-endpoints must provide equivalent persistence without weakening the uniform
-client response.
+tenantless `audit.ingestion_authentication_failures` aggregate. ClaimPack uses
+allowlisted `integration.claim_pack.*` events and its distinct tenantless
+`audit.claim_pack_authentication_failures` aggregate; question, facts, briefs,
+copy, headers, and raw credentials are excluded. Other protected endpoints must
+provide equivalent persistence without weakening the uniform client response.

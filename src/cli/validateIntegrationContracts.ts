@@ -24,6 +24,7 @@ export const CONTRACT_SCHEMA_FILES = [
   "ingestion-job-response.schema.json",
   "evidence-gap-request.schema.json",
   "claim-pack.schema.json",
+  "claim-pack-request.schema.json",
   "event-envelope.schema.json",
   "api-error.schema.json",
 ] as const;
@@ -37,6 +38,7 @@ export const CONTRACT_EXAMPLE_BINDINGS = [
   { contractName: "ingestion-job-response", schemaFile: "ingestion-job-response.schema.json", exampleFile: "ingestion-job-response.valid.json" },
   { contractName: "evidence-gap-request", schemaFile: "evidence-gap-request.schema.json", exampleFile: "evidence-gap-request.valid.json" },
   { contractName: "claim-pack", schemaFile: "claim-pack.schema.json", exampleFile: "claim-pack.valid.json" },
+  { contractName: "claim-pack-request", schemaFile: "claim-pack-request.schema.json", exampleFile: "claim-pack-request.valid.json" },
   { contractName: "event-envelope", schemaFile: "event-envelope.schema.json", exampleFile: "event-envelope.valid.json" },
   { contractName: "api-error", schemaFile: "api-error.schema.json", exampleFile: "api-error.valid.json" },
   { contractName: "api-error-unauthorized", schemaFile: "api-error.schema.json", exampleFile: "api-error-unauthorized.valid.json" },
@@ -191,6 +193,7 @@ const validateOpenApiDocument = async (
 
   const paths = isJsonObject(openapi.paths) ? openapi.paths : {};
   const expectedPaths = [
+    "/api/v1/claim-packs",
     "/api/v1/procedure-queries",
     "/api/v1/ingestion-jobs",
     "/api/v1/ingestion-jobs/{job_id}",
@@ -199,6 +202,9 @@ const validateOpenApiDocument = async (
     recordIssue("invalid_path_scope", "OpenAPI path scope does not match implemented v1 routes");
   }
 
+  const claimPackPath = isJsonObject(paths["/api/v1/claim-packs"])
+    ? paths["/api/v1/claim-packs"]
+    : {};
   const procedurePath = isJsonObject(paths["/api/v1/procedure-queries"])
     ? paths["/api/v1/procedure-queries"]
     : {};
@@ -208,6 +214,9 @@ const validateOpenApiDocument = async (
   const ingestionItemPath = isJsonObject(paths["/api/v1/ingestion-jobs/{job_id}"])
     ? paths["/api/v1/ingestion-jobs/{job_id}"]
     : {};
+  if (!equalStringSets(Object.keys(claimPackPath), ["post"])) {
+    recordIssue("invalid_method_scope", "ClaimPack path must describe only POST");
+  }
   if (!equalStringSets(Object.keys(procedurePath), ["post"])) {
     recordIssue("invalid_method_scope", "Procedure query path must describe only POST");
   }
@@ -218,10 +227,12 @@ const validateOpenApiDocument = async (
     recordIssue("invalid_method_scope", "Ingestion item path must describe only GET");
   }
 
+  const claimPackOperation = isJsonObject(claimPackPath.post) ? claimPackPath.post : {};
   const procedureOperation = isJsonObject(procedurePath.post) ? procedurePath.post : {};
   const ingestionPostOperation = isJsonObject(ingestionPath.post) ? ingestionPath.post : {};
   const ingestionGetOperation = isJsonObject(ingestionItemPath.get) ? ingestionItemPath.get : {};
   const operations = [
+    ["POST /api/v1/claim-packs", claimPackOperation],
     ["POST /api/v1/procedure-queries", procedureOperation],
     ["POST /api/v1/ingestion-jobs", ingestionPostOperation],
     ["GET /api/v1/ingestion-jobs/{job_id}", ingestionGetOperation],
@@ -245,6 +256,7 @@ const validateOpenApiDocument = async (
       .map((parameter) => String(parameter.name).toLowerCase())
   );
   for (const [label, operation, expectedHeaders] of [
+    ["claim pack", claimPackOperation, ["idempotency-key", "x-request-id"]],
     ["procedure query", procedureOperation, ["idempotency-key", "x-request-id"]],
     ["ingestion enqueue", ingestionPostOperation, ["idempotency-key", "x-request-id"]],
     ["ingestion status", ingestionGetOperation, ["x-request-id"]],
@@ -258,6 +270,7 @@ const validateOpenApiDocument = async (
   }
 
   for (const [label, operation, expectedResponses] of [
+    ["claim pack", claimPackOperation, ["200", "400", "401", "403", "409", "429", "500"]],
     ["procedure query", procedureOperation, ["200", "400", "401", "403", "409", "429", "500", "503"]],
     ["ingestion enqueue", ingestionPostOperation, ["200", "202", "400", "401", "403", "409", "429", "500", "503"]],
     ["ingestion status", ingestionGetOperation, ["200", "400", "401", "403", "404", "429", "500"]],

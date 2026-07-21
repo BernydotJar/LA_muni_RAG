@@ -1,0 +1,105 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://contracts.la-muni-rag.invalid/v1/claim-pack-request.schema.json",
+  "title": "ClaimPackRequest v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "direction",
+    "product_boundary",
+    "request_id",
+    "tenant_id",
+    "question",
+    "jurisdiction",
+    "case_context",
+    "requested_depth",
+    "provenance"
+  ],
+  "properties": {
+    "schema_version": {
+      "$ref": "common.schema.json#/$defs/SchemaVersion"
+    },
+    "direction": {
+      "const": "inbound"
+    },
+    "product_boundary": {
+      "const": "claims_and_evidence_request_only"
+    },
+    "request_id": {
+      "$ref": "common.schema.json#/$defs/Uuid"
+    },
+    "tenant_id": {
+      "$ref": "common.schema.json#/$defs/Uuid"
+    },
+    "question": {
+      "type": "string",
+      "minLength": 3,
+      "maxLength": 4000
+    },
+    "jurisdiction": {
+      "$ref": "common.schema.json#/$defs/Jurisdiction"
+    },
+    "case_context": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "subject_reference",
+        "facts",
+        "provided_documents",
+        "constraints"
+      ],
+      "properties": {
+        "subject_reference": {
+          "$ref": "common.schema.json#/$defs/SafeOpaqueId"
+        },
+        "facts": {
+          "type": "array",
+          "maxItems": 50,
+          "items": {
+            "$ref": "common.schema.json#/$defs/NonEmptyString"
+          },
+          "uniqueItems": true
+        },
+        "provided_documents": {
+          "type": "array",
+          "maxItems": 100,
+          "items": {
+            "$ref": "common.schema.json#/$defs/SafeOpaqueId"
+          },
+          "uniqueItems": true
+        },
+        "constraints": {
+          "type": "array",
+          "maxItems": 50,
+          "items": {
+            "$ref": "common.schema.json#/$defs/NonEmptyString"
+          },
+          "uniqueItems": true
+        }
+      }
+    },
+    "requested_depth": {
+      "type": "string",
+      "enum": [
+        "overview",
+        "deep_dive"
+      ]
+    },
+    "provenance": {
+      "allOf": [
+        {
+          "$ref": "common.schema.json#/$defs/Provenance"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "source_product": {
+              "const": "content_agency"
+            }
+          }
+        }
+      ]
+    }
+  }
+}

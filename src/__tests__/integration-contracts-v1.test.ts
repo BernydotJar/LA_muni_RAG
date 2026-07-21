@@ -32,8 +32,8 @@ describe("integration contracts v1", () => {
       status: "valid",
       schemaDialect: JSON_SCHEMA_DIALECT,
       openapiVersion: OPENAPI_VERSION,
-      schemasValidated: 11,
-      examplesValidated: 11,
+      schemasValidated: 12,
+      examplesValidated: 12,
       openapiDocumentsValidated: 1,
       issues: [],
     });
@@ -232,6 +232,23 @@ describe("integration contracts v1", () => {
     assert.equal(validate(missingWithKnownUrl), true);
   });
 
+  it("keeps ClaimPack requests Content-Agency-only and free of production fields", async () => {
+    const validate = await schemaValidator("claim-pack-request.schema.json");
+    const request = await readContractExample(projectRoot, "claim-pack-request.valid.json");
+    assert.equal(validate(request), true);
+
+    const osProvenance = clone(request);
+    const provenance = osProvenance.provenance as Record<string, unknown>;
+    provenance.source_product = "os_electoral";
+    assert.equal(validate(osProvenance), false);
+
+    for (const field of ["campaign_id", "community_id", "content_brief", "channels", "copy"]) {
+      const extra = clone(request);
+      extra[field] = field === "channels" ? ["social"] : "not-allowed";
+      assert.equal(validate(extra), false, `unexpectedly allowed ${field}`);
+    }
+  });
+
   it("rejects campaign strategy in responses and content generation in ClaimPack", async () => {
     const validateEvidence = await schemaValidator("evidence-bundle.schema.json");
     const evidence = await readContractExample(projectRoot, "evidence-bundle.valid.json");
@@ -271,15 +288,35 @@ describe("integration contracts v1", () => {
     assert.equal(openapi.openapi, OPENAPI_VERSION);
     assert.equal(openapi.jsonSchemaDialect, JSON_SCHEMA_DIALECT);
     assert.deepEqual(Object.keys(openapi.paths), [
+      "/api/v1/claim-packs",
       "/api/v1/procedure-queries",
       "/api/v1/ingestion-jobs",
       "/api/v1/ingestion-jobs/{job_id}",
     ]);
+    assert.deepEqual(Object.keys(openapi.paths["/api/v1/claim-packs"]), ["post"]);
     assert.deepEqual(Object.keys(openapi.paths["/api/v1/procedure-queries"]), ["post"]);
     assert.deepEqual(Object.keys(openapi.paths["/api/v1/ingestion-jobs"]), ["post"]);
     assert.deepEqual(Object.keys(openapi.paths["/api/v1/ingestion-jobs/{job_id}"]), ["get"]);
 
+    const claimPack = openapi.paths["/api/v1/claim-packs"].post;
     const operation = openapi.paths["/api/v1/procedure-queries"].post;
+    assert.deepEqual(claimPack.security, [{ bearerAuth: [] }]);
+    assert.deepEqual(
+      claimPack.parameters.map((parameter: { name: string }) => parameter.name),
+      ["Idempotency-Key", "X-Request-Id"]
+    );
+    assert.equal(
+      claimPack.requestBody.content["application/json"].schema.$ref,
+      "../../schemas/v1/claim-pack-request.schema.json"
+    );
+    assert.equal(
+      claimPack.responses["200"].content["application/json"].schema.$ref,
+      "../../schemas/v1/claim-pack.schema.json"
+    );
+    assert.deepEqual(
+      Object.keys(claimPack.responses),
+      ["200", "400", "401", "403", "409", "429", "500"]
+    );
     assert.deepEqual(operation.security, [{ bearerAuth: [] }]);
     assert.deepEqual(
       operation.parameters.map((parameter: { name: string }) => parameter.name),
@@ -328,7 +365,7 @@ describe("integration contracts v1", () => {
     );
     assert.equal(
       openapi["x-implementation-status"],
-      "evidence_bundle_procedure_workflow_and_ingestion_job_providers_implemented_with_limits"
+      "claim_pack_evidence_bundle_procedure_workflow_and_ingestion_job_providers_implemented_with_limits"
     );
   });
 });

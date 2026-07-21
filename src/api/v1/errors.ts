@@ -1,8 +1,5 @@
-import type {
-  ApiErrorDetailV1,
-  ApiErrorV1,
-  ProcedureQueryContractValidators,
-} from "./types.js";
+import type { ValidateFunction } from "ajv";
+import type { ApiErrorDetailV1, ApiErrorV1 } from "./types.js";
 
 export type ApiV1Status = ApiErrorV1["http_status"];
 
@@ -56,7 +53,7 @@ export const buildApiError = (
 export const serializeValidatedApiError = (
   error: ApiV1Error,
   context: ErrorIdentityContext,
-  validators: Pick<ProcedureQueryContractValidators, "apiError">
+  validators: { apiError: ValidateFunction }
 ): string => {
   const body = buildApiError(error, context);
   if (!validators.apiError(body)) {

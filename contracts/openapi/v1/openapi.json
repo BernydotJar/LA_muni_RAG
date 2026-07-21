@@ -6,8 +6,89 @@
     "version": "1.0.0",
     "description": "Contract for the implemented evidence-bundle and procedure-workflow providers plus authenticated ingestion-job submission/status slices. ProcedureAssessment, document upload, and a deployed worker/storage/scanner remain unavailable; this document does not claim deployment."
   },
-  "x-implementation-status": "evidence_bundle_procedure_workflow_and_ingestion_job_providers_implemented_with_limits",
+  "x-implementation-status": "claim_pack_evidence_bundle_procedure_workflow_and_ingestion_job_providers_implemented_with_limits",
   "paths": {
+    "/api/v1/claim-packs": {
+      "post": {
+        "operationId": "submitClaimPack",
+        "summary": "Request a citation-preserving ClaimPack",
+        "description": "Accepts a tenant-scoped Content Agency ClaimPackRequest. LA Muni RAG returns claims, citations, paraphrase limits, disclaimer, validity bound, and source links only; it does not generate copy, assets, channel plans, publication tasks, or campaign strategy.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "description": "Stable key for safely replaying the same tenant-scoped request.",
+            "schema": {
+              "type": "string",
+              "minLength": 16,
+              "maxLength": 128,
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{15,127}$"
+            }
+          },
+          {
+            "name": "X-Request-Id",
+            "in": "header",
+            "required": true,
+            "description": "UUID that must equal request_id in the body.",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "../../schemas/v1/claim-pack-request.schema.json"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Contract-valid ClaimPack with at least one citable supported or comparative claim.",
+            "headers": {
+              "X-Request-Id": {
+                "$ref": "#/components/headers/RequestId"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../../schemas/v1/claim-pack.schema.json"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        }
+      }
+    },
     "/api/v1/procedure-queries": {
       "post": {
         "operationId": "submitProcedureQuery",

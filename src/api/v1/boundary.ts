@@ -1,5 +1,3 @@
-import type { ProcedureQueryRequestV1 } from "./types.js";
-
 export type ProductBoundaryViolation = "electoral_strategy" | "content_generation" | null;
 
 const normalize = (value: string): string =>
@@ -30,8 +28,16 @@ const CONTENT_PATTERNS = [
   /\b(?:write|generate|create|draft)\b.{0,80}\b(?:content|post|speech|script|copy|video)\b/,
 ];
 
+export interface ProductBoundaryRequest {
+  question: string;
+  case_context: {
+    facts: string[];
+    constraints: string[];
+  };
+}
+
 export const detectProductBoundaryViolation = (
-  request: ProcedureQueryRequestV1
+  request: ProductBoundaryRequest
 ): ProductBoundaryViolation => {
   const text = normalize(
     [

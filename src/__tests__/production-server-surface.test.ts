@@ -107,6 +107,45 @@ describe("production server surface", () => {
     assert.equal(body.error?.code, "unauthorized");
   });
 
+  it("keeps the authenticated ClaimPack route ahead of the legacy production gate", async () => {
+    const requestId = "bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb";
+    const response = await fetch(`${baseUrl}/api/v1/claim-packs`, {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+        "idempotency-key": "production-claim-pack-check-0001",
+        "x-request-id": requestId,
+      },
+      body: "{malformed-before-auth",
+    });
+    const body = await response.json() as {
+      tenant_id?: unknown;
+      error?: { code?: unknown };
+    };
+
+    assert.equal(response.status, 401);
+    assert.equal(response.headers.get("access-control-allow-origin"), null);
+    assert.equal(body.tenant_id, null);
+    assert.equal(body.error?.code, "unauthorized");
+  });
+
+  it("advertises only exact-origin POST ClaimPack CORS", async () => {
+    const trusted = await fetch(`${baseUrl}/api/v1/claim-packs`, {
+      method: "OPTIONS",
+      headers: { origin: "https://trusted.example" },
+    });
+    const untrusted = await fetch(`${baseUrl}/api/v1/claim-packs`, {
+      method: "OPTIONS",
+      headers: { origin: "https://untrusted.example" },
+    });
+
+    assert.equal(trusted.status, 204);
+    assert.equal(trusted.headers.get("access-control-allow-origin"), "https://trusted.example");
+    assert.equal(trusted.headers.get("access-control-allow-methods"), "POST, OPTIONS");
+    assert.equal(untrusted.status, 204);
+    assert.equal(untrusted.headers.get("access-control-allow-origin"), null);
+  });
+
   it("advertises only exact-origin GET/POST ingestion CORS", async () => {
     const trusted = await fetch(`${baseUrl}/api/v1/ingestion-jobs`, {
       method: "OPTIONS",
@@ -129,11 +168,14 @@ describe("production server surface", () => {
     const body = await response.json() as {
       status?: unknown;
       ingestionJobApi?: { enabled?: unknown; workerConfigured?: unknown };
+      claimPackApi?: { enabled?: unknown; validitySeconds?: unknown };
     };
 
     assert.equal(response.status, 200);
     assert.equal(body.status, "ok");
     assert.equal(body.ingestionJobApi?.enabled, false);
     assert.equal(body.ingestionJobApi?.workerConfigured, false);
+    assert.equal(body.claimPackApi?.enabled, true);
+    assert.equal(body.claimPackApi?.validitySeconds, 86_400);
   });
 });

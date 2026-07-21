@@ -1,7 +1,7 @@
 # Privacy review
 
 Status: pre-production review; legal decisions and named owner pending
-Last reviewed: 2026-07-18
+Last reviewed: 2026-07-21
 Technical owner: Product Engineering
 Privacy/Legal owner: pending human assignment
 
@@ -23,9 +23,10 @@ If an integration payload contains internal campaign strategy, voter-level data,
 |---|---|---|---|
 | Public municipal source | laws, regulations, plans, forms, official URLs | evidence retrieval and procedural compilation | public when authority and version are verified |
 | Derived evidence | extracted text, chunks, embeddings, citations, contradictions | retrieval and traceability | inherits source and tenant restrictions; not automatically public |
-| Query/case content | question, jurisdiction, limited case facts, missing evidence | answer or assess a procedure | may contain personal or confidential data; minimize and do not log bodies by default |
+| Query/case content | question, jurisdiction, limited case facts, missing evidence | answer, assess a procedure, or derive a ClaimPack | may contain personal or confidential data; minimize and do not log bodies by default |
 | Account/integration identity | principal ID, tenant membership, roles, credential digest/status | authentication, authorization, accountability | protected security metadata; raw tokens must not be stored |
 | Feedback and workflow review | rating, type, notes, workflow/step/source references | quality improvement and correction | may identify an operator or case; schema currently sets a 180-day visibility window but no purge job is evidenced |
+| ClaimPack replay state | tenant/principal IDs, key/request digests, validated response, audit ID, expiry | exact replay and abuse control | protected tenant data; request body, Bearer token, brief, copy, and publication assets are excluded |
 | Audit/security metadata | request/correlation ID, actor ID, tenant ID, action, outcome, safe reason | security, investigation, change accountability | protected; exact retention and access review pending |
 | Operational telemetry | latency, error/rate-limit counts, database health | reliability and abuse detection | aggregate/minimize; no credentials, bodies, prompts, or sensitive URLs |
 | Backup | database and required versioned storage snapshot | disaster recovery | inherits all contained classifications; encryption/access controls pending platform selection |
@@ -39,7 +40,7 @@ The source inventory is incomplete and not a full personal-data inventory. Each 
 - Keep query/case facts out of ordinary logs, metric labels, traces, error messages, idempotency keys, and URLs.
 - Hash or otherwise protect credential and idempotency material; never log raw Bearer tokens, database URLs, cookies, or secret-manager references containing values.
 - Store document bytes and extracted content only when source authority, purpose, tenant, confidentiality, version, and provenance are known.
-- Avoid copying full external payloads for audit. Store safe IDs, versions, hashes, action, outcome, and an approved minimal snapshot only when necessary.
+- Avoid copying full external payloads for audit. ClaimPack audit stores safe IDs, hashes, action, outcome, and reason only; questions, facts, briefs, copy, headers, and source payloads remain excluded.
 - Do not use production queries, feedback, or case content for model training or evaluation without a separate approved purpose, notice, minimization plan, and dataset review.
 - Do not place sensitive or personal information in the public Pages artifact.
 
@@ -53,7 +54,7 @@ Retention is not fully approved. The following are decision records, not promise
 | Query/case content | no complete server-side case lifecycle exists | whether content is persisted, purpose, duration, tenant deletion, and legal hold |
 | Feedback | `retention_until` defaults to 180 days and expired rows are excluded from normal reads | physical deletion job, exception/legal hold, and owner approval |
 | Audit/security events | schema/foundation exists but operational retention is not set | minimum/maximum duration, immutable storage, access review, and legal hold |
-| Idempotency/rate-limit records | foundation/API work is in progress | shortest operational window, purge behavior, and collision/investigation needs |
+| Idempotency/rate-limit records | ClaimPack replay expires after 24 hours and per-principal rate buckets are cleaned opportunistically; no scheduled purge proof exists | shortest operational window, physical purge/backup aging, and collision/investigation needs |
 | Operational logs/traces | centralized service not selected | field allowlist, duration, sampling, regional storage, vendor access, and deletion |
 | Backups | no production backup service or completed restore drill | RPO/RTO, retention generations, encryption, legal hold, secure disposal |
 

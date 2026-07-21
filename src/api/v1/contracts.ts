@@ -4,6 +4,7 @@ import type {
   ApiErrorDetailV1,
   ProcedureQueryContractValidators,
 } from "./types.js";
+import type { ClaimPackContractValidators } from "./claimPackTypes.js";
 
 const requiredValidator = (
   schemas: Awaited<ReturnType<typeof loadIntegrationContractRegistry>>["schemasByFile"],
@@ -25,6 +26,7 @@ export const loadProcedureQueryContractValidators = async (
   return {
     request: requiredValidator(registry.schemasByFile, "procedure-query-request.schema.json"),
     evidenceBundle: requiredValidator(registry.schemasByFile, "evidence-bundle.schema.json"),
+    claimPack: requiredValidator(registry.schemasByFile, "claim-pack.schema.json"),
     workflow: requiredValidator(registry.schemasByFile, "procedure-workflow.schema.json"),
     apiError: requiredValidator(registry.schemasByFile, "api-error.schema.json"),
   };
@@ -48,3 +50,14 @@ export const validationDetails = (
     field: fieldForError(error).slice(0, 300),
     issue: (error.message ?? error.keyword).slice(0, 1000),
   }));
+
+export const loadClaimPackContractValidators = async (
+  projectRoot = process.cwd()
+): Promise<ClaimPackContractValidators> => {
+  const registry = await loadIntegrationContractRegistry(projectRoot);
+  return {
+    request: requiredValidator(registry.schemasByFile, "claim-pack-request.schema.json"),
+    claimPack: requiredValidator(registry.schemasByFile, "claim-pack.schema.json"),
+    apiError: requiredValidator(registry.schemasByFile, "api-error.schema.json"),
+  };
+};

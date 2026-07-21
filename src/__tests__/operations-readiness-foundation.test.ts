@@ -31,6 +31,7 @@ describe("operations readiness foundation", () => {
       "npm run domain:evaluate",
       "npm run eval:procedure",
       "npm run eval:os-integration",
+      "npm run eval:content-integration",
       "npm run eval:boundary",
       "npm run eval:corrupt",
       "npm run eval:tenant",
@@ -50,9 +51,12 @@ describe("operations readiness foundation", () => {
     assert.match(workflow, /db\/migrations\/005_tenant_ingestion_runtime\.sql/);
     assert.match(workflow, /db\/migrations\/006_ingestion_api_runtime\.sql/);
     assert.match(workflow, /db\/migrations\/007_persisted_artifact_acceptance\.sql/);
+    assert.match(workflow, /db\/migrations\/008_claim_pack_api\.sql/);
+    assert.match(workflow, /db\/tests\/claim_pack_runtime_gate\.sql/);
     assert.match(workflow, /db\/tests\/tenant_ingestion_runtime_gate\.sql/);
     assert.match(workflow, /run: npm run smoke:tenant-ingestion/);
     assert.match(workflow, /run: npm run smoke:ingestion-api/);
+    assert.match(workflow, /run: npm run smoke:claim-pack/);
 
     assert.doesNotMatch(workflow, /build:pages|configure-pages|upload-pages|deploy-pages/i);
     assert.doesNotMatch(workflow, /^\s*(?:pages|id-token|actions|checks): write$/m);
@@ -88,9 +92,26 @@ describe("operations readiness foundation", () => {
     assert.match(evaluation, /same internal compilation used by the workflow provider/);
     assert.match(evaluation, /passed_for_workflow_and_evidence_bundle_provider_with_assessment_and_external_consumer_limitations/);
     assert.match(evaluation, /No consumer contract test has run inside the OS Electoral repository/);
-    assert.match(openapi, /evidence_bundle_procedure_workflow_and_ingestion_job_providers_implemented_with_limits/);
+    assert.match(openapi, /claim_pack_evidence_bundle_procedure_workflow_and_ingestion_job_providers_implemented_with_limits/);
     assert.match(smoke, /evidenceBundleValidated: true/);
     assert.match(smoke, /requested_output: "evidence_bundle"/);
+  });
+
+  it("keeps the named Content Agency ClaimPack eval executable and bounded to evidence", async () => {
+    const [packageJson, evaluation, openapi, smoke] = await Promise.all([
+      read("package.json"),
+      read("docs/testing/eval-harness.md"),
+      read("contracts/openapi/v1/openapi.json"),
+      read("scripts/claim-pack-postgres-smoke.mjs"),
+    ]);
+
+    assert.match(packageJson, /"eval:content-integration": "node --import tsx --test src\/__tests__\/eval-content-integration-001\.test\.ts"/);
+    assert.match(evaluation, /## EVAL-CONTENT-INTEGRATION-001/);
+    assert.match(evaluation, /claims, citations, paraphrase limits, disclaimer, validity bound, and source links/);
+    assert.match(evaluation, /does not generate copy, assets, channels, publication tasks, or campaign strategy/);
+    assert.match(openapi, /\/api\/v1\/claim-packs/);
+    assert.match(smoke, /claim_pack_postgres_http_smoke_passed/);
+    assert.match(smoke, /contentGenerated: false/);
   });
 
   it("keeps the named product-boundary hard eval executable and honestly documented", async () => {

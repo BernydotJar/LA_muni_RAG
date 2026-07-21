@@ -46,7 +46,7 @@ Known exposed or potentially exposed surfaces remain:
 - `/health` and static assets are intentionally unauthenticated;
 - GitHub Pages is a public static demonstration, not the backend, and has no project-level custom response headers in the current setup;
 - the Pages demo can be configured to call an API, but no production API origin has been approved;
-- the `ProcedureWorkflow` provider exists, but OS Electoral/Content Agency consumers and the remaining artifacts are not an operational integration.
+- the `ProcedureWorkflow`, `EvidenceBundle`, and `ClaimPack` providers exist locally, but OS Electoral/Content Agency consumers, remote ClaimPack database evidence, and the remaining artifacts are not an operational integration.
 
 The production artifact must retain the tested legacy-route gate. Development/legacy mode must not be exposed to untrusted networks with confidential, internal, or cross-tenant data.
 
@@ -69,8 +69,9 @@ Public Internet
                               +--> document/object storage [adapter/service absent]
 
 OS Electoral / Content Agency
-  +--> ProcedureWorkflow v1 provider                 [local provider tested]
-  +--> remaining versioned contracts                 [adapters absent]
+  +--> EvidenceBundle / ProcedureWorkflow providers  [local providers tested]
+  +--> ClaimPack provider                            [local provider tested; remote DB gate pending]
+  +--> external consumers / remaining contracts      [adapters absent]
 ```
 
 Each arrow crosses a trust boundary. CORS, private network placement, source URLs, `tenant_id` fields, and contract `producer` fields are not identities. Authentication and authorization must be established from server-controlled credentials before a tenant-scoped resource is read or changed.
@@ -80,11 +81,11 @@ Each arrow crosses a trust boundary. CORS, private network placement, source URL
 | Boundary | Untrusted input | Required control | Current evidence |
 |---|---|---|---|
 | Browser -> Pages | URL parameters, DOM data, configured API URL | scheme/origin validation, no secrets, safe links | static hardening tests exist; Pages remains public |
-| Client -> API | headers, JSON body, query, tenant/resource IDs | TLS, body bounds, authentication, RBAC, tenant match, rate limits, safe errors | implemented/tested for procedure-query and ingestion-job v1; TLS/ingress and the remaining API catalog are absent; legacy is production-disabled |
-| API -> PostgreSQL | query parameters and principal/tenant context | parameterized SQL, transaction-local tenant context, RLS, least-privilege DB role | disposable real-DB/HTTP gates pass for both v1 families; production provisioning, statement limits, HA and monitoring are absent |
+| Client -> API | headers, JSON body, query, tenant/resource IDs | TLS, body bounds, authentication, RBAC, tenant match, rate limits, safe errors | implemented/tested for procedure-query, ClaimPack, and ingestion-job v1; TLS/ingress and the remaining API catalog are absent; legacy is production-disabled |
+| API -> PostgreSQL | query parameters and principal/tenant context | parameterized SQL, transaction-local tenant context, RLS, least-privilege DB role | disposable real-DB/HTTP gates pass for procedure-query and ingestion; ClaimPack SQL/HTTP gates are wired but remote execution for this HEAD is pending; production provisioning, statement limits, HA and monitoring are absent |
 | Ingestion -> corpus | bytes, MIME type, filenames, URLs, extracted text | size/type/hash validation, malware policy, provenance, parser isolation, resource bounds, quarantine, durable leases, tenant vectors, human promotion | local signature/MIME gate, private-snapshot ClamAV adapter, bounded raw-PDF child, authenticated job API, accepted-artifact worker boundary, rollback/replacement and pre-extraction enforcement are tested; real scanner/storage adapter, deployed worker, approved OS sandbox, load/HA and human promotion are absent |
 | API -> logs/audit | identifiers, outcomes, errors | allowlisted fields, redaction, immutable access control, retention | both v1 families persist allowlisted tenant audit and bounded route-specific tenantless auth aggregates; centralized append-only storage/access review remain absent |
-| Product -> external product | contract envelope and claims | schema validation, authenticated producer, tenant scope, idempotency, provenance | local ProcedureWorkflow provider is tested; consumer identity/interoperability and remaining adapters are absent |
+| Product -> external product | contract envelope and claims | schema validation, authenticated producer, tenant scope, idempotency, provenance, expiry | local EvidenceBundle, ProcedureWorkflow, and ClaimPack providers are tested; consumer identity/interoperability, cross-product revocation, and remaining adapters are absent |
 
 ## Assets and security objectives
 
@@ -160,7 +161,7 @@ isolation, decompression-bomb resilience, or human document approval.
 
 ### TM-05: replay or idempotency collision
 
-A client repeats a POST or reuses a key with a different payload. The v1 server scopes the digest by principal, tenant, and operation, returns byte-exact replay only after current-contract and identity validation, conflicts on another fingerprint, and deletes/audits corrupt stored bytes. Unit and disposable PostgreSQL HTTP gates pass replay, conflict, corruption, and retry. Concurrent load and timeout-race testing remain required.
+A client repeats a POST or reuses a key with a different payload. The v1 server scopes the digest by principal, tenant, and operation, returns byte-exact replay only after current-contract and identity validation, conflicts on another fingerprint, and deletes/audits corrupt stored bytes. ClaimPack additionally rejects an expired replay and requires regeneration; its local eval covers replay, conflict, corruption wiring, expiry, and retry, while the PostgreSQL gate for this HEAD awaits remote CI. Concurrent load and timeout-race testing remain required.
 
 Ingestion v1 separately binds tenant, principal, document version, artifact,
 pipeline, attempt policy, and key digests. The disposable compiled smoke passed
@@ -172,7 +173,7 @@ production timeout evidence.
 
 ### TM-06: boundary-violating electoral request
 
-A caller asks LA Muni RAG to generate campaign strategy, voter segmentation, political messaging, or a content calendar. The service must refuse the out-of-scope work and may return only approved procedural evidence. It must not store the internal electoral context in the corpus or logs.
+A caller asks LA Muni RAG to generate campaign strategy, voter segmentation, political messaging, copy, assets, channels, publication tasks, or a content calendar. The service must refuse the out-of-scope work and may return only approved procedural evidence or a bounded ClaimPack. The ClaimPack request is closed and its audit excludes question, facts, briefs, copy, and publication data. Internal electoral/content context must not enter the corpus, ordinary logs, replay state, or backups.
 
 ### TM-07: denial-of-wallet and resource exhaustion
 

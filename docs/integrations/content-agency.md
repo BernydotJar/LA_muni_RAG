@@ -1,6 +1,6 @@
 # Integración con AI-Native Content Agency SaaS
 
-Estado: ClaimPack schema v1 implementado; provider/consumer runtime pendientes
+Estado: ClaimPack provider v1 implementado localmente; consumer externo y CI PostgreSQL del HEAD pendientes
 
 Fecha de corte: 2026-07-18  
 Producto vecino: [`BernydotJar/AI-Native-Content-Agency-SaaS`](https://github.com/BernydotJar/AI-Native-Content-Agency-SaaS)
@@ -135,20 +135,23 @@ LA Muni RAG no recibe este paquete como system of record. Si se usa para audit c
 
 ## Estado real al corte
 
-- LA Muni RAG implementa el schema cerrado, ejemplo válido y contract tests de boundary para `ClaimPack`; no implementa todavía provider endpoint, adapter, expiry/supersession runtime ni consumer test vecino.
+- LA Muni RAG implementa `POST /api/v1/claim-packs`, request/response schemas cerrados, exact replay, `valid_until`, RLS/idempotency/rate/audit separados y EVAL-CONTENT-INTEGRATION-001 7/7. El provider devuelve claims/citations/usage bounds; no genera contenido.
+- El SQL gate y smoke HTTP compilado están cableados, pero la imagen pgvector fijada no puede registrarse en el sandbox actual; el gate del HEAD requiere CI remoto.
+- No existe todavía consumer test dentro del repositorio Content Agency, ni flujo de supersession/revocation cross-product.
 - Content Agency, en la rama inspeccionada `feat/production-foundation-v1` y commit `20a6e31ccaa54f10327858bee33996c52242f4e3`, tiene API HTTP v1 local para missions/runs/approvals, persistence SQL e idempotency.
 - Esa identidad usa headers sólo en desarrollo; proveedores/publicación son sandbox y staging/producción no están implementados.
 - Su OpenAPI observado no contiene ClaimPack ni un cliente de LA Muni RAG. Además, la evidencia proviene de una feature branch, por lo que no se asume integrada a su `main`.
-- En consecuencia, este documento define una integración futura y no una ruta operativa.
+- En consecuencia, el provider de LA Muni RAG es operativo localmente, pero la integración end-to-end con Content Agency sigue incompleta.
 
 ## Gates de implementación
 
-1. JSON Schema/OpenAPI de ClaimPack y su request están aprobados y versionados.
-2. Identity/tenant mapping y autorización negativa están probados.
-3. Citation resolution, expiry, supersession y prohibited-claim cases tienen contract tests.
-4. Content Agency conserva IDs/evidence refs en el output de prueba.
-5. EVAL-CONTENT-INTEGRATION-001 y EVAL-BOUNDARY-001 pasan.
-6. Ningún test ejecuta publicación, gasto o proveedor externo real.
+1. JSON Schema/OpenAPI de ClaimPack y su request están versionados y pasan validación local.
+2. Identity/tenant mapping, autorización negativa, replay, expiry y no-promotion pasan pruebas focales.
+3. El SQL gate y smoke HTTP deben pasar en CI remoto con rol no propietario.
+4. Content Agency debe conservar IDs/evidence refs en un consumer contract test de su repositorio.
+5. Supersession/revocation cross-product y prohibited-claim consumption requieren prueba vecina.
+6. EVAL-CONTENT-INTEGRATION-001 y EVAL-BOUNDARY-001 deben permanecer verdes.
+7. Ningún test ejecuta publicación, gasto o proveedor externo real.
 
 ## Documentos relacionados
 

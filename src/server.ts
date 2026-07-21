@@ -5,6 +5,12 @@ import { fileURLToPath } from "node:url";
 import { evaluateQueryWithDependencies } from "./agent.js";
 import { buildDeterministicAnswerWithDependencies } from "./answer.js";
 import {
+  CLAIM_PACK_ROUTE,
+  createClaimPackV1Dependencies,
+  handleClaimPackV1,
+  type ClaimPackV1Options,
+} from "./api/v1/claimPackIndex.js";
+import {
   createIngestionJobV1Dependencies,
   handleIngestionJobV1,
   INGESTION_JOBS_ROUTE,
@@ -62,6 +68,7 @@ export interface ServerOptions {
   procedureFeedbackDependencies?: ProcedureFeedbackDependencies;
   domainPack?: DomainPack;
   procedureQueryV1?: ProcedureQueryV1Options;
+  claimPackV1?: ClaimPackV1Options;
   ingestionJobV1?: IngestionJobV1Options;
   v1CorsAllowedOrigins?: readonly string[];
   legacyApiEnabled?: boolean;
@@ -118,6 +125,10 @@ export const createRequestHandler = (options: ServerOptions = {}): RequestListen
     options.procedureQueryV1,
     domainPack
   );
+  const claimPackV1Dependencies = createClaimPackV1Dependencies(
+    options.claimPackV1,
+    domainPack
+  );
   const ingestionJobV1Dependencies = createIngestionJobV1Dependencies(
     options.ingestionJobV1
   );
@@ -133,6 +144,12 @@ export const createRequestHandler = (options: ServerOptions = {}): RequestListen
   return async (req, res) => {
     try {
       const url = requestUrl(req);
+
+      if (url.pathname === CLAIM_PACK_ROUTE) {
+        if (handleV1Cors(req, res, v1CorsAllowedOrigins)) return;
+        await handleClaimPackV1(req, res, claimPackV1Dependencies);
+        return;
+      }
 
       if (url.pathname === "/api/v1/procedure-queries") {
         if (handleV1Cors(req, res, v1CorsAllowedOrigins)) return;
@@ -171,6 +188,10 @@ export const createRequestHandler = (options: ServerOptions = {}): RequestListen
           ingestionJobApi: {
             enabled: Boolean(ingestionJobV1Dependencies.pipelineConfig),
             workerConfigured: false,
+          },
+          claimPackApi: {
+            enabled: true,
+            validitySeconds: claimPackV1Dependencies.validitySeconds,
           },
           domainPack: domainPackSummary,
         });

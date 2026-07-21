@@ -12,6 +12,7 @@ A green synthetic evaluation is not evidence that the municipal corpus is comple
 npm run domain:evaluate
 npm run eval:procedure
 npm run eval:os-integration
+npm run eval:content-integration
 npm run eval:boundary
 npm run eval:corrupt
 npm run eval:tenant
@@ -20,7 +21,7 @@ npm run eval:water
 npm test
 ```
 
-`npm run eval:procedure`, `npm run eval:os-integration`, `npm run eval:boundary`, `npm run eval:corrupt`, `npm run eval:tenant`, `npm run eval:mixco`, and `npm run eval:water` are named CI gates. The complete regression remains `npm test`.
+`npm run eval:procedure`, `npm run eval:os-integration`, `npm run eval:content-integration`, `npm run eval:boundary`, `npm run eval:corrupt`, `npm run eval:tenant`, `npm run eval:mixco`, and `npm run eval:water` are named CI gates. The complete regression remains `npm test`.
 
 ## EVAL-PROCEDURE-001
 
@@ -98,6 +99,49 @@ Current limitations:
 - `ProcedureAssessment`, procedure lifecycle persistence, human approval, and distributed production topology remain unavailable.
 
 Therefore `EVAL-OS-INTEGRATION-001` is `passed_for_workflow_and_evidence_bundle_provider_with_assessment_and_external_consumer_limitations`.
+
+## EVAL-CONTENT-INTEGRATION-001
+
+Primary request:
+
+```text
+Content Agency -> ClaimPackRequest(question, jurisdiction, case_context)
+```
+
+Implemented acceptance criteria:
+
+1. `POST /api/v1/claim-packs` accepts only the dedicated closed Content Agency request; OS Electoral campaign/community fields, briefs, channels, copy, and unknown fields are rejected.
+2. Authentication completes before request-body parsing; authorization, tenant identity, credential provenance, CORS, rate limiting, and idempotency are enforced server-side.
+3. Official Antigua evidence produces a schema-valid pack with claims, citations, paraphrase limits, disclaimer, validity bound, and source links.
+4. The provider does not generate copy, assets, channels, publication tasks, or campaign strategy.
+5. Exact replay returns byte-identical output; changed input with the same key returns a non-leaking conflict; corrupt/expired stored output is invalidated before emission.
+6. No citable source, inferred evidence, or `validation_required` evidence returns `409 insufficient_evidence` without a ClaimPack.
+7. Mixco remains `comparative_reference` and carries the canonical warning; it is never promoted to official Antigua evidence.
+8. Missing role, cross-tenant scope, mismatched credential provenance, content generation, and electoral strategy return uniform `403 forbidden`; detailed ownership classification remains audit-only.
+9. Migration 008 creates separate forced-RLS idempotency/rate tables and a sanitized pre-tenant authentication sink; no Bearer token, request body, brief, copy, or publication artifact is stored.
+10. OpenAPI 3.1.1, a non-owner SQL gate, and a compiled HTTP smoke are wired as required CI evidence.
+
+Executable evidence:
+
+- `src/__tests__/eval-content-integration-001.test.ts`
+- `src/__tests__/claim-pack-runtime-migration.test.ts`
+- `src/api/v1/claimPackHandler.ts`
+- `src/api/v1/claimPackPersistence.ts`
+- `contracts/schemas/v1/claim-pack-request.schema.json`
+- `contracts/schemas/v1/claim-pack.schema.json`
+- `contracts/openapi/v1/openapi.json`
+- `db/migrations/008_claim_pack_api.sql`
+- `db/tests/claim_pack_runtime_gate.sql`
+- `scripts/claim-pack-postgres-smoke.mjs`
+
+Current limitations:
+
+- Focused provider tests use controlled identity-bound evidence and do not prove corpus completeness or current legal effect.
+- The pinned pgvector image could not register its layers inside the current Cloud Sandbox (`operation not supported`); the SQL/HTTP gates are wired for remote CI but are not credited as passed for this HEAD.
+- No consumer contract has run inside the Content Agency repository, so downstream ID/evidence preservation, Greenlight handling, and expiry/supersession behavior remain unproved.
+- `valid_until` is a bounded reuse control, not a legal-validity determination, and cross-product revocation remains pending.
+
+Therefore `EVAL-CONTENT-INTEGRATION-001` is `passed_for_claim_pack_provider_with_external_consumer_and_remote_db_limitations`.
 
 ## EVAL-BOUNDARY-001
 
@@ -293,7 +337,7 @@ Therefore `EVAL-WATER-001` is `passed_with_corpus_and_runtime_limitations`, whil
 | EVAL-WATER-001 | passed_with_corpus_and_runtime_limitations | Real Antigua corpus, retrieval thresholds, contradictions, approvals, and persistent case tracking. |
 | EVAL-MIXCO-001 | passed_with_corpus_and_corroboration_limitations | End-to-end classification, composition, mapping, warning, anti-promotion schema checks, and corroboration gaps pass; real corpus and Antigua corroboration remain open. |
 | EVAL-OS-INTEGRATION-001 | passed_for_workflow_and_evidence_bundle_provider_with_assessment_and_external_consumer_limitations | EvidenceBundle and ProcedureWorkflow providers, replay, CORS, authority/citation identity, no-evidence gaps, boundary, OpenAPI, and compiled smoke wiring pass; assessment and OS-repository consumer proof remain open. |
-| EVAL-CONTENT-INTEGRATION-001 | missing | ClaimPack provider and contract tests are not implemented. |
+| EVAL-CONTENT-INTEGRATION-001 | passed_for_claim_pack_provider_with_external_consumer_and_remote_db_limitations | Provider, contract, replay, abstention, RBAC/tenant, Mixco, no-promotion, OpenAPI, migration and smoke wiring pass locally/static; remote DB gate and Content Agency consumer remain open. |
 | EVAL-BOUNDARY-001 | passed_for_current_provider_surface | Mixed and single-owner requests, hidden context violations, non-compilation, safe audit, and allowed evidence/procedure output pass; future APIs and consumers remain in scope. |
 | EVAL-TENANT-001 | passed_for_current_provider_and_disposable_db_gate_with_topology_limitations | Non-leaking HTTP denial, authenticated-tenant audit, transaction-local context, FORCE-RLS assertions, restored SQL gate, and compiled smoke wiring pass locally/static; full catalog and topology remain open. |
 | EVAL-CONFLICT-001 | missing | Conflicting versions, review, and non-silent promotion are not implemented end to end. |

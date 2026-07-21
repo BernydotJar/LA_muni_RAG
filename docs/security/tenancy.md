@@ -109,9 +109,11 @@ Direct vector indexing no longer constructs a global repository from
 over an authenticated tenant transaction and otherwise reports
 `tenant_vector_context_required`.
 
-`POST /api/v1/procedure-queries` authenticates before body parsing, verifies
-`integration:query`, matches the credential and body tenant, and performs
-retrieval, rate/idempotency state, and tenant audit through this contract. Its
+`POST /api/v1/procedure-queries` and `POST /api/v1/claim-packs` authenticate before
+body parsing, verify `integration:query`, match credential provenance and body
+tenant, and perform retrieval, rate/idempotency state, and tenant audit through
+this contract. ClaimPack uses dedicated migration-008 tables rather than sharing
+procedure-query keys or response state. Its
 keyword/phrase SQL repeats explicit tenant predicates and admits only public,
 active documents with processed versions. Calls on the single transaction-bound
 `pg` client are serialized.
@@ -125,10 +127,11 @@ share a uniform 404. The callable worker can lease only one explicitly configure
 tenant at a time and resolves artifacts by the leased tenant/version/digest
 tuple; there is no global storage resolver.
 
-Migration `006` forces RLS on per-principal ingestion API rate state. Anonymous
-authentication failures stay in a separate tenantless aggregate behind a narrow
-fixed-search-path function, because assigning them to a tenant would invent
-identity. The application role cannot read that aggregate table.
+Migration `006` forces RLS on per-principal ingestion API rate state. Migration
+`008` separately forces RLS on ClaimPack replay/rate state and creates its own
+fixed-search-path authentication-failure aggregate. Anonymous failures remain
+tenantless because assigning them to a tenant would invent identity. The
+application role cannot read either aggregate table.
 
 The runtime PostgreSQL role must:
 
@@ -155,7 +158,9 @@ missing/malformed context denial, scoped uniqueness, authentication, sanitized
 audit, cross-tenant equal vector ids, concurrent job/work deduplication, one
 lease winner, stale/artifact fencing, atomic vector rollback/replacement, and
 eligible public retrieval. The compiled procedure handler, ingestion service,
-and ingestion HTTP handler ran over real non-owner connections. The latter also
+and ingestion HTTP handler ran over real non-owner connections. ClaimPack has a
+dedicated SQL gate and compiled HTTP smoke wired to CI, but the pinned pgvector
+image could not register in the current sandbox and this HEAD has no remote result. The latter also
 proved viewer/tenant denial, stable replay/dedup, rate state, own/cross-tenant
 status parity, and exact CORS without exposing artifact/control secrets.
 
