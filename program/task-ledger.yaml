@@ -1,5 +1,5 @@
 schema_version: 1
-updated_at: "2026-07-21T07:42:43Z"
+updated_at: "2026-07-21T07:48:28Z"
 runtime:
   type: yaml_fallback
   farmtable_available: false
@@ -953,8 +953,8 @@ blockers:
     state: blocked_external
     condition: "Cloud Sandbox MCP cannot publish the local program commits through its dedicated git_push operation."
     exact_evidence:
-      - "Two Cloud_Sandbox_MCP.git_push calls failed while the connector attempted to initialize its internal daemon/NAT without the required sandbox network privileges."
-      - "At 2026-07-21T07:42:43Z, feature implementation HEAD e8ac74f was 13 ahead / 0 behind origin/program/procedural-intelligence-prod-ready at 6987f9d; the local program branch 942669b was 12 ahead / 0 behind."
+      - "Three Cloud_Sandbox_MCP.git_push calls failed while the connector attempted to initialize its internal daemon/NAT without the required sandbox network privileges; the third targeted feature/claim-pack-provider-v1 at 83d1e83."
+      - "At 2026-07-21T07:48:28Z, feature branch HEAD 83d1e83 was 14 ahead / 0 behind origin/program/procedural-intelligence-prod-ready and 37 ahead / 0 behind origin/main; implementation commit e8ac74f and local program base 942669b remain preserved."
       - "No raw git push or privilege escalation was used to bypass the connector boundary."
     affects:
       - WS03-ARTIFACT-ACCEPTANCE-CI-001

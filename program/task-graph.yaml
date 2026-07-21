@@ -1,5 +1,5 @@
 schema_version: 1
-generated_at: "2026-07-21T07:42:43Z"
+generated_at: "2026-07-21T07:48:28Z"
 program:
   id: LA-MUNI-RAG-PROD
   objective: "Make LA Muni RAG production-ready within its evidence, procedure, workflow, case-tracking, and integration domain."
@@ -13,21 +13,22 @@ program:
 baseline:
   origin_main_commit: "4950ba3c24dbe7d9891d5cec8d7ba5f57db3ef9c"
   observed_branch: "feature/claim-pack-provider-v1"
-  observed_commit: "e8ac74f53837919a9ed444ab251c3f89ff65187f"
+  observed_commit: "83d1e83aecf497fe586b85afbaf7d065fd8e268b"
+  feature_implementation_commit: "e8ac74f53837919a9ed444ab251c3f89ff65187f"
   local_program_branch_commit: "942669b8d47f1b04f181926beecb6824394d36c4"
   upstream: origin/program/procedural-intelligence-prod-ready
   upstream_commit: "6987f9d78f2d69a96b522ddfb920cd1ed1100437"
   upstream_state: local_ahead_publication_blocked
   divergence:
-    ahead: 13
+    ahead: 14
     behind: 0
   divergence_from_origin_main:
-    ahead: 36
+    ahead: 37
     behind: 0
   local_program_divergence:
     ahead: 12
     behind: 0
-  worktree: clean_at_feature_commit
+  worktree: clean_at_evidence_commit
   repository_instructions:
     - README.md
     - RTK.md
@@ -968,8 +969,8 @@ blockers:
     state: blocked_external
     condition: "Cloud Sandbox MCP cannot publish the local program commits through its dedicated git_push operation."
     evidence:
-      - "Two dedicated git_push calls failed while the connector attempted to initialize an internal daemon/NAT without the required sandbox network privileges."
-      - "At 2026-07-21T07:42:43Z feature implementation HEAD e8ac74f was 13 ahead / 0 behind origin/program/procedural-intelligence-prod-ready at 6987f9d; local program branch 942669b was 12 ahead / 0 behind."
+      - "Three dedicated git_push calls failed while the connector attempted to initialize an internal daemon/NAT without the required sandbox network privileges; the third targeted feature/claim-pack-provider-v1 at 83d1e83."
+      - "At 2026-07-21T07:48:28Z feature branch HEAD 83d1e83 was 14 ahead / 0 behind origin/program/procedural-intelligence-prod-ready and 37 ahead / 0 behind origin/main; implementation commit e8ac74f and local program base 942669b remain preserved."
       - "No raw git push or privilege escalation was used to bypass the connector boundary."
     next_safe_action: "Retry the dedicated connector after its runtime privilege issue is fixed, then execute remote Backend CI on the exact published HEAD."
   - id: BLK-CLAIM-PACK-DB-001
@@ -1034,7 +1035,7 @@ claims:
     statement: "The canonical local implementation preserves origin/main and its current global regression passes."
     status: supported_with_publication_and_remote_runtime_blockers
     evidence:
-      - "origin/main 4950ba3; local program branch 942669b; feature implementation head e8ac74f; no reverse divergence"
+      - "origin/main 4950ba3; local program branch 942669b; feature implementation e8ac74f; feature evidence head 83d1e83; no reverse divergence"
       - "588/590 tests passed with 2 explicit skips and 0 failures; eight implemented named eval gates, typecheck, build, inventory, contracts 12/12, audit, Pages, and domain evaluation 8/8 passed"
       - "origin program branch remains 6987f9d because BLK-CLOUD-PUSH-001 prevents publication"
     limitations:
@@ -1166,15 +1167,17 @@ branches:
     reconciliation_task: BASE-001
     blocker: BLK-CLOUD-PUSH-001
   - name: "feature/claim-pack-provider-v1"
-    commit: "e8ac74f53837919a9ed444ab251c3f89ff65187f"
+    commit: "83d1e83aecf497fe586b85afbaf7d065fd8e268b"
     base_commit: "942669b8d47f1b04f181926beecb6824394d36c4"
     implementation_commits:
       - "e8ac74f53837919a9ed444ab251c3f89ff65187f"
+    evidence_commits:
+      - "83d1e83aecf497fe586b85afbaf7d065fd8e268b"
     divergence_from_origin_program:
-      ahead: 13
+      ahead: 14
       behind: 0
     divergence_from_origin_main:
-      ahead: 36
+      ahead: 37
       behind: 0
     blockers:
       - BLK-CLOUD-PUSH-001
@@ -1205,7 +1208,7 @@ ci:
     pages_verification: passed
     claim_pack_v1: "provider/eval/static security gates passed; PostgreSQL/HTTP smoke awaits remote CI"
     dependency_audit: "npm audit --audit-level=high found 0 vulnerabilities"
-    current_remote_ci: "not started because BLK-CLOUD-PUSH-001 prevents publishing e8ac74f"
+    current_remote_ci: "not started because BLK-CLOUD-PUSH-001 prevents publishing 83d1e83/e8ac74f"
 gates:
   - id: GATE-PROD-001
     status: not_evaluated
