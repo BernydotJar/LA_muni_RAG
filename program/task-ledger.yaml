@@ -1,5 +1,5 @@
 schema_version: 1
-updated_at: "2026-07-21T06:38:42Z"
+updated_at: "2026-07-21T06:46:34Z"
 runtime:
   type: yaml_fallback
   farmtable_available: false
@@ -785,12 +785,52 @@ tasks:
       - "No registry push, SBOM, scan, signature, Terraform, platform, secret manager, observability, backup/restore drill, rollback rehearsal, incident exercise, or deployment."
     pr: null
     ci: passed_local
+  - id: WS11-EVAL-PROCEDURE-001
+    workstream: WS-11
+    title: "Hard-evaluate a generic procedure query without inventing the subject"
+    status: completed_with_limitations
+    owner: /root
+    files:
+      - src/__tests__/eval-procedure-001.test.ts
+      - src/procedure/procedureClassifier.ts
+      - src/domain/packs/municipal-antigua.ts
+      - docs/testing/eval-harness.md
+      - program/gap-matrix.md
+      - package.json
+      - .github/workflows/ci.yml
+      - src/__tests__/operations-readiness-foundation.test.ts
+    depends_on:
+      - BOUND-001
+      - WS08-CONTRACT-FOUNDATION-001
+      - WS08-PROCEDURE-QUERY-001
+    blockers:
+      - BLK-CLOUD-PUSH-001
+    acceptance:
+      - "The literal X query remains procedural but unclassified until its subject and governing evidence are identified."
+      - "No-evidence output contains structured steps, dependencies, required/output documents, explicit gaps, and canonical missing-evidence state."
+      - "Identity-bound municipal citations support only their matching steps and map to valid draft ProcedureWorkflow JSON."
+    evidence:
+      - "Commit ef86c14 adds EVAL-PROCEDURE-001, normalized retrieval-query deduplication, a domain evaluation case, a named CI gate, and honest eval documentation."
+      - "EVAL-PROCEDURE-001 passed 4/4; domain evaluation passed 8/8; focused procedure/mapper/operations tests passed 25/25."
+      - "Integrated regression passed 550 of 552 tests with zero failures and two explicit skips; contracts, inventory, npm high-severity audit, typecheck, and build passed."
+    limitations:
+      - "Supporting records are controlled synthetic fixtures, not proof of a complete or current Antigua Guatemala corpus."
+      - "The placeholder X intentionally remains unknown; production retrieval thresholds and contradiction handling are not proved."
+      - "Persistent procedure versions, review, approval, supersession, and procedure-case tracking remain open."
+      - "Remote CI and publication remain blocked by BLK-CLOUD-PUSH-001."
+    branch: "program/procedural-intelligence-prod-ready"
+    pr: null
+    ci: passed_local_remote_publication_blocked
   - id: WS11-QA-001
     workstream: WS-11
     title: "Run required evals, tests, docs checks, and global regression"
-    status: pending
-    owner: unassigned
-    files: []
+    status: in_progress
+    owner: /root
+    files:
+      - docs/testing/eval-harness.md
+      - program/gap-matrix.md
+      - src/__tests__/eval-procedure-001.test.ts
+      - src/__tests__/eval-water-001.test.ts
     depends_on:
       - GAP-001
     integration_dependencies:
@@ -803,13 +843,17 @@ tasks:
       - WS08-INT-001
       - WS09-UX-001
       - WS10-OPS-001
-    blockers: []
+    blockers:
+      - BLK-CLOUD-PUSH-001
     acceptance:
       - "All nine named hard evals, required tests, and cross-workstream regression pass."
       - "Mandatory documentation exists and matches runtime truth."
-    evidence: []
+    evidence:
+      - "EVAL-PROCEDURE-001 and EVAL-WATER-001 are named local CI gates and pass their focused suites."
+      - "Current integrated regression at ef86c14 passed 550/552 with two explicit skips and zero failures."
+      - "Seven named hard evals or their full runtime/corpus proof remain incomplete."
     pr: null
-    ci: not_started
+    ci: passed_local_partial_remote_publication_blocked
   - id: REL-VERIFY-001
     workstream: WS-11
     title: "Audit completion and record human deploy decision"
@@ -852,14 +896,16 @@ blockers:
     next_safe_action: "Continue on the canonical branch and preserve RTK.md."
   - id: BLK-CLOUD-PUSH-001
     state: blocked_external
-    condition: "Cloud Sandbox MCP cannot publish the two local commits through its dedicated git_push operation."
+    condition: "Cloud Sandbox MCP cannot publish the local program commits through its dedicated git_push operation."
     exact_evidence:
       - "Two Cloud_Sandbox_MCP.git_push calls failed while the connector attempted to initialize its internal daemon/NAT without the required sandbox network privileges."
-      - "At 2026-07-21T06:38:42Z, local HEAD was 1d129f0 and origin/program/procedural-intelligence-prod-ready was 6987f9d: 2 ahead / 0 behind."
+      - "At 2026-07-21T06:46:34Z, implementation HEAD was ef86c14 and origin/program/procedural-intelligence-prod-ready was 6987f9d: 4 ahead / 0 behind before this control reconciliation."
       - "No raw git push or privilege escalation was used to bypass the connector boundary."
     affects:
       - WS03-ARTIFACT-ACCEPTANCE-CI-001
       - WS05-WATER-001
+      - WS11-EVAL-PROCEDURE-001
+      - WS11-QA-001
       - remote_ci
       - pull_request_publication
     next_safe_action: "Retry only through the dedicated connector after its daemon/network privilege issue is repaired; then run remote Backend CI on the exact published HEAD."
@@ -873,7 +919,8 @@ farmtable_equivalent_queries:
     source: program/task-graph.yaml
   GetCriticalPath:
     source: program/task-graph.yaml
-    current_bottlenecks: []
+    current_bottlenecks:
+      - BLK-CLOUD-PUSH-001
   GetBottlenecks:
     open:
       - BLK-CLOUD-PUSH-001

@@ -1,6 +1,6 @@
 # Skill usage register
 
-Last updated: 2026-07-21T06:38:42Z
+Last updated: 2026-07-21T06:46:34Z
 
 Program source: attached `goal_la_muni_rag_procedural_intelligence_prod_ready.md` conversation artifact. No local macOS path is assumed.
 
@@ -9,11 +9,11 @@ Repository state observed during this session:
 - workspace root: `/workspace`
 - branch: `program/procedural-intelligence-prod-ready`
 - origin/main baseline: `4950ba3c24dbe7d9891d5cec8d7ba5f57db3ef9c`
-- local HEAD at reconciliation: `1d129f0f08a04c72f1d5c24aaac5ab5e53bf71f4`
+- implementation HEAD at reconciliation: `ef86c14b07f5e8cb1528ba91a2e2c037aa4a4041`
 - remote program branch: `6987f9d78f2d69a96b522ddfb920cd1ed1100437`
-- divergence from remote program branch: 2 ahead / 0 behind; publication blocked by `BLK-CLOUD-PUSH-001`
+- divergence from remote program branch: 4 ahead / 0 behind before this control reconciliation; publication blocked by `BLK-CLOUD-PUSH-001`
 - divergence from origin/main: 25 ahead / 0 behind
-- local canonical gate: 545 passed / 547 total / 2 explicit skips / 0 failures; typecheck, build, contracts, inventory, dependency audit, and domain evaluation 7/7 passed
+- local canonical gate: 550 passed / 552 total / 2 explicit skips / 0 failures; typecheck, build, contracts, inventory, dependency audit, and domain evaluation 8/8 passed
 - source inventory: valid, 17 total documents, 4 verified, 4 missing_source, 1 acquired, and 0 ingested; acquisition is not ingestion
 - repository instructions read from tracked `README.md` and `RTK.md`
 
@@ -36,6 +36,7 @@ Repository state observed during this session:
 | WS08-PROCEDURE-QUERY-001 | Implement and adversarially verify the procedure-query v1 provider | No listed skill targets this repository's Node/PostgreSQL API implementation | Used the repository contract/security foundations, Context7 evidence, direct code review, focused adversarial tests, and a guarded disposable PostgreSQL/HTTP gate. | Canonical v1 schemas/OpenAPI; identity/RBAC/RLS foundation; PostgreSQL 16.14/pgvector 0.8.5 disposable runtime | Secure provider, migration 004, public-only scoped retrieval, production legacy gate, DB fixture, HTTP smoke, current docs | Commit deef177; 35/35 focal tests; canonical Node summary 457/457 in a clean detached worktree; prior 539 reporter-marker count corrected; contract/inventory/domain/Pages/build/typecheck gates; 0 production dependency vulnerabilities; DB/HTTP statuses 200/200/409/403/400/401/500/200 and legacy 404. | completed_with_limitations |
 | WS03-ARTIFACT-ACCEPTANCE-CI-001 | Align the ingestion runtime gate with persisted immutable-object and clean-scan acceptance | `skill-creator` was the only listed skill; it creates or updates skills and does not match repository implementation or database fixture repair | Manual repository workflow using the existing migration, RLS, worker, and smoke-test contracts; no unrelated skill was invoked | Migration 007; failed remote CI evidence; ingestion job service; tenant A/B SQL fixtures | Correct migration order, artifact-object/scan RLS checks, accepted fixtures, and completion binding | Commit a69fb15; integrated local regression at 1d129f0 passed 545/547 with 2 skips and 0 failures; live PostgreSQL rerun and remote CI remain blocked by sandbox runtime/publication limits | completed_with_limitations |
 | WS05-WATER-001 | Compile and hard-evaluate the 47-category Antigua-first potable-water research workflow | `skill-creator` was the only listed skill; it does not implement domain compilers, contract mappers, or evaluation suites | Manual domain-model and test-first workflow using existing LA Muni RAG contracts; no new framework/API decision required a Context7 query | Golden water query; existing domain pack; ProcedureWorkflow v1 schema; product-boundary rules | Dedicated classifier/template, 47 research categories, canonical missing-evidence mapping, named hard eval, CI gate, documentation | Commit 1d129f0; EVAL-WATER-001 4/4; domain 7/7; focused 24/24; integrated 545/547 with 2 skips and 0 failures; synthetic/corpus/runtime limitations documented | completed_with_limitations |
+| WS11-EVAL-PROCEDURE-001 | Hard-evaluate the literal generic procedure query and canonical workflow JSON | `skill-creator` was the only listed skill; it does not implement repository evaluation suites or domain classifiers | Manual test-first use of existing classifier, compiler, identity binding, mapper, and JSON Schema contracts | Literal X query; ProcedureWorkflow v1; controlled Antigua evidence identities; product-boundary rules | Retrieval-query deduplication, named hard eval, CI gate, domain case, documentation | Commit ef86c14; EVAL-PROCEDURE 4/4; domain 8/8; focused 25/25; integrated 550/552 with two skips and zero failures; synthetic/corpus/lifecycle limits documented | completed_with_limitations |
 | PRG-CONTROL-RECON-20260721 | Reconcile program controls to current Git, tests, blockers, and product boundaries | No listed skill targets repository program-ledger reconciliation | Manual documentation-as-code update after validating Git state and parsing both YAML files | Local HEAD/upstream divergence; commits a69fb15 and 1d129f0; test evidence; Cloud Sandbox push failures | Updated task graph, ledger, skill register, claims, and external blocker record | Both YAML files parse successfully; macOS source-path assumption removed; production-ready claim remains unproven | completed |
 
 ## Context7 activation evidence
@@ -173,6 +174,17 @@ The canonical set contains 70 checked links and 0 broken links.
 - local evidence: static migration/operations tests, typecheck, contracts, inventory, audit, domain evaluation, global tests, and build pass; the later integrated regression reports 545/547 with two explicit skips and zero failures
 - limitations: this nested sandbox cannot start the PostgreSQL/pgvector service required for a live rerun, and the dedicated Cloud Sandbox push operation cannot publish the commit for remote CI
 - boundary: no source/upload feature, scanner, object store, deployed worker, OS Electoral capability, or Content Agency capability was added
+
+### WS11-EVAL-PROCEDURE-001
+
+- commit: `ef86c14`
+- input: `¿Cuál es el procedimiento para realizar X?`
+- conservative classification: procedural `true`, workflow type `unknown`; `X` is not invented
+- no-evidence output: three research steps, two dependencies, required/output documents, blocking gaps, and canonical missing evidence
+- controlled evidence output: three identity-bound official Antigua sources and section citations, exactly one citation per matching step
+- verification: EVAL-PROCEDURE-001 4/4; domain evaluation 8/8; focused tests 25/25; contracts/inventory/audit/typecheck/build pass; integrated regression 550/552 with two explicit skips and zero failures
+- limitations: synthetic evidence only; no real corpus threshold, conflict review, persistent lifecycle, approval, or procedure-case proof
+- boundary: evidence and procedure output only; no electoral strategy or content production
 
 ### WS05-WATER-001
 

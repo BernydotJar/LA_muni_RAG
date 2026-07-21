@@ -1,5 +1,5 @@
 schema_version: 1
-generated_at: "2026-07-21T06:38:42Z"
+generated_at: "2026-07-21T06:46:34Z"
 program:
   id: LA-MUNI-RAG-PROD
   objective: "Make LA Muni RAG production-ready within its evidence, procedure, workflow, case-tracking, and integration domain."
@@ -13,15 +13,15 @@ program:
 baseline:
   origin_main_commit: "4950ba3c24dbe7d9891d5cec8d7ba5f57db3ef9c"
   observed_branch: "program/procedural-intelligence-prod-ready"
-  observed_commit: "1d129f0f08a04c72f1d5c24aaac5ab5e53bf71f4"
+  observed_commit: "ef86c14b07f5e8cb1528ba91a2e2c037aa4a4041"
   upstream: origin/program/procedural-intelligence-prod-ready
   upstream_commit: "6987f9d78f2d69a96b522ddfb920cd1ed1100437"
   upstream_state: local_ahead_publication_blocked
   divergence:
-    ahead: 2
+    ahead: 4
     behind: 0
   divergence_from_origin_main:
-    ahead: 25
+    ahead: 27
     behind: 0
   worktree: clean_at_observation
   repository_instructions:
@@ -30,8 +30,8 @@ baseline:
   canonical_gate:
     status: passed_local_with_remote_publication_blocked
     tests:
-      passed: 545
-      total: 547
+      passed: 550
+      total: 552
       skipped: 2
       failed: 0
     typecheck: passed
@@ -45,9 +45,10 @@ baseline:
       ingested_documents: 0
       production_ingestion_gate: not_passed
     domain_evaluation:
-      passed: 7
-      total: 7
+      passed: 8
+      total: 8
     hard_evals:
+      EVAL-PROCEDURE-001: passed_with_corpus_and_lifecycle_limitations
       EVAL-WATER-001: passed_with_corpus_and_runtime_limitations
     pages_verification: not_rerun_on_current_head
     remote_ci: blocked_before_publication
@@ -635,7 +636,7 @@ tasks:
       eval_water: "4/4 passed"
       citation_selectivity: "one PDM-OT citation supports only the PDM-OT category"
       contract_validation: "11 schemas / 11 examples / 1 OpenAPI 3.1.1 document valid"
-      domain_evaluation: "7/7 passed"
+      domain_evaluation: "8/8 passed"
       focused_tests: "24/24 passed"
       integrated_tests: "545 passed / 547 total / 2 skipped / 0 failed"
       typecheck: passed
@@ -771,9 +772,53 @@ tasks:
       deployment: not_attempted
     limitations:
       - "No registry, scan/signature/SBOM, Terraform, platform, secrets, observability, restore/rollback/incident drill, or deployment."
+  - id: WS11-EVAL-PROCEDURE-001
+    workstream: WS-11
+    title: "Hard-evaluate a generic procedure query without inventing the subject"
+    status: completed_with_limitations
+    owner: /root
+    depends_on:
+      - BOUND-001
+      - WS08-CONTRACT-FOUNDATION-001
+      - WS08-PROCEDURE-QUERY-001
+    blockers:
+      - BLK-CLOUD-PUSH-001
+    outputs:
+      - src/__tests__/eval-procedure-001.test.ts
+      - src/procedure/procedureClassifier.ts
+      - src/domain/packs/municipal-antigua.ts
+      - docs/testing/eval-harness.md
+      - program/gap-matrix.md
+    result:
+      commit: ef86c14
+      classification: "procedural=true; workflow_type=unknown"
+      no_evidence_workflow: "3 research steps / 2 dependencies / blocking gaps"
+      supported_fixture: "3 identity-bound official Antigua sources / 3 section citations / one citation per step"
+      eval_procedure: "4/4 passed"
+      domain_evaluation: "8/8 passed"
+      focused_tests: "25/25 passed"
+      integrated_tests: "550 passed / 552 total / 2 skipped / 0 failed"
+      contract_validation: "11 schemas / 11 examples / 1 OpenAPI 3.1.1 document valid"
+      typecheck: passed
+      build: passed
+      dependency_audit: "0 high vulnerabilities"
+    limitations:
+      - "Controlled synthetic sources do not prove a complete or current Antigua corpus."
+      - "X intentionally remains unknown; retrieval thresholds and conflicts are not proven."
+      - "Persistent lifecycle, review, approval, supersession, and procedure cases remain open."
+      - "Remote CI and publication remain blocked by BLK-CLOUD-PUSH-001."
+    parent_completion_effect: "WS11-QA-001 is now in_progress; two of nine named hard evals have executable focused gates."
   - id: WS11-QA-001
     workstream: WS-11
     title: "Build the required hard-eval, contract, security, accessibility, and global regression matrix"
+    status: in_progress
+    owner: /root
+    completed_slices:
+      - WS11-EVAL-PROCEDURE-001
+      - WS05-WATER-001
+    current_state: "Two named hard evals pass focused gates; the integrated local regression passes, but seven named evals or their full corpus/runtime proof remain incomplete."
+    blockers:
+      - BLK-CLOUD-PUSH-001
     depends_on:
       - GAP-001
     integration_dependencies:
@@ -828,13 +873,15 @@ blockers:
     affects:
       - WS03-ARTIFACT-ACCEPTANCE-CI-001
       - WS05-WATER-001
+      - WS11-EVAL-PROCEDURE-001
+      - WS11-QA-001
       - remote_ci
       - pull_request_publication
     state: blocked_external
-    condition: "Cloud Sandbox MCP cannot publish the two local commits through its dedicated git_push operation."
+    condition: "Cloud Sandbox MCP cannot publish the local program commits through its dedicated git_push operation."
     evidence:
       - "Two dedicated git_push calls failed while the connector attempted to initialize an internal daemon/NAT without the required sandbox network privileges."
-      - "At 2026-07-21T06:38:42Z local HEAD 1d129f0 was 2 ahead / 0 behind origin/program/procedural-intelligence-prod-ready at 6987f9d."
+      - "At 2026-07-21T06:46:34Z implementation HEAD ef86c14 was 4 ahead / 0 behind origin/program/procedural-intelligence-prod-ready at 6987f9d before this control reconciliation."
       - "No raw git push or privilege escalation was used to bypass the connector boundary."
     next_safe_action: "Retry the dedicated connector after its runtime privilege issue is fixed, then execute remote Backend CI on the exact published HEAD."
 critical_path:
@@ -886,9 +933,18 @@ claims:
     statement: "The canonical local branch preserves the origin/main baseline and its current local regression passes."
     status: supported_with_publication_blocker
     evidence:
-      - "origin/main 4950ba3; local program branch 1d129f0; 25 ahead / 0 behind origin/main"
-      - "545/547 tests passed with 2 explicit skips and 0 failures; typecheck, build, inventory, contracts, audit, and domain evaluation 7/7 passed"
+      - "origin/main 4950ba3; implementation head ef86c14; local branch remains ahead of origin/main with no reverse divergence"
+      - "550/552 tests passed with 2 explicit skips and 0 failures; typecheck, build, inventory, contracts, audit, and domain evaluation 8/8 passed"
       - "origin program branch remains 6987f9d because BLK-CLOUD-PUSH-001 prevents publication"
+  - id: CLAIM-GENERIC-PROCEDURE-HARD-EVAL
+    statement: "A literal generic procedure query yields conservative, schema-valid research workflow JSON with selective identity-bound citations."
+    status: supported_with_corpus_and_lifecycle_limitations
+    evidence:
+      - "Commit ef86c14; EVAL-PROCEDURE-001 4/4; domain evaluation 8/8; integrated regression 550/552 with two explicit skips and zero failures"
+      - "No-evidence output contains three research steps, two dependencies, blocking gaps, and canonical missing evidence"
+      - "Three synthetic official Antigua sources map one-to-one to three steps without cross-step citation promotion"
+    limitations:
+      - "Synthetic fixtures only; X remains unclassified and no real corpus retrieval, conflict review, lifecycle, approval, or case persistence is proved"
   - id: CLAIM-WATER-47-RESEARCH-WORKFLOW
     statement: "The golden potable-water query compiles to 47 Antigua-first research categories with explicit missing evidence and selective citations."
     status: supported_with_corpus_and_runtime_limitations
@@ -989,15 +1045,16 @@ owners:
     - WS-11
 branches:
   - name: "program/procedural-intelligence-prod-ready"
-    commit: "1d129f0f08a04c72f1d5c24aaac5ab5e53bf71f4"
+    commit: "ef86c14b07f5e8cb1528ba91a2e2c037aa4a4041"
     implementation_commits:
       - "a69fb15f322931f67fc7b52e084d1dbd80add0a2"
       - "1d129f0f08a04c72f1d5c24aaac5ab5e53bf71f4"
+      - "ef86c14b07f5e8cb1528ba91a2e2c037aa4a4041"
     upstream: "origin/program/procedural-intelligence-prod-ready"
     upstream_commit: "6987f9d78f2d69a96b522ddfb920cd1ed1100437"
     upstream_state: local_ahead_publication_blocked
     divergence:
-      ahead: 2
+      ahead: 4
       behind: 0
     reconciliation_task: BASE-001
     blocker: BLK-CLOUD-PUSH-001
@@ -1009,21 +1066,22 @@ ci:
   status: local_regression_passed_remote_current_head_blocked
   baseline_task: WS11-QA-001
   evidence:
-    tests: "545 passed / 547 total / 2 skipped / 0 failed across 100 suites"
+    tests: "550 passed / 552 total / 2 skipped / 0 failed across 101 suites"
+    eval_procedure: "4/4 passed; conservative unknown classification; one identity-bound citation per step; canonical v1 mapping"
     eval_water: "4/4 passed; 47 categories; selective citation; canonical v1 mapping"
     historical_procedure_query_tests: "457/457 at deef177; prior 539 reporter-marker count corrected"
     typecheck: passed
     build: passed
     contracts: "11 schemas / 11 examples / 1 OpenAPI 3.1.1 document valid"
     source_inventory: "valid; 17 total, 4 verified, 4 missing_source, 1 acquired, 0 ingested"
-    domain_evaluation: "7/7 passed"
+    domain_evaluation: "8/8 passed"
     pages_verification: "not rerun on current local head; prior remote checkpoint passed"
     boundary_docs: "9 canonical documents; 70 links checked; 0 broken"
     procedure_query_v1: "historical 35/35 focused tests; PostgreSQL/HTTP disposable gate passed"
     artifact_acceptance_alignment: "migration 007 order, accepted object/scan fixtures, artifact RLS checks, and completion binding at a69fb15"
     dependency_audit: "npm audit --audit-level=high found 0 vulnerabilities"
     remote_history: "Backend CI runs 29707579030 and 29709823390 passed commits 52ec72d and 50716cc"
-    current_remote_ci: "not started because BLK-CLOUD-PUSH-001 prevents publishing a69fb15 and 1d129f0"
+    current_remote_ci: "not started because BLK-CLOUD-PUSH-001 prevents publishing the current local program commits"
 gates:
   - id: GATE-PROD-001
     status: not_evaluated
