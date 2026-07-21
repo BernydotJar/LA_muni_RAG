@@ -98,6 +98,9 @@ jobs:
       - name: Run EVAL-WATER-001
         run: npm run eval:water
 
+      - name: Run EVAL-ACCESSIBILITY-001
+        run: npm run eval:accessibility
+
       - name: Typecheck
         run: npm run typecheck
 

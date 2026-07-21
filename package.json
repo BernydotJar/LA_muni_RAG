@@ -42,7 +42,8 @@
     "eval:job-lease": "node --import tsx --test src/__tests__/eval-job-lease-001.test.ts src/__tests__/ingestion-job-service.test.ts src/__tests__/ingestion-worker.test.ts",
     "eval:assessment": "node --import tsx --test src/__tests__/eval-procedure-assessment-001.test.ts",
     "eval:evidence-gap": "node --import tsx --test src/__tests__/eval-evidence-gap-001.test.ts src/__tests__/evidence-gap-runtime-migration.test.ts",
-    "smoke:evidence-gap": "node scripts/evidence-gap-postgres-smoke.mjs"
+    "smoke:evidence-gap": "node scripts/evidence-gap-postgres-smoke.mjs",
+    "eval:accessibility": "node --import tsx --test src/__tests__/procedure-training-console.test.ts src/__tests__/eval-accessibility-001.test.ts"
   },
   "keywords": [],
   "author": "",

@@ -496,7 +496,7 @@ Current local evidence:
 - contract registry: 17 schemas, 17 examples, one OpenAPI 3.1.1 document;
 - fresh non-owner database path: PostgreSQL 15.18, pgvector 0.8.5, migrations/gates 001–004 + 008–010 + 012;
 - compiled ProcedureQuery, ClaimPack, lifecycle, and EvidenceGap HTTP smokes: pass;
-- full regression: 669 tests, 667 pass, 0 fail, 2 explicit environment skips.
+- full regression: 681 tests, 676 pass, 3 fail, 2 explicit environment skips.
 
 Remaining limitations:
 
@@ -603,6 +603,51 @@ Therefore `EVAL-JOB-LEASE-001` is `passed_for_disposable_postgres_fencing_with_d
 | EVAL-VECTOR-001 | passed_for_tenant_atomic_vector_persistence_with_real_corpus_and_load_limitations | Tenant/model/dimension identity, conflict fencing, atomic replacement, rollback, stale deletion, public eligibility, and bounded search pass; real-corpus quality/load remain open. |
 | EVAL-JOB-LEASE-001 | passed_for_disposable_postgres_fencing_with_deployment_and_operations_limitations | SKIP LOCKED, single claim, fresh fencing token, heartbeat/expiry, stale rejection, bounded retry, and concurrent PostgreSQL smoke pass; dispatcher/metrics/HA remain open. |
 
+
+| EVAL-ACCESSIBILITY-001 | passed_for_static_training_surface_with_browser_screen_reader_auth_and_full_product_limitations | 11/11 checks cover Academy semantics, contrast, focus, keyboard, responsive CSS, reduced motion, forced colors, storage/rendering security and Pages; supported-browser E2E, screen readers, human WCAG review, authenticated shell and whole-product audit remain open. |
+
 ## Release rule
 
 No evaluation result authorizes deployment. Production requires all hard evaluations, the full production gate, and explicit human approval.
+
+## EVAL-ACCESSIBILITY-001
+
+Current scope: **static training surface** for the public/read-only Academia de
+Procedimientos preview.
+
+Implemented executable checks:
+
+1. Spanish document language, skip link, semantic header/nav/main/aside, labelled
+   module control, native buttons/radios, polite status announcements and no
+   inline event handlers or fake password login.
+2. Visible focus, 44px interaction targets, desktop/tablet/mobile reflow,
+   `prefers-reduced-motion` and forced-colors styles.
+3. Core foreground/background design tokens meet or exceed WCAG AA contrast in
+   deterministic calculations; primary text targets enhanced contrast.
+4. Lesson tabs support ArrowUp, ArrowDown, Home and End with focus management,
+   `aria-selected` and `aria-current`.
+5. GitHub Pages contains the full academy HTML/CSS/JS/curriculum artifact and
+   keeps the public/read-only and `requester_supplied_unverified` boundaries.
+
+Executable evidence:
+
+- `src/__tests__/eval-accessibility-001.test.ts`;
+- `src/__tests__/procedure-training-console.test.ts`;
+- `public/procedure-training.html`;
+- `public/procedure-training.css`;
+- `public/procedure-training.js`;
+- `public/data/water-training-map.json`.
+
+Limitations:
+
+- This gate does not yet constitute a supported-browser matrix, automated browser
+  E2E, zoom/reflow observation, screen-reader test, keyboard-only human review or
+  WCAG 2.2 AA audit of the whole product.
+- The surface is public training preview, not the authenticated SaaS shell. Cases,
+  review/approval and tenancy remain disabled until a human-session architecture
+  is approved.
+- Dynamic procedure evidence remains demo/development data or explicit missing
+  evidence; real-corpus accessibility and source-viewer behavior are unproved.
+
+Therefore `EVAL-ACCESSIBILITY-001` is
+`passed_for_static_training_surface_with_browser_screen_reader_auth_and_full_product_limitations`.

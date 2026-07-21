@@ -1,0 +1,210 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Academia pública de procedimientos municipales basada en evidencia, pasos, documentos, decisiones y brechas explícitas.">
+  <title>Academia de Procedimientos | LA Muni RAG</title>
+  <link rel="icon" href="./favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="./procedure-training.css">
+</head>
+<body>
+  <a class="skip-link" href="#training-main">Saltar al contenido</a>
+
+  <div class="academy-app">
+    <header class="academy-topbar">
+      <a class="brand-lockup" href="./index.html" aria-label="LA Muni RAG, inicio">
+        <span class="brand-mark" aria-hidden="true">LA</span>
+        <span>
+          <strong>LA Muni RAG</strong>
+          <small>Academia de Procedimientos</small>
+        </span>
+      </a>
+      <div class="topbar-status" aria-label="Estado de la superficie">
+        <span class="status-dot" aria-hidden="true"></span>
+        <span>Vista pública de capacitación</span>
+        <span class="status-divider" aria-hidden="true"></span>
+        <span>Read-only</span>
+      </div>
+      <a class="topbar-link" href="./procedure-workflow.html">Explorar workflow</a>
+    </header>
+
+    <div class="academy-shell">
+      <aside class="workspace-sidebar">
+        <nav class="academy-nav" aria-label="Navegación principal de la academia">
+          <p class="nav-eyebrow">Capacitación</p>
+          <a class="nav-item is-active" href="./procedure-training.html" aria-current="page">
+            <span class="nav-icon" aria-hidden="true">A</span>
+            <span><strong>Academia</strong><small>Lecciones y evidencia</small></span>
+          </a>
+          <a class="nav-item" href="./procedure-workflow.html">
+            <span class="nav-icon" aria-hidden="true">P</span>
+            <span><strong>Procedimientos</strong><small>Workflow documental</small></span>
+          </a>
+          <a class="nav-item" href="./index.html#sources">
+            <span class="nav-icon" aria-hidden="true">E</span>
+            <span><strong>Evidencia</strong><small>Fuentes y citas</small></span>
+          </a>
+
+          <p class="nav-eyebrow nav-eyebrow-spaced">SaaS protegido</p>
+          <button class="nav-item nav-item-disabled" type="button" data-saas-only disabled aria-disabled="true">
+            <span class="nav-icon" aria-hidden="true">C</span>
+            <span><strong>Casos</strong><small>Requiere sesión SaaS aprobada</small></span>
+          </button>
+          <button class="nav-item nav-item-disabled" type="button" data-saas-only disabled aria-disabled="true">
+            <span class="nav-icon" aria-hidden="true">R</span>
+            <span><strong>Revisiones</strong><small>Requiere sesión SaaS aprobada</small></span>
+          </button>
+          <button class="nav-item nav-item-disabled" type="button" data-saas-only disabled aria-disabled="true">
+            <span class="nav-icon" aria-hidden="true">T</span>
+            <span><strong>Tenancy y RBAC</strong><small>Requiere sesión SaaS aprobada</small></span>
+          </button>
+        </nav>
+
+        <section class="boundary-note" aria-labelledby="boundary-title">
+          <p class="boundary-kicker">Frontera honesta</p>
+          <h2 id="boundary-title">Entrenamiento local, no certificación institucional</h2>
+          <p>Tu progreso se guarda sólo en este navegador. No representa aprobación, cumplimiento, expediente ni finalización de un procedimiento.</p>
+        </section>
+      </aside>
+
+      <main id="training-main" class="training-main" tabindex="-1">
+        <section class="module-header" aria-labelledby="academy-title">
+          <div>
+            <p class="eyebrow">Municipal Procedural Intelligence Platform</p>
+            <h1 id="academy-title">Aprende a leer un procedimiento como evidencia, no como una lista inventada.</h1>
+            <p class="module-intro">Cada lección conecta una acción investigada con participantes, documentos, decisiones, citas, riesgos y lo que todavía falta.</p>
+          </div>
+          <form class="module-picker" id="module-form">
+            <label for="training-module">Módulo de capacitación</label>
+            <select id="training-module" name="module">
+              <option value="water-community-antigua">Agua potable para una comunidad</option>
+            </select>
+            <p>47 categorías de investigación agrupadas en 8 fases enseñables.</p>
+          </form>
+        </section>
+
+        <div id="training-status" class="training-status" role="status" aria-live="polite" data-state="loading">
+          <span class="status-spinner" aria-hidden="true"></span>
+          <span>Cargando mapa de investigación y evidencia disponible…</span>
+        </div>
+
+        <section class="training-grid" aria-label="Lección activa y evidencia">
+          <section class="lesson-rail" aria-labelledby="lesson-rail-title">
+            <div class="rail-heading">
+              <div>
+                <p class="rail-kicker">Ruta de aprendizaje</p>
+                <h2 id="lesson-rail-title">8 fases</h2>
+              </div>
+              <span id="progress-count" class="progress-count">0/8</span>
+            </div>
+            <div class="progress-track" aria-hidden="true"><span id="progress-bar"></span></div>
+            <nav id="lesson-list" class="lesson-list" aria-label="Fases del módulo" role="tablist"></nav>
+            <button id="clear-progress" class="text-button" type="button">Borrar progreso local</button>
+          </section>
+
+          <article class="lesson-canvas" id="lesson-content" role="tabpanel" tabindex="-1" aria-labelledby="lesson-title">
+            <header class="lesson-header">
+              <div>
+                <p id="lesson-sequence" class="lesson-sequence">Fase 1 de 8</p>
+                <h2 id="lesson-title">Preparando la lección…</h2>
+              </div>
+              <span id="lesson-evidence-status" class="evidence-badge" data-evidence-status="missing_evidence">missing_evidence</span>
+            </header>
+            <p id="lesson-summary" class="lesson-summary">El módulo aparecerá cuando termine la carga.</p>
+
+            <section class="lesson-objective" aria-labelledby="objective-title">
+              <p class="section-kicker">Objetivo de aprendizaje</p>
+              <h3 id="objective-title">Qué debes poder distinguir</h3>
+              <p id="lesson-objective">—</p>
+            </section>
+
+            <div class="procedure-facts">
+              <section class="fact-block" aria-labelledby="action-title">
+                <h3 id="action-title">Acción investigada</h3>
+                <p id="lesson-action">—</p>
+              </section>
+              <section class="fact-block" aria-labelledby="participants-title">
+                <h3 id="participants-title">Participantes</h3>
+                <ul id="lesson-participants" class="plain-list"></ul>
+              </section>
+              <section class="fact-block" aria-labelledby="documents-title">
+                <h3 id="documents-title">Documentos y salidas</h3>
+                <ul id="lesson-documents" class="plain-list"></ul>
+              </section>
+              <section class="fact-block" aria-labelledby="decisions-title">
+                <h3 id="decisions-title">Decisiones y dependencias</h3>
+                <ul id="lesson-decisions" class="plain-list"></ul>
+              </section>
+              <section class="fact-block fact-block-wide" aria-labelledby="risks-title">
+                <h3 id="risks-title">Riesgos y desconocidos</h3>
+                <ul id="lesson-risks" class="plain-list"></ul>
+              </section>
+            </div>
+
+            <form id="knowledge-check" class="knowledge-check">
+              <fieldset>
+                <legend>Comprobación de aprendizaje</legend>
+                <p>¿Qué hace falta antes de presentar esta fase como respaldada?</p>
+                <label><input type="radio" name="knowledge" value="title"> Que el documento tenga un título convincente.</label>
+                <label><input type="radio" name="knowledge" value="citation"> Una cita verificable que pruebe la proposición concreta.</label>
+                <label><input type="radio" name="knowledge" value="priority"> Que el proyecto tenga prioridad alta.</label>
+              </fieldset>
+              <div class="knowledge-actions">
+                <button class="secondary-button" id="check-answer" type="submit">Revisar respuesta</button>
+                <p id="knowledge-feedback" class="knowledge-feedback" aria-live="polite"></p>
+              </div>
+            </form>
+
+            <footer class="lesson-actions">
+              <button id="previous-lesson" class="secondary-button" type="button">Fase anterior</button>
+              <button id="mark-understood" class="primary-button" type="button">Marcar como comprendido</button>
+              <button id="next-lesson" class="secondary-button" type="button">Siguiente fase</button>
+            </footer>
+          </article>
+
+          <aside class="evidence-panel" aria-label="Panel de evidencia del paso">
+            <header class="evidence-panel-header">
+              <div>
+                <p class="section-kicker">Trazabilidad</p>
+                <h2>Evidencia del paso</h2>
+              </div>
+              <span id="citation-count" class="citation-count">0 citas</span>
+            </header>
+            <section aria-labelledby="evidence-summary-title">
+              <h3 id="evidence-summary-title">Lectura del estado</h3>
+              <p id="evidence-summary">Todavía no se ha evaluado la evidencia de esta fase.</p>
+            </section>
+            <div id="citation-list" class="citation-list"></div>
+            <section class="gap-panel" aria-labelledby="gap-title">
+              <h3 id="gap-title">Información que todavía falta</h3>
+              <ul id="gap-list" class="plain-list"></ul>
+            </section>
+          </aside>
+        </section>
+
+        <section class="research-map" aria-labelledby="research-map-title">
+          <header class="research-map-header">
+            <div>
+              <p class="section-kicker">Mapa completo</p>
+              <h2 id="research-map-title">47 categorías de investigación</h2>
+            </div>
+            <p>Son preguntas documentales ordenadas, no hechos ni pasos oficiales predeterminados.</p>
+          </header>
+          <div id="research-category-grid" class="research-category-grid"></div>
+        </section>
+
+        <footer class="academy-footer">
+          <p><strong>Uso responsable:</strong> una lección comprendida no equivale a un requisito cumplido, una fuente validada ni una actuación municipal autorizada.</p>
+          <a href="./index.html#method">Conocer la metodología de evidencia</a>
+        </footer>
+      </main>
+    </div>
+  </div>
+
+  <noscript><p class="noscript-message">Esta academia necesita JavaScript para mostrar las lecciones. Ningún dato de caso se procesa en esta vista pública.</p></noscript>
+  <script src="./pages-demo-api.js" data-demo-mode="auto"></script>
+  <script src="./pages-security-guard.js"></script>
+  <script src="./procedure-training.js"></script>
+</body>
+</html>

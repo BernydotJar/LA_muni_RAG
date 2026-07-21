@@ -306,6 +306,32 @@ describe("operations readiness foundation", () => {
     assert.match(evaluation, /No evaluation result authorizes deployment/);
   });
 
+  it("keeps the named static training accessibility eval executable and honestly bounded", async () => {
+    const [packageJson, evaluation, workflow, html, css, script] = await Promise.all([
+      read("package.json"),
+      read("docs/testing/eval-harness.md"),
+      read(".github/workflows/ci.yml"),
+      read("public/procedure-training.html"),
+      read("public/procedure-training.css"),
+      read("public/procedure-training.js"),
+    ]);
+
+    assert.match(packageJson, /"eval:accessibility": "node --import tsx --test src\/__tests__\/procedure-training-console\.test\.ts src\/__tests__\/eval-accessibility-001\.test\.ts"/);
+    assert.match(evaluation, /## EVAL-ACCESSIBILITY-001/);
+    assert.match(evaluation, /static training surface/);
+    assert.match(evaluation, /screen-reader test/);
+    assert.match(evaluation, /passed_for_static_training_surface_with_browser_screen_reader_auth_and_full_product_limitations/);
+    assert.match(workflow, /Run EVAL-ACCESSIBILITY-001/);
+    assert.match(workflow, /npm run eval:accessibility/);
+    assert.match(html, /Vista pública de capacitación/);
+    assert.match(html, /Entrenamiento local, no certificación institucional/);
+    assert.match(css, /prefers-reduced-motion/);
+    assert.match(css, /forced-colors/);
+    assert.match(script, /credentials: "omit"/);
+    assert.match(script, /requester_supplied_unverified/);
+    assert.doesNotMatch(script, /authorization|bearer|access[_-]?token|refresh[_-]?token/i);
+  });
+
   it("builds an explicit, multi-stage, non-root production container", async () => {
     const [dockerfile, dockerignore] = await Promise.all([read("Dockerfile"), read(".dockerignore")]);
 
