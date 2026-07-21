@@ -107,6 +107,18 @@ jobs:
       - name: Run EVAL-RESTORE-001
         run: npm run eval:restore
 
+      - name: Run EVAL-SOURCE-001
+        run: npm run eval:source
+
+      - name: Run EVAL-MISSING-001
+        run: npm run eval:missing
+
+      - name: Run EVAL-RBAC-001
+        run: npm run eval:rbac
+
+      - name: Run EVAL-INGEST-001
+        run: npm run eval:ingest
+
       - name: Typecheck
         run: npm run typecheck
 

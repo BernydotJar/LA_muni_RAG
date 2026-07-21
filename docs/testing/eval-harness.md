@@ -607,6 +607,10 @@ Therefore `EVAL-JOB-LEASE-001` is `passed_for_disposable_postgres_fencing_with_d
 | EVAL-ACCESSIBILITY-001 | passed_for_static_training_surface_with_browser_screen_reader_auth_and_full_product_limitations | 11/11 checks cover Academy semantics, contrast, focus, keyboard, responsive CSS, reduced motion, forced colors, storage/rendering security and Pages; supported-browser E2E, screen readers, human WCAG review, authenticated shell and whole-product audit remain open. |
 | EVAL-CASE-001 | passed_for_tenant_approved_workflow_case_system_with_ui_privacy_load_restore_and_deployment_limitations | API, contracts, exact aggregate replay, concurrent convergence, role-separated documentary validation, document-version identity, append-only audit, forced RLS, SQL gate and compiled PostgreSQL HTTP smoke pass; browser UI, approved retention, load, restore, staging and deployment remain open. |
 | EVAL-RESTORE-001 | passed_for_disposable_logical_database_restore_with_object_pitr_staging_rpo_rto_and_human_limitations | Custom dump/checksum, empty isolated target, transactional restore, equal catalog/RLS and bounded table-data fingerprints, post-restore runtime grants, cross-tenant denial and compiled HTTP smoke pass; external objects, encryption/KMS recovery, PITR, production RPO/RTO, staging/load and human sign-off remain open. |
+| EVAL-SOURCE-001 | passed_for_versioned_source_inventory_semantics_with_durable_bytes_ingestion_and_freshness_operations_limitations | 15/15 validates authority, jurisdiction, comparative warnings, versions and strict lifecycle; one record has acquisition metadata but ignored bytes are absent from this checkout and zero records are ingested. |
+| EVAL-MISSING-001 | passed_for_explicit_no_evidence_and_gap_behavior_with_real_corpus_and_resolution_lifecycle_limitations | 25/25 proves missing-evidence downgrade, null actor/unit/deadline/system, no citations, open unverified EvidenceGap intake and comparative non-promotion; real-corpus research assignment/resolution remain open. |
+| EVAL-RBAC-001 | passed_for_current_server_side_role_matrix_and_tenant_endpoints_with_human_idp_provisioning_access_review_and_full_catalog_limitations | 32/32 proves ten closed roles, transaction-local tenant context, server-side permission checks, forced RLS, uniform tenant denial and separate case review; human OIDC/session/provisioning/access review remain open. |
+| EVAL-INGEST-001 | passed_for_disposable_postgres_artifact_job_vector_pipeline_with_production_object_scanner_dispatcher_load_and_operations_limitations | 40/40 plus PostgreSQL 15.18/pgvector 0.8.5 SQL gates and compiled HTTP smokes prove exact acceptance, 50-way idempotent convergence, single lease/fencing, rollback, stale removal and tenant denial; production storage/scanner/dispatcher/load/HA remain open. |
 
 ## Release rule
 
@@ -710,3 +714,104 @@ Not proved:
 
 Therefore `EVAL-RESTORE-001` is
 `passed_for_disposable_logical_database_restore_with_object_pitr_staging_rpo_rto_and_human_limitations`.
+
+## EVAL-SOURCE-001
+
+Current scope: versioned source inventory semantics and lifecycle reconciliation.
+
+Proved:
+
+- 17 records carry source/document identity, version, authority, jurisdiction,
+  target applicability, state, limitations and provenance notes;
+- four records are verified, one has acquisition metadata and zero are credited
+  as ingested;
+- Mixco official records remain comparative and never target-official for Antigua;
+- `ingested` requires full acquisition, clean persisted artifact safety,
+  extraction, chunking and operational manifest reconciliation;
+- the acquired PDF's ignored artifact path is absent in this checkout, so the
+  eval does not pretend that metadata equals durable possession.
+
+Not proved:
+
+- durable production object possession for the acquired record;
+- current malware-scan evidence, extraction, indexing or retrieval validation;
+- periodic freshness/supersession operation;
+- a complete Antigua-first corpus.
+
+Therefore `EVAL-SOURCE-001` is
+`passed_for_versioned_source_inventory_semantics_with_durable_bytes_ingestion_and_freshness_operations_limitations`.
+
+## EVAL-MISSING-001
+
+Current scope: conservative behavior when documentary evidence is absent,
+inapplicable, private, inactive or unprocessed.
+
+Proved:
+
+- an unknown procedure remains draft and `missing_evidence`;
+- actor, unit, deadline and external system remain null and citations empty;
+- blocking gaps use explicit documentary language rather than invented steps;
+- EvidenceGap remains immutable `open` requester-supplied-unverified intake;
+- comparative municipal evidence remains below Antigua target authority.
+
+Not proved:
+
+- assignment, research, acquisition or resolution of documentary gaps;
+- notification of a consumer after a gap is resolved;
+- behavior against a complete real corpus.
+
+Therefore `EVAL-MISSING-001` is
+`passed_for_explicit_no_evidence_and_gap_behavior_with_real_corpus_and_resolution_lifecycle_limitations`.
+
+## EVAL-RBAC-001
+
+Current scope: server-side roles, permissions, tenant binding and current endpoint
+surfaces.
+
+Proved:
+
+- exactly ten product roles have a closed permission matrix;
+- multi-role permissions are unioned without manufacturing review/approval power;
+- tenant context is transaction-local and rollback/release guarded;
+- credentials supply tenant identity and handlers enforce tenant plus permission;
+- case operation and documentary review use separate permissions;
+- disposable SQL gates prove non-owner `NOSUPERUSER`/`NOBYPASSRLS`, forced RLS
+  and cross-tenant denial.
+
+Not proved:
+
+- human OIDC, session/BFF, logout/revocation and account recovery;
+- tenant/member provisioning or periodic access review;
+- role-aware authenticated browser navigation;
+- every future endpoint or production topology.
+
+Therefore `EVAL-RBAC-001` is
+`passed_for_current_server_side_role_matrix_and_tenant_endpoints_with_human_idp_provisioning_access_review_and_full_catalog_limitations`.
+
+## EVAL-INGEST-001
+
+Current scope: disposable tenant ingestion persistence and current HTTP/worker
+surfaces.
+
+Proved:
+
+- exact immutable artifact identity and bounded clean scan acceptance;
+- durable idempotent jobs with `SKIP LOCKED`, heartbeat, lease expiry, fencing,
+  stale-worker rejection and bounded retry;
+- tenant/provider/model/dimension vector identity, atomic replacement, rollback
+  and stale-chunk removal;
+- authenticated/authorized tenant-bound ingestion HTTP with replay, rate limit,
+  sanitized errors and no raw credential/key persistence;
+- PostgreSQL 15.18 and pgvector 0.8.5 gates under a non-owner runtime role;
+- 50 concurrent equivalent submissions converge on one job and two claimers on
+  one active lease; compiled ingestion HTTP and vector smokes pass.
+
+Not proved:
+
+- a production object store, malware scanner/definitions monitor or dispatcher;
+- quotas, cancellation, dead-letter operator UI or workload identity;
+- real municipal corpus extraction/retrieval quality;
+- load/HA, production telemetry, staging or deployment.
+
+Therefore `EVAL-INGEST-001` is
+`passed_for_disposable_postgres_artifact_job_vector_pipeline_with_production_object_scanner_dispatcher_load_and_operations_limitations`.
