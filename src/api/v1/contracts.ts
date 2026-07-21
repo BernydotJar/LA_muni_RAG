@@ -26,7 +26,6 @@ export const loadProcedureQueryContractValidators = async (
   return {
     request: requiredValidator(registry.schemasByFile, "procedure-query-request.schema.json"),
     evidenceBundle: requiredValidator(registry.schemasByFile, "evidence-bundle.schema.json"),
-    claimPack: requiredValidator(registry.schemasByFile, "claim-pack.schema.json"),
     workflow: requiredValidator(registry.schemasByFile, "procedure-workflow.schema.json"),
     apiError: requiredValidator(registry.schemasByFile, "api-error.schema.json"),
   };

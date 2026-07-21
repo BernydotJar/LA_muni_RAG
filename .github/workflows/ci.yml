@@ -65,6 +65,9 @@ jobs:
       - name: Run EVAL-CONTENT-INTEGRATION-001
         run: npm run eval:content-integration
 
+      - name: Run EVAL-CONFLICT-001
+        run: npm run eval:conflict
+
       - name: Run EVAL-BOUNDARY-001
         run: npm run eval:boundary
 

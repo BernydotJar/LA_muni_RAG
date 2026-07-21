@@ -58,9 +58,14 @@ identity-bound evidence: only cited steps become claims; unsupported material is
 returned as `missing_evidence`; contradictions remain empty unless an explicit
 conflict record exists. Citation use is monotonic: `inference` can produce at most
 `inferred_for_review`, while `validation_required` produces no claim and an
-explicit evidence gap even when the source authority is official. The bundle
-states that it contains no campaign strategy, segmentation, territory,
-mobilization, or campaign decision.
+explicit evidence gap even when the source authority is official. When the same
+document and citation slot appear in distinct versions with different cited text,
+the bundle emits separate `inferred_for_review` positions plus a
+`review_required` contradiction. The workflow step is downgraded and receives a
+blocking documentary gap; no version is selected automatically. Same text across
+versions, different excerpts within one version, and different documents are not
+classified as version conflicts. The bundle states that it contains no campaign
+strategy, segmentation, territory, mobilization, or campaign decision.
 
 A retrieved excerpt becomes
 a citation only when document, version, section, and an HTTP(S) source URL are

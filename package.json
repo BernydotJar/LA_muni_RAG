@@ -15,6 +15,7 @@
     "document-library": "node --import tsx src/cli/documentLibrary.ts",
     "eval:boundary": "node --import tsx --test src/__tests__/eval-boundary-001.test.ts",
     "eval:content-integration": "node --import tsx --test src/__tests__/eval-content-integration-001.test.ts",
+    "eval:conflict": "node --import tsx --test src/__tests__/eval-conflict-001.test.ts",
     "eval:corrupt": "node --import tsx --test src/__tests__/eval-corrupt-001.test.ts src/__tests__/ingestion-pdf.test.ts src/__tests__/ingestion-worker.test.ts src/__tests__/ingestion-job-service.test.ts",
     "eval:tenant": "node --import tsx --test src/__tests__/eval-tenant-001.test.ts",
     "eval:mixco": "node --import tsx --test src/__tests__/eval-mixco-001.test.ts",

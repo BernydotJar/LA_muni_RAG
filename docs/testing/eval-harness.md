@@ -13,6 +13,7 @@ npm run domain:evaluate
 npm run eval:procedure
 npm run eval:os-integration
 npm run eval:content-integration
+npm run eval:conflict
 npm run eval:boundary
 npm run eval:corrupt
 npm run eval:tenant
@@ -21,7 +22,7 @@ npm run eval:water
 npm test
 ```
 
-`npm run eval:procedure`, `npm run eval:os-integration`, `npm run eval:content-integration`, `npm run eval:boundary`, `npm run eval:corrupt`, `npm run eval:tenant`, `npm run eval:mixco`, and `npm run eval:water` are named CI gates. The complete regression remains `npm test`.
+`npm run eval:procedure`, `npm run eval:os-integration`, `npm run eval:content-integration`, `npm run eval:conflict`, `npm run eval:boundary`, `npm run eval:corrupt`, `npm run eval:tenant`, `npm run eval:mixco`, and `npm run eval:water` are named CI gates. The complete regression remains `npm test`.
 
 ## EVAL-PROCEDURE-001
 
@@ -142,6 +143,41 @@ Current limitations:
 - `valid_until` is a bounded reuse control, not a legal-validity determination, and cross-product revocation remains pending.
 
 Therefore `EVAL-CONTENT-INTEGRATION-001` is `passed_for_claim_pack_provider_with_external_consumer_and_remote_db_limitations`.
+
+## EVAL-CONFLICT-001
+
+Primary fixture:
+
+```text
+same document + same citation slot + distinct document versions + different cited text
+```
+
+Implemented acceptance criteria:
+
+1. Conflict detection is documentary and deterministic: it groups only the same `document_id`, normalized citation label, and page; it requires at least two distinct `document_version_id` values and different cited text.
+2. It does not infer semantic opposition. The response says explicitly that text differs across versions and human review is required.
+3. `EvidenceBundle` emits one `inferred_for_review` position per conflicting version and one schema-valid `Contradiction` whose `claim_refs` point to those positions and whose `review_required` is `true`.
+4. The affected workflow step is downgraded to `inferred_for_review`, remains in an AI `draft`, gains a blocking gap, risks, unknowns, and a documentary next action.
+5. No version is promoted silently because source authority remains separate from evidence sufficiency.
+6. ClaimPack abstains while any review-required contradiction exists, including mixed workflows that also contain an unrelated supported step.
+7. Same cited text across versions, different excerpts inside one version, and different documents with the same label do not create false conflicts.
+8. The next documentary action requires publication/effective-date, authority, and supersession comparison plus explicit human approval of the applicable version.
+
+Executable evidence:
+
+- `src/__tests__/eval-conflict-001.test.ts`
+- `src/api/v1/mapper.ts`
+- `contracts/schemas/v1/common.schema.json#/$defs/Contradiction`
+- `contracts/schemas/v1/evidence-bundle.schema.json`
+
+Current limitations:
+
+- This is explicit version-text divergence, not semantic contradiction detection across unrelated documents or legal interpretations.
+- `document_versions` still lacks a complete effective/supersession decision service; the eval exposes a gap but does not resolve it.
+- The current corpus has no approved conflicting Antigua fixture, so the hard eval uses identity-bound synthetic public evidence.
+- Conflict review/approval is not persisted as a workflow lifecycle event yet.
+
+Therefore `EVAL-CONFLICT-001` is `passed_for_explicit_version_text_conflicts_with_lifecycle_and_corpus_limitations`.
 
 ## EVAL-BOUNDARY-001
 
@@ -340,7 +376,7 @@ Therefore `EVAL-WATER-001` is `passed_with_corpus_and_runtime_limitations`, whil
 | EVAL-CONTENT-INTEGRATION-001 | passed_for_claim_pack_provider_with_external_consumer_and_remote_db_limitations | Provider, contract, replay, abstention, RBAC/tenant, Mixco, no-promotion, OpenAPI, migration and smoke wiring pass locally/static; remote DB gate and Content Agency consumer remain open. |
 | EVAL-BOUNDARY-001 | passed_for_current_provider_surface | Mixed and single-owner requests, hidden context violations, non-compilation, safe audit, and allowed evidence/procedure output pass; future APIs and consumers remain in scope. |
 | EVAL-TENANT-001 | passed_for_current_provider_and_disposable_db_gate_with_topology_limitations | Non-leaking HTTP denial, authenticated-tenant audit, transaction-local context, FORCE-RLS assertions, restored SQL gate, and compiled smoke wiring pass locally/static; full catalog and topology remain open. |
-| EVAL-CONFLICT-001 | missing | Conflicting versions, review, and non-silent promotion are not implemented end to end. |
+| EVAL-CONFLICT-001 | passed_for_explicit_version_text_conflicts_with_lifecycle_and_corpus_limitations | 8/8 proves visibility, review_required, downgrade, a blocking gap, ClaimPack abstention, and anti-false-positive behavior; real corpus conflicts, semantic comparison, and persisted resolution lifecycle remain open. |
 | EVAL-CORRUPT-001 | passed_for_current_replay_and_ingestion_failure_surfaces_with_storage_limitations | Corrupt replay invalidation, failed-compilation release/retry, stable PDFs, worker no-completion failure paths, and durable job retry/failure suites pass; real scanner, storage, dispatcher, load, and recovery remain open. |
 
 ## Release rule

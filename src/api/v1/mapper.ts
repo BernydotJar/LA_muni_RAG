@@ -62,6 +62,11 @@ interface CitationMapping {
   citation: MappedCitation;
 }
 
+interface VersionConflict {
+  conflict_key: string;
+  mappings: CitationMapping[];
+}
+
 export interface EvidenceArtifactRequestV1 {
   tenant_id: string;
   request_id: string;
@@ -304,6 +309,71 @@ const citationKey = (citation: ProcedureCitation): string =>
 
 const unique = <T>(values: T[]): T[] => [...new Set(values)];
 
+const normalizedConflictText = (value: string): string =>
+  normalized(value.replace(/<\/?mark>/gi, ""));
+
+const versionConflictSlot = (mapping: CitationMapping): string =>
+  [
+    mapping.source.document_id,
+    normalized(mapping.citation.label),
+    mapping.citation.page_start ?? "no-page",
+  ].join(":");
+
+const detectVersionConflicts = (mappings: CitationMapping[]): VersionConflict[] => {
+  const groups = new Map<string, CitationMapping[]>();
+  for (const mapping of mappings) {
+    const key = versionConflictSlot(mapping);
+    const group = groups.get(key) ?? [];
+    group.push(mapping);
+    groups.set(key, group);
+  }
+
+  return [...groups.entries()]
+    .map(([conflictKey, group]) => {
+      const byVersion = new Map<string, CitationMapping>();
+      for (const mapping of [...group].sort((left, right) =>
+        left.citation.citation_id.localeCompare(right.citation.citation_id)
+      )) {
+        if (!byVersion.has(mapping.citation.document_version_id)) {
+          byVersion.set(mapping.citation.document_version_id, mapping);
+        }
+      }
+      return {
+        conflict_key: conflictKey,
+        mappings: [...byVersion.values()].sort((left, right) =>
+          left.citation.document_version_id.localeCompare(right.citation.document_version_id)
+        ),
+      };
+    })
+    .filter(
+      (conflict) =>
+        conflict.mappings.length >= 2 &&
+        new Set(
+          conflict.mappings.map((mapping) => normalizedConflictText(mapping.citation.excerpt))
+        ).size >= 2
+    )
+    .sort((left, right) => left.conflict_key.localeCompare(right.conflict_key));
+};
+
+const conflictCitationIds = (conflicts: readonly VersionConflict[]): Set<string> =>
+  new Set(
+    conflicts.flatMap((conflict) =>
+      conflict.mappings.map((mapping) => mapping.citation.citation_id)
+    )
+  );
+
+const refsHaveConflict = (
+  refs: readonly CitationMapping[],
+  conflictingCitationIds: ReadonlySet<string>
+): boolean =>
+  refs.some((ref) => conflictingCitationIds.has(ref.citation.citation_id));
+
+const conflictReviewLimitation =
+  "Conflicto explícito entre versiones documentales: ninguna versión puede promoverse silenciosamente; se requiere revisión humana de vigencia, autoridad y supersession.";
+
+const conflictNextDocumentalAction =
+  "Comparar las versiones, confirmar fechas de publicación y vigencia, revisar autoridad y supersession, y aprobar explícitamente la versión aplicable antes de usarla.";
+
 const strongestAuthority = (values: AuthorityStatus[]): AuthorityStatus => {
   const order: AuthorityStatus[] = [
     "official_target_jurisdiction",
@@ -325,8 +395,12 @@ const stepCitationRefs = (
   return [...new Map(refs.map((item) => [item.citation.citation_id, item])).values()];
 };
 
-const stepEvidenceStatus = (refs: CitationMapping[]): EvidenceStatus => {
+const stepEvidenceStatus = (
+  refs: CitationMapping[],
+  conflictingCitationIds: ReadonlySet<string> = new Set()
+): EvidenceStatus => {
   if (refs.length === 0) return "missing_evidence";
+  if (refsHaveConflict(refs, conflictingCitationIds)) return "inferred_for_review";
   const statuses = refs.map((ref) => ref.citation.evidence_status);
   if (statuses.includes("supported")) return "supported";
   if (statuses.includes("comparative_reference")) return "comparative_reference";
@@ -372,6 +446,8 @@ interface MappedEvidenceContext {
   mappingsByKey: Map<string, CitationMapping>;
   sources: MappedSource[];
   citations: MappedCitation[];
+  versionConflicts: VersionConflict[];
+  conflictingCitationIds: Set<string>;
 }
 
 const mapEvidenceContext = (
@@ -385,6 +461,7 @@ const mapEvidenceContext = (
       return record ? mapCitation(citation, record, request) : null;
     })
     .filter((item): item is CitationMapping => Boolean(item));
+  const versionConflicts = detectVersionConflicts(mappings);
   return {
     mappings,
     mappingsByKey: new Map(mappings.map((item) => [citationKey(item.internal), item])),
@@ -396,16 +473,20 @@ const mapEvidenceContext = (
         mappings.map((item) => [item.citation.citation_id, item.citation])
       ).values(),
     ],
+    versionConflicts,
+    conflictingCitationIds: conflictCitationIds(versionConflicts),
   };
 };
 
 export const mapProcedureWorkflowV1 = (options: MapProcedureWorkflowOptions): Record<string, unknown> => {
   const { request, workflow } = options;
-  const { mappings, mappingsByKey, sources, citations } = mapEvidenceContext(
-    request,
-    workflow,
-    options.evidenceRecords
-  );
+  const {
+    mappingsByKey,
+    sources,
+    citations,
+    versionConflicts,
+    conflictingCitationIds,
+  } = mapEvidenceContext(request, workflow, options.evidenceRecords);
   const stepIds = new Map(
     workflow.steps.map((step) => [
       step.stepNumber,
@@ -419,7 +500,8 @@ export const mapProcedureWorkflowV1 = (options: MapProcedureWorkflowOptions): Re
     const legalRefs = step.legalBasis
       .map((citation) => mappingsByKey.get(citationKey(citation))?.citation.citation_id)
       .filter((value): value is string => Boolean(value));
-    const status = stepEvidenceStatus(refs);
+    const hasVersionConflict = refsHaveConflict(refs, conflictingCitationIds);
+    const status = stepEvidenceStatus(refs, conflictingCitationIds);
     const authority = strongestAuthority(refs.map((ref) => ref.citation.authority_status));
     const outputDocuments = unique(step.outputDocuments.map((item) => item.trim()).filter(Boolean));
     return {
@@ -453,7 +535,12 @@ export const mapProcedureWorkflowV1 = (options: MapProcedureWorkflowOptions): Re
             )
           : ["La acción está documentada y lista para revisión humana."],
       follow_up_cadence: null,
-      risks: ["Ejecutar este paso sin validación humana y documental."],
+      risks: unique([
+        "Ejecutar este paso sin validación humana y documental.",
+        ...(hasVersionConflict
+          ? ["Promover silenciosamente una versión documental mientras existe texto conflictivo."]
+          : []),
+      ]),
       unknowns: unique([
         "Actor responsable pendiente de evidencia.",
         "Unidad responsable pendiente de evidencia.",
@@ -461,6 +548,12 @@ export const mapProcedureWorkflowV1 = (options: MapProcedureWorkflowOptions): Re
         "Sistema externo pendiente de evidencia.",
         ...(status === "missing_evidence"
           ? ["Documento o regla pendiente de localizar y validar."]
+          : []),
+        ...(hasVersionConflict
+          ? [
+              "Versión documental aplicable pendiente de revisión humana.",
+              "Vigencia, autoridad y supersession de las versiones en conflicto pendientes de confirmar.",
+            ]
           : []),
       ]),
     };
@@ -519,6 +612,18 @@ export const mapProcedureWorkflowV1 = (options: MapProcedureWorkflowOptions): Re
         : gap.severity,
     next_documental_action: gap.requiredToConfirm,
   }));
+  for (const conflict of versionConflicts) {
+    gaps.push({
+      gap_id: deterministicUuid(
+        `gap:${request.tenant_id}:${request.request_id}:version-conflict:${conflict.conflict_key}`
+      ),
+      description:
+        `Conflicto de versiones documentales en «${conflict.mappings[0]?.citation.label ?? "ubicación citable"}»: ` +
+        `${conflict.mappings.length} versiones del mismo documento contienen texto diferente.`,
+      severity: "blocking",
+      next_documental_action: conflictNextDocumentalAction,
+    });
+  }
   if (citations.length < workflow.citations.length) {
     gaps.push({
       gap_id: deterministicUuid(`gap:${request.tenant_id}:${request.request_id}:provenance`),
@@ -543,6 +648,7 @@ export const mapProcedureWorkflowV1 = (options: MapProcedureWorkflowOptions): Re
     "Borrador generado por IA; requiere revisión humana y no constituye aprobación ni instrucción ejecutable.",
     "Actores, unidades, plazos y sistemas externos permanecen sin asignar cuando no existe evidencia explícita.",
     workflow.validationWarning,
+    ...(versionConflicts.length > 0 ? [conflictReviewLimitation] : []),
     ...(hasMixcoReference ? [MIXCO_COMPARATIVE_WARNING] : []),
   ].filter(Boolean));
 
@@ -585,17 +691,19 @@ export const mapProcedureWorkflowV1 = (options: MapProcedureWorkflowOptions): Re
 
 export const mapEvidenceBundleV1 = (options: MapEvidenceBundleOptions): Record<string, unknown> => {
   const { request, workflow } = options;
-  const { mappingsByKey, sources, citations } = mapEvidenceContext(
-    request,
-    workflow,
-    options.evidenceRecords
-  );
+  const {
+    mappingsByKey,
+    sources,
+    citations,
+    versionConflicts,
+    conflictingCitationIds,
+  } = mapEvidenceContext(request, workflow, options.evidenceRecords);
 
-  const claims = workflow.steps.flatMap((step) => {
+  const normalClaims = workflow.steps.flatMap((step) => {
     const refs = stepCitationRefs(step, mappingsByKey);
-    if (refs.length === 0) return [];
+    if (refs.length === 0 || refsHaveConflict(refs, conflictingCitationIds)) return [];
     const citationRefs = unique(refs.map((ref) => ref.citation.citation_id));
-    const status = stepEvidenceStatus(refs);
+    const status = stepEvidenceStatus(refs, conflictingCitationIds);
     if (status === "missing_evidence") return [];
     const limitations = unique([
       ...refs.flatMap((ref) => ref.source.limitations),
@@ -614,6 +722,50 @@ export const mapEvidenceBundleV1 = (options: MapEvidenceBundleOptions): Record<s
     ];
   });
 
+  const conflictClaimsByCitationId = new Map(
+    versionConflicts.flatMap((conflict) =>
+      conflict.mappings.map((mapping) => [
+        mapping.citation.citation_id,
+        {
+          claim_id: deterministicUuid(
+            `claim:${request.tenant_id}:${request.request_id}:version-conflict:${mapping.citation.citation_id}`
+          ),
+          text:
+            (`Texto recuperado de «${mapping.source.title}», versión ` +
+              `${mapping.citation.document_version_id}, ${mapping.citation.label}: ` +
+              mapping.citation.excerpt).slice(0, 3000),
+          citation_refs: [mapping.citation.citation_id],
+          evidence_status: "inferred_for_review" as const,
+          limitations: unique([
+            ...mapping.source.limitations,
+            conflictReviewLimitation,
+          ]),
+        },
+      ] as const)
+    )
+  );
+  const conflictClaims = [...conflictClaimsByCitationId.values()];
+  const claims = [...normalClaims, ...conflictClaims];
+  const contradictions = versionConflicts
+    .map((conflict) => ({
+      contradiction_id: deterministicUuid(
+        `contradiction:${request.tenant_id}:${request.request_id}:${conflict.conflict_key}`
+      ),
+      claim_refs: unique(
+        conflict.mappings
+          .map((mapping) =>
+            conflictClaimsByCitationId.get(mapping.citation.citation_id)?.claim_id
+          )
+          .filter((value): value is string => Boolean(value))
+      ),
+      description:
+        (`El mismo documento y ubicación citable «${conflict.mappings[0]?.citation.label ?? "sin etiqueta"}» ` +
+          `aparece en ${conflict.mappings.length} versiones con texto diferente. ` +
+          "Esto señala un conflicto explícito de versiones, no una conclusión semántica automática; se requiere revisión humana antes de seleccionar una versión.").slice(0, 3000),
+      review_required: true as const,
+    }))
+    .filter((contradiction) => contradiction.claim_refs.length >= 2);
+
   const missingEvidence = workflow.gaps.map((gap, index) => ({
     gap_id: deterministicUuid(
       `evidence-gap:${request.tenant_id}:${request.request_id}:${index}:${gap.missingItem}`
@@ -625,7 +777,7 @@ export const mapEvidenceBundleV1 = (options: MapEvidenceBundleOptions): Record<s
   }));
   for (const step of workflow.steps) {
     const refs = stepCitationRefs(step, mappingsByKey);
-    if (stepEvidenceStatus(refs) !== "missing_evidence") continue;
+    if (stepEvidenceStatus(refs, conflictingCitationIds) !== "missing_evidence") continue;
     missingEvidence.push({
       gap_id: deterministicUuid(
         `evidence-gap:${request.tenant_id}:${request.request_id}:step:${step.stepNumber}`
@@ -636,6 +788,18 @@ export const mapEvidenceBundleV1 = (options: MapEvidenceBundleOptions): Record<s
         "El paso no tiene evidencia citable suficiente o la evidencia disponible requiere validación antes de sostener una afirmación.",
       next_documental_action:
         "Localizar y validar una fuente aplicable antes de convertir este paso en una afirmación respaldada.",
+    });
+  }
+  for (const conflict of versionConflicts) {
+    missingEvidence.push({
+      gap_id: deterministicUuid(
+        `evidence-gap:${request.tenant_id}:${request.request_id}:version-conflict:${conflict.conflict_key}`
+      ),
+      subject: `${workflow.title} — conflicto de versiones`.trim().slice(0, 500),
+      missing_document: "Resolución humana del conflicto de versiones documentales",
+      reason:
+        `El mismo documento y ubicación citable aparece en ${conflict.mappings.length} versiones con texto diferente.`,
+      next_documental_action: conflictNextDocumentalAction,
     });
   }
   if (citations.length < workflow.citations.length) {
@@ -668,7 +832,9 @@ export const mapEvidenceBundleV1 = (options: MapEvidenceBundleOptions): Record<s
   const limitations = unique([
     "Artefacto documental para consumo de OS Electoral; no contiene estrategia, segmentación, territorio, movilización ni decisiones de campaña.",
     "Las afirmaciones requieren revisión humana de vigencia, jurisdicción y aplicación al caso concreto.",
-    "La ausencia de contradicciones registradas no demuestra que las fuentes sean consistentes o completas.",
+    ...(versionConflicts.length === 0
+      ? ["La ausencia de contradicciones registradas no demuestra que las fuentes sean consistentes o completas."]
+      : [conflictReviewLimitation]),
     workflow.validationWarning,
     ...(hasMixcoReference ? [MIXCO_COMPARATIVE_WARNING] : []),
   ].filter(Boolean));
@@ -688,7 +854,7 @@ export const mapEvidenceBundleV1 = (options: MapEvidenceBundleOptions): Record<s
     sources,
     claims,
     citations,
-    contradictions: [],
+    contradictions,
     missing_evidence: missingEvidence,
     limitations,
     provenance: {
@@ -714,6 +880,12 @@ export const mapClaimPackV1 = (
     limitations: string[];
   }>;
   const rawCitations = evidenceBundle.citations as MappedCitation[];
+  const contradictions = evidenceBundle.contradictions as Array<{
+    review_required: boolean;
+  }>;
+  if (contradictions.some((contradiction) => contradiction.review_required)) {
+    return null;
+  }
 
   const claims = rawClaims
     .filter(

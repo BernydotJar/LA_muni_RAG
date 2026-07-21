@@ -270,6 +270,8 @@ Reusable today:
   eligible public search.
 - authenticated, rate-limited enqueue/status contracts for existing document
   versions, with server-owned pipeline policy and non-leaking status reads;
+- explicit visibility for same-document citation slots whose distinct versions
+  contain different text, with review-required contradictions and no silent promotion;
 - a callable worker that accepts only injected immutable, clean-scan-bound bytes
   and rechecks their identity before atomic completion.
 

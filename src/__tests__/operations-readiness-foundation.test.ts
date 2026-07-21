@@ -32,6 +32,7 @@ describe("operations readiness foundation", () => {
       "npm run eval:procedure",
       "npm run eval:os-integration",
       "npm run eval:content-integration",
+      "npm run eval:conflict",
       "npm run eval:boundary",
       "npm run eval:corrupt",
       "npm run eval:tenant",
@@ -112,6 +113,24 @@ describe("operations readiness foundation", () => {
     assert.match(openapi, /\/api\/v1\/claim-packs/);
     assert.match(smoke, /claim_pack_postgres_http_smoke_passed/);
     assert.match(smoke, /contentGenerated: false/);
+  });
+
+  it("keeps explicit version conflicts visible and review-required", async () => {
+    const [packageJson, evaluation, mapper, conflictEval] = await Promise.all([
+      read("package.json"),
+      read("docs/testing/eval-harness.md"),
+      read("src/api/v1/mapper.ts"),
+      read("src/__tests__/eval-conflict-001.test.ts"),
+    ]);
+
+    assert.match(packageJson, /"eval:conflict": "node --import tsx --test src\/__tests__\/eval-conflict-001\.test\.ts"/);
+    assert.match(evaluation, /## EVAL-CONFLICT-001/);
+    assert.match(evaluation, /same document \+ same citation slot \+ distinct document versions \+ different cited text/);
+    assert.match(mapper, /review_required: true/);
+    assert.match(mapper, /ninguna versión puede promoverse silenciosamente/);
+    assert.match(conflictEval, /does not create a conflict when versions contain the same cited text/);
+    assert.match(conflictEval, /does not treat different excerpts from the same version as a version conflict/);
+    assert.match(conflictEval, /does not join different documents into a false version conflict/);
   });
 
   it("keeps the named product-boundary hard eval executable and honestly documented", async () => {

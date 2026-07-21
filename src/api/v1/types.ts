@@ -28,9 +28,9 @@ export interface ProcedureQueryRequestV1 {
     constraints: string[];
   };
   requested_depth: "overview" | "deep_dive";
-  requested_output: "evidence_bundle" | "claim_pack" | "procedure_workflow" | "procedure_assessment";
+  requested_output: "evidence_bundle" | "procedure_workflow" | "procedure_assessment";
   provenance: {
-    source_product: "os_electoral" | "content_agency";
+    source_product: "os_electoral";
     generated_by: "ai" | "human" | "system" | "integration_client" | "import";
     created_at: string;
     source_refs: string[];
@@ -70,7 +70,6 @@ export interface ApiErrorV1 {
 export interface ProcedureQueryContractValidators {
   request: ValidateFunction;
   evidenceBundle: ValidateFunction;
-  claimPack: ValidateFunction;
   workflow: ValidateFunction;
   apiError: ValidateFunction;
 }
