@@ -1,0 +1,85 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://contracts.la-muni-rag.invalid/v1/public-query-response.schema.json",
+  "title": "PublicQueryResponse v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "response_type", "request_id", "role", "content", "citations", "meta"],
+  "properties": {
+    "schema_version": { "$ref": "common.schema.json#/$defs/SchemaVersion" },
+    "response_type": { "const": "public_query" },
+    "request_id": { "$ref": "common.schema.json#/$defs/Uuid" },
+    "role": { "const": "assistant" },
+    "content": { "type": "string", "minLength": 1, "maxLength": 6000 },
+    "citations": {
+      "type": "array",
+      "maxItems": 5,
+      "items": { "$ref": "#/$defs/PublicCitation" }
+    },
+    "meta": { "$ref": "#/$defs/PublicMeta" }
+  },
+  "$defs": {
+    "PublicCitation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "citationLabel", "sourceType", "title", "pageStart", "pageEnd",
+        "articleNumber", "excerpt", "sourceUrl", "authorityStatus",
+        "temporalStatus", "evidenceStatus"
+      ],
+      "properties": {
+        "citationLabel": { "type": "string", "minLength": 1, "maxLength": 300 },
+        "sourceType": { "type": "string", "minLength": 1, "maxLength": 64 },
+        "title": { "type": "string", "minLength": 1, "maxLength": 300 },
+        "pageStart": { "type": ["integer", "null"], "minimum": 1 },
+        "pageEnd": { "type": ["integer", "null"], "minimum": 1 },
+        "articleNumber": { "type": ["string", "null"], "minLength": 1, "maxLength": 120 },
+        "excerpt": { "type": "string", "minLength": 1, "maxLength": 700 },
+        "sourceUrl": { "type": "string", "format": "uri", "maxLength": 2048 },
+        "authorityStatus": {
+          "type": "string",
+          "enum": ["official_target_jurisdiction", "official_national", "comparative", "unknown"]
+        },
+        "temporalStatus": {
+          "type": "string",
+          "enum": ["current_by_stored_dates", "future_by_stored_dates", "expired_by_stored_dates", "undetermined"]
+        },
+        "evidenceStatus": {
+          "type": "string",
+          "enum": ["supported", "comparative_reference", "validation_required"]
+        }
+      }
+    },
+    "PublicMeta": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "responseLabel", "confidence", "evidenceCount", "suggestedAction",
+        "requestedMode", "executedModes", "jurisdiction", "asOfDate", "limitations"
+      ],
+      "properties": {
+        "responseLabel": { "type": "string", "enum": ["evidence_found", "insufficient_evidence", "not_found"] },
+        "confidence": { "type": "string", "enum": ["high", "medium", "low"] },
+        "evidenceCount": { "type": "integer", "minimum": 0, "maximum": 5 },
+        "suggestedAction": { "type": "string", "minLength": 1, "maxLength": 500 },
+        "requestedMode": { "type": "string", "enum": ["keyword", "phrase"] },
+        "executedModes": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 1,
+          "uniqueItems": true,
+          "items": { "type": "string", "enum": ["keyword", "phrase"] }
+        },
+        "jurisdiction": { "type": "string", "minLength": 1, "maxLength": 300 },
+        "asOfDate": { "type": "string", "format": "date" },
+        "limitations": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 12,
+          "uniqueItems": true,
+          "items": { "type": "string", "minLength": 1, "maxLength": 500 }
+        }
+      }
+    }
+  }
+}

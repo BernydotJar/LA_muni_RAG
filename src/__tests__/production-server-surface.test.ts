@@ -51,10 +51,9 @@ describe("production server surface", () => {
     "/api/agent?q=test",
     "/api/answer?q=test",
     "/api/chat",
-    "/api/public/v1/query",
   ]) {
     it(`does not expose legacy route ${path}`, async () => {
-      const isPost = path === "/api/chat" || path === "/api/public/v1/query";
+      const isPost = path === "/api/chat";
       const response = await fetch(`${baseUrl}${path}`, {
         method: isPost ? "POST" : "GET",
         headers: { origin: "https://untrusted.example" },
@@ -73,6 +72,58 @@ describe("production server surface", () => {
       });
     });
   }
+
+
+  it("rejects unapproved public query origins without wildcard CORS", async () => {
+    const response = await fetch(`${baseUrl}/api/public/v1/query`, {
+      method: "POST",
+      headers: {
+        origin: "https://untrusted.example",
+        "content-type": "application/json",
+      },
+      body: JSON.stringify({ message: "test", mode: "keyword", limit: 5 }),
+    });
+
+    assert.equal(response.status, 403);
+    assert.equal(response.headers.get("access-control-allow-origin"), null);
+    const body = await response.json() as { error: { code: string } };
+    assert.equal(body.error.code, "forbidden");
+  });
+
+  it("returns bounded 503 for an approved origin while public query is disabled", async () => {
+    const disabledServer = createApiServer({
+      evidenceDependencies: {
+        keywordSearch: async () => [],
+        phraseSearch: async () => [],
+      },
+      publicQueryV1: {
+        enabled: false,
+        allowedOrigins: ["https://consulta.example"],
+      },
+    });
+    await new Promise<void>((resolve) => disabledServer.listen(0, "127.0.0.1", resolve));
+    try {
+      const address = disabledServer.address();
+      assert.ok(address && typeof address === "object");
+      const response = await fetch(`http://127.0.0.1:${address.port}/api/public/v1/query`, {
+        method: "POST",
+        headers: {
+          origin: "https://consulta.example",
+          "content-type": "application/json",
+        },
+        body: JSON.stringify({ message: "test", mode: "keyword", limit: 5 }),
+      });
+      assert.equal(response.status, 503);
+      assert.equal(response.headers.get("access-control-allow-origin"), "https://consulta.example");
+      assert.equal(response.headers.get("cache-control"), "no-store");
+      const body = await response.json() as { error: { code: string } };
+      assert.equal(body.error.code, "service_unavailable");
+    } finally {
+      await new Promise<void>((resolve, reject) =>
+        disabledServer.close((error) => error ? reject(error) : resolve())
+      );
+    }
+  });
 
   it("rejects legacy preflight without wildcard CORS", async () => {
     const response = await fetch(`${baseUrl}/api/search`, {

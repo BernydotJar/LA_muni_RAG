@@ -32,8 +32,8 @@ describe("integration contracts v1", () => {
       status: "valid",
       schemaDialect: JSON_SCHEMA_DIALECT,
       openapiVersion: OPENAPI_VERSION,
-      schemasValidated: 30,
-      examplesValidated: 30,
+      schemasValidated: 33,
+      examplesValidated: 33,
       openapiDocumentsValidated: 1,
       issues: [],
     });
@@ -375,6 +375,7 @@ describe("integration contracts v1", () => {
       "/api/v1/procedures",
       "/api/v1/search",
       "/api/v1/evidence-bundles",
+      "/api/public/v1/query",
     ]);
     assert.deepEqual(Object.keys(openapi.paths["/api/v1/claim-packs"]), ["post"]);
     assert.deepEqual(Object.keys(openapi.paths["/api/v1/evidence-gap-requests"]), ["post"]);
@@ -392,6 +393,12 @@ describe("integration contracts v1", () => {
     assert.deepEqual(Object.keys(openapi.paths["/api/v1/procedures"]), ["get"]);
     assert.deepEqual(Object.keys(openapi.paths["/api/v1/search"]), ["post"]);
     assert.deepEqual(Object.keys(openapi.paths["/api/v1/evidence-bundles"]), ["post"]);
+    assert.deepEqual(Object.keys(openapi.paths["/api/public/v1/query"]), ["post"]);
+    const publicQuery = openapi.paths["/api/public/v1/query"].post;
+    assert.deepEqual(publicQuery.security, []);
+    assert.equal(publicQuery.requestBody.content["application/json"].schema.$ref, "../../schemas/v1/public-query-request.schema.json");
+    assert.equal(publicQuery.responses["200"].content["application/json"].schema.$ref, "../../schemas/v1/public-query-response.schema.json");
+    assert.deepEqual(Object.keys(publicQuery.responses), ["200", "400", "403", "405", "429", "500", "503"]);
 
     const sourceCreate = openapi.paths["/api/v1/sources"].post;
     const sourceList = openapi.paths["/api/v1/sources"].get;

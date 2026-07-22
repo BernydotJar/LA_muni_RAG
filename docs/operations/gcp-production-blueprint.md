@@ -68,20 +68,16 @@ Secret Manager entries are referenced by version and workload identity:
 No secret is injected into GitHub Pages, source control, Terraform variables in
 plain text, image layers or command output.
 
-## Public query gateway contract required before enablement
+## Public query gateway controls and remaining enablement gates
 
-The gateway must:
+The repository implementation now provides the contract, server-bound tenant configuration, lexical-only retrieval, HMAC rate buckets, minimized audit and forced-RLS retrieval gates. Production enablement still must prove:
 
-1. expose a dedicated route, not legacy `/api/chat`;
-2. bind one approved public tenant/corpus server-side;
-3. accept no tenant, credential or authority claim from the browser;
-4. enforce exact origin, method, content type, size, timeout and rate controls;
-5. retrieve only public/active/processed/accepted evidence;
-6. return bounded citations and explicit no-evidence states;
-7. never expose internal credential, tenant, object, scanner or audit identifiers;
-8. log only minimized operational metadata;
-9. support Cloud Armor and global/per-instance abuse controls;
-10. fail closed when corpus, database, provider or policy dependencies are absent.
+1. one authorized, ingested and human-reviewed public tenant/corpus;
+2. approved project, region, budget, workload identity and Secret Manager wiring;
+3. exact production origin and Pages `PAGES_API_URL`;
+4. Cloud Armor plus quota/load/abuse evidence beyond database rate buckets;
+5. production grants, logs, metrics, alerts and SLOs;
+6. privacy, retention, recovery, rollout and observation evidence.
 
 ## Environment promotion
 

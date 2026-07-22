@@ -45,7 +45,7 @@ Known exposed or potentially exposed surfaces remain:
 - `NODE_ENV=production` disables all pre-v1 `/api/*` routes before wildcard CORS; configuration regression or deliberate re-enablement would reopen this risk;
 - `/health` and static assets are intentionally unauthenticated;
 - GitHub Pages is a public static product shell, not the backend, and has no project-level custom response headers in the current setup;
-- Pages fails closed without `PAGES_API_URL`; the dedicated public gateway is not implemented or approved;
+- Pages fails closed without `PAGES_API_URL`; the dedicated public gateway is implemented but disabled, unbound to a reviewed real corpus, and not deployed;
 - the `ProcedureWorkflow`, `EvidenceBundle`, and `ClaimPack` providers exist locally, but OS Electoral/Content Agency consumers, remote ClaimPack database evidence, and the remaining artifacts are not an operational integration.
 
 The production artifact must retain the tested legacy-route gate. Development/legacy mode must not be exposed to untrusted networks with confidential, internal, or cross-tenant data.

@@ -64,7 +64,8 @@ describe("EVAL-PRODUCTION-PUBLIC-SURFACE-001", () => {
     const decision = await read("docs/decisions/071-production-public-surface-and-gcp-target.md");
     assert.match(server, /process\.env\.NODE_ENV !== "production"/);
     assert.match(productionTest, /"\/api\/chat"/);
-    assert.match(productionTest, /does not expose legacy route/);
+    assert.match(productionTest, /rejects unapproved public query origins/);
+    assert.match(productionTest, /public query is disabled/);
     assert.match(decision, /dedicated public query gateway\/BFF/);
     assert.match(decision, /Do not put integration Bearer credentials in browser code/);
   });

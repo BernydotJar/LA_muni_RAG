@@ -58,6 +58,12 @@ import {
   WORKFLOWS_ROUTE_PREFIX,
   type WorkflowLifecycleV1Options,
 } from "./api/v1/workflowLifecycleIndex.js";
+import {
+  createPublicQueryDependencies,
+  handlePublicQueryV1,
+  PUBLIC_QUERY_ROUTE,
+  type PublicQueryV1Options,
+} from "./api/public/v1/publicQueryIndex.js";
 import { processChatWithDependencies } from "./chat.js";
 import { closeDb } from "./db.js";
 import {
@@ -112,6 +118,7 @@ export interface ServerOptions {
   ingestionJobV1?: IngestionJobV1Options;
   workflowLifecycleV1?: WorkflowLifecycleV1Options;
   searchEvidenceV1?: SearchEvidenceV1Options;
+  publicQueryV1?: PublicQueryV1Options;
   v1CorsAllowedOrigins?: readonly string[];
   legacyApiEnabled?: boolean;
   requestTimeoutMs?: number;
@@ -187,6 +194,7 @@ export const createRequestHandler = (options: ServerOptions = {}): RequestListen
   const searchEvidenceV1Dependencies = createSearchEvidenceV1Dependencies(
     options.searchEvidenceV1
   );
+  const publicQueryV1Dependencies = createPublicQueryDependencies(options.publicQueryV1);
   const v1CorsAllowedOrigins =
     options.v1CorsAllowedOrigins ??
     (process.env.V1_CORS_ALLOWED_ORIGINS ?? "")
@@ -199,6 +207,11 @@ export const createRequestHandler = (options: ServerOptions = {}): RequestListen
   return async (req, res) => {
     try {
       const url = requestUrl(req);
+
+      if (url.pathname === PUBLIC_QUERY_ROUTE) {
+        if (await handlePublicQueryV1(req, res, url.pathname, publicQueryV1Dependencies)) return;
+        throw new HttpError(404, "not_found", "Route not found");
+      }
 
       if (url.pathname === CLAIM_PACK_ROUTE) {
         if (handleV1Cors(req, res, v1CorsAllowedOrigins)) return;
@@ -308,6 +321,11 @@ export const createRequestHandler = (options: ServerOptions = {}): RequestListen
             enabled: true,
             semanticConfigured: Boolean(searchEvidenceV1Dependencies.queryEmbeddingProvider),
             semanticFailClosed: true,
+          },
+          publicQueryApi: {
+            enabled: publicQueryV1Dependencies.enabled,
+            modes: ["keyword", "phrase"],
+            browserCredentialRequired: false,
           },
           workflowLifecycleApi: {
             enabled: true,

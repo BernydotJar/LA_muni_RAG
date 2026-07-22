@@ -1,0 +1,35 @@
+{
+  "schema_version": "v1",
+  "response_type": "public_query",
+  "request_id": "55555555-5555-4555-8555-555555555555",
+  "role": "assistant",
+  "content": "Encontré **1 fragmento documental público** relacionado con la consulta. Revisa la cita, vigencia y aplicabilidad antes de usarlo como conclusión institucional.",
+  "citations": [
+    {
+      "citationLabel": "Manual municipal de agua potable, página 12",
+      "sourceType": "procedure",
+      "title": "Manual municipal de agua potable",
+      "pageStart": 12,
+      "pageEnd": 12,
+      "articleNumber": null,
+      "excerpt": "La unidad municipal recibe la solicitud y verifica los requisitos publicados.",
+      "sourceUrl": "https://muniantigua.gob.gt/documentos/manual-agua.pdf",
+      "authorityStatus": "official_target_jurisdiction",
+      "temporalStatus": "current_by_stored_dates",
+      "evidenceStatus": "supported"
+    }
+  ],
+  "meta": {
+    "responseLabel": "evidence_found",
+    "confidence": "medium",
+    "evidenceCount": 1,
+    "suggestedAction": "Revisa la cita, la vigencia y la aplicabilidad antes de tomar una decisión.",
+    "requestedMode": "keyword",
+    "executedModes": ["keyword"],
+    "jurisdiction": "Municipio de La Antigua Guatemala, Sacatepéquez, Guatemala",
+    "asOfDate": "2026-07-22",
+    "limitations": [
+      "La recuperación pública no sustituye revisión jurídica, técnica o municipal."
+    ]
+  }
+}

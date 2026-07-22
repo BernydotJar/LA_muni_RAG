@@ -48,11 +48,14 @@ GET  /api/procedure
 POST /api/procedure-feedback
 GET  /api/procedure-feedback
 
-# Planned public browser boundary; not implemented yet
+# Public browser boundary; disabled by default until configured with a reviewed public corpus
 POST /api/public/v1/query
 ```
 
 `/api/procedure-feedback` requires a Bearer token configured through `PROCEDURE_FEEDBACK_API_TOKEN`.
+
+`POST /api/public/v1/query` is the credential-free browser boundary. It accepts only `message`, `mode` (`keyword` or `phrase`), and `limit`; tenant, jurisdiction, date, evidence eligibility and database identity are server configuration. It requires an exact Origin, rejects Authorization/Cookie and tenant fields, uses HMAC-based per-client plus global rate buckets, returns public citations or an explicit no-evidence state, and is disabled unless all `PUBLIC_QUERY_*` settings are present. Enabling the route does not create or approve a corpus.
+
 
 The catalog route family registers tenant sources and document versions in fail-closed states and exposes minimized source, document, ingestion-job, and procedure summaries. It does not accept artifact bytes or let callers declare officiality, validation, scan, ingestion, retrieval, or legal applicability.
 
@@ -290,6 +293,7 @@ npm run contracts:consumer-verify
 npm run staging:verify
 npm run eval:staging-e2e-architecture
 npm run eval:production-public-surface
+npm run eval:public-query-gateway
 npm run eval:search-api
 npm run eval:evidence-bundle-api
 npm run typecheck
@@ -302,7 +306,7 @@ node scripts/verify-pages-artifact.mjs
 PAGES_API_URL=http://localhost:4000 npm run build:pages
 ```
 
-Without `PAGES_API_URL`, Pages intentionally renders the product but disables queries and returns a bounded 503 for approved API calls. The default widget path is `/api/public/v1/query`; that gateway is the next backend slice and is not the legacy `/api/chat` route.
+Without `PAGES_API_URL`, Pages intentionally renders the product but disables queries and returns a bounded 503 for approved API calls. The default widget path is `/api/public/v1/query`; the backend route now exists but remains disabled by default and must be bound to an authorized reviewed public corpus before Pages is configured. It is not the legacy `/api/chat` route.
 
 `dist-pages/` contains generated Pages output. After local verification, restore tracked content and remove only generated untracked files before confirming a clean working tree.
 

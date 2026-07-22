@@ -1800,6 +1800,163 @@
           }
         }
       }
+    },
+    "/api/public/v1/query": {
+      "post": {
+        "operationId": "publicQuery",
+        "summary": "Query reviewed public municipal evidence without a browser service credential",
+        "description": "Binds tenant and jurisdiction server-side, permits keyword or phrase retrieval only, and returns bounded public citations or an explicit no-evidence state. The route requires an exact reviewed Origin and never accepts Authorization, tenant, credential, semantic, or hybrid input.",
+        "security": [],
+        "parameters": [
+          {
+            "name": "Origin",
+            "in": "header",
+            "required": true,
+            "description": "Exact reviewed browser origin.",
+            "schema": {
+              "type": "string",
+              "format": "uri",
+              "maxLength": 300
+            }
+          },
+          {
+            "name": "X-Request-Id",
+            "in": "header",
+            "required": false,
+            "description": "Optional correlation UUID. The server generates one when omitted.",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "../../schemas/v1/public-query-request.schema.json"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Deterministic public evidence response or explicit no-evidence state.",
+            "headers": {
+              "X-Request-Id": {
+                "$ref": "#/components/headers/RequestId"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../../schemas/v1/public-query-response.schema.json"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request.",
+            "headers": {
+              "X-Request-Id": {
+                "$ref": "#/components/headers/RequestId"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../../schemas/v1/public-query-error.schema.json"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Origin is not allowed.",
+            "headers": {
+              "X-Request-Id": {
+                "$ref": "#/components/headers/RequestId"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../../schemas/v1/public-query-error.schema.json"
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "Method is not allowed.",
+            "headers": {
+              "X-Request-Id": {
+                "$ref": "#/components/headers/RequestId"
+              },
+              "Allow": {
+                "schema": {
+                  "type": "string",
+                  "const": "POST, OPTIONS"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../../schemas/v1/public-query-error.schema.json"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Global or per-client rate limit exceeded.",
+            "headers": {
+              "X-Request-Id": {
+                "$ref": "#/components/headers/RequestId"
+              },
+              "Retry-After": {
+                "$ref": "#/components/headers/RetryAfter"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../../schemas/v1/public-query-error.schema.json"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected internal failure.",
+            "headers": {
+              "X-Request-Id": {
+                "$ref": "#/components/headers/RequestId"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../../schemas/v1/public-query-error.schema.json"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Public gateway is disabled or unavailable.",
+            "headers": {
+              "X-Request-Id": {
+                "$ref": "#/components/headers/RequestId"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../../schemas/v1/public-query-error.schema.json"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {

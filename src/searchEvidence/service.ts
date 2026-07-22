@@ -5,7 +5,7 @@ import {
   type AuthorityStatus,
   type ClassifiedSearchCandidate,
   type ExecutedSearchMode,
-  type SearchEvidenceRequestV1,
+  type SearchExecutionRequestV1,
   type SearchEvidenceRepository,
   type SearchExecutionInput,
   type SearchFiltersV1,
@@ -116,7 +116,7 @@ const finiteScore = (value: number | null, fallback = 0): number =>
 
 const classify = (
   candidate: StoredSearchCandidate,
-  request: SearchEvidenceRequestV1,
+  request: SearchExecutionRequestV1,
   matchedModes: ExecutedSearchMode[],
   score: number,
   scoreType: ClassifiedSearchCandidate["scoreType"]
@@ -164,7 +164,7 @@ const filterCandidate = (
     id.toLowerCase() === candidate.sourceId.toLowerCase()
   ));
 
-const inputFor = (request: SearchEvidenceRequestV1): SearchExecutionInput => ({
+const inputFor = (request: SearchExecutionRequestV1): SearchExecutionInput => ({
   tenantId: request.tenant_id,
   query: request.query,
   jurisdiction: request.jurisdiction,
@@ -188,7 +188,7 @@ const requireSemanticProvider = (provider: QueryEmbeddingProvider | null): Query
 };
 
 export const prepareSearchCapability = async (
-  request: SearchEvidenceRequestV1,
+  request: SearchExecutionRequestV1,
   provider: QueryEmbeddingProvider | null
 ): Promise<PreparedSemanticQuery | null> => {
   if (request.mode === "keyword" || request.mode === "phrase") return null;
@@ -217,7 +217,7 @@ const requirePreparedSemanticQuery = (
 const semanticRows = async (
   repository: SearchEvidenceRepository,
   client: TenantTransactionClient,
-  request: SearchEvidenceRequestV1,
+  request: SearchExecutionRequestV1,
   prepared: PreparedSemanticQuery | null
 ): Promise<StoredSearchCandidate[]> => {
   const semantic = requirePreparedSemanticQuery(prepared);
@@ -237,7 +237,7 @@ const semanticRows = async (
 
 const rankSingleMode = (
   rows: StoredSearchCandidate[],
-  request: SearchEvidenceRequestV1,
+  request: SearchExecutionRequestV1,
   mode: Exclude<SearchMode, "hybrid">
 ): ClassifiedSearchCandidate[] => rows.map((candidate) => {
   if (mode === "keyword") {
@@ -253,7 +253,7 @@ const mergeHybrid = (
   keywordRows: StoredSearchCandidate[],
   phraseRows: StoredSearchCandidate[],
   semanticRowsResult: StoredSearchCandidate[],
-  request: SearchEvidenceRequestV1
+  request: SearchExecutionRequestV1
 ): ClassifiedSearchCandidate[] => {
   const aggregate = new Map<string, {
     candidate: StoredSearchCandidate;
@@ -293,7 +293,7 @@ export class SearchCapabilityError extends Error {
 export const executeSearch = async (
   repository: SearchEvidenceRepository,
   client: TenantTransactionClient,
-  request: SearchEvidenceRequestV1,
+  request: SearchExecutionRequestV1,
   preparedSemantic: PreparedSemanticQuery | null
 ): Promise<SearchExecutionResult> => {
   let classified: ClassifiedSearchCandidate[];

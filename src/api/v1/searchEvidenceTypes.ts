@@ -62,6 +62,8 @@ export interface EvidenceBundleCreateRequestV1 extends SearchRequestBaseV1 {
 }
 
 export type SearchEvidenceRequestV1 = SearchRequestV1 | EvidenceBundleCreateRequestV1;
+type WithoutProvenance<T> = T extends unknown ? Omit<T, "provenance"> : never;
+export type SearchExecutionRequestV1 = WithoutProvenance<SearchEvidenceRequestV1>;
 
 export interface StoredSearchCandidate {
   tenantId: string;

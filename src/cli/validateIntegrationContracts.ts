@@ -20,6 +20,9 @@ export const CONTRACT_SCHEMA_FILES = [
   "evidence-bundle-request.schema.json",
   "search-request.schema.json",
   "search-response.schema.json",
+  "public-query-request.schema.json",
+  "public-query-response.schema.json",
+  "public-query-error.schema.json",
   "procedure-workflow.schema.json",
   "procedure-assessment.schema.json",
   "procedure-query-request.schema.json",
@@ -52,6 +55,9 @@ export const CONTRACT_EXAMPLE_BINDINGS = [
   { contractName: "evidence-bundle-request", schemaFile: "evidence-bundle-request.schema.json", exampleFile: "evidence-bundle-request.valid.json" },
   { contractName: "search-request", schemaFile: "search-request.schema.json", exampleFile: "search-request.valid.json" },
   { contractName: "search-response", schemaFile: "search-response.schema.json", exampleFile: "search-response.valid.json" },
+  { contractName: "public-query-request", schemaFile: "public-query-request.schema.json", exampleFile: "public-query-request.valid.json" },
+  { contractName: "public-query-response", schemaFile: "public-query-response.schema.json", exampleFile: "public-query-response.valid.json" },
+  { contractName: "public-query-error", schemaFile: "public-query-error.schema.json", exampleFile: "public-query-error.valid.json" },
   { contractName: "procedure-workflow", schemaFile: "procedure-workflow.schema.json", exampleFile: "procedure-workflow.valid.json" },
   { contractName: "procedure-assessment", schemaFile: "procedure-assessment.schema.json", exampleFile: "procedure-assessment.valid.json" },
   { contractName: "procedure-query-request", schemaFile: "procedure-query-request.schema.json", exampleFile: "procedure-query-request.valid.json" },
@@ -245,6 +251,7 @@ const validateOpenApiDocument = async (
     "/api/v1/sources",
     "/api/v1/documents",
     "/api/v1/procedures",
+    "/api/public/v1/query",
   ];
   if (!equalStringSets(Object.keys(paths), expectedPaths)) {
     recordIssue("invalid_path_scope", "OpenAPI path scope does not match implemented v1 routes");
@@ -298,6 +305,9 @@ const validateOpenApiDocument = async (
   const proceduresPath = isJsonObject(paths["/api/v1/procedures"])
     ? paths["/api/v1/procedures"]
     : {};
+  const publicQueryPath = isJsonObject(paths["/api/public/v1/query"])
+    ? paths["/api/public/v1/query"]
+    : {};
   if (!equalStringSets(Object.keys(claimPackPath), ["post"])) {
     recordIssue("invalid_method_scope", "ClaimPack path must describe only POST");
   }
@@ -342,6 +352,9 @@ const validateOpenApiDocument = async (
   if (!equalStringSets(Object.keys(proceduresPath), ["get"])) {
     recordIssue("invalid_method_scope", "Procedures path must describe only GET");
   }
+  if (!equalStringSets(Object.keys(publicQueryPath), ["post"])) {
+    recordIssue("invalid_method_scope", "Public query path must describe only POST");
+  }
 
   const claimPackOperation = isJsonObject(claimPackPath.post) ? claimPackPath.post : {};
   const evidenceGapOperation = isJsonObject(evidenceGapPath.post) ? evidenceGapPath.post : {};
@@ -363,6 +376,7 @@ const validateOpenApiDocument = async (
   const documentCreateOperation = isJsonObject(documentsPath.post) ? documentsPath.post : {};
   const documentListOperation = isJsonObject(documentsPath.get) ? documentsPath.get : {};
   const procedureListOperation = isJsonObject(proceduresPath.get) ? proceduresPath.get : {};
+  const publicQueryOperation = isJsonObject(publicQueryPath.post) ? publicQueryPath.post : {};
   const operations = [
     ["POST /api/v1/claim-packs", claimPackOperation],
     ["POST /api/v1/evidence-gap-requests", evidenceGapOperation],
@@ -390,6 +404,10 @@ const validateOpenApiDocument = async (
     if (!security.some((entry) => isJsonObject(entry) && Array.isArray(entry.bearerAuth))) {
       recordIssue("missing_bearer_security", label + " must require bearerAuth");
     }
+  }
+  const publicSecurity = Array.isArray(publicQueryOperation.security) ? publicQueryOperation.security : [];
+  if (publicSecurity.length !== 0) {
+    recordIssue("invalid_public_security", "Public query must not advertise browser Bearer authentication");
   }
 
   const requiredHeaders = (operation: JsonObject): Set<string> => new Set(
@@ -433,6 +451,14 @@ const validateOpenApiDocument = async (
     }
   }
 
+  const publicRequiredHeaders = requiredHeaders(publicQueryOperation);
+  if (!publicRequiredHeaders.has("origin")) {
+    recordIssue("missing_required_header", "public query is missing required Origin");
+  }
+  if (publicRequiredHeaders.has("authorization")) {
+    recordIssue("invalid_public_header", "public query must not require Authorization");
+  }
+
   for (const [label, operation, expectedResponses] of [
     ["claim pack", claimPackOperation, ["200", "400", "401", "403", "409", "429", "500"]],
     ["evidence gap", evidenceGapOperation, ["200", "400", "401", "403", "409", "429", "500"]],
@@ -454,6 +480,7 @@ const validateOpenApiDocument = async (
     ["document list", documentListOperation, ["200", "400", "401", "403", "429", "500"]],
     ["ingestion list", ingestionListOperation, ["200", "400", "401", "403", "429", "500"]],
     ["procedure list", procedureListOperation, ["200", "400", "401", "403", "429", "500"]],
+    ["public query", publicQueryOperation, ["200", "400", "403", "405", "429", "500", "503"]],
   ] as const) {
     const responses = isJsonObject(operation.responses) ? operation.responses : {};
     if (!equalStringSets(Object.keys(responses), [...expectedResponses])) {
@@ -488,6 +515,7 @@ const validateOpenApiDocument = async (
   for (const [label, operation, requestSchema, responseSchema] of [
     ["search", searchOperation, "search-request.schema.json", "search-response.schema.json"],
     ["evidence bundle", evidenceBundleOperation, "evidence-bundle-request.schema.json", "evidence-bundle.schema.json"],
+    ["public query", publicQueryOperation, "public-query-request.schema.json", "public-query-response.schema.json"],
   ] as const) {
     const requestRef = "../../schemas/v1/" + requestSchema;
     const responseRef = "../../schemas/v1/" + responseSchema;
@@ -537,6 +565,13 @@ const validateOpenApiDocument = async (
       "invalid_response_schema",
       "Evidence gap 200 response must reference evidence-gap-response.schema.json"
     );
+  }
+
+  const publicResponses = isJsonObject(publicQueryOperation.responses) ? publicQueryOperation.responses : {};
+  for (const status of ["400", "403", "405", "429", "500", "503"]) {
+    if (operationSchemaRef(publicQueryOperation, "response", status) !== "../../schemas/v1/public-query-error.schema.json") {
+      recordIssue("invalid_response_schema", `public query ${status} response must reference public-query-error.schema.json`);
+    }
   }
 
   const components = isJsonObject(openapi.components) ? openapi.components : {};

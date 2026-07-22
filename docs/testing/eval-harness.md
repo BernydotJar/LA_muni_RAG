@@ -1008,3 +1008,35 @@ Not proved:
 
 Therefore `EVAL-PRODUCTION-PUBLIC-SURFACE-001` is
 `passed_for_honest_fail_closed_public_product_surface_with_gateway_corpus_identity_infrastructure_and_deployment_limitations`.
+
+## EVAL-PUBLIC-QUERY-GATEWAY-001
+
+Current scope: dedicated credential-free browser boundary over the existing
+public SearchEvidence eligibility and forced-RLS data plane.
+
+Proved:
+
+- closed `message`/`keyword|phrase`/`limit` request with no tenant or credential input;
+- exact Origin CORS and no credentialed CORS;
+- disabled-by-default configuration with bounded 503;
+- global and per-client HMAC rate buckets before body parsing;
+- explicit rejection of Authorization and Cookie headers;
+- server-bound tenant, jurisdiction and as-of date;
+- public/active/processed/exact accepted-clean evidence eligibility;
+- comparative/validation-required evidence never creates a supported answer;
+- HTTPS-only source URLs without credentials, query or fragment;
+- bounded deterministic citations, no-evidence state and safe errors;
+- audit details exclude query, excerpt, URL, IP and user-agent;
+- migration 016, forced RLS, non-owner role, cross-tenant denial and compiled PostgreSQL 16.14/pgvector 0.8.5 smoke;
+- legacy `/api/chat` remains production-disabled.
+
+Not proved:
+
+- an authorized, ingested and human-reviewed real public corpus;
+- Cloud Armor, production quotas, load, latency, cost or abuse SLOs;
+- GCP project/infrastructure, secrets, DNS or deployment;
+- human identity, authenticated SaaS, browser E2E or external consumer execution;
+- merge, rollout, recovery/privacy operations or observation.
+
+Therefore `EVAL-PUBLIC-QUERY-GATEWAY-001` is
+`passed_for_disabled_server_bound_public_lexical_gateway_with_real_corpus_edge_infrastructure_load_and_deployment_limitations`.

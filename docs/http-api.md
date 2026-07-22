@@ -281,7 +281,7 @@ Parameters:
 - `mode`: `keyword` or `phrase`; defaults to `keyword`
 - `limit`: optional integer from 1 to 50; defaults to 5
 
-`/api/chat` is retained only for local/development compatibility and returns 404 in production. The product widget defaults to the planned `/api/public/v1/query` gateway, which is not implemented yet. Never expose an integration Bearer credential to make the browser call the tenant API directly.
+`/api/chat` is retained only for local/development compatibility and returns 404 in production. The product widget defaults to `/api/public/v1/query`; the gateway is implemented but disabled by default and must be bound to a reviewed public corpus before Pages is configured. Never expose an integration Bearer credential to make the browser call the tenant API directly.
 
 ## CORS
 
