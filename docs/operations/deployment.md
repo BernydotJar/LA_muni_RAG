@@ -1,13 +1,13 @@
 # Backend deployment runbook
 
-Status: pre-production procedure; no backend deployment has been performed
-Last reviewed: 2026-07-19
+Status: pre-production procedure; GCP target selected; no backend deployment has been performed
+Last reviewed: 2026-07-22
 Runbook owner: Platform/Operations owner pending assignment
 Approval authority: Release manager, Security owner, Database owner, and Product owner (named humans pending)
 
 ## Purpose and non-goals
 
-This runbook defines the release gates for the Node.js API and PostgreSQL data plane. It does not select a cloud or container platform, create infrastructure, authorize production, or change the separate public GitHub Pages workflow. A successful CI run builds confidence in source; it never authorizes or performs a backend deployment.
+This runbook defines the release gates for the Node.js API and PostgreSQL data plane. Decision 071 selects GCP as the target architecture, but this runbook does not create infrastructure, enable billing, authorize production, or apply Terraform. The public GitHub Pages workflow remains separate. A successful CI run builds confidence in source; it never authorizes or performs a backend deployment.
 
 No production runtime, registry, managed database, secret manager, ingress, DNS, observability service, pager, or release environment is evidenced in this repository. Platform selection and risk acceptance require human decisions before these steps can be executed.
 
@@ -19,7 +19,7 @@ No production runtime, registry, managed database, secret manager, ingress, DNS,
 - Secrets come from an approved secret manager at runtime. They never appear in an image layer, repository, CI log, command transcript, ticket, screenshot, or runbook value.
 - Production traffic uses TLS and an approved origin/network policy. CORS is not authentication.
 - Tenant isolation, authenticated v1 behavior, safe errors, body/rate limits, and audit must be proven before confidential or multi-tenant data is allowed.
-- GitHub Pages remains a public static demo and must contain public data only.
+- GitHub Pages remains a public static product shell and must contain public data only; it must not manufacture answers or carry service credentials.
 - A human release approval is mandatory after preflight and before any production mutation.
 
 ## Required platform decisions
@@ -28,9 +28,9 @@ The release manager must stop if any item is unassigned or undocumented:
 
 | Decision | Required evidence | Current state |
 |---|---|---|
-| Runtime platform and region | architecture record, owner, support boundary | pending |
-| Container registry | private repository, retention, scanning/signing policy | pending |
-| PostgreSQL/pgvector service | version, HA, extensions, roles, connection limits | pending |
+| Runtime platform and region | architecture record, owner, support boundary | GCP Cloud Run/Cloud SQL target selected; project, region and owners pending |
+| Container registry | private repository, retention, scanning/signing policy | Artifact Registry target selected; repository and policy pending |
+| PostgreSQL/pgvector service | version, HA, extensions, roles, connection limits | Cloud SQL PostgreSQL target selected; shape, network, HA/PITR and roles pending |
 | Object storage, scanner, and worker runtime | immutable versions, IAM, scan evidence, isolation, scheduling | pending |
 | Secret manager and rotation | secret owners, access policy, break-glass flow | pending |
 | TLS ingress, DNS, CORS/origins | certificate and network policy | pending |
@@ -289,9 +289,9 @@ When acceptance holds through the approved observation window, record the final 
 
 ## Pages boundary
 
-`.github/workflows/deploy-pages.yml` is a separate static-site workflow. The backend CI does not call it and the backend container is not deployed by it. Pages assets must remain public-only and secret-free. A Pages success cannot be cited as backend health, database readiness, authentication, or tenant-isolation evidence.
+`.github/workflows/deploy-pages.yml` is a separate static-site workflow. The backend CI does not call it and the backend container is not deployed by it. Pages assets must remain public-only and secret-free. They must not contain static evidence responses. A Pages success cannot be cited as backend health, database readiness, authentication, or tenant-isolation evidence.
 
-The existing Pages workflow can run on `main`; branch/environment protection and human approval for that public demo are external GitHub settings and are not verified here.
+The Pages build accepts an optional non-secret repository variable `PAGES_API_URL`. Without it, the assistant fails closed. Configuring it does not authorize use until the public gateway contract exists and has passed staging. Branch/environment protection and human approval are external GitHub settings and are not verified here.
 
 ## Context7 primary-source evidence
 

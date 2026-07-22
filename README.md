@@ -1,6 +1,6 @@
 # LA Muni RAG
 
-Last updated: 2026-07-21
+Last updated: 2026-07-22
 Status: Pre-production hardening in progress; controlled artifact, bounded
 raw-PDF, tenant-query, authenticated ingestion, durable tenant ingestion/vector,
 and governed workflow lifecycle API foundations implemented
@@ -9,8 +9,9 @@ LA Muni RAG is an evidence-first RAG and procedural workflow system configured b
 
 ## Product Surfaces
 
-- `/` — public evidence-backed assistant.
-- `/procedure-workflow.html` — structured Procedure Workflow Advisor.
+- `/` — public product shell with direct Assistant and Glass Wall navigation. The assistant fails closed until a reviewed public gateway is configured.
+- `/procedure-training.html` — public evidence-literacy Academy.
+- `/procedure-workflow.html` — structured Procedure Workflow Advisor; production-compatible public gateway pending.
 - `/domain-intake.html` — prepares domain-aware ingestion metadata and commands; it does not upload files.
 - `/procedure-feedback-dashboard.html` — reviews locally captured workflow feedback.
 - `/glass-wall.html` — technical evidence and retrieval inspection.
@@ -36,6 +37,7 @@ POST /api/v1/workflow-drafts
 POST /api/v1/workflow-reviews
 POST /api/v1/workflow-approvals
 GET  /api/v1/workflows/{workflow_version_id}
+# Development-only legacy surface; production returns 404
 GET  /api/search
 GET  /api/evidence
 GET  /api/agent
@@ -45,6 +47,9 @@ GET  /api/domain-pack
 GET  /api/procedure
 POST /api/procedure-feedback
 GET  /api/procedure-feedback
+
+# Planned public browser boundary; not implemented yet
+POST /api/public/v1/query
 ```
 
 `/api/procedure-feedback` requires a Bearer token configured through `PROCEDURE_FEEDBACK_API_TOKEN`.
@@ -260,12 +265,14 @@ QUERY_EMBEDDING_DIMENSIONS=1536
 QUERY_EMBEDDING_TIMEOUT_MS=10000
 ```
 
-Never place secrets in frontend files or GitHub Pages assets.
+Never place secrets in frontend files or GitHub Pages assets. GitHub Pages may receive a non-secret `PAGES_API_URL` build variable, but it must point to the dedicated public gateway. The authenticated tenant APIs and their Bearer credentials are never browser configuration.
 
 ## Run Locally
 
 ```bash
-npm install
+npm ci
+cp .env.example .env
+# Configure a disposable/local DATABASE_URL before starting the API.
 npm run dev:start
 ```
 
@@ -282,6 +289,7 @@ npm run contracts:validate
 npm run contracts:consumer-verify
 npm run staging:verify
 npm run eval:staging-e2e-architecture
+npm run eval:production-public-surface
 npm run eval:search-api
 npm run eval:evidence-bundle-api
 npm run typecheck
@@ -290,7 +298,11 @@ npm run domain:evaluate
 npm run test
 npm run build:pages
 node scripts/verify-pages-artifact.mjs
+# Optional local wiring only:
+PAGES_API_URL=http://localhost:4000 npm run build:pages
 ```
+
+Without `PAGES_API_URL`, Pages intentionally renders the product but disables queries and returns a bounded 503 for approved API calls. The default widget path is `/api/public/v1/query`; that gateway is the next backend slice and is not the legacy `/api/chat` route.
 
 `dist-pages/` contains generated Pages output. After local verification, restore tracked content and remove only generated untracked files before confirming a clean working tree.
 

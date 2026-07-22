@@ -1,53 +1,37 @@
 # Domain Pack UI Labels And Routing
 
 Feature: `044-domain-pack-ui-labels-and-routing`  
-Status: MVP
+Status: server-controlled metadata; public production gateway pending
 
 ## Purpose
 
-The procedure workflow page can now adapt its visible copy to the active server-side domain pack. This keeps `municipal-antigua` as the fallback while allowing HR, finance, sales SOP, or custom deployments to show neutral domain language.
+The procedure workflow page adapts visible copy to the active server-side domain
+pack. `municipal-antigua` remains the default while other deployments may use
+neutral domain language.
 
-## Public Endpoint
+## Legacy public endpoint
 
 ```http
 GET /api/domain-pack
 ```
 
-The endpoint returns safe UI metadata:
+This legacy endpoint is disabled when `NODE_ENV=production`. A future public
+gateway may expose a bounded metadata projection, but it must not reveal
+environment variables, secrets, database URLs, tokens or dependency internals.
 
-- pack id;
-- pack name;
-- language;
-- branding;
-- workflow type labels and descriptions;
-- example queries;
-- default query.
+## Frontend behavior
 
-It does not expose environment variables, secrets, database URLs, tokens, or runtime dependency internals.
+`public/procedure-workflow.html` requests `/api/domain-pack`. If the request
+fails, it keeps conservative Antigua-first labels and does not claim that a
+server-selected pack was loaded.
 
-## Frontend Behavior
+## GitHub Pages behavior
 
-`public/procedure-workflow.html` calls `/api/domain-pack` on load.
-
-If the call succeeds, the page updates:
-
-- assistant/status pill;
-- hero eyebrow;
-- hero title;
-- lead copy;
-- domain note;
-- default query.
-
-If the call fails, the page keeps the Antigua-first fallback copy.
-
-## Pages Demo/Proxy
-
-`public/pages-demo-api.js` now handles `/api/domain-pack`.
-
-In demo mode, it returns the municipal Antigua demo pack summary.
-
-In proxy mode, it forwards a safe GET to the configured API base without credentials and without redirects.
+`public/pages-api-bridge.js` forwards the route only when a reviewed
+`PAGES_API_URL` is configured. Otherwise it returns HTTP 503. It does not return
+static domain metadata.
 
 ## Governance
 
-The public UI does not allow arbitrary pack switching. The active pack remains controlled by server-side `DOMAIN_PACK`.
+The public UI cannot select a domain pack. Runtime configuration and any future
+public metadata projection remain server-controlled.

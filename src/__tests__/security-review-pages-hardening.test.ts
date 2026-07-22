@@ -4,9 +4,9 @@ import { readFile } from "node:fs/promises";
 
 const readSource = (path: string): Promise<string> => readFile(path, "utf-8");
 
-describe("security review and Pages hardening", () => {
-  it("sanitizes configured API URLs in the Pages demo bridge", async () => {
-    const bridge = await readSource("public/pages-demo-api.js");
+describe("security review and production Pages hardening", () => {
+  it("sanitizes configured API URLs in the Pages production bridge", async () => {
+    const bridge = await readSource("public/pages-api-bridge.js");
 
     assert.match(bridge, /const sanitizeApiBaseUrl/);
     assert.match(bridge, /parsed\.protocol !== "https:" && parsed\.protocol !== "http:"/);
@@ -18,12 +18,23 @@ describe("security review and Pages hardening", () => {
   });
 
   it("does not forward credentials or follow redirects through the Pages bridge", async () => {
-    const bridge = await readSource("public/pages-demo-api.js");
+    const bridge = await readSource("public/pages-api-bridge.js");
 
     assert.match(bridge, /const safeProxyInit/);
     assert.match(bridge, /credentials: "omit"/);
     assert.match(bridge, /redirect: "error"/);
-    assert.match(bridge, /nativeFetch\(targetUrl, safeProxyInit\(init\)\)/);
+    assert.match(bridge, /cache: "no-store"/);
+    assert.match(bridge, /nativeFetch\(targetUrl, safeProxyInit\(method, init\)\)/);
+  });
+
+
+  it("fails closed instead of returning static municipal evidence", async () => {
+    const bridge = await readSource("public/pages-api-bridge.js");
+
+    assert.match(bridge, /service_unavailable/);
+    assert.match(bridge, /status: 503/);
+    assert.match(bridge, /x-la-muni-rag-api-configured/);
+    assert.doesNotMatch(bridge, /demoResponse|demoProcedureResponse|PDM-OT Antigua Guatemala/);
   });
 
   it("adds a Pages source-link security guard", async () => {

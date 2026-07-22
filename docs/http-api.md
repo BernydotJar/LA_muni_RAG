@@ -239,7 +239,7 @@ Expected response:
 `/api/agent` is the semi-agent endpoint. A future LLM should call this to get
 evidence-grounded context before drafting an answer.
 
-### Chat
+### Development-only legacy chat
 
 ```http
 POST /api/chat
@@ -281,8 +281,7 @@ Parameters:
 - `mode`: `keyword` or `phrase`; defaults to `keyword`
 - `limit`: optional integer from 1 to 50; defaults to 5
 
-`/api/chat` is the endpoint the widget calls. It returns human-readable
-Spanish content with markdown formatting, plus structured citation cards.
+`/api/chat` is retained only for local/development compatibility and returns 404 in production. The product widget defaults to the planned `/api/public/v1/query` gateway, which is not implemented yet. Never expose an integration Bearer credential to make the browser call the tenant API directly.
 
 ## CORS
 
@@ -303,34 +302,34 @@ as authentication.
 Add one line before `</body>` on any webpage:
 
 ```html
-<script src="http://your-server:4010/widget.js"></script>
+<script src="https://static.example/widget.js" data-api-url="https://api.example" data-api-path="/api/public/v1/query"></script>
 ```
 
 The widget auto-detects the API URL from its own script `src`. To override:
 
 ```html
-<script src="http://cdn/widget.js" data-api-url="http://api:4010"></script>
+<script src="https://static.example/widget.js" data-api-url="https://api.example" data-api-path="/api/public/v1/query"></script>
 ```
 
 ### Configuration
 
 | Attribute | Default | Description |
 |-----------|---------|-------------|
-| `data-api-url` | auto-detect from `src` | API base URL |
+| `data-api-url` | auto-detect from `src` outside Pages | reviewed API/gateway base URL |
+| `data-api-path` | `/api/public/v1/query` | public browser gateway path |
 | `data-position` | `right` | `right` or `left` |
 | `data-theme` | `dark` | `dark` or `light` |
 | `data-title` | `Asistente Municipal` | Chat window title |
 
-### Demo Page
+### Product page
 
-Visit `http://localhost:4010/` for a live demo page showing the widget in
-action with embedding instructions.
+Visit `http://localhost:4010/` for the local product shell. It requires a local database/backend for queries; the static Pages build fails closed without `PAGES_API_URL`.
 
 ### Static Files
 
 The server serves files from the `public/` directory:
 
-- `GET /` → `public/index.html` (demo page)
+- `GET /` → `public/index.html` (product shell)
 - `GET /widget.js` → the embeddable chat widget
 
 ## Mentor Note

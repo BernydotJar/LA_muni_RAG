@@ -40,6 +40,7 @@ describe("GitHub Pages static deployment", () => {
     assert.match(workflow, /actions\/deploy-pages@v4/);
     assert.match(workflow, /pages: write/);
     assert.match(workflow, /id-token: write/);
+    assert.match(workflow, /PAGES_API_URL: \$\{\{ vars\.PAGES_API_URL \}\}/);
     assert.match(workflow, /node scripts\/build-pages\.mjs/);
     assert.match(workflow, /node scripts\/verify-pages-artifact\.mjs/);
     assert.match(workflow, /path: dist-pages/);

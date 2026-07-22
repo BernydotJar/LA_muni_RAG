@@ -977,3 +977,34 @@ Not proved:
 
 Therefore `EVAL-EPHEMERAL-STAGING-E2E-001` is
 `passed_for_executable_ephemeral_staging_and_e2e_architecture_with_identity_infrastructure_external_consumer_browser_and_production_limitations`.
+
+## EVAL-PRODUCTION-PUBLIC-SURFACE-001
+
+Current scope: public product shell, fail-closed Pages bridge, honest widget state,
+design-system guardrails and cloud-target decision.
+
+Proved:
+
+- Assistant and Glass Wall are direct primary navigation destinations;
+- presentation-only evidence, flow and operability sections are absent;
+- modular CSS/JavaScript replace the monolithic homepage implementation;
+- primary, secondary and panel text tokens exceed WCAG AA contrast in the tested combinations;
+- keyboard focus, reduced motion and responsive mobile stacking are present;
+- GitHub Pages contains no static answer, citation, procedure or domain fixture;
+- absent API configuration produces bounded 503 and disabled widget controls;
+- API URLs reject non-HTTPS production origins, credentials, query and fragment material;
+- widget and Pages default to the planned `/api/public/v1/query` boundary, not legacy `/api/chat`;
+- production continues to return 404 for both legacy chat and the not-yet-implemented public gateway;
+- GCP is selected as architecture only and no project, billing account, model or cloud resource is created;
+- OpenSEO and Unlimited-OCR remain optional isolated evaluations rather than runtime dependencies.
+
+Not proved:
+
+- the public query gateway/BFF;
+- an approved real public corpus or retrieval quality;
+- human identity/session or authenticated role-aware UI;
+- deployed GCP infrastructure, security headers, WAF, load, HA, recovery or operations;
+- external consumer execution, PR review, merge or production deployment.
+
+Therefore `EVAL-PRODUCTION-PUBLIC-SURFACE-001` is
+`passed_for_honest_fail_closed_public_product_surface_with_gateway_corpus_identity_infrastructure_and_deployment_limitations`.

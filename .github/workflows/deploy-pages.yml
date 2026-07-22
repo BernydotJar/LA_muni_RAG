@@ -29,6 +29,8 @@ jobs:
           node-version: 24
 
       - name: Build GitHub Pages artifact
+        env:
+          PAGES_API_URL: ${{ vars.PAGES_API_URL }}
         run: node scripts/build-pages.mjs
 
       - name: Verify GitHub Pages artifact

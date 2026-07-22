@@ -110,7 +110,7 @@ describe("procedure training console", () => {
       read("scripts/verify-pages-artifact.mjs"),
     ]);
 
-    assert.match(index, /href="\/procedure-training\.html"[^>]*>Academia/);
+    assert.match(index, /href="\.\/procedure-training\.html"[^>]*>Academia/);
     assert.match(build, /href="\/procedure-training\.html"/);
     assert.match(build, /href="\.\/procedure-training\.html"/);
     for (const file of [

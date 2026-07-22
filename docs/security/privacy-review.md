@@ -84,7 +84,7 @@ Current blockers: no named Privacy/Legal owner, no published intake channel/SLA,
 
 Required controls include TLS, tenant-aware authentication/RBAC/RLS, least-privilege database and backup roles, secret management and rotation, encryption at rest, approved regional storage, safe logging, audit access controls, dependency/container scanning, and incident escalation. The repository does not demonstrate all of them in production.
 
-The public Pages demo is limited to public demonstration assets. Browser storage used by demo/case UI is not a durable municipal record and can expose data to anyone with access to the same browser profile. It must not be used for personal, internal, restricted, or legally authoritative case information.
+The public Pages product contains public static assets only and manufactures no evidence responses. Browser storage used by public case/training UI is not a durable municipal record and can expose data to anyone with access to the same browser profile. It must not be used for personal, internal, restricted, or legally authoritative case information.
 
 ## Vendors, models, and transfers
 

@@ -51,12 +51,14 @@ describe("production server surface", () => {
     "/api/agent?q=test",
     "/api/answer?q=test",
     "/api/chat",
+    "/api/public/v1/query",
   ]) {
     it(`does not expose legacy route ${path}`, async () => {
+      const isPost = path === "/api/chat" || path === "/api/public/v1/query";
       const response = await fetch(`${baseUrl}${path}`, {
-        method: path === "/api/chat" ? "POST" : "GET",
+        method: isPost ? "POST" : "GET",
         headers: { origin: "https://untrusted.example" },
-        ...(path === "/api/chat"
+        ...(isPost
           ? { body: JSON.stringify({ message: "test" }), headers: {
               origin: "https://untrusted.example",
               "content-type": "application/json",

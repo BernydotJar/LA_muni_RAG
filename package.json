@@ -62,7 +62,8 @@
     "contracts:consumer-verify": "node --import tsx src/cli/verifyConsumerContractKits.ts",
     "eval:consumer-contract-kit": "node --import tsx --test src/__tests__/eval-consumer-contract-kit-001.test.ts src/__tests__/consumer-contract-kit-v1.test.ts",
     "staging:verify": "node --import tsx src/cli/verifyEphemeralStagingPlan.ts",
-    "eval:staging-e2e-architecture": "node --import tsx --test --test-concurrency=1 src/__tests__/eval-ephemeral-staging-e2e-001.test.ts src/__tests__/ephemeral-staging-plan-v1.test.ts"
+    "eval:staging-e2e-architecture": "node --import tsx --test --test-concurrency=1 src/__tests__/eval-ephemeral-staging-e2e-001.test.ts src/__tests__/ephemeral-staging-plan-v1.test.ts",
+    "eval:production-public-surface": "node --import tsx --test --test-concurrency=1 src/__tests__/eval-production-public-surface-001.test.ts src/__tests__/premium-frontend-refresh.test.ts src/__tests__/frontend-responsive-layout.test.ts src/__tests__/pages-api-production-mode.test.ts src/__tests__/municipal-product-readiness.test.ts src/__tests__/public-surface-contrast.test.ts"
   },
   "keywords": [],
   "author": "",

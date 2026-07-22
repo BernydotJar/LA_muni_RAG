@@ -25,7 +25,9 @@ const requiredFiles = [
   "procedure-source-attribution.js",
   "procedure-case-workspace.js",
   "procedure-case-open.js",
-  "pages-demo-api.js",
+  "pages-api-bridge.js",
+  "product.css",
+  "product.js",
   "pages-security-guard.js",
   ".nojekyll",
 ];
@@ -50,6 +52,10 @@ const procedureSourceAttributionJs = await readFile(join(outputDir, "procedure-s
 const procedureCaseWorkspaceJs = await readFile(join(outputDir, "procedure-case-workspace.js"), "utf-8");
 const procedureCaseOpenJs = await readFile(join(outputDir, "procedure-case-open.js"), "utf-8");
 
+const pagesApiBridge = await readFile(join(outputDir, "pages-api-bridge.js"), "utf-8");
+const productCss = await readFile(join(outputDir, "product.css"), "utf-8");
+const productJs = await readFile(join(outputDir, "product.js"), "utf-8");
+
 const forbiddenRootRelativePatterns = [
   'href="/"', 'href="/glass-wall.html"', 'href="/procedure-training.html"', 'href="/procedure-workflow.html"',
   'href="/procedure-feedback-dashboard.html"', 'href="/procedure-case-portfolio.html"',
@@ -67,14 +73,19 @@ for (const pattern of forbiddenRootRelativePatterns) {
   }
 }
 
-if (!indexHtml.includes('src="./pages-demo-api.js" data-demo-mode="auto"')) throw new Error("GitHub Pages artifact is missing the demo/API bridge before the widget.");
+if (!indexHtml.includes('src="./pages-api-bridge.js"')) throw new Error("GitHub Pages artifact is missing the fail-closed API bridge before the widget.");
 if (!indexHtml.includes('src="./pages-security-guard.js"')) throw new Error("GitHub Pages artifact is missing the source-link security guard.");
 if (!indexHtml.includes('src="./procedure-widget-entrypoint.js"')) throw new Error("GitHub Pages artifact is missing the procedure workflow widget entrypoint.");
+if (!indexHtml.includes('href="./product.css"') || !indexHtml.includes('src="./product.js"')) throw new Error("GitHub Pages artifact is missing the modular product assets.");
+if (!indexHtml.includes('data-open-assistant') || !indexHtml.includes('href="./glass-wall.html"')) throw new Error("GitHub Pages artifact is missing direct Assistant or Glass Wall navigation.");
+if (!pagesApiBridge.includes('service_unavailable') || !pagesApiBridge.includes('x-la-muni-rag-api-configured') || pagesApiBridge.includes('demoResponse') || pagesApiBridge.includes('demoProcedureResponse')) throw new Error("Pages API bridge is not fail-closed or still contains demo responses.");
+if (!productCss.includes('--action:#67e8f9') || !productCss.includes(':focus-visible')) throw new Error("Product styles are missing the reserved action color or focus treatment.");
+if (!productJs.includes('[data-open-assistant]') || !productJs.includes('navigator.clipboard.writeText')) throw new Error("Product runtime is missing assistant navigation or install-copy behavior.");
 if (!indexHtml.includes('href="./procedure-training.html"')) throw new Error("GitHub Pages artifact is missing the Academy entrypoint.");
 if (!procedureTrainingHtml.includes('href="./index.html"') || !procedureTrainingHtml.includes('src="./procedure-training.js"') || !procedureTrainingHtml.includes('href="./procedure-training.css"')) throw new Error("Procedure training page has invalid Pages-relative assets.");
 if (!procedureTrainingJs.includes("requester_supplied_unverified")) throw new Error("Procedure training runtime is missing requester assertion provenance.");
 if (!waterTrainingMap.includes('"research_not_facts": true') || !waterTrainingMap.includes('"sequence": 47')) throw new Error("Procedure training curriculum is missing bounded research semantics.");
-if (!procedureWorkflowHtml.includes('src="./pages-demo-api.js" data-demo-mode="auto"')) throw new Error("Procedure workflow page is missing the Pages demo/API bridge.");
+if (!procedureWorkflowHtml.includes('src="./pages-api-bridge.js"')) throw new Error("Procedure workflow page is missing the Pages fail-closed API bridge.");
 if (!procedureWorkflowHtml.includes('src="./procedure-feedback.js"')) throw new Error("Procedure workflow page is missing the feedback loop script.");
 if (!procedureFeedbackJs.includes('./procedure-deep-dive.js')) throw new Error("Procedure workflow feedback loader is missing the deep-dive UI enhancement.");
 if (!procedureFeedbackJs.includes('./procedure-source-attribution.js')) throw new Error("Procedure workflow feedback loader is missing official source attribution.");
@@ -105,7 +116,7 @@ if (
 }
 
 if (!feedbackDashboardHtml.includes('la-muni-rag:procedure-feedback')) throw new Error("Feedback dashboard is missing the localStorage feedback key.");
-if (!domainIntakeHtml.includes('src="./pages-demo-api.js" data-demo-mode="auto"')) throw new Error("Domain intake page is missing the Pages demo/API bridge.");
+if (!domainIntakeHtml.includes('src="./pages-api-bridge.js"')) throw new Error("Domain intake page is missing the Pages fail-closed API bridge.");
 if (!domainIntakeHtml.includes('/api/domain-pack')) throw new Error("Domain intake page is missing the active domain-pack metadata route.");
 
 console.log("GitHub Pages artifact verified.");

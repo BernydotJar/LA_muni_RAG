@@ -27,10 +27,10 @@ describe("chat answer quality and evidence composition", () => {
     assert.match(widget, /Te dejo una síntesis primero y las fuentes verificadas aparte/);
   });
 
-  it("shows verified evidence by default while still allowing users to hide it", async () => {
+  it("shows available evidence by default while still allowing users to hide it", async () => {
     const widget = await readWidget();
 
-    assert.match(widget, /Fuentes verificadas · \$\{view\.citations\.length\}/);
+    assert.match(widget, /Evidencia disponible · \$\{view\.citations\.length\}/);
     assert.match(widget, /aria-expanded="true"/);
     assert.match(widget, /Ocultar evidencia/);
     assert.match(widget, /Ver evidencia/);
@@ -61,10 +61,11 @@ describe("chat answer quality and evidence composition", () => {
     assert.match(widget, /this\.sendQuery\(chip\.getAttribute\("data-query"\)/);
   });
 
-  it("preserves the existing chat API contract and mode controls", async () => {
+  it("uses the public gateway contract and preserves mode controls", async () => {
     const widget = await readWidget();
 
-    assert.match(widget, /\/api\/chat/);
+    assert.match(widget, /\/api\/public\/v1\/query/);
+    assert.match(widget, /data-api-path/);
     assert.match(widget, /JSON\.stringify\(\{ message, mode: this\.searchMode, limit: 5 \}\)/);
     assert.match(widget, /this\.searchMode\s*=\s*"keyword"/);
     assert.match(widget, /this\.setSearchMode\("phrase"\)/);

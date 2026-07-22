@@ -70,10 +70,9 @@ describe("RAG glass wall static page", () => {
   it("is intentionally discoverable from the homepage", async () => {
     const html = await readHome();
 
-    assert.match(html, /href="\/glass-wall\.html"/);
-    assert.match(html, /glass-wall-invite/);
-    assert.match(html, /¿Necesitas inspeccionar el flujo técnico\?/);
-    assert.match(html, /sala técnica con ruta de consulta, evidencia y salida segura/);
+    assert.match(html, /href="\.\/glass-wall\.html">Glass Wall/);
+    assert.match(html, /data-open-assistant>Asistente/);
+    assert.match(html, /Abrir Glass Wall/);
   });
 
   it("references only approved application endpoints", async () => {

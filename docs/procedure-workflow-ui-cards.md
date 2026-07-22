@@ -2,7 +2,8 @@
 
 ## Purpose
 
-This page renders Procedure Workflow Advisor responses as a municipal workflow interface instead of a chat paragraph.
+This page renders Procedure Workflow Advisor responses as a municipal workflow
+interface instead of a chat paragraph.
 
 Route:
 
@@ -10,33 +11,41 @@ Route:
 /procedure-workflow.html
 ```
 
-API used by the page:
+Current browser request:
 
 ```text
 GET /api/procedure?q=<query>&mode=<mode>&limit=<limit>
 ```
 
+The legacy route is disabled in production. The page is therefore unavailable
+on GitHub Pages unless a compatible reviewed public gateway is configured. The
+static site does not substitute a workflow fixture.
+
 ## What the UI shows
 
 - workflow summary;
-- jurisdiction and confidence;
+- jurisdiction and evidence status;
 - one card per procedure step;
-- required documents;
-- output documents;
-- step citations/evidence labels;
-- notes and validation-required text;
+- required and output documents;
+- citations and evidence labels;
 - gaps and missing documents;
-- final human validation warning;
-- copy-checklist button.
+- human validation warning;
+- copy-checklist action.
 
 ## Safety posture
 
-The UI does not hide low confidence, gaps, or validation warnings. If the API marks external municipal references, the UI shows a warning that the flow must be validated against Antigua Guatemala official documents and national law.
+The UI does not hide low evidence, gaps, conflicts or validation warnings.
+External municipal references remain comparative until corroborated against
+Antigua Guatemala and applicable national sources.
 
-## GitHub Pages demo mode
+## GitHub Pages behavior
 
-`public/pages-demo-api.js` now supports `/api/procedure` in static demo mode. This keeps the page usable on GitHub Pages without deploying the Node backend. Demo citations keep `sourceUrl: null`.
+`public/pages-api-bridge.js` forwards approved calls only when `PAGES_API_URL` is
+configured. Without that configuration it returns HTTP 503. It contains no
+static procedure, citation or domain-pack response.
 
 ## Current limitation
 
-The UI is a dedicated page. It does not yet replace or deeply integrate with the embeddable chat widget.
+A production-compatible public procedure gateway has not been implemented. The
+authenticated v1 ProcedureQuery contract remains server-to-server and must not
+be called from a public browser with an integration credential.

@@ -1,65 +1,78 @@
-# Final Security Review — GitHub Pages Demo
+# Security review — public GitHub Pages product
 
 ## Scope
 
-This review covers the public demo surface introduced by the GitHub Pages deployment:
+This review covers:
 
 - static Pages artifact generation;
-- `pages-demo-api.js` demo/API bridge;
-- widget source-link behavior on Pages;
-- Pages deployment workflow boundary;
-- separation between static frontend and backend RAG runtime.
+- the fail-closed `pages-api-bridge.js`;
+- widget source-link behavior;
+- Pages deployment workflow boundaries;
+- separation between the public frontend and authenticated tenant APIs.
 
 This review does not claim to be a penetration test.
 
 ## Summary
 
-The Pages deployment is intentionally static-only. It does not ship backend code execution, database credentials, embeddings, environment files, or secrets. The demo now includes a defensive client-side bridge so the public site remains usable without a backend while preserving a path to route to a deployed API.
+GitHub Pages ships static public assets only. It does not contain backend code,
+database credentials, integration Bearer tokens, environment files, document
+bytes, embeddings, or static evidence responses. Without an explicitly
+configured HTTPS backend, approved API calls return a bounded 503 and widget
+query controls are disabled.
 
-## Findings and Mitigations
+## Findings and mitigations
 
-### 1. API URL configuration hardening
+### API URL configuration
 
-Risk: `?apiUrl=` and `data-api-url` could be used with unsafe URL schemes or credential-bearing URLs.
+`PAGES_API_URL` is injected at build time through a non-secret GitHub variable.
+The build rejects non-HTTPS production URLs, embedded credentials, query strings
+and fragments. HTTP is accepted only for localhost. The runtime bridge strips
+URL credentials defensively, omits fetch credentials, rejects redirects and
+disables caching.
 
-Mitigation implemented:
+### No static municipal evidence
 
-- only `https:` API URLs are accepted for public use;
-- `http:` is accepted only for localhost development;
-- username, password, query, and hash are stripped;
-- credentials are omitted from proxied fetches;
-- redirects are rejected.
+The previous static answer/procedure/domain bridge has been removed. Pages does
+not manufacture responses, citations, procedures or authority states. The
+widget no longer says that documents are official or verified without a real
+backend response.
 
-### 2. Source-link rendering hardening
+### Browser credential boundary
 
-Risk: a future API could return citation source URLs with unsafe schemes.
+The authenticated v1 APIs require tenant-bound credentials. Those credentials
+must never be embedded in Pages, JavaScript storage or browser requests. A
+future public query gateway/BFF must bind an approved public corpus server-side
+and enforce abuse controls without exposing a service credential.
 
-Mitigation implemented:
+### Source-link rendering
 
-- added `pages-security-guard.js` for the Pages demo;
-- unsafe rendered source links are converted to `Fuente no enlazada`;
-- allowed links receive `target="_blank"` and `rel="noopener noreferrer"`.
+`pages-security-guard.js` removes unsafe source links. Allowed HTTP(S) links use
+`target="_blank"` and `rel="noopener noreferrer"`. This client guard is defense
+in depth; the backend must continue validating and minimizing source URLs.
 
-### 3. GitHub Pages security header limitation
+### Security headers
 
-Risk: GitHub Pages does not provide project-level custom security headers in this static setup.
+GitHub Pages does not provide the complete environment-level header policy
+needed for a final production deployment. A future public domain should use an
+approved edge/load-balancer configuration for CSP, HSTS, frame policy,
+Permissions-Policy, request limits and Cloud Armor or an equivalent WAF.
 
-Mitigation:
+## Residual risks
 
-- no secrets or backend runtime are shipped;
-- demo responses are static and non-sensitive;
-- production deployment should put the static site behind a CDN or reverse proxy if strict CSP, HSTS, X-Frame-Options, or Permissions-Policy headers are required.
+- A future public API still needs rate limiting, exact CORS, abuse monitoring,
+  minimized logging, edge controls and load evidence.
+- The public gateway and human identity/session systems are not implemented.
+- No real reviewed corpus is credited as ingested.
+- GitHub repository variables, branch/environment protection and production
+  headers require independent configuration evidence.
 
-## Residual Risks
+## Required next security work
 
-- A future public API still needs rate limiting, auth policy, CORS origin policy, abuse monitoring, request logging, and deployment-specific security headers.
-- The Pages demo is public and should not include confidential municipal documents.
-- This repository still needs separate backend CI/security gates for dependency scanning and server-side hardening.
-
-## Recommended Next Security Work
-
-1. Add a backend CI workflow with typecheck, tests, dependency audit, and secret scanning.
-2. Add production API deployment hardening before connecting Pages to a live `/api/chat`.
-3. Add explicit CORS allowlist for production API origins.
-4. Add rate limiting and request size monitoring on the deployed API.
-5. Serve production behind a platform that supports security headers.
+1. Implement and red-team the dedicated public query gateway/BFF.
+2. Bind it to one reviewed public corpus; accept no tenant or credential claim
+   from the browser.
+3. Deploy only through approved GCP workload identities and Secret Manager.
+4. Exercise cross-tenant, abuse, timeout, provider-failure and no-evidence paths
+   in staging.
+5. Complete human accessibility, penetration testing and incident exercises
+   before production approval.

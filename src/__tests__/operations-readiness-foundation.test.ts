@@ -371,7 +371,7 @@ describe("operations readiness foundation", () => {
       assert.match(threatModel, new RegExp(`\\b${stride}\\b`));
 
     assert.match(threatModel, /legacy `\/api\/search`/);
-    assert.match(threatModel, /GitHub Pages is a public static demonstration/);
+    assert.match(threatModel, /GitHub Pages is a public static product shell/);
     assert.match(threatModel, /disposable PostgreSQL 16\.14\/pgvector 0\.8\.5 gate/);
     assert.match(threatModel, /not an image scan\/signature, staging test, production role attestation, load test, deployment, or external-consumer proof/);
     assert.match(threatModel, /No production backend infrastructure/);
@@ -408,7 +408,8 @@ describe("operations readiness foundation", () => {
     assert.match(deployment, /workerConfigured: false/);
     assert.match(deployment, /cross-tenant request return non-leaking 403/);
     assert.match(deployment, /Progressive traffic and observation/);
-    assert.match(deployment, /does not select a cloud or container platform/i);
+    assert.match(deployment, /selects GCP as the target architecture/i);
+    assert.match(deployment, /does not create infrastructure, enable billing/i);
     assert.match(deployment, /npx ctx7 docs \/docker\/docs/);
   });
 

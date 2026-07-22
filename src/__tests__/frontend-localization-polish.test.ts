@@ -27,7 +27,8 @@ describe("frontend localization and graph polish", () => {
 
     assert.match(homepage, /<html lang="es">/);
     assert.match(glassWall, /<html lang="es">/);
-    assert.match(homepage, /Asistente documental para la Municipalidad de La Antigua Guatemala/);
+    assert.match(homepage, /Consulta documental municipal/);
+    assert.match(homepage, /Consulta pública/);
     assert.match(glassWall, /Sala de observación para/);
     assert.match(glassWall, /recuperación documental/);
   });
@@ -46,7 +47,7 @@ describe("frontend localization and graph polish", () => {
     const homepage = await readHomepage();
     const glassWall = await readGlassWall();
 
-    assert.match(homepage, /architectural-line/);
+    assert.match(homepage, /civic-institutional-hero\.svg/);
     assert.match(homepage, /arcos coloniales/);
     assert.match(homepage, /campanario/);
     assert.match(homepage, /cúpula/);
@@ -69,12 +70,13 @@ describe("frontend localization and graph polish", () => {
     const homepage = await readHomepage();
     const glassWall = await readGlassWall();
 
-    assert.match(homepage, /<script src="\/widget\.js"><\/script>/);
-    assert.match(homepage, /window\.location\.origin \+ '\/widget\.js'/);
-    assert.match(homepage, /href="\/glass-wall\.html"/);
+    assert.match(homepage, /<script src="\.\/widget\.js"><\/script>/);
+    assert.match(homepage, /<script src="\.\/product\.js"><\/script>/);
+    assert.match(homepage, /href="\.\/glass-wall\.html"/);
     assert.match(glassWall, /approvedEndpointPaths = \["\/health", "\/api\/evidence", "\/api\/answer"\]/);
     assert.match(glassWall, /Contrato de seguridad/);
-    assert.match(homepage, /prefers-reduced-motion/);
+    const productCss = await readFile("public/product.css", "utf-8");
+    assert.match(productCss, /prefers-reduced-motion/);
     assert.match(glassWall, /prefers-reduced-motion/);
   });
 });

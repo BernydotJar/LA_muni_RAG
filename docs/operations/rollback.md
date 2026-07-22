@@ -114,7 +114,7 @@ Record final traffic/image state, database migration state, start/end time, impa
 
 ## Pages rollback boundary
 
-GitHub Pages is a separate public static demo. A Pages rollback should select/revert a reviewed static commit and run its own artifact verification/deployment governance. It must not be described as a backend rollback and cannot recover API, PostgreSQL, tenant isolation, or confidential data.
+GitHub Pages is a separate public static product shell. A Pages rollback should select/revert a reviewed static commit and run its own artifact verification/deployment governance. It must not be described as a backend rollback and cannot recover API, PostgreSQL, tenant isolation, or confidential data.
 
 ## Rehearsal requirement
 

@@ -83,6 +83,9 @@ jobs:
       - name: Run EVAL-EPHEMERAL-STAGING-E2E-001
         run: npm run eval:staging-e2e-architecture
 
+      - name: Run EVAL-PRODUCTION-PUBLIC-SURFACE-001
+        run: npm run eval:production-public-surface
+
       - name: Run EVAL-CONFLICT-001
         run: npm run eval:conflict
 

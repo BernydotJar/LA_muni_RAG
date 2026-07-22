@@ -1,7 +1,7 @@
 /**
  * LA Muni RAG — Pages source-link security guard.
  *
- * Defensive layer for the static GitHub Pages demo. It sanitizes source links
+ * Defensive layer for the public GitHub Pages product. It sanitizes source links
  * rendered inside the widget Shadow DOM, because real API responses can carry
  * citation source URLs.
  */
