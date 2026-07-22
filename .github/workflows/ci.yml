@@ -50,6 +50,9 @@ jobs:
       - name: Verify portable consumer contract kits
         run: npm run contracts:consumer-verify
 
+      - name: Verify ephemeral staging and E2E architecture
+        run: npm run staging:verify
+
       - name: Validate source inventory
         run: npm run source-inventory:validate
 
@@ -76,6 +79,9 @@ jobs:
 
       - name: Run EVAL-CONSUMER-CONTRACT-KIT-001
         run: npm run eval:consumer-contract-kit
+
+      - name: Run EVAL-EPHEMERAL-STAGING-E2E-001
+        run: npm run eval:staging-e2e-architecture
 
       - name: Run EVAL-CONFLICT-001
         run: npm run eval:conflict

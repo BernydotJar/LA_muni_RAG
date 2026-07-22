@@ -60,7 +60,9 @@
     "eval:evidence-bundle-api": "node --import tsx --test src/__tests__/eval-evidence-bundle-api-001.test.ts src/__tests__/search-evidence-api-v1.test.ts src/__tests__/search-evidence-api-runtime-migration.test.ts",
     "smoke:search-evidence-api": "node scripts/search-evidence-postgres-smoke.mjs",
     "contracts:consumer-verify": "node --import tsx src/cli/verifyConsumerContractKits.ts",
-    "eval:consumer-contract-kit": "node --import tsx --test src/__tests__/eval-consumer-contract-kit-001.test.ts src/__tests__/consumer-contract-kit-v1.test.ts"
+    "eval:consumer-contract-kit": "node --import tsx --test src/__tests__/eval-consumer-contract-kit-001.test.ts src/__tests__/consumer-contract-kit-v1.test.ts",
+    "staging:verify": "node --import tsx src/cli/verifyEphemeralStagingPlan.ts",
+    "eval:staging-e2e-architecture": "node --import tsx --test --test-concurrency=1 src/__tests__/eval-ephemeral-staging-e2e-001.test.ts src/__tests__/ephemeral-staging-plan-v1.test.ts"
   },
   "keywords": [],
   "author": "",

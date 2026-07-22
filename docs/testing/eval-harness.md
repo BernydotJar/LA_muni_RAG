@@ -949,3 +949,31 @@ Not proved:
 
 Therefore `EVAL-CONSUMER-CONTRACT-KIT-001` is
 `passed_for_portable_provider_contract_manifests_with_external_consumer_and_e2e_limitations`.
+
+## EVAL-EPHEMERAL-STAGING-E2E-001
+
+Current scope: executable provider-side specification for isolated ephemeral
+staging and the future browser E2E architecture.
+
+Proved:
+
+- closed draft 2020-12 staging schema and one canonical plan;
+- two synthetic tenants, eleven principals, exact ten-role RBAC and thirteen deterministic fixtures;
+- ordered fresh-database reset with mutable-resource coverage and mandatory destruction;
+- twenty runnable API/system journeys aligned to canonical OpenAPI methods, statuses and route permissions;
+- uniform cross-tenant 403/RLS expectation, idempotency, replay conflict, provider failure, separation of duties and reset checks;
+- twelve bounded browser journeys restricted to session/navigation/feedback/accessibility concerns;
+- all browser journeys remain blocked by human IdP/BFF and authenticated UI prerequisites;
+- loopback-only deterministic mocks and explicit provider-contract-only treatment of OS Electoral and Content Agency;
+- secret-like material, production-like endpoints, RBAC drift, route/status drift, permission drift, reset weakening, browser-layer misuse and external-consumer overclaims fail closed.
+
+Not proved:
+
+- an actually provisioned ephemeral staging environment;
+- human IdP/OIDC/PKCE/BFF/session, secure cookies, CSRF, logout, recovery or provisioning;
+- role-aware authenticated UI or browser execution;
+- external consumer repository execution;
+- real corpus, production storage/scanning, load/HA/recovery/privacy, merge or deployment.
+
+Therefore `EVAL-EPHEMERAL-STAGING-E2E-001` is
+`passed_for_executable_ephemeral_staging_and_e2e_architecture_with_identity_infrastructure_external_consumer_browser_and_production_limitations`.
