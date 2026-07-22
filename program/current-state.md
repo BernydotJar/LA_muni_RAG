@@ -1,87 +1,84 @@
 # LA Muni RAG — Current Program State
 
-Updated: 2026-07-22T20:47:22Z
+Updated: 2026-07-22T21:54:35Z
 
-Program status: **PARTIAL WITH DOCUMENTED BLOCKERS — Feature 072 adds a verified public query gateway, but the gateway remains disabled and undeployed until an authorized real corpus, staging, edge controls and release approvals exist**
+Program status: **PARTIAL WITH DOCUMENTED BLOCKERS — Feature 073 executes all twenty API/system staging journeys in disposable PostgreSQL and proves cleanup, while real corpus, browser identity/UI, external consumers, cloud staging and production release remain absent**
 
 ## Authoritative checkout
 
 ```text
 workspace_id: 090ec1e4-f130-4801-addd-f6ecb198744a
 root: /workspace
-branch: feature/public-query-gateway-v1
-functional_commit: 856a6edee20cdb14a16a89d0d1a831faadbf166e
-remote_functional_ref: 856a6edee20cdb14a16a89d0d1a831faadbf166e
+branch: feature/ephemeral-staging-runner-v1
+functional_commit: 4f6ab306d383f6d74808b393a88ff8172d666b5b
+remote_functional_ref: 4f6ab306d383f6d74808b393a88ff8172d666b5b
 pushed: true
-remote_ci_run: 29955124279 success
+remote_ci_run: 29959965725 success
 PR_open: false
 merged: false
-staging_deployed: false
+cloud_staging_deployed: false
 production_deployed: false
 observed_in_production: false
 cloud_resources_created: false
 billable_actions: 0
 ```
 
-`AGENTS.md` and `RTK.md` remain authoritative. Merge, deployment, paid infrastructure, project/billing creation, sensitive production credentials and legal conclusions remain human-gated.
+`AGENTS.md` and `RTK.md` remain authoritative. Merge, deployment, paid infrastructure, project/billing creation, production credentials and legal conclusions remain human-gated.
 
-## Feature 072 — public query gateway v1
+## Feature 073 — ephemeral staging runner v1
 
-`POST /api/public/v1/query` is implemented ahead of the production legacy-route gate. It:
+The canonical Feature 070 staging plan is now executable. The runner:
 
-- accepts only a closed `message`, `mode` and `limit` body;
-- accepts only keyword or phrase anonymous retrieval;
-- rejects browser Authorization and Cookie headers;
-- binds tenant, jurisdiction and database role server-side;
-- requires an exact reviewed Origin and minimal CORS headers;
-- applies database-backed global and HMAC per-client rate buckets before retrieval;
-- persists no raw IP, user-agent, query, excerpt or source URL in audit/rate state;
-- uses forced RLS and the existing strict public evidence eligibility path;
-- returns only bounded HTTPS citations without userinfo, query or fragment;
-- never promotes comparative or validation-required evidence into a supported answer;
-- returns explicit supported, insufficient-evidence or no-evidence states;
-- remains disabled by default and does not configure Pages automatically.
-
-Legacy `/api/chat` remains production-disabled. Browser service credentials remain prohibited.
+- validates exact coverage of all twenty runnable API/system journeys;
+- preserves all twelve browser journeys as explicitly blocked;
+- requires a dedicated loopback PostgreSQL admin endpoint and explicit ephemeral confirmation;
+- refuses unrelated databases and preserves an unapproved dirty environment;
+- creates four fixed `_test` databases and three non-owner runtime roles;
+- applies repository-controlled migrations/runtime gates and executes compiled HTTP/service smokes;
+- uses exact viewer, document-manager, platform-admin, tenant-admin, integration-client, procedure-author, reviewer, approver and case-operator personas;
+- drops and recreates the catalog database to verify reset-to-empty behavior;
+- disables local dotenv and does not invoke a shell for child processes;
+- requires a clean Git worktree so the receipt cites the exact functional SHA;
+- validates a closed, sanitized receipt before writing mode `0600` under ignored `artifacts/staging/`;
+- destroys run-owned databases and roles in `finally` and re-queries the postcondition.
 
 ## Verification
 
-Exact detached checkout `856a6edee20cdb14a16a89d0d1a831faadbf166e`:
+Exact detached checkout `4f6ab306d383f6d74808b393a88ff8172d666b5b`:
 
 ```text
-EVAL-PUBLIC-QUERY-GATEWAY-001: 23/23 pass
-full suite: 842 total / 840 pass / 0 fail / 2 explicit environment skips
+EVAL-EPHEMERAL-STAGING-RUNNER-001: 14/14 pass
+full suite: 856 total / 854 pass / 0 fail / 2 explicit environment skips
 canonical contracts: 33 schemas / 33 examples / OpenAPI 3.1.1
 consumer contracts: 2 kits / 5 interactions / 0 issues
-staging architecture: valid / 0 issues
+staging plan: valid / 0 issues
 typecheck: pass
 build: pass
-Pages fail-closed artifact: pass
 npm audit --audit-level=high: 0 vulnerabilities
 npm audit --omit=dev --audit-level=high: 0 vulnerabilities
 PostgreSQL: 16.14
 pgvector: 0.8.5
-fresh migrations: 001–016
-runtime role: non-owner / NOSUPERUSER / NOBYPASSRLS
-forced RLS and cross-tenant denial: pass
-compiled public gateway smoke: pass
-Backend CI 29955124279: success
+API/system journeys: 20/20 pass
+browser journeys: 12/12 blocked
+created/destroyed databases: 4/4
+created/destroyed runtime roles: 3/3
+independent postcondition: 0 target databases / 0 target roles
+Backend CI 29959965725: success, including Execute ephemeral staging runner
 ```
 
-These gates prove the implementation boundary, not a deployed or legally authoritative service.
+This proves the synthetic provider-side API/system staging lifecycle. It does not prove deployed cloud staging, human browser sessions, external consumers, real-corpus quality or production operation.
 
 ## Cumulative verified capabilities
 
 - tenant identity/RBAC and transaction-local forced RLS;
 - source/document/procedure catalog APIs;
 - artifact acceptance, ingestion jobs, leases/fencing and tenant vectors;
-- Search and conservative EvidenceBundle APIs;
+- Search, conservative EvidenceBundle and public query gateway APIs;
 - ProcedureQuery, ClaimPack, EvidenceGap, workflow lifecycle and ProcedureCase APIs;
 - provider-side consumer contract kits;
-- executable staging/E2E architecture;
 - fail-closed public product shell and Procedure Academy;
-- dedicated public query gateway disabled by default;
-- disposable PostgreSQL, compiled HTTP, accessibility and logical restore gates.
+- disposable PostgreSQL runner for all twenty API/system staging journeys;
+- accessibility, corruption, restore, boundary, tenant, artifact and vector hard gates.
 
 ## Current corpus truth
 
@@ -94,37 +91,36 @@ records credited as ingested: 0
 records retrieval-validated against real corpus: 0
 ```
 
-Synthetic fixtures and database gates do not change those values. Zero documents are credited as ingested against a real, reviewed corpus. The minimum Antigua-first and comparative corpus is incomplete.
+Synthetic fixtures, staging receipts and database gates do not change those values. Zero documents are credited as ingested against a real, reviewed corpus. The minimum Antigua-first and comparative corpus is incomplete.
 
 ## Next execution sequence
 
-1. Execute the Feature 070 ephemeral staging runner and all twenty API/system journeys against disposable services.
-2. Obtain authorization for Antigua-first corpus rights, durable storage, scanner, retention/legal-hold and named reviewers.
-3. Acquire, scan, ingest and evaluate real public documents.
-4. Add guarded GCP Terraform with `apply` disabled by default; create no resource before project, billing, region and budget approval.
-5. Deploy isolated staging only after approval, then configure the public gateway and `PAGES_API_URL` with reviewed origins and edge controls.
+1. Obtain authorization for Antigua-first corpus rights, durable storage, scanner, retention/legal-hold and named reviewers.
+2. Acquire, scan, ingest and evaluate real public documents with immutable manifests.
+3. Add guarded GCP Terraform with `apply` disabled by default; create no resource before project, billing, region and budget approval.
+4. Provision isolated cloud staging only after approval and execute the same twenty journeys against deployed revisions.
+5. Configure exact gateway origins, edge protection, telemetry, load/SLO controls and `PAGES_API_URL` only after real-corpus staging passes.
 6. Coordinate consumer-side suites in OS Electoral and Content Agency.
 7. Approve and implement IdP/OIDC/PKCE/BFF/session and role-aware authenticated UI.
 8. Complete browser E2E, human accessibility, load/HA, recovery/privacy, reviewed PR, protected merge, rollout and observation.
 
 ## Critical blockers
 
-- `PQG-OPEN-ENABLEMENT-001`: gateway is implemented but cannot be enabled without authorized ingested public evidence, edge controls, staging and deployment approval;
+- `PQG-OPEN-ENABLEMENT-001`: public gateway cannot be enabled without authorized ingested evidence, edge controls, deployed staging and approval;
 - `BLK-CORPUS-OPS-001`: source rights, durable storage, scanner and retention/legal-hold controls are unavailable;
 - zero real documents are credited as ingested and no judged real-corpus retrieval evidence exists;
-- no staging runner has executed the twenty API/system journeys;
-- browser authentication/session architecture and authenticated role-aware UI remain absent;
+- no approved human IdP/BFF/session or authenticated role-aware UI; twelve browser journeys remain blocked;
 - external consumer repositories have not executed their suites;
-- no GCP infrastructure, observability/SLO, load/HA, coordinated recovery or privacy operation exists;
+- no GCP project/resources, deployed cloud staging, observability/SLO, load/HA, recovery or privacy operation exists;
 - no reviewed PR, protected merge, deployment or observation window exists.
 
 ## Persistent boundary assertions
 
-- Gateway implementation is not gateway enablement or deployment.
+- Disposable API/system staging is not deployed cloud staging or production.
+- The twelve browser journeys remain blocked; they were not counted as passed.
 - GCP remains architecture only; zero resources and zero billable actions were created.
 - EvidenceGap is intake-only; no research assignment, resolution lifecycle or notification workflow is implemented.
 - There is no production object store, scanner/definitions monitor or dispatcher operating.
-- Human IdP/BFF/session, access review and role-aware navigation remain unimplemented.
-- Browser credentials are not integration credentials.
+- Browser authentication/session architecture is not implemented. Human IdP/BFF/session, access review and role-aware navigation remain unimplemented.
 - Provider-side kits do not prove external interoperability.
-- A green feature branch is not production readiness.
+- A green feature branch and synthetic staging receipt are not production readiness.

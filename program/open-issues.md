@@ -1,21 +1,21 @@
 # LA Muni RAG — Open Issues
 
-Updated: 2026-07-22T20:47:22Z
+Updated: 2026-07-22T21:54:35Z
 
 ## Critical
 
 ### PQG-OPEN-ENABLEMENT-001 — public gateway cannot be enabled yet
 
-`POST /api/public/v1/query` is implemented, contract-validated and PostgreSQL-tested, but remains disabled and undeployed.
+`POST /api/public/v1/query` is implemented and its API/system path is included in disposable staging, but it remains disabled and undeployed.
 
 Required closure:
 
 - authorized, reviewed and ingested public tenant corpus;
 - exact production origins and gateway configuration;
 - Cloud Armor/WAF and edge/global abuse controls;
-- staging execution, load evidence, sanitized telemetry and alerting;
+- deployed staging, load evidence, sanitized telemetry and alerting;
 - deployment approval and immutable revision receipt;
-- Pages `PAGES_API_URL` configured only after staging passes.
+- Pages `PAGES_API_URL` configured only after those gates pass.
 
 ### BLK-CORPUS-OPS-001 — authorized corpus operations unavailable
 
@@ -29,21 +29,21 @@ Zero real documents are credited as ingested. Human/platform inputs required:
 
 ### E2E-OPEN-IDP-002 — human identity/session absent
 
-No approved IdP/OIDC/PKCE/BFF, secure cookie/CSRF, provisioning, logout, revocation, recovery or role-aware authenticated UI exists.
+No approved IdP/OIDC/PKCE/BFF, secure cookie/CSRF, provisioning, logout, revocation, recovery or role-aware authenticated UI exists. All twelve browser journeys remain explicitly blocked.
 
-### PROG-OPS-001 — production platform and operations absent
+### PROG-OPS-001 — cloud platform and production operations absent
 
 GCP is architecture only. No project, billing, Terraform apply, Cloud Run, Cloud SQL, Storage, queue, Secret Manager configuration, telemetry, load/HA, recovery or privacy operation exists.
 
 ## High
 
-### E2E-OPEN-RUNNER-001 — staging contract not executed
-
-Feature 070 defines twenty API/system journeys and reset/destruction, but no runner has executed the complete lifecycle.
-
 ### E2E-OPEN-CONSUMERS-003 — external consumer suites absent
 
 OS Electoral and Content Agency have not run the portable kits inside their own repositories.
+
+### STAGING-CLOUD-001 — provider-side disposable runner is not deployed staging
+
+Feature 073 executes all twenty API/system journeys in a dedicated local/CI PostgreSQL service with synthetic fixtures and complete cleanup. It does not exercise cloud networking, workload identity, managed secrets, immutable deployed revisions, edge controls or real corpus.
 
 ### PUBLIC-EDGE-001 — edge protection and capacity unproved
 
@@ -63,6 +63,6 @@ Unlimited-OCR remains evaluation-only pending pinned revisions, license/security
 - No production object store, scanner/definitions monitor or dispatcher operates.
 - Legacy pre-v1 routes remain development-only and production-disabled.
 - Pages contains no static municipal answers or procedure fixtures.
-- Gateway is disabled by default and no public corpus is bound.
+- Gateway is disabled by default and no real public corpus is bound.
 - OpenSEO remains deferred until a production public domain and content policy exist.
-- No PR, merge, staging deployment or production deployment has occurred.
+- No PR, merge, cloud staging deployment or production deployment has occurred.

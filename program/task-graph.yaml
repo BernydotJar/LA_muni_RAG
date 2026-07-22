@@ -1106,9 +1106,10 @@ tasks:
   - EVAL-DOCUMENT-API-001
   - EVAL-CONSUMER-CONTRACT-KIT-001
   - EVAL-EPHEMERAL-STAGING-E2E-001
+  - EVAL-EPHEMERAL-STAGING-RUNNER-001
   - EVAL-PRODUCTION-PUBLIC-SURFACE-001
   - EVAL-PUBLIC-QUERY-GATEWAY-001
-  current_state: Feature 072 passes 23/23; detached regression is 840/842 with zero failures and two explicit skips; 33/33 contracts and PostgreSQL 16.14/pgvector 0.8.5 gates pass.
+  current_state: Feature 073 passes 14/14; detached regression is 854/856 with zero failures and two explicit skips; 33/33 contracts and disposable PostgreSQL 20/20 staging execution pass.
   blockers: []
   depends_on:
   - GAP-001
@@ -1310,17 +1311,27 @@ tasks:
 - id: WS10-EPHEMERAL-STAGING-RUNNER-001
   workstream: WS-10
   title: Execute the ephemeral staging contract locally
-  status: pending
+  status: completed_with_limitations
   owner: /root
   depends_on:
   - WS10-EPHEMERAL-STAGING-E2E-ARCH-001
   blockers: []
-  acceptance:
-  - Create and destroy a fresh disposable environment per run.
-  - Execute all 20 API/system journeys with generated credentials and synthetic fixtures.
-  - Collect sanitized receipts and prove cleanup.
+  result:
+    functional_commit: 4f6ab306d383f6d74808b393a88ff8172d666b5b
+    branch: feature/ephemeral-staging-runner-v1
+    eval: 14/14
+    detached_tests: 854/856; zero failures; two skips
+    api_system_journeys: 20/20
+    browser_journeys: 12/12 blocked
+    databases_destroyed: 4/4
+    runtime_roles_destroyed: 3/3
+    postcondition: 0 databases / 0 roles
+    postgres: 16.14 / pgvector 0.8.5
+    remote_ci: 29959965725 success
   limitations:
-  - Browser E2E remains blocked until human identity and authenticated UI exist.
+  - Uses synthetic fixtures in a disposable local/CI PostgreSQL service, not deployed cloud staging.
+  - Browser E2E remains blocked until human identity/session and authenticated UI exist.
+  - External consumers, real corpus, load/HA, cloud operations, merge and deployment remain unproved.
 - id: WS09-PRODUCTION-PUBLIC-SURFACE-001
   workstream: WS-09
   title: Convert the public frontend into a fail-closed production product shell

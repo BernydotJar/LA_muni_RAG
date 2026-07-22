@@ -1,8 +1,8 @@
 {
-  "schema_version": "1.11.0",
-  "generated_at": "2026-07-22T20:47:22Z",
-  "current_slice": "Feature 072 public query gateway v1",
-  "functional_head": "856a6edee20cdb14a16a89d0d1a831faadbf166e",
+  "schema_version": "1.12.0",
+  "generated_at": "2026-07-22T21:54:35Z",
+  "current_slice": "Feature 073 ephemeral staging runner v1",
+  "functional_head": "4f6ab306d383f6d74808b393a88ff8172d666b5b",
   "summary": {
     "resolved_feature_findings": 8,
     "critical_or_high_open_in_feature": 0,
@@ -10,60 +10,60 @@
   },
   "feature_findings": [
     {
-      "id": "PQG-CRIT-001",
+      "id": "ESR-CRIT-001",
       "severity": "critical",
       "status": "resolved",
-      "finding": "Browser query boundary was absent.",
-      "resolution": "Implemented POST /api/public/v1/query, disabled by default and ahead of the legacy production gate."
+      "finding": "The staging plan was not executable.",
+      "resolution": "Implemented plan-driven orchestration over four disposable PostgreSQL databases and existing compiled smokes."
     },
     {
-      "id": "PQG-CRIT-002",
+      "id": "ESR-CRIT-002",
       "severity": "critical",
       "status": "resolved",
-      "finding": "Browser could supply tenant or service identity.",
-      "resolution": "Closed request excludes tenant/credential; Authorization and Cookie are rejected; tenant/jurisdiction are server-bound."
+      "finding": "A runner could target a non-test database service.",
+      "resolution": "Requires loopback /postgres, explicit ephemeral confirmation, admin capability and a dedicated cluster with no unrelated databases."
     },
     {
-      "id": "PQG-CRIT-003",
+      "id": "ESR-CRIT-003",
       "severity": "critical",
       "status": "resolved",
-      "finding": "Public retrieval could expose foreign/private evidence.",
-      "resolution": "Forced-RLS tenant transaction and strict public/active/processed/accepted/clean eligibility passed PostgreSQL gates."
+      "finding": "Failure could leave test databases or roles.",
+      "resolution": "Run-owned resources are cleaned in finally, absence is re-queried, and detached/CI receipts prove 4/4 databases and 3/3 roles destroyed."
     },
     {
-      "id": "PQG-HIGH-004",
+      "id": "ESR-HIGH-004",
       "severity": "high",
       "status": "resolved",
-      "finding": "Anonymous abuse could bypass retrieval controls.",
-      "resolution": "Global and HMAC per-client database buckets run before body parsing/retrieval; edge controls remain required."
+      "finding": "Journey coverage could be partial or duplicated.",
+      "resolution": "Canonical plan mapping proves all 20 runnable API journeys exactly once and maps no browser journey."
     },
     {
-      "id": "PQG-HIGH-005",
+      "id": "ESR-HIGH-005",
       "severity": "high",
       "status": "resolved",
-      "finding": "Comparative evidence could be presented as official answer.",
-      "resolution": "Comparative/validation-required candidates remain citations or limitations and never produce supported answer content."
+      "finding": "Permission-equivalent principals could overstate persona coverage.",
+      "resolution": "Viewer, platform admin, tenant admin and case operator use exact dedicated principals and credentials."
     },
     {
-      "id": "PQG-HIGH-006",
+      "id": "ESR-HIGH-006",
       "severity": "high",
       "status": "resolved",
-      "finding": "Audit could retain query or network identity.",
-      "resolution": "Audit allowlist excludes query, excerpts, URLs, IP and user-agent; rate identity persists only a 32-byte HMAC digest."
+      "finding": "Local dotenv or process environment could leak into smokes.",
+      "resolution": "No shell, minimal child environment, dotenv disabled and raw output excluded from receipt."
     },
     {
-      "id": "PQG-HIGH-007",
+      "id": "ESR-HIGH-007",
       "severity": "high",
       "status": "resolved",
-      "finding": "Source links could leak credentials or signatures.",
-      "resolution": "Public citations require HTTPS URLs with no userinfo, query or fragment."
+      "finding": "Receipts could leak connection material or cite a dirty worktree SHA.",
+      "resolution": "Runner requires a clean worktree, validates a closed receipt and writes mode 0600 under ignored artifacts."
     },
     {
-      "id": "PQG-HIGH-008",
+      "id": "ESR-HIGH-008",
       "severity": "high",
       "status": "resolved",
-      "finding": "Feature implementation could be mistaken for deployment.",
-      "resolution": "Gateway remains disabled by default; no Pages API URL, cloud resource, merge or deployment is claimed."
+      "finding": "Synthetic API staging could be mistaken for browser/cloud/production evidence.",
+      "resolution": "Twelve browser journeys remain blocked and docs deny real corpus, external consumer, cloud staging, merge and deployment claims."
     }
   ],
   "open_findings": [
@@ -80,13 +80,6 @@
       "status": "open",
       "area": "corpus",
       "finding": "No authorized durable corpus bytes or real ingestion exist."
-    },
-    {
-      "id": "E2E-OPEN-RUNNER-001",
-      "severity": "high",
-      "status": "open",
-      "area": "staging_execution",
-      "finding": "No runner has executed the staging lifecycle and twenty API/system journeys."
     },
     {
       "id": "E2E-OPEN-IDP-002",
@@ -111,10 +104,10 @@
     }
   ],
   "publication": {
-    "branch": "feature/public-query-gateway-v1",
-    "functional_sha": "856a6edee20cdb14a16a89d0d1a831faadbf166e",
+    "branch": "feature/ephemeral-staging-runner-v1",
+    "functional_sha": "4f6ab306d383f6d74808b393a88ff8172d666b5b",
     "remote_sha_verified": true,
-    "ci_run_id": 29955124279,
+    "ci_run_id": 29959965725,
     "ci_status": "success",
     "ci_conclusion": "success",
     "pr": null,

@@ -1,13 +1,13 @@
 {
-  "schema_version": "1.11.0",
-  "generated_at": "2026-07-22T20:47:22Z",
-  "branch": "feature/public-query-gateway-v1",
-  "functional_head": "856a6edee20cdb14a16a89d0d1a831faadbf166e",
+  "schema_version": "1.12.0",
+  "generated_at": "2026-07-22T21:54:35Z",
+  "branch": "feature/ephemeral-staging-runner-v1",
+  "functional_head": "4f6ab306d383f6d74808b393a88ff8172d666b5b",
   "source": "observed command outputs only",
   "status": "PARTIAL_WITH_DOCUMENTED_BLOCKERS",
   "tests": {
-    "total": 842,
-    "passed": 840,
+    "total": 856,
+    "passed": 854,
     "failed": 0,
     "skipped": 2
   },
@@ -30,9 +30,14 @@
     "mocks": 6,
     "reset_steps": 10,
     "issues": 0,
-    "environment_executed": false,
+    "environment_executed": true,
     "browser_e2e_runnable": false,
-    "external_consumers_verified": false
+    "external_consumers_verified": false,
+    "api_system_journeys_executed": 20,
+    "api_system_journeys_passed": 20,
+    "databases_destroyed": 4,
+    "runtime_roles_destroyed": 3,
+    "cleanup_complete": true
   },
   "hard_evals": {
     "ephemeral_staging_e2e": "13/13",
@@ -40,7 +45,8 @@
     "search_api": "24/24",
     "evidence_bundle_api": "24/24",
     "production_public_surface": "33/33",
-    "public_query_gateway": "23/23"
+    "public_query_gateway": "23/23",
+    "ephemeral_staging_runner": "14/14"
   },
   "source_inventory": {
     "total": 17,
@@ -49,10 +55,10 @@
     "ingested": 0
   },
   "publication": {
-    "branch": "feature/public-query-gateway-v1",
-    "functional_sha": "856a6edee20cdb14a16a89d0d1a831faadbf166e",
+    "branch": "feature/ephemeral-staging-runner-v1",
+    "functional_sha": "4f6ab306d383f6d74808b393a88ff8172d666b5b",
     "remote_sha_verified": true,
-    "ci_run_id": 29955124279,
+    "ci_run_id": 29959965725,
     "ci_status": "completed",
     "ci_conclusion": "success",
     "pr": null,
@@ -74,9 +80,8 @@
   "remaining_blockers": [
     "No authorized real corpus or real ingestion.",
     "Public gateway remains disabled and undeployed; no edge/load evidence exists.",
-    "No actual ephemeral staging runner or service deployment.",
-    "No human IdP/BFF/session or authenticated role-aware UI.",
-    "No browser journey or external consumer repository suite executed.",
-    "GCP infrastructure, observability, HA/recovery/privacy, merge and deployment are absent."
+    "No human IdP/BFF/session or authenticated role-aware UI; twelve browser journeys remain blocked.",
+    "No external consumer repository suite executed.",
+    "No GCP staging deployment, observability, HA/recovery/privacy operation, merge or production deployment."
   ]
 }

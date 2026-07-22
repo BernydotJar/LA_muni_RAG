@@ -10,5 +10,8 @@
 - [x] Add named eval and CI execution.
 - [x] Add documentation, risk and traceability.
 - [x] Run final local regression.
-- [ ] Run detached verification from the functional SHA.
-- [ ] Commit, push, observe successful CI and reconcile program state.
+- [x] Run detached verification from the functional SHA.
+- [x] Commit, push and observe successful functional CI.
+- [x] Reconcile program state.
+
+Browser, external consumer, real-corpus, cloud staging and production release remain separate gated work.

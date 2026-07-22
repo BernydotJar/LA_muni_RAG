@@ -373,3 +373,12 @@ Before any installation, require an owner to verify every skill file, license, d
 - Critic/fixer scope: rejected Authorization/Cookie, moved rate gate before browser-credential rejection, required HTTPS citations without query/fragment, removed fictitious internal credential identity, added `nosniff` and exact CORS exposure, and proved cleanup/ownership/column restrictions.
 - Independent verification: detached 23/23 eval, 840/842 global, 33/33 contracts, PostgreSQL 16.14/pgvector 0.8.5 migrations 001–016, non-owner forced-RLS gate, compiled smoke, zero dependency vulnerabilities and Backend CI 29955124279 success.
 - Product boundary: gateway remains disabled and undeployed; no real corpus, edge protection, GCP resource, Pages binding, PR, merge or production observation is claimed.
+
+## 2026-07-22 — Feature 073 ephemeral staging runner v1
+
+- Matching installed skill: none. Repository TypeScript, PostgreSQL, CI and program-state work was executed directly through Cloud Sandbox MCP.
+- New package or external skill installation: none; the existing lockfile and pinned pgvector CI image were retained.
+- Producer scope: plan-to-smoke mapping, four disposable database scenarios, exact persona fixtures, loopback/dedicated-cluster executor, clean-worktree CLI, reset gate, sanitized receipt schema/validator and CI execution.
+- Critic/fixer scope: preserved unowned dirty environments, disabled local dotenv, avoided shell invocation, required exact personas instead of permission-equivalent roles, counted only resources that existed, re-queried zero-residue postconditions and denied browser/cloud/production overclaims.
+- Independent verification: clean detached 14/14 eval, 854/856 global, 33/33 contracts, PostgreSQL 16.14/pgvector 0.8.5 20/20 journey receipt, 12 blocked browser journeys, cleanup 4/4 databases and 3/3 roles, zero/zero postcondition, zero dependency vulnerabilities and Backend CI 29959965725 success.
+- Product boundary: synthetic provider-side staging only; no real corpus, human browser session, external consumer execution, GCP resource, PR, merge or deployment is claimed.

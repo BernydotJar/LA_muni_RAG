@@ -1,6 +1,6 @@
 # Feature 073 — Ephemeral staging runner v1
 
-Status: implemented locally; detached verification, publication and remote CI pending.
+Status: implemented, independently verified and published; API/system staging executed with synthetic fixtures, while browser/cloud/production remain unproved.
 
 ## Objective
 

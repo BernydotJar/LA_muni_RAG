@@ -1,12 +1,12 @@
 {
-  "schema_version": "1.15.0",
-  "generated_at": "2026-07-22T20:47:22Z",
-  "branch": "feature/public-query-gateway-v1",
-  "functional_head": "856a6edee20cdb14a16a89d0d1a831faadbf166e",
-  "status": "passed_feature072_public_query_gateway_with_explicit_corpus_edge_staging_identity_and_deployment_blockers",
+  "schema_version": "1.16.0",
+  "generated_at": "2026-07-22T21:54:35Z",
+  "branch": "feature/ephemeral-staging-runner-v1",
+  "functional_head": "4f6ab306d383f6d74808b393a88ff8172d666b5b",
+  "status": "passed_feature073_ephemeral_staging_runner_with_explicit_browser_corpus_external_consumer_cloud_and_deployment_blockers",
   "deterministic": {
-    "tests": 842,
-    "pass": 840,
+    "tests": 856,
+    "pass": 854,
     "fail": 0,
     "skipped": 2,
     "typecheck": "pass",
@@ -33,9 +33,16 @@
     "mocks": 6,
     "reset_steps": 10,
     "issues": 0,
-    "environment_executed": false,
+    "environment_executed": true,
     "browser_e2e_runnable": false,
-    "external_consumers_verified": false
+    "external_consumers_verified": false,
+    "api_system_journeys_executed": 20,
+    "api_system_journeys_passed": 20,
+    "databases_created": 4,
+    "databases_destroyed": 4,
+    "runtime_roles_created": 3,
+    "runtime_roles_destroyed": 3,
+    "cleanup_complete": true
   },
   "hard_evals": {
     "EVAL-PROCEDURE-001": {
@@ -191,13 +198,38 @@
       "passed": 23,
       "total": 23,
       "status": "passed_for_disabled_by_default_server_bound_public_gateway_with_real_corpus_edge_and_deployment_limitations"
+    },
+    "EVAL-EPHEMERAL-STAGING-RUNNER-001": {
+      "command": "npm run eval:staging-runner",
+      "passed": 14,
+      "total": 14,
+      "result": "passed_for_disposable_api_system_staging_runner_with_browser_external_consumer_real_corpus_cloud_and_production_limitations",
+      "evidence": [
+        "4f6ab306d383f6d74808b393a88ff8172d666b5b",
+        "src/staging/ephemeralStagingRunner.ts",
+        "src/staging/ephemeralStagingPostgresExecutor.ts",
+        "contracts/staging/v1/ephemeral-staging-receipt.schema.json",
+        "scripts/staging-reset-postgres-smoke.mjs"
+      ],
+      "execution": {
+        "api_system_journeys": "20/20",
+        "browser_journeys": "12/12 blocked",
+        "databases_destroyed": "4/4",
+        "runtime_roles_destroyed": "3/3",
+        "postcondition": "0 databases / 0 roles"
+      },
+      "limitations": [
+        "Synthetic fixtures only.",
+        "Browser E2E remains blocked.",
+        "External consumers, cloud staging, load/HA, real corpus, merge and deployment are unproved."
+      ]
     }
   },
   "publication": {
-    "branch": "feature/public-query-gateway-v1",
-    "functional_sha": "856a6edee20cdb14a16a89d0d1a831faadbf166e",
+    "branch": "feature/ephemeral-staging-runner-v1",
+    "functional_sha": "4f6ab306d383f6d74808b393a88ff8172d666b5b",
     "remote_sha_verified": true,
-    "ci_run_id": 29955124279,
+    "ci_run_id": 29959965725,
     "ci_status": "completed",
     "ci_conclusion": "success",
     "pr": null,
@@ -214,8 +246,10 @@
     "production_load_ha_recovery_privacy"
   ],
   "limitations": [
-    "Public query gateway is implemented and disabled by default; it is not deployed or bound to an authorized real corpus.",
-    "Zero real documents are credited as ingested.",
-    "Edge protection, staging execution, human identity, external consumers, GCP resources, merge and deployment remain absent."
+    "Ephemeral API/system staging executed with synthetic fixtures; it is not a deployed cloud staging environment.",
+    "Twelve browser journeys remain blocked by missing human identity/session and authenticated UI.",
+    "Zero real documents are credited as ingested and external consumers have not executed their suites.",
+    "Public gateway remains disabled and undeployed; edge/load/observability/HA/recovery/privacy evidence is absent.",
+    "No PR, merge or production deployment is proved."
   ]
 }

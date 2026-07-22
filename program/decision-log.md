@@ -220,3 +220,11 @@ Decision: implement `POST /api/public/v1/query` as the only anonymous browser qu
 Decision: implementation does not authorize enablement. The gateway stays disabled and Pages remains unbound until an authorized ingested public corpus, exact origins, edge controls, staging, load/SLO evidence and deployment approval exist.
 
 Evidence: Feature 072 `856a6edee20cdb14a16a89d0d1a831faadbf166e`, 23/23 named eval, detached 840/842 regression, 33/33 contracts, fresh PostgreSQL 16.14/pgvector 0.8.5 migrations 001–016, non-owner forced-RLS gate, compiled public HTTP smoke and Backend CI `29955124279` success. No PR, merge, cloud resource, Pages binding or deployment is claimed.
+
+## 2026-07-22T21:54:35Z — Execute API/system staging before browser or cloud staging
+
+Decision: Feature 073 is the authoritative provider-side runner for the Feature 070 plan. It maps all twenty runnable API/system journeys exactly once, keeps all twelve browser journeys blocked, executes repository-controlled gates/smokes in four disposable PostgreSQL databases, emits a sanitized SHA-bound receipt and proves cleanup of four databases and three non-owner runtime roles.
+
+Decision: a disposable local/CI PostgreSQL lifecycle is staging evidence for server behavior only. It does not authorize gateway enablement, count as managed cloud staging, prove real-corpus quality, human identity/UI, external consumer conformance, load/HA, merge or deployment.
+
+Evidence: functional SHA `4f6ab306d383f6d74808b393a88ff8172d666b5b`, 14/14 named eval, detached 854/856 regression, 33/33 contracts, PostgreSQL 16.14/pgvector 0.8.5 receipt with 20/20 API/system journeys, 12/12 browser blockers, cleanup 4/4 databases and 3/3 roles, zero/zero postcondition, and Backend CI `29959965725` success including `Execute ephemeral staging runner`.

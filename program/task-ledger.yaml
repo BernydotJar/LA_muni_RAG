@@ -1182,9 +1182,10 @@ tasks:
   - EVAL-DOCUMENT-API-001
   - EVAL-CONSUMER-CONTRACT-KIT-001
   - EVAL-EPHEMERAL-STAGING-E2E-001
+  - EVAL-EPHEMERAL-STAGING-RUNNER-001
   - EVAL-PRODUCTION-PUBLIC-SURFACE-001
   - EVAL-PUBLIC-QUERY-GATEWAY-001
-  current_state: Feature 072 passes 23/23; detached regression is 840/842 with zero failures and two explicit skips; 33/33 contracts and PostgreSQL 16.14/pgvector 0.8.5 gates pass.
+  current_state: Feature 073 passes 14/14; detached regression is 854/856 with zero failures and two explicit skips; 33/33 contracts and disposable PostgreSQL 20/20 staging execution pass.
   blockers: []
   depends_on:
   - GAP-001
@@ -1201,13 +1202,13 @@ tasks:
   files:
   - docs/testing/eval-harness.md
   - program/eval-results.json
-  - src/__tests__/eval-public-query-gateway-001.test.ts
+  - src/__tests__/eval-ephemeral-staging-runner-001.test.ts
   evidence:
-  - Feature 072 EVAL-PUBLIC-QUERY-GATEWAY-001 23/23.
-  - Detached 840/842 regression, 33/33 contracts, fresh PostgreSQL 001-016 and compiled public gateway smoke pass.
-  - Backend CI 29955124279 success.
+  - Feature 073 EVAL-EPHEMERAL-STAGING-RUNNER-001 14/14.
+  - Detached 854/856 regression; 33/33 contracts; 20/20 API/system journeys; 12 browser blockers; zero database/role residue.
+  - Backend CI 29959965725 success.
   pr: null
-  ci: remote_success_run_29955124279
+  ci: remote_success_run_29959965725
 - id: WS05-LIFECYCLE-API-001
   workstream: WS-05
   title: Expose governed workflow lifecycle API v1
@@ -1521,21 +1522,42 @@ tasks:
 - id: WS10-EPHEMERAL-STAGING-RUNNER-001
   workstream: WS-10
   title: Execute the ephemeral staging contract locally
-  status: pending
+  status: completed_with_limitations
   owner: /root
   depends_on:
   - WS10-EPHEMERAL-STAGING-E2E-ARCH-001
   blockers: []
-  acceptance:
-  - Create and destroy a fresh disposable environment per run.
-  - Execute all 20 API/system journeys with generated credentials and synthetic fixtures.
-  - Collect sanitized receipts and prove cleanup.
+  result:
+    functional_commit: 4f6ab306d383f6d74808b393a88ff8172d666b5b
+    branch: feature/ephemeral-staging-runner-v1
+    eval: 14/14
+    detached_tests: 854/856; zero failures; two skips
+    api_system_journeys: 20/20
+    browser_journeys: 12/12 blocked
+    databases_destroyed: 4/4
+    runtime_roles_destroyed: 3/3
+    postcondition: 0 databases / 0 roles
+    postgres: 16.14 / pgvector 0.8.5
+    remote_ci: 29959965725 success
   limitations:
-  - Browser E2E remains blocked until human identity and authenticated UI exist.
-  files: []
-  evidence: []
+  - Uses synthetic fixtures in a disposable local/CI PostgreSQL service, not deployed cloud staging.
+  - Browser E2E remains blocked until human identity/session and authenticated UI exist.
+  - External consumers, real corpus, load/HA, cloud operations, merge and deployment remain unproved.
+  files:
+  - src/staging/ephemeralStagingRunner.ts
+  - src/staging/ephemeralStagingPostgresExecutor.ts
+  - src/staging/ephemeralStagingReceipt.ts
+  - src/cli/runEphemeralStaging.ts
+  - contracts/staging/v1/ephemeral-staging-receipt.schema.json
+  - db/tests/staging_reset_runtime_gate.sql
+  - scripts/staging-reset-postgres-smoke.mjs
+  evidence:
+  - Exact remote SHA 4f6ab306d383f6d74808b393a88ff8172d666b5b.
+  - Detached clean receipt: 20/20 API/system, 12 blocked browser, cleanup 4/4 databases and 3/3 roles, postcondition zero/zero.
+  - Backend CI 29959965725 success including Execute ephemeral staging runner.
+  branch: feature/ephemeral-staging-runner-v1
   pr: null
-  ci: not_started
+  ci: remote_success_run_29959965725
 - id: WS09-PRODUCTION-PUBLIC-SURFACE-001
   workstream: WS-09
   title: Convert the public frontend into a fail-closed production product shell
