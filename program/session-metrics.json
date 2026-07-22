@@ -1,98 +1,72 @@
 {
-  "updated_at": "2026-07-22T00:35:00Z",
-  "branch": "feature/search-evidence-api-v1",
-  "head": "42d2fda70b27ccc9178c6a8d69bba957ef953105",
+  "schema_version": "1.8.0",
+  "generated_at": "2026-07-22T01:05:41Z",
+  "branch": "feature/consumer-contract-kit-v1",
+  "functional_head": "5e5481e26b1a27a0aa2bd9c965e1c160f18b3198",
   "source": "observed command outputs only",
+  "status": "PARTIAL_WITH_DOCUMENTED_BLOCKERS",
   "tests": {
-    "total": 779,
-    "passed": 777,
+    "total": 795,
+    "passed": 793,
     "failed": 0,
     "skipped": 2
   },
-  "database": {
-    "postgres": "16.14",
-    "pgvector": "0.8.5",
-    "fresh_migrations": "001-015 pass",
-    "non_owner_rls": "pass",
-    "compiled_http_smoke": "pass"
-  },
-  "publication": {
-    "branch": "feature/search-evidence-api-v1",
-    "functional_sha": "42d2fda70b27ccc9178c6a8d69bba957ef953105",
-    "remote_sha_verified": true,
-    "remote_ci_run": 29880372748,
-    "remote_ci_status": "success",
-    "pr": null,
-    "merged": false,
-    "deployed": false
-  },
-  "cost": null,
-  "duration_seconds": null,
-  "token_usage": null,
-  "limitations": [
-    "Billing, wall-clock duration and token telemetry unavailable; fields remain null."
-  ],
-  "updatedAt": "2026-07-21T21:53:16Z",
-  "currentBranch": "chore/program-readiness-reconciliation-v1",
-  "functionalHead": "e39ad7740324895c914e15106746f453e213de77",
-  "originMain": "4950ba3c24dbe7d9891d5cec8d7ba5f57db3ef9c",
   "contracts": {
     "schemas": 30,
     "examples": 30,
-    "openapi": "3.1.1"
+    "openapi": "3.1.1",
+    "consumer_kits": 2,
+    "consumer_interactions": 5
   },
-  "requiredNamedEvals": {
-    "required": 19,
-    "dedicated": 19
+  "hard_evals": {
+    "consumer_contract_kit": "16/16",
+    "search_api": "24/24",
+    "evidence_bundle_api": "24/24"
   },
-  "sourceInventory": {
+  "source_inventory": {
     "total": 17,
     "verified": 4,
-    "acquiredMetadata": 1,
+    "acquisition_metadata": 1,
     "ingested": 0
   },
-  "remoteCiRuns": {
-    "academy": 29865728313,
-    "procedureCase": 29866907067,
-    "restore": 29867846337,
-    "remainingEvals": 29871698536
-  },
-  "openPullRequests": 0,
-  "merged": false,
-  "deployed": false,
-  "productionReady": false,
-  "dependency_audit": {
-    "fast_uri": "3.1.4",
-    "all_vulnerabilities": 0,
-    "production_vulnerabilities": 0
-  },
-  "schema_version": "1.7.0",
-  "checkpoint": {
-    "functional_sha": "42d2fda70b27ccc9178c6a8d69bba957ef953105",
+  "publication": {
+    "branch": "feature/consumer-contract-kit-v1",
+    "functional_sha": "5e5481e26b1a27a0aa2bd9c965e1c160f18b3198",
     "remote_sha_verified": true,
-    "detached_verification": true,
-    "remote_ci_run": 29880372748,
-    "remote_ci_status": "success",
+    "ci_run_id": 29882062536,
+    "ci_status": "success",
+    "ci_conclusion": "success",
     "pr": null,
     "merged": false,
     "deployed": false
   },
-  "hard_evals": {
-    "search_api": "24/24",
-    "evidence_bundle_api": "24/24"
+  "dependency_audit": {
+    "all_vulnerabilities": 0,
+    "production_vulnerabilities": 0
   },
-  "operational_gates": {
-    "search_evidence_postgres": "passed",
-    "search_evidence_compiled_http": "passed",
-    "detached_search_evidence": "passed"
+  "consumer_contract_gate": {
+    "kits": 2,
+    "interactions": 5,
+    "issues": 0,
+    "detached_verification": "pass",
+    "external_consumers": "not_run"
   },
-  "program_status": "PARTIAL_WITH_DOCUMENTED_BLOCKERS",
-  "blockers": [
-    "BLK-CORPUS-OPS-001: source rights, durable storage, scanner and retention/legal-hold controls unavailable.",
-    "Human IdP/session/SaaS surfaces absent.",
-    "Production infrastructure, observability, staging, load/HA, recovery and privacy operations absent.",
-    "External consumer contracts, reviewed PR, protected merge and deployment absent."
+  "e2e_sequence": [
+    "external_consumer_contracts",
+    "identity_and_deterministic_ephemeral_staging",
+    "system_api_journeys",
+    "browser_e2e_last"
   ],
+  "remaining_blockers": [
+    "BLK-CORPUS-OPS-001: source rights, durable storage, scanner and retention/legal-hold controls unavailable.",
+    "External consumer repository suites have not run.",
+    "Human IdP/session and deterministic staging identities/data are absent.",
+    "Production infrastructure, observability, load/HA, recovery and privacy operations are absent.",
+    "No reviewed PR, protected merge or deployment exists."
+  ],
+  "cost": null,
+  "duration_seconds": null,
+  "token_usage": null,
   "historical_checkpoints": {
     "feature067_catalog": {
       "database": {
@@ -116,43 +90,5 @@
         "deployed": false
       }
     }
-  },
-  "generated_at": "2026-07-22T00:35:00Z",
-  "functional_head": "42d2fda70b27ccc9178c6a8d69bba957ef953105",
-  "status": "PARTIAL_WITH_DOCUMENTED_BLOCKERS",
-  "cumulative_test_gate": {
-    "tests": 779,
-    "passed": 777,
-    "failed": 0,
-    "skipped": 2
-  },
-  "deterministic": {
-    "contracts": "30/30",
-    "typecheck": "pass",
-    "build": "pass",
-    "tests": "777/779",
-    "pages": "pass"
-  },
-  "vector_validation": {
-    "semantic_provider_timeout": "pass",
-    "provider_outside_transaction": "pass",
-    "replay_without_provider": "pass",
-    "literal_phrase": "pass",
-    "signed_url_filter": "pass",
-    "real_corpus_quality": "not_run"
-  },
-  "scans": {
-    "secret_patterns": "none",
-    "dependency_audit": "0 vulnerabilities",
-    "production_dependency_audit": "0 vulnerabilities",
-    "license_packages": 351,
-    "denied_licenses": 0,
-    "unknown_licenses": 0
-  },
-  "remaining_blockers": [
-    "BLK-CORPUS-OPS-001: source rights, durable storage, scanner and retention/legal-hold controls unavailable.",
-    "Human IdP/session/SaaS surfaces absent.",
-    "Production infrastructure, observability, staging, load/HA, recovery and privacy operations absent.",
-    "External consumer contracts, reviewed PR, protected merge and deployment absent."
-  ]
+  }
 }

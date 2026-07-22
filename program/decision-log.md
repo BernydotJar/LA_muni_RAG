@@ -189,3 +189,14 @@ remain owned by the artifact adapter and are never persisted in catalog fields.
 `feature/catalog-api-v1` is published at exact functional SHA
 `9da29720c23d64bc73bdb24e92e67707834f4f84`. Backend CI run `29876782983`
 is tracked separately. No PR, merge, deployment or production observation is claimed.
+## 2026-07-22T01:10:55Z — E2E follows contracts, identity, deterministic staging and system journeys
+
+Decision: publish provider-side portable contract manifests first, require each
+external consumer to pin the exact SHA and run equivalent verification, then
+stabilize human identity and resettable staging data before system/API journeys.
+Browser E2E is the final layer and validates critical user outcomes rather than
+serving as a discovery mechanism for schema, authorization or persistence bugs.
+
+Evidence: Feature 069 `5e5481e26b1a27a0aa2bd9c965e1c160f18b3198`, 16/16 consumer-kit eval, detached 793/795
+regression, 2 kits/5 interactions and CI run `29882062536` (`success`). No
+external repository, PR, merge or deployment is claimed.

@@ -1,151 +1,85 @@
 # LA Muni RAG — Current Program State
 
-Updated: 2026-07-22T00:15:00Z
+Updated: 2026-07-22T01:05:41Z
 
-Program status: **PARTIAL — Feature 068 is a locally verified production-shaped backend candidate; global production readiness is not proven**
+Program status: **PARTIAL WITH DOCUMENTED BLOCKERS — Feature 069 is a published, independently verified provider-side contract checkpoint; global production readiness is not proven**
 
 ## Authoritative checkout
 
 ```text
 workspace_id: 090ec1e4-f130-4801-addd-f6ecb198744a
 root: /workspace
-branch: feature/search-evidence-api-v1
-base_remote_ref: origin/feature/catalog-api-v1
-base_sha: 4343e5dc14595ff24a559a4e7476cde067be1539
-functional_commit: 42d2fda70b27ccc9178c6a8d69bba957ef953105
+branch: feature/consumer-contract-kit-v1
+functional_commit: 5e5481e26b1a27a0aa2bd9c965e1c160f18b3198
+remote_functional_ref: 5e5481e26b1a27a0aa2bd9c965e1c160f18b3198
+origin_main: 4950ba3c24dbe7d9891d5cec8d7ba5f57db3ef9c
 pushed: true
 PR_open: false
 merged: false
 deployed: false
 observed_in_production: false
-remote_ci_run: 29880372748 success on functional SHA
+remote_ci_run: 29882062536 success
 ```
 
-`AGENTS.md` and `RTK.md` remain authoritative. Normal feature-branch commits,
-pushes and verification are authorized. Protected merge, production deployment,
-paid/external infrastructure, sensitive credential use and legal conclusions
-remain human-gated.
+`AGENTS.md` and `RTK.md` remain authoritative. Protected merge, production deployment, paid/external infrastructure, sensitive credential use, legal conclusions and modifications to neighboring products remain human-gated.
 
-## Feature 068 — dedicated Search and EvidenceBundle API v1
+## Feature 069 — portable consumer contract kits v1
 
-Implemented routes:
+Published provider-side artifacts:
 
 ```text
-POST /api/v1/search
-POST /api/v1/evidence-bundles
+contracts/consumer-kits/v1/os-electoral.json
+contracts/consumer-kits/v1/content-agency.json
+contracts/consumer-kits/v1/consumer-contract-kit.schema.json
 ```
 
-Implemented behavior:
+Verified scope:
 
-- bearer authentication and `evidence:query` authorization precede body parsing;
-- request, tenant and credential identities are bound to the authenticated principal;
-- all PostgreSQL retrieval and control-state work executes in a transaction-local
-  tenant context with forced RLS;
-- Search supports explicit `keyword`, `phrase`, `semantic` and `hybrid` modes;
-- semantic and hybrid requests fail closed with `503 capability_unavailable`
-  when the query-embedding provider is missing, incompatible, timed out or fails;
-- query embedding executes outside PostgreSQL transactions with a bounded HTTP timeout;
-- hybrid proves semantic capability first and never claims semantic execution
-  after a lexical-only fallback;
-- candidates require source `acquired/ingested/indexed`, active public documents,
-  processed extraction, exact accepted clean artifact state, processed ingestion
-  job, citable identity, public URL and SHA-256 provenance;
-- runtime grants are column-scoped and do not expose object coordinates, scanner
-  engine/version, lease/fencing material or pipeline configuration;
-- authority, temporal and evidence-use states are derived from persisted
-  server-owned fields and an explicit request `as_of_date`;
-- citation identity is deduplicated, negative cosine similarity is clamped to zero,
-  and score semantics are named explicitly;
-- ordinary EvidenceBundle claims require `supported` evidence and preserve the
-  exact bounded documentary excerpt;
-- comparative and validation-required material remains visible as evidence but
-  is never promoted to an ordinary supported claim;
-- Mixco/comparative material retains an Antigua/national corroboration gap;
-- conflicting document versions produce review-required positions,
-  contradictions and missing-evidence actions without selecting a winner;
-- EvidenceBundle uses principal-scoped digest-only idempotency, byte-exact replay,
-  semantic replay validation and committed deletion of corrupt completed state;
-- closed JSON Schemas reject caller-selected authority, validation, retrieval,
-  score-threshold and support fields;
-- OpenAPI 3.1.1 describes exact methods, headers, schemas and response statuses.
+- exactly two allowlisted consumer kits and five interactions;
+- OS Electoral: EvidenceBundle, ProcedureWorkflow, ProcedureAssessment and EvidenceGapResponse;
+- Content Agency: ClaimPack delivery;
+- exact OpenAPI path, method, request headers, response correlation header, success/error statuses and schemas;
+- canonical request/response/error examples validated against JSON Schema draft 2020-12;
+- each ProcedureQuery example binds its `requested_output` explicitly;
+- complete interaction inventories cannot be silently reduced;
+- consumer-owned campaign/content fields are rejected in response schemas and examples;
+- non-allowlisted kit paths are rejected before filesystem access;
+- provider-side CLI and CI are deterministic and offline.
 
-## Feature 067 — governed tenant Catalog API v1
+This feature does **not** modify OS Electoral or Content Agency and does not prove that either repository consumes, persists or retries these contracts correctly.
 
-Previously implemented and retained routes:
+## Verification
+
+Exact detached checkout `5e5481e26b1a27a0aa2bd9c965e1c160f18b3198`:
 
 ```text
-GET  /api/v1/sources
-POST /api/v1/sources
-GET  /api/v1/documents
-POST /api/v1/documents
-GET  /api/v1/ingestion-jobs
-GET  /api/v1/procedures
-```
-
-Catalog registration remains fail closed: it cannot establish official authority,
-artifact acceptance, acquisition, ingestion, retrieval quality, vigencia, legal
-validity or deployment.
-
-## Local verification of the Feature 068 candidate
-
-```text
-contracts: 30 schemas / 30 examples / OpenAPI 3.1.1
-EVAL-SEARCH-API-001: 24/24 pass
-EVAL-EVIDENCE-BUNDLE-API-001: 24/24 pass
-full suite: 779 total / 777 pass / 0 fail / 2 explicit environment skips
+npm ci --ignore-scripts --prefer-offline: pass
+full suite: 795 total / 793 pass / 0 fail / 2 explicit environment skips
+EVAL-CONSUMER-CONTRACT-KIT-001: 16/16 pass
+canonical contracts: 30 schemas / 30 examples / OpenAPI 3.1.1
+portable kits: 2 kits / 5 interactions / 0 issues
 typecheck: pass
 build: pass
-domain evaluation: 8/8
 source inventory: 17 valid / 4 verified / 1 acquisition metadata / 0 ingested
+domain evaluation: 8/8
 npm audit --audit-level=high: 0 vulnerabilities
 npm audit --omit=dev --audit-level=high: 0 vulnerabilities
-GitHub Pages artifact verification: pass
 git diff --check: pass
 ```
 
-Fresh disposable PostgreSQL verification:
-
-```text
-PostgreSQL: 16.14
-pgvector image: 0.8.5-pg16-bookworm
-fresh migrations: 001–015 pass
-runtime role: non-owner / NOSUPERUSER / NOBYPASSRLS
-search/evidence SQL/RLS gate: pass
-eligible public fixture evidence: 2
-private artifact columns granted: false
-cross-tenant leak: false
-compiled Search/EvidenceBundle HTTP smoke: pass
-HTTP decisions: 503/401/200/200/200/200/200/409/500/403/200
-semantic executed when explicitly configured: true
-hybrid executed with keyword/phrase/semantic: true
-comparative evidence promoted to ordinary claim: false
-exact replay: true
-corrupt replay cleanup committed: true
-```
-
-Detached verification of `42d2fda70b27ccc9178c6a8d69bba957ef953105` independently repeated npm ci, 30/30 contracts, typecheck, 779/777/0/2 tests, build, both zero-vulnerability audits, fresh migrations 001–015, the non-owner SQL/RLS gate and the compiled HTTP smoke.
-
-The PostgreSQL corpus and query-embedding provider used by the gate are controlled
-test fixtures. They prove integration mechanics and safety boundaries, not
-real-corpus relevance, legal correctness, provider reliability or production
-capacity.
+Backend CI run `29882062536` completed with `success` on the exact functional SHA. A green local or remote feature branch is not a PR, merge, staging deployment or production release.
 
 ## Cumulative product capabilities
 
-- source inventory and fail-closed tenant source registration;
-- document/version registration and safe catalog projection;
-- exact artifact-acceptance foundation;
-- durable ingestion jobs, retry, leases, fencing and tenant vectors;
-- dedicated Search and EvidenceBundle v1 providers;
-- ProcedureQuery outputs: EvidenceBundle, ProcedureWorkflow and conservative
-  ProcedureAssessment;
-- workflow draft/review/approval/read lifecycle;
-- EvidenceGap and ClaimPack providers;
-- tenant ProcedureCase create/read/update lifecycle;
+- governed tenant source/document/procedure catalogs;
+- exact artifact acceptance and durable ingestion job/vector foundations;
+- dedicated Search and conservative EvidenceBundle APIs;
+- ProcedureQuery EvidenceBundle, ProcedureWorkflow and ProcedureAssessment;
+- ClaimPack and immutable EvidenceGapRequest providers;
+- governed workflow lifecycle and tenant ProcedureCase lifecycle;
+- provider-side portable consumer contract manifests;
 - public evidence-first Procedure Academy;
-- disposable logical PostgreSQL restore drill;
-- named hard-eval families plus ProcedureAssessment, EvidenceGap, Source API,
-  Document API, Search API and EvidenceBundle API gates.
+- disposable PostgreSQL/RLS, compiled HTTP and logical restore gates.
 
 ## Current corpus truth
 
@@ -158,81 +92,44 @@ records credited as ingested: 0
 records retrieval-validated against real corpus: 0
 ```
 
-API registration and synthetic PostgreSQL fixtures do not change these values. A
-URL or SHA-256 declaration is not durable acquisition, clean scan, extraction,
-ingestion, retrieval quality or human legal review.
+Synthetic examples, manifests and PostgreSQL fixtures do not change these values. A URL, hash or green contract test is not durable acquisition, current scan, ingestion, retrieval quality, legal validity or human applicability review.
 
-## Minimum API status
+## Best path forward
 
-The product-minimum route names requested by the program now have local,
-production-shaped implementations. This closes the missing-route gap only. It
-does not establish production equivalence without real corpus, human SaaS,
-consumer contracts, infrastructure, operational evidence, protected merge and
-observed deployment.
+1. **Consumer-side contract verification.** Pin the exact Feature 069 SHA in OS Electoral and Content Agency and run equivalent schema/OpenAPI/preservation tests in each repository.
+2. **Identity and deterministic staging.** Decide the human IdP/OIDC/BFF/session architecture; define ephemeral tenant fixtures, integration credentials and resettable data without production secrets.
+3. **System/API journeys.** Exercise auth, tenant isolation, replay, expiry, supersession, failure/retry and cross-product preservation through deployed ephemeral services.
+4. **E2E last.** Add browser journeys only after contracts, identity, fixtures and staging topology are stable. E2E should validate user outcomes, not discover schema, authorization or persistence defects that lower layers should catch.
 
-## Critical global gaps
+## Critical global blockers
 
 ### Corpus and retrieval
 
-- authorized durable object storage and current production scanner operation;
-- exact Antigua-first and national artifact acquisition;
-- real extraction, chunks, embeddings and operational manifest reconciliation;
-- real keyword/phrase/semantic/hybrid quality and performance evaluation;
-- human citation, authority, vigencia, supersession, applicability and
-  contradiction review;
-- zero documents are credited as ingested against a real reviewed corpus.
+- source rights, approved durable storage, current scanner and retention/legal-hold controls are unavailable (`BLK-CORPUS-OPS-001`);
+- zero real documents are credited as ingested;
+- no judged Antigua-first retrieval quality, latency, cost or load evidence exists;
+- human authority, vigencia, supersession, jurisdiction and applicability review remains mandatory.
 
-### Human SaaS
+### Human SaaS and E2E prerequisites
 
-- browser authentication/session architecture and approved human IdP/OIDC
-  authorization-code-with-PKCE plus BFF/session model;
-- secure cookies, CSRF, logout, revocation and account recovery;
-- tenant/member/role provisioning and periodic access review;
-- role-aware navigation and authenticated source viewer, library, search, cases,
-  reviews, administration and audit surfaces;
-- supported-browser, screen-reader and human WCAG 2.2 AA evidence.
+- no approved IdP/OIDC/PKCE/BFF/session architecture;
+- no secure cookies, CSRF, provisioning, logout, revocation or recovery;
+- no authenticated role-aware source/library/search/case/review/admin/audit UI;
+- no deterministic staging identities/data or browser E2E environment;
+- no supported-browser, screen-reader or human WCAG 2.2 AA evidence.
 
-### Platform and operations
+### Platform, integration and release
 
-- Terraform/environment provisioning, workload identity and production secrets;
-- no production object store, scanner/definitions monitor or dispatcher is
-  operating from this checkpoint;
-- quotas, cancellation and dead-letter operator tooling;
-- metrics, traces, logs, SLOs and exercised alerts;
-- staging, load, capacity and HA evidence;
-- coordinated object/database restore, PITR, KMS/key recovery and approved RPO/RTO;
-- privacy purpose, retention, deletion/legal-hold and DSAR operations.
+- no production Terraform, workload identity, secrets, object store, scanner, dispatcher, observability/SLOs, staging, load/HA or coordinated recovery;
+- no cross-repository consumer suites have run;
+- no reviewed PR, protected merge, deployment or observation window exists;
+- legal, privacy, security and release approvals remain human-gated.
 
-### Research gaps
+## Persistent open-boundary assertions
 
-- EvidenceGap is intake-only: there is no research assignment, resolution lifecycle or notification workflow;
-- the minimum Antigua-first and comparative corpus is incomplete.
-
-### Integration and release
-
-- cross-repository OS Electoral and Content Agency consumer suites;
-- human-reviewed PR and protected merge;
-- production deployment and observation window;
-- legal, privacy, security and release approvals.
-
-## Critical work after Feature 068 publication
-
-1. `WS02-CORPUS-ACQUISITION-001` — blocked pending human approval of rights, storage, scanner and privacy controls; then acquire an authorized durable Antigua-first corpus,
-   current scan, extraction and ingestion.
-2. `WS04-REAL-CORPUS-RETRIEVAL-001` — judged real-corpus retrieval, citation and
-   conflict quality across keyword, phrase, semantic and hybrid modes.
-3. `WS09-AUTH-SHELL-001` — human IdP/session/BFF and role-aware authenticated shell
-   after human architecture decisions.
-4. `WS10-PLATFORM-001` — staging, observability, load/HA, privacy operations and
-   coordinated recovery.
-5. Consumer repository contract tests, reviewed PR, protected merge and observed
-   deployment.
-
-## Exact resume condition
-
-1. Verify workspace, branch, HEAD, upstream, worktree and remote SHA.
-2. Finish staged diff review, secret/dependency/license checks and local gates.
-3. Preserve Backend CI success run 29880372748 on the exact functional SHA without inferring merge or deployment.
-4. Preserve the separate program reconciliation commit and verify its remote SHA.
-5. Continue with authorized Antigua-first corpus acquisition only after source rights, storage, scanner and retention controls are available.
-6. Do not merge, deploy, provision paid infrastructure, issue legal conclusions, or implement OS Electoral/Content Agency automatically.
+- There is no production object store, and no production scanner/definitions monitor or dispatcher is operating from this repository checkpoint.
+- Zero documents are credited as ingested against a real, reviewed corpus.
+- EvidenceGap is intake-only: there is no research assignment, resolution lifecycle or notification workflow.
+- The minimum Antigua-first and comparative corpus is incomplete.
+- Browser authentication/session architecture, approved IdP/OIDC/BFF, secure cookies/CSRF, provisioning, recovery, and role-aware navigation remain unimplemented.
+- Provider-side contract kits do not prove external consumer interoperability.

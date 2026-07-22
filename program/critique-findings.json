@@ -1,14 +1,98 @@
 {
-  "updated_at": "2026-07-22T00:35:00Z",
-  "slice": "Feature 068 dedicated Search and EvidenceBundle API v1",
-  "functional_head": "42d2fda70b27ccc9178c6a8d69bba957ef953105",
+  "schema_version": "1.8.0",
+  "generated_at": "2026-07-22T01:05:41Z",
+  "current_slice": "Feature 069 portable consumer contract kits v1",
+  "functional_head": "5e5481e26b1a27a0aa2bd9c965e1c160f18b3198",
   "summary": {
-    "resolved_findings": 15,
-    "open_findings": 1,
-    "feature068_critical_or_high_open": 0,
+    "resolved_feature_findings": 6,
+    "critical_or_high_open_in_feature": 0,
     "global_blockers_remain": true
   },
-  "findings": [
+  "feature_findings": [
+    {
+      "id": "CCK-HIGH-001",
+      "severity": "high",
+      "status": "resolved",
+      "finding": "A manifest could silently remove a supported interaction.",
+      "resolution": "Consumer-specific exact interaction inventories are enforced."
+    },
+    {
+      "id": "CCK-HIGH-002",
+      "severity": "high",
+      "status": "resolved",
+      "finding": "ProcedureQuery interactions shared an ambiguous request example.",
+      "resolution": "Each output has a canonical example and requested_output discriminator validation."
+    },
+    {
+      "id": "CCK-CRIT-003",
+      "severity": "critical",
+      "status": "resolved",
+      "finding": "Consumer-owned fields could be introduced only in a response schema.",
+      "resolution": "Forbidden fields are recursively checked in schemas and examples, with non-removable baseline guards."
+    },
+    {
+      "id": "CCK-HIGH-004",
+      "severity": "high",
+      "status": "resolved",
+      "finding": "Response correlation headers were not part of the manifest gate.",
+      "resolution": "Every success/error response must advertise X-Request-Id."
+    },
+    {
+      "id": "CCK-HIGH-005",
+      "severity": "high",
+      "status": "resolved",
+      "finding": "Kit path input could address files outside the allowlist.",
+      "resolution": "Only the two canonical kit filenames are accepted before filesystem access."
+    },
+    {
+      "id": "CCK-MED-006",
+      "severity": "medium",
+      "status": "resolved",
+      "finding": "Documentation implied the provider CLI was directly portable.",
+      "resolution": "Schemas/examples/manifests are portable; consumer repositories must run equivalent local verification."
+    }
+  ],
+  "open_findings": [
+    {
+      "id": "CCK-OPEN-CONSUMERS-001",
+      "severity": "high",
+      "status": "open",
+      "area": "external_integrations",
+      "finding": "OS Electoral and Content Agency have not executed the kits in their own repositories."
+    },
+    {
+      "id": "PROG-CORPUS-001",
+      "severity": "critical",
+      "status": "open",
+      "area": "corpus",
+      "finding": "No authorized durable corpus bytes or real ingestion exist."
+    },
+    {
+      "id": "PROG-IDP-E2E-001",
+      "severity": "critical",
+      "status": "open",
+      "area": "human_saas",
+      "finding": "No approved human identity/session architecture or deterministic staging environment exists for E2E."
+    },
+    {
+      "id": "PROG-OPS-001",
+      "severity": "critical",
+      "status": "open",
+      "area": "operations",
+      "finding": "No production platform, observability, load/HA, recovery or privacy operations exist."
+    }
+  ],
+  "publication": {
+    "branch": "feature/consumer-contract-kit-v1",
+    "functional_sha": "5e5481e26b1a27a0aa2bd9c965e1c160f18b3198",
+    "ci_run": 29882062536,
+    "ci_status": "success",
+    "pr": null,
+    "merged": false,
+    "deployed": false,
+    "ci_conclusion": "success"
+  },
+  "historical_findings": [
     {
       "id": "CAT-CRIT-001",
       "severity": "critical",
@@ -183,72 +267,5 @@
         "eval-evidence-bundle-api-001.test.ts"
       ]
     }
-  ],
-  "open_external_or_governance_findings": [
-    {
-      "id": "CAT-OPEN-CORPUS-001",
-      "severity": "critical",
-      "category": "external_data",
-      "description": "No durable acquired, scanned, ingested and retrieval-validated Antigua-first corpus exists."
-    },
-    {
-      "id": "CAT-OPEN-SEARCH-002",
-      "severity": "high",
-      "category": "product",
-      "description": "Dedicated Search and EvidenceBundle APIs are still missing."
-    },
-    {
-      "id": "CAT-OPEN-IDP-003",
-      "severity": "critical",
-      "category": "human_decision",
-      "description": "Human IdP/OIDC/BFF/session architecture is not approved or implemented."
-    },
-    {
-      "id": "CAT-OPEN-OPS-004",
-      "severity": "critical",
-      "category": "infrastructure",
-      "description": "No production object store/scanner/dispatcher/observability/staging/load/HA exists."
-    },
-    {
-      "id": "CAT-OPEN-RELEASE-005",
-      "severity": "high",
-      "category": "human_gate",
-      "description": "No PR, protected merge, deployment or production observation exists."
-    }
-  ],
-  "open_global_findings": [
-    "No authorized durable corpus bytes, current production scans or real ingestion exist.",
-    "No judged real-corpus keyword, phrase, semantic or hybrid quality/performance evidence exists.",
-    "No human IdP/session/BFF/provisioning/recovery or authenticated role-aware SaaS surfaces exist.",
-    "No production object store/scanner/dispatcher, observability/SLO, staging/load/HA, coordinated recovery or privacy operations exist.",
-    "No external consumer contract suites, reviewed PR, protected merge or deployment exist."
-  ],
-  "schema_version": "1.7.0",
-  "head": "42d2fda70b27ccc9178c6a8d69bba957ef953105",
-  "open_findings": [
-    {
-      "id": "PROG-CORPUS-001",
-      "severity": "critical",
-      "status": "open",
-      "area": "corpus",
-      "finding": "No authorized durable corpus bytes or real ingestion exist.",
-      "required_next_action": "Resolve BLK-CORPUS-OPS-001 and execute authorized acquisition/scan/ingestion without crediting fixtures."
-    }
-  ],
-  "generated_at": "2026-07-22T00:35:00Z",
-  "current_slice": "Feature 068 dedicated Search and EvidenceBundle API v1",
-  "critical_or_high_open": 0,
-  "warning_open": 0,
-  "publication": {
-    "branch": "feature/search-evidence-api-v1",
-    "functional_sha": "42d2fda70b27ccc9178c6a8d69bba957ef953105",
-    "remote_sha_verified": true,
-    "remote_ci_run": 29880372748,
-    "remote_ci_status": "success",
-    "pr": null,
-    "merged": false,
-    "deployed": false
-  },
-  "global_readiness_gate": "The backend feature is locally and independently verified, but global production readiness remains blocked by real corpus, human review/SaaS, production operations, consumers and release evidence.",
-  "global_state": "PARTIAL_WITH_DOCUMENTED_BLOCKERS"
+  ]
 }

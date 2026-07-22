@@ -1,17 +1,18 @@
 # LA Muni RAG — Program Risk Register
 
-Updated: 2026-07-22T00:35:00Z
+Updated: 2026-07-22T01:05:41Z
 
 | ID | Risk | Current control/evidence | Residual state |
 |---|---|---|---|
-| R-CORPUS-01 | Synthetic fixtures are mistaken for real corpus readiness | Current-state and API limitations report 0 ingested; fixtures labeled test-only | critical_open |
-| R-AUTHORITY-01 | Retrieval output is mistaken for legal validity/applicability | Server-derived authority/time labels, conservative claims, human-review limitations | high_open_until_human_review |
-| R-TENANT-01 | Cross-tenant or private artifact data leaks | Forced RLS, explicit predicates, non-owner column grants, cross-tenant smoke | controlled_locally; staging/production drift monitoring open |
-| R-SEMANTIC-01 | Semantic outage silently degrades or holds DB transactions | Fail-closed 503, provider timeout, embedding outside transactions, replay before provider | controlled_locally; provider SLO/cost/circuit-breaker open |
-| R-REPLAY-01 | Hash-valid replay corrupts evidence relationships | Schema/hash/identity/claim/citation/contradiction validation and committed cleanup | controlled_locally; DB compromise/key operations open |
-| R-COMPARATIVE-01 | Mixco/comparative evidence is promoted as Antigua authority | Comparative non-promotion and explicit corroboration gaps | controlled_locally; human classification review open |
-| R-SAAS-01 | Backend is presented as a complete human SaaS | Current-state explicitly marks IdP/session/UI absent | critical_open |
-| R-OPS-01 | Local green gates are presented as production operations | No staging/load/HA/SLO/deployment claims; disposable gates identified | critical_open |
+| R-CORPUS-01 | Fixtures are mistaken for real corpus readiness | Explicit 0-ingested state and test-only labels | critical_open |
+| R-AUTHORITY-01 | Retrieval is mistaken for legal validity/applicability | Conservative authority/evidence labels and human-review limits | high_open_until_human_review |
+| R-TENANT-01 | Cross-tenant/private metadata leaks | Forced RLS, non-owner grants and adversarial smokes | controlled_locally; staging drift open |
+| R-CONSUMER-01 | Provider changes break external consumers | Feature 069 exact manifests and verifier | high_open until consumer repositories run suites |
+| R-CONSUMER-02 | Provider-side green is presented as interoperability | Manifests/docs explicitly deny that claim | high_open until cross-repository evidence |
+| R-BOUNDARY-01 | Campaign/content fields enter provider contracts | Required schema/example forbidden-field guards | controlled_provider_side |
+| R-E2E-01 | Browser tests become brittle and mask lower-layer defects | E2E explicitly sequenced after contracts/identity/fixtures/staging | medium_open |
+| R-IDP-01 | E2E uses fake auth incompatible with production design | No browser E2E claimed before IdP/BFF decision | critical_open |
+| R-SAAS-01 | Backend is presented as complete human SaaS | Current-state marks all human surfaces absent | critical_open |
+| R-OPS-01 | Local gates are presented as production operations | No staging/load/HA/SLO/deployment claim | critical_open |
 | R-PRIVACY-01 | Retention/deletion/legal-hold obligations are undefined | Documentation only | critical_open |
-| R-RELEASE-01 | Published branch is mistaken for merged/deployed product | Exact branch/SHA/CI/PR/merge/deploy fields tracked separately | high_open |
-| R-CONSUMER-01 | Provider changes break external consumers | Closed schemas/OpenAPI and versioned examples | high_open until external contract suites run |
+| R-RELEASE-01 | Published branch is mistaken for merged/deployed product | Branch/SHA/CI/PR/merge/deploy tracked separately | high_open |

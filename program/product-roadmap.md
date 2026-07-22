@@ -1,51 +1,58 @@
 # LA Muni RAG — Product Roadmap
 
-Updated: 2026-07-22T00:35:00Z
+Updated: 2026-07-22T01:05:41Z
 
 ## Completed locally with explicit limitations
 
 - Tenant identity/RBAC and transaction-local RLS foundations.
-- Artifact acceptance, ingestion jobs, leases/fencing and tenant vector foundations.
-- ProcedureQuery, ClaimPack, EvidenceGap, workflow lifecycle and ProcedureCase APIs.
-- Governed Source/Document catalog API v1 (Feature 067).
-- Dedicated Search and EvidenceBundle API v1 (Feature 068, functional commit `42d2fda`).
-- Closed contract registry: 30 schemas, 30 examples and OpenAPI 3.1.1.
-- Disposable PostgreSQL/pgvector, compiled HTTP and logical restore gates.
+- Artifact acceptance, ingestion jobs, leases/fencing and tenant vectors.
+- Catalog, Search, EvidenceBundle, ProcedureQuery, ClaimPack, EvidenceGap, workflow lifecycle and ProcedureCase APIs.
+- Closed registry: 30 schemas, 30 examples and OpenAPI 3.1.1.
+- Portable provider-side contract kits: 2 consumers / 5 interactions at `5e5481e`.
+- Disposable PostgreSQL/pgvector, compiled HTTP, accessibility and restore gates.
 
-## Phase 1 — Authorized Antigua-first corpus
+These capabilities are feature-branch evidence, not merged/deployed production.
+
+## Phase 1 — External consumer conformance
+
+1. Pin the exact Feature 069 SHA in OS Electoral and Content Agency.
+2. Run equivalent schema/OpenAPI tests in each consumer repository.
+3. Prove preservation of tenant/request IDs, versions, citations, disclaimers, limitations, expiry and idempotency behavior.
+4. Exercise retries, supersession/revocation and structured failures.
+
+Exit criterion: both external consumer suites pass against an immutable kit SHA.
+
+## Phase 2 — Authorized Antigua-first corpus
 
 1. Approve source rights, storage, scanner, retention and provenance controls.
-2. Acquire exact municipal/national artifacts into durable storage with immutable manifests.
-3. Execute current scan, extraction, chunking, embeddings and ingestion reconciliation.
+2. Acquire exact municipal/national artifacts with immutable manifests.
+3. Execute current scan, extraction, chunking, embeddings and ingestion.
 4. Preserve failures, dead letters and operator remediation evidence.
 
-Exit criterion: real artifacts, digests, accepted scans, processed jobs and indexed chunks are traceable without counting fixtures.
+## Phase 3 — Identity and ephemeral staging
 
-## Phase 2 — Real-corpus retrieval and human review
+1. Approve human IdP/OIDC/PKCE/BFF/session architecture.
+2. Implement provisioning, secure cookies, CSRF, logout, revocation and recovery.
+3. Define resettable tenant identities and deterministic non-production fixtures.
+4. Deploy immutable services to isolated ephemeral infrastructure without production credentials.
 
-1. Build judged keyword, phrase, semantic and hybrid datasets.
-2. Measure relevance, citation accuracy, authority, temporal classification, contradictions, latency and cost.
-3. Conduct human review of vigencia, supersession, jurisdiction and applicability.
-4. Establish model/provider lifecycle, thresholds, regression policy and monitoring.
+## Phase 4 — System/API journeys
 
-Exit criterion: approved eval thresholds and human-reviewed evidence on the target corpus.
+1. Test auth, tenant isolation, replay, conflict, expiry and failure/retry paths.
+2. Test cross-product preservation through real HTTP and independent stores.
+3. Exercise observability, SLOs, load, HA and coordinated recovery.
+4. Complete privacy retention/deletion/legal-hold/DSAR operations.
 
-## Phase 3 — Human SaaS
+## Phase 5 — E2E and accessibility
 
-1. Decide and implement IdP/OIDC/BFF/session architecture.
-2. Add tenant/member provisioning, recovery, revocation, secure cookies and CSRF.
-3. Build role-aware source viewer, library, search, cases, reviews, admin and audit surfaces.
-4. Complete browser, screen-reader and WCAG 2.2 AA testing.
+1. Add a small browser smoke suite for critical user journeys.
+2. Add role/permission matrices and degraded/failure journeys.
+3. Run supported browsers, screen readers and human WCAG 2.2 AA review.
+4. Keep E2E last: contracts, identity, fixtures and staging must be stable first.
 
-## Phase 4 — Platform and operations
+## Phase 6 — Release
 
-1. Terraform environments, workload identity, secrets, object store, scanner and dispatcher.
-2. Observability, SLOs, alerts, staging, load, capacity and HA.
-3. Coordinated recovery, PITR, KMS/key recovery, privacy retention/deletion/legal hold/DSAR.
-
-## Phase 5 — Integration and release
-
-1. Run external consumer contract suites.
-2. Open reviewed PRs and use protected merge.
-3. Deploy to staging, execute release rehearsal and approvals.
-4. Deploy and observe production before declaring readiness.
+1. Run external consumers and all lower-layer gates on the candidate SHA.
+2. Open human-reviewed PRs and use protected merge.
+3. Rehearse deployment/rollback in staging and collect approvals.
+4. Deploy and observe before declaring production readiness.

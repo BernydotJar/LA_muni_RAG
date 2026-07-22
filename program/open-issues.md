@@ -1,42 +1,42 @@
 # LA Muni RAG — Open Issues
 
-Updated: 2026-07-22T00:35:00Z
+Updated: 2026-07-22T01:05:41Z
 
-## Closed locally by Feature 068
+## Closed locally by Feature 069
 
-- `POST /api/v1/search` is implemented with explicit keyword, phrase, semantic and hybrid modes.
-- `POST /api/v1/evidence-bundles` is implemented with conservative claim promotion, exact replay and corrupt-replay cleanup.
-- Closed contracts, OpenAPI 3.1.1, named evals, forced-RLS PostgreSQL gates and compiled HTTP smoke pass on functional commit `42d2fda70b27ccc9178c6a8d69bba957ef953105`.
-- The branch is published at the exact SHA; Backend CI run `29880372748` completed successfully on the exact functional SHA. No PR, merge or deployment exists.
+- Provider-side portable manifests exist for OS Electoral and Content Agency.
+- Five interactions are bound to exact OpenAPI routes, headers, statuses, schemas and canonical examples.
+- Complete interaction inventories, output discriminators, response correlation headers and foreign-owned field guards are executable.
+- Functional commit `5e5481e26b1a27a0aa2bd9c965e1c160f18b3198` is published at the exact remote ref.
+- Detached verification passes 795/793/0/2, 30/30 canonical contracts, 2 kits/5 interactions, typecheck, build and two zero-vulnerability audits.
+- Backend CI run `29882062536` is `success`. No PR, merge or deployment exists.
 
 ## Critical product blockers
 
-### Corpus and retrieval quality
+### External consumers
 
-1. No authorized durable source bytes are present; zero documents are credited as ingested against a real reviewed corpus.
-2. Antigua-first and national source acquisition, current scanning, extraction, chunking and embeddings remain unexecuted.
-3. Keyword, phrase, semantic and hybrid relevance, citation quality, latency and load remain unmeasured on real corpus data.
-4. Human review of authority, vigencia, supersession, jurisdiction, applicability and contradictions remains mandatory.
+1. OS Electoral has not pinned or executed the kit in its own repository.
+2. Content Agency has not pinned or executed the kit in its own repository.
+3. Cross-product persistence, retries, expiry, revocation and supersession remain unproved.
 
-### Human SaaS
+### Corpus and human review
 
-1. Human IdP/OIDC, authorization-code-with-PKCE, session/BFF, provisioning, logout, revocation and recovery are undecided/unimplemented.
-2. Secure cookies, CSRF, role-aware navigation and authenticated source/library/search/case/review/admin/audit surfaces remain absent.
-3. Supported-browser, screen-reader and human WCAG 2.2 AA evidence remains absent.
+1. Zero authorized durable bytes and zero real ingested documents.
+2. No real-corpus retrieval/citation/latency/load evaluation.
+3. No human authority, vigencia, supersession or applicability sign-off.
 
-### Production platform and operations
+### Human SaaS, staging and E2E
 
-1. Terraform/environments, workload identity, secrets, production object store/scanner/dispatcher and dead-letter UI are absent.
-2. Metrics, traces, logs, SLOs, alerts, staging, performance, capacity and HA have not been exercised.
-3. Coordinated object/database recovery, PITR, KMS/key recovery and approved RPO/RTO remain open.
-4. Privacy purpose, retention, deletion, legal hold and DSAR operations remain open.
+1. IdP/OIDC/BFF/session architecture remains undecided/unimplemented.
+2. Deterministic tenant identities/data and isolated ephemeral staging are absent.
+3. Authenticated role-aware UI and browser/screen-reader evidence are absent.
+4. Browser E2E is intentionally deferred until these prerequisites stabilize.
 
-### Integration and release
+### Platform and release
 
-1. OS Electoral and Content Agency consumer contract suites remain external and unexecuted.
-2. No reviewed PR, protected merge, staging deployment, production deployment or observation window exists.
-3. Legal, privacy, security and release approvals remain human-gated.
+1. Production Terraform, secrets, object/scanner/dispatcher, observability, SLOs, load/HA, coordinated recovery and privacy operations remain absent.
+2. No reviewed PR, protected merge, deployment or observation window exists.
 
-## Next ready task
+## Next safe executable work
 
-`WS02-CORPUS-ACQUISITION-001` — acquire an authorized Antigua-first corpus into approved durable storage, execute current scanning/extraction/ingestion, and preserve immutable manifests. This task is blocked in practice until storage, scanner, rights and retention decisions are available; no synthetic fixture may be credited as real corpus completion.
+`WS08-EXTERNAL-CONSUMER-CONFORMANCE-001` requires explicit access/coordination with neighboring repositories. In this repository, the next autonomous preparation work is an ephemeral staging/E2E architecture specification that does not provision paid services or use production credentials.

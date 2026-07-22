@@ -1,5 +1,5 @@
 schema_version: 1
-updated_at: '2026-07-21T18:01:44Z'
+updated_at: '2026-07-22T01:05:41Z'
 runtime:
   type: yaml_fallback
   farmtable_available: false
@@ -68,8 +68,8 @@ tasks:
   - Required versioned records exist in program/context7-evidence.md.
   limitations:
   - Context7 Node documentation reaches v25 while the observed runtime is v26.5.0.
-  - Context7 Ajv documentation is v8.17.1 while implementation selected ajv 8.20.0 and ajv-formats 3.0.1; compatibility
-    verification is required.
+  - Context7 Ajv documentation is v8.17.1 while implementation selected ajv 8.20.0 and ajv-formats 3.0.1; compatibility verification
+    is required.
   branch: program/procedural-intelligence-prod-ready
   pr: null
   ci: not_applicable
@@ -88,8 +88,8 @@ tasks:
   evidence:
   - No Farmtable API operation was found.
   - 'ft --version exited 127: zsh:1: command not found: ft.'
-  - YAML fallback models releases, workstreams, dependencies, blockers, critical path, claims, owners, branches,
-    PRs, and CI.
+  - YAML fallback models releases, workstreams, dependencies, blockers, critical path, claims, owners, branches, PRs, and
+    CI.
   branch: program/procedural-intelligence-prod-ready
   pr: null
   ci: not_applicable
@@ -106,11 +106,11 @@ tasks:
   - Current worktree changes are attributed and preserved.
   - Branches, open PRs, and CI are reconciled to a canonical implementation baseline.
   evidence:
-  - Canonical branch program/procedural-intelligence-prod-ready is based on origin/main at 4950ba3 with divergence
-    0 ahead / 0 behind.
+  - Canonical branch program/procedural-intelligence-prod-ready is based on origin/main at 4950ba3 with divergence 0 ahead
+    / 0 behind.
   - 371/371 tests passed; typecheck and build passed.
-  - Source inventory validation passed with 16 total, 3 verified, 5 missing_source, 0 acquired, and 0 ingested;
-    acquisition and ingestion remain production gaps.
+  - Source inventory validation passed with 16 total, 3 verified, 5 missing_source, 0 acquired, and 0 ingested; acquisition
+    and ingestion remain production gaps.
   - Domain evaluation passed 6/6 and Pages verification passed.
   - RTK.md remains pre-existing untracked, untouched, and out of scope.
   branch: program/procedural-intelligence-prod-ready
@@ -156,8 +156,8 @@ tasks:
   - Every requirement, artifact, eval, gate, and invariant has an evidence state, owner, and task.
   - Missing or indirect evidence is recorded as not achieved.
   evidence:
-  - Gap matrix refreshed after the corpus acquisition and secure procedure-query provider slices; production claim
-    remains unproven.
+  - Gap matrix refreshed after the corpus acquisition and secure procedure-query provider slices; production claim remains
+    unproven.
   pr: null
   ci: not_started
 - id: WS02-CORP-001
@@ -175,8 +175,7 @@ tasks:
   - Authority, jurisdiction, provenance, comparison warning, and evidence gaps are explicit.
   evidence:
   - EVAL-SOURCE-001 passes 15/15 for 17 governed records, authority/jurisdiction/version semantics and strict lifecycle.
-  - Inventory remains 4 verified, 1 acquisition metadata, 0 ingested; ignored acquired bytes are absent from this
-    checkout.
+  - Inventory remains 4 verified, 1 acquisition metadata, 0 ingested; ignored acquired bytes are absent from this checkout.
   pr: null
   ci: passed_scoped_eval_remote
 - id: WS02-CORP-RECON-001
@@ -201,8 +200,7 @@ tasks:
   - Status transition missing_source -> verified; acquired false; ingested false.
   - Official URL, version, verification date, and SHA-256 are portable; optional local bytes matched.
   - Feature 054 import dry-run returned planned true and mutated false.
-  - 'Inventory summary at reconciliation commit 58ff4ae: 16 total / 3 verified / 5 missing_source / 0 acquired /
-    0 ingested.'
+  - 'Inventory summary at reconciliation commit 58ff4ae: 16 total / 3 verified / 5 missing_source / 0 acquired / 0 ingested.'
   - Focused tests passed 15/15 and typecheck passed.
   pr: null
   ci: passed
@@ -225,23 +223,21 @@ tasks:
   blockers: []
   acceptance:
   - The official catalog and individual DMP v3 URL are verified without treating portal metadata as document validity.
-  - Original bytes are imported through Feature 054, reread, SHA-256 verified, and represented by a portable bounded
-    path.
+  - Original bytes are imported through Feature 054, reread, SHA-256 verified, and represented by a portable bounded path.
   - Acquisition does not imply extraction, indexing, legal approval, or safe-content review.
   evidence:
   - Commits d98ff2a and 2a8ff1c move the catalog missing_source -> verified and the individual DMP v3 artifact acquisition_pending
     -> acquired.
-  - Controlled copy is 49,052,885 bytes with SHA-256 4cbd35993b345c1f2bdb308825f1d3a6cac24ad239bdc9b087e2d99f2297e8f9;
-    repeated import returned noop/mutated false.
+  - Controlled copy is 49,052,885 bytes with SHA-256 4cbd35993b345c1f2bdb308825f1d3a6cac24ad239bdc9b087e2d99f2297e8f9; repeated
+    import returned noop/mutated false.
   - Current inventory validates at 17 total / 4 verified / 4 missing_source / 1 acquired / 0 ingested.
   - Focused acquisition/inventory tests passed 15/15 and typecheck passed.
   limitations:
-  - The acquired PDF is stored only in the Git-ignored local library; durable object storage, backup, production
-    access controls, and a real scanner runtime are absent.
-  - Commit 37ff0ad adds a local fail-closed scan/quarantine gate, but no clean malware verdict has been recorded
-    for the DMP.
-  - No extraction, section count, embedding, vector indexing, corpus-manifest reconciliation, approval, effective
-    date, or reuse license is claimed.
+  - The acquired PDF is stored only in the Git-ignored local library; durable object storage, backup, production access controls,
+    and a real scanner runtime are absent.
+  - Commit 37ff0ad adds a local fail-closed scan/quarantine gate, but no clean malware verdict has been recorded for the DMP.
+  - No extraction, section count, embedding, vector indexing, corpus-manifest reconciliation, approval, effective date, or
+    reuse license is claimed.
   pr: null
   ci: passed_local
 - id: WS07-FOUNDATION-001
@@ -267,17 +263,16 @@ tasks:
   acceptance:
   - Foundation follows timing-safe secret handling and PostgreSQL RLS default-deny/FORCE evidence.
   evidence:
-  - Commits c24f003 and e15050d implement hashed Bearer lookup, ten roles, transaction-local tenant context, FORCE
-    RLS, scoped uniqueness, tenant-aware seeds, and safe database setup guidance.
+  - Commits c24f003 and e15050d implement hashed Bearer lookup, ten roles, transaction-local tenant context, FORCE RLS, scoped
+    uniqueness, tenant-aware seeds, and safe database setup guidance.
   - Identity/RBAC focal tests passed 22/22; tenant migration/bootstrap focal tests passed 14/14; typecheck passed.
   - Context7 Node crypto and PostgreSQL RLS evidence is recorded in program/context7-evidence.md.
-  - Commit deef177 wires the foundation into procedure-query v1 and adds a disposable non-owner PostgreSQL/HTTP
-    isolation gate.
+  - Commit deef177 wires the foundation into procedure-query v1 and adds a disposable non-owner PostgreSQL/HTTP isolation
+    gate.
   limitations:
-  - HTTP enforcement is proven only for procedure-query v1; pre-v1 routes remain development-only and the rest of
-    the required v1 catalog is absent.
-  - The real PostgreSQL gate is disposable local evidence, not production role provisioning, staging, load, or HA
-    proof.
+  - HTTP enforcement is proven only for procedure-query v1; pre-v1 routes remain development-only and the rest of the required
+    v1 catalog is absent.
+  - The real PostgreSQL gate is disposable local evidence, not production role provisioning, staging, load, or HA proof.
   pr: null
   ci: passed_static
 - id: WS07-ID-001
@@ -295,8 +290,8 @@ tasks:
   acceptance:
   - Minimum roles are enforced and cross-tenant access is denied, audited, and leak-free.
   evidence:
-  - Ten-role closed server permission matrix, credential tenant binding, transaction-local context, forced RLS and
-    uniform cross-tenant denial pass EVAL-TENANT/RBAC.
+  - Ten-role closed server permission matrix, credential tenant binding, transaction-local context, forced RLS and uniform
+    cross-tenant denial pass EVAL-TENANT/RBAC.
   - Current credentials are service/integration credentials, not a browser human-login solution.
   limitations:
   - Production provisioning/rotation and equivalent enforcement for all future v1 endpoints remain incomplete.
@@ -313,16 +308,15 @@ tasks:
   - WS07-ID-001
   - PRG-CTX7-001
   blockers:
-  - Production object store, scanner/definitions service, dispatcher, quotas and operator dead-letter UI are external
-    infrastructure/product gaps.
+  - Production object store, scanner/definitions service, dispatcher, quotas and operator dead-letter UI are external infrastructure/product
+    gaps.
   acceptance:
-  - Ingestion is tenant-scoped, idempotent, auditable, stable on corrupt input, and exact artifact acceptance is
-    enforced at every boundary.
+  - Ingestion is tenant-scoped, idempotent, auditable, stable on corrupt input, and exact artifact acceptance is enforced
+    at every boundary.
   evidence:
-  - EVAL-ARTIFACT/VECTOR/JOB-LEASE/INGEST pass; fresh PostgreSQL 15.18/pgvector 0.8.5 non-owner gates and compiled
-    HTTP smokes pass.
-  - 50 equivalent submissions converge on one job; single lease/fencing, Nth-write rollback and stale vector removal
-    are proven.
+  - EVAL-ARTIFACT/VECTOR/JOB-LEASE/INGEST pass; fresh PostgreSQL 15.18/pgvector 0.8.5 non-owner gates and compiled HTTP smokes
+    pass.
+  - 50 equivalent submissions converge on one job; single lease/fencing, Nth-write rollback and stale vector removal are proven.
   pr: null
   ci: passed_local_detached_postgres_and_remote
 - id: WS03-ARTIFACT-SAFETY-001
@@ -348,30 +342,28 @@ tasks:
   blockers: []
   acceptance:
   - Extension, explicit MIME, size, and structural signature agree before acquisition evidence is written.
-  - Scanner absence, error, infection, tamper, and stale evidence fail closed before extraction and applied failures
-    are quarantined without overwriting destinations.
-  - Clean evidence binds path, expected/observed hash, size, media, signature, scanner versions, verdict, and inspection
-    time.
+  - Scanner absence, error, infection, tamper, and stale evidence fail closed before extraction and applied failures are quarantined
+    without overwriting destinations.
+  - Clean evidence binds path, expected/observed hash, size, media, signature, scanner versions, verdict, and inspection time.
   - The exact verified in-memory bytes reach extraction/indexing; a mutable path is not reread by the vector boundary.
   evidence:
-  - Commit 37ff0ad implements fixed clamdscan/clamscan adapters via execFile without a shell, bounded time/output,
-    official-database and limit alerts for standalone clamscan, stable evidence, quarantine, and clean retry.
-  - Atomic hard-link/no-replace publication prevents pre-existing and concurrently created managed destinations
-    from being overwritten.
-  - Focused artifact/library/inventory/vector suites passed 43/43; canonical global Node summary passed 479/479
-    with zero skips or failures.
-  - Typecheck and build passed; inventory remained 17 total / 4 verified / 4 missing_source / 8 acquisition_pending
-    / 1 acquired / 0 ingested.
-  - Nine schemas, nine examples, and one OpenAPI document validated; domain evaluation passed 6/6; ten changed Markdown
-    files had zero missing local links.
-  - The real DMP import dry-run remained noop, artifactSafety null, mutated false, with zero sections and chunks;
-    no artifact bytes or inventory state were changed.
+  - Commit 37ff0ad implements fixed clamdscan/clamscan adapters via execFile without a shell, bounded time/output, official-database
+    and limit alerts for standalone clamscan, stable evidence, quarantine, and clean retry.
+  - Atomic hard-link/no-replace publication prevents pre-existing and concurrently created managed destinations from being
+    overwritten.
+  - Focused artifact/library/inventory/vector suites passed 43/43; canonical global Node summary passed 479/479 with zero
+    skips or failures.
+  - Typecheck and build passed; inventory remained 17 total / 4 verified / 4 missing_source / 8 acquisition_pending / 1 acquired
+    / 0 ingested.
+  - Nine schemas, nine examples, and one OpenAPI document validated; domain evaluation passed 6/6; ten changed Markdown files
+    had zero missing local links.
+  - The real DMP import dry-run remained noop, artifactSafety null, mutated false, with zero sections and chunks; no artifact
+    bytes or inventory state were changed.
   limitations:
   - Neither clamdscan nor clamscan is installed in the current runtime or production image; real inspection is unavailable
     and fails closed.
   - The acquired DMP has no clean malware verdict and remains acquired only.
-  - Authenticated library/API, durable object storage, jobs/retries/locks/audit, and tenant-scoped vector writes
-    remain open.
+  - Authenticated library/API, durable object storage, jobs/retries/locks/audit, and tenant-scoped vector writes remain open.
   - Commit 3a7b531 subsequently adds a private scanner snapshot and bounded isolated raw-PDF extraction under WS03-PDF-EXTRACTION-001.
   pr: null
   ci: passed_local_with_runtime_limitation
@@ -406,43 +398,39 @@ tasks:
   - PRG-CTX7-001
   blockers: []
   acceptance:
-  - Raw PDF bytes use a real binary parser; the legacy PDF JSONL adapter is explicit and cannot be selected through
-    the extractor registry.
-  - Untrusted parsing runs in a separate child with fixed permissions and bounded input, time, pages, per-page text,
-    total text, output, stderr, memory settings, and concurrency.
-  - Malformed, encrypted, no-text, timeout, crash, stderr/output flood, and protocol failures map to stable fail-closed
-    errors.
-  - The exact safety-verified buffer is parsed once and the resulting normalized document is passed to indexing
-    without path reread or reparse.
-  - Document chunk count and provider embedding batch size fail closed at fixed upper bounds before unbounded provider
-    work.
+  - Raw PDF bytes use a real binary parser; the legacy PDF JSONL adapter is explicit and cannot be selected through the extractor
+    registry.
+  - Untrusted parsing runs in a separate child with fixed permissions and bounded input, time, pages, per-page text, total
+    text, output, stderr, memory settings, and concurrency.
+  - Malformed, encrypted, no-text, timeout, crash, stderr/output flood, and protocol failures map to stable fail-closed errors.
+  - The exact safety-verified buffer is parsed once and the resulting normalized document is passed to indexing without path
+    reread or reparse.
+  - Document chunk count and provider embedding batch size fail closed at fixed upper bounds before unbounded provider work.
   evidence:
-  - Commit 3a7b531 pins pdfjs-dist 6.1.200 and @napi-rs/canvas 1.0.2 as exact direct production dependencies and
-    copies the extraction worker into the runtime image.
-  - The PDF worker accepts only stdin bytes and returns strict v1 JSON; its minimal environment/private cwd and
-    Node permission flags deny unmanaged reads, writes, child processes, and worker threads while allowing the required
-    native addon.
-  - The scanner now receives a private 0700-directory/0600-file snapshot of the verified buffer; before/after snapshot
-    hashes and a managed-path recheck close the observed A-to-B-to-A mutation window.
-  - Document-library ingestion passes the normalized document plus exact verified bytes to vector indexing; direct
-    raw-PDF indexing/backfill routes fail before provider invocation or file parsing.
-  - Focused PDF/library/vector/indexer/corpus/backfill/artifact suites passed 80/80; canonical global Node summary
-    passed 498/498 with zero skips or failures.
-  - Typecheck, build, Pages, inventory, contracts, and 6/6 domain evaluation passed; 16 changed Markdown files contained
-    11 local links and zero missing targets.
-  - npm audit --omit=dev reported zero vulnerabilities; the node:24.12.0-bookworm-slim production image built and
-    a non-root in-container raw-PDF extraction smoke passed.
-  - 'The controlled DMP remained ignored and untouched: acquired only, artifactSafety null, with no scan, extraction,
-    indexing, promotion, or inventory mutation.'
+  - Commit 3a7b531 pins pdfjs-dist 6.1.200 and @napi-rs/canvas 1.0.2 as exact direct production dependencies and copies the
+    extraction worker into the runtime image.
+  - The PDF worker accepts only stdin bytes and returns strict v1 JSON; its minimal environment/private cwd and Node permission
+    flags deny unmanaged reads, writes, child processes, and worker threads while allowing the required native addon.
+  - The scanner now receives a private 0700-directory/0600-file snapshot of the verified buffer; before/after snapshot hashes
+    and a managed-path recheck close the observed A-to-B-to-A mutation window.
+  - Document-library ingestion passes the normalized document plus exact verified bytes to vector indexing; direct raw-PDF
+    indexing/backfill routes fail before provider invocation or file parsing.
+  - Focused PDF/library/vector/indexer/corpus/backfill/artifact suites passed 80/80; canonical global Node summary passed
+    498/498 with zero skips or failures.
+  - Typecheck, build, Pages, inventory, contracts, and 6/6 domain evaluation passed; 16 changed Markdown files contained 11
+    local links and zero missing targets.
+  - npm audit --omit=dev reported zero vulnerabilities; the node:24.12.0-bookworm-slim production image built and a non-root
+    in-container raw-PDF extraction smoke passed.
+  - 'The controlled DMP remained ignored and untouched: acquired only, artifactSafety null, with no scan, extraction, indexing,
+    promotion, or inventory mutation.'
   limitations:
-  - 'The child is not a complete OS sandbox: no network namespace, seccomp profile, or hard total-RSS/native-memory
-    cap has been proved.'
-  - The parser uses a native canvas addon; concurrency is per application process rather than distributed, and no
-    load/capacity gate has been run.
-  - No OCR, table, form, or semantic-layout extraction exists; parser upgrades may change text normalization and
-    hashes.
-  - A real scanner, authenticated tenant-scoped API, durable object storage, job/retry/lock/audit/retention system,
-    and tenant-scoped vector persistence remain absent.
+  - 'The child is not a complete OS sandbox: no network namespace, seccomp profile, or hard total-RSS/native-memory cap has
+    been proved.'
+  - The parser uses a native canvas addon; concurrency is per application process rather than distributed, and no load/capacity
+    gate has been run.
+  - No OCR, table, form, or semantic-layout extraction exists; parser upgrades may change text normalization and hashes.
+  - A real scanner, authenticated tenant-scoped API, durable object storage, job/retry/lock/audit/retention system, and tenant-scoped
+    vector persistence remain absent.
   - The real DMP remains acquired only and has no clean malware verdict.
   pr: null
   ci: passed_local_with_platform_limitations
@@ -478,52 +466,51 @@ tasks:
   - PRG-CTX7-001
   blockers: []
   acceptance:
-  - Every vector and ingestion-job read/write runs in one explicit tenant transaction and is protected by FORCE
-    RLS for a non-owner, non-BYPASSRLS runtime role.
-  - Raw idempotency material is digested; exact replay is stable, changed payloads conflict, and tenant-wide duplicate
-    work converges under concurrency.
-  - Claims use SKIP LOCKED leases with opaque tokens, heartbeat, stale-token fencing, bounded retries, terminal
-    exhaustion, and allowlisted audit events.
-  - Artifact identity is rechecked at enqueue and completion; vectors, version state, job state, stale-row replacement,
-    and audit commit or roll back atomically.
-  - Legacy unscoped vector rows are never assigned guessed ownership; unsafe migration order stops for explicit
-    reviewed mapping.
+  - Every vector and ingestion-job read/write runs in one explicit tenant transaction and is protected by FORCE RLS for a
+    non-owner, non-BYPASSRLS runtime role.
+  - Raw idempotency material is digested; exact replay is stable, changed payloads conflict, and tenant-wide duplicate work
+    converges under concurrency.
+  - Claims use SKIP LOCKED leases with opaque tokens, heartbeat, stale-token fencing, bounded retries, terminal exhaustion,
+    and allowlisted audit events.
+  - Artifact identity is rechecked at enqueue and completion; vectors, version state, job state, stale-row replacement, and
+    audit commit or roll back atomically.
+  - Legacy unscoped vector rows are never assigned guessed ownership; unsafe migration order stops for explicit reviewed mapping.
   evidence:
-  - Commit 9dcc054 implements migration 005, the non-owner SQL gate, the tenant repository, durable job service,
-    bounded planner/provider flow, compiled PostgreSQL smoke, CI service, and Feature 056 governance artifacts.
-  - Fresh migrations 001,002,003,004,005 and supported legacy migrations 001,002,011,003,004,005 passed on PostgreSQL
-    16.14 with pgvector 0.8.5.
-  - An unsafe post-003 legacy fixture with an unscoped vector row exited 3 with an explicit reviewed-tenant-mapping
-    requirement; no ownership was inferred.
-  - The table-non-owner NOSUPERUSER/NOBYPASSRLS SQL gate proved FORCE RLS, contract-v1 writes, A/B isolation, and
-    zero visibility/write ability under missing or malformed tenant context.
-  - The compiled smoke converged 50 concurrent idempotent submissions to one job and two concurrent claimers to
-    one lease; stale leases and wrong artifact identity were fenced.
-  - The compiled smoke also proved same chunk IDs can coexist across tenants, failed finalization rolls back all
-    vectors/state, successful replacement removes stale chunks, and public-successful search is scoped.
-  - Canonical regression passed 517/517 tests across 91 suites with zero failures, cancellations, or skips; typecheck
-    and build passed.
-  - Inventory remained valid at 17 total / 4 verified / 4 missing_source / 8 acquisition_pending / 1 acquired /
-    0 ingested; contracts passed 9/9 schemas and examples plus one OpenAPI document; domain evaluation passed 6/6.
-  - npm audit --audit-level=high reported zero vulnerabilities; Pages build/verification and all 221 repository
-    Markdown relative-link checks passed.
-  - GitHub Actions Backend CI run 29702647686 passed commit 9dcc054 in 52 seconds, including the migration/RLS gate
-    and compiled ingestion smoke.
-  - Every database smoke reported controlledArtifactsRead 0; the DMP remained ignored, acquired only, artifactSafety
-    null, and unscanned/unextracted/unindexed/unmodified.
+  - Commit 9dcc054 implements migration 005, the non-owner SQL gate, the tenant repository, durable job service, bounded planner/provider
+    flow, compiled PostgreSQL smoke, CI service, and Feature 056 governance artifacts.
+  - Fresh migrations 001,002,003,004,005 and supported legacy migrations 001,002,011,003,004,005 passed on PostgreSQL 16.14
+    with pgvector 0.8.5.
+  - An unsafe post-003 legacy fixture with an unscoped vector row exited 3 with an explicit reviewed-tenant-mapping requirement;
+    no ownership was inferred.
+  - The table-non-owner NOSUPERUSER/NOBYPASSRLS SQL gate proved FORCE RLS, contract-v1 writes, A/B isolation, and zero visibility/write
+    ability under missing or malformed tenant context.
+  - The compiled smoke converged 50 concurrent idempotent submissions to one job and two concurrent claimers to one lease;
+    stale leases and wrong artifact identity were fenced.
+  - The compiled smoke also proved same chunk IDs can coexist across tenants, failed finalization rolls back all vectors/state,
+    successful replacement removes stale chunks, and public-successful search is scoped.
+  - Canonical regression passed 517/517 tests across 91 suites with zero failures, cancellations, or skips; typecheck and
+    build passed.
+  - Inventory remained valid at 17 total / 4 verified / 4 missing_source / 8 acquisition_pending / 1 acquired / 0 ingested;
+    contracts passed 9/9 schemas and examples plus one OpenAPI document; domain evaluation passed 6/6.
+  - npm audit --audit-level=high reported zero vulnerabilities; Pages build/verification and all 221 repository Markdown relative-link
+    checks passed.
+  - GitHub Actions Backend CI run 29702647686 passed commit 9dcc054 in 52 seconds, including the migration/RLS gate and compiled
+    ingestion smoke.
+  - Every database smoke reported controlledArtifactsRead 0; the DMP remained ignored, acquired only, artifactSafety null,
+    and unscanned/unextracted/unindexed/unmodified.
   limitations:
-  - There is no authenticated ingestion API or worker dispatcher, durable object storage, real scanner, tenant quota,
-    total attempt deadline, dead-letter/operator tooling, or production monitoring.
+  - There is no authenticated ingestion API or worker dispatcher, durable object storage, real scanner, tenant quota, total
+    attempt deadline, dead-letter/operator tooling, or production monitoring.
   - The migration runtime-shape constraint is NOT VALID for preserved contract-0 legacy rows; a later reviewed inventory/validation
     migration is still required.
-  - Vector search remains exact and intentionally unindexed until partition/index recall, plan, and load evidence
-    supports a production design.
-  - Procedure-query v1 remains keyword/phrase only pending authorization and retrieval-quality evaluation of the
-    tenant vector path.
+  - Vector search remains exact and intentionally unindexed until partition/index recall, plan, and load evidence supports
+    a production design.
+  - Procedure-query v1 remains keyword/phrase only pending authorization and retrieval-quality evaluation of the tenant vector
+    path.
   - Production role provisioning/drift detection, HA, backup/restore, capacity, upgrade/rollback, staging, and deployment
     are unproved.
-  - The controlled DMP cannot enter this path until the real scanner, authenticated API/worker, durable storage,
-    and production controls operate.
+  - The controlled DMP cannot enter this path until the real scanner, authenticated API/worker, durable storage, and production
+    controls operate.
   branch: program/procedural-intelligence-prod-ready
   pr: null
   ci: passed_remote_with_platform_limitations
@@ -560,46 +547,45 @@ tasks:
   - PRG-CTX7-001
   blockers: []
   acceptance:
-  - POST enqueue and GET status authenticate before body work, apply tenant/principal/operation admission, require
-    document:ingest, and never leak cross-tenant existence.
-  - The public contract is closed and clients cannot choose extractor, planner, provider, model, dimension, retries,
-    storage location, worker, or lease material.
-  - Exact replay, tenant-wide duplicate work, conflicts, and status use the durable Feature 056 service; API rate
-    state forces RLS and pre-tenant audit is bounded.
-  - Early rejected framed bodies are neither drained nor left on reusable sockets; body-bearing GET requests are
-    rejected and the connection closes.
-  - The worker accepts only injected immutable, exact-digest, current-clean-scan-bound bytes, verifies them before/after
-    extraction, heartbeats, and finalizes through lease fencing.
+  - POST enqueue and GET status authenticate before body work, apply tenant/principal/operation admission, require document:ingest,
+    and never leak cross-tenant existence.
+  - The public contract is closed and clients cannot choose extractor, planner, provider, model, dimension, retries, storage
+    location, worker, or lease material.
+  - Exact replay, tenant-wide duplicate work, conflicts, and status use the durable Feature 056 service; API rate state forces
+    RLS and pre-tenant audit is bounded.
+  - Early rejected framed bodies are neither drained nor left on reusable sockets; body-bearing GET requests are rejected
+    and the connection closes.
+  - The worker accepts only injected immutable, exact-digest, current-clean-scan-bound bytes, verifies them before/after extraction,
+    heartbeats, and finalizes through lease fencing.
   evidence:
-  - Commit 52ec72d implements migration 006, strict schemas/OpenAPI, the authenticated API, accepted-artifact worker,
-    guarded SQL/compiled HTTP gates, CI integration, and Feature 057 governance artifacts.
-  - 'Context7 Node evidence identified the paused unread-request-stream edge; commit 50716cc disables keep-alive
-    and sends Connection: close on early unread-body rejection, with a raw body-bearing GET test and compiled-smoke
-    assertions.'
-  - Fresh 001-006 and supported 001,002,011,003,004,005,006 migrations passed on PostgreSQL 16.14/pgvector 0.8.5;
-    unsafe post-003 unscoped vectors stopped at migration 005 with the row preserved and no tenant column added.
-  - The non-owner NOSUPERUSER/NOBYPASSRLS SQL gate proved forced API-rate/job/vector RLS, missing/malformed context
-    denial, credential lookup, unreadable tenantless audit storage, and bounded failure aggregation.
-  - The compiled HTTP smoke observed 401,403,403,202,200,202,409,429,200,404,404; replay/dedup job identity was
-    stable, cross-tenant status did not leak, and raw credential/idempotency/artifact/control data was absent.
-  - The worker tests prove idle behavior, immutable clean evidence, byte/policy/media bounds, parser mutation detection,
-    pipeline match, provider retry, heartbeat, atomic completion handoff, and lease-loss safety.
-  - Canonical regression passed 545/545 tests across 95 suites; typecheck/build passed; 11 schemas/examples and
-    one OpenAPI document validated; inventory and 6/6 domain evaluation remained valid.
-  - npm audit --audit-level=high found zero vulnerabilities; Pages and 227-file Markdown-link verification passed;
-    the exact final source built in the non-root Node 24.12.0 image and loaded all ingestion validators in-container.
+  - Commit 52ec72d implements migration 006, strict schemas/OpenAPI, the authenticated API, accepted-artifact worker, guarded
+    SQL/compiled HTTP gates, CI integration, and Feature 057 governance artifacts.
+  - 'Context7 Node evidence identified the paused unread-request-stream edge; commit 50716cc disables keep-alive and sends
+    Connection: close on early unread-body rejection, with a raw body-bearing GET test and compiled-smoke assertions.'
+  - Fresh 001-006 and supported 001,002,011,003,004,005,006 migrations passed on PostgreSQL 16.14/pgvector 0.8.5; unsafe post-003
+    unscoped vectors stopped at migration 005 with the row preserved and no tenant column added.
+  - The non-owner NOSUPERUSER/NOBYPASSRLS SQL gate proved forced API-rate/job/vector RLS, missing/malformed context denial,
+    credential lookup, unreadable tenantless audit storage, and bounded failure aggregation.
+  - The compiled HTTP smoke observed 401,403,403,202,200,202,409,429,200,404,404; replay/dedup job identity was stable, cross-tenant
+    status did not leak, and raw credential/idempotency/artifact/control data was absent.
+  - The worker tests prove idle behavior, immutable clean evidence, byte/policy/media bounds, parser mutation detection, pipeline
+    match, provider retry, heartbeat, atomic completion handoff, and lease-loss safety.
+  - Canonical regression passed 545/545 tests across 95 suites; typecheck/build passed; 11 schemas/examples and one OpenAPI
+    document validated; inventory and 6/6 domain evaluation remained valid.
+  - npm audit --audit-level=high found zero vulnerabilities; Pages and 227-file Markdown-link verification passed; the exact
+    final source built in the non-root Node 24.12.0 image and loaded all ingestion validators in-container.
   - GitHub Actions Backend CI runs 29707579030 and 29709823390 passed commits 52ec72d and 50716cc, including migration/RLS,
     compiled tenant-service, and compiled ingestion-API smokes.
   - Every database/HTTP smoke reported controlledArtifactsRead 0; the DMP remained ignored, acquired only, and unread/unscanned/unextracted/unindexed/unmodified.
   limitations:
-  - No upload/source-version administration API, durable object-store resolver, quarantine IAM, persisted real-scanner
-    evidence, scanner runtime, or definitions monitoring exists.
+  - No upload/source-version administration API, durable object-store resolver, quarantine IAM, persisted real-scanner evidence,
+    scanner runtime, or definitions monitoring exists.
   - The worker is not a running/deployed loop; workload identity, tenant routing, total deadline/cancellation, backpressure,
     shutdown, quotas, dead-letter/repair tools, metrics, and alerts remain absent.
-  - Parser/container OS isolation, native-memory/load evidence, production role provisioning/drift detection, database
-    topology/migration ledger/restore/HA/failover, staging, and deployment remain unproved.
-  - Procedure-query v1 does not yet consume tenant vectors; the controlled DMP is not authorized for this path and
-    remains acquired only.
+  - Parser/container OS isolation, native-memory/load evidence, production role provisioning/drift detection, database topology/migration
+    ledger/restore/HA/failover, staging, and deployment remain unproved.
+  - Procedure-query v1 does not yet consume tenant vectors; the controlled DMP is not authorized for this path and remains
+    acquired only.
   branch: program/procedural-intelligence-prod-ready
   pr: null
   ci: passed_remote_with_platform_limitations
@@ -621,17 +607,17 @@ tasks:
   - Tenant A and B fixtures include exact accepted artifact-object and clean-scan evidence protected by FORCE RLS.
   - Compiled completion binds the accepted object and scan identifiers required by the current worker contract.
   evidence:
-  - Commit a69fb15 updates migration order, fixture permissions/RLS assertions, accepted artifact and scan rows,
-    cross-tenant visibility checks, and compiled smoke completion parameters.
-  - Static migration and operations tests, typecheck, contracts, inventory, dependency audit, domain evaluation,
-    global tests, and build passed locally.
+  - Commit a69fb15 updates migration order, fixture permissions/RLS assertions, accepted artifact and scan rows, cross-tenant
+    visibility checks, and compiled smoke completion parameters.
+  - Static migration and operations tests, typecheck, contracts, inventory, dependency audit, domain evaluation, global tests,
+    and build passed locally.
   - The later integrated regression at 1d129f0 passed 545 of 547 tests with zero failures and two explicit skips.
   limitations:
-  - A live PostgreSQL/pgvector rerun of the revised migration gate was not possible in this nested sandbox because
-    its daemon/network privileges are unavailable.
+  - A live PostgreSQL/pgvector rerun of the revised migration gate was not possible in this nested sandbox because its daemon/network
+    privileges are unavailable.
   - The feature branch is published; remote GitHub Actions status remains unverified.
-  - This repair does not provide a real scanner, durable object store, running worker dispatcher, production topology,
-    or deployment.
+  - This repair does not provide a real scanner, durable object store, running worker dispatcher, production topology, or
+    deployment.
   branch: program/procedural-intelligence-prod-ready
   pr: null
   ci: passed_local_feature_published_remote_ci_unverified
@@ -660,8 +646,7 @@ tasks:
   - WS07-FOUNDATION-001
   blockers: []
   acceptance:
-  - Accepted state proves exact current clean scan, hash, MIME, generation and a future window no longer than seven
-    days.
+  - Accepted state proves exact current clean scan, hash, MIME, generation and a future window no longer than seven days.
   - Accepted identity and scan evidence are immutable; corrupt historical state stops migration.
   - Completion row-locks exact acceptance without artifact UPDATE and denies cross-tenant validation.
   - Fresh, supported legacy and corrupt-history PostgreSQL paths plus compiled ingestion smokes pass.
@@ -669,11 +654,10 @@ tasks:
   - Commit and exact remote SHA f539db3aa910dbf57328602daf19fec2ed3e9677.
   - EVAL-ARTIFACT 5/5, EVAL-VECTOR 9/9 and EVAL-JOB-LEASE 13/13.
   - Detached global regression 646/648 with two explicit environment skips and zero failures.
-  - PostgreSQL 15.18/pgvector 0.8.5 gates, 50-submit concurrency, lease fencing, rollback and stale replacement
-    passed.
+  - PostgreSQL 15.18/pgvector 0.8.5 gates, 50-submit concurrency, lease fencing, rollback and stale replacement passed.
   limitations:
-  - No production object store, scanner/definitions monitor, deployed dispatcher, metrics, load/HA or real-corpus
-    vector quality is proved.
+  - No production object store, scanner/definitions monitor, deployed dispatcher, metrics, load/HA or real-corpus vector quality
+    is proved.
   - Backend CI run 29852618726 passed; no PR, merge or deployment exists at this checkpoint.
   branch: feature/artifact-vector-runtime-hardening-v1
   pr: null
@@ -722,23 +706,20 @@ tasks:
   acceptance:
   - The golden query classifies as a dedicated Antigua-first potable-water workflow.
   - Exactly 47 ordered research categories compile without treating categories as facts.
-  - Every v1 step exposes the canonical fields and missing evidence; unsupported actors, units, systems, approvals,
-    deadlines, legal bases, and citations remain null or empty.
+  - Every v1 step exposes the canonical fields and missing evidence; unsupported actors, units, systems, approvals, deadlines,
+    legal bases, and citations remain null or empty.
   - A narrow citation supports only its matching step and does not silently promote the other 46 categories.
   evidence:
   - Commit 1d129f0 adds the dedicated domain template, classifier, gaps, canonical missing-evidence wording, EVAL-WATER-001,
     CI gate, documentation, and gap-matrix reconciliation.
   - EVAL-WATER-001 passed 4/4; domain evaluation passed 7/7; focused operations/mapper/workflow tests passed 24/24.
-  - Contracts validated 11 schemas, 11 examples, and one OpenAPI 3.1.1 document; inventory and npm high-severity
-    audit passed.
-  - Integrated regression passed 545 of 547 tests with zero failures and two explicit skips; typecheck and build
-    passed.
+  - Contracts validated 11 schemas, 11 examples, and one OpenAPI 3.1.1 document; inventory and npm high-severity audit passed.
+  - Integrated regression passed 545 of 547 tests with zero failures and two explicit skips; typecheck and build passed.
   limitations:
-  - The evaluation uses controlled synthetic evidence and does not prove a complete, current, ingested Antigua Guatemala
-    corpus.
+  - The evaluation uses controlled synthetic evidence and does not prove a complete, current, ingested Antigua Guatemala corpus.
   - The sequential graph is a research checklist, not a legally confirmed official ordering.
-  - Corpus-backed retrieval thresholds, contradiction handling, persistent procedure versions, reviews, approvals,
-    and procedure cases remain open.
+  - Corpus-backed retrieval thresholds, contradiction handling, persistent procedure versions, reviews, approvals, and procedure
+    cases remain open.
   - Descendant f539db3 passed Backend CI; no merge or deployment is claimed.
   branch: program/procedural-intelligence-prod-ready
   pr: null
@@ -763,10 +744,9 @@ tasks:
   - Golden water workflow is Antigua-first and evidence-backed per step.
   evidence:
   - WS05-WATER-001 completed the 47-category research compiler and named hard-eval slice at commit 1d129f0.
-  - The canonical v1 mapper already represents every required operational field and keeps unsupported values null
-    or empty.
-  - The parent remains partial because procedure cases, semantic applicability/conflict resolution, corpus-backed
-    authority, UI/accessibility, and production operation are absent.
+  - The canonical v1 mapper already represents every required operational field and keeps unsupported values null or empty.
+  - The parent remains partial because procedure cases, semantic applicability/conflict resolution, corpus-backed authority,
+    UI/accessibility, and production operation are absent.
   pr: null
   ci: passed_local_feature_published_remote_ci_unverified
 - id: WS06-CASE-001
@@ -783,9 +763,8 @@ tasks:
   acceptance:
   - Cases track status, actors, evidence, decisions, events, and audit history.
   evidence:
-  - Feature 064 provides tenant ProcedureCase create/read/update, approved immutable workflow binding, exact concurrent
-    aggregate replay, document-version dossier identity, blockers/follow-up, append-only audit and role-separated
-    review.
+  - Feature 064 provides tenant ProcedureCase create/read/update, approved immutable workflow binding, exact concurrent aggregate
+    replay, document-version dossier identity, blockers/follow-up, append-only audit and role-separated review.
   - EVAL-CASE-001 passes 17/17; real PostgreSQL SQL gate and compiled HTTP smoke pass; CI 29866907067 succeeded.
   pr: null
   ci: passed_local_detached_postgres_and_remote
@@ -812,11 +791,11 @@ tasks:
   - 'Context7 /ajv-validator/ajv/v8.17.1 query: Ajv2020 strict allErrors addSchema.'
   - Commit 2449064 pins ajv 8.20.0 and ajv-formats 3.0.1.
   - Twelve draft 2020-12 schemas, twelve valid examples, and one OpenAPI 3.1.1 contract validate with zero issues.
-  - Fourteen focal contract tests cover closed objects, ClaimPack request separation, identity/error safety, Mixco,
-    AI draft, product boundaries, event discrimination, and OpenAPI controls.
+  - Fourteen focal contract tests cover closed objects, ClaimPack request separation, identity/error safety, Mixco, AI draft,
+    product boundaries, event discrimination, and OpenAPI controls.
   limitations:
-  - Context7 documentation is v8.17.1; compatibility with selected v8.20.0 is evidenced by executable strict validation,
-    not version-matched documentation.
+  - Context7 documentation is v8.17.1; compatibility with selected v8.20.0 is evidenced by executable strict validation, not
+    version-matched documentation.
   - Cross-field equality and provider/consumer interoperability require runtime contract tests.
   pr: null
   ci: passed
@@ -837,30 +816,28 @@ tasks:
   - WS08-CONTRACT-FOUNDATION-001
   blockers: []
   acceptance:
-  - Bearer/RBAC/tenant controls, scoped retrieval, validation, structured errors, idempotency, audit, rate limits,
-    and boundary refusal pass adversarial tests.
+  - Bearer/RBAC/tenant controls, scoped retrieval, validation, structured errors, idempotency, audit, rate limits, and boundary
+    refusal pass adversarial tests.
   - Any unsupported response artifact fails explicitly without a false capability claim.
   evidence:
-  - Commit deef177 implements the provider, migration 004, scoped public-only retrieval, current-contract replay
-    validation, audit/rate controls, product-boundary refusal, and production legacy-route closure.
-  - Focused API/security suites passed 35/35; the canonical Node summary at deef177 passed 457/457 in a clean detached
-    worktree; contracts, inventory, domain evaluation, typecheck, build, Pages verification, and npm production
-    audit passed.
+  - Commit deef177 implements the provider, migration 004, scoped public-only retrieval, current-contract replay validation,
+    audit/rate controls, product-boundary refusal, and production legacy-route closure.
+  - Focused API/security suites passed 35/35; the canonical Node summary at deef177 passed 457/457 in a clean detached worktree;
+    contracts, inventory, domain evaluation, typecheck, build, Pages verification, and npm production audit passed.
   - The previously recorded 539 figure counted reporter markers rather than Node tests and is corrected by the clean-worktree
     457/457 summary.
-  - Clean PostgreSQL 16.14/pgvector 0.8.5 migrations and non-owner RLS assertions passed; the historical workflow
-    HTTP smoke returned 200/200/409/403/400/401/500/200 plus a non-CORS legacy 404.
+  - Clean PostgreSQL 16.14/pgvector 0.8.5 migrations and non-owner RLS assertions passed; the historical workflow HTTP smoke
+    returned 200/200/409/403/400/401/500/200 plus a non-CORS legacy 404.
   - Commit 9c9803b adds the contract-valid EvidenceBundle output, exact replay, OS-origin CORS coverage, and EVAL-OS-INTEGRATION-001.
-  - The post-commit critic hardening keeps inference at inferred_for_review and suppresses validation_required claims;
-    EVAL-OS-INTEGRATION-001 passes 5/5 and the integrated local suite passes 574/576 with two explicit skips and
-    zero failures.
+  - The post-commit critic hardening keeps inference at inferred_for_review and suppresses validation_required claims; EVAL-OS-INTEGRATION-001
+    passes 5/5 and the integrated local suite passes 574/576 with two explicit skips and zero failures.
   limitations:
-  - EvidenceBundle and ProcedureWorkflow were the original outputs; descendant commit 56b9866 adds conservative
-    ProcedureAssessment success/replay without case-completion claims.
-  - No OS Electoral consumer/interoperability, staging/load test, production platform/role, or deployment is claimed;
-    governed workflow lifecycle/approval exists as a separate descendant slice.
-  - Descendant 56b9866 passed Backend CI and compiled PostgreSQL smoke for bundle, workflow and assessment; this
-    original task remains limited by consumer and production topology.
+  - EvidenceBundle and ProcedureWorkflow were the original outputs; descendant commit 56b9866 adds conservative ProcedureAssessment
+    success/replay without case-completion claims.
+  - No OS Electoral consumer/interoperability, staging/load test, production platform/role, or deployment is claimed; governed
+    workflow lifecycle/approval exists as a separate descendant slice.
+  - Descendant 56b9866 passed Backend CI and compiled PostgreSQL smoke for bundle, workflow and assessment; this original
+    task remains limited by consumer and production topology.
   pr: null
   ci: passed_local_remote_pending
 - id: WS08-CLAIM-PACK-001
@@ -886,26 +863,24 @@ tasks:
   - WS08-PROCEDURE-QUERY-001
   blockers: []
   acceptance:
-  - A dedicated Content Agency request returns only claims, citations, paraphrase bounds, disclaimer, validity,
-    source links, limitations, and provenance.
-  - Authentication-before-body, RBAC, tenant/credential binding, exact replay, expiry, rate limit, audit, abstention,
-    Mixco comparison, and product boundaries pass adversarial tests.
-  - No copy, assets, channels, publication tasks, campaign strategy, brief body, or raw credential is generated
-    or persisted.
+  - A dedicated Content Agency request returns only claims, citations, paraphrase bounds, disclaimer, validity, source links,
+    limitations, and provenance.
+  - Authentication-before-body, RBAC, tenant/credential binding, exact replay, expiry, rate limit, audit, abstention, Mixco
+    comparison, and product boundaries pass adversarial tests.
+  - No copy, assets, channels, publication tasks, campaign strategy, brief body, or raw credential is generated or persisted.
   evidence:
   - Commit e8ac74f implements POST /api/v1/claim-packs; commit f3a1450 repairs the PostgreSQL rate SQL and production-shaped
     smoke fixtures.
-  - EVAL-CONTENT-INTEGRATION-001 passed 7/7; the current contract registry passed 16 schemas, 16 examples, and OpenAPI
-    3.1.1.
-  - Fresh PostgreSQL 15.18/pgvector 0.8.5 non-owner SQL gate and compiled ClaimPack smoke passed with exact replay,
-    expiry regeneration, corrupt-replay regeneration, no cross-tenant metadata leak, and no content generation.
-  - Global regression passed 634 of 636 tests with zero failures and two explicit environment skips; all nine named
-    hard evals, typecheck, build, Pages verification, and npm audit passed.
+  - EVAL-CONTENT-INTEGRATION-001 passed 7/7; the current contract registry passed 16 schemas, 16 examples, and OpenAPI 3.1.1.
+  - Fresh PostgreSQL 15.18/pgvector 0.8.5 non-owner SQL gate and compiled ClaimPack smoke passed with exact replay, expiry
+    regeneration, corrupt-replay regeneration, no cross-tenant metadata leak, and no content generation.
+  - Global regression passed 634 of 636 tests with zero failures and two explicit environment skips; all nine named hard evals,
+    typecheck, build, Pages verification, and npm audit passed.
   limitations:
-  - The Content Agency repository has not run a consumer contract, so downstream ID preservation, Greenlight handling,
-    expiry, and revocation remain unproved.
-  - Cross-product supersession/revocation, staging/load evidence, production roles/topology, remote CI, and deployment
-    remain absent.
+  - The Content Agency repository has not run a consumer contract, so downstream ID preservation, Greenlight handling, expiry,
+    and revocation remain unproved.
+  - Cross-product supersession/revocation, staging/load evidence, production roles/topology, remote CI, and deployment remain
+    absent.
   branch: feature/workflow-lifecycle-v1
   pr: null
   ci: passed_local_postgres_remote_pending
@@ -982,13 +957,12 @@ tasks:
   acceptance:
   - Auth, rate, RBAC, tenant/credential binding, closed contracts, boundary refusal and audit minimization pass.
   - Transport replay and aggregate identity replay/conflict remain distinct, exact and concurrency-safe.
-  - The tenant-owned aggregate is immutable, open, requester-supplied-unverified, and never promotes source authority
-    or resolution.
+  - The tenant-owned aggregate is immutable, open, requester-supplied-unverified, and never promotes source authority or resolution.
   - Non-owner FORCE-RLS SQL gate, clean shared database sequence, compiled HTTP smoke and remote CI pass.
   evidence:
   - Commit and exact remote SHA 66b41b943242d9c4317d35f125de1cd617ebb6e4.
-  - EVAL-EVIDENCE-GAP-001 plus migration/contract boundary passed 14/14; detached global regression passed 667/669
-    with two explicit skips and zero failures.
+  - EVAL-EVIDENCE-GAP-001 plus migration/contract boundary passed 14/14; detached global regression passed 667/669 with two
+    explicit skips and zero failures.
   - Contract registry passed 17 schemas, 17 examples and OpenAPI 3.1.1; typecheck/build/inventory/domain/Pages/audit/diff/secret
     gates passed.
   - Clean PostgreSQL 15.18/pgvector 0.8.5 sequence passed ProcedureQuery, ClaimPack, lifecycle and EvidenceGap SQL/compiled
@@ -1027,8 +1001,8 @@ tasks:
   - Content Agency gets ClaimPack evidence without content generation.
   - Both provider and external consumer suites pass.
   evidence:
-  - OS Electoral provider slices return EvidenceBundle, draft ProcedureWorkflow and conservative ProcedureAssessment
-    without campaign-owned fields; EVAL-OS-INTEGRATION-001 passes 5/5.
+  - OS Electoral provider slices return EvidenceBundle, draft ProcedureWorkflow and conservative ProcedureAssessment without
+    campaign-owned fields; EVAL-OS-INTEGRATION-001 passes 5/5.
   - EvidenceGapRequest commit 66b41b9 provides immutable open/unverified intake, replay/dedupe/conflicts, anti-authority,
     FORCE RLS and compiled HTTP; focused/migration gate passes 14/14 and remote CI passes.
   - Inference and validation-required evidence cannot be silently promoted to supported claims.
@@ -1036,10 +1010,19 @@ tasks:
     and local PostgreSQL gates.
   - External OS Electoral and Content Agency consumers have not run cross-repository contract tests.
   limitations:
-  - EvidenceGap resolution lifecycle, consumer interoperability, cross-product revocation/supersession, staging/load,
-    PR, merge and deployment remain open.
+  - Provider-side manifests do not prove consumer persistence, retry, expiry, revocation or supersession behavior.
+  - No cross-repository consumer suite, staging journey, PR, merge or deployment exists.
   pr: null
   ci: providers_published_remote_ci_passed_external_consumers_pending
+  completed_slices:
+  - portable_consumer_contract_kits
+  result:
+    consumer_contract_kit_commit: 5e5481e26b1a27a0aa2bd9c965e1c160f18b3198
+    consumer_contract_kits: 2 kits / 5 interactions / 0 issues
+    eval_consumer_contract_kit: 16/16 passed
+    detached_regression: 793/795; zero failures; two explicit environment skips
+    remote_ci: 29882062536 success
+    external_consumers: pending
 - id: WS09-UX-001
   workstream: WS-09
   title: Harden authenticated and accessible evidence/workflow UX
@@ -1052,14 +1035,14 @@ tasks:
   - WS06-CASE-001
   - WS07-ID-001
   blockers:
-  - Human SaaS identity/session architecture, authenticated product surfaces and human browser/screen-reader review
-    remain open.
+  - Human SaaS identity/session architecture, authenticated product surfaces and human browser/screen-reader review remain
+    open.
   acceptance:
   - UX exposes citations, authority, conflicts, gaps, workflow state, and cases without overstatement.
   - Accessibility review passes.
   evidence:
-  - Feature 063 ships an evidence-first responsive Procedure Academy with all 47 water research categories, safe
-    degraded state, keyboard navigation and explicit evidence/gaps.
+  - Feature 063 ships an evidence-first responsive Procedure Academy with all 47 water research categories, safe degraded
+    state, keyboard navigation and explicit evidence/gaps.
   - EVAL-ACCESSIBILITY-001 passes for the static training surface; Academy correction CI 29865728313 succeeded.
   pr: null
   ci: passed_static_surface_remote
@@ -1079,14 +1062,14 @@ tasks:
   - WS09-UX-001
   - PRG-CTX7-001
   blockers:
-  - Production topology, Terraform, secrets, object restore, PITR, approved RPO/RTO, observability, staging, load/HA
-    and human drills remain open.
+  - Production topology, Terraform, secrets, object restore, PITR, approved RPO/RTO, observability, staging, load/HA and human
+    drills remain open.
   acceptance:
   - Security/privacy have zero critical and high findings.
   - Observability, Terraform, backup/restore, deploy, rollback, and incident response are proven.
   evidence:
-  - Feature 065 executes a checksum-bound disposable logical PostgreSQL restore to an isolated empty target, compares
-    catalog/RLS/data fingerprints, reapplies reviewed runtime grants and passes compiled HTTP smoke.
+  - Feature 065 executes a checksum-bound disposable logical PostgreSQL restore to an isolated empty target, compares catalog/RLS/data
+    fingerprints, reapplies reviewed runtime grants and passes compiled HTTP smoke.
   - EVAL-RESTORE-001 passes with explicit object/PITR/RPO-RTO/staging/human limitations; CI 29867846337 succeeded.
   pr: null
   ci: passed_disposable_restore_remote
@@ -1113,11 +1096,11 @@ tasks:
   - Commit fd227a7 adds backend CI, a non-root multi-stage container, threat/privacy foundation, and deployment/backup/rollback/incident
     runbooks.
   - Commit deef177 adds the guarded PostgreSQL/API gate and current provider/legacy-production evidence to the runbooks.
-  - Local image digest sha256:4c0e291f1508a728d9c95c7f1d5661158781702d2eb7c825f6163db175fa3c8b ran as node and passed
-    the disposable DB smoke.
+  - Local image digest sha256:4c0e291f1508a728d9c95c7f1d5661158781702d2eb7c825f6163db175fa3c8b ran as node and passed the
+    disposable DB smoke.
   limitations:
-  - No registry push, SBOM, scan, signature, Terraform, platform, secret manager, observability, backup/restore
-    drill, rollback rehearsal, incident exercise, or deployment.
+  - No registry push, SBOM, scan, signature, Terraform, platform, secret manager, observability, backup/restore drill, rollback
+    rehearsal, incident exercise, or deployment.
   pr: null
   ci: passed_local
 - id: WS11-EVAL-PROCEDURE-001
@@ -1141,23 +1124,20 @@ tasks:
   blockers: []
   acceptance:
   - The literal X query remains procedural but unclassified until its subject and governing evidence are identified.
-  - No-evidence output contains structured steps, dependencies, required/output documents, explicit gaps, and canonical
-    missing-evidence state.
-  - Identity-bound municipal citations support only their matching steps and map to valid draft ProcedureWorkflow
-    JSON.
+  - No-evidence output contains structured steps, dependencies, required/output documents, explicit gaps, and canonical missing-evidence
+    state.
+  - Identity-bound municipal citations support only their matching steps and map to valid draft ProcedureWorkflow JSON.
   evidence:
-  - Commit ef86c14 adds EVAL-PROCEDURE-001, normalized retrieval-query deduplication, a domain evaluation case,
-    a named CI gate, and honest eval documentation.
-  - EVAL-PROCEDURE-001 passed 4/4; domain evaluation passed 8/8; focused procedure/mapper/operations tests passed
-    25/25.
-  - Integrated regression passed 550 of 552 tests with zero failures and two explicit skips; contracts, inventory,
-    npm high-severity audit, typecheck, and build passed.
+  - Commit ef86c14 adds EVAL-PROCEDURE-001, normalized retrieval-query deduplication, a domain evaluation case, a named CI
+    gate, and honest eval documentation.
+  - EVAL-PROCEDURE-001 passed 4/4; domain evaluation passed 8/8; focused procedure/mapper/operations tests passed 25/25.
+  - Integrated regression passed 550 of 552 tests with zero failures and two explicit skips; contracts, inventory, npm high-severity
+    audit, typecheck, and build passed.
   limitations:
   - Supporting records are controlled synthetic fixtures, not proof of a complete or current Antigua Guatemala corpus.
-  - The placeholder X intentionally remains unknown; production retrieval thresholds and contradiction handling
-    are not proved.
-  - Procedure lifecycle, review, approval, and supersession are implemented locally; procedure-case tracking and
-    semantic applicability remain open.
+  - The placeholder X intentionally remains unknown; production retrieval thresholds and contradiction handling are not proved.
+  - Procedure lifecycle, review, approval, and supersession are implemented locally; procedure-case tracking and semantic
+    applicability remain open.
   - Descendant f539db3 passed Backend CI; no merge or deployment is claimed.
   branch: program/procedural-intelligence-prod-ready
   pr: null
@@ -1186,19 +1166,22 @@ tasks:
   - WS09-UX-001
   - WS10-OPS-001
   blockers:
-  - Real corpus, authenticated browsers, external consumers, staging, load/HA and production observation remain
-    unproved.
+  - Real corpus, authenticated browsers, external consumers, staging, load/HA and production observation remain unproved.
   acceptance:
   - Every required named eval and cross-workstream gate has scope-equivalent evidence.
   - Documentation and program state match current runtime truth.
   evidence:
-  - All 19 goal-required named hard evals plus ProcedureAssessment and EvidenceGap now have dedicated executable
-    gates.
-  - Detached 9da2972 regression passed 747/749 with 0 fail and 2 explicit environment skips; typecheck,
-    build, 27/27 contracts, 8/8 domain and both npm audits pass.
+  - All 19 goal-required named hard evals plus ProcedureAssessment and EvidenceGap now have dedicated executable gates.
+  - Detached 9da2972 regression passed 747/749 with 0 fail and 2 explicit environment skips; typecheck, build, 27/27 contracts,
+    8/8 domain and both npm audits pass.
   - Catalog fresh PostgreSQL 001-014 non-owner gate and compiled smoke pass; Feature 067 CI 29876782983 is in progress.
   pr: null
   ci: passed_local_detached_postgres_and_remote
+  completed_slices:
+  - EVAL-CONSUMER-CONTRACT-KIT-001
+  current_state: Required hard-eval families plus Feature 069 consumer-kit eval pass; detached regression is 793/795 with
+    zero failures, contracts are 30/30 and portable kits are 2/5. Real corpus, external consumers, human identity/staging,
+    browser E2E, load/HA and production observation remain incomplete.
 - id: WS05-LIFECYCLE-API-001
   workstream: WS-05
   title: Expose governed workflow lifecycle API v1
@@ -1229,20 +1212,20 @@ tasks:
   blockers: []
   acceptance:
   - Every version enters draft and only distinct authorized humans can review and approve.
-  - Four authenticated tenant-scoped routes enforce validation, action RBAC, idempotency, audit, rate limits, and
-    non-enumerating reads.
+  - Four authenticated tenant-scoped routes enforce validation, action RBAC, idempotency, audit, rate limits, and non-enumerating
+    reads.
   - Atomic supersession leaves exactly one approved reviewed replacement.
   - Forced RLS and compiled PostgreSQL smokes pass as a non-owner role.
   evidence:
   - Foundation commit d842b4e and API commit c6e110c.
-  - Lifecycle focused tests passed 35/35; HTTP adversarial tests include auth-before-body, RBAC, tenant isolation,
-    replay/conflict/concurrency, transitions, CORS, and metadata leakage.
-  - Fresh PostgreSQL 15.18/pgvector 0.8.5 SQL gate and compiled smoke passed exact replay, human separation, atomic
-    supersession, cross-tenant denial, corrupt replay invalidation, and recovery.
+  - Lifecycle focused tests passed 35/35; HTTP adversarial tests include auth-before-body, RBAC, tenant isolation, replay/conflict/concurrency,
+    transitions, CORS, and metadata leakage.
+  - Fresh PostgreSQL 15.18/pgvector 0.8.5 SQL gate and compiled smoke passed exact replay, human separation, atomic supersession,
+    cross-tenant denial, corrupt replay invalidation, and recovery.
   - Contract registry passed 16 schemas, 16 examples, and OpenAPI 3.1.1.
   limitations:
-  - No review/approval UI, accessibility evidence, external consumer interoperability, semantic applicability service,
-    remote CI, merge, or deployment.
+  - No review/approval UI, accessibility evidence, external consumer interoperability, semantic applicability service, remote
+    CI, merge, or deployment.
   branch: feature/workflow-lifecycle-v1
   pr: null
   ci: passed_local_postgres_remote_pending
@@ -1315,8 +1298,7 @@ tasks:
   - WS10-OPS-001
   blockers: []
   acceptance:
-  - Distinct empty target, checksum/manifest, transactional restore, equal catalog/data fingerprints and restored
-    HTTP smoke.
+  - Distinct empty target, checksum/manifest, transactional restore, equal catalog/data fingerprints and restored HTTP smoke.
   - Object/PITR/RPO-RTO/staging/human non-proofs remain explicit.
   evidence:
   - 5d4541000d234c6ccf23155f5eeab70b467dd0c6; Backend CI 29867846337 success.
@@ -1395,17 +1377,20 @@ tasks:
   - WS07-FOUNDATION-001
   blockers: []
   acceptance:
-  - POST search supports bounded keyword, phrase, semantic and hybrid modes with tenant/authority/jurisdiction/confidentiality filters.
+  - POST search supports bounded keyword, phrase, semantic and hybrid modes with tenant/authority/jurisdiction/confidentiality
+    filters.
   - POST evidence-bundles preserves identity-bound citations, authority and explicit gaps without comparative promotion.
   - Query embedding runs outside PostgreSQL transactions with bounded timeout and fail-closed 503 semantics.
-  - Exact replay, semantic corruption cleanup, closed contracts, adversarial HTTP, forced-RLS PostgreSQL and compiled smokes pass.
+  - Exact replay, semantic corruption cleanup, closed contracts, adversarial HTTP, forced-RLS PostgreSQL and compiled smokes
+    pass.
   evidence:
   - Functional commit and exact remote SHA 42d2fda70b27ccc9178c6a8d69bba957ef953105.
   - Detached 777/779 regression with 0 failures and 2 explicit skips; 30/30 contracts; both npm audits zero.
   - Fresh PostgreSQL 16.14/pgvector 0.8.5 migrations 001-015, non-owner SQL/RLS gate and compiled HTTP smoke pass.
   - EVAL-SEARCH-API-001 24/24 and EVAL-EVIDENCE-BUNDLE-API-001 24/24.
   limitations:
-  - Real corpus, human legal review, production provider/SLO/load, human SaaS, external consumers, PR, merge and deployment remain open.
+  - Real corpus, human legal review, production provider/SLO/load, human SaaS, external consumers, PR, merge and deployment
+    remain open.
   branch: feature/search-evidence-api-v1
   pr: null
   ci: remote_success_run_29880372748
@@ -1421,17 +1406,59 @@ tasks:
   blockers:
   - BLK-CORPUS-OPS-001
   acceptance:
-  - Authorized durable bytes, immutable manifests, current clean scans, processed ingestion and indexed chunks exist for the approved corpus.
+  - Authorized durable bytes, immutable manifests, current clean scans, processed ingestion and indexed chunks exist for the
+    approved corpus.
   - No synthetic fixture is credited as production corpus evidence.
   evidence: []
   pr: null
   ci: not_started
+- id: WS08-CONSUMER-CONTRACT-KIT-001
+  workstream: WS-08
+  title: Publish portable provider-side consumer contract kits v1
+  status: completed_with_limitations
+  owner: /root
+  depends_on:
+  - WS08-INT-001
+  - WS08-CONTRACT-FOUNDATION-001
+  blockers: []
+  result:
+    functional_commit: 5e5481e26b1a27a0aa2bd9c965e1c160f18b3198
+    branch: feature/consumer-contract-kit-v1
+    kits:
+    - os-electoral.json
+    - content-agency.json
+    interactions: 5
+    eval: 16/16
+    detached_tests: 793/795; zero failures; two skips
+    remote_ci: 29882062536 success
+  limitations:
+  - External repositories have not executed the kits.
+  - No cross-product staging, browser E2E, PR, merge or deployment is proved.
+  files:
+  - contracts/consumer-kits/v1/
+  - src/integration/consumerContractKit.ts
+  - src/cli/verifyConsumerContractKits.ts
+  - src/__tests__/consumer-contract-kit-v1.test.ts
+  - src/__tests__/eval-consumer-contract-kit-001.test.ts
+  - docs/integrations/consumer-contract-kits.md
+  acceptance:
+  - Exactly two consumer manifests and five interactions match canonical OpenAPI, schemas and examples.
+  - Interaction removal, binding drift, output-discriminator drift, response-header loss and foreign-owned fields fail closed.
+  - Provider-side verification remains distinct from external interoperability.
+  evidence:
+  - Functional commit and exact remote SHA 5e5481e26b1a27a0aa2bd9c965e1c160f18b3198.
+  - Detached 793/795 regression; 30/30 contracts; 2 kits/5 interactions; both audits zero.
+  - EVAL-CONSUMER-CONTRACT-KIT-001 16/16.
+  branch: feature/consumer-contract-kit-v1
+  pr: null
+  ci: remote_success_run_29882062536
 blockers:
 - id: BLK-CORPUS-OPS-001
   affects:
   - WS02-CORPUS-ACQUISITION-001
   state: open
-  condition: Source rights, durable object storage, current scanner operation and retention/legal-hold policy are not available in this repository context.
+  condition: Source rights, durable object storage, current scanner operation and retention/legal-hold policy are not available
+    in this repository context.
   next_safe_action: Human owners approve rights and production storage/scanner/privacy controls before artifact acquisition.
 - id: BLK-CTX7-001
   state: resolved
@@ -1441,8 +1468,7 @@ blockers:
   - Four required libraries resolved and queried; evidence recorded in program/context7-evidence.md.
   resolution: CLI fallback is active; PRG-CTX7-001 completed.
   residual_limitation: Node docs through v25 versus observed runtime v26.5.0.
-  next_safe_action: Continue task-specific Context7 queries and verify v26-only Node behavior against matching primary
-    documentation.
+  next_safe_action: Continue task-specific Context7 queries and verify v26-only Node behavior against matching primary documentation.
 - id: BLK-AUTO-001
   state: mitigated
   condition: Proposal licenses and five prompt-injection reviews are unproven.
@@ -1454,8 +1480,7 @@ blockers:
 - id: BLK-BASE-001
   state: resolved
   condition: The previous branch upstream was gone and RTK.md was pre-existing untracked work.
-  resolution: The canonical branch was recreated from origin/main at 4950ba3 and subsequent implementation commits
-    were preserved.
+  resolution: The canonical branch was recreated from origin/main at 4950ba3 and subsequent implementation commits were preserved.
   residual_limitation: RTK.md remains pre-existing, untouched, and out of scope.
   next_safe_action: Continue on the canonical branch and preserve RTK.md.
 - id: BLK-CLOUD-PUSH-001
@@ -1471,20 +1496,21 @@ blockers:
 - id: BLK-CLAIM-PACK-DB-001
   state: resolved
   condition: Nested Docker could not register the pinned pgvector image layers.
-  resolution: Installed disposable PostgreSQL 15.18 and built pgvector 0.8.5 from verified official commit 159b790;
-    fresh non-owner SQL gates and compiled ProcedureQuery, ClaimPack, and lifecycle smokes passed.
+  resolution: Installed disposable PostgreSQL 15.18 and built pgvector 0.8.5 from verified official commit 159b790; fresh
+    non-owner SQL gates and compiled ProcedureQuery, ClaimPack, and lifecycle smokes passed.
   exact_evidence:
   - claim_pack_sql_gate_passed
   - claim_pack_postgres_http_smoke_passed
   - workflow_lifecycle_sql_gate_passed
   - workflow_lifecycle_postgres_http_smoke_passed
-  residual_limitation: Remote CI still uses PostgreSQL 16/pgvector 0.8.5 and has not been verified on the published
-    feature head.
+  residual_limitation: Remote CI still uses PostgreSQL 16/pgvector 0.8.5 and has not been verified on the published feature
+    head.
   next_safe_action: Retain the remote CI gate and execute it on the exact published HEAD.
 farmtable_equivalent_queries:
   GetReadyTasks:
     result: []
-    caveat: Feature 068 is complete with limitations; corpus acquisition is blocked by BLK-CORPUS-OPS-001 and no production task is safe to execute automatically.
+    caveat: Feature 068 is complete with limitations; corpus acquisition is blocked by BLK-CORPUS-OPS-001 and no production
+      task is safe to execute automatically.
   GetDependencyTree:
     root: REL-VERIFY-001
     source: program/task-graph.yaml

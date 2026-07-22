@@ -1,21 +1,25 @@
 {
-  "updated_at": "2026-07-21T23:20:48Z",
-  "branch": "feature/search-evidence-api-v1",
-  "functional_head": "42d2fda70b27ccc9178c6a8d69bba957ef953105",
-  "status": "passed_feature068_with_explicit_global_product_blockers",
+  "schema_version": "1.12.0",
+  "generated_at": "2026-07-22T01:05:41Z",
+  "branch": "feature/consumer-contract-kit-v1",
+  "functional_head": "5e5481e26b1a27a0aa2bd9c965e1c160f18b3198",
+  "status": "passed_feature069_with_explicit_external_consumer_and_global_product_blockers",
   "deterministic": {
-    "tests": 779,
-    "pass": 777,
+    "tests": 795,
+    "pass": 793,
     "fail": 0,
     "skipped": 2,
     "typecheck": "pass",
-    "build": "pass"
+    "build": "pass",
+    "audits": "0 vulnerabilities"
   },
-  "database": {
-    "search_evidence_fresh_migrations": "001-015 pass",
-    "non_owner_rls": "pass",
-    "compiled_http_smoke": "pass",
-    "catalog_historical_gate": "preserved in historical_checkpoints"
+  "contracts": {
+    "canonical_schemas": 30,
+    "canonical_examples": 30,
+    "openapi": "3.1.1",
+    "consumer_kits": 2,
+    "consumer_interactions": 5,
+    "issues": 0
   },
   "hard_evals": {
     "EVAL-PROCEDURE-001": {
@@ -116,196 +120,49 @@
         "No real-corpus conflict-resolution study or human approval workflow.",
         "No external consumer suite, PR, merge or deployment."
       ]
+    },
+    "EVAL-CONSUMER-CONTRACT-KIT-001": {
+      "command": "npm run eval:consumer-contract-kit",
+      "passed": 16,
+      "total": 16,
+      "result": "passed_for_portable_provider_contract_manifests_with_external_consumer_and_e2e_limitations",
+      "evidence": [
+        "5e5481e26b1a27a0aa2bd9c965e1c160f18b3198",
+        "contracts/consumer-kits/v1/",
+        "src/integration/consumerContractKit.ts",
+        "docs/integrations/consumer-contract-kits.md"
+      ],
+      "limitations": [
+        "No external consumer repository has run the kit.",
+        "No cross-product staging, browser E2E, merge or deployment."
+      ]
     }
-  },
-  "missing_dedicated_evals": [
-    "real_corpus_retrieval_quality",
-    "human_authority_vigencia_applicability_review",
-    "production_provider_latency_cost_slo",
-    "consumer_contracts",
-    "staging_load_ha_recovery_privacy"
-  ],
-  "evidence_gap_assertions": {
-    "initial_status": "open",
-    "request_assertion_status": "requester_supplied_unverified",
-    "retrieval_or_compiler_invoked": false,
-    "source_authority_promoted": false,
-    "exact_key_replay": true,
-    "exact_aggregate_replay": true,
-    "concurrent_aggregate_convergence": true,
-    "response_hash_enforced": true,
-    "canonical_response_reconstructed": true,
-    "cross_tenant_marker_leaked": false,
-    "corrupt_replay_marker_leaked": false,
-    "documentary_text_in_audit": false
   },
   "publication": {
-    "branch": "feature/search-evidence-api-v1",
-    "functional_sha": "42d2fda70b27ccc9178c6a8d69bba957ef953105",
+    "branch": "feature/consumer-contract-kit-v1",
+    "functional_sha": "5e5481e26b1a27a0aa2bd9c965e1c160f18b3198",
     "remote_sha_verified": true,
-    "remote_ci_run": 29880372748,
-    "remote_ci_status": "success",
+    "ci_run": 29882062536,
+    "ci_status": "success",
     "pr": null,
     "merged": false,
-    "deployed": false
+    "deployed": false,
+    "ci_conclusion": "success"
   },
+  "missing_dedicated_evals": [
+    "external_os_electoral_consumer",
+    "external_content_agency_consumer",
+    "deterministic_staging_identity",
+    "system_api_journeys",
+    "browser_e2e",
+    "real_corpus_quality",
+    "production_load_ha_recovery_privacy"
+  ],
   "limitations": [
-    "No authorized durable corpus bytes are present and zero real documents are credited as ingested.",
-    "No real-corpus keyword, phrase, semantic or hybrid quality/performance evidence exists.",
-    "No human IdP/session/SaaS shell, production infrastructure, staging/load/HA/privacy operations or consumer contract suites exist.",
-    "Functional branch is published and CI is in progress; there is no PR, protected merge, deployment or observation window."
+    "Provider-side manifests are not external interoperability evidence.",
+    "Zero real documents are credited as ingested.",
+    "Human SaaS, staging and production operations remain absent."
   ],
-  "generatedAt": "2026-07-22T00:35:00Z",
-  "summary": {
-    "overall": "passed_with_documented_product_blockers",
-    "tests": {
-      "total": 779,
-      "passed": 777,
-      "failed": 0,
-      "skipped": 2
-    },
-    "contracts": {
-      "schemas": 30,
-      "examples": 30,
-      "openapi": "3.1.1"
-    },
-    "domain_pack": {
-      "passed": 8,
-      "total": 8
-    },
-    "source_inventory": {
-      "total": 17,
-      "verified": 4,
-      "with_acquisition_metadata": 1,
-      "ingested": 0
-    },
-    "dependency_audit": {
-      "all": "0 vulnerabilities",
-      "production": "0 vulnerabilities"
-    },
-    "pages_artifact": "passed",
-    "postgres_search_evidence": {
-      "postgres": "16.14",
-      "pgvector": "0.8.5",
-      "fresh_migrations": "001-015 passed",
-      "non_owner_rls": "passed",
-      "compiled_http_smoke": "passed"
-    },
-    "remote": {
-      "functional_sha_verified": true,
-      "ci_run": 29880372748,
-      "ci_status": "in_progress",
-      "pr": null,
-      "merged": false,
-      "deployed": false
-    }
-  },
-  "evaluations": [
-    {
-      "evalId": "EVAL-CASE-001",
-      "status": "pass_with_limitations",
-      "summary": "17/17 plus disposable PostgreSQL SQL gate and compiled HTTP smoke; authenticated UI, privacy, load, restore and deployment remain open.",
-      "verifiedAt": "2026-07-21T21:53:16Z"
-    },
-    {
-      "evalId": "EVAL-ACCESSIBILITY-001",
-      "status": "pass_with_limitations",
-      "summary": "11/11 static Academy checks; supported-browser E2E, screen readers, human WCAG and authenticated application remain open.",
-      "verifiedAt": "2026-07-21T21:53:16Z"
-    },
-    {
-      "evalId": "EVAL-RESTORE-001",
-      "status": "pass_with_limitations",
-      "summary": "5/5 plus real isolated logical restore and restored HTTP smoke; objects, PITR, RPO/RTO, staging/load and human sign-off remain open.",
-      "verifiedAt": "2026-07-21T21:53:16Z"
-    },
-    {
-      "evalId": "EVAL-SOURCE-001",
-      "status": "pass_with_limitations",
-      "summary": "15/15 inventory semantics; durable acquired bytes absent in checkout and zero records ingested.",
-      "verifiedAt": "2026-07-21T21:53:16Z"
-    },
-    {
-      "evalId": "EVAL-MISSING-001",
-      "status": "pass_with_limitations",
-      "summary": "25/25 explicit no-evidence/gap behavior; real-corpus research and resolution lifecycle remain open.",
-      "verifiedAt": "2026-07-21T21:53:16Z"
-    },
-    {
-      "evalId": "EVAL-RBAC-001",
-      "status": "pass_with_limitations",
-      "summary": "32/32 current server role/tenant surface; human IdP/provisioning/access review remain open.",
-      "verifiedAt": "2026-07-21T21:53:16Z"
-    },
-    {
-      "evalId": "EVAL-INGEST-001",
-      "status": "pass_with_limitations",
-      "summary": "40/40 plus PostgreSQL/pgvector gates and HTTP smokes; production object/scanner/dispatcher/load/operations remain open.",
-      "verifiedAt": "2026-07-21T21:53:16Z"
-    }
-  ],
-  "catalog_assertions": {
-    "source_registration_unreviewed": true,
-    "source_authority_promoted": false,
-    "document_initial_draft": true,
-    "artifact_acceptance_fabricated": false,
-    "exact_source_replay": true,
-    "exact_document_replay": true,
-    "semantic_corruption_rejected": true,
-    "cleanup_committed_before_error": true,
-    "signed_url_rejected": true,
-    "private_object_or_job_internals_returned": false,
-    "cross_tenant_marker_leaked": false
-  },
-  "schema_version": "1.11.0",
-  "generated_at": "2026-07-22T00:35:00Z",
-  "head_commit": "42d2fda70b27ccc9178c6a8d69bba957ef953105",
-  "test_suite": {
-    "command": "npm test",
-    "total": 779,
-    "passed": 777,
-    "failed": 0,
-    "skipped": 2,
-    "limitations": [
-      "Two explicit environment skips remain; no failures.",
-      "Synthetic tests and fixtures do not establish real-corpus retrieval quality or legal correctness."
-    ]
-  },
-  "integration_contracts": {
-    "command": "npm run contracts:validate",
-    "schemas": 30,
-    "examples": 30,
-    "openapi": "3.1.1",
-    "result": "passed"
-  },
-  "operational_gates": {
-    "search_evidence_api": {
-      "database": "PostgreSQL 16.14 / pgvector 0.8.5",
-      "migrations": "fresh 001-015 passed",
-      "role": "la_muni_search_runtime_test; non-owner; NOSUPERUSER; NOBYPASSRLS",
-      "private_artifact_columns_granted": false,
-      "cross_tenant_leak": false,
-      "eligible_fixture_count": 2,
-      "compiled_smoke": "passed",
-      "statuses": [
-        503,
-        401,
-        200,
-        200,
-        200,
-        200,
-        200,
-        200,
-        409,
-        500,
-        403,
-        200
-      ],
-      "exact_replay": true,
-      "corrupt_replay_cleanup_committed": true,
-      "comparative_promoted_to_claim": false
-    }
-  },
   "historical_checkpoints": {
     "feature067_catalog": {
       "functional_head": "9da29720c23d64bc73bdb24e92e67707834f4f84",
@@ -416,19 +273,5 @@
       },
       "missing_dedicated_evals": []
     }
-  },
-  "vector_validation": {
-    "provider_timeout": "pass",
-    "provider_outside_transaction": "pass",
-    "semantic_fail_closed": "pass",
-    "hybrid_explicit_modes": "pass",
-    "real_corpus_quality": "not_run"
-  },
-  "scans": {
-    "secret_patterns": "none",
-    "dependency_audit": "0 vulnerabilities",
-    "production_dependency_audit": "0 vulnerabilities",
-    "license_denied": 0,
-    "unknown_licenses": 0
   }
 }

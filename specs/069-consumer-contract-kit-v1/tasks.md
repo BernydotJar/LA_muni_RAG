@@ -7,4 +7,4 @@
 - [x] Add CLI and CI command.
 - [x] Document portable usage and limitations.
 - [x] Run focused/global verification and adversarial review.
-- [ ] Commit, detached verify, push and reconcile program state.
+- [x] Commit, detached verify, push and reconcile program state.
