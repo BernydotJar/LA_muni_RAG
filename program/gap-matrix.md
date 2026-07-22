@@ -1,20 +1,30 @@
 # LA Muni RAG — Gap Matrix
 
-Updated: 2026-07-22T16:53:05Z
+Updated: 2026-07-22T19:34:37Z
 
-| Capability | Repository evidence | State | Remaining production gap |
+| Workstream | Verified now | Remaining production gap | State |
 |---|---|---|---|
-| Governed catalogs and APIs | Features 067–068, contracts, PostgreSQL/HTTP gates | verified_with_limits | Real corpus, human SaaS, platform, deployment |
-| Portable consumer contracts | Feature 069, 16/16 eval, 2 kits/5 interactions | verified_provider_side | Suites inside OS Electoral and Content Agency |
-| Ephemeral staging architecture | Feature 070 `f4d018f`, 13/13 eval, 2 tenants/20 API/12 blocked browser | verified_architecture_only | Actual runner, provisioned disposable services, journey receipts, cleanup attestation |
-| Consumer interoperability | Provider manifests/stubs only | missing_external_evidence | Independent stores, retry/expiry/revocation/supersession tests |
-| Corpus acquisition | 17 inventory records; 0 durable bytes/0 ingested | blocked | Rights, storage, scan, manifests, ingestion |
-| Retrieval quality | Synthetic fixtures only | missing_real_evidence | Judged Antigua-first relevance, citation quality, latency, cost, load |
-| Human authentication | Server credential/RBAC foundation only | missing_human_identity | IdP/OIDC/PKCE/BFF/session/provisioning/recovery |
-| Authenticated role-aware UI | Public Academy and planned routes only | missing | Source/library/search/workflow/case/review/admin/audit surfaces |
-| API/system staging journeys | 20 specified and locally contract-validated | not_executed_in_deployed_staging | Ephemeral runner, service topology, fault injection, receipts |
-| Browser E2E | 12 specified and blocked | intentionally_deferred | Human identity, secure sessions, role-aware UI, deployed fixtures |
-| Accessibility | Static Academy gate | partial | Authenticated browsers, screen readers, human WCAG 2.2 AA |
-| Platform/operations | CI, runbooks, disposable PostgreSQL/restore gates | partial | Terraform, observability, SLOs, load/HA, coordinated recovery |
-| Privacy lifecycle | Documentation foundations | missing_operations | Retention, deletion, legal hold, DSAR |
-| Release | Feature branch published; exact CI success | incomplete | PR, protected merge, staging rehearsal, deployment, observation |
+| Product/public UX | Concise modular shell; direct Assistant/Glass Wall; fail-closed Pages; contrast/focus/responsive gates | public gateway, real corpus, human accessibility, authenticated application surfaces | partial |
+| Public query boundary | Widget defaults to `/api/public/v1/query`; production negative 404 gate | handler, closed contract, public tenant binding, rate/origin/abuse controls, SQL/HTTP proof | missing |
+| Sources/corpus | 17 inventory records, 4 verified, 1 acquisition metadata | source rights, durable bytes, scanner, immutable manifests, human authority review | blocked external |
+| Ingestion | Artifact, job, lease/fencing, vector and HTTP foundations | production object store/scanner/dispatcher, real document ingestion, monitoring and load | partial |
+| Retrieval/evidence | Keyword/phrase/semantic/hybrid and conservative EvidenceBundle APIs | judged real-corpus relevance, provider SLO/cost/load, human citation/vigencia/applicability review | partial |
+| Procedures/workflows | ProcedureQuery, lifecycle, assessment, EvidenceGap and training foundations | real evidence, human approvals, research resolution workflow and institutional operation | partial |
+| Cases | Approved-workflow case lifecycle, document-version validation, RLS and audit | authenticated UI, retention/privacy policy, load, recovery and deployment | partial |
+| Identity/RBAC | Ten server-side roles, tenant-bound credentials, forced RLS | browser authentication/session architecture, IdP/BFF, provisioning, recovery, access review | partial |
+| Integrations | Provider-side OS Electoral and Content Agency kits | consumer repository execution, retry/revocation/supersession across stores | partial |
+| Staging/E2E | Executable plan: 20 API/system and 12 blocked browser journeys | runner execution, deployed services, human identity/UI and browser execution | architecture verified |
+| Cloud/IaC | GCP Cloud Run/Cloud SQL/Storage target and cost constraints documented | project, billing, region, guarded Terraform, workload identity, secrets and staging | architecture only |
+| Security/privacy | Threat/privacy/runbook foundations, fail-closed Pages, zero dependency vulnerabilities | penetration test, edge controls, human approvals, retention/deletion/legal hold/DSAR operations | partial |
+| Observability/reliability | sanitized audit foundations and disposable restore drill | production metrics/traces/SLOs/alerts, load/HA, PITR, object/KMS recovery | partial |
+| Release | feature branches, exact remote SHAs and successful CI receipts | reviewed PR, protected merge, deployment rehearsal, rollout/rollback and observation | incomplete |
+
+## Non-negotiable truths
+
+- Zero documents are credited as ingested against a real, reviewed corpus.
+- The minimum Antigua-first and comparative corpus is incomplete.
+- EvidenceGap is intake-only.
+- Browser authentication/session architecture is not implemented.
+- There is no production object store, scanner/definitions monitor or dispatcher.
+- GCP selection created no resource and incurred no billable action.
+- Passing Feature 071 is not production readiness.

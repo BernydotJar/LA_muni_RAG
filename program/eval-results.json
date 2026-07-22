@@ -1,12 +1,12 @@
 {
-  "schema_version": "1.13.0",
-  "generated_at": "2026-07-22T16:53:05Z",
-  "branch": "feature/ephemeral-staging-e2e-architecture-v1",
-  "functional_head": "f4d018f0909d15408092167cb935bf4ac71cd6d9",
-  "status": "passed_feature070_architecture_with_explicit_execution_and_global_product_blockers",
+  "schema_version": "1.14.0",
+  "generated_at": "2026-07-22T19:34:37Z",
+  "branch": "feature/production-public-surface-v1",
+  "functional_head": "bf29e6fdc48fa155b004b5f0b2ff410050b59c84",
+  "status": "passed_feature071_public_surface_with_explicit_gateway_corpus_identity_and_deployment_blockers",
   "deterministic": {
-    "tests": 808,
-    "pass": 806,
+    "tests": 818,
+    "pass": 816,
     "fail": 0,
     "skipped": 2,
     "typecheck": "pass",
@@ -169,13 +169,30 @@
         "No human browser identity/UI or browser execution.",
         "No external consumer repository execution."
       ]
+    },
+    "EVAL-PRODUCTION-PUBLIC-SURFACE-001": {
+      "command": "npm run eval:production-public-surface",
+      "passed": 33,
+      "total": 33,
+      "result": "passed_for_honest_fail_closed_public_product_surface_with_gateway_corpus_identity_infrastructure_and_deployment_limitations",
+      "evidence": [
+        "bf29e6fdc48fa155b004b5f0b2ff410050b59c84",
+        "public/pages-api-bridge.js",
+        "public/product.css",
+        "DESIGN.md",
+        "docs/operations/gcp-production-blueprint.md"
+      ],
+      "limitations": [
+        "No public query gateway or authorized real corpus.",
+        "No GCP resources, human identity, browser E2E, PR, merge or deployment."
+      ]
     }
   },
   "publication": {
-    "branch": "feature/ephemeral-staging-e2e-architecture-v1",
-    "functional_sha": "f4d018f0909d15408092167cb935bf4ac71cd6d9",
+    "branch": "feature/production-public-surface-v1",
+    "functional_sha": "bf29e6fdc48fa155b004b5f0b2ff410050b59c84",
     "remote_sha_verified": true,
-    "ci_run_id": 29939453123,
+    "ci_run_id": 29951023165,
     "ci_status": "success",
     "ci_conclusion": "success",
     "pr": null,
@@ -183,6 +200,7 @@
     "deployed": false
   },
   "missing_dedicated_evals": [
+    "public_query_gateway",
     "ephemeral_staging_runner_execution",
     "external_os_electoral_consumer",
     "external_content_agency_consumer",
@@ -192,8 +210,8 @@
     "production_load_ha_recovery_privacy"
   ],
   "limitations": [
-    "Architecture conformance is not deployed staging.",
-    "Browser E2E and external consumer interoperability are unproved.",
-    "Zero real documents are credited as ingested."
+    "Public shell is production-facing but query gateway is absent.",
+    "Zero real documents are credited as ingested.",
+    "GCP is architecture only; no resource, merge or deployment exists."
   ]
 }

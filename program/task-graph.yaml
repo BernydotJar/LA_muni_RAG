@@ -1,5 +1,5 @@
 schema_version: 1
-generated_at: '2026-07-22T16:53:05Z'
+generated_at: '2026-07-22T19:34:37Z'
 program:
   id: LA-MUNI-RAG-PROD
   objective: Make LA Muni RAG production-ready within its evidence, procedure, workflow, case-tracking, and integration domain.
@@ -991,8 +991,9 @@ tasks:
   owner: /root
   completed_slices:
   - WS09-PROCEDURE-TRAINING-001
-  current_state: Public evidence-first Academy and static accessibility gate pass; authenticated SaaS shell and human browser/accessibility
-    evidence remain open.
+  - WS09-PRODUCTION-PUBLIC-SURFACE-001
+  current_state: Public shell is concise, modular and fail-closed; Assistant and Glass Wall are direct navigation. Public
+    gateway, authenticated SaaS and human accessibility evidence remain open.
   blockers: []
 - id: WS10-OPS-001
   workstream: WS-10
@@ -1011,8 +1012,8 @@ tasks:
   completed_slices:
   - WS10-RESTORE-DRILL-001
   - WS10-EPHEMERAL-STAGING-E2E-ARCH-001
-  current_state: Feature 070 defines and verifies the disposable staging/E2E contract; no environment runner, human identity,
-    browser execution, production topology, load/HA, or deployment is proved.
+  current_state: GCP Cloud Run/Cloud SQL target is selected in architecture only; no project, billing, Terraform apply or
+    deployment exists. Disposable restore evidence remains valid.
   blockers: []
 - id: WS10-OPS-FOUNDATION-001
   workstream: WS-10
@@ -1105,9 +1106,9 @@ tasks:
   - EVAL-DOCUMENT-API-001
   - EVAL-CONSUMER-CONTRACT-KIT-001
   - EVAL-EPHEMERAL-STAGING-E2E-001
-  current_state: Feature 070 staging/E2E architecture eval passes 13/13; detached regression is 806/808 with zero failures,
-    contracts are 30/30, consumer kits 2/5, and CI succeeds. Real corpus, external consumers, actual staging, human identity,
-    browser execution, load/HA, and production observation remain open.
+  - EVAL-PRODUCTION-PUBLIC-SURFACE-001
+  current_state: Required hard evals plus consumer, staging architecture and production public-surface evals pass; detached
+    regression is 816/818 with zero failures and two explicit skips.
   blockers: []
   depends_on:
   - GAP-001
@@ -1320,6 +1321,46 @@ tasks:
   - Collect sanitized receipts and prove cleanup.
   limitations:
   - Browser E2E remains blocked until human identity and authenticated UI exist.
+- id: WS09-PRODUCTION-PUBLIC-SURFACE-001
+  workstream: WS-09
+  title: Convert the public frontend into a fail-closed production product shell
+  status: completed_with_limitations
+  owner: /root
+  depends_on:
+  - WS09-UX-001
+  - WS10-EPHEMERAL-STAGING-E2E-ARCH-001
+  blockers: []
+  result:
+    functional_commit: bf29e6fdc48fa155b004b5f0b2ff410050b59c84
+    branch: feature/production-public-surface-v1
+    surface: direct Assistant / Glass Wall / Academy / Install navigation
+    gateway_default: POST /api/public/v1/query (not implemented)
+    eval: 33/33
+    detached_tests: 816/818; zero failures; two skips
+    remote_ci: 29951023165 success
+    cloud_target: GCP architecture only; no resources created
+  limitations:
+  - Public gateway and real corpus are absent.
+  - No GCP project/resource, human identity, PR, merge or deployment is proved.
+- id: WS09-PUBLIC-QUERY-GATEWAY-001
+  workstream: WS-09
+  title: Implement the dedicated public query gateway v1
+  status: pending
+  owner: /root
+  depends_on:
+  - WS09-PRODUCTION-PUBLIC-SURFACE-001
+  - WS05-SEARCH-EVIDENCE-API-001
+  - WS07-FOUNDATION-001
+  blockers: []
+  acceptance:
+  - POST /api/public/v1/query is the only browser query boundary and accepts no tenant or service credential from the browser.
+  - A server-configured public tenant/corpus, bounded rate/body/origin controls, public-only evidence eligibility, safe no-evidence
+    output and minimized audit are enforced.
+  - Legacy /api/chat remains production-disabled and integration Bearer credentials never enter frontend assets.
+  - Closed contract, adversarial tests, PostgreSQL/RLS gate and compiled HTTP smoke pass.
+  limitations:
+  - Production enablement still requires an authorized ingested public corpus, edge abuse controls, load evidence and deployment
+    approval.
 blockers:
 - id: BLK-CORPUS-OPS-001
   affects:

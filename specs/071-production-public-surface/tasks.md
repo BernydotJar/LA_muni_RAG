@@ -9,4 +9,4 @@
 - [x] Remove ungrounded verified/official-corpus copy.
 - [x] Record GCP architecture, design system, risks and public-query gateway blocker.
 - [x] Add and pass EVAL-PRODUCTION-PUBLIC-SURFACE-001.
-- [ ] Run full verification, commit, detached verify, push and observe CI.
+- [x] Run full verification, commit, detached verify, push and observe CI.

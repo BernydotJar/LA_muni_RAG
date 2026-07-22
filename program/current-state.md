@@ -1,100 +1,100 @@
 # LA Muni RAG — Current Program State
 
-Updated: 2026-07-22T16:53:05Z
+Updated: 2026-07-22T19:34:37Z
 
-Program status: **PARTIAL WITH DOCUMENTED BLOCKERS — Feature 070 provides an executable staging/E2E architecture; no deployed staging, browser E2E, or production readiness is claimed**
+Program status: **PARTIAL WITH DOCUMENTED BLOCKERS — Feature 071 converts the public surface into an honest product shell; the public query gateway, real corpus, human identity, cloud infrastructure and production release remain open**
 
 ## Authoritative checkout
 
 ```text
 workspace_id: 090ec1e4-f130-4801-addd-f6ecb198744a
 root: /workspace
-branch: feature/ephemeral-staging-e2e-architecture-v1
-functional_commit: f4d018f0909d15408092167cb935bf4ac71cd6d9
-remote_functional_ref: f4d018f0909d15408092167cb935bf4ac71cd6d9
+branch: feature/production-public-surface-v1
+functional_commit: bf29e6fdc48fa155b004b5f0b2ff410050b59c84
+remote_functional_ref: bf29e6fdc48fa155b004b5f0b2ff410050b59c84
 origin_main: 4950ba3c24dbe7d9891d5cec8d7ba5f57db3ef9c
 pushed: true
-remote_ci_run: 29939453123 success
+remote_ci_run: 29951023165 success
 PR_open: false
 merged: false
-deployed: false
+staging_deployed: false
+production_deployed: false
 observed_in_production: false
+cloud_resources_created: false
+billable_actions: 0
 ```
 
-`AGENTS.md` and `RTK.md` remain authoritative. Protected merge, production deployment, paid or external infrastructure, sensitive credentials, legal conclusions, and modifications to neighboring products remain human-gated.
+`AGENTS.md` and `RTK.md` remain authoritative. Protected merge, production deployment, paid infrastructure, project/billing creation, sensitive credentials, legal conclusions and modifications to neighboring products remain human-gated.
 
-## Feature 070 — executable ephemeral staging and E2E architecture v1
+## Feature 071 — production-facing public surface
 
-Machine-readable source:
+The public product now has:
+
+- direct primary navigation to **Assistant** and **Glass Wall**;
+- Academy and installation as secondary destinations;
+- a concise product hero and installation section;
+- no “Experiencia con evidencia”, “Flujo visual” or “Sistema operable” marketing sections;
+- modular `product.css` and `product.js` assets;
+- cyan reserved for interaction, visible keyboard focus, reduced-motion support and responsive stacking;
+- measured contrast above 4.5:1 for tested normal, muted, quiet, CTA and panel token combinations;
+- a fail-closed Pages bridge with no static answers, citations, procedures or domain fixtures;
+- a widget that disables query controls when no API is configured;
+- no claims that documents are verified, official, current or loaded unless supplied by a real backend response;
+- default browser route `/api/public/v1/query`, not legacy `/api/chat`.
+
+The production server intentionally returns 404 for both legacy `/api/chat` and the not-yet-implemented `/api/public/v1/query`. This is a safety boundary, not a missing configuration workaround. An integration Bearer credential must never be placed in Pages or browser storage.
+
+## Cloud target
+
+Decision 071 selects Google Cloud as architecture only:
 
 ```text
-contracts/staging/v1/ephemeral-staging-plan.schema.json
-contracts/staging/v1/ephemeral-staging-plan.json
+Cloud Run: public gateway, authenticated API and reviewed jobs/workers
+Cloud SQL: PostgreSQL plus pgvector
+Cloud Storage: immutable document objects
+Pub/Sub or Cloud Tasks: asynchronous work
+Secret Manager: workload-scoped secrets
+Artifact Registry: immutable images
+Cloud Logging and Monitoring: sanitized telemetry and SLO evidence
 ```
 
-Verified architecture:
-
-- per-run isolation, fresh database, 120-minute maximum TTL, loopback-only networking, mandatory destruction;
-- no production credentials or production data;
-- two synthetic tenants, eleven principals, exact ten-role RBAC, thirteen deterministic non-authoritative fixtures;
-- ordered reset with ten steps, mutable-resource coverage, sanitized artifacts, empty-state checks, and destruction postconditions;
-- twenty runnable API/system journeys aligned to canonical OpenAPI routes, statuses, and runtime permissions;
-- twelve planned browser journeys covering the required human roles, all blocked by `BLK-HUMAN-IDP-BFF-001` and `BLK-AUTHENTICATED-UI-001`;
-- strict API-versus-browser concern ownership;
-- deterministic loopback provider stubs and explicit boundary-only treatment of object storage and malware scanning;
-- OS Electoral and Content Agency remain provider-contract-only mocks; external interoperability is not claimed;
-- secret-like material, production endpoints, RBAC drift, permission drift, reset weakening, layer misuse, and external-consumer overclaims fail closed.
-
-Execution summary:
-
-```text
-plan_version: 1.0.0
-tenants: 2
-principals: 11
-roles: 10
-fixtures: 13
-api_system_journeys: 20
-browser_journeys: 12
-blocked_browser_journeys: 12
-mocks: 6
-reset_steps: 10
-external_consumers_verified: false
-browser_e2e_runnable: false
-```
+No GCP project, billing account, Terraform apply, Cloud Run service, Cloud SQL instance, bucket, queue, secret, DNS record or paid model was created. Region, budget, project ownership and production topology remain human decisions.
 
 ## Verification
 
-Exact detached checkout `f4d018f0909d15408092167cb935bf4ac71cd6d9`:
+Exact detached checkout `bf29e6fdc48fa155b004b5f0b2ff410050b59c84`:
 
 ```text
-npm ci --ignore-scripts --prefer-offline: pass
-EVAL-EPHEMERAL-STAGING-E2E-001: 13/13 pass
-full suite: 808 total / 806 pass / 0 fail / 2 explicit environment skips
+EVAL-PRODUCTION-PUBLIC-SURFACE-001: 33/33 pass
+full suite: 818 total / 816 pass / 0 fail / 2 explicit environment skips
 canonical contracts: 30 schemas / 30 examples / OpenAPI 3.1.1
 consumer contracts: 2 kits / 5 interactions / 0 issues
-staging plan: valid / 0 issues
+staging architecture: valid / 0 issues
 typecheck: pass
 build: pass
 source inventory: 17 valid / 4 verified / 1 acquisition metadata / 0 ingested
 domain evaluation: 8/8
+Pages fail-closed artifact: pass
+browser smoke: desktop/mobile screenshots plus DOM markers pass
 npm audit --audit-level=high: 0 vulnerabilities
 npm audit --omit=dev --audit-level=high: 0 vulnerabilities
-Backend CI 29939453123: success
+Backend CI 29951023165: success
 ```
 
-A green architecture plan and CI run are not deployed staging, browser execution, a reviewed PR, protected merge, or production release.
+A green public shell and cloud blueprint are not a gateway, corpus, staging environment, reviewed PR, protected merge or production deployment.
 
-## Cumulative capabilities
+## Cumulative verified capabilities
 
 - tenant identity/RBAC and transaction-local forced-RLS foundations;
-- governed source/document/procedure catalogs;
-- artifact acceptance, ingestion jobs, leases/fencing, and tenant-vector foundations;
+- governed source, document and procedure catalog APIs;
+- artifact acceptance, ingestion jobs, leases/fencing and tenant-vector foundations;
 - dedicated Search and conservative EvidenceBundle APIs;
-- ProcedureQuery, ClaimPack, EvidenceGap, workflow lifecycle, and ProcedureCase APIs;
+- ProcedureQuery, ClaimPack, EvidenceGap, workflow lifecycle and ProcedureCase APIs;
 - portable provider-side consumer contract kits;
 - executable ephemeral staging/E2E architecture;
+- fail-closed production-facing public product shell;
 - public evidence-first Procedure Academy;
-- disposable PostgreSQL, compiled HTTP, accessibility, and logical restore gates.
+- disposable PostgreSQL, compiled HTTP, accessibility and logical restore gates.
 
 ## Current corpus truth
 
@@ -107,35 +107,35 @@ records credited as ingested: 0
 records retrieval-validated against real corpus: 0
 ```
 
-Synthetic examples, deterministic fixtures, mocks, and PostgreSQL gates do not change these values.
+Zero documents are credited as ingested against a real, reviewed corpus. The minimum Antigua-first and comparative corpus is incomplete. Synthetic fixtures, deterministic examples, mocks, browser screenshots and PostgreSQL gates do not change these values.
 
 ## Next execution sequence
 
-1. Implement a local ephemeral staging runner that realizes the declared lifecycle with a fresh disposable database and executes the twenty API/system journeys.
-2. Coordinate independent consumer-side suites in OS Electoral and Content Agency against an immutable contract-kit SHA; do not simulate them from this repository.
-3. Obtain and implement the human IdP/OIDC/PKCE/BFF/session decision, secure cookies, CSRF, logout, revocation, recovery, and provisioning.
-4. Build the role-aware authenticated UI and deploy deterministic fixtures to isolated ephemeral services.
-5. Enable the twelve browser journeys only after all lower-layer and identity prerequisites pass.
-6. Add human accessibility evidence, load/HA, recovery/privacy operations, reviewed PRs, protected merge, staging rehearsal, deployment, and observation.
+1. Implement `POST /api/public/v1/query` as a dedicated browser gateway with server-bound public tenant/corpus, exact origin/body/rate controls, public-only evidence, bounded citations, minimized audit and no browser service credential.
+2. Execute the Feature 070 ephemeral staging runner and all twenty API/system journeys against disposable services.
+3. Coordinate consumer-side suites in OS Electoral and Content Agency against immutable contract-kit SHAs.
+4. Obtain authorization for Antigua-first corpus rights, durable storage, scanner, retention and legal-hold controls; then acquire, scan, ingest and evaluate real documents.
+5. Add guarded GCP Terraform with `apply` remaining human-gated; create no resource before project, billing, region and budget approval.
+6. Approve and implement human IdP/OIDC/PKCE/BFF/session, secure cookies, CSRF, logout, revocation, recovery and role-aware authenticated UI.
+7. Enable browser E2E only after gateway, identity, fixtures and deployed staging pass lower-layer gates.
+8. Complete human accessibility, load/HA, recovery/privacy operations, reviewed PR, protected merge, rollout and observation.
 
 ## Critical blockers
 
-- `BLK-CORPUS-OPS-001`: source rights, approved durable storage, current scanner, and retention/legal-hold controls are unavailable;
+- `PPS-OPEN-GATEWAY-001`: the dedicated public query gateway is not implemented;
+- `BLK-CORPUS-OPS-001`: source rights, approved durable storage, current scanner and retention/legal-hold controls are unavailable;
 - zero real documents are credited as ingested and no judged real-corpus retrieval evidence exists;
-- no approved human IdP/BFF/session architecture or authenticated role-aware SaaS UI exists;
-- no actual ephemeral environment has been provisioned and no browser journey has executed;
-- OS Electoral and Content Agency repositories have not executed their consumer suites;
-- no production Terraform, workload identity, secrets, object store, scanner, dispatcher, observability/SLOs, load/HA, coordinated recovery, or privacy operations exist;
-- no reviewed PR, protected merge, deployment, or observation window exists.
+- browser authentication/session architecture, approved IdP/OIDC/BFF, secure cookies/CSRF, provisioning, recovery and role-aware navigation remain unimplemented;
+- no actual ephemeral environment has executed the twenty API/system journeys;
+- OS Electoral and Content Agency repositories have not executed consumer suites;
+- no production Terraform, workload identity, object store, scanner, dispatcher, observability/SLOs, load/HA, coordinated recovery or privacy operations exist;
+- no reviewed PR, protected merge, deployment or observation window exists.
 
 ## Persistent boundary assertions
 
-- Zero documents are credited as ingested against a real, reviewed corpus.
-- EvidenceGap is intake-only: there is no research assignment, resolution lifecycle, or notification workflow.
-- The minimum Antigua-first and comparative corpus is incomplete.
-- Browser authentication/session architecture, approved IdP/OIDC/BFF, secure cookies/CSRF, provisioning, recovery, and role-aware navigation remain unimplemented.
-- There is no production object store, scanner/definitions monitor, or dispatcher operating from this checkpoint.
-- EvidenceGap remains intake-only; no research assignment or resolution lifecycle is deployed.
+- There is no production object store, scanner/definitions monitor or dispatcher operating from this checkpoint.
+- EvidenceGap is intake-only: there is no research assignment, resolution lifecycle or notification workflow.
 - Browser service credentials are not human browser credentials and must never be placed in JavaScript storage.
 - Provider-side contract stubs do not prove external consumer interoperability.
-- Passing Feature 070 proves architecture conformance only, not production readiness.
+- GCP selection is architecture, not a resource receipt or deployment.
+- Passing Feature 071 proves an honest fail-closed public surface, not production readiness.

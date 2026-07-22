@@ -1,8 +1,8 @@
 {
-  "schema_version": "1.9.0",
-  "generated_at": "2026-07-22T16:53:05Z",
-  "current_slice": "Feature 070 ephemeral staging and E2E architecture v1",
-  "functional_head": "f4d018f0909d15408092167cb935bf4ac71cd6d9",
+  "schema_version": "1.10.0",
+  "generated_at": "2026-07-22T19:34:37Z",
+  "current_slice": "Feature 071 production public surface v1",
+  "functional_head": "bf29e6fdc48fa155b004b5f0b2ff410050b59c84",
   "summary": {
     "resolved_feature_findings": 9,
     "critical_or_high_open_in_feature": 0,
@@ -10,76 +10,90 @@
   },
   "feature_findings": [
     {
-      "id": "E2E-ARCH-CRIT-001",
+      "id": "PPS-CRIT-001",
       "severity": "critical",
       "status": "resolved",
-      "finding": "Browser journeys could run using service credentials.",
-      "resolution": "Exact human IdP/BFF and authenticated UI blockers are mandatory; browser_e2e_enabled is false."
+      "finding": "Pages manufactured static municipal answers and procedure/domain fixtures.",
+      "resolution": "Static bridge deleted; unconfigured approved calls return bounded 503."
     },
     {
-      "id": "E2E-ARCH-HIGH-002",
-      "severity": "high",
-      "status": "resolved",
-      "finding": "Role personas existed without journey coverage.",
-      "resolution": "Every API-required and browser-required role must have a principal and journey."
-    },
-    {
-      "id": "E2E-ARCH-HIGH-003",
-      "severity": "high",
-      "status": "resolved",
-      "finding": "Journey status/permission claims could drift from OpenAPI/RBAC.",
-      "resolution": "Methods, statuses, route permissions and actor allow/deny expectations are checked."
-    },
-    {
-      "id": "E2E-ARCH-HIGH-004",
-      "severity": "high",
-      "status": "resolved",
-      "finding": "Reset could omit mutable resource classes or safety postconditions.",
-      "resolution": "Derived mutable-resource coverage, exact ordered steps and exact postconditions are required."
-    },
-    {
-      "id": "E2E-ARCH-CRIT-005",
+      "id": "PPS-CRIT-002",
       "severity": "critical",
       "status": "resolved",
-      "finding": "Secrets or production endpoints could enter the plan.",
-      "resolution": "Secret-pattern scan, safe credential references and loopback/test endpoint allowlist fail closed."
+      "finding": "Widget defaulted to production-disabled /api/chat.",
+      "resolution": "Default changed to planned /api/public/v1/query; production 404 gate retained until gateway exists."
     },
     {
-      "id": "E2E-ARCH-HIGH-006",
+      "id": "PPS-CRIT-003",
+      "severity": "critical",
+      "status": "resolved",
+      "finding": "Browser could be tempted to receive an integration credential.",
+      "resolution": "Explicit public gateway/BFF boundary; no credential forwarding or frontend secret."
+    },
+    {
+      "id": "PPS-HIGH-004",
       "severity": "high",
       "status": "resolved",
-      "finding": "Browser tests could duplicate lower-layer concerns.",
-      "resolution": "Exact API/browser concern ownership and violations fail closed."
+      "finding": "UI claimed verified/official loaded documents without runtime evidence.",
+      "resolution": "Claims removed; evidence labels depend on actual responses."
     },
     {
-      "id": "E2E-ARCH-HIGH-007",
+      "id": "PPS-HIGH-005",
       "severity": "high",
       "status": "resolved",
-      "finding": "Consumer stubs could be presented as external verification.",
-      "resolution": "Provider-contract-only status and external-verification overclaim checks."
+      "finding": "Marketing sections obscured the usable product.",
+      "resolution": "Hero plus installation only; direct Assistant and Glass Wall menu."
     },
     {
-      "id": "E2E-ARCH-MED-008",
+      "id": "PPS-HIGH-006",
+      "severity": "high",
+      "status": "resolved",
+      "finding": "Glass surfaces risked insufficient text contrast.",
+      "resolution": "Opaque surfaces and measured token ratios above 4.5:1."
+    },
+    {
+      "id": "PPS-HIGH-007",
+      "severity": "high",
+      "status": "resolved",
+      "finding": "Unconfigured widget assumed script origin was a valid API.",
+      "resolution": "Explicit data-api-url is required outside the Pages bridge."
+    },
+    {
+      "id": "PPS-HIGH-008",
+      "severity": "high",
+      "status": "resolved",
+      "finding": "Cloud choice could trigger premature resource creation or cost.",
+      "resolution": "GCP architecture selected; no project, billing, Terraform or apply."
+    },
+    {
+      "id": "PPS-MED-009",
       "severity": "medium",
       "status": "resolved",
-      "finding": "Adversarial tests exhausted constrained memory.",
-      "resolution": "Validator cache and consolidated negative cases preserve coverage with deterministic resource use."
-    },
-    {
-      "id": "E2E-ARCH-HIGH-009",
-      "severity": "high",
-      "status": "resolved",
-      "finding": "Architecture could be mistaken for deployed staging.",
-      "resolution": "Summary flags, docs, eval, release state and limitations explicitly deny execution/deployment."
+      "finding": "External SEO/OCR/design references could become unreviewed runtime dependencies.",
+      "resolution": "SEO deferred, OCR evaluation isolated, original DESIGN.md created."
     }
   ],
   "open_findings": [
+    {
+      "id": "PPS-OPEN-GATEWAY-001",
+      "severity": "critical",
+      "status": "open",
+      "area": "public_gateway",
+      "finding": "POST /api/public/v1/query is not implemented; public assistant remains disabled."
+    },
+    {
+      "id": "PROG-CORPUS-001",
+      "severity": "critical",
+      "status": "open",
+      "area": "corpus",
+      "finding": "No authorized durable corpus bytes or real ingestion exist."
+    },
     {
       "id": "E2E-OPEN-RUNNER-001",
       "severity": "high",
       "status": "open",
       "area": "staging_execution",
-      "finding": "No runner has executed the declared environment lifecycle and twenty API/system journeys."
+      "finding": "No runner has executed the staging lifecycle and twenty API/system journeys."
     },
     {
       "id": "E2E-OPEN-IDP-002",
@@ -96,25 +110,18 @@
       "finding": "OS Electoral and Content Agency have not executed consumer suites."
     },
     {
-      "id": "PROG-CORPUS-001",
-      "severity": "critical",
-      "status": "open",
-      "area": "corpus",
-      "finding": "No authorized durable corpus bytes or real ingestion exist."
-    },
-    {
       "id": "PROG-OPS-001",
       "severity": "critical",
       "status": "open",
       "area": "operations",
-      "finding": "No production platform, observability, load/HA, recovery, privacy operations, merge or deployment exists."
+      "finding": "GCP is architecture only; infrastructure, observability, load/HA, recovery, privacy, merge and deployment are absent."
     }
   ],
   "publication": {
-    "branch": "feature/ephemeral-staging-e2e-architecture-v1",
-    "functional_sha": "f4d018f0909d15408092167cb935bf4ac71cd6d9",
+    "branch": "feature/production-public-surface-v1",
+    "functional_sha": "bf29e6fdc48fa155b004b5f0b2ff410050b59c84",
     "remote_sha_verified": true,
-    "ci_run_id": 29939453123,
+    "ci_run_id": 29951023165,
     "ci_status": "success",
     "ci_conclusion": "success",
     "pr": null,

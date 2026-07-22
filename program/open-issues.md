@@ -1,53 +1,71 @@
 # LA Muni RAG — Open Issues
 
-Updated: 2026-07-22T16:53:05Z
+Updated: 2026-07-22T19:34:37Z
 
-## Closed locally by Feature 070
+## Critical
 
-- A closed machine-readable ephemeral staging/E2E plan exists and validates with zero issues.
-- Exact RBAC, deterministic tenants/principals/fixtures, reset order/postconditions, API/OpenAPI alignment, route permissions, tenant isolation, mock boundaries, and API-versus-browser ownership are executable gates.
-- Twenty API/system journeys are runnable by contract.
-- Twelve browser journeys cover the required human roles and remain explicitly blocked.
-- Secret-like material, production endpoints, permission drift, reset weakening, browser misuse, and external-consumer overclaims fail closed.
-- Functional SHA `f4d018f0909d15408092167cb935bf4ac71cd6d9` is published and Backend CI `29939453123` succeeded.
-- Detached verification passed 808/806/0/2, 13/13 staging eval, 30/30 canonical contracts, 2/5 consumer contracts, typecheck, build, and two zero-vulnerability audits.
+### PPS-OPEN-GATEWAY-001 — public query gateway absent
 
-No PR, merge, staging deployment, browser execution, or production deployment exists.
+`POST /api/public/v1/query` is the approved browser boundary but is not implemented. Production correctly returns 404 and the public widget remains disabled. Do not re-enable legacy `/api/chat` or place a tenant/integration credential in JavaScript.
 
-## Critical open work
+Required closure:
 
-### Ephemeral execution
+- closed public request/response contract;
+- server-bound public tenant/corpus;
+- no tenant or credential input from the browser;
+- exact CORS/origin, method, content type, body, timeout and rate/abuse controls;
+- public-only accepted evidence eligibility;
+- bounded citations and explicit no-evidence/degraded states;
+- minimized audit/logging;
+- PostgreSQL/RLS and compiled HTTP gates.
 
-1. The Feature 070 lifecycle is specified but no platform runner currently provisions and destroys the environment.
-2. The twenty API/system journeys have not executed against independently deployed ephemeral services.
-3. Run receipts, timing, fault injection, cleanup attestation, and sanitized artifact collection remain to be implemented.
+### BLK-CORPUS-OPS-001 — authorized corpus operations unavailable
 
-### Human identity and browser E2E
+The minimum Antigua-first and comparative corpus is incomplete. Zero documents are credited as ingested against a real, reviewed corpus.
 
-1. IdP/OIDC/PKCE/BFF/session architecture is not approved or implemented.
-2. Secure cookies, CSRF, logout, revocation, recovery, provisioning, and periodic access review are absent.
-3. Authenticated role-aware UI routes are absent.
-4. All twelve browser journeys are intentionally blocked and have not executed.
-5. Supported-browser, screen-reader, and human WCAG 2.2 AA evidence is absent.
+Human/platform inputs required:
 
-### External consumers
+- source rights and acquisition approval;
+- durable object storage;
+- current malware scanner and definitions monitoring;
+- retention, deletion and legal-hold policy;
+- named source/authority reviewers.
 
-1. OS Electoral has not pinned or executed the provider contract kit in its own repository.
-2. Content Agency has not pinned or executed the provider contract kit in its own repository.
-3. Cross-product persistence, retries, expiry, revocation, supersession, and independent-store behavior remain unproved.
+### E2E-OPEN-IDP-002 — human identity/session absent
 
-### Corpus and legal review
+Browser authentication/session architecture, approved IdP/OIDC/PKCE/BFF, secure cookies/CSRF, provisioning, logout, revocation, recovery and role-aware navigation remain unimplemented.
 
-1. No authorized durable source bytes are present and zero real documents are credited as ingested.
-2. No real-corpus retrieval, citation, latency, cost, or load evaluation exists.
-3. Human review of authority, vigencia, jurisdiction, supersession, applicability, and contradictions remains mandatory.
+### PROG-OPS-001 — production platform and operations absent
 
-### Production platform and release
+GCP is selected as target architecture only. No project, billing, Terraform apply, Cloud Run, Cloud SQL, Storage, queue, Secret Manager configuration, telemetry, load/HA, recovery or privacy operation exists.
 
-1. Terraform, workload identity, production secrets, object store, scanner, dispatcher, observability, SLOs, alerts, staging, load/HA, and coordinated recovery are absent.
-2. Privacy retention, deletion, legal hold, and DSAR operations are absent.
-3. No reviewed PR, protected merge, deployment approval, deployment, rollback rehearsal, or observation window exists.
+## High
 
-## Next safe autonomous task
+### E2E-OPEN-RUNNER-001 — staging contract not executed
 
-`WS10-EPHEMERAL-STAGING-RUNNER-001` — implement a local disposable runner for the Feature 070 contract using only generated credentials and synthetic fixtures. It must execute and attest the twenty API/system journeys, collect sanitized receipts, and destroy all state. Browser E2E remains blocked until the human identity and authenticated UI prerequisites are satisfied.
+The Feature 070 plan validates, but no runner has created/destroyed the environment or executed the twenty API/system journeys.
+
+### E2E-OPEN-CONSUMERS-003 — external consumer suites absent
+
+OS Electoral and Content Agency have not run the portable contract kits inside their own repositories. Provider-side stubs do not prove external consumer interoperability.
+
+### PUBLIC-EDGE-001 — edge abuse and security controls unproved
+
+The future public gateway needs WAF/Cloud Armor, global and per-instance rate controls, request limits, sanitized telemetry and load evidence. None is deployed.
+
+### ACCESSIBILITY-HUMAN-001 — human accessibility evidence absent
+
+Automated contrast/focus/reduced-motion tests pass, but no supported-browser, screen-reader or human WCAG review exists.
+
+### OCR-EVAL-001 — OCR production candidate unbenchmarked
+
+Unlimited-OCR is not a dependency. A future isolated benchmark must pin model/code revisions, use non-sensitive samples, measure accuracy/structure/hallucination/latency/cost and run outside the API process.
+
+## Product boundaries
+
+- EvidenceGap is intake-only: there is no research assignment, resolution lifecycle or notification workflow.
+- No production object store, scanner/definitions monitor or dispatcher is operating.
+- Legacy pre-v1 routes remain development-only and production-disabled.
+- Pages contains no static municipal answers or procedure fixtures.
+- OpenSEO is deferred until a production public domain and content policy exist.
+- No PR, merge, staging deployment or production deployment has occurred.
