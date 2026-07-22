@@ -1,0 +1,199 @@
+{
+  "schema_version": "1.13.0",
+  "generated_at": "2026-07-22T16:53:05Z",
+  "branch": "feature/ephemeral-staging-e2e-architecture-v1",
+  "functional_head": "f4d018f0909d15408092167cb935bf4ac71cd6d9",
+  "status": "passed_feature070_architecture_with_explicit_execution_and_global_product_blockers",
+  "deterministic": {
+    "tests": 808,
+    "pass": 806,
+    "fail": 0,
+    "skipped": 2,
+    "typecheck": "pass",
+    "build": "pass",
+    "audits": "0 vulnerabilities"
+  },
+  "contracts": {
+    "canonical_schemas": 30,
+    "canonical_examples": 30,
+    "openapi": "3.1.1",
+    "consumer_kits": 2,
+    "consumer_interactions": 5,
+    "staging_plan_issues": 0
+  },
+  "staging_architecture": {
+    "plan_version": "1.0.0",
+    "tenants": 2,
+    "principals": 11,
+    "roles": 10,
+    "fixtures": 13,
+    "api_system_journeys": 20,
+    "browser_journeys": 12,
+    "blocked_browser_journeys": 12,
+    "mocks": 6,
+    "reset_steps": 10,
+    "issues": 0,
+    "environment_executed": false,
+    "browser_e2e_runnable": false,
+    "external_consumers_verified": false
+  },
+  "hard_evals": {
+    "EVAL-PROCEDURE-001": {
+      "passed": 4,
+      "total": 4
+    },
+    "EVAL-WATER-001": {
+      "passed": 4,
+      "total": 4
+    },
+    "EVAL-MIXCO-001": {
+      "passed": 4,
+      "total": 4
+    },
+    "EVAL-OS-INTEGRATION-001": {
+      "passed": 5,
+      "total": 5
+    },
+    "EVAL-PROCEDURE-ASSESSMENT-001": {
+      "passed": 4,
+      "total": 4
+    },
+    "EVAL-EVIDENCE-GAP-001": {
+      "passed": 14,
+      "total": 14
+    },
+    "EVAL-CONTENT-INTEGRATION-001": {
+      "passed": 7,
+      "total": 7
+    },
+    "EVAL-CONFLICT-001": {
+      "passed": 8,
+      "total": 8
+    },
+    "EVAL-BOUNDARY-001": {
+      "passed": 4,
+      "total": 4
+    },
+    "EVAL-TENANT-001": {
+      "passed": 4,
+      "total": 4
+    },
+    "EVAL-CORRUPT-001": {
+      "passed": 20,
+      "total": 20
+    },
+    "EVAL-ARTIFACT-001": {
+      "passed": 5,
+      "total": 5
+    },
+    "EVAL-VECTOR-001": {
+      "passed": 9,
+      "total": 9
+    },
+    "EVAL-JOB-LEASE-001": {
+      "passed": 13,
+      "total": 13
+    },
+    "EVAL-SOURCE-API-001": {
+      "passed": 18,
+      "total": 18,
+      "status": "passed_for_unreviewed_tenant_source_catalog_with_validation_acquisition_retrieval_and_deployment_limitations"
+    },
+    "EVAL-DOCUMENT-API-001": {
+      "passed": 18,
+      "total": 18,
+      "status": "passed_for_safe_tenant_document_registration_and_catalog_monitoring_with_artifact_ingestion_retrieval_ui_and_deployment_limitations"
+    },
+    "EVAL-SEARCH-API-001": {
+      "command": "npm run eval:search-api",
+      "passed": 24,
+      "total": 24,
+      "result": "passed_for_explicit_tenant_search_with_real_corpus_human_review_provider_performance_and_deployment_limitations",
+      "evidence": [
+        "42d2fda70b27ccc9178c6a8d69bba957ef953105",
+        "db/tests/search_evidence_api_runtime_gate.sql",
+        "scripts/search-evidence-postgres-smoke.mjs",
+        "docs/api/search-evidence-v1.md"
+      ],
+      "limitations": [
+        "No authorized real corpus is ingested.",
+        "No judged relevance, latency, load, provider SLO or human authority/vigencia review.",
+        "No PR, merge or deployment."
+      ]
+    },
+    "EVAL-EVIDENCE-BUNDLE-API-001": {
+      "command": "npm run eval:evidence-bundle-api",
+      "passed": 24,
+      "total": 24,
+      "result": "passed_for_conservative_dedicated_bundle_with_real_corpus_human_resolution_consumer_operations_and_deployment_limitations",
+      "evidence": [
+        "42d2fda70b27ccc9178c6a8d69bba957ef953105",
+        "src/searchEvidence/evidenceBundle.ts",
+        "src/api/v1/searchEvidenceHandler.ts",
+        "scripts/search-evidence-postgres-smoke.mjs"
+      ],
+      "limitations": [
+        "No real-corpus conflict-resolution study or human approval workflow.",
+        "No external consumer suite, PR, merge or deployment."
+      ]
+    },
+    "EVAL-CONSUMER-CONTRACT-KIT-001": {
+      "command": "npm run eval:consumer-contract-kit",
+      "passed": 16,
+      "total": 16,
+      "result": "passed_for_portable_provider_contract_manifests_with_external_consumer_and_e2e_limitations",
+      "evidence": [
+        "5e5481e26b1a27a0aa2bd9c965e1c160f18b3198",
+        "contracts/consumer-kits/v1/",
+        "src/integration/consumerContractKit.ts",
+        "docs/integrations/consumer-contract-kits.md"
+      ],
+      "limitations": [
+        "No external consumer repository has run the kit.",
+        "No cross-product staging, browser E2E, merge or deployment."
+      ]
+    },
+    "EVAL-EPHEMERAL-STAGING-E2E-001": {
+      "command": "npm run eval:staging-e2e-architecture",
+      "passed": 13,
+      "total": 13,
+      "result": "passed_for_executable_ephemeral_staging_and_e2e_architecture_with_identity_infrastructure_external_consumer_browser_and_production_limitations",
+      "evidence": [
+        "f4d018f0909d15408092167cb935bf4ac71cd6d9",
+        "contracts/staging/v1/",
+        "src/staging/ephemeralStagingPlan.ts",
+        "docs/testing/ephemeral-staging-e2e-architecture.md"
+      ],
+      "limitations": [
+        "No environment runner or deployed staging.",
+        "No human browser identity/UI or browser execution.",
+        "No external consumer repository execution."
+      ]
+    }
+  },
+  "publication": {
+    "branch": "feature/ephemeral-staging-e2e-architecture-v1",
+    "functional_sha": "f4d018f0909d15408092167cb935bf4ac71cd6d9",
+    "remote_sha_verified": true,
+    "ci_run_id": 29939453123,
+    "ci_status": "success",
+    "ci_conclusion": "success",
+    "pr": null,
+    "merged": false,
+    "deployed": false
+  },
+  "missing_dedicated_evals": [
+    "ephemeral_staging_runner_execution",
+    "external_os_electoral_consumer",
+    "external_content_agency_consumer",
+    "human_identity_session",
+    "browser_e2e",
+    "real_corpus_quality",
+    "production_load_ha_recovery_privacy"
+  ],
+  "limitations": [
+    "Architecture conformance is not deployed staging.",
+    "Browser E2E and external consumer interoperability are unproved.",
+    "Zero real documents are credited as ingested."
+  ]
+}

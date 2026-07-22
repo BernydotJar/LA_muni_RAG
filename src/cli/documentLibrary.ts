@@ -3,11 +3,13 @@ import {
   formatDocumentLibraryOperationResult,
   importLocalArtifact,
   ingestLibraryArtifact,
+  inspectLibraryArtifact,
   type ImportLocalArtifactInput,
   type IngestLibraryArtifactInput,
+  type InspectLibraryArtifactInput,
 } from "../sources/documentLibraryOperations.js";
 
-export type DocumentLibraryCommand = "import" | "ingest";
+export type DocumentLibraryCommand = "import" | "inspect" | "ingest";
 
 export interface DocumentLibraryCliArgs {
   command?: DocumentLibraryCommand;
@@ -16,6 +18,7 @@ export interface DocumentLibraryCliArgs {
   sourceId?: string;
   inputPath?: string;
   libraryRoot?: string;
+  quarantineRoot?: string;
   documentVersion?: string;
   mediaType?: string;
   dryRun: boolean;
@@ -23,17 +26,20 @@ export interface DocumentLibraryCliArgs {
 }
 
 export const usage = `Usage:
-  npm run document-library -- import --inventory .rag/source-inventory.json --source-id SOURCE --input FILE --library-root .rag/library --document-version VERSION [--media-type TYPE] [--dry-run]
+  npm run document-library -- import --inventory .rag/source-inventory.json --source-id SOURCE --input FILE --library-root .rag/library --document-version VERSION --media-type TYPE [--dry-run]
+  npm run document-library -- inspect --inventory .rag/source-inventory.json --source-id SOURCE --library-root .rag/library --quarantine-root .rag/quarantine [--dry-run]
   npm run document-library -- ingest --inventory .rag/source-inventory.json --corpus-manifest .rag/corpus-manifest.json --source-id SOURCE [--dry-run]
 
 Commands:
-  import   Copy a local artifact into the bounded document library and record acquisition evidence.
-  ingest   Extract and index an acquired artifact, reconcile manifests, and record ingestion evidence.
+  import    Validate size/signature/MIME, copy a local artifact, and record acquisition evidence.
+  inspect   Run the configured malware scanner and accept or quarantine an acquired artifact.
+  ingest    Extract and index only a recently accepted artifact, reconcile manifests, and record ingestion evidence.
 
 Safety:
   - No network acquisition is performed.
   - --dry-run never copies, indexes, or writes manifests.
   - Version and hash conflicts fail closed.
+  - Extraction is refused unless scanner evidence is clean, matching, and current.
 `;
 
 const valueFlags = new Set([
@@ -42,6 +48,7 @@ const valueFlags = new Set([
   "--source-id",
   "--input",
   "--library-root",
+  "--quarantine-root",
   "--document-version",
   "--media-type",
 ]);
@@ -49,7 +56,7 @@ const valueFlags = new Set([
 export const parseDocumentLibraryArgs = (argv: string[]): DocumentLibraryCliArgs => {
   const parsed: DocumentLibraryCliArgs = { dryRun: false, help: false };
   const [command, ...args] = argv;
-  if (command === "import" || command === "ingest") parsed.command = command;
+  if (command === "import" || command === "inspect" || command === "ingest") parsed.command = command;
   else if (command === "--help" || command === "-h" || command === undefined) parsed.help = true;
   else throw new Error(`Unsupported document library command: ${command}.`);
 
@@ -71,6 +78,7 @@ export const parseDocumentLibraryArgs = (argv: string[]): DocumentLibraryCliArgs
     if (arg === "--source-id") parsed.sourceId = value;
     if (arg === "--input") parsed.inputPath = value;
     if (arg === "--library-root") parsed.libraryRoot = value;
+    if (arg === "--quarantine-root") parsed.quarantineRoot = value;
     if (arg === "--document-version") parsed.documentVersion = value;
     if (arg === "--media-type") parsed.mediaType = value;
     index += 1;
@@ -85,22 +93,29 @@ const requireValue = (value: string | undefined, code: string): string => {
 };
 
 const toImportInput = (args: DocumentLibraryCliArgs): ImportLocalArtifactInput => {
-  const input: ImportLocalArtifactInput = {
+  return {
     inventoryPath: requireValue(args.inventoryPath, "missing_inventory"),
     sourceId: requireValue(args.sourceId, "missing_source_id"),
     inputPath: requireValue(args.inputPath, "missing_input"),
     libraryRoot: requireValue(args.libraryRoot, "missing_library_root"),
     documentVersion: requireValue(args.documentVersion, "missing_document_version"),
+    mediaType: requireValue(args.mediaType, "missing_media_type"),
     dryRun: args.dryRun,
   };
-  if (args.mediaType) input.mediaType = args.mediaType;
-  return input;
 };
 
 const toIngestInput = (args: DocumentLibraryCliArgs): IngestLibraryArtifactInput => ({
   inventoryPath: requireValue(args.inventoryPath, "missing_inventory"),
   corpusManifestPath: requireValue(args.corpusManifestPath, "missing_corpus_manifest"),
   sourceId: requireValue(args.sourceId, "missing_source_id"),
+  dryRun: args.dryRun,
+});
+
+const toInspectInput = (args: DocumentLibraryCliArgs): InspectLibraryArtifactInput => ({
+  inventoryPath: requireValue(args.inventoryPath, "missing_inventory"),
+  sourceId: requireValue(args.sourceId, "missing_source_id"),
+  libraryRoot: requireValue(args.libraryRoot, "missing_library_root"),
+  quarantineRoot: requireValue(args.quarantineRoot, "missing_quarantine_root"),
   dryRun: args.dryRun,
 });
 
@@ -112,12 +127,17 @@ export const runDocumentLibraryCli = async (args: DocumentLibraryCliArgs): Promi
   if (args.command === "import") {
     const result = await importLocalArtifact(toImportInput(args));
     console.log(formatDocumentLibraryOperationResult(result));
-    return result.status === "failed" ? 1 : 0;
+    return result.failures.length > 0 ? 1 : 0;
+  }
+  if (args.command === "inspect") {
+    const result = await inspectLibraryArtifact(toInspectInput(args));
+    console.log(formatDocumentLibraryOperationResult(result));
+    return result.failures.length > 0 ? 1 : 0;
   }
   if (args.command === "ingest") {
     const result = await ingestLibraryArtifact(toIngestInput(args));
     console.log(formatDocumentLibraryOperationResult(result));
-    return result.status === "failed" ? 1 : 0;
+    return result.failures.length > 0 ? 1 : 0;
   }
   throw new Error("missing_command");
 };

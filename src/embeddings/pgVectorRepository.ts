@@ -6,6 +6,9 @@ import type { EmbeddingRepository, EmbeddingVectorRecord } from "./types.js";
 export const DEFAULT_VECTOR_DIMENSION = 1536;
 
 export interface PgVectorRow {
+  tenant_id?: string;
+  document_version_id?: string | null;
+  ingestion_job_id?: string | null;
   chunk_id: string;
   document_key: string;
   document_version: string;
@@ -31,8 +34,12 @@ export interface PgVectorRow {
 }
 
 export class PgVectorRepositoryError extends Error {
-  constructor(public readonly code: string, message: string) {
-    super(message);
+  constructor(
+    public readonly code: string,
+    message: string,
+    options?: { cause?: unknown }
+  ) {
+    super(message, options);
     this.name = "PgVectorRepositoryError";
   }
 }
@@ -130,15 +137,17 @@ export const pgVectorRowToVectorCandidate = (row: PgVectorRow): VectorCandidateI
   articleNumber: row.article_number,
   similarity: Number(row.similarity ?? 0),
   metadata: {
+    ...(typeof row.metadata === "object" && row.metadata !== null ? (row.metadata as Record<string, unknown>) : {}),
     documentKey: row.document_key,
     documentVersion: row.document_version,
+    ...(row.document_version_id ? { documentVersionId: row.document_version_id } : {}),
+    ...(row.ingestion_job_id ? { ingestionJobId: row.ingestion_job_id } : {}),
     sectionPath: row.section_path,
     sectionType: row.section_type,
     contentSha256: row.content_sha256,
     embeddingModel: row.embedding_model,
     embeddingProvider: row.embedding_provider,
     embeddingDimension: row.embedding_dimension,
-    ...(typeof row.metadata === "object" && row.metadata !== null ? (row.metadata as Record<string, unknown>) : {}),
   },
 });
 

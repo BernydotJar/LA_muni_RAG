@@ -1,0 +1,119 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://contracts.la-muni-rag.invalid/v1/evidence-gap-response.schema.json",
+  "title": "EvidenceGapResponse v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "response_type",
+    "product_boundary",
+    "gap_request_id",
+    "request_id",
+    "tenant_id",
+    "requester_product",
+    "jurisdiction",
+    "subject",
+    "missing_document",
+    "reason",
+    "priority",
+    "campaign_reference",
+    "status",
+    "request_assertion_status",
+    "submitted_at",
+    "limitations",
+    "provenance"
+  ],
+  "properties": {
+    "schema_version": {
+      "$ref": "common.schema.json#/$defs/SchemaVersion"
+    },
+    "response_type": {
+      "const": "evidence_gap_request"
+    },
+    "product_boundary": {
+      "const": "evidence_gap_request_only"
+    },
+    "gap_request_id": {
+      "$ref": "common.schema.json#/$defs/Uuid"
+    },
+    "request_id": {
+      "$ref": "common.schema.json#/$defs/Uuid"
+    },
+    "tenant_id": {
+      "$ref": "common.schema.json#/$defs/Uuid"
+    },
+    "requester_product": {
+      "const": "os_electoral"
+    },
+    "jurisdiction": {
+      "$ref": "common.schema.json#/$defs/Jurisdiction"
+    },
+    "subject": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256
+    },
+    "missing_document": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 512
+    },
+    "reason": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 1000
+    },
+    "priority": {
+      "type": "string",
+      "enum": [
+        "low",
+        "medium",
+        "high",
+        "critical"
+      ]
+    },
+    "campaign_reference": {
+      "$ref": "common.schema.json#/$defs/SafeOpaqueId"
+    },
+    "status": {
+      "const": "open"
+    },
+    "request_assertion_status": {
+      "const": "requester_supplied_unverified"
+    },
+    "submitted_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "limitations": {
+      "type": "array",
+      "minItems": 2,
+      "maxItems": 32,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 1000
+      }
+    },
+    "provenance": {
+      "allOf": [
+        {
+          "$ref": "common.schema.json#/$defs/Provenance"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "source_product": {
+              "const": "la_muni_rag"
+            },
+            "generated_by": {
+              "const": "system"
+            }
+          }
+        }
+      ]
+    }
+  }
+}

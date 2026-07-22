@@ -1,7 +1,9 @@
 # LA Muni RAG
 
-Last updated: 2026-07-15  
-Status: Reusable domain-pack template foundation complete; template bootstrap CLI in review
+Last updated: 2026-07-21
+Status: Pre-production hardening in progress; controlled artifact, bounded
+raw-PDF, tenant-query, authenticated ingestion, durable tenant ingestion/vector,
+and governed workflow lifecycle API foundations implemented
 
 LA Muni RAG is an evidence-first RAG and procedural workflow system configured by default for the Municipality of La Antigua Guatemala, Sacatepéquez. Its core supports validated domain packs so the same architecture can be reused for HR, finance, sales SOPs, and custom procedural assistants.
 
@@ -17,6 +19,23 @@ LA Muni RAG is an evidence-first RAG and procedural workflow system configured b
 
 ```text
 GET  /health
+GET  /api/v1/sources
+POST /api/v1/sources
+GET  /api/v1/documents
+POST /api/v1/documents
+GET  /api/v1/ingestion-jobs
+POST /api/v1/ingestion-jobs
+GET  /api/v1/ingestion-jobs/{job_id}
+GET  /api/v1/procedures
+POST /api/v1/search
+POST /api/v1/evidence-bundles
+POST /api/v1/procedure-queries
+POST /api/v1/evidence-gap-requests
+POST /api/v1/claim-packs
+POST /api/v1/workflow-drafts
+POST /api/v1/workflow-reviews
+POST /api/v1/workflow-approvals
+GET  /api/v1/workflows/{workflow_version_id}
 GET  /api/search
 GET  /api/evidence
 GET  /api/agent
@@ -29,6 +48,33 @@ GET  /api/procedure-feedback
 ```
 
 `/api/procedure-feedback` requires a Bearer token configured through `PROCEDURE_FEEDBACK_API_TOKEN`.
+
+The catalog route family registers tenant sources and document versions in fail-closed states and exposes minimized source, document, ingestion-job, and procedure summaries. It does not accept artifact bytes or let callers declare officiality, validation, scan, ingestion, retrieval, or legal applicability.
+
+`POST /api/v1/search` executes an explicit keyword, phrase, semantic, or hybrid mode over eligible public evidence. Semantic and hybrid requests fail closed with `503 capability_unavailable` when the configured query-embedding capability is missing, incompatible, or fails; the API never labels a lexical-only response as semantic or hybrid. `POST /api/v1/evidence-bundles` creates the canonical documentary bundle from the same classified evidence, promotes only supported exact excerpts to ordinary claims, preserves comparative references as citations/gaps, and requires exact idempotent replay. These local gates do not prove real-corpus quality, legal validity, consumer interoperability, or deployment.
+
+`POST /api/v1/procedure-queries` is the authenticated, tenant-scoped production
+slice. According to `requested_output`, it returns an identity-bound
+`EvidenceBundle`, an AI-generated `ProcedureWorkflow` draft, or a conservative
+`ProcedureAssessment` of that draft and the caller's case context. The assessment
+never treats opaque provided-document IDs as validated completion and does not
+prove legal compliance, approval, budget, procurement, or execution.
+`POST /api/v1/evidence-gap-requests` records an immutable, tenant-scoped `open`
+documentary research need from OS Electoral. It supports exact replay and
+aggregate dedupe but never declares a source official, current, applicable,
+acquired, ingested, or resolved.
+`POST /api/v1/claim-packs` is a separate
+Content-Agency-facing provider that emits claims/citations/usage limits only and
+rejects copy, assets, channels, publication tasks, and campaign strategy. Production disables every pre-v1 `/api/*` route;
+the legacy routes listed above are development-only and must not be exposed with
+confidential or multi-tenant data. The ingestion v1 route family authenticates
+`document:ingest` and enqueues/reads jobs only for existing registry versions;
+it is not an upload or artifact-acceptance API. The workflow lifecycle route
+family persists tenant-owned drafts, reviews, approvals, supersession, and archival
+with action-specific RBAC, human separation of duties, exact replay, and
+non-enumerating reads. Approval state does not prove legal validity or institutional
+execution. A bounded ingestion worker class exists, but no storage/scanner adapter,
+worker process, workflow UI, or deployment exists.
 
 ## Domain Packs
 
@@ -169,7 +215,25 @@ Apply migrations in order:
 ```bash
 psql "$DATABASE_URL" -f db/migrations/001_initial_rag_schema.sql
 psql "$DATABASE_URL" -f db/migrations/002_procedure_feedback.sql
+psql "$DATABASE_URL" -f db/migrations/003_identity_tenancy_rbac.sql
+psql "$DATABASE_URL" -f db/migrations/004_procedure_query_api.sql
+psql "$DATABASE_URL" -f db/migrations/005_tenant_ingestion_runtime.sql
+psql "$DATABASE_URL" -f db/migrations/006_ingestion_api_runtime.sql
+psql "$DATABASE_URL" -f db/migrations/007_persisted_artifact_acceptance.sql
+psql "$DATABASE_URL" -f db/migrations/008_claim_pack_api.sql
+psql "$DATABASE_URL" -f db/migrations/009_workflow_lifecycle.sql
+psql "$DATABASE_URL" -f db/migrations/010_workflow_lifecycle_api.sql
+psql "$DATABASE_URL" -f db/migrations/011_artifact_vector_runtime_hardening.sql
+psql "$DATABASE_URL" -f db/migrations/012_evidence_gap_requests.sql
+psql "$DATABASE_URL" -f db/migrations/013_procedure_cases.sql
+psql "$DATABASE_URL" -f db/migrations/014_catalog_api.sql
+psql "$DATABASE_URL" -f db/migrations/015_search_evidence_api.sql
 ```
+
+Migration `005` is the canonical vector-store migration. Do not apply
+`migrations/011-production-vector-store.sql` on a fresh database; it exists only
+for historical upgrade reproduction. Unscoped legacy rows halt migration for an
+explicit reviewed ownership mapping.
 
 Initial seeds:
 
@@ -178,12 +242,22 @@ psql "$DATABASE_URL" -f db/seeds/001_core_documents.sql
 psql "$DATABASE_URL" -f db/seeds/002_document_versions.sql
 ```
 
+The seeds set the explicit legacy/bootstrap tenant transaction-locally so they
+continue to fail closed under forced RLS. That tenant is only a migration bridge;
+review and reassign seeded ownership before onboarding another tenant.
+
 ## Environment
 
 ```env
 DATABASE_URL=postgresql://postgres:YOUR_PASSWORD@localhost:5432/la_muni_rag
 DOMAIN_PACK=municipal-antigua
 PROCEDURE_FEEDBACK_API_TOKEN=replace-with-a-long-random-secret
+QUERY_EMBEDDING_PROVIDER=http
+QUERY_EMBEDDING_ENDPOINT=https://provider.example/v1/embeddings
+QUERY_EMBEDDING_API_KEY=inject-from-secret-manager
+QUERY_EMBEDDING_MODEL=reviewed-model-name
+QUERY_EMBEDDING_DIMENSIONS=1536
+QUERY_EMBEDDING_TIMEOUT_MS=10000
 ```
 
 Never place secrets in frontend files or GitHub Pages assets.
@@ -204,6 +278,12 @@ http://localhost:4010
 ## Verification
 
 ```bash
+npm run contracts:validate
+npm run contracts:consumer-verify
+npm run staging:verify
+npm run eval:staging-e2e-architecture
+npm run eval:search-api
+npm run eval:evidence-bundle-api
 npm run typecheck
 npm run build
 npm run domain:evaluate
@@ -220,7 +300,7 @@ Reusable today:
 
 - PostgreSQL document registry and versions;
 - citable sections;
-- keyword, phrase, and hybrid retrieval;
+- authenticated keyword, phrase, semantic, and hybrid retrieval with explicit score semantics and fail-closed semantic capability;
 - evidence-first response contracts;
 - domain-pack registry and validation;
 - domain-aware workflow classification and composition;
@@ -229,14 +309,55 @@ Reusable today:
 - deterministic domain-pack evaluation;
 - validated JSON workflow-template authoring foundation;
 - deterministic draft domain-pack bootstrap CLI.
+- controlled local artifact import/inspection/quarantine operations;
+- bounded page-cited raw-PDF extraction after accepted safety evidence.
+- digest-bound durable ingestion jobs with bounded leases/retries and stale-worker
+  fencing;
+- tenant-scoped, job/version-bound vector generations with atomic replacement and
+  eligible public search;
+- dedicated Search and EvidenceBundle v1 routes with accepted-artifact eligibility,
+  derived authority/temporal state, comparative non-promotion, exact replay, and
+  non-owner PostgreSQL gates.
+- authenticated, rate-limited enqueue/status contracts for existing document
+  versions, with server-owned pipeline policy and non-leaking status reads;
+- explicit visibility for same-document citation slots whose distinct versions
+  contain different text, with review-required contradictions and no silent promotion;
+- tenant-scoped workflow lifecycle tables and authenticated v1 draft/review/
+  approval/read APIs with deterministic transitions, exact replay, forced RLS,
+  bounded audit, and human separation of duties;
+- immutable tenant-scoped EvidenceGapRequest intake with dedicated replay/rate
+  state, aggregate identity conflict handling, canonical response validation and
+  non-owner PostgreSQL gates;
+- a callable worker that accepts only injected immutable, clean-scan-bound bytes
+  and rechecks their identity before atomic completion.
 
 Still intentionally incomplete:
 
 - complete authenticated document-library/admin UI;
 - browser-based file upload and ingestion;
+- production ClamAV/runtime sandbox and durable object storage;
+- approved immutable object-storage/scanner-evidence adapter and authenticated
+  administrative upload/version-acceptance flow;
+- separately packaged/deployed worker with workload identity, tenant routing,
+  cancellation/deadline, backpressure, monitoring, and graceful shutdown;
+- production DB role attestation, queue/observability, load/HA, and reviewed
+  tenant-partitioned approximate-vector strategy if scale requires it;
+- authenticated lifecycle UI, accessibility, external consumer interoperability,
+  and production-shaped load/HA/observability evidence;
 - automatic workflow-template publication;
 - visual workflow-template editor;
 - real customer HR, finance, or sales policy corpora;
 - final reusable-template hardening and documentation.
 
 Starter packs and generated scaffolds are templates. They must not be treated as authoritative organizational policy until populated, evidenced, reviewed, and approved by the relevant domain owner.
+
+See [Tenant Vector and Ingestion Runtime](docs/tenant-ingestion-runtime.md) for
+the durable job/vector contract, local PostgreSQL gate, and remaining production
+boundary, and [Ingestion jobs API v1](docs/api/ingestion-jobs-v1.md) for the
+authenticated enqueue/status contract, and
+[Workflow Lifecycle API v1](docs/api/workflow-lifecycle-v1.md) for the governed
+version/review/approval boundary, and
+[EvidenceGapRequest API v1](docs/api/evidence-gap-requests-v1.md) for unresolved
+documentary research intake, and [Search and EvidenceBundle API v1](docs/api/search-evidence-v1.md) for explicit retrieval modes, evidence classification, and conservative bundle construction.
+
+See [Portable consumer contract kits](docs/integrations/consumer-contract-kits.md) for the OS Electoral and Content Agency provider-side manifests and limitations. See [Ephemeral staging and E2E architecture](docs/testing/ephemeral-staging-e2e-architecture.md) for deterministic test identity, fixtures, reset, role coverage, mocks, and the API-versus-browser decision rule.

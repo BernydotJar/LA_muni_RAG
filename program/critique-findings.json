@@ -1,0 +1,124 @@
+{
+  "schema_version": "1.9.0",
+  "generated_at": "2026-07-22T16:53:05Z",
+  "current_slice": "Feature 070 ephemeral staging and E2E architecture v1",
+  "functional_head": "f4d018f0909d15408092167cb935bf4ac71cd6d9",
+  "summary": {
+    "resolved_feature_findings": 9,
+    "critical_or_high_open_in_feature": 0,
+    "global_blockers_remain": true
+  },
+  "feature_findings": [
+    {
+      "id": "E2E-ARCH-CRIT-001",
+      "severity": "critical",
+      "status": "resolved",
+      "finding": "Browser journeys could run using service credentials.",
+      "resolution": "Exact human IdP/BFF and authenticated UI blockers are mandatory; browser_e2e_enabled is false."
+    },
+    {
+      "id": "E2E-ARCH-HIGH-002",
+      "severity": "high",
+      "status": "resolved",
+      "finding": "Role personas existed without journey coverage.",
+      "resolution": "Every API-required and browser-required role must have a principal and journey."
+    },
+    {
+      "id": "E2E-ARCH-HIGH-003",
+      "severity": "high",
+      "status": "resolved",
+      "finding": "Journey status/permission claims could drift from OpenAPI/RBAC.",
+      "resolution": "Methods, statuses, route permissions and actor allow/deny expectations are checked."
+    },
+    {
+      "id": "E2E-ARCH-HIGH-004",
+      "severity": "high",
+      "status": "resolved",
+      "finding": "Reset could omit mutable resource classes or safety postconditions.",
+      "resolution": "Derived mutable-resource coverage, exact ordered steps and exact postconditions are required."
+    },
+    {
+      "id": "E2E-ARCH-CRIT-005",
+      "severity": "critical",
+      "status": "resolved",
+      "finding": "Secrets or production endpoints could enter the plan.",
+      "resolution": "Secret-pattern scan, safe credential references and loopback/test endpoint allowlist fail closed."
+    },
+    {
+      "id": "E2E-ARCH-HIGH-006",
+      "severity": "high",
+      "status": "resolved",
+      "finding": "Browser tests could duplicate lower-layer concerns.",
+      "resolution": "Exact API/browser concern ownership and violations fail closed."
+    },
+    {
+      "id": "E2E-ARCH-HIGH-007",
+      "severity": "high",
+      "status": "resolved",
+      "finding": "Consumer stubs could be presented as external verification.",
+      "resolution": "Provider-contract-only status and external-verification overclaim checks."
+    },
+    {
+      "id": "E2E-ARCH-MED-008",
+      "severity": "medium",
+      "status": "resolved",
+      "finding": "Adversarial tests exhausted constrained memory.",
+      "resolution": "Validator cache and consolidated negative cases preserve coverage with deterministic resource use."
+    },
+    {
+      "id": "E2E-ARCH-HIGH-009",
+      "severity": "high",
+      "status": "resolved",
+      "finding": "Architecture could be mistaken for deployed staging.",
+      "resolution": "Summary flags, docs, eval, release state and limitations explicitly deny execution/deployment."
+    }
+  ],
+  "open_findings": [
+    {
+      "id": "E2E-OPEN-RUNNER-001",
+      "severity": "high",
+      "status": "open",
+      "area": "staging_execution",
+      "finding": "No runner has executed the declared environment lifecycle and twenty API/system journeys."
+    },
+    {
+      "id": "E2E-OPEN-IDP-002",
+      "severity": "critical",
+      "status": "open",
+      "area": "human_identity",
+      "finding": "No approved IdP/BFF/session or authenticated role-aware UI exists."
+    },
+    {
+      "id": "E2E-OPEN-CONSUMERS-003",
+      "severity": "high",
+      "status": "open",
+      "area": "external_integrations",
+      "finding": "OS Electoral and Content Agency have not executed consumer suites."
+    },
+    {
+      "id": "PROG-CORPUS-001",
+      "severity": "critical",
+      "status": "open",
+      "area": "corpus",
+      "finding": "No authorized durable corpus bytes or real ingestion exist."
+    },
+    {
+      "id": "PROG-OPS-001",
+      "severity": "critical",
+      "status": "open",
+      "area": "operations",
+      "finding": "No production platform, observability, load/HA, recovery, privacy operations, merge or deployment exists."
+    }
+  ],
+  "publication": {
+    "branch": "feature/ephemeral-staging-e2e-architecture-v1",
+    "functional_sha": "f4d018f0909d15408092167cb935bf4ac71cd6d9",
+    "remote_sha_verified": true,
+    "ci_run_id": 29939453123,
+    "ci_status": "success",
+    "ci_conclusion": "success",
+    "pr": null,
+    "merged": false,
+    "deployed": false
+  }
+}

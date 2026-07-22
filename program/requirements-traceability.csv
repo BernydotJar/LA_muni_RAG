@@ -1,0 +1,22 @@
+requirement_id,requirement,state,authoritative_evidence,remaining_gap
+REQ-SOURCE-001,Versioned governed source inventory,verified,EVAL-SOURCE-001; .rag/source-inventory.json; 15/15,"durable bytes, ingestion and freshness operations"
+REQ-ARTIFACT-001,Exact immutable artifact acceptance,verified,EVAL-ARTIFACT-001; migrations 007/011; PostgreSQL gates,production object store and scanner operations
+REQ-INGEST-001,Durable tenant ingestion jobs,verified_with_limitations,EVAL-INGEST-001; EVAL-JOB-LEASE-001; PostgreSQL/HTTP smokes,"production dispatcher, quotas, cancellation, DLQ UI, load/HA"
+REQ-VECTOR-001,Tenant atomic vector persistence,verified_with_limitations,EVAL-VECTOR-001; artifact/vector gate; pgvector smoke,real corpus quality and production capacity
+REQ-MISSING-001,Explicit missing evidence behavior,verified_with_limitations,EVAL-MISSING-001; procedure mapper/API; EvidenceGap,research assignment and resolution lifecycle
+REQ-PROCEDURE-001,Cited conservative procedure outputs,verified_with_limitations,EVAL-PROCEDURE-001; WATER; MIXCO; CONFLICT,human-approved real Antigua procedure
+REQ-WORKFLOW-001,Draft review approval lifecycle,verified_with_limitations,workflow lifecycle SQL/API gates,authenticated human UX and production topology
+REQ-CASE-001,Tenant procedure case system of record,verified_with_limitations,EVAL-CASE-001; migration 013; compiled PostgreSQL HTTP smoke,"authenticated UI, privacy, load/recovery/deployment"
+REQ-RBAC-001,Ten-role server authorization and tenant isolation,verified_with_limitations,EVAL-RBAC-001; EVAL-TENANT-001; forced RLS gates,human OIDC/session/provisioning/access review
+REQ-A11Y-001,Accessible Procedure Academy,verified_static_scope,EVAL-ACCESSIBILITY-001; Pages/browser render gate,"authenticated product, screen readers and human WCAG review"
+REQ-RESTORE-001,Executable database restore,verified_disposable_scope,EVAL-RESTORE-001; restore-drill-20260721-004,"object restore, PITR, RPO/RTO, staging and human sign-off"
+REQ-API-001,Minimum v1 API catalog,verified_with_limits,Features 067-069; 5e5481e26b1a27a0aa2bd9c965e1c160f18b3198; 30/30 contracts; 2 consumer kits/5 interactions; PostgreSQL/API gates,"external consumer suites, real corpus, human SaaS, production deployment"
+REQ-CORPUS-001,Useful Antigua-first corpus,incomplete,source inventory summary,authorized durable bytes; zero ingested
+REQ-SAAS-001,Authenticated multi-tenant SaaS,incomplete,ADR 063 and current-state audit,"IdP/session/BFF, role shell and protected product surfaces"
+REQ-OPS-001,Production platform and operations,partial_architecture_verified,Feature 070 f4d018f0909d15408092167cb935bf4ac71cd6d9; EVAL-EPHEMERAL-STAGING-E2E-001 13/13; CI 29939453123,"actual staging runner, Terraform, observability, load/HA, recovery, privacy and deployment"
+REQ-RELEASE-001,Production release,incomplete,remote feature CI receipts,PR/review/protected merge/deployment/observation and human approvals
+REQ-SOURCE-API-001,Authenticated tenant source registration and listing,verified_with_limits,Feature 067; migration 014; EVAL-SOURCE-API-001 18/18; PostgreSQL/HTTP smoke,"human validation, durable acquisition, corpus operations and deployment"
+REQ-DOCUMENT-API-001,Authenticated tenant document registration and safe listing,verified_with_limits,Feature 067; EVAL-DOCUMENT-API-001 18/18; column-grant SQL gate; compiled smoke,real object/scan/extraction/ingestion/retrieval and deployment
+REQ-SEARCH-API-001,Dedicated tenant search and EvidenceBundle APIs,verified_with_limits,Feature 068 42d2fda; EVAL-SEARCH-API-001 24/24; EVAL-EVIDENCE-BUNDLE-API-001 24/24; PostgreSQL/HTTP smoke,"real-corpus quality, human review, provider operations and deployment"
+REQ-CONSUMER-KIT-001,Portable provider-side OS Electoral and Content Agency contract kits,verified_provider_side_with_limits,Feature 069 5e5481e26b1a27a0aa2bd9c965e1c160f18b3198; EVAL-CONSUMER-CONTRACT-KIT-001 16/16; 2 kits/5 interactions,"consumer repository execution, cross-product persistence/retry/revocation and staging E2E"
+REQ-STAGING-E2E-001,Executable ephemeral staging and E2E architecture,verified_architecture_with_execution_blockers,Feature 070 f4d018f0909d15408092167cb935bf4ac71cd6d9; 13/13 eval; 2 tenants; 20 API journeys; 12 blocked browser journeys,"runner execution, human identity, role-aware UI, browser E2E, external consumers and production operations"

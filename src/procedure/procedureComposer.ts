@@ -238,6 +238,9 @@ const summaryFor = (
 ): string => {
   const template = templateForType(domainPack, classification.procedureType);
   if (evidenceCount === 0) {
+    if (isMunicipalAntigua(domainPack) && classification.procedureType === "potable_water_project") {
+      return `${template.defaultSummary} No encontré evidencia suficiente para confirmar ninguno de los 47 pasos; todos se devuelven como categorías de investigación con brechas documentales explícitas.`;
+    }
     return isMunicipalAntigua(domainPack)
       ? `No encontré evidencia suficiente para afirmar un procedimiento específico para “${query}”. Devuelvo un checklist de investigación y documentos faltantes.`
       : `I did not find enough ${domainPack.name} evidence to assert a specific workflow for “${query}”. I am returning an investigation checklist.`;

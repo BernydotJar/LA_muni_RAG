@@ -43,6 +43,52 @@ export const handleCors = (req: IncomingMessage, res: ServerResponse): boolean =
   return false;
 };
 
+const appendVary = (res: ServerResponse, value: string): void => {
+  const existing = res.getHeader("vary");
+  const values = new Set(
+    (Array.isArray(existing) ? existing : String(existing ?? "").split(","))
+      .map((item) => item.trim())
+      .filter(Boolean)
+  );
+  values.add(value);
+  res.setHeader("vary", [...values].join(", "));
+};
+
+/**
+ * Versioned integration routes never emit wildcard origins. An absent Origin
+ * is valid for server-to-server clients; browser origins must match exactly.
+ */
+export const handleV1Cors = (
+  req: IncomingMessage,
+  res: ServerResponse,
+  allowedOrigins: readonly string[],
+  allowedMethods: readonly ("GET" | "POST" | "PATCH")[] = ["POST"]
+): boolean => {
+  appendVary(res, "Origin");
+  const origin = singleHeaderValue(req.headers.origin);
+  if (origin && allowedOrigins.includes(origin)) {
+    res.setHeader("access-control-allow-origin", origin);
+    res.setHeader(
+      "access-control-allow-methods",
+      [...new Set([...allowedMethods, "OPTIONS" as const])].join(", ")
+    );
+    res.setHeader(
+      "access-control-allow-headers",
+      "authorization, content-type, idempotency-key, x-request-id"
+    );
+    res.setHeader("access-control-max-age", "600");
+  }
+  if (req.method === "OPTIONS") {
+    res.writeHead(204);
+    res.end();
+    return true;
+  }
+  return false;
+};
+
+const singleHeaderValue = (value: string | string[] | undefined): string | null =>
+  typeof value === "string" ? value : null;
+
 // ---------------------------------------------------------------------------
 // Request helpers
 // ---------------------------------------------------------------------------
@@ -67,15 +113,26 @@ export const requireQueryParam = (url: URL, name: string): string => {
 const MAX_BODY_BYTES = 16_384; // 16 KB
 
 /** Read and parse a JSON request body. */
-export const readJsonBody = async <T = unknown>(req: IncomingMessage): Promise<T> => {
+export const readJsonBody = async <T = unknown>(
+  req: IncomingMessage,
+  maxBodyBytes = MAX_BODY_BYTES
+): Promise<T> => {
+  if (!Number.isSafeInteger(maxBodyBytes) || maxBodyBytes < 1 || maxBodyBytes > 4 * 1024 * 1024) {
+    throw new Error("JSON body limit is outside policy");
+  }
   return new Promise((resolve, reject) => {
     const chunks: Buffer[] = [];
     let size = 0;
+    let tooLarge = false;
 
     req.on("data", (chunk: Buffer) => {
+      if (tooLarge) return;
       size += chunk.length;
-      if (size > MAX_BODY_BYTES) {
-        req.destroy();
+      if (size > maxBodyBytes) {
+        tooLarge = true;
+        chunks.length = 0;
+        // Keep draining the socket. Destroying it here can prevent the caller
+        // from returning a contract-shaped rejection and breaks reuse.
         reject(new HttpError(413, "body_too_large", "Request body too large"));
         return;
       }
@@ -83,6 +140,7 @@ export const readJsonBody = async <T = unknown>(req: IncomingMessage): Promise<T
     });
 
     req.on("end", () => {
+      if (tooLarge) return;
       try {
         const raw = Buffer.concat(chunks).toString("utf-8");
         if (!raw.trim()) {

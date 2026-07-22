@@ -14,6 +14,7 @@ describe("query embedding provider factory", () => {
       QUERY_EMBEDDING_API_KEY: "test-key",
       QUERY_EMBEDDING_MODEL: "test-model",
       QUERY_EMBEDDING_DIMENSIONS: "3",
+      QUERY_EMBEDDING_TIMEOUT_MS: "2500",
     });
 
     assert.deepEqual(config, {
@@ -22,6 +23,7 @@ describe("query embedding provider factory", () => {
       apiKey: "test-key",
       model: "test-model",
       dimensions: 3,
+      timeoutMs: 2500,
     });
   });
 

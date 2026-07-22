@@ -1,0 +1,138 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://contracts.la-muni-rag.invalid/v1/claim-pack.schema.json",
+  "title": "ClaimPack v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "response_type",
+    "product_boundary",
+    "claim_pack_id",
+    "tenant_id",
+    "request_id",
+    "jurisdiction",
+    "claims",
+    "citations",
+    "allowed_paraphrase_scope",
+    "legal_disclaimer",
+    "valid_until",
+    "source_links",
+    "limitations",
+    "provenance"
+  ],
+  "properties": {
+    "schema_version": {
+      "$ref": "common.schema.json#/$defs/SchemaVersion"
+    },
+    "response_type": {
+      "const": "claim_pack"
+    },
+    "product_boundary": {
+      "const": "claims_and_evidence_only"
+    },
+    "claim_pack_id": {
+      "$ref": "common.schema.json#/$defs/Uuid"
+    },
+    "tenant_id": {
+      "$ref": "common.schema.json#/$defs/Uuid"
+    },
+    "request_id": {
+      "$ref": "common.schema.json#/$defs/Uuid"
+    },
+    "jurisdiction": {
+      "$ref": "common.schema.json#/$defs/Jurisdiction"
+    },
+    "claims": {
+      "type": "array",
+      "items": {
+        "$ref": "common.schema.json#/$defs/Claim"
+      },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "citations": {
+      "type": "array",
+      "items": {
+        "$ref": "common.schema.json#/$defs/Citation"
+      },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "allowed_paraphrase_scope": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "mode",
+        "allowed_operations",
+        "content_generation_allowed",
+        "campaign_strategy_allowed"
+      ],
+      "properties": {
+        "mode": {
+          "type": "string",
+          "enum": [
+            "faithful_paraphrase_only",
+            "quotation_only"
+          ]
+        },
+        "allowed_operations": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "paraphrase",
+              "summarize",
+              "translate"
+            ]
+          },
+          "uniqueItems": true
+        },
+        "content_generation_allowed": {
+          "const": false
+        },
+        "campaign_strategy_allowed": {
+          "const": false
+        }
+      }
+    },
+    "legal_disclaimer": {
+      "$ref": "common.schema.json#/$defs/NonEmptyString"
+    },
+    "valid_until": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "source_links": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "format": "uri"
+      },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "limitations": {
+      "type": "array",
+      "items": {
+        "$ref": "common.schema.json#/$defs/NonEmptyString"
+      },
+      "uniqueItems": true
+    },
+    "provenance": {
+      "allOf": [
+        {
+          "$ref": "common.schema.json#/$defs/Provenance"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "source_product": {
+              "const": "la_muni_rag"
+            }
+          }
+        }
+      ]
+    }
+  }
+}

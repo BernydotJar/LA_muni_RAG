@@ -1,0 +1,75 @@
+{
+  "schema_version": "1.9.0",
+  "generated_at": "2026-07-22T16:53:05Z",
+  "branch": "feature/ephemeral-staging-e2e-architecture-v1",
+  "functional_head": "f4d018f0909d15408092167cb935bf4ac71cd6d9",
+  "source": "observed command outputs only",
+  "status": "PARTIAL_WITH_DOCUMENTED_BLOCKERS",
+  "tests": {
+    "total": 808,
+    "passed": 806,
+    "failed": 0,
+    "skipped": 2
+  },
+  "contracts": {
+    "schemas": 30,
+    "examples": 30,
+    "openapi": "3.1.1",
+    "consumer_kits": 2,
+    "consumer_interactions": 5
+  },
+  "staging_architecture": {
+    "plan_version": "1.0.0",
+    "tenants": 2,
+    "principals": 11,
+    "roles": 10,
+    "fixtures": 13,
+    "api_system_journeys": 20,
+    "browser_journeys": 12,
+    "blocked_browser_journeys": 12,
+    "mocks": 6,
+    "reset_steps": 10,
+    "issues": 0,
+    "environment_executed": false,
+    "browser_e2e_runnable": false,
+    "external_consumers_verified": false
+  },
+  "hard_evals": {
+    "ephemeral_staging_e2e": "13/13",
+    "consumer_contract_kit": "16/16",
+    "search_api": "24/24",
+    "evidence_bundle_api": "24/24"
+  },
+  "source_inventory": {
+    "total": 17,
+    "verified": 4,
+    "acquisition_metadata": 1,
+    "ingested": 0
+  },
+  "publication": {
+    "branch": "feature/ephemeral-staging-e2e-architecture-v1",
+    "functional_sha": "f4d018f0909d15408092167cb935bf4ac71cd6d9",
+    "remote_sha_verified": true,
+    "ci_run_id": 29939453123,
+    "ci_status": "success",
+    "ci_conclusion": "success",
+    "pr": null,
+    "merged": false,
+    "deployed": false
+  },
+  "dependency_audit": {
+    "all_vulnerabilities": 0,
+    "production_vulnerabilities": 0
+  },
+  "cost": null,
+  "duration_seconds": null,
+  "token_usage": null,
+  "remaining_blockers": [
+    "No actual ephemeral staging runner or service deployment.",
+    "No human IdP/BFF/session or authenticated role-aware UI.",
+    "No browser journey executed.",
+    "External consumer repository suites have not run.",
+    "Zero real corpus documents are credited as ingested.",
+    "Production infrastructure, observability, load/HA, recovery, privacy, merge and deployment are absent."
+  ]
+}

@@ -1,7 +1,7 @@
 import { detectFormat } from "./detectFormat.js";
 import { docxExtractor } from "./extractors/docxExtractor.js";
 import { markdownExtractor } from "./extractors/markdownExtractor.js";
-import { pdfExtractorAdapter } from "./extractors/pdfExtractorAdapter.js";
+import { rawPdfExtractor } from "./extractors/rawPdfExtractor.js";
 import { txtExtractor } from "./extractors/txtExtractor.js";
 import type { DocumentExtractor, ExtractorInput, NormalizedDocument, SourceFormat } from "./types.js";
 import { UnsupportedFormatError } from "./types.js";
@@ -10,7 +10,7 @@ const extractors: Partial<Record<SourceFormat, DocumentExtractor>> = {
   markdown: markdownExtractor,
   txt: txtExtractor,
   docx: docxExtractor,
-  pdf: pdfExtractorAdapter,
+  pdf: rawPdfExtractor,
 };
 
 export const getExtractor = (format: SourceFormat): DocumentExtractor => {
@@ -18,7 +18,7 @@ export const getExtractor = (format: SourceFormat): DocumentExtractor => {
   if (!extractor) {
     throw new UnsupportedFormatError(
       format,
-      `No direct TypeScript extractor is registered for ${format}. Use the existing PDF extraction flow for PDFs.`
+      `No extractor is registered for ${format}.`
     );
   }
   return extractor;

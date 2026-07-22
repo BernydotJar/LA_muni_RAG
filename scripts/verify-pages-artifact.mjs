@@ -7,6 +7,10 @@ const outputDir = join(repoRoot, "dist-pages");
 const requiredFiles = [
   "index.html",
   "glass-wall.html",
+  "procedure-training.html",
+  "procedure-training.css",
+  "procedure-training.js",
+  "data/water-training-map.json",
   "procedure-workflow.html",
   "procedure-feedback-dashboard.html",
   "procedure-case-portfolio.html",
@@ -30,6 +34,9 @@ for (const file of requiredFiles) await access(join(outputDir, file));
 
 const indexHtml = await readFile(join(outputDir, "index.html"), "utf-8");
 const glassWallHtml = await readFile(join(outputDir, "glass-wall.html"), "utf-8");
+const procedureTrainingHtml = await readFile(join(outputDir, "procedure-training.html"), "utf-8");
+const procedureTrainingJs = await readFile(join(outputDir, "procedure-training.js"), "utf-8");
+const waterTrainingMap = await readFile(join(outputDir, "data/water-training-map.json"), "utf-8");
 const procedureWorkflowHtml = await readFile(join(outputDir, "procedure-workflow.html"), "utf-8");
 const feedbackDashboardHtml = await readFile(join(outputDir, "procedure-feedback-dashboard.html"), "utf-8");
 const casePortfolioHtml = await readFile(join(outputDir, "procedure-case-portfolio.html"), "utf-8");
@@ -44,7 +51,7 @@ const procedureCaseWorkspaceJs = await readFile(join(outputDir, "procedure-case-
 const procedureCaseOpenJs = await readFile(join(outputDir, "procedure-case-open.js"), "utf-8");
 
 const forbiddenRootRelativePatterns = [
-  'href="/"', 'href="/glass-wall.html"', 'href="/procedure-workflow.html"',
+  'href="/"', 'href="/glass-wall.html"', 'href="/procedure-training.html"', 'href="/procedure-workflow.html"',
   'href="/procedure-feedback-dashboard.html"', 'href="/procedure-case-portfolio.html"',
   'href="/domain-intake.html"', 'href="/index.html"', 'src="/widget.js"',
   'src="/procedure-widget-entrypoint.js"', 'src="/procedure-feedback.js"',
@@ -55,7 +62,7 @@ const forbiddenRootRelativePatterns = [
 ];
 
 for (const pattern of forbiddenRootRelativePatterns) {
-  if ([indexHtml, glassWallHtml, procedureWorkflowHtml, feedbackDashboardHtml, casePortfolioHtml, domainIntakeHtml].some((value) => value.includes(pattern))) {
+  if ([indexHtml, glassWallHtml, procedureTrainingHtml, procedureWorkflowHtml, feedbackDashboardHtml, casePortfolioHtml, domainIntakeHtml].some((value) => value.includes(pattern))) {
     throw new Error(`GitHub Pages artifact still contains root-relative static reference: ${pattern}`);
   }
 }
@@ -63,6 +70,10 @@ for (const pattern of forbiddenRootRelativePatterns) {
 if (!indexHtml.includes('src="./pages-demo-api.js" data-demo-mode="auto"')) throw new Error("GitHub Pages artifact is missing the demo/API bridge before the widget.");
 if (!indexHtml.includes('src="./pages-security-guard.js"')) throw new Error("GitHub Pages artifact is missing the source-link security guard.");
 if (!indexHtml.includes('src="./procedure-widget-entrypoint.js"')) throw new Error("GitHub Pages artifact is missing the procedure workflow widget entrypoint.");
+if (!indexHtml.includes('href="./procedure-training.html"')) throw new Error("GitHub Pages artifact is missing the Academy entrypoint.");
+if (!procedureTrainingHtml.includes('href="./index.html"') || !procedureTrainingHtml.includes('src="./procedure-training.js"') || !procedureTrainingHtml.includes('href="./procedure-training.css"')) throw new Error("Procedure training page has invalid Pages-relative assets.");
+if (!procedureTrainingJs.includes("requester_supplied_unverified")) throw new Error("Procedure training runtime is missing requester assertion provenance.");
+if (!waterTrainingMap.includes('"research_not_facts": true') || !waterTrainingMap.includes('"sequence": 47')) throw new Error("Procedure training curriculum is missing bounded research semantics.");
 if (!procedureWorkflowHtml.includes('src="./pages-demo-api.js" data-demo-mode="auto"')) throw new Error("Procedure workflow page is missing the Pages demo/API bridge.");
 if (!procedureWorkflowHtml.includes('src="./procedure-feedback.js"')) throw new Error("Procedure workflow page is missing the feedback loop script.");
 if (!procedureFeedbackJs.includes('./procedure-deep-dive.js')) throw new Error("Procedure workflow feedback loader is missing the deep-dive UI enhancement.");

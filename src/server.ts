@@ -4,6 +4,60 @@ import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { evaluateQueryWithDependencies } from "./agent.js";
 import { buildDeterministicAnswerWithDependencies } from "./answer.js";
+import {
+  CLAIM_PACK_ROUTE,
+  createClaimPackV1Dependencies,
+  handleClaimPackV1,
+  type ClaimPackV1Options,
+} from "./api/v1/claimPackIndex.js";
+import {
+  createCatalogV1Dependencies,
+  DOCUMENTS_ROUTE,
+  handleCatalogV1,
+  PROCEDURES_ROUTE,
+  SOURCES_ROUTE,
+  type CatalogV1Options,
+} from "./api/v1/catalogIndex.js";
+import {
+  createEvidenceGapV1Dependencies,
+  EVIDENCE_GAP_ROUTE,
+  handleEvidenceGapV1,
+  type EvidenceGapV1Options,
+} from "./api/v1/evidenceGapIndex.js";
+import {
+  createIngestionJobV1Dependencies,
+  handleIngestionJobV1,
+  INGESTION_JOBS_ROUTE,
+  type IngestionJobV1Options,
+} from "./api/v1/ingestionIndex.js";
+import {
+  createProcedureQueryV1Dependencies,
+  handleProcedureQueryV1,
+  type ProcedureQueryV1Options,
+} from "./api/v1/index.js";
+import {
+  createSearchEvidenceV1Dependencies,
+  EVIDENCE_BUNDLES_ROUTE,
+  handleSearchEvidenceV1,
+  SEARCH_ROUTE,
+  type SearchEvidenceV1Options,
+} from "./api/v1/searchEvidenceIndex.js";
+import {
+  createProcedureCaseV1Dependencies,
+  handleProcedureCaseV1,
+  PROCEDURE_CASES_ROUTE,
+  PROCEDURE_CASES_ROUTE_PREFIX,
+  type ProcedureCaseV1Options,
+} from "./api/v1/procedureCaseIndex.js";
+import {
+  createWorkflowLifecycleV1Dependencies,
+  handleWorkflowLifecycleV1,
+  WORKFLOW_APPROVALS_ROUTE,
+  WORKFLOW_DRAFTS_ROUTE,
+  WORKFLOW_REVIEWS_ROUTE,
+  WORKFLOWS_ROUTE_PREFIX,
+  type WorkflowLifecycleV1Options,
+} from "./api/v1/workflowLifecycleIndex.js";
 import { processChatWithDependencies } from "./chat.js";
 import { closeDb } from "./db.js";
 import {
@@ -16,6 +70,7 @@ import { type EvidenceDependencies, type EvidenceMode, findEvidenceWithDependenc
 import {
   HttpError,
   handleCors,
+  handleV1Cors,
   parseLimit,
   readJsonBody,
   requestUrl,
@@ -49,6 +104,20 @@ export interface ServerOptions {
   vectorRuntimeStatus?: RuntimeVectorStatus;
   procedureFeedbackDependencies?: ProcedureFeedbackDependencies;
   domainPack?: DomainPack;
+  procedureQueryV1?: ProcedureQueryV1Options;
+  catalogV1?: CatalogV1Options;
+  procedureCaseV1?: ProcedureCaseV1Options;
+  claimPackV1?: ClaimPackV1Options;
+  evidenceGapV1?: EvidenceGapV1Options;
+  ingestionJobV1?: IngestionJobV1Options;
+  workflowLifecycleV1?: WorkflowLifecycleV1Options;
+  searchEvidenceV1?: SearchEvidenceV1Options;
+  v1CorsAllowedOrigins?: readonly string[];
+  legacyApiEnabled?: boolean;
+  requestTimeoutMs?: number;
+  headersTimeoutMs?: number;
+  keepAliveTimeoutMs?: number;
+  maxHeadersCount?: number;
 }
 
 const requireDatabaseUrl = (): void => {
@@ -94,12 +163,126 @@ export const createRequestHandler = (options: ServerOptions = {}): RequestListen
   const domainPack = options.domainPack ?? loadActiveDomainPack();
   const domainPackSummary = summarizeDomainPack(domainPack);
   const domainPackUiSummary = summarizeDomainPackForUi(domainPack);
+  const procedureQueryV1Dependencies = createProcedureQueryV1Dependencies(
+    options.procedureQueryV1,
+    domainPack
+  );
+  const catalogV1Dependencies = createCatalogV1Dependencies(options.catalogV1);
+  const procedureCaseV1Dependencies = createProcedureCaseV1Dependencies(
+    options.procedureCaseV1
+  );
+  const claimPackV1Dependencies = createClaimPackV1Dependencies(
+    options.claimPackV1,
+    domainPack
+  );
+  const evidenceGapV1Dependencies = createEvidenceGapV1Dependencies(
+    options.evidenceGapV1
+  );
+  const ingestionJobV1Dependencies = createIngestionJobV1Dependencies(
+    options.ingestionJobV1
+  );
+  const workflowLifecycleV1Dependencies = createWorkflowLifecycleV1Dependencies(
+    options.workflowLifecycleV1
+  );
+  const searchEvidenceV1Dependencies = createSearchEvidenceV1Dependencies(
+    options.searchEvidenceV1
+  );
+  const v1CorsAllowedOrigins =
+    options.v1CorsAllowedOrigins ??
+    (process.env.V1_CORS_ALLOWED_ORIGINS ?? "")
+      .split(",")
+      .map((origin) => origin.trim())
+      .filter(Boolean);
+  const legacyApiEnabled =
+    options.legacyApiEnabled ?? process.env.NODE_ENV !== "production";
 
   return async (req, res) => {
     try {
-      if (handleCors(req, res)) return;
-
       const url = requestUrl(req);
+
+      if (url.pathname === CLAIM_PACK_ROUTE) {
+        if (handleV1Cors(req, res, v1CorsAllowedOrigins)) return;
+        await handleClaimPackV1(req, res, claimPackV1Dependencies);
+        return;
+      }
+
+      if (url.pathname === EVIDENCE_GAP_ROUTE) {
+        if (handleV1Cors(req, res, v1CorsAllowedOrigins)) return;
+        await handleEvidenceGapV1(req, res, evidenceGapV1Dependencies);
+        return;
+      }
+
+      if (url.pathname === "/api/v1/procedure-queries") {
+        if (handleV1Cors(req, res, v1CorsAllowedOrigins)) return;
+        await handleProcedureQueryV1(req, res, procedureQueryV1Dependencies);
+        return;
+      }
+
+      if (url.pathname === SEARCH_ROUTE || url.pathname === EVIDENCE_BUNDLES_ROUTE) {
+        if (handleV1Cors(req, res, v1CorsAllowedOrigins, ["POST"])) return;
+        if (await handleSearchEvidenceV1(req, res, url.pathname, searchEvidenceV1Dependencies)) return;
+        throw new HttpError(404, "not_found", "Route not found");
+      }
+
+      if (
+        url.pathname === SOURCES_ROUTE ||
+        url.pathname === DOCUMENTS_ROUTE ||
+        url.pathname === PROCEDURES_ROUTE ||
+        (url.pathname === INGESTION_JOBS_ROUTE && req.method === "GET")
+      ) {
+        const catalogMethods = url.pathname === PROCEDURES_ROUTE
+          ? (["GET"] as const)
+          : (["GET", "POST"] as const);
+        if (handleV1Cors(req, res, v1CorsAllowedOrigins, catalogMethods)) return;
+        if (await handleCatalogV1(req, res, url, catalogV1Dependencies)) return;
+        throw new HttpError(404, "not_found", "Route not found");
+      }
+
+      if (
+        url.pathname === PROCEDURE_CASES_ROUTE ||
+        url.pathname.startsWith(PROCEDURE_CASES_ROUTE_PREFIX)
+      ) {
+        const caseMethods = url.pathname === PROCEDURE_CASES_ROUTE
+          ? (["POST"] as const)
+          : (["GET", "PATCH"] as const);
+        if (handleV1Cors(req, res, v1CorsAllowedOrigins, caseMethods)) return;
+        if (await handleProcedureCaseV1(req, res, url, procedureCaseV1Dependencies)) return;
+        throw new HttpError(404, "not_found", "Route not found");
+      }
+
+      if (
+        url.pathname === INGESTION_JOBS_ROUTE ||
+        url.pathname.startsWith(`${INGESTION_JOBS_ROUTE}/`)
+      ) {
+        if (handleV1Cors(req, res, v1CorsAllowedOrigins, ["GET", "POST"])) return;
+        await handleIngestionJobV1(req, res, ingestionJobV1Dependencies);
+        return;
+      }
+
+      if (
+        url.pathname === WORKFLOW_DRAFTS_ROUTE ||
+        url.pathname === WORKFLOW_REVIEWS_ROUTE ||
+        url.pathname === WORKFLOW_APPROVALS_ROUTE ||
+        url.pathname.startsWith(WORKFLOWS_ROUTE_PREFIX)
+      ) {
+        const workflowMethods = url.pathname.startsWith(WORKFLOWS_ROUTE_PREFIX)
+          ? (["GET"] as const)
+          : (["POST"] as const);
+        if (handleV1Cors(req, res, v1CorsAllowedOrigins, workflowMethods)) return;
+        await handleWorkflowLifecycleV1(req, res, url, workflowLifecycleV1Dependencies);
+        return;
+      }
+
+      // The pre-v1 API uses global-pool queries and demo-oriented wildcard
+      // CORS. It is intentionally unavailable in production until every route
+      // is migrated to authenticated tenant transactions and bounded abuse
+      // controls. Keep this check before legacy CORS so a disabled route does
+      // not advertise browser access.
+      if (!legacyApiEnabled && url.pathname.startsWith("/api/")) {
+        throw new HttpError(404, "not_found", "Route not found");
+      }
+
+      if (handleCors(req, res)) return;
 
       if (req.method === "GET" && url.pathname === "/health") {
         sendJson(res, 200, {
@@ -108,6 +291,32 @@ export const createRequestHandler = (options: ServerOptions = {}): RequestListen
           vectorRuntime: vectorRuntimeStatus,
           procedureFeedbackApi: {
             enabled: Boolean(procedureFeedbackDependencies.apiToken?.trim()),
+          },
+          ingestionJobApi: {
+            enabled: Boolean(ingestionJobV1Dependencies.pipelineConfig),
+            workerConfigured: false,
+          },
+          claimPackApi: {
+            enabled: true,
+            validitySeconds: claimPackV1Dependencies.validitySeconds,
+          },
+          evidenceGapApi: {
+            enabled: true,
+            initialStatus: "open",
+          },
+          searchEvidenceApi: {
+            enabled: true,
+            semanticConfigured: Boolean(searchEvidenceV1Dependencies.queryEmbeddingProvider),
+            semanticFailClosed: true,
+          },
+          workflowLifecycleApi: {
+            enabled: true,
+            humanApprovalRequired: true,
+          },
+          procedureCaseApi: {
+            enabled: true,
+            approvedWorkflowRequired: true,
+            legalStatusClaims: false,
           },
           domainPack: domainPackSummary,
         });
@@ -240,8 +449,15 @@ export const createRequestHandler = (options: ServerOptions = {}): RequestListen
   };
 };
 
-export const createApiServer = (options: ServerOptions = {}): Server =>
-  createServer(createRequestHandler(options));
+export const createApiServer = (options: ServerOptions = {}): Server => {
+  const server = createServer(createRequestHandler(options));
+  server.requestTimeout = options.requestTimeoutMs ?? 15_000;
+  server.headersTimeout = options.headersTimeoutMs ?? 10_000;
+  server.keepAliveTimeout = options.keepAliveTimeoutMs ?? 5_000;
+  server.maxHeadersCount = options.maxHeadersCount ?? 100;
+  server.maxRequestsPerSocket = 1_000;
+  return server;
+};
 
 export const startServer = (): Server => {
   requireDatabaseUrl();

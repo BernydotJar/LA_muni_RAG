@@ -1,0 +1,64 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://contracts.la-muni-rag.invalid/v1/workflow-draft-request.schema.json",
+  "title": "WorkflowDraftRequestV1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "request_id",
+    "tenant_id",
+    "procedure_key",
+    "generation_source",
+    "workflow_definition",
+    "provenance"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "v1"
+    },
+    "request_id": {
+      "$ref": "common.schema.json#/$defs/Uuid"
+    },
+    "tenant_id": {
+      "$ref": "common.schema.json#/$defs/Uuid"
+    },
+    "procedure_key": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9._:-]{2,127}$"
+    },
+    "generation_source": {
+      "type": "string",
+      "enum": [
+        "ai",
+        "human",
+        "import"
+      ]
+    },
+    "workflow_definition": {
+      "$ref": "procedure-workflow.schema.json"
+    },
+    "evidence_bundle_id": {
+      "anyOf": [
+        {
+          "$ref": "common.schema.json#/$defs/Uuid"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "provenance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "credential_id"
+      ],
+      "properties": {
+        "credential_id": {
+          "$ref": "common.schema.json#/$defs/Uuid"
+        }
+      }
+    }
+  }
+}

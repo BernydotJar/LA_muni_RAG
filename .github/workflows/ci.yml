@@ -1,0 +1,358 @@
+name: Backend CI
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: backend-ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify-backend:
+    name: Verify backend
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    services:
+      postgres:
+        image: pgvector/pgvector:0.8.5-pg16-bookworm@sha256:1d533553fefe4f12e5d80c7b80622ba0c382abb5758856f52983d8789179f0fb
+        env:
+          POSTGRES_DB: la_muni_rag_ingestion_test
+          POSTGRES_PASSWORD: disposable-ci-admin-password
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres -d la_muni_rag_ingestion_test"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
+
+      - name: Setup Node.js
+        uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5
+        with:
+          node-version: 24.12.0
+          cache: npm
+
+      - name: Install locked dependencies
+        run: npm ci
+
+      - name: Validate integration contracts
+        run: npm run contracts:validate
+
+      - name: Verify portable consumer contract kits
+        run: npm run contracts:consumer-verify
+
+      - name: Verify ephemeral staging and E2E architecture
+        run: npm run staging:verify
+
+      - name: Validate source inventory
+        run: npm run source-inventory:validate
+
+      - name: Audit dependencies
+        run: npm audit --audit-level=high
+
+      - name: Evaluate domain packs
+        run: npm run domain:evaluate
+
+      - name: Run EVAL-PROCEDURE-001
+        run: npm run eval:procedure
+
+      - name: Run EVAL-OS-INTEGRATION-001
+        run: npm run eval:os-integration
+
+      - name: Run EVAL-PROCEDURE-ASSESSMENT-001
+        run: npm run eval:assessment
+
+      - name: Run EVAL-EVIDENCE-GAP-001
+        run: npm run eval:evidence-gap
+
+      - name: Run EVAL-CONTENT-INTEGRATION-001
+        run: npm run eval:content-integration
+
+      - name: Run EVAL-CONSUMER-CONTRACT-KIT-001
+        run: npm run eval:consumer-contract-kit
+
+      - name: Run EVAL-EPHEMERAL-STAGING-E2E-001
+        run: npm run eval:staging-e2e-architecture
+
+      - name: Run EVAL-CONFLICT-001
+        run: npm run eval:conflict
+
+      - name: Run EVAL-BOUNDARY-001
+        run: npm run eval:boundary
+
+      - name: Run EVAL-CORRUPT-001
+        run: npm run eval:corrupt
+
+      - name: Run EVAL-ARTIFACT-001
+        run: npm run eval:artifact
+
+      - name: Run EVAL-VECTOR-001
+        run: npm run eval:vector
+
+      - name: Run EVAL-JOB-LEASE-001
+        run: npm run eval:job-lease
+
+      - name: Run EVAL-TENANT-001
+        run: npm run eval:tenant
+
+      - name: Run EVAL-MIXCO-001
+        run: npm run eval:mixco
+
+      - name: Run EVAL-WATER-001
+        run: npm run eval:water
+
+      - name: Run EVAL-ACCESSIBILITY-001
+        run: npm run eval:accessibility
+
+      - name: Run EVAL-CASE-001
+        run: npm run eval:case
+
+      - name: Run EVAL-RESTORE-001
+        run: npm run eval:restore
+
+      - name: Run EVAL-SOURCE-001
+        run: npm run eval:source
+
+      - name: Run EVAL-MISSING-001
+        run: npm run eval:missing
+
+      - name: Run EVAL-RBAC-001
+        run: npm run eval:rbac
+
+      - name: Run EVAL-INGEST-001
+        run: npm run eval:ingest
+
+      - name: Run EVAL-SOURCE-API-001
+        run: npm run eval:source-api
+
+      - name: Run EVAL-DOCUMENT-API-001
+        run: npm run eval:document-api
+
+      - name: Run EVAL-SEARCH-API-001
+        run: npm run eval:search-api
+
+      - name: Run EVAL-EVIDENCE-BUNDLE-API-001
+        run: npm run eval:evidence-bundle-api
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Verify governed workflow lifecycle foundation
+        run: npm run test:workflow-lifecycle
+
+      - name: Test
+        run: npm test
+
+      - name: Build backend
+        run: npm run build
+
+      - name: Verify procedure-query migrations and non-owner RLS
+        env:
+          POSTGRES_CONTAINER: ${{ job.services.postgres.id }}
+        run: |
+          docker exec "$POSTGRES_CONTAINER" \
+            createdb -U postgres la_muni_rag_test
+          for sql_file in \
+            db/migrations/001_initial_rag_schema.sql \
+            db/migrations/002_procedure_feedback.sql \
+            db/migrations/003_identity_tenancy_rbac.sql \
+            db/migrations/004_procedure_query_api.sql \
+            db/tests/procedure_query_runtime_gate.sql \
+            db/migrations/008_claim_pack_api.sql \
+            db/tests/claim_pack_runtime_gate.sql \
+            db/migrations/009_workflow_lifecycle.sql \
+            db/migrations/010_workflow_lifecycle_api.sql \
+            db/tests/workflow_lifecycle_runtime_gate.sql \
+            db/migrations/012_evidence_gap_requests.sql \
+            db/tests/evidence_gap_runtime_gate.sql
+          do
+            docker exec -i "$POSTGRES_CONTAINER" \
+              psql -U postgres -d la_muni_rag_test \
+              -v ON_ERROR_STOP=1 < "$sql_file"
+          done
+
+      - name: Verify compiled procedure-query API
+        env:
+          DATABASE_URL: postgresql://la_muni_runtime_test:disposable-runtime-password-20260718@127.0.0.1:5432/la_muni_rag_test
+        run: npm run smoke:postgres-api
+
+      - name: Verify compiled ClaimPack API
+        env:
+          DATABASE_URL: postgresql://la_muni_runtime_test:disposable-runtime-password-20260718@127.0.0.1:5432/la_muni_rag_test
+        run: npm run smoke:claim-pack
+
+      - name: Verify compiled workflow lifecycle API
+        env:
+          DATABASE_URL: postgresql://la_muni_runtime_test:disposable-runtime-password-20260718@127.0.0.1:5432/la_muni_rag_test
+        run: npm run smoke:workflow-lifecycle
+
+      - name: Verify compiled EvidenceGap API
+        env:
+          DATABASE_URL: postgresql://la_muni_runtime_test:disposable-runtime-password-20260718@127.0.0.1:5432/la_muni_rag_test
+        run: npm run smoke:evidence-gap
+
+      - name: Verify catalog migrations and non-owner RLS
+        env:
+          POSTGRES_CONTAINER: ${{ job.services.postgres.id }}
+        run: |
+          docker exec "$POSTGRES_CONTAINER" \
+            createdb -U postgres la_muni_rag_catalog_test
+          for sql_file in \
+            db/migrations/001_initial_rag_schema.sql \
+            db/migrations/002_procedure_feedback.sql \
+            db/migrations/003_identity_tenancy_rbac.sql \
+            db/migrations/004_procedure_query_api.sql \
+            db/migrations/005_tenant_ingestion_runtime.sql \
+            db/migrations/006_ingestion_api_runtime.sql \
+            db/migrations/007_persisted_artifact_acceptance.sql \
+            db/migrations/008_claim_pack_api.sql \
+            db/migrations/009_workflow_lifecycle.sql \
+            db/migrations/010_workflow_lifecycle_api.sql \
+            db/migrations/011_artifact_vector_runtime_hardening.sql \
+            db/migrations/012_evidence_gap_requests.sql \
+            db/migrations/013_procedure_cases.sql \
+            db/migrations/014_catalog_api.sql \
+            db/tests/catalog_api_runtime_gate.sql
+          do
+            docker exec -i "$POSTGRES_CONTAINER" \
+              psql -U postgres -d la_muni_rag_catalog_test \
+              -v ON_ERROR_STOP=1 < "$sql_file"
+          done
+
+      - name: Verify compiled catalog API
+        env:
+          DATABASE_URL: postgresql://la_muni_runtime_test:disposable-runtime-password-20260718@127.0.0.1:5432/la_muni_rag_catalog_test
+        run: npm run smoke:catalog-api
+
+      - name: Verify Search and EvidenceBundle migrations and non-owner RLS
+        env:
+          POSTGRES_CONTAINER: ${{ job.services.postgres.id }}
+        run: |
+          docker exec "$POSTGRES_CONTAINER" \
+            createdb -U postgres la_muni_rag_search_test
+          for sql_file in \
+            db/migrations/001_initial_rag_schema.sql \
+            db/migrations/002_procedure_feedback.sql \
+            db/migrations/003_identity_tenancy_rbac.sql \
+            db/migrations/004_procedure_query_api.sql \
+            db/migrations/005_tenant_ingestion_runtime.sql \
+            db/migrations/006_ingestion_api_runtime.sql \
+            db/migrations/007_persisted_artifact_acceptance.sql \
+            db/migrations/008_claim_pack_api.sql \
+            db/migrations/009_workflow_lifecycle.sql \
+            db/migrations/010_workflow_lifecycle_api.sql \
+            db/migrations/011_artifact_vector_runtime_hardening.sql \
+            db/migrations/012_evidence_gap_requests.sql \
+            db/migrations/013_procedure_cases.sql \
+            db/migrations/014_catalog_api.sql \
+            db/migrations/015_search_evidence_api.sql \
+            db/tests/search_evidence_api_runtime_gate.sql
+          do
+            docker exec -i "$POSTGRES_CONTAINER" \
+              psql -U postgres -d la_muni_rag_search_test \
+              -v ON_ERROR_STOP=1 < "$sql_file"
+          done
+
+      - name: Verify compiled Search and EvidenceBundle API
+        env:
+          DATABASE_URL: postgresql://la_muni_search_runtime_test:disposable-search-runtime-password-20260721@127.0.0.1:5432/la_muni_rag_search_test
+        run: npm run smoke:search-evidence-api
+
+      - name: Verify tenant ingestion migrations and non-owner RLS
+        env:
+          POSTGRES_CONTAINER: ${{ job.services.postgres.id }}
+        run: |
+          for sql_file in \
+            db/migrations/001_initial_rag_schema.sql \
+            db/migrations/002_procedure_feedback.sql \
+            db/migrations/003_identity_tenancy_rbac.sql \
+            db/migrations/004_procedure_query_api.sql \
+            db/migrations/005_tenant_ingestion_runtime.sql \
+            db/migrations/006_ingestion_api_runtime.sql \
+            db/migrations/007_persisted_artifact_acceptance.sql \
+            db/migrations/011_artifact_vector_runtime_hardening.sql \
+            db/tests/tenant_ingestion_runtime_gate.sql \
+            db/tests/artifact_vector_runtime_hardening_gate.sql
+          do
+            docker exec -i "$POSTGRES_CONTAINER" \
+              psql -U postgres -d la_muni_rag_ingestion_test \
+              -v ON_ERROR_STOP=1 < "$sql_file"
+          done
+
+      - name: Verify corrupt historical artifact acceptance blocks migration
+        env:
+          POSTGRES_CONTAINER: ${{ job.services.postgres.id }}
+        run: |
+          docker exec "$POSTGRES_CONTAINER" \
+            createdb -U postgres la_muni_rag_invalid_artifact_test
+          for sql_file in \
+            db/migrations/001_initial_rag_schema.sql \
+            db/migrations/002_procedure_feedback.sql \
+            db/migrations/003_identity_tenancy_rbac.sql \
+            db/migrations/004_procedure_query_api.sql \
+            db/migrations/005_tenant_ingestion_runtime.sql \
+            db/migrations/006_ingestion_api_runtime.sql \
+            db/migrations/007_persisted_artifact_acceptance.sql \
+            db/tests/artifact_vector_invalid_history_fixture.sql
+          do
+            docker exec -i "$POSTGRES_CONTAINER" \
+              psql -U postgres -d la_muni_rag_invalid_artifact_test \
+              -v ON_ERROR_STOP=1 < "$sql_file"
+          done
+          if docker exec -i "$POSTGRES_CONTAINER" \
+            psql -U postgres -d la_muni_rag_invalid_artifact_test \
+            -v ON_ERROR_STOP=1 \
+            < db/migrations/011_artifact_vector_runtime_hardening.sql \
+            > invalid-artifact-migration.log 2>&1
+          then
+            echo "corrupt historical acceptance unexpectedly migrated"
+            exit 1
+          fi
+          grep -q \
+            "existing accepted artifact rows violate the exact clean-scan boundary" \
+            invalid-artifact-migration.log
+          test "$(docker exec "$POSTGRES_CONTAINER" \
+            psql -U postgres -d la_muni_rag_invalid_artifact_test -Atc \
+            "SELECT to_regprocedure('rag.validate_artifact_acceptance_v1()') IS NULL")" = "t"
+
+      - name: Verify supported legacy vector upgrade
+        env:
+          POSTGRES_CONTAINER: ${{ job.services.postgres.id }}
+        run: |
+          docker exec "$POSTGRES_CONTAINER" \
+            createdb -U postgres la_muni_rag_legacy_ingestion_test
+          for sql_file in \
+            db/migrations/001_initial_rag_schema.sql \
+            db/migrations/002_procedure_feedback.sql \
+            migrations/011-production-vector-store.sql \
+            db/migrations/003_identity_tenancy_rbac.sql \
+            db/migrations/004_procedure_query_api.sql \
+            db/migrations/005_tenant_ingestion_runtime.sql \
+            db/migrations/006_ingestion_api_runtime.sql \
+            db/migrations/007_persisted_artifact_acceptance.sql \
+            db/migrations/011_artifact_vector_runtime_hardening.sql \
+            db/tests/artifact_vector_legacy_upgrade_gate.sql
+          do
+            docker exec -i "$POSTGRES_CONTAINER" \
+              psql -U postgres -d la_muni_rag_legacy_ingestion_test \
+              -v ON_ERROR_STOP=1 < "$sql_file"
+          done
+
+      - name: Verify compiled tenant ingestion service
+        env:
+          DATABASE_URL: postgresql://la_muni_ingestion_runtime_test:disposable-ingestion-runtime-password-20260719@127.0.0.1:5432/la_muni_rag_ingestion_test
+        run: npm run smoke:tenant-ingestion
+
+      - name: Verify compiled authenticated ingestion API
+        env:
+          DATABASE_URL: postgresql://la_muni_ingestion_runtime_test:disposable-ingestion-runtime-password-20260719@127.0.0.1:5432/la_muni_rag_ingestion_test
+        run: npm run smoke:ingestion-api

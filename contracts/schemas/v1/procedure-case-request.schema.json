@@ -1,0 +1,553 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://contracts.la-muni-rag.invalid/v1/procedure-case-request.schema.json",
+  "title": "ProcedureCaseRequest v1",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "v1"
+    },
+    "operation": {
+      "enum": [
+        "create",
+        "update"
+      ]
+    },
+    "request_id": {
+      "$ref": "common.schema.json#/$defs/Uuid"
+    },
+    "tenant_id": {
+      "$ref": "common.schema.json#/$defs/Uuid"
+    },
+    "case_key": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9._:-]{2,127}$"
+    },
+    "workflow_version_id": {
+      "$ref": "common.schema.json#/$defs/Uuid"
+    },
+    "jurisdiction": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 500
+    },
+    "subject_reference": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 200
+    },
+    "community_reference": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 200
+    },
+    "follow_up_at": {
+      "anyOf": [
+        {
+          "type": "string",
+          "format": "date-time"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "provenance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "credential_id"
+      ],
+      "properties": {
+        "credential_id": {
+          "$ref": "common.schema.json#/$defs/Uuid"
+        }
+      }
+    },
+    "case_id": {
+      "$ref": "common.schema.json#/$defs/Uuid"
+    },
+    "expected_revision": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "action": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "type",
+            "step_id",
+            "state"
+          ],
+          "properties": {
+            "type": {
+              "const": "set_step_state"
+            },
+            "step_id": {
+              "$ref": "common.schema.json#/$defs/SafeOpaqueId"
+            },
+            "state": {
+              "enum": [
+                "not_started",
+                "in_progress",
+                "blocked",
+                "ready_for_review",
+                "completed"
+              ]
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "type",
+            "requirement_id",
+            "state"
+          ],
+          "properties": {
+            "type": {
+              "const": "record_document"
+            },
+            "requirement_id": {
+              "$ref": "common.schema.json#/$defs/SafeOpaqueId"
+            },
+            "state": {
+              "enum": [
+                "missing",
+                "requested",
+                "received",
+                "reviewed"
+              ]
+            },
+            "document_version_id": {
+              "anyOf": [
+                {
+                  "$ref": "common.schema.json#/$defs/Uuid"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "note": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 1000
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "type",
+            "blocker_code",
+            "description"
+          ],
+          "properties": {
+            "type": {
+              "const": "add_blocker"
+            },
+            "blocker_code": {
+              "type": "string",
+              "pattern": "^[a-z][a-z0-9_]{0,63}$"
+            },
+            "description": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 1000
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "type",
+            "blocker_id"
+          ],
+          "properties": {
+            "type": {
+              "const": "resolve_blocker"
+            },
+            "blocker_id": {
+              "$ref": "common.schema.json#/$defs/Uuid"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "type",
+            "follow_up_at"
+          ],
+          "properties": {
+            "type": {
+              "const": "set_follow_up"
+            },
+            "follow_up_at": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "type",
+            "validation_state"
+          ],
+          "properties": {
+            "type": {
+              "const": "set_validation_state"
+            },
+            "validation_state": {
+              "enum": [
+                "unreviewed",
+                "in_review",
+                "validated",
+                "changes_required"
+              ]
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "type",
+            "note"
+          ],
+          "properties": {
+            "type": {
+              "const": "append_note"
+            },
+            "note": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4000
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "type",
+            "note"
+          ],
+          "properties": {
+            "type": {
+              "const": "close_case"
+            },
+            "note": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4000
+            }
+          }
+        }
+      ]
+    }
+  },
+  "oneOf": [
+    {
+      "required": [
+        "schema_version",
+        "operation",
+        "request_id",
+        "tenant_id",
+        "case_key",
+        "workflow_version_id",
+        "jurisdiction",
+        "provenance"
+      ],
+      "properties": {
+        "schema_version": {
+          "const": "v1"
+        },
+        "operation": {
+          "const": "create"
+        },
+        "request_id": {
+          "$ref": "common.schema.json#/$defs/Uuid"
+        },
+        "tenant_id": {
+          "$ref": "common.schema.json#/$defs/Uuid"
+        },
+        "case_key": {
+          "type": "string",
+          "pattern": "^[a-z0-9][a-z0-9._:-]{2,127}$"
+        },
+        "workflow_version_id": {
+          "$ref": "common.schema.json#/$defs/Uuid"
+        },
+        "jurisdiction": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 500
+        },
+        "provenance": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "credential_id"
+          ],
+          "properties": {
+            "credential_id": {
+              "$ref": "common.schema.json#/$defs/Uuid"
+            }
+          }
+        }
+      }
+    },
+    {
+      "required": [
+        "schema_version",
+        "operation",
+        "request_id",
+        "tenant_id",
+        "case_id",
+        "expected_revision",
+        "action",
+        "provenance"
+      ],
+      "properties": {
+        "schema_version": {
+          "const": "v1"
+        },
+        "operation": {
+          "const": "update"
+        },
+        "request_id": {
+          "$ref": "common.schema.json#/$defs/Uuid"
+        },
+        "tenant_id": {
+          "$ref": "common.schema.json#/$defs/Uuid"
+        },
+        "case_id": {
+          "$ref": "common.schema.json#/$defs/Uuid"
+        },
+        "expected_revision": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "action": {
+          "oneOf": [
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "type",
+                "step_id",
+                "state"
+              ],
+              "properties": {
+                "type": {
+                  "const": "set_step_state"
+                },
+                "step_id": {
+                  "$ref": "common.schema.json#/$defs/SafeOpaqueId"
+                },
+                "state": {
+                  "enum": [
+                    "not_started",
+                    "in_progress",
+                    "blocked",
+                    "ready_for_review",
+                    "completed"
+                  ]
+                }
+              }
+            },
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "type",
+                "requirement_id",
+                "state"
+              ],
+              "properties": {
+                "type": {
+                  "const": "record_document"
+                },
+                "requirement_id": {
+                  "$ref": "common.schema.json#/$defs/SafeOpaqueId"
+                },
+                "state": {
+                  "enum": [
+                    "missing",
+                    "requested",
+                    "received",
+                    "reviewed"
+                  ]
+                },
+                "document_version_id": {
+                  "anyOf": [
+                    {
+                      "$ref": "common.schema.json#/$defs/Uuid"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "note": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 1000
+                }
+              }
+            },
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "type",
+                "blocker_code",
+                "description"
+              ],
+              "properties": {
+                "type": {
+                  "const": "add_blocker"
+                },
+                "blocker_code": {
+                  "type": "string",
+                  "pattern": "^[a-z][a-z0-9_]{0,63}$"
+                },
+                "description": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 1000
+                }
+              }
+            },
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "type",
+                "blocker_id"
+              ],
+              "properties": {
+                "type": {
+                  "const": "resolve_blocker"
+                },
+                "blocker_id": {
+                  "$ref": "common.schema.json#/$defs/Uuid"
+                }
+              }
+            },
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "type",
+                "follow_up_at"
+              ],
+              "properties": {
+                "type": {
+                  "const": "set_follow_up"
+                },
+                "follow_up_at": {
+                  "anyOf": [
+                    {
+                      "type": "string",
+                      "format": "date-time"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "type",
+                "validation_state"
+              ],
+              "properties": {
+                "type": {
+                  "const": "set_validation_state"
+                },
+                "validation_state": {
+                  "enum": [
+                    "unreviewed",
+                    "in_review",
+                    "validated",
+                    "changes_required"
+                  ]
+                }
+              }
+            },
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "type",
+                "note"
+              ],
+              "properties": {
+                "type": {
+                  "const": "append_note"
+                },
+                "note": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 4000
+                }
+              }
+            },
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "type",
+                "note"
+              ],
+              "properties": {
+                "type": {
+                  "const": "close_case"
+                },
+                "note": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 4000
+                }
+              }
+            }
+          ]
+        },
+        "provenance": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "credential_id"
+          ],
+          "properties": {
+            "credential_id": {
+              "$ref": "common.schema.json#/$defs/Uuid"
+            }
+          }
+        }
+      }
+    }
+  ]
+}

@@ -3,11 +3,20 @@
 --
 -- Run after:
 --   1. db/migrations/001_initial_rag_schema.sql
---   2. db/seeds/001_core_documents.sql
+--   2. db/migrations/002_procedure_feedback.sql
+--   3. db/migrations/003_identity_tenancy_rbac.sql
+--   4. db/seeds/001_core_documents.sql
 
 BEGIN;
 
+SELECT set_config(
+  'app.tenant_id',
+  '00000000-0000-4000-8000-000000000001',
+  true
+);
+
 INSERT INTO rag.document_versions (
+  tenant_id,
   document_id,
   version_label,
   source_url,
@@ -21,6 +30,7 @@ INSERT INTO rag.document_versions (
   metadata
 )
 SELECT
+  d.tenant_id,
   d.id,
   'official-municipal-pdf-2026-06-22',
   'https://muniantigua.gob.gt/assets/backend/info/MODULO_1_PDMOT.pdf',
@@ -33,8 +43,8 @@ SELECT
   NULL,
   '{"verified_download": true, "downloaded_at": "2026-06-22", "file_size_bytes": 34822596}'::jsonb
 FROM rag.documents d
-WHERE d.title = 'Plan de Desarrollo Municipal y Ordenamiento Territorial de Antigua Guatemala, PDM-OT'
+WHERE d.tenant_id = '00000000-0000-4000-8000-000000000001'::uuid
+  AND d.title = 'Plan de Desarrollo Municipal y Ordenamiento Territorial de Antigua Guatemala, PDM-OT'
 ON CONFLICT DO NOTHING;
 
 COMMIT;
-

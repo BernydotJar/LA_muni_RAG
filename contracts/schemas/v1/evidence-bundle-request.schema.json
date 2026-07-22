@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://contracts.la-muni-rag.invalid/v1/evidence-bundle-request.schema.json",
+  "title": "EvidenceBundleCreateRequest v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "operation",
+    "request_id",
+    "tenant_id",
+    "query",
+    "jurisdiction",
+    "as_of_date",
+    "mode",
+    "limit",
+    "filters",
+    "provenance"
+  ],
+  "properties": {
+    "schema_version": { "$ref": "common.schema.json#/$defs/SchemaVersion" },
+    "operation": { "const": "evidence_bundle_create" },
+    "request_id": { "$ref": "common.schema.json#/$defs/Uuid" },
+    "tenant_id": { "$ref": "common.schema.json#/$defs/Uuid" },
+    "query": { "type": "string", "minLength": 1, "maxLength": 4000 },
+    "jurisdiction": { "$ref": "common.schema.json#/$defs/Jurisdiction" },
+    "as_of_date": { "type": "string", "format": "date" },
+    "mode": { "type": "string", "enum": ["keyword", "phrase", "semantic", "hybrid"] },
+    "limit": { "type": "integer", "minimum": 1, "maximum": 50 },
+    "filters": { "$ref": "search-request.schema.json#/$defs/SearchFilters" },
+    "provenance": { "$ref": "search-request.schema.json#/$defs/RequestProvenance" }
+  }
+}
