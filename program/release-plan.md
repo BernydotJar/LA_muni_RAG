@@ -1,45 +1,54 @@
 # LA Muni RAG — Release Plan
 
-Updated: 2026-07-22T01:05:41Z
+Updated: 2026-07-22T16:53:05Z
 
 ## Current release state
 
 ```text
-functional_branch: feature/consumer-contract-kit-v1
-functional_sha: 5e5481e26b1a27a0aa2bd9c965e1c160f18b3198
+functional_branch: feature/ephemeral-staging-e2e-architecture-v1
+functional_sha: f4d018f0909d15408092167cb935bf4ac71cd6d9
 remote_sha_verified: true
-backend_ci: run 29882062536 success
+backend_ci: run 29939453123 success
 pull_request: none
 merged_to_main: false
 staging_deployed: false
+browser_e2e_executed: false
 production_deployed: false
 observation_window: none
 ```
 
-## Feature 069 gates satisfied locally
+## Feature 070 gates satisfied
 
-- 16/16 EVAL-CONSUMER-CONTRACT-KIT-001.
-- 2 consumer kits / 5 interactions / 0 issues.
-- 30/30 canonical schemas/examples and OpenAPI 3.1.1.
-- Full suite 795 total / 793 pass / 0 fail / 2 explicit skips.
-- Clean detached verification of the exact functional SHA.
-- Typecheck/build and all/prod dependency audits pass.
+- closed staging schema and canonical plan validate with zero issues;
+- 13/13 `EVAL-EPHEMERAL-STAGING-E2E-001`;
+- 2 synthetic tenants, 11 principals, exact 10-role matrix, 13 fixtures;
+- 20 runnable API/system journeys and 12 explicitly blocked browser journeys;
+- deterministic reset and destruction contract;
+- OpenAPI method/status and route-permission alignment;
+- secret, production-endpoint, RBAC, isolation, reset, layer, and overclaim guards;
+- detached full suite 808 total / 806 pass / 0 fail / 2 skips;
+- 30/30 canonical contracts, 2/5 consumer contracts, typecheck, build, and zero-vulnerability audits;
+- exact remote SHA and Backend CI success.
 
-## Required sequence before E2E
+## Required sequence before browser E2E
 
-1. Consumer repositories pin the exact kit SHA and pass equivalent contract tests.
-2. Human identity/session architecture is approved and implemented.
-3. Isolated staging has deterministic tenants, credentials and resettable data.
-4. System/API journeys pass auth, isolation, replay, expiry and failure/retry.
-5. Browser E2E then validates only critical user outcomes and role boundaries.
+1. Implement and execute the local ephemeral staging runner.
+2. Prove fresh database creation, migrations, identity/fixture seeding, twenty API/system journeys, sanitized artifact collection, and destruction.
+3. Coordinate consumer-side contract tests in OS Electoral and Content Agency.
+4. Approve and implement IdP/OIDC/PKCE/BFF/session architecture, provisioning, secure cookies, CSRF, logout, revocation, and recovery.
+5. Build role-aware authenticated UI routes.
+6. Enable the twelve browser journeys and collect browser, keyboard, screen-reader, and human accessibility evidence.
 
 ## Blocking release gates
 
-- authorized real corpus and judged retrieval quality;
-- human authority/applicability review;
-- production infrastructure, observability, staging, load/HA and recovery/privacy;
+- authorized real corpus acquisition and judged retrieval quality;
+- human authority/vigencia/applicability review;
+- actual ephemeral/staging execution and cleanup evidence;
+- human identity/session and authenticated SaaS surfaces;
 - external consumer conformance;
-- browser/accessibility evidence;
-- reviewed PR, protected merge, approvals, deployment and observation.
+- production infrastructure, observability, load/HA, recovery, and privacy operations;
+- reviewed PR, protected merge, deployment approvals, rollout, rollback, and observation.
 
-A green feature branch is not a release. No automatic merge or deployment is authorized by this plan.
+## Release rule
+
+An executable architecture, green feature branch, or disposable gate is not a release. Production readiness may be declared only when every blocking gate has immutable evidence and the deployed revision is observed. No automatic merge or deployment is authorized.

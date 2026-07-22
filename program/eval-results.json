@@ -1,12 +1,12 @@
 {
-  "schema_version": "1.12.0",
-  "generated_at": "2026-07-22T01:05:41Z",
-  "branch": "feature/consumer-contract-kit-v1",
-  "functional_head": "5e5481e26b1a27a0aa2bd9c965e1c160f18b3198",
-  "status": "passed_feature069_with_explicit_external_consumer_and_global_product_blockers",
+  "schema_version": "1.13.0",
+  "generated_at": "2026-07-22T16:53:05Z",
+  "branch": "feature/ephemeral-staging-e2e-architecture-v1",
+  "functional_head": "f4d018f0909d15408092167cb935bf4ac71cd6d9",
+  "status": "passed_feature070_architecture_with_explicit_execution_and_global_product_blockers",
   "deterministic": {
-    "tests": 795,
-    "pass": 793,
+    "tests": 808,
+    "pass": 806,
     "fail": 0,
     "skipped": 2,
     "typecheck": "pass",
@@ -19,7 +19,23 @@
     "openapi": "3.1.1",
     "consumer_kits": 2,
     "consumer_interactions": 5,
-    "issues": 0
+    "staging_plan_issues": 0
+  },
+  "staging_architecture": {
+    "plan_version": "1.0.0",
+    "tenants": 2,
+    "principals": 11,
+    "roles": 10,
+    "fixtures": 13,
+    "api_system_journeys": 20,
+    "browser_journeys": 12,
+    "blocked_browser_journeys": 12,
+    "mocks": 6,
+    "reset_steps": 10,
+    "issues": 0,
+    "environment_executed": false,
+    "browser_e2e_runnable": false,
+    "external_consumers_verified": false
   },
   "hard_evals": {
     "EVAL-PROCEDURE-001": {
@@ -136,142 +152,48 @@
         "No external consumer repository has run the kit.",
         "No cross-product staging, browser E2E, merge or deployment."
       ]
+    },
+    "EVAL-EPHEMERAL-STAGING-E2E-001": {
+      "command": "npm run eval:staging-e2e-architecture",
+      "passed": 13,
+      "total": 13,
+      "result": "passed_for_executable_ephemeral_staging_and_e2e_architecture_with_identity_infrastructure_external_consumer_browser_and_production_limitations",
+      "evidence": [
+        "f4d018f0909d15408092167cb935bf4ac71cd6d9",
+        "contracts/staging/v1/",
+        "src/staging/ephemeralStagingPlan.ts",
+        "docs/testing/ephemeral-staging-e2e-architecture.md"
+      ],
+      "limitations": [
+        "No environment runner or deployed staging.",
+        "No human browser identity/UI or browser execution.",
+        "No external consumer repository execution."
+      ]
     }
   },
   "publication": {
-    "branch": "feature/consumer-contract-kit-v1",
-    "functional_sha": "5e5481e26b1a27a0aa2bd9c965e1c160f18b3198",
+    "branch": "feature/ephemeral-staging-e2e-architecture-v1",
+    "functional_sha": "f4d018f0909d15408092167cb935bf4ac71cd6d9",
     "remote_sha_verified": true,
-    "ci_run": 29882062536,
+    "ci_run_id": 29939453123,
     "ci_status": "success",
+    "ci_conclusion": "success",
     "pr": null,
     "merged": false,
-    "deployed": false,
-    "ci_conclusion": "success"
+    "deployed": false
   },
   "missing_dedicated_evals": [
+    "ephemeral_staging_runner_execution",
     "external_os_electoral_consumer",
     "external_content_agency_consumer",
-    "deterministic_staging_identity",
-    "system_api_journeys",
+    "human_identity_session",
     "browser_e2e",
     "real_corpus_quality",
     "production_load_ha_recovery_privacy"
   ],
   "limitations": [
-    "Provider-side manifests are not external interoperability evidence.",
-    "Zero real documents are credited as ingested.",
-    "Human SaaS, staging and production operations remain absent."
-  ],
-  "historical_checkpoints": {
-    "feature067_catalog": {
-      "functional_head": "9da29720c23d64bc73bdb24e92e67707834f4f84",
-      "deterministic": {
-        "typecheck": "pass",
-        "build": "pass",
-        "contracts": {
-          "schemas": 27,
-          "examples": 27,
-          "openapi_documents": 1,
-          "contract_suite_passed": 27,
-          "contract_suite_failed": 0
-        },
-        "global_tests": {
-          "total": 749,
-          "passed": 747,
-          "failed": 0,
-          "skipped": 2,
-          "skip_reason": "explicit environment-gated database tests"
-        },
-        "source_inventory": {
-          "total": 17,
-          "valid": 17,
-          "verified": 4,
-          "missing_source": 4,
-          "acquisition_metadata": 1,
-          "ingested": 0
-        },
-        "domain_evaluation": {
-          "total": 8,
-          "passed": 8
-        },
-        "pages": "pass",
-        "dependency_audit": {
-          "all_vulnerabilities": 0,
-          "production_vulnerabilities": 0,
-          "fast_uri_version": "3.1.4"
-        },
-        "diff_check": "pass",
-        "secret_scan": "pass",
-        "detached_lockfile_install": "pass"
-      },
-      "database": {
-        "postgres_version": "15.18",
-        "pgvector_version": "0.8.5",
-        "runtime_role": "non_owner_nosuperuser_nobypassrls",
-        "clean_database_recreated": true,
-        "procedure_query_sql_gate": "pass",
-        "claim_pack_sql_gate": "pass",
-        "workflow_lifecycle_sql_gate": "pass",
-        "evidence_gap_sql_gate": "pass",
-        "procedure_query_compiled_smoke": "pass",
-        "claim_pack_compiled_smoke": "pass",
-        "workflow_lifecycle_compiled_smoke": "pass",
-        "evidence_gap_compiled_smoke": "pass",
-        "evidence_gap_statuses": [
-          401,
-          200,
-          200,
-          200,
-          200,
-          200,
-          409,
-          409,
-          403,
-          400,
-          400,
-          500,
-          200
-        ],
-        "catalog_sql_gate": "pass",
-        "catalog_compiled_smoke": "pass",
-        "catalog_migrations": "001-014",
-        "catalog_statuses": [
-          401,
-          201,
-          201,
-          409,
-          500,
-          400,
-          201,
-          201,
-          200,
-          200,
-          200,
-          200,
-          403,
-          200
-        ],
-        "catalog_corrupt_replay_cleanup_committed": true,
-        "catalog_cross_tenant_leak": false,
-        "catalog_private_artifact_columns_granted": false
-      },
-      "publication": {
-        "remote_branch": "feature/catalog-api-v1",
-        "remote_commit": "9da29720c23d64bc73bdb24e92e67707834f4f84",
-        "main_commit": "4950ba3c24dbe7d9891d5cec8d7ba5f57db3ef9c",
-        "pr_state": "absent",
-        "remote_ci": {
-          "run_id": 29876782983,
-          "workflow": "Backend CI",
-          "status": "in_progress",
-          "conclusion": null,
-          "head_sha": "9da29720c23d64bc73bdb24e92e67707834f4f84"
-        },
-        "merged": false,
-        "deployed": false
-      },
-      "missing_dedicated_evals": []
-    }
-  }
+    "Architecture conformance is not deployed staging.",
+    "Browser E2E and external consumer interoperability are unproved.",
+    "Zero real documents are credited as ingested."
+  ]
 }

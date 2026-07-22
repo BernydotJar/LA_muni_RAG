@@ -7,4 +7,4 @@
 - [x] Add CLI, package scripts, named eval, and CI steps.
 - [x] Document staging identity, fixtures, reset, journeys, role matrix, mocks, and API/browser policy.
 - [x] Run adversarial review and focused/global verification.
-- [ ] Commit functional slice, detached verify, push, observe CI, and reconcile program state.
+- [x] Commit functional slice, detached verify, push, observe CI, and reconcile program state.

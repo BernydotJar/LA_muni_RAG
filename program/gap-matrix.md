@@ -1,19 +1,20 @@
 # LA Muni RAG — Gap Matrix
 
-Updated: 2026-07-22T01:05:41Z
+Updated: 2026-07-22T16:53:05Z
 
 | Capability | Repository evidence | State | Remaining production gap |
 |---|---|---|---|
-| Governed catalogs and APIs | Features 067–068, contracts and PostgreSQL gates | verified_with_limits | Real corpus, human SaaS and deployment |
-| Portable consumer contracts | Feature 069 `5e5481e`, 16/16 eval, 2 kits/5 interactions | verified_provider_side | Suites inside OS Electoral and Content Agency |
-| Consumer interoperability | Provider manifests only | missing_external_evidence | Independent stores, retry/expiry/revocation/supersession tests |
-| Corpus acquisition | 17 inventory records; 0 durable bytes/0 ingested | blocked | Rights, storage, scan, manifests and ingestion |
-| Retrieval quality | Synthetic fixtures only | missing_real_evidence | Judged Antigua-first quality, latency, cost and load |
-| Human authentication | Architecture notes only | missing | IdP/OIDC/BFF/session/provisioning/recovery |
-| Ephemeral staging data | No deterministic deployed identity/data reset | missing | Isolated environment and repeatable fixtures |
-| System/API journeys | Local HTTP/PostgreSQL smokes | partial | Deployed multi-service journeys and fault injection |
-| Browser E2E | Static Academy checks only | intentionally_deferred | Stable identity, fixtures, staging and role-aware UI |
-| Accessibility | Static gate | partial | Supported browsers, screen readers and human WCAG review |
-| Platform/operations | CI, runbooks, disposable restore | partial | Terraform, observability, SLOs, load/HA and recovery |
-| Privacy lifecycle | Documentation foundations | missing_operations | Retention, deletion, legal hold and DSAR |
-| Release | Exact branch/SHA published; CI tracked | incomplete | PR, protected merge, staging, deployment and observation |
+| Governed catalogs and APIs | Features 067–068, contracts, PostgreSQL/HTTP gates | verified_with_limits | Real corpus, human SaaS, platform, deployment |
+| Portable consumer contracts | Feature 069, 16/16 eval, 2 kits/5 interactions | verified_provider_side | Suites inside OS Electoral and Content Agency |
+| Ephemeral staging architecture | Feature 070 `f4d018f`, 13/13 eval, 2 tenants/20 API/12 blocked browser | verified_architecture_only | Actual runner, provisioned disposable services, journey receipts, cleanup attestation |
+| Consumer interoperability | Provider manifests/stubs only | missing_external_evidence | Independent stores, retry/expiry/revocation/supersession tests |
+| Corpus acquisition | 17 inventory records; 0 durable bytes/0 ingested | blocked | Rights, storage, scan, manifests, ingestion |
+| Retrieval quality | Synthetic fixtures only | missing_real_evidence | Judged Antigua-first relevance, citation quality, latency, cost, load |
+| Human authentication | Server credential/RBAC foundation only | missing_human_identity | IdP/OIDC/PKCE/BFF/session/provisioning/recovery |
+| Authenticated role-aware UI | Public Academy and planned routes only | missing | Source/library/search/workflow/case/review/admin/audit surfaces |
+| API/system staging journeys | 20 specified and locally contract-validated | not_executed_in_deployed_staging | Ephemeral runner, service topology, fault injection, receipts |
+| Browser E2E | 12 specified and blocked | intentionally_deferred | Human identity, secure sessions, role-aware UI, deployed fixtures |
+| Accessibility | Static Academy gate | partial | Authenticated browsers, screen readers, human WCAG 2.2 AA |
+| Platform/operations | CI, runbooks, disposable PostgreSQL/restore gates | partial | Terraform, observability, SLOs, load/HA, coordinated recovery |
+| Privacy lifecycle | Documentation foundations | missing_operations | Retention, deletion, legal hold, DSAR |
+| Release | Feature branch published; exact CI success | incomplete | PR, protected merge, staging rehearsal, deployment, observation |

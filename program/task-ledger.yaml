@@ -1,5 +1,5 @@
 schema_version: 1
-updated_at: '2026-07-22T01:05:41Z'
+updated_at: '2026-07-22T16:53:05Z'
 runtime:
   type: yaml_fallback
   farmtable_available: false
@@ -1073,6 +1073,10 @@ tasks:
   - EVAL-RESTORE-001 passes with explicit object/PITR/RPO-RTO/staging/human limitations; CI 29867846337 succeeded.
   pr: null
   ci: passed_disposable_restore_remote
+  completed_slices:
+  - WS10-EPHEMERAL-STAGING-E2E-ARCH-001
+  current_state: Feature 070 defines and verifies the disposable staging/E2E contract; no environment runner, human identity,
+    browser execution, production topology, load/HA, or deployment is proved.
 - id: WS10-OPS-FOUNDATION-001
   workstream: WS-10
   title: Build CI, non-root container, threat/privacy review, and operational runbook foundation
@@ -1179,9 +1183,10 @@ tasks:
   ci: passed_local_detached_postgres_and_remote
   completed_slices:
   - EVAL-CONSUMER-CONTRACT-KIT-001
-  current_state: Required hard-eval families plus Feature 069 consumer-kit eval pass; detached regression is 793/795 with
-    zero failures, contracts are 30/30 and portable kits are 2/5. Real corpus, external consumers, human identity/staging,
-    browser E2E, load/HA and production observation remain incomplete.
+  - EVAL-EPHEMERAL-STAGING-E2E-001
+  current_state: Feature 070 staging/E2E architecture eval passes 13/13; detached regression is 806/808 with zero failures,
+    contracts are 30/30, consumer kits 2/5, and CI succeeds. Real corpus, external consumers, actual staging, human identity,
+    browser execution, load/HA, and production observation remain open.
 - id: WS05-LIFECYCLE-API-001
   workstream: WS-05
   title: Expose governed workflow lifecycle API v1
@@ -1452,6 +1457,64 @@ tasks:
   branch: feature/consumer-contract-kit-v1
   pr: null
   ci: remote_success_run_29882062536
+- id: WS10-EPHEMERAL-STAGING-E2E-ARCH-001
+  workstream: WS-10
+  title: Define executable ephemeral staging and E2E architecture v1
+  status: completed_with_limitations
+  owner: /root
+  depends_on:
+  - WS08-CONSUMER-CONTRACT-KIT-001
+  - WS07-ID-001
+  - WS11-QA-001
+  blockers: []
+  result:
+    functional_commit: f4d018f0909d15408092167cb935bf4ac71cd6d9
+    branch: feature/ephemeral-staging-e2e-architecture-v1
+    plan: 2 tenants / 11 principals / 10 roles / 13 fixtures
+    journeys: 20 API-system runnable / 12 browser blocked
+    eval: 13/13
+    detached_tests: 806/808; zero failures; two explicit skips
+    remote_ci: 29939453123 success
+  limitations:
+  - No environment runner or deployed staging exists.
+  - No human IdP/BFF/session, role-aware UI, browser E2E, external consumer execution, merge, or deployment is proved.
+  files:
+  - contracts/staging/v1/
+  - src/staging/ephemeralStagingPlan.ts
+  - src/cli/verifyEphemeralStagingPlan.ts
+  - src/__tests__/ephemeral-staging-plan-v1.test.ts
+  - src/__tests__/eval-ephemeral-staging-e2e-001.test.ts
+  - docs/testing/ephemeral-staging-e2e-architecture.md
+  acceptance:
+  - Closed plan validates exact RBAC, identities, fixtures, reset, journeys, mocks, and layer policy.
+  - API journeys align to OpenAPI methods/statuses and actor permissions.
+  - Browser journeys remain blocked until identity/UI prerequisites exist.
+  - External consumers and production equivalence are not overclaimed.
+  evidence:
+  - Functional commit and exact remote SHA f4d018f0909d15408092167cb935bf4ac71cd6d9.
+  - Detached 806/808 regression; staging eval 13/13; 30/30 contracts; 2/5 consumer kits; both audits zero.
+  - Backend CI 29939453123 success.
+  branch: feature/ephemeral-staging-e2e-architecture-v1
+  pr: null
+  ci: remote_success_run_29939453123
+- id: WS10-EPHEMERAL-STAGING-RUNNER-001
+  workstream: WS-10
+  title: Execute the ephemeral staging contract locally
+  status: pending
+  owner: /root
+  depends_on:
+  - WS10-EPHEMERAL-STAGING-E2E-ARCH-001
+  blockers: []
+  acceptance:
+  - Create and destroy a fresh disposable environment per run.
+  - Execute all 20 API/system journeys with generated credentials and synthetic fixtures.
+  - Collect sanitized receipts and prove cleanup.
+  limitations:
+  - Browser E2E remains blocked until human identity and authenticated UI exist.
+  files: []
+  evidence: []
+  pr: null
+  ci: not_started
 blockers:
 - id: BLK-CORPUS-OPS-001
   affects:

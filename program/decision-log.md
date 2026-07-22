@@ -200,3 +200,9 @@ serving as a discovery mechanism for schema, authorization or persistence bugs.
 Evidence: Feature 069 `5e5481e26b1a27a0aa2bd9c965e1c160f18b3198`, 16/16 consumer-kit eval, detached 793/795
 regression, 2 kits/5 interactions and CI run `29882062536` (`success`). No
 external repository, PR, merge or deployment is claimed.
+
+## 2026-07-22T16:53:05Z — Browser E2E remains downstream of executable staging, identity and API/system journeys
+
+Decision: adopt Feature 070 as the single provider-side contract for ephemeral staging and future browser E2E. The contract fixes synthetic identity, exact RBAC, deterministic fixtures, reset/destruction, twenty API/system journeys, twelve browser journeys, mock boundaries, and API-versus-browser concern ownership. Browser journeys remain blocked until human IdP/OIDC/PKCE/BFF/session, secure cookies/CSRF, role-aware UI, and deployed ephemeral services exist.
+
+Evidence: functional SHA `f4d018f0909d15408092167cb935bf4ac71cd6d9`, detached 806/808 regression, 13/13 staging eval, zero staging-plan issues, and Backend CI `29939453123` success. No environment deployment, browser execution, external consumer suite, PR, merge, or production release is claimed.

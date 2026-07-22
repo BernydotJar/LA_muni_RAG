@@ -1,5 +1,5 @@
 schema_version: 1
-generated_at: '2026-07-22T01:05:41Z'
+generated_at: '2026-07-22T16:53:05Z'
 program:
   id: LA-MUNI-RAG-PROD
   objective: Make LA Muni RAG production-ready within its evidence, procedure, workflow, case-tracking, and integration domain.
@@ -1010,8 +1010,9 @@ tasks:
   owner: /root
   completed_slices:
   - WS10-RESTORE-DRILL-001
-  current_state: Disposable logical database restore with restored runtime/HTTP smoke passes; production platform, object
-    restore, PITR, RPO/RTO, staging/load/HA remain open.
+  - WS10-EPHEMERAL-STAGING-E2E-ARCH-001
+  current_state: Feature 070 defines and verifies the disposable staging/E2E contract; no environment runner, human identity,
+    browser execution, production topology, load/HA, or deployment is proved.
   blockers: []
 - id: WS10-OPS-FOUNDATION-001
   workstream: WS-10
@@ -1103,9 +1104,10 @@ tasks:
   - EVAL-SOURCE-API-001
   - EVAL-DOCUMENT-API-001
   - EVAL-CONSUMER-CONTRACT-KIT-001
-  current_state: Required hard-eval families plus Feature 069 consumer-kit eval pass; detached regression is 793/795 with
-    zero failures, contracts are 30/30 and portable kits are 2/5. Real corpus, external consumers, human identity/staging,
-    browser E2E, load/HA and production observation remain incomplete.
+  - EVAL-EPHEMERAL-STAGING-E2E-001
+  current_state: Feature 070 staging/E2E architecture eval passes 13/13; detached regression is 806/808 with zero failures,
+    contracts are 30/30, consumer kits 2/5, and CI succeeds. Real corpus, external consumers, actual staging, human identity,
+    browser execution, load/HA, and production observation remain open.
   blockers: []
   depends_on:
   - GAP-001
@@ -1283,6 +1285,41 @@ tasks:
   limitations:
   - External repositories have not executed the kits.
   - No cross-product staging, browser E2E, PR, merge or deployment is proved.
+- id: WS10-EPHEMERAL-STAGING-E2E-ARCH-001
+  workstream: WS-10
+  title: Define executable ephemeral staging and E2E architecture v1
+  status: completed_with_limitations
+  owner: /root
+  depends_on:
+  - WS08-CONSUMER-CONTRACT-KIT-001
+  - WS07-ID-001
+  - WS11-QA-001
+  blockers: []
+  result:
+    functional_commit: f4d018f0909d15408092167cb935bf4ac71cd6d9
+    branch: feature/ephemeral-staging-e2e-architecture-v1
+    plan: 2 tenants / 11 principals / 10 roles / 13 fixtures
+    journeys: 20 API-system runnable / 12 browser blocked
+    eval: 13/13
+    detached_tests: 806/808; zero failures; two explicit skips
+    remote_ci: 29939453123 success
+  limitations:
+  - No environment runner or deployed staging exists.
+  - No human IdP/BFF/session, role-aware UI, browser E2E, external consumer execution, merge, or deployment is proved.
+- id: WS10-EPHEMERAL-STAGING-RUNNER-001
+  workstream: WS-10
+  title: Execute the ephemeral staging contract locally
+  status: pending
+  owner: /root
+  depends_on:
+  - WS10-EPHEMERAL-STAGING-E2E-ARCH-001
+  blockers: []
+  acceptance:
+  - Create and destroy a fresh disposable environment per run.
+  - Execute all 20 API/system journeys with generated credentials and synthetic fixtures.
+  - Collect sanitized receipts and prove cleanup.
+  limitations:
+  - Browser E2E remains blocked until human identity and authenticated UI exist.
 blockers:
 - id: BLK-CORPUS-OPS-001
   affects:

@@ -1,64 +1,99 @@
 {
-  "schema_version": "1.8.0",
-  "generated_at": "2026-07-22T01:05:41Z",
-  "current_slice": "Feature 069 portable consumer contract kits v1",
-  "functional_head": "5e5481e26b1a27a0aa2bd9c965e1c160f18b3198",
+  "schema_version": "1.9.0",
+  "generated_at": "2026-07-22T16:53:05Z",
+  "current_slice": "Feature 070 ephemeral staging and E2E architecture v1",
+  "functional_head": "f4d018f0909d15408092167cb935bf4ac71cd6d9",
   "summary": {
-    "resolved_feature_findings": 6,
+    "resolved_feature_findings": 9,
     "critical_or_high_open_in_feature": 0,
     "global_blockers_remain": true
   },
   "feature_findings": [
     {
-      "id": "CCK-HIGH-001",
-      "severity": "high",
-      "status": "resolved",
-      "finding": "A manifest could silently remove a supported interaction.",
-      "resolution": "Consumer-specific exact interaction inventories are enforced."
-    },
-    {
-      "id": "CCK-HIGH-002",
-      "severity": "high",
-      "status": "resolved",
-      "finding": "ProcedureQuery interactions shared an ambiguous request example.",
-      "resolution": "Each output has a canonical example and requested_output discriminator validation."
-    },
-    {
-      "id": "CCK-CRIT-003",
+      "id": "E2E-ARCH-CRIT-001",
       "severity": "critical",
       "status": "resolved",
-      "finding": "Consumer-owned fields could be introduced only in a response schema.",
-      "resolution": "Forbidden fields are recursively checked in schemas and examples, with non-removable baseline guards."
+      "finding": "Browser journeys could run using service credentials.",
+      "resolution": "Exact human IdP/BFF and authenticated UI blockers are mandatory; browser_e2e_enabled is false."
     },
     {
-      "id": "CCK-HIGH-004",
+      "id": "E2E-ARCH-HIGH-002",
       "severity": "high",
       "status": "resolved",
-      "finding": "Response correlation headers were not part of the manifest gate.",
-      "resolution": "Every success/error response must advertise X-Request-Id."
+      "finding": "Role personas existed without journey coverage.",
+      "resolution": "Every API-required and browser-required role must have a principal and journey."
     },
     {
-      "id": "CCK-HIGH-005",
+      "id": "E2E-ARCH-HIGH-003",
       "severity": "high",
       "status": "resolved",
-      "finding": "Kit path input could address files outside the allowlist.",
-      "resolution": "Only the two canonical kit filenames are accepted before filesystem access."
+      "finding": "Journey status/permission claims could drift from OpenAPI/RBAC.",
+      "resolution": "Methods, statuses, route permissions and actor allow/deny expectations are checked."
     },
     {
-      "id": "CCK-MED-006",
+      "id": "E2E-ARCH-HIGH-004",
+      "severity": "high",
+      "status": "resolved",
+      "finding": "Reset could omit mutable resource classes or safety postconditions.",
+      "resolution": "Derived mutable-resource coverage, exact ordered steps and exact postconditions are required."
+    },
+    {
+      "id": "E2E-ARCH-CRIT-005",
+      "severity": "critical",
+      "status": "resolved",
+      "finding": "Secrets or production endpoints could enter the plan.",
+      "resolution": "Secret-pattern scan, safe credential references and loopback/test endpoint allowlist fail closed."
+    },
+    {
+      "id": "E2E-ARCH-HIGH-006",
+      "severity": "high",
+      "status": "resolved",
+      "finding": "Browser tests could duplicate lower-layer concerns.",
+      "resolution": "Exact API/browser concern ownership and violations fail closed."
+    },
+    {
+      "id": "E2E-ARCH-HIGH-007",
+      "severity": "high",
+      "status": "resolved",
+      "finding": "Consumer stubs could be presented as external verification.",
+      "resolution": "Provider-contract-only status and external-verification overclaim checks."
+    },
+    {
+      "id": "E2E-ARCH-MED-008",
       "severity": "medium",
       "status": "resolved",
-      "finding": "Documentation implied the provider CLI was directly portable.",
-      "resolution": "Schemas/examples/manifests are portable; consumer repositories must run equivalent local verification."
+      "finding": "Adversarial tests exhausted constrained memory.",
+      "resolution": "Validator cache and consolidated negative cases preserve coverage with deterministic resource use."
+    },
+    {
+      "id": "E2E-ARCH-HIGH-009",
+      "severity": "high",
+      "status": "resolved",
+      "finding": "Architecture could be mistaken for deployed staging.",
+      "resolution": "Summary flags, docs, eval, release state and limitations explicitly deny execution/deployment."
     }
   ],
   "open_findings": [
     {
-      "id": "CCK-OPEN-CONSUMERS-001",
+      "id": "E2E-OPEN-RUNNER-001",
+      "severity": "high",
+      "status": "open",
+      "area": "staging_execution",
+      "finding": "No runner has executed the declared environment lifecycle and twenty API/system journeys."
+    },
+    {
+      "id": "E2E-OPEN-IDP-002",
+      "severity": "critical",
+      "status": "open",
+      "area": "human_identity",
+      "finding": "No approved IdP/BFF/session or authenticated role-aware UI exists."
+    },
+    {
+      "id": "E2E-OPEN-CONSUMERS-003",
       "severity": "high",
       "status": "open",
       "area": "external_integrations",
-      "finding": "OS Electoral and Content Agency have not executed the kits in their own repositories."
+      "finding": "OS Electoral and Content Agency have not executed consumer suites."
     },
     {
       "id": "PROG-CORPUS-001",
@@ -68,204 +103,22 @@
       "finding": "No authorized durable corpus bytes or real ingestion exist."
     },
     {
-      "id": "PROG-IDP-E2E-001",
-      "severity": "critical",
-      "status": "open",
-      "area": "human_saas",
-      "finding": "No approved human identity/session architecture or deterministic staging environment exists for E2E."
-    },
-    {
       "id": "PROG-OPS-001",
       "severity": "critical",
       "status": "open",
       "area": "operations",
-      "finding": "No production platform, observability, load/HA, recovery or privacy operations exist."
+      "finding": "No production platform, observability, load/HA, recovery, privacy operations, merge or deployment exists."
     }
   ],
   "publication": {
-    "branch": "feature/consumer-contract-kit-v1",
-    "functional_sha": "5e5481e26b1a27a0aa2bd9c965e1c160f18b3198",
-    "ci_run": 29882062536,
+    "branch": "feature/ephemeral-staging-e2e-architecture-v1",
+    "functional_sha": "f4d018f0909d15408092167cb935bf4ac71cd6d9",
+    "remote_sha_verified": true,
+    "ci_run_id": 29939453123,
     "ci_status": "success",
+    "ci_conclusion": "success",
     "pr": null,
     "merged": false,
-    "deployed": false,
-    "ci_conclusion": "success"
-  },
-  "historical_findings": [
-    {
-      "id": "CAT-CRIT-001",
-      "severity": "critical",
-      "status": "resolved",
-      "description": "Schema-valid replay could alter authority or artifact state.",
-      "repair": "Require response hash, identity, persisted aggregate lookup and exact canonical reconstruction; commit cleanup before emitting replay_invalid.",
-      "evidence": [
-        "semantic replay corruption tests",
-        "compiled PostgreSQL cleanup receipt"
-      ]
-    },
-    {
-      "id": "CAT-CRIT-002",
-      "severity": "critical",
-      "status": "resolved",
-      "description": "Public URL fields could persist embedded credentials or temporary signatures.",
-      "repair": "Reject userinfo and credential/signature query parameters in HTTP and PostgreSQL constraints.",
-      "evidence": [
-        "HTTP negative tests",
-        "SQL check-violation gate"
-      ]
-    },
-    {
-      "id": "CAT-HIGH-003",
-      "severity": "high",
-      "status": "resolved",
-      "description": "SELECT-star lateral queries required private columns despite minimum grants.",
-      "repair": "Use explicit projections and column-level grants for artifact, job, procedure and version state.",
-      "evidence": [
-        "non-owner SQL gate",
-        "compiled document-list smoke"
-      ]
-    },
-    {
-      "id": "CAT-HIGH-004",
-      "severity": "high",
-      "status": "resolved",
-      "description": "Legacy document status defaulted to unknown for new catalog registrations.",
-      "repair": "Set migration default to draft and derive official_source/status in a server-owned trigger.",
-      "evidence": [
-        "migration test",
-        "fresh PostgreSQL document response"
-      ]
-    },
-    {
-      "id": "CAT-HIGH-005",
-      "severity": "high",
-      "status": "resolved",
-      "description": "Repeated rate denials could reuse one audit UUID and degrade to 500.",
-      "repair": "Persist at most one blocked audit per window inside the rate transaction and return subsequent 429s without duplicate inserts.",
-      "evidence": [
-        "third-request regression",
-        "HTTP suite"
-      ]
-    },
-    {
-      "id": "CAT-HIGH-006",
-      "severity": "high",
-      "status": "resolved",
-      "description": "PostgreSQL idempotency claim inferred new ownership from timestamp equality.",
-      "repair": "Use INSERT rowCount as the only new-claim signal.",
-      "evidence": [
-        "repository review",
-        "exact replay smoke"
-      ]
-    },
-    {
-      "id": "CAT-HIGH-007",
-      "severity": "high",
-      "status": "resolved",
-      "description": "Transitive fast-uri 3.1.3 triggered a high advisory.",
-      "repair": "Update lockfile-only resolution to fast-uri 3.1.4 and run clean npm ci plus all/prod audits.",
-      "evidence": [
-        "npm ls fast-uri",
-        "two zero-vulnerability audits"
-      ]
-    },
-    {
-      "id": "SE-TRANS-001",
-      "severity": "high",
-      "status": "resolved",
-      "area": "semantic runtime",
-      "finding": "External query embedding initially executed inside the tenant PostgreSQL transaction.",
-      "resolution": "prepareSearchCapability now executes before opening retrieval transactions; semantic replay is resolved before provider invocation.",
-      "evidence": [
-        "src/searchEvidence/service.ts",
-        "src/api/v1/searchEvidenceHandler.ts",
-        "search-evidence-api-v1.test.ts"
-      ]
-    },
-    {
-      "id": "SE-TIMEOUT-002",
-      "severity": "high",
-      "status": "resolved",
-      "area": "semantic runtime",
-      "finding": "HTTP query embedding transport had no bounded timeout.",
-      "resolution": "AbortController timeout defaults to 10 seconds and is bounded/configurable with QUERY_EMBEDDING_TIMEOUT_MS.",
-      "evidence": [
-        "src/embeddings/httpQueryEmbeddingProvider.ts",
-        "http-query-embedding-provider.test.ts"
-      ]
-    },
-    {
-      "id": "SE-REPLAY-003",
-      "severity": "critical",
-      "status": "resolved",
-      "area": "idempotency",
-      "finding": "Hash-valid replay could have preserved semantically corrupted source/citation/claim relationships.",
-      "resolution": "Replay validates deterministic identity, source/citation linkage, exact excerpt claims, support authority and contradiction references; corrupt completed state is deleted in a committed transaction.",
-      "evidence": [
-        "src/api/v1/searchEvidenceHandler.ts",
-        "eval-evidence-bundle-api-001.test.ts",
-        "search-evidence-postgres-smoke.mjs"
-      ]
-    },
-    {
-      "id": "SE-PHRASE-004",
-      "severity": "medium",
-      "status": "resolved",
-      "area": "retrieval",
-      "finding": "ILIKE phrase search treated percent and underscore as wildcards.",
-      "resolution": "Phrase search now uses literal case-insensitive strpos and smoke proves percent returns zero.",
-      "evidence": [
-        "src/searchEvidence/repository.ts",
-        "search-evidence-postgres-smoke.mjs"
-      ]
-    },
-    {
-      "id": "SE-URL-005",
-      "severity": "high",
-      "status": "resolved",
-      "area": "data minimization",
-      "finding": "Signed or credential-bearing URLs could enter response projections.",
-      "resolution": "Database constraints plus runtime URL filtering reject credentials, signature/token parameters and overlong URLs.",
-      "evidence": [
-        "src/searchEvidence/repository.ts",
-        "search-evidence-api-v1.test.ts"
-      ]
-    },
-    {
-      "id": "SE-RANK-006",
-      "severity": "medium",
-      "status": "resolved",
-      "area": "retrieval",
-      "finding": "Duplicate citation identities and negative cosine values could violate response assumptions.",
-      "resolution": "Candidates dedupe by version/section identity and similarity is clamped to zero with explicit score semantics.",
-      "evidence": [
-        "src/searchEvidence/service.ts",
-        "search-evidence-api-v1.test.ts"
-      ]
-    },
-    {
-      "id": "SE-PRIV-007",
-      "severity": "critical",
-      "status": "resolved",
-      "area": "database privileges",
-      "finding": "Broad artifact/scanner grants could leak private coordinates.",
-      "resolution": "Runtime gate grants only required columns and asserts object/scanner/lease/pipeline fields remain unreadable.",
-      "evidence": [
-        "db/tests/search_evidence_api_runtime_gate.sql"
-      ]
-    },
-    {
-      "id": "SE-PROMOTION-008",
-      "severity": "critical",
-      "status": "resolved",
-      "area": "evidence policy",
-      "finding": "Comparative evidence must never be promoted to an ordinary supported claim.",
-      "resolution": "Bundle mapper promotes only supported exact excerpts; comparative evidence remains citation/gap and replay rejects promotion.",
-      "evidence": [
-        "src/searchEvidence/evidenceBundle.ts",
-        "eval-evidence-bundle-api-001.test.ts"
-      ]
-    }
-  ]
+    "deployed": false
+  }
 }

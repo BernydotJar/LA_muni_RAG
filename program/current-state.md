@@ -1,85 +1,100 @@
 # LA Muni RAG — Current Program State
 
-Updated: 2026-07-22T01:05:41Z
+Updated: 2026-07-22T16:53:05Z
 
-Program status: **PARTIAL WITH DOCUMENTED BLOCKERS — Feature 069 is a published, independently verified provider-side contract checkpoint; global production readiness is not proven**
+Program status: **PARTIAL WITH DOCUMENTED BLOCKERS — Feature 070 provides an executable staging/E2E architecture; no deployed staging, browser E2E, or production readiness is claimed**
 
 ## Authoritative checkout
 
 ```text
 workspace_id: 090ec1e4-f130-4801-addd-f6ecb198744a
 root: /workspace
-branch: feature/consumer-contract-kit-v1
-functional_commit: 5e5481e26b1a27a0aa2bd9c965e1c160f18b3198
-remote_functional_ref: 5e5481e26b1a27a0aa2bd9c965e1c160f18b3198
+branch: feature/ephemeral-staging-e2e-architecture-v1
+functional_commit: f4d018f0909d15408092167cb935bf4ac71cd6d9
+remote_functional_ref: f4d018f0909d15408092167cb935bf4ac71cd6d9
 origin_main: 4950ba3c24dbe7d9891d5cec8d7ba5f57db3ef9c
 pushed: true
+remote_ci_run: 29939453123 success
 PR_open: false
 merged: false
 deployed: false
 observed_in_production: false
-remote_ci_run: 29882062536 success
 ```
 
-`AGENTS.md` and `RTK.md` remain authoritative. Protected merge, production deployment, paid/external infrastructure, sensitive credential use, legal conclusions and modifications to neighboring products remain human-gated.
+`AGENTS.md` and `RTK.md` remain authoritative. Protected merge, production deployment, paid or external infrastructure, sensitive credentials, legal conclusions, and modifications to neighboring products remain human-gated.
 
-## Feature 069 — portable consumer contract kits v1
+## Feature 070 — executable ephemeral staging and E2E architecture v1
 
-Published provider-side artifacts:
+Machine-readable source:
 
 ```text
-contracts/consumer-kits/v1/os-electoral.json
-contracts/consumer-kits/v1/content-agency.json
-contracts/consumer-kits/v1/consumer-contract-kit.schema.json
+contracts/staging/v1/ephemeral-staging-plan.schema.json
+contracts/staging/v1/ephemeral-staging-plan.json
 ```
 
-Verified scope:
+Verified architecture:
 
-- exactly two allowlisted consumer kits and five interactions;
-- OS Electoral: EvidenceBundle, ProcedureWorkflow, ProcedureAssessment and EvidenceGapResponse;
-- Content Agency: ClaimPack delivery;
-- exact OpenAPI path, method, request headers, response correlation header, success/error statuses and schemas;
-- canonical request/response/error examples validated against JSON Schema draft 2020-12;
-- each ProcedureQuery example binds its `requested_output` explicitly;
-- complete interaction inventories cannot be silently reduced;
-- consumer-owned campaign/content fields are rejected in response schemas and examples;
-- non-allowlisted kit paths are rejected before filesystem access;
-- provider-side CLI and CI are deterministic and offline.
+- per-run isolation, fresh database, 120-minute maximum TTL, loopback-only networking, mandatory destruction;
+- no production credentials or production data;
+- two synthetic tenants, eleven principals, exact ten-role RBAC, thirteen deterministic non-authoritative fixtures;
+- ordered reset with ten steps, mutable-resource coverage, sanitized artifacts, empty-state checks, and destruction postconditions;
+- twenty runnable API/system journeys aligned to canonical OpenAPI routes, statuses, and runtime permissions;
+- twelve planned browser journeys covering the required human roles, all blocked by `BLK-HUMAN-IDP-BFF-001` and `BLK-AUTHENTICATED-UI-001`;
+- strict API-versus-browser concern ownership;
+- deterministic loopback provider stubs and explicit boundary-only treatment of object storage and malware scanning;
+- OS Electoral and Content Agency remain provider-contract-only mocks; external interoperability is not claimed;
+- secret-like material, production endpoints, RBAC drift, permission drift, reset weakening, layer misuse, and external-consumer overclaims fail closed.
 
-This feature does **not** modify OS Electoral or Content Agency and does not prove that either repository consumes, persists or retries these contracts correctly.
+Execution summary:
+
+```text
+plan_version: 1.0.0
+tenants: 2
+principals: 11
+roles: 10
+fixtures: 13
+api_system_journeys: 20
+browser_journeys: 12
+blocked_browser_journeys: 12
+mocks: 6
+reset_steps: 10
+external_consumers_verified: false
+browser_e2e_runnable: false
+```
 
 ## Verification
 
-Exact detached checkout `5e5481e26b1a27a0aa2bd9c965e1c160f18b3198`:
+Exact detached checkout `f4d018f0909d15408092167cb935bf4ac71cd6d9`:
 
 ```text
 npm ci --ignore-scripts --prefer-offline: pass
-full suite: 795 total / 793 pass / 0 fail / 2 explicit environment skips
-EVAL-CONSUMER-CONTRACT-KIT-001: 16/16 pass
+EVAL-EPHEMERAL-STAGING-E2E-001: 13/13 pass
+full suite: 808 total / 806 pass / 0 fail / 2 explicit environment skips
 canonical contracts: 30 schemas / 30 examples / OpenAPI 3.1.1
-portable kits: 2 kits / 5 interactions / 0 issues
+consumer contracts: 2 kits / 5 interactions / 0 issues
+staging plan: valid / 0 issues
 typecheck: pass
 build: pass
 source inventory: 17 valid / 4 verified / 1 acquisition metadata / 0 ingested
 domain evaluation: 8/8
 npm audit --audit-level=high: 0 vulnerabilities
 npm audit --omit=dev --audit-level=high: 0 vulnerabilities
-git diff --check: pass
+Backend CI 29939453123: success
 ```
 
-Backend CI run `29882062536` completed with `success` on the exact functional SHA. A green local or remote feature branch is not a PR, merge, staging deployment or production release.
+A green architecture plan and CI run are not deployed staging, browser execution, a reviewed PR, protected merge, or production release.
 
-## Cumulative product capabilities
+## Cumulative capabilities
 
-- governed tenant source/document/procedure catalogs;
-- exact artifact acceptance and durable ingestion job/vector foundations;
+- tenant identity/RBAC and transaction-local forced-RLS foundations;
+- governed source/document/procedure catalogs;
+- artifact acceptance, ingestion jobs, leases/fencing, and tenant-vector foundations;
 - dedicated Search and conservative EvidenceBundle APIs;
-- ProcedureQuery EvidenceBundle, ProcedureWorkflow and ProcedureAssessment;
-- ClaimPack and immutable EvidenceGapRequest providers;
-- governed workflow lifecycle and tenant ProcedureCase lifecycle;
-- provider-side portable consumer contract manifests;
+- ProcedureQuery, ClaimPack, EvidenceGap, workflow lifecycle, and ProcedureCase APIs;
+- portable provider-side consumer contract kits;
+- executable ephemeral staging/E2E architecture;
 - public evidence-first Procedure Academy;
-- disposable PostgreSQL/RLS, compiled HTTP and logical restore gates.
+- disposable PostgreSQL, compiled HTTP, accessibility, and logical restore gates.
 
 ## Current corpus truth
 
@@ -92,44 +107,35 @@ records credited as ingested: 0
 records retrieval-validated against real corpus: 0
 ```
 
-Synthetic examples, manifests and PostgreSQL fixtures do not change these values. A URL, hash or green contract test is not durable acquisition, current scan, ingestion, retrieval quality, legal validity or human applicability review.
+Synthetic examples, deterministic fixtures, mocks, and PostgreSQL gates do not change these values.
 
-## Best path forward
+## Next execution sequence
 
-1. **Consumer-side contract verification.** Pin the exact Feature 069 SHA in OS Electoral and Content Agency and run equivalent schema/OpenAPI/preservation tests in each repository.
-2. **Identity and deterministic staging.** Decide the human IdP/OIDC/BFF/session architecture; define ephemeral tenant fixtures, integration credentials and resettable data without production secrets.
-3. **System/API journeys.** Exercise auth, tenant isolation, replay, expiry, supersession, failure/retry and cross-product preservation through deployed ephemeral services.
-4. **E2E last.** Add browser journeys only after contracts, identity, fixtures and staging topology are stable. E2E should validate user outcomes, not discover schema, authorization or persistence defects that lower layers should catch.
+1. Implement a local ephemeral staging runner that realizes the declared lifecycle with a fresh disposable database and executes the twenty API/system journeys.
+2. Coordinate independent consumer-side suites in OS Electoral and Content Agency against an immutable contract-kit SHA; do not simulate them from this repository.
+3. Obtain and implement the human IdP/OIDC/PKCE/BFF/session decision, secure cookies, CSRF, logout, revocation, recovery, and provisioning.
+4. Build the role-aware authenticated UI and deploy deterministic fixtures to isolated ephemeral services.
+5. Enable the twelve browser journeys only after all lower-layer and identity prerequisites pass.
+6. Add human accessibility evidence, load/HA, recovery/privacy operations, reviewed PRs, protected merge, staging rehearsal, deployment, and observation.
 
-## Critical global blockers
+## Critical blockers
 
-### Corpus and retrieval
+- `BLK-CORPUS-OPS-001`: source rights, approved durable storage, current scanner, and retention/legal-hold controls are unavailable;
+- zero real documents are credited as ingested and no judged real-corpus retrieval evidence exists;
+- no approved human IdP/BFF/session architecture or authenticated role-aware SaaS UI exists;
+- no actual ephemeral environment has been provisioned and no browser journey has executed;
+- OS Electoral and Content Agency repositories have not executed their consumer suites;
+- no production Terraform, workload identity, secrets, object store, scanner, dispatcher, observability/SLOs, load/HA, coordinated recovery, or privacy operations exist;
+- no reviewed PR, protected merge, deployment, or observation window exists.
 
-- source rights, approved durable storage, current scanner and retention/legal-hold controls are unavailable (`BLK-CORPUS-OPS-001`);
-- zero real documents are credited as ingested;
-- no judged Antigua-first retrieval quality, latency, cost or load evidence exists;
-- human authority, vigencia, supersession, jurisdiction and applicability review remains mandatory.
+## Persistent boundary assertions
 
-### Human SaaS and E2E prerequisites
-
-- no approved IdP/OIDC/PKCE/BFF/session architecture;
-- no secure cookies, CSRF, provisioning, logout, revocation or recovery;
-- no authenticated role-aware source/library/search/case/review/admin/audit UI;
-- no deterministic staging identities/data or browser E2E environment;
-- no supported-browser, screen-reader or human WCAG 2.2 AA evidence.
-
-### Platform, integration and release
-
-- no production Terraform, workload identity, secrets, object store, scanner, dispatcher, observability/SLOs, staging, load/HA or coordinated recovery;
-- no cross-repository consumer suites have run;
-- no reviewed PR, protected merge, deployment or observation window exists;
-- legal, privacy, security and release approvals remain human-gated.
-
-## Persistent open-boundary assertions
-
-- There is no production object store, and no production scanner/definitions monitor or dispatcher is operating from this repository checkpoint.
 - Zero documents are credited as ingested against a real, reviewed corpus.
-- EvidenceGap is intake-only: there is no research assignment, resolution lifecycle or notification workflow.
+- EvidenceGap is intake-only: there is no research assignment, resolution lifecycle, or notification workflow.
 - The minimum Antigua-first and comparative corpus is incomplete.
 - Browser authentication/session architecture, approved IdP/OIDC/BFF, secure cookies/CSRF, provisioning, recovery, and role-aware navigation remain unimplemented.
-- Provider-side contract kits do not prove external consumer interoperability.
+- There is no production object store, scanner/definitions monitor, or dispatcher operating from this checkpoint.
+- EvidenceGap remains intake-only; no research assignment or resolution lifecycle is deployed.
+- Browser service credentials are not human browser credentials and must never be placed in JavaScript storage.
+- Provider-side contract stubs do not prove external consumer interoperability.
+- Passing Feature 070 proves architecture conformance only, not production readiness.

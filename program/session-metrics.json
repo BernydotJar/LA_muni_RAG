@@ -1,13 +1,13 @@
 {
-  "schema_version": "1.8.0",
-  "generated_at": "2026-07-22T01:05:41Z",
-  "branch": "feature/consumer-contract-kit-v1",
-  "functional_head": "5e5481e26b1a27a0aa2bd9c965e1c160f18b3198",
+  "schema_version": "1.9.0",
+  "generated_at": "2026-07-22T16:53:05Z",
+  "branch": "feature/ephemeral-staging-e2e-architecture-v1",
+  "functional_head": "f4d018f0909d15408092167cb935bf4ac71cd6d9",
   "source": "observed command outputs only",
   "status": "PARTIAL_WITH_DOCUMENTED_BLOCKERS",
   "tests": {
-    "total": 795,
-    "passed": 793,
+    "total": 808,
+    "passed": 806,
     "failed": 0,
     "skipped": 2
   },
@@ -18,7 +18,24 @@
     "consumer_kits": 2,
     "consumer_interactions": 5
   },
+  "staging_architecture": {
+    "plan_version": "1.0.0",
+    "tenants": 2,
+    "principals": 11,
+    "roles": 10,
+    "fixtures": 13,
+    "api_system_journeys": 20,
+    "browser_journeys": 12,
+    "blocked_browser_journeys": 12,
+    "mocks": 6,
+    "reset_steps": 10,
+    "issues": 0,
+    "environment_executed": false,
+    "browser_e2e_runnable": false,
+    "external_consumers_verified": false
+  },
   "hard_evals": {
+    "ephemeral_staging_e2e": "13/13",
     "consumer_contract_kit": "16/16",
     "search_api": "24/24",
     "evidence_bundle_api": "24/24"
@@ -30,10 +47,10 @@
     "ingested": 0
   },
   "publication": {
-    "branch": "feature/consumer-contract-kit-v1",
-    "functional_sha": "5e5481e26b1a27a0aa2bd9c965e1c160f18b3198",
+    "branch": "feature/ephemeral-staging-e2e-architecture-v1",
+    "functional_sha": "f4d018f0909d15408092167cb935bf4ac71cd6d9",
     "remote_sha_verified": true,
-    "ci_run_id": 29882062536,
+    "ci_run_id": 29939453123,
     "ci_status": "success",
     "ci_conclusion": "success",
     "pr": null,
@@ -44,51 +61,15 @@
     "all_vulnerabilities": 0,
     "production_vulnerabilities": 0
   },
-  "consumer_contract_gate": {
-    "kits": 2,
-    "interactions": 5,
-    "issues": 0,
-    "detached_verification": "pass",
-    "external_consumers": "not_run"
-  },
-  "e2e_sequence": [
-    "external_consumer_contracts",
-    "identity_and_deterministic_ephemeral_staging",
-    "system_api_journeys",
-    "browser_e2e_last"
-  ],
-  "remaining_blockers": [
-    "BLK-CORPUS-OPS-001: source rights, durable storage, scanner and retention/legal-hold controls unavailable.",
-    "External consumer repository suites have not run.",
-    "Human IdP/session and deterministic staging identities/data are absent.",
-    "Production infrastructure, observability, load/HA, recovery and privacy operations are absent.",
-    "No reviewed PR, protected merge or deployment exists."
-  ],
   "cost": null,
   "duration_seconds": null,
   "token_usage": null,
-  "historical_checkpoints": {
-    "feature067_catalog": {
-      "database": {
-        "postgres": "15.18",
-        "pgvector": "0.8.5",
-        "clean_database_recreated": true,
-        "migrations": "001-014",
-        "catalog_sql_gate": "pass",
-        "catalog_compiled_http_smoke": "pass",
-        "corrupt_replay_cleanup_committed": true,
-        "source_authority_promoted": false,
-        "cross_tenant_leak": false
-      },
-      "publication": {
-        "remote_sha_verified": true,
-        "pr_open": false,
-        "ci_run_id": 29876782983,
-        "ci_status": "in_progress",
-        "ci_conclusion": null,
-        "merged": false,
-        "deployed": false
-      }
-    }
-  }
+  "remaining_blockers": [
+    "No actual ephemeral staging runner or service deployment.",
+    "No human IdP/BFF/session or authenticated role-aware UI.",
+    "No browser journey executed.",
+    "External consumer repository suites have not run.",
+    "Zero real corpus documents are credited as ingested.",
+    "Production infrastructure, observability, load/HA, recovery, privacy, merge and deployment are absent."
+  ]
 }
