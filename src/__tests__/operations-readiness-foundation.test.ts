@@ -113,7 +113,7 @@ describe("operations readiness foundation", () => {
     assert.match(evaluation, /same internal compilation used by the workflow provider/);
     assert.match(evaluation, /passed_for_bundle_workflow_and_conservative_assessment_provider_with_external_consumer_limitations/);
     assert.match(evaluation, /No consumer contract test has run inside the OS Electoral repository/);
-    assert.match(openapi, /claim_pack_evidence_gap_procedure_ingestion_and_governed_workflow_lifecycle_providers_implemented_with_limits/);
+    assert.match(openapi, /catalog_search_evidence_claim_pack_gap_procedure_ingestion_workflow_case_providers_implemented_with_limits/);
     assert.match(smoke, /evidenceBundleValidated: true/);
     assert.match(smoke, /procedureAssessmentValidated: true/);
     assert.match(smoke, /requested_output: "evidence_bundle"/);
@@ -136,7 +136,11 @@ describe("operations readiness foundation", () => {
     assert.match(evaluation, /do not prove corpus completeness/);
     assert.match(workflow, /Run EVAL-PROCEDURE-ASSESSMENT-001/);
     assert.match(openapi, /procedure-assessment\.schema\.json/);
-    assert.doesNotMatch(openapi, /capability_unavailable/);
+    const parsedOpenapi = JSON.parse(openapi) as { paths: Record<string, unknown> };
+    assert.doesNotMatch(
+      JSON.stringify(parsedOpenapi.paths["/api/v1/procedure-queries"]),
+      /capability_unavailable/
+    );
     assert.match(smoke, /procedureAssessmentValidated: true/);
     const handler = await read("src/api/v1/handler.ts");
     assert.match(handler, /const canonicalWorkflow = mapProcedureWorkflowV1\(mappingOptions\)/);

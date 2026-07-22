@@ -32,8 +32,8 @@ describe("integration contracts v1", () => {
       status: "valid",
       schemaDialect: JSON_SCHEMA_DIALECT,
       openapiVersion: OPENAPI_VERSION,
-      schemasValidated: 27,
-      examplesValidated: 27,
+      schemasValidated: 30,
+      examplesValidated: 30,
       openapiDocumentsValidated: 1,
       issues: [],
     });
@@ -373,6 +373,8 @@ describe("integration contracts v1", () => {
       "/api/v1/sources",
       "/api/v1/documents",
       "/api/v1/procedures",
+      "/api/v1/search",
+      "/api/v1/evidence-bundles",
     ]);
     assert.deepEqual(Object.keys(openapi.paths["/api/v1/claim-packs"]), ["post"]);
     assert.deepEqual(Object.keys(openapi.paths["/api/v1/evidence-gap-requests"]), ["post"]);
@@ -388,6 +390,8 @@ describe("integration contracts v1", () => {
     assert.deepEqual(Object.keys(openapi.paths["/api/v1/sources"]), ["get", "post"]);
     assert.deepEqual(Object.keys(openapi.paths["/api/v1/documents"]), ["get", "post"]);
     assert.deepEqual(Object.keys(openapi.paths["/api/v1/procedures"]), ["get"]);
+    assert.deepEqual(Object.keys(openapi.paths["/api/v1/search"]), ["post"]);
+    assert.deepEqual(Object.keys(openapi.paths["/api/v1/evidence-bundles"]), ["post"]);
 
     const sourceCreate = openapi.paths["/api/v1/sources"].post;
     const sourceList = openapi.paths["/api/v1/sources"].get;
@@ -395,6 +399,8 @@ describe("integration contracts v1", () => {
     const documentList = openapi.paths["/api/v1/documents"].get;
     const ingestionList = openapi.paths["/api/v1/ingestion-jobs"].get;
     const procedureList = openapi.paths["/api/v1/procedures"].get;
+    const search = openapi.paths["/api/v1/search"].post;
+    const evidenceBundle = openapi.paths["/api/v1/evidence-bundles"].post;
     for (const catalogOperation of [sourceCreate, sourceList, documentCreate, documentList, ingestionList, procedureList]) {
       assert.deepEqual(catalogOperation.security, [{ bearerAuth: [] }]);
     }
@@ -406,6 +412,40 @@ describe("integration contracts v1", () => {
     assert.equal(documentList.responses["200"].content["application/json"].schema.$ref, "../../schemas/v1/document-list-response.schema.json");
     assert.equal(ingestionList.responses["200"].content["application/json"].schema.$ref, "../../schemas/v1/ingestion-job-list-response.schema.json");
     assert.equal(procedureList.responses["200"].content["application/json"].schema.$ref, "../../schemas/v1/procedure-list-response.schema.json");
+    assert.deepEqual(search.security, [{ bearerAuth: [] }]);
+    assert.deepEqual(
+      search.parameters.map((parameter: { name: string }) => parameter.name),
+      ["X-Request-Id"]
+    );
+    assert.equal(
+      search.requestBody.content["application/json"].schema.$ref,
+      "../../schemas/v1/search-request.schema.json"
+    );
+    assert.equal(
+      search.responses["200"].content["application/json"].schema.$ref,
+      "../../schemas/v1/search-response.schema.json"
+    );
+    assert.deepEqual(
+      Object.keys(search.responses),
+      ["200", "400", "401", "403", "429", "500", "503"]
+    );
+    assert.deepEqual(evidenceBundle.security, [{ bearerAuth: [] }]);
+    assert.deepEqual(
+      evidenceBundle.parameters.map((parameter: { name: string }) => parameter.name),
+      ["Idempotency-Key", "X-Request-Id"]
+    );
+    assert.equal(
+      evidenceBundle.requestBody.content["application/json"].schema.$ref,
+      "../../schemas/v1/evidence-bundle-request.schema.json"
+    );
+    assert.equal(
+      evidenceBundle.responses["200"].content["application/json"].schema.$ref,
+      "../../schemas/v1/evidence-bundle.schema.json"
+    );
+    assert.deepEqual(
+      Object.keys(evidenceBundle.responses),
+      ["200", "400", "401", "403", "409", "429", "500", "503"]
+    );
 
     const claimPack = openapi.paths["/api/v1/claim-packs"].post;
     const evidenceGap = openapi.paths["/api/v1/evidence-gap-requests"].post;
@@ -567,7 +607,7 @@ describe("integration contracts v1", () => {
     );
     assert.equal(
       openapi["x-implementation-status"],
-      "claim_pack_evidence_gap_procedure_ingestion_and_governed_workflow_lifecycle_providers_implemented_with_limits"
+      "catalog_search_evidence_claim_pack_gap_procedure_ingestion_workflow_case_providers_implemented_with_limits"
     );
   });
 });

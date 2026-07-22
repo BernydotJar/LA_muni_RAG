@@ -36,6 +36,13 @@ import {
   type ProcedureQueryV1Options,
 } from "./api/v1/index.js";
 import {
+  createSearchEvidenceV1Dependencies,
+  EVIDENCE_BUNDLES_ROUTE,
+  handleSearchEvidenceV1,
+  SEARCH_ROUTE,
+  type SearchEvidenceV1Options,
+} from "./api/v1/searchEvidenceIndex.js";
+import {
   createProcedureCaseV1Dependencies,
   handleProcedureCaseV1,
   PROCEDURE_CASES_ROUTE,
@@ -104,6 +111,7 @@ export interface ServerOptions {
   evidenceGapV1?: EvidenceGapV1Options;
   ingestionJobV1?: IngestionJobV1Options;
   workflowLifecycleV1?: WorkflowLifecycleV1Options;
+  searchEvidenceV1?: SearchEvidenceV1Options;
   v1CorsAllowedOrigins?: readonly string[];
   legacyApiEnabled?: boolean;
   requestTimeoutMs?: number;
@@ -176,6 +184,9 @@ export const createRequestHandler = (options: ServerOptions = {}): RequestListen
   const workflowLifecycleV1Dependencies = createWorkflowLifecycleV1Dependencies(
     options.workflowLifecycleV1
   );
+  const searchEvidenceV1Dependencies = createSearchEvidenceV1Dependencies(
+    options.searchEvidenceV1
+  );
   const v1CorsAllowedOrigins =
     options.v1CorsAllowedOrigins ??
     (process.env.V1_CORS_ALLOWED_ORIGINS ?? "")
@@ -205,6 +216,12 @@ export const createRequestHandler = (options: ServerOptions = {}): RequestListen
         if (handleV1Cors(req, res, v1CorsAllowedOrigins)) return;
         await handleProcedureQueryV1(req, res, procedureQueryV1Dependencies);
         return;
+      }
+
+      if (url.pathname === SEARCH_ROUTE || url.pathname === EVIDENCE_BUNDLES_ROUTE) {
+        if (handleV1Cors(req, res, v1CorsAllowedOrigins, ["POST"])) return;
+        if (await handleSearchEvidenceV1(req, res, url.pathname, searchEvidenceV1Dependencies)) return;
+        throw new HttpError(404, "not_found", "Route not found");
       }
 
       if (
@@ -286,6 +303,11 @@ export const createRequestHandler = (options: ServerOptions = {}): RequestListen
           evidenceGapApi: {
             enabled: true,
             initialStatus: "open",
+          },
+          searchEvidenceApi: {
+            enabled: true,
+            semanticConfigured: Boolean(searchEvidenceV1Dependencies.queryEmbeddingProvider),
+            semanticFailClosed: true,
           },
           workflowLifecycleApi: {
             enabled: true,

@@ -1,0 +1,23 @@
+# Tasks — Feature 068 Search and EvidenceBundle API v1
+
+- [x] Add closed Search request/response contracts and examples.
+- [x] Add closed EvidenceBundle request contract and example.
+- [x] Add RED HTTP, migration and named-eval tests.
+- [x] Implement tenant-scoped retrieval repository.
+- [x] Enforce accepted artifact, clean scan, processed job and source-indexed eligibility.
+- [x] Derive authority, temporal and evidence-use classifications.
+- [x] Implement explicit keyword, phrase, semantic and hybrid modes.
+- [x] Fail closed when semantic capability is absent or fails.
+- [x] Implement Search HTTP handler with auth-before-body, tenant/RBAC, rate/audit and safe errors.
+- [x] Implement dedicated EvidenceBundle mapping without comparative/inference promotion.
+- [x] Implement bundle idempotency, exact replay and corrupt-replay cleanup.
+- [x] Add migration 015 with forced RLS and minimized auth-failure state.
+- [x] Register server routes and route-specific CORS.
+- [x] Update contract registry and OpenAPI.
+- [x] Add PostgreSQL non-owner runtime gate and compiled smoke.
+- [x] Add named evals and CI/package scripts.
+- [x] Run adversarial critic review and repair all critical/high findings.
+- [x] Run focused, PostgreSQL, contract, typecheck, build, full regression, audit and diff gates.
+- [ ] Commit functional slice and verify from detached checkout.
+- [ ] Push exact feature SHA and verify remote ref.
+- [ ] Reconcile program checkpoint separately.

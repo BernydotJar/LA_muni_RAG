@@ -3,10 +3,10 @@
   "jsonSchemaDialect": "https://json-schema.org/draft/2020-12/schema",
   "info": {
     "title": "LA Muni RAG v1 API Contract",
-    "version": "1.3.0",
-    "description": "Contract for implemented tenant-scoped source, document, ingestion-job monitoring, procedure catalog, ClaimPack, EvidenceGapRequest, evidence/procedure-query, workflow lifecycle, and ProcedureCase providers. Catalog registration cannot establish official authority, artifact acceptance, ingestion, retrieval quality, legal validity, or deployment."
+    "version": "1.4.0",
+    "description": "Contract for implemented tenant-scoped catalog, Search, dedicated EvidenceBundle, ClaimPack, EvidenceGapRequest, procedure-query, ingestion-job monitoring, workflow lifecycle, and ProcedureCase providers. Registration and retrieval labels cannot establish corpus completeness, legal validity, applicability, human approval, production infrastructure, merge, or deployment."
   },
-  "x-implementation-status": "claim_pack_evidence_gap_procedure_ingestion_and_governed_workflow_lifecycle_providers_implemented_with_limits",
+  "x-implementation-status": "catalog_search_evidence_claim_pack_gap_procedure_ingestion_workflow_case_providers_implemented_with_limits",
   "paths": {
     "/api/v1/claim-packs": {
       "post": {
@@ -1644,6 +1644,159 @@
           },
           "500": {
             "$ref": "#/components/responses/InternalError"
+          }
+        }
+      }
+    },
+    "/api/v1/search": {
+      "post": {
+        "operationId": "searchEvidence",
+        "summary": "Search tenant-scoped municipal documentary evidence",
+        "description": "Executes an explicit keyword, phrase, semantic, or hybrid retrieval mode over eligible public evidence. Semantic and hybrid requests fail closed when the configured capability is unavailable.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "X-Request-Id",
+            "in": "header",
+            "required": true,
+            "description": "Request correlation UUID that must equal request_id in the body.",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "../../schemas/v1/search-request.schema.json"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Bounded tenant-scoped search results with explicit authority, temporal, evidence, and score semantics.",
+            "headers": {
+              "X-Request-Id": {
+                "$ref": "#/components/headers/RequestId"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../../schemas/v1/search-response.schema.json"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          },
+          "503": {
+            "$ref": "#/components/responses/Unavailable"
+          }
+        }
+      }
+    },
+    "/api/v1/evidence-bundles": {
+      "post": {
+        "operationId": "createEvidenceBundle",
+        "summary": "Create a conservative documentary EvidenceBundle",
+        "description": "Creates the canonical EvidenceBundle from eligible tenant evidence. Only supported documentary excerpts become ordinary claims; comparative and validation-required material is never promoted.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "description": "Stable principal-scoped key for exact replay of the same request.",
+            "schema": {
+              "type": "string",
+              "minLength": 16,
+              "maxLength": 128,
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{15,127}$"
+            }
+          },
+          {
+            "name": "X-Request-Id",
+            "in": "header",
+            "required": true,
+            "description": "Request correlation UUID that must equal request_id in the body.",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "../../schemas/v1/evidence-bundle-request.schema.json"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Contract-valid EvidenceBundle with exact replay semantics and explicit gaps or contradictions.",
+            "headers": {
+              "X-Request-Id": {
+                "$ref": "#/components/headers/RequestId"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../../schemas/v1/evidence-bundle.schema.json"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          },
+          "503": {
+            "$ref": "#/components/responses/Unavailable"
           }
         }
       }

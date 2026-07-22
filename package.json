@@ -55,7 +55,10 @@
     "eval:ingest": "node --import tsx --test src/__tests__/eval-ingest-001.test.ts src/__tests__/eval-artifact-001.test.ts src/__tests__/eval-vector-001.test.ts src/__tests__/eval-job-lease-001.test.ts src/__tests__/ingestion-job-api-v1.test.ts src/__tests__/ingestion-job-service.test.ts src/__tests__/ingestion-worker.test.ts src/__tests__/tenant-ingestion-runtime-migration.test.ts",
     "eval:source-api": "node --import tsx --test src/__tests__/eval-source-api-001.test.ts src/__tests__/catalog-api-v1.test.ts src/__tests__/catalog-api-runtime-migration.test.ts",
     "eval:document-api": "node --import tsx --test src/__tests__/eval-document-api-001.test.ts src/__tests__/catalog-api-v1.test.ts src/__tests__/catalog-api-runtime-migration.test.ts",
-    "smoke:catalog-api": "node scripts/catalog-api-postgres-smoke.mjs"
+    "smoke:catalog-api": "node scripts/catalog-api-postgres-smoke.mjs",
+    "eval:search-api": "node --import tsx --test src/__tests__/eval-search-api-001.test.ts src/__tests__/search-evidence-api-v1.test.ts src/__tests__/search-evidence-api-runtime-migration.test.ts",
+    "eval:evidence-bundle-api": "node --import tsx --test src/__tests__/eval-evidence-bundle-api-001.test.ts src/__tests__/search-evidence-api-v1.test.ts src/__tests__/search-evidence-api-runtime-migration.test.ts",
+    "smoke:search-evidence-api": "node scripts/search-evidence-postgres-smoke.mjs"
   },
   "keywords": [],
   "author": "",

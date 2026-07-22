@@ -19,11 +19,19 @@ LA Muni RAG is an evidence-first RAG and procedural workflow system configured b
 
 ```text
 GET  /health
+GET  /api/v1/sources
+POST /api/v1/sources
+GET  /api/v1/documents
+POST /api/v1/documents
+GET  /api/v1/ingestion-jobs
+POST /api/v1/ingestion-jobs
+GET  /api/v1/ingestion-jobs/{job_id}
+GET  /api/v1/procedures
+POST /api/v1/search
+POST /api/v1/evidence-bundles
 POST /api/v1/procedure-queries
 POST /api/v1/evidence-gap-requests
 POST /api/v1/claim-packs
-POST /api/v1/ingestion-jobs
-GET  /api/v1/ingestion-jobs/{job_id}
 POST /api/v1/workflow-drafts
 POST /api/v1/workflow-reviews
 POST /api/v1/workflow-approvals
@@ -40,6 +48,10 @@ GET  /api/procedure-feedback
 ```
 
 `/api/procedure-feedback` requires a Bearer token configured through `PROCEDURE_FEEDBACK_API_TOKEN`.
+
+The catalog route family registers tenant sources and document versions in fail-closed states and exposes minimized source, document, ingestion-job, and procedure summaries. It does not accept artifact bytes or let callers declare officiality, validation, scan, ingestion, retrieval, or legal applicability.
+
+`POST /api/v1/search` executes an explicit keyword, phrase, semantic, or hybrid mode over eligible public evidence. Semantic and hybrid requests fail closed with `503 capability_unavailable` when the configured query-embedding capability is missing, incompatible, or fails; the API never labels a lexical-only response as semantic or hybrid. `POST /api/v1/evidence-bundles` creates the canonical documentary bundle from the same classified evidence, promotes only supported exact excerpts to ordinary claims, preserves comparative references as citations/gaps, and requires exact idempotent replay. These local gates do not prove real-corpus quality, legal validity, consumer interoperability, or deployment.
 
 `POST /api/v1/procedure-queries` is the authenticated, tenant-scoped production
 slice. According to `requested_output`, it returns an identity-bound
@@ -212,6 +224,10 @@ psql "$DATABASE_URL" -f db/migrations/008_claim_pack_api.sql
 psql "$DATABASE_URL" -f db/migrations/009_workflow_lifecycle.sql
 psql "$DATABASE_URL" -f db/migrations/010_workflow_lifecycle_api.sql
 psql "$DATABASE_URL" -f db/migrations/011_artifact_vector_runtime_hardening.sql
+psql "$DATABASE_URL" -f db/migrations/012_evidence_gap_requests.sql
+psql "$DATABASE_URL" -f db/migrations/013_procedure_cases.sql
+psql "$DATABASE_URL" -f db/migrations/014_catalog_api.sql
+psql "$DATABASE_URL" -f db/migrations/015_search_evidence_api.sql
 ```
 
 Migration `005` is the canonical vector-store migration. Do not apply
@@ -236,6 +252,12 @@ review and reassign seeded ownership before onboarding another tenant.
 DATABASE_URL=postgresql://postgres:YOUR_PASSWORD@localhost:5432/la_muni_rag
 DOMAIN_PACK=municipal-antigua
 PROCEDURE_FEEDBACK_API_TOKEN=replace-with-a-long-random-secret
+QUERY_EMBEDDING_PROVIDER=http
+QUERY_EMBEDDING_ENDPOINT=https://provider.example/v1/embeddings
+QUERY_EMBEDDING_API_KEY=inject-from-secret-manager
+QUERY_EMBEDDING_MODEL=reviewed-model-name
+QUERY_EMBEDDING_DIMENSIONS=1536
+QUERY_EMBEDDING_TIMEOUT_MS=10000
 ```
 
 Never place secrets in frontend files or GitHub Pages assets.
@@ -256,6 +278,9 @@ http://localhost:4010
 ## Verification
 
 ```bash
+npm run contracts:validate
+npm run eval:search-api
+npm run eval:evidence-bundle-api
 npm run typecheck
 npm run build
 npm run domain:evaluate
@@ -272,7 +297,7 @@ Reusable today:
 
 - PostgreSQL document registry and versions;
 - citable sections;
-- keyword, phrase, and hybrid retrieval;
+- authenticated keyword, phrase, semantic, and hybrid retrieval with explicit score semantics and fail-closed semantic capability;
 - evidence-first response contracts;
 - domain-pack registry and validation;
 - domain-aware workflow classification and composition;
@@ -286,7 +311,10 @@ Reusable today:
 - digest-bound durable ingestion jobs with bounded leases/retries and stale-worker
   fencing;
 - tenant-scoped, job/version-bound vector generations with atomic replacement and
-  eligible public search.
+  eligible public search;
+- dedicated Search and EvidenceBundle v1 routes with accepted-artifact eligibility,
+  derived authority/temporal state, comparative non-promotion, exact replay, and
+  non-owner PostgreSQL gates.
 - authenticated, rate-limited enqueue/status contracts for existing document
   versions, with server-owned pipeline policy and non-leaking status reads;
 - explicit visibility for same-document citation slots whose distinct versions
@@ -327,4 +355,4 @@ authenticated enqueue/status contract, and
 [Workflow Lifecycle API v1](docs/api/workflow-lifecycle-v1.md) for the governed
 version/review/approval boundary, and
 [EvidenceGapRequest API v1](docs/api/evidence-gap-requests-v1.md) for unresolved
-documentary research intake.
+documentary research intake, and [Search and EvidenceBundle API v1](docs/api/search-evidence-v1.md) for explicit retrieval modes, evidence classification, and conservative bundle construction.

@@ -17,6 +17,9 @@ export const OPENAPI_RELATIVE_PATH = "contracts/openapi/v1/openapi.json";
 export const CONTRACT_SCHEMA_FILES = [
   "common.schema.json",
   "evidence-bundle.schema.json",
+  "evidence-bundle-request.schema.json",
+  "search-request.schema.json",
+  "search-response.schema.json",
   "procedure-workflow.schema.json",
   "procedure-assessment.schema.json",
   "procedure-query-request.schema.json",
@@ -46,6 +49,9 @@ export const CONTRACT_SCHEMA_FILES = [
 
 export const CONTRACT_EXAMPLE_BINDINGS = [
   { contractName: "evidence-bundle", schemaFile: "evidence-bundle.schema.json", exampleFile: "evidence-bundle.valid.json" },
+  { contractName: "evidence-bundle-request", schemaFile: "evidence-bundle-request.schema.json", exampleFile: "evidence-bundle-request.valid.json" },
+  { contractName: "search-request", schemaFile: "search-request.schema.json", exampleFile: "search-request.valid.json" },
+  { contractName: "search-response", schemaFile: "search-response.schema.json", exampleFile: "search-response.valid.json" },
   { contractName: "procedure-workflow", schemaFile: "procedure-workflow.schema.json", exampleFile: "procedure-workflow.valid.json" },
   { contractName: "procedure-assessment", schemaFile: "procedure-assessment.schema.json", exampleFile: "procedure-assessment.valid.json" },
   { contractName: "procedure-query-request", schemaFile: "procedure-query-request.schema.json", exampleFile: "procedure-query-request.valid.json" },
@@ -226,6 +232,8 @@ const validateOpenApiDocument = async (
     "/api/v1/claim-packs",
     "/api/v1/evidence-gap-requests",
     "/api/v1/procedure-queries",
+    "/api/v1/search",
+    "/api/v1/evidence-bundles",
     "/api/v1/ingestion-jobs",
     "/api/v1/ingestion-jobs/{job_id}",
     "/api/v1/workflow-drafts",
@@ -250,6 +258,12 @@ const validateOpenApiDocument = async (
     : {};
   const procedurePath = isJsonObject(paths["/api/v1/procedure-queries"])
     ? paths["/api/v1/procedure-queries"]
+    : {};
+  const searchPath = isJsonObject(paths["/api/v1/search"])
+    ? paths["/api/v1/search"]
+    : {};
+  const evidenceBundlesPath = isJsonObject(paths["/api/v1/evidence-bundles"])
+    ? paths["/api/v1/evidence-bundles"]
     : {};
   const ingestionPath = isJsonObject(paths["/api/v1/ingestion-jobs"])
     ? paths["/api/v1/ingestion-jobs"]
@@ -293,6 +307,12 @@ const validateOpenApiDocument = async (
   if (!equalStringSets(Object.keys(procedurePath), ["post"])) {
     recordIssue("invalid_method_scope", "Procedure query path must describe only POST");
   }
+  if (!equalStringSets(Object.keys(searchPath), ["post"])) {
+    recordIssue("invalid_method_scope", "Search path must describe only POST");
+  }
+  if (!equalStringSets(Object.keys(evidenceBundlesPath), ["post"])) {
+    recordIssue("invalid_method_scope", "EvidenceBundle path must describe only POST");
+  }
   if (!equalStringSets(Object.keys(ingestionPath), ["get", "post"])) {
     recordIssue("invalid_method_scope", "Ingestion collection path must describe GET and POST");
   }
@@ -326,6 +346,8 @@ const validateOpenApiDocument = async (
   const claimPackOperation = isJsonObject(claimPackPath.post) ? claimPackPath.post : {};
   const evidenceGapOperation = isJsonObject(evidenceGapPath.post) ? evidenceGapPath.post : {};
   const procedureOperation = isJsonObject(procedurePath.post) ? procedurePath.post : {};
+  const searchOperation = isJsonObject(searchPath.post) ? searchPath.post : {};
+  const evidenceBundleOperation = isJsonObject(evidenceBundlesPath.post) ? evidenceBundlesPath.post : {};
   const ingestionPostOperation = isJsonObject(ingestionPath.post) ? ingestionPath.post : {};
   const ingestionListOperation = isJsonObject(ingestionPath.get) ? ingestionPath.get : {};
   const ingestionGetOperation = isJsonObject(ingestionItemPath.get) ? ingestionItemPath.get : {};
@@ -345,6 +367,8 @@ const validateOpenApiDocument = async (
     ["POST /api/v1/claim-packs", claimPackOperation],
     ["POST /api/v1/evidence-gap-requests", evidenceGapOperation],
     ["POST /api/v1/procedure-queries", procedureOperation],
+    ["POST /api/v1/search", searchOperation],
+    ["POST /api/v1/evidence-bundles", evidenceBundleOperation],
     ["POST /api/v1/ingestion-jobs", ingestionPostOperation],
     ["GET /api/v1/ingestion-jobs/{job_id}", ingestionGetOperation],
     ["POST /api/v1/workflow-drafts", workflowDraftOperation],
@@ -383,6 +407,8 @@ const validateOpenApiDocument = async (
     ["claim pack", claimPackOperation, ["idempotency-key", "x-request-id"]],
     ["evidence gap", evidenceGapOperation, ["idempotency-key", "x-request-id"]],
     ["procedure query", procedureOperation, ["idempotency-key", "x-request-id"]],
+    ["search", searchOperation, ["x-request-id"]],
+    ["evidence bundle", evidenceBundleOperation, ["idempotency-key", "x-request-id"]],
     ["ingestion enqueue", ingestionPostOperation, ["idempotency-key", "x-request-id"]],
     ["ingestion status", ingestionGetOperation, ["x-request-id"]],
     ["workflow draft", workflowDraftOperation, ["idempotency-key", "x-request-id"]],
@@ -411,6 +437,8 @@ const validateOpenApiDocument = async (
     ["claim pack", claimPackOperation, ["200", "400", "401", "403", "409", "429", "500"]],
     ["evidence gap", evidenceGapOperation, ["200", "400", "401", "403", "409", "429", "500"]],
     ["procedure query", procedureOperation, ["200", "400", "401", "403", "409", "429", "500"]],
+    ["search", searchOperation, ["200", "400", "401", "403", "429", "500", "503"]],
+    ["evidence bundle", evidenceBundleOperation, ["200", "400", "401", "403", "409", "429", "500", "503"]],
     ["ingestion enqueue", ingestionPostOperation, ["200", "202", "400", "401", "403", "409", "429", "500", "503"]],
     ["ingestion status", ingestionGetOperation, ["200", "400", "401", "403", "404", "429", "500"]],
     ["workflow draft", workflowDraftOperation, ["201", "400", "401", "403", "409", "429", "500"]],
@@ -440,6 +468,37 @@ const validateOpenApiDocument = async (
     if (!isJsonObject(value)) return null;
     return typeof value.$ref === "string" ? value.$ref : null;
   };
+  const operationSchemaRef = (
+    operation: JsonObject,
+    kind: "request" | "response",
+    status = "200"
+  ): string | null => {
+    if (kind === "request") {
+      const requestBody = isJsonObject(operation.requestBody) ? operation.requestBody : {};
+      const content = isJsonObject(requestBody.content) ? requestBody.content : {};
+      const json = isJsonObject(content["application/json"]) ? content["application/json"] : {};
+      return schemaRef(json.schema);
+    }
+    const responses = isJsonObject(operation.responses) ? operation.responses : {};
+    const response = isJsonObject(responses[status]) ? responses[status] : {};
+    const content = isJsonObject(response.content) ? response.content : {};
+    const json = isJsonObject(content["application/json"]) ? content["application/json"] : {};
+    return schemaRef(json.schema);
+  };
+  for (const [label, operation, requestSchema, responseSchema] of [
+    ["search", searchOperation, "search-request.schema.json", "search-response.schema.json"],
+    ["evidence bundle", evidenceBundleOperation, "evidence-bundle-request.schema.json", "evidence-bundle.schema.json"],
+  ] as const) {
+    const requestRef = "../../schemas/v1/" + requestSchema;
+    const responseRef = "../../schemas/v1/" + responseSchema;
+    if (operationSchemaRef(operation, "request") !== requestRef) {
+      recordIssue("invalid_request_schema", label + " requestBody must reference " + requestSchema);
+    }
+    if (operationSchemaRef(operation, "response") !== responseRef) {
+      recordIssue("invalid_response_schema", label + " 200 response must reference " + responseSchema);
+    }
+  }
+
   const evidenceGapRequestBody = isJsonObject(evidenceGapOperation.requestBody)
     ? evidenceGapOperation.requestBody
     : {};

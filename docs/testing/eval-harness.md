@@ -612,6 +612,9 @@ Therefore `EVAL-JOB-LEASE-001` is `passed_for_disposable_postgres_fencing_with_d
 | EVAL-RBAC-001 | passed_for_current_server_side_role_matrix_and_tenant_endpoints_with_human_idp_provisioning_access_review_and_full_catalog_limitations | 32/32 proves ten closed roles, transaction-local tenant context, server-side permission checks, forced RLS, uniform tenant denial and separate case review; human OIDC/session/provisioning/access review remain open. |
 | EVAL-INGEST-001 | passed_for_disposable_postgres_artifact_job_vector_pipeline_with_production_object_scanner_dispatcher_load_and_operations_limitations | 40/40 plus PostgreSQL 15.18/pgvector 0.8.5 SQL gates and compiled HTTP smokes prove exact acceptance, 50-way idempotent convergence, single lease/fencing, rollback, stale removal and tenant denial; production storage/scanner/dispatcher/load/HA remain open. |
 
+| EVAL-SEARCH-API-001 | passed_for_explicit_tenant_search_with_real_corpus_human_review_provider_performance_and_deployment_limitations | 21/21 plus PostgreSQL/HTTP smoke prove explicit modes, eligibility, fail-closed semantic, derived authority/time and isolation; real corpus/provider/load/human review remain open. |
+| EVAL-EVIDENCE-BUNDLE-API-001 | passed_for_conservative_dedicated_bundle_with_real_corpus_human_resolution_consumer_operations_and_deployment_limitations | 21/21 plus PostgreSQL/HTTP smoke prove no comparative promotion, exact replay, corrupt cleanup and explicit gaps/conflicts; real corpus, consumer, human resolution and deployment remain open. |
+
 ## Release rule
 
 No evaluation result authorizes deployment. Production requires all hard evaluations, the full production gate, and explicit human approval.
@@ -872,3 +875,52 @@ Not proved:
 
 Therefore `EVAL-DOCUMENT-API-001` is
 `passed_for_safe_tenant_document_registration_and_catalog_monitoring_with_artifact_ingestion_retrieval_ui_and_deployment_limitations`.
+
+
+## EVAL-SEARCH-API-001
+
+Current scope: dedicated authenticated tenant Search v1 over public, accepted, processed documentary evidence.
+
+Proved:
+
+- closed bounded request/response contracts and explicit `as_of_date`;
+- auth-before-body, tenant/request/credential binding, `evidence:query`, rate limiting, safe errors and audit;
+- keyword, phrase, semantic and reciprocal-rank hybrid execution with citation-identity deduplication and explicit score semantics;
+- semantic/hybrid fail closed with `503 capability_unavailable` instead of silent lexical fallback;
+- source acquired/ingested/indexed, document active/public, extraction processed, exact accepted clean scan and processed-job eligibility;
+- derived authority, temporal and evidence-use state, including comparative non-promotion;
+- fresh PostgreSQL 16.14/pgvector 0.8.5, non-owner `NOSUPERUSER`/`NOBYPASSRLS`, column-level grants and compiled HTTP smoke.
+
+Not proved:
+
+- Antigua-first real corpus acquisition, freshness or completeness;
+- real-corpus relevance thresholds, semantic quality, latency, cost or load;
+- human citation/authority/vigencia/applicability review;
+- production provider, secrets, staging, HA, merge or deployment.
+
+Therefore `EVAL-SEARCH-API-001` is
+`passed_for_explicit_tenant_search_with_real_corpus_human_review_provider_performance_and_deployment_limitations`.
+
+## EVAL-EVIDENCE-BUNDLE-API-001
+
+Current scope: dedicated conservative EvidenceBundle construction from classified Search candidates.
+
+Proved:
+
+- canonical EvidenceBundle schema validation and identity-bound provenance;
+- only supported exact documentary excerpts become ordinary claims;
+- comparative and validation-required evidence remains visible but is never promoted;
+- Mixco/other comparative references require Antigua or national corroboration;
+- conflicting versions create review-required positions, contradiction and gap without silent winner selection;
+- exact byte replay, hash validation, semantic relationship validation and committed cleanup of corrupt replay state;
+- no supported claim produces an explicit missing-evidence next action;
+- PostgreSQL forced RLS, minimized control state, non-owner SQL gate and compiled HTTP smoke.
+
+Not proved:
+
+- real-corpus contradiction coverage or legal correctness;
+- human resolution workflow, consumer repository compatibility or cross-product revocation;
+- staging/load/restore/retention/legal-hold operations, merge or deployment.
+
+Therefore `EVAL-EVIDENCE-BUNDLE-API-001` is
+`passed_for_conservative_dedicated_bundle_with_real_corpus_human_resolution_consumer_operations_and_deployment_limitations`.
