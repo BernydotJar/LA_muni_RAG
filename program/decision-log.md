@@ -212,3 +212,11 @@ Evidence: functional SHA `f4d018f0909d15408092167cb935bf4ac71cd6d9`, detached 80
 Decision: remove static answer/procedure/domain fixtures, make Assistant and Glass Wall direct navigation, require explicit API configuration, keep legacy `/api/chat` production-disabled, and reserve `/api/public/v1/query` for a dedicated public gateway. Select GCP Cloud Run/Cloud SQL/Cloud Storage as the target architecture without creating a project, enabling billing, applying Terraform or deploying.
 
 Evidence: Feature 071 `bf29e6fdc48fa155b004b5f0b2ff410050b59c84`, EVAL-PRODUCTION-PUBLIC-SURFACE-001 33/33, detached 816/818 regression, browser smoke, zero audits, and Backend CI `29951023165` success. No gateway, corpus, resource, PR, merge or deployment is claimed.
+
+## 2026-07-22T20:47:22Z — Public browser queries use a dedicated disabled-by-default gateway
+
+Decision: implement `POST /api/public/v1/query` as the only anonymous browser query boundary. The browser supplies no tenant, principal or service credential. Tenant and jurisdiction are server configuration; Authorization and Cookie headers are rejected; anonymous retrieval is keyword/phrase only; forced RLS, strict public evidence eligibility, HMAC/global rate buckets and minimized audit remain authoritative.
+
+Decision: implementation does not authorize enablement. The gateway stays disabled and Pages remains unbound until an authorized ingested public corpus, exact origins, edge controls, staging, load/SLO evidence and deployment approval exist.
+
+Evidence: Feature 072 `856a6edee20cdb14a16a89d0d1a831faadbf166e`, 23/23 named eval, detached 840/842 regression, 33/33 contracts, fresh PostgreSQL 16.14/pgvector 0.8.5 migrations 001–016, non-owner forced-RLS gate, compiled public HTTP smoke and Backend CI `29955124279` success. No PR, merge, cloud resource, Pages binding or deployment is claimed.

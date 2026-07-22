@@ -1107,8 +1107,8 @@ tasks:
   - EVAL-CONSUMER-CONTRACT-KIT-001
   - EVAL-EPHEMERAL-STAGING-E2E-001
   - EVAL-PRODUCTION-PUBLIC-SURFACE-001
-  current_state: Required hard evals plus consumer, staging architecture and production public-surface evals pass; detached
-    regression is 816/818 with zero failures and two explicit skips.
+  - EVAL-PUBLIC-QUERY-GATEWAY-001
+  current_state: Feature 072 passes 23/23; detached regression is 840/842 with zero failures and two explicit skips; 33/33 contracts and PostgreSQL 16.14/pgvector 0.8.5 gates pass.
   blockers: []
   depends_on:
   - GAP-001
@@ -1334,33 +1334,37 @@ tasks:
     functional_commit: bf29e6fdc48fa155b004b5f0b2ff410050b59c84
     branch: feature/production-public-surface-v1
     surface: direct Assistant / Glass Wall / Academy / Install navigation
-    gateway_default: POST /api/public/v1/query (not implemented)
+    gateway_default: POST /api/public/v1/query implemented by Feature 072; disabled and undeployed
     eval: 33/33
     detached_tests: 816/818; zero failures; two skips
     remote_ci: 29951023165 success
     cloud_target: GCP architecture only; no resources created
   limitations:
-  - Public gateway and real corpus are absent.
+  - Real corpus, gateway enablement and deployment are absent.
   - No GCP project/resource, human identity, PR, merge or deployment is proved.
 - id: WS09-PUBLIC-QUERY-GATEWAY-001
   workstream: WS-09
   title: Implement the dedicated public query gateway v1
-  status: pending
+  status: completed_with_limitations
   owner: /root
   depends_on:
   - WS09-PRODUCTION-PUBLIC-SURFACE-001
   - WS05-SEARCH-EVIDENCE-API-001
   - WS07-FOUNDATION-001
   blockers: []
-  acceptance:
-  - POST /api/public/v1/query is the only browser query boundary and accepts no tenant or service credential from the browser.
-  - A server-configured public tenant/corpus, bounded rate/body/origin controls, public-only evidence eligibility, safe no-evidence
-    output and minimized audit are enforced.
-  - Legacy /api/chat remains production-disabled and integration Bearer credentials never enter frontend assets.
-  - Closed contract, adversarial tests, PostgreSQL/RLS gate and compiled HTTP smoke pass.
+  result:
+    functional_commit: 856a6edee20cdb14a16a89d0d1a831faadbf166e
+    branch: feature/public-query-gateway-v1
+    route: POST /api/public/v1/query
+    eval: 23/23
+    detached_tests: 840/842; zero failures; two skips
+    contracts: 33 schemas / 33 examples / OpenAPI 3.1.1
+    postgres: 16.14 / pgvector 0.8.5 / migrations 001-016 / forced RLS / non-owner smoke pass
+    remote_ci: 29955124279 success
   limitations:
-  - Production enablement still requires an authorized ingested public corpus, edge abuse controls, load evidence and deployment
-    approval.
+  - Gateway is disabled by default and not deployed.
+  - Enablement requires an authorized ingested public corpus, exact reviewed origins, edge abuse controls, load evidence and deployment approval.
+  - No PR, merge, Pages API binding, cloud resource or production observation is proved.
 blockers:
 - id: BLK-CORPUS-OPS-001
   affects:

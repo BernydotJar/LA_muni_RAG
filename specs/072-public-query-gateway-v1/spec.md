@@ -1,6 +1,6 @@
 # Feature 072 — Public Query Gateway v1
 
-Status: RED tests pending implementation.
+Status: implemented, independently verified and published; disabled by default and not deployed.
 
 ## Goal
 

@@ -1,71 +1,68 @@
 # LA Muni RAG — Open Issues
 
-Updated: 2026-07-22T19:34:37Z
+Updated: 2026-07-22T20:47:22Z
 
 ## Critical
 
-### PPS-OPEN-GATEWAY-001 — public query gateway absent
+### PQG-OPEN-ENABLEMENT-001 — public gateway cannot be enabled yet
 
-`POST /api/public/v1/query` is the approved browser boundary but is not implemented. Production correctly returns 404 and the public widget remains disabled. Do not re-enable legacy `/api/chat` or place a tenant/integration credential in JavaScript.
+`POST /api/public/v1/query` is implemented, contract-validated and PostgreSQL-tested, but remains disabled and undeployed.
 
 Required closure:
 
-- closed public request/response contract;
-- server-bound public tenant/corpus;
-- no tenant or credential input from the browser;
-- exact CORS/origin, method, content type, body, timeout and rate/abuse controls;
-- public-only accepted evidence eligibility;
-- bounded citations and explicit no-evidence/degraded states;
-- minimized audit/logging;
-- PostgreSQL/RLS and compiled HTTP gates.
+- authorized, reviewed and ingested public tenant corpus;
+- exact production origins and gateway configuration;
+- Cloud Armor/WAF and edge/global abuse controls;
+- staging execution, load evidence, sanitized telemetry and alerting;
+- deployment approval and immutable revision receipt;
+- Pages `PAGES_API_URL` configured only after staging passes.
 
 ### BLK-CORPUS-OPS-001 — authorized corpus operations unavailable
 
-The minimum Antigua-first and comparative corpus is incomplete. Zero documents are credited as ingested against a real, reviewed corpus.
-
-Human/platform inputs required:
+Zero real documents are credited as ingested. Human/platform inputs required:
 
 - source rights and acquisition approval;
-- durable object storage;
+- durable immutable object storage;
 - current malware scanner and definitions monitoring;
 - retention, deletion and legal-hold policy;
-- named source/authority reviewers.
+- named source, authority and vigencia reviewers.
 
 ### E2E-OPEN-IDP-002 — human identity/session absent
 
-Browser authentication/session architecture, approved IdP/OIDC/PKCE/BFF, secure cookies/CSRF, provisioning, logout, revocation, recovery and role-aware navigation remain unimplemented.
+No approved IdP/OIDC/PKCE/BFF, secure cookie/CSRF, provisioning, logout, revocation, recovery or role-aware authenticated UI exists.
 
 ### PROG-OPS-001 — production platform and operations absent
 
-GCP is selected as target architecture only. No project, billing, Terraform apply, Cloud Run, Cloud SQL, Storage, queue, Secret Manager configuration, telemetry, load/HA, recovery or privacy operation exists.
+GCP is architecture only. No project, billing, Terraform apply, Cloud Run, Cloud SQL, Storage, queue, Secret Manager configuration, telemetry, load/HA, recovery or privacy operation exists.
 
 ## High
 
 ### E2E-OPEN-RUNNER-001 — staging contract not executed
 
-The Feature 070 plan validates, but no runner has created/destroyed the environment or executed the twenty API/system journeys.
+Feature 070 defines twenty API/system journeys and reset/destruction, but no runner has executed the complete lifecycle.
 
 ### E2E-OPEN-CONSUMERS-003 — external consumer suites absent
 
-OS Electoral and Content Agency have not run the portable contract kits inside their own repositories. Provider-side stubs do not prove external consumer interoperability.
+OS Electoral and Content Agency have not run the portable kits inside their own repositories.
 
-### PUBLIC-EDGE-001 — edge abuse and security controls unproved
+### PUBLIC-EDGE-001 — edge protection and capacity unproved
 
-The future public gateway needs WAF/Cloud Armor, global and per-instance rate controls, request limits, sanitized telemetry and load evidence. None is deployed.
+Database-backed rate limits are defense in depth, not DDoS protection. Cloud Armor/WAF, quotas, load tests, latency/error SLOs and operational alerts remain required.
 
 ### ACCESSIBILITY-HUMAN-001 — human accessibility evidence absent
 
-Automated contrast/focus/reduced-motion tests pass, but no supported-browser, screen-reader or human WCAG review exists.
+Automated contrast/focus/reduced-motion gates pass; supported-browser, keyboard, screen-reader and human WCAG review do not.
 
 ### OCR-EVAL-001 — OCR production candidate unbenchmarked
 
-Unlimited-OCR is not a dependency. A future isolated benchmark must pin model/code revisions, use non-sensitive samples, measure accuracy/structure/hallucination/latency/cost and run outside the API process.
+Unlimited-OCR remains evaluation-only pending pinned revisions, license/security review, sandboxing and non-sensitive accuracy/latency/cost benchmarks.
 
 ## Product boundaries
 
-- EvidenceGap is intake-only: there is no research assignment, resolution lifecycle or notification workflow.
-- No production object store, scanner/definitions monitor or dispatcher is operating.
+- EvidenceGap is intake-only.
+- No production object store, scanner/definitions monitor or dispatcher operates.
 - Legacy pre-v1 routes remain development-only and production-disabled.
 - Pages contains no static municipal answers or procedure fixtures.
-- OpenSEO is deferred until a production public domain and content policy exist.
+- Gateway is disabled by default and no public corpus is bound.
+- OpenSEO remains deferred until a production public domain and content policy exist.
 - No PR, merge, staging deployment or production deployment has occurred.

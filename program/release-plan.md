@@ -1,73 +1,76 @@
 # LA Muni RAG — Release Plan
 
-Updated: 2026-07-22T19:34:37Z
+Updated: 2026-07-22T20:47:22Z
 
 ## Current release state
 
 ```text
-functional_branch: feature/production-public-surface-v1
-functional_sha: bf29e6fdc48fa155b004b5f0b2ff410050b59c84
+functional_branch: feature/public-query-gateway-v1
+functional_sha: 856a6edee20cdb14a16a89d0d1a831faadbf166e
 remote_sha_verified: true
-backend_ci: run 29951023165 success
+backend_ci: run 29955124279 success
 pull_request: none
 merged_to_main: false
 gcp_project_created: false
 cloud_resources_created: false
 staging_deployed: false
+gateway_enabled: false
+pages_api_bound: false
 browser_e2e_executed: false
 production_deployed: false
 observation_window: none
 ```
 
-## Feature 071 gates satisfied
+## Feature 072 gates satisfied
 
-- presentation-only public sections removed;
-- Assistant and Glass Wall exposed directly in the primary menu;
-- modular public CSS/JavaScript and embeddable widget preserved;
-- tested text/CTA/panel contrast ratios exceed 4.5:1;
-- visible keyboard focus, reduced motion and responsive mobile stacking;
-- static answer, citation, procedure and domain fixtures removed from Pages;
-- unconfigured Pages calls fail closed with bounded HTTP 503;
-- widget controls remain disabled without explicit API configuration;
-- default browser boundary is `/api/public/v1/query`, not legacy `/api/chat`;
-- production continues to return 404 until the dedicated public gateway exists;
-- GCP Cloud Run/Cloud SQL target documented without resource creation or cost;
-- OpenSEO deferred, Unlimited-OCR restricted to an isolated future evaluation and original `DESIGN.md` adopted;
-- 33/33 `EVAL-PRODUCTION-PUBLIC-SURFACE-001`;
-- detached full suite 818 total / 816 pass / 0 fail / 2 skips;
-- 30/30 contracts, 2/5 consumer kits, typecheck, build, Pages verification and both audits pass;
+- closed public request, response and error schemas;
+- `POST /api/public/v1/query` implemented ahead of the legacy production gate;
+- tenant and jurisdiction bound server-side;
+- browser Authorization/Cookie and extra identity fields rejected;
+- exact Origin allowlist and minimal CORS;
+- keyword/phrase-only anonymous retrieval;
+- global and HMAC per-client database rate buckets before retrieval;
+- forced RLS and public/active/processed/accepted/clean evidence eligibility;
+- comparative/validation-required evidence never promoted into a supported answer;
+- HTTPS-only citations without userinfo, query or fragment;
+- audit excludes query, excerpts, URLs, IP and user-agent;
+- disabled-by-default configuration and no automatic Pages binding;
+- 23/23 named eval;
+- detached 842 total / 840 pass / 0 fail / 2 skips;
+- 33/33 contracts, typecheck, build, Pages and zero-vulnerability audits;
+- fresh PostgreSQL 16.14/pgvector 0.8.5 migrations 001–016, non-owner forced-RLS gate and compiled smoke;
 - exact remote SHA and Backend CI success.
 
 ## Required sequence before public enablement
 
-1. Implement and verify `POST /api/public/v1/query`.
-2. Bind one reviewed public tenant/corpus server-side and accept no browser tenant or credential input.
-3. Add origin, request-size, timeout, abuse/rate, audit-minimization and dependency-failure controls.
-4. Acquire and ingest an authorized public corpus; complete judged retrieval and human source review.
-5. Execute the ephemeral staging runner and twenty API/system journeys.
-6. Provision guarded GCP staging only after project, billing, region and budget approval.
-7. Configure the Pages `PAGES_API_URL` variable only after the gateway passes staging.
+1. Approve and ingest a real public corpus with human authority/vigencia review.
+2. Execute the staging runner and all twenty API/system journeys.
+3. Configure exact staging origins, HMAC secret and public tenant binding.
+4. Add Cloud Armor/WAF, quotas, load/SLO evidence, sanitized telemetry and alerts.
+5. Provision guarded GCP staging only after project, billing, region and budget approval.
+6. Deploy an immutable gateway revision and verify rollback.
+7. Configure Pages `PAGES_API_URL` only after staging passes.
+8. Run human usability/accessibility review before public launch.
 
-## Required sequence before browser E2E
+## Required sequence before authenticated browser E2E
 
-1. Complete public gateway and staging execution.
-2. Coordinate consumer-side contract tests in OS Electoral and Content Agency.
-3. Approve and implement IdP/OIDC/PKCE/BFF/session, secure cookies, CSRF, logout, revocation and recovery.
-4. Build role-aware authenticated UI routes.
-5. Enable bounded browser journeys and collect browser, keyboard, screen-reader and human accessibility evidence.
+1. Coordinate consumer-side contract tests in OS Electoral and Content Agency.
+2. Approve and implement IdP/OIDC/PKCE/BFF/session, secure cookies, CSRF, logout, revocation and recovery.
+3. Build role-aware authenticated UI routes.
+4. Enable bounded browser journeys and collect browser, keyboard, screen-reader and human accessibility evidence.
 
 ## Blocking release gates
 
-- dedicated public query gateway;
 - authorized real corpus acquisition, ingestion and judged retrieval quality;
 - human authority/vigencia/applicability review;
 - executed staging runner and cleanup evidence;
+- edge protection, load/SLO and production telemetry;
 - human identity/session and authenticated SaaS surfaces;
 - external consumer conformance;
 - approved GCP project/budget/region, guarded infrastructure, workload identity and secrets;
-- observability, load/HA, coordinated recovery and privacy operations;
+- HA, coordinated recovery and privacy operations;
 - reviewed PR, protected merge, deployment approvals, rollout, rollback and observation.
 
 ## Release rule
 
-A public shell, cloud blueprint, green feature branch or disposable gate is not a release. Production readiness may be declared only when every blocking gate has immutable evidence and the deployed revision is observed. No automatic merge, Terraform apply or production deployment is authorized.
+A gateway implementation, green branch or disposable database gate is not a release. Production readiness requires immutable evidence for every blocking gate and observation of the deployed revision. No automatic merge, Terraform apply or production deployment is authorized.

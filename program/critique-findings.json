@@ -1,85 +1,78 @@
 {
-  "schema_version": "1.10.0",
-  "generated_at": "2026-07-22T19:34:37Z",
-  "current_slice": "Feature 071 production public surface v1",
-  "functional_head": "bf29e6fdc48fa155b004b5f0b2ff410050b59c84",
+  "schema_version": "1.11.0",
+  "generated_at": "2026-07-22T20:47:22Z",
+  "current_slice": "Feature 072 public query gateway v1",
+  "functional_head": "856a6edee20cdb14a16a89d0d1a831faadbf166e",
   "summary": {
-    "resolved_feature_findings": 9,
+    "resolved_feature_findings": 8,
     "critical_or_high_open_in_feature": 0,
     "global_blockers_remain": true
   },
   "feature_findings": [
     {
-      "id": "PPS-CRIT-001",
+      "id": "PQG-CRIT-001",
       "severity": "critical",
       "status": "resolved",
-      "finding": "Pages manufactured static municipal answers and procedure/domain fixtures.",
-      "resolution": "Static bridge deleted; unconfigured approved calls return bounded 503."
+      "finding": "Browser query boundary was absent.",
+      "resolution": "Implemented POST /api/public/v1/query, disabled by default and ahead of the legacy production gate."
     },
     {
-      "id": "PPS-CRIT-002",
+      "id": "PQG-CRIT-002",
       "severity": "critical",
       "status": "resolved",
-      "finding": "Widget defaulted to production-disabled /api/chat.",
-      "resolution": "Default changed to planned /api/public/v1/query; production 404 gate retained until gateway exists."
+      "finding": "Browser could supply tenant or service identity.",
+      "resolution": "Closed request excludes tenant/credential; Authorization and Cookie are rejected; tenant/jurisdiction are server-bound."
     },
     {
-      "id": "PPS-CRIT-003",
+      "id": "PQG-CRIT-003",
       "severity": "critical",
       "status": "resolved",
-      "finding": "Browser could be tempted to receive an integration credential.",
-      "resolution": "Explicit public gateway/BFF boundary; no credential forwarding or frontend secret."
+      "finding": "Public retrieval could expose foreign/private evidence.",
+      "resolution": "Forced-RLS tenant transaction and strict public/active/processed/accepted/clean eligibility passed PostgreSQL gates."
     },
     {
-      "id": "PPS-HIGH-004",
+      "id": "PQG-HIGH-004",
       "severity": "high",
       "status": "resolved",
-      "finding": "UI claimed verified/official loaded documents without runtime evidence.",
-      "resolution": "Claims removed; evidence labels depend on actual responses."
+      "finding": "Anonymous abuse could bypass retrieval controls.",
+      "resolution": "Global and HMAC per-client database buckets run before body parsing/retrieval; edge controls remain required."
     },
     {
-      "id": "PPS-HIGH-005",
+      "id": "PQG-HIGH-005",
       "severity": "high",
       "status": "resolved",
-      "finding": "Marketing sections obscured the usable product.",
-      "resolution": "Hero plus installation only; direct Assistant and Glass Wall menu."
+      "finding": "Comparative evidence could be presented as official answer.",
+      "resolution": "Comparative/validation-required candidates remain citations or limitations and never produce supported answer content."
     },
     {
-      "id": "PPS-HIGH-006",
+      "id": "PQG-HIGH-006",
       "severity": "high",
       "status": "resolved",
-      "finding": "Glass surfaces risked insufficient text contrast.",
-      "resolution": "Opaque surfaces and measured token ratios above 4.5:1."
+      "finding": "Audit could retain query or network identity.",
+      "resolution": "Audit allowlist excludes query, excerpts, URLs, IP and user-agent; rate identity persists only a 32-byte HMAC digest."
     },
     {
-      "id": "PPS-HIGH-007",
+      "id": "PQG-HIGH-007",
       "severity": "high",
       "status": "resolved",
-      "finding": "Unconfigured widget assumed script origin was a valid API.",
-      "resolution": "Explicit data-api-url is required outside the Pages bridge."
+      "finding": "Source links could leak credentials or signatures.",
+      "resolution": "Public citations require HTTPS URLs with no userinfo, query or fragment."
     },
     {
-      "id": "PPS-HIGH-008",
+      "id": "PQG-HIGH-008",
       "severity": "high",
       "status": "resolved",
-      "finding": "Cloud choice could trigger premature resource creation or cost.",
-      "resolution": "GCP architecture selected; no project, billing, Terraform or apply."
-    },
-    {
-      "id": "PPS-MED-009",
-      "severity": "medium",
-      "status": "resolved",
-      "finding": "External SEO/OCR/design references could become unreviewed runtime dependencies.",
-      "resolution": "SEO deferred, OCR evaluation isolated, original DESIGN.md created."
+      "finding": "Feature implementation could be mistaken for deployment.",
+      "resolution": "Gateway remains disabled by default; no Pages API URL, cloud resource, merge or deployment is claimed."
     }
   ],
   "open_findings": [
     {
-      "id": "PPS-OPEN-GATEWAY-001",
+      "id": "PQG-OPEN-ENABLEMENT-001",
       "severity": "critical",
       "status": "open",
-      "area": "public_gateway",
-      "finding": "POST /api/public/v1/query is not implemented; public assistant remains disabled."
+      "area": "public_gateway_enablement",
+      "finding": "Gateway is implemented but cannot be enabled until an authorized ingested public corpus, edge controls, staging and deployment approval exist."
     },
     {
       "id": "PROG-CORPUS-001",
@@ -118,10 +111,10 @@
     }
   ],
   "publication": {
-    "branch": "feature/production-public-surface-v1",
-    "functional_sha": "bf29e6fdc48fa155b004b5f0b2ff410050b59c84",
+    "branch": "feature/public-query-gateway-v1",
+    "functional_sha": "856a6edee20cdb14a16a89d0d1a831faadbf166e",
     "remote_sha_verified": true,
-    "ci_run_id": 29951023165,
+    "ci_run_id": 29955124279,
     "ci_status": "success",
     "ci_conclusion": "success",
     "pr": null,

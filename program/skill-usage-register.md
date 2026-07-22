@@ -364,3 +364,12 @@ Before any installation, require an owner to verify every skill file, license, d
   zero-vulnerability all/production audits;
 - result: implemented, verified and published at exact SHA `9da2972`; remote CI,
   Search/EvidenceBundle, corpus ingestion, human SaaS, merge and deployment remain open.
+
+## 2026-07-22 — Feature 072 public query gateway v1
+
+- Matching installed skill: none. Repository-level TypeScript, OpenAPI, PostgreSQL, RLS and HTTP implementation was executed directly through Cloud Sandbox MCP.
+- New external skill/package installation: none; the existing lockfile was retained.
+- Producer scope: closed public schemas/OpenAPI, disabled-by-default handler, server-bound tenant/jurisdiction, HMAC/global rate persistence, minimized audit, forced-RLS retrieval and widget-compatible response.
+- Critic/fixer scope: rejected Authorization/Cookie, moved rate gate before browser-credential rejection, required HTTPS citations without query/fragment, removed fictitious internal credential identity, added `nosniff` and exact CORS exposure, and proved cleanup/ownership/column restrictions.
+- Independent verification: detached 23/23 eval, 840/842 global, 33/33 contracts, PostgreSQL 16.14/pgvector 0.8.5 migrations 001–016, non-owner forced-RLS gate, compiled smoke, zero dependency vulnerabilities and Backend CI 29955124279 success.
+- Product boundary: gateway remains disabled and undeployed; no real corpus, edge protection, GCP resource, Pages binding, PR, merge or production observation is claimed.

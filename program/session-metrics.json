@@ -1,19 +1,19 @@
 {
-  "schema_version": "1.10.0",
-  "generated_at": "2026-07-22T19:34:37Z",
-  "branch": "feature/production-public-surface-v1",
-  "functional_head": "bf29e6fdc48fa155b004b5f0b2ff410050b59c84",
+  "schema_version": "1.11.0",
+  "generated_at": "2026-07-22T20:47:22Z",
+  "branch": "feature/public-query-gateway-v1",
+  "functional_head": "856a6edee20cdb14a16a89d0d1a831faadbf166e",
   "source": "observed command outputs only",
   "status": "PARTIAL_WITH_DOCUMENTED_BLOCKERS",
   "tests": {
-    "total": 818,
-    "passed": 816,
+    "total": 842,
+    "passed": 840,
     "failed": 0,
     "skipped": 2
   },
   "contracts": {
-    "schemas": 30,
-    "examples": 30,
+    "schemas": 33,
+    "examples": 33,
     "openapi": "3.1.1",
     "consumer_kits": 2,
     "consumer_interactions": 5
@@ -39,7 +39,8 @@
     "consumer_contract_kit": "16/16",
     "search_api": "24/24",
     "evidence_bundle_api": "24/24",
-    "production_public_surface": "33/33"
+    "production_public_surface": "33/33",
+    "public_query_gateway": "23/23"
   },
   "source_inventory": {
     "total": 17,
@@ -48,11 +49,11 @@
     "ingested": 0
   },
   "publication": {
-    "branch": "feature/production-public-surface-v1",
-    "functional_sha": "bf29e6fdc48fa155b004b5f0b2ff410050b59c84",
+    "branch": "feature/public-query-gateway-v1",
+    "functional_sha": "856a6edee20cdb14a16a89d0d1a831faadbf166e",
     "remote_sha_verified": true,
-    "ci_run_id": 29951023165,
-    "ci_status": "success",
+    "ci_run_id": 29955124279,
+    "ci_status": "completed",
     "ci_conclusion": "success",
     "pr": null,
     "merged": false,
@@ -71,11 +72,11 @@
   "duration_seconds": null,
   "token_usage": null,
   "remaining_blockers": [
-    "No dedicated public query gateway.",
     "No authorized real corpus or real ingestion.",
+    "Public gateway remains disabled and undeployed; no edge/load evidence exists.",
     "No actual ephemeral staging runner or service deployment.",
     "No human IdP/BFF/session or authenticated role-aware UI.",
     "No browser journey or external consumer repository suite executed.",
-    "GCP infrastructure, observability, load/HA, recovery, privacy, merge and deployment are absent."
+    "GCP infrastructure, observability, HA/recovery/privacy, merge and deployment are absent."
   ]
 }

@@ -1,12 +1,12 @@
 {
-  "schema_version": "1.14.0",
-  "generated_at": "2026-07-22T19:34:37Z",
-  "branch": "feature/production-public-surface-v1",
-  "functional_head": "bf29e6fdc48fa155b004b5f0b2ff410050b59c84",
-  "status": "passed_feature071_public_surface_with_explicit_gateway_corpus_identity_and_deployment_blockers",
+  "schema_version": "1.15.0",
+  "generated_at": "2026-07-22T20:47:22Z",
+  "branch": "feature/public-query-gateway-v1",
+  "functional_head": "856a6edee20cdb14a16a89d0d1a831faadbf166e",
+  "status": "passed_feature072_public_query_gateway_with_explicit_corpus_edge_staging_identity_and_deployment_blockers",
   "deterministic": {
-    "tests": 818,
-    "pass": 816,
+    "tests": 842,
+    "pass": 840,
     "fail": 0,
     "skipped": 2,
     "typecheck": "pass",
@@ -14,8 +14,8 @@
     "audits": "0 vulnerabilities"
   },
   "contracts": {
-    "canonical_schemas": 30,
-    "canonical_examples": 30,
+    "canonical_schemas": 33,
+    "canonical_examples": 33,
     "openapi": "3.1.1",
     "consumer_kits": 2,
     "consumer_interactions": 5,
@@ -186,21 +186,25 @@
         "No public query gateway or authorized real corpus.",
         "No GCP resources, human identity, browser E2E, PR, merge or deployment."
       ]
+    },
+    "EVAL-PUBLIC-QUERY-GATEWAY-001": {
+      "passed": 23,
+      "total": 23,
+      "status": "passed_for_disabled_by_default_server_bound_public_gateway_with_real_corpus_edge_and_deployment_limitations"
     }
   },
   "publication": {
-    "branch": "feature/production-public-surface-v1",
-    "functional_sha": "bf29e6fdc48fa155b004b5f0b2ff410050b59c84",
+    "branch": "feature/public-query-gateway-v1",
+    "functional_sha": "856a6edee20cdb14a16a89d0d1a831faadbf166e",
     "remote_sha_verified": true,
-    "ci_run_id": 29951023165,
-    "ci_status": "success",
+    "ci_run_id": 29955124279,
+    "ci_status": "completed",
     "ci_conclusion": "success",
     "pr": null,
     "merged": false,
     "deployed": false
   },
   "missing_dedicated_evals": [
-    "public_query_gateway",
     "ephemeral_staging_runner_execution",
     "external_os_electoral_consumer",
     "external_content_agency_consumer",
@@ -210,8 +214,8 @@
     "production_load_ha_recovery_privacy"
   ],
   "limitations": [
-    "Public shell is production-facing but query gateway is absent.",
+    "Public query gateway is implemented and disabled by default; it is not deployed or bound to an authorized real corpus.",
     "Zero real documents are credited as ingested.",
-    "GCP is architecture only; no resource, merge or deployment exists."
+    "Edge protection, staging execution, human identity, external consumers, GCP resources, merge and deployment remain absent."
   ]
 }
