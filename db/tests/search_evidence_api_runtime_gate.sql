@@ -131,24 +131,24 @@ INSERT INTO identity.principals (
   id, tenant_id, principal_kind, external_subject, display_name
 ) VALUES
   ('11111111-1111-4111-8111-111111111111', 'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa',
-   'user', 'search-researcher-a', 'Search researcher A'),
+   'user', 'search-viewer-a', 'Search viewer A'),
   ('22222222-2222-4222-8222-222222222222', 'bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb',
-   'user', 'search-researcher-b', 'Search researcher B');
+   'user', 'search-viewer-b', 'Search viewer B');
 
 INSERT INTO identity.memberships (tenant_id, principal_id, role)
 VALUES
-  ('aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa', '11111111-1111-4111-8111-111111111111', 'researcher'),
-  ('bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb', '22222222-2222-4222-8222-222222222222', 'researcher');
+  ('aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa', '11111111-1111-4111-8111-111111111111', 'viewer'),
+  ('bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb', '22222222-2222-4222-8222-222222222222', 'viewer');
 
 INSERT INTO identity.api_credentials (
   id, tenant_id, principal_id, label, secret_sha256
 ) VALUES
   ('33333333-3333-4333-8333-333333333333', 'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa',
    '11111111-1111-4111-8111-111111111111', 'Disposable search credential A',
-   digest('search-researcher-a-token-20260721-000000000001', 'sha256')),
+   digest('search-viewer-a-token-20260721-000000000001', 'sha256')),
   ('44444444-4444-4444-8444-444444444444', 'bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb',
    '22222222-2222-4222-8222-222222222222', 'Disposable search credential B',
-   digest('search-researcher-b-token-20260721-000000000001', 'sha256'));
+   digest('search-viewer-b-token-20260721-000000000001', 'sha256'));
 
 BEGIN;
 SELECT set_config('app.tenant_id', 'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa', true);

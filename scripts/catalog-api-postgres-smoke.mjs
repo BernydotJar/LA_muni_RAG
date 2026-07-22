@@ -9,6 +9,8 @@ const PRINCIPAL_CREDENTIAL_A = "33333333-3333-4333-8333-333333333333";
 const PRINCIPAL_CREDENTIAL_B = "34343434-3434-4343-8343-343434343434";
 const TOKEN_A = "catalog-manager-a-token-20260721-000000000001";
 const TOKEN_B = "catalog-manager-b-token-20260721-000000000001";
+const PLATFORM_ADMIN_TOKEN = "catalog-platform-admin-a-token-20260722-0001";
+const TENANT_ADMIN_TOKEN = "catalog-tenant-admin-a-token-20260722-00001";
 const ORIGIN = "https://admin.example";
 
 if (!process.env.DATABASE_URL) {
@@ -243,6 +245,13 @@ try {
   assert.equal(sources.response.status, 200);
   assert.equal(sources.body.items.some((item) => item.source_id === sourceId), true);
   assert.equal(sources.text.includes("TENANT_B"), false);
+
+  for (const token of [PLATFORM_ADMIN_TOKEN, TENANT_ADMIN_TOKEN]) {
+    const adminSources = await call(`/api/v1/sources?tenant_id=${TENANT_A}&limit=100`, { token });
+    assert.equal(adminSources.response.status, 200);
+    assert.equal(adminSources.body.items.some((item) => item.source_id === sourceId), true);
+    assert.equal(adminSources.text.includes("TENANT_B"), false);
+  }
 
   const documents = await call(`/api/v1/documents?tenant_id=${TENANT_A}&limit=100`);
   assert.equal(documents.response.status, 200);

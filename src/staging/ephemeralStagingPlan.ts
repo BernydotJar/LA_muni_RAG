@@ -406,6 +406,16 @@ export const buildEphemeralStagingExecutionSummary = (
   };
 };
 
+export const loadEphemeralStagingPlan = async (
+  projectRoot = process.cwd()
+): Promise<EphemeralStagingPlan> => {
+  const result = await verifyEphemeralStagingPlan(projectRoot);
+  if (result.status !== "valid" || !result.plan) {
+    throw new Error("Ephemeral staging plan is invalid");
+  }
+  return result.plan;
+};
+
 export const verifyEphemeralStagingPlan = async (
   projectRoot = process.cwd()
 ): Promise<EphemeralStagingValidationResult> => {

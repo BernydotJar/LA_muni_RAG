@@ -377,3 +377,17 @@ version/review/approval boundary, and
 documentary research intake, and [Search and EvidenceBundle API v1](docs/api/search-evidence-v1.md) for explicit retrieval modes, evidence classification, and conservative bundle construction.
 
 See [Portable consumer contract kits](docs/integrations/consumer-contract-kits.md) for the OS Electoral and Content Agency provider-side manifests and limitations. See [Ephemeral staging and E2E architecture](docs/testing/ephemeral-staging-e2e-architecture.md) for deterministic test identity, fixtures, reset, role coverage, mocks, and the API-versus-browser decision rule.
+
+## Ephemeral staging runner
+
+The repository includes a plan-driven local/CI runner for the twenty API/system staging journeys:
+
+```bash
+npm run eval:staging-runner
+
+STAGING_ADMIN_DATABASE_URL='postgresql://postgres:YOUR_PASSWORD@127.0.0.1:55432/postgres' \
+STAGING_CONFIRM_EPHEMERAL=true \
+npm run staging:run
+```
+
+The PostgreSQL/pgvector cluster must be dedicated and disposable. The runner creates and destroys four fixed `_test` databases and three non-owner runtime roles, writes a sanitized receipt under ignored `artifacts/staging/`, and leaves all twelve browser journeys blocked until human identity and authenticated UI exist. It creates no cloud resource and does not prove real-corpus or production readiness. See `docs/testing/ephemeral-staging-runner.md`.

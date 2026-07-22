@@ -83,6 +83,9 @@ jobs:
       - name: Run EVAL-EPHEMERAL-STAGING-E2E-001
         run: npm run eval:staging-e2e-architecture
 
+      - name: Run EVAL-EPHEMERAL-STAGING-RUNNER-001
+        run: npm run eval:staging-runner
+
       - name: Run EVAL-PRODUCTION-PUBLIC-SURFACE-001
         run: npm run eval:production-public-surface
 
@@ -370,3 +373,17 @@ jobs:
         env:
           DATABASE_URL: postgresql://la_muni_ingestion_runtime_test:disposable-ingestion-runtime-password-20260719@127.0.0.1:5432/la_muni_rag_ingestion_test
         run: npm run smoke:ingestion-api
+
+      - name: Execute ephemeral staging runner
+        env:
+          STAGING_ADMIN_DATABASE_URL: postgresql://postgres:disposable-ci-admin-password@127.0.0.1:5432/postgres
+          STAGING_CONFIRM_EPHEMERAL: "true"
+          STAGING_CLEAN_EXISTING: "true"
+          STAGING_RUN_ID: 00000000-0000-4000-8000-000000000073
+        run: |
+          docker exec "${{ job.services.postgres.id }}" \
+            dropdb -U postgres --if-exists la_muni_rag_invalid_artifact_test
+          docker exec "${{ job.services.postgres.id }}" \
+            dropdb -U postgres --if-exists la_muni_rag_legacy_ingestion_test
+          rm -f invalid-artifact-migration.log
+          npm run staging:run

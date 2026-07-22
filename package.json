@@ -65,7 +65,9 @@
     "eval:staging-e2e-architecture": "node --import tsx --test --test-concurrency=1 src/__tests__/eval-ephemeral-staging-e2e-001.test.ts src/__tests__/ephemeral-staging-plan-v1.test.ts",
     "eval:production-public-surface": "node --import tsx --test --test-concurrency=1 src/__tests__/eval-production-public-surface-001.test.ts src/__tests__/premium-frontend-refresh.test.ts src/__tests__/frontend-responsive-layout.test.ts src/__tests__/pages-api-production-mode.test.ts src/__tests__/municipal-product-readiness.test.ts src/__tests__/public-surface-contrast.test.ts",
     "eval:public-query-gateway": "node --import tsx --test --test-concurrency=1 src/__tests__/eval-public-query-gateway-001.test.ts src/__tests__/public-query-gateway-v1.test.ts src/__tests__/public-query-gateway-migration.test.ts",
-    "smoke:public-query-gateway": "node scripts/public-query-postgres-smoke.mjs"
+    "smoke:public-query-gateway": "node scripts/public-query-postgres-smoke.mjs",
+    "staging:run": "node --import tsx src/cli/runEphemeralStaging.ts",
+    "eval:staging-runner": "node --import tsx --test --test-concurrency=1 src/__tests__/eval-ephemeral-staging-runner-001.test.ts src/__tests__/ephemeral-staging-runner-v1.test.ts"
   },
   "keywords": [],
   "author": "",

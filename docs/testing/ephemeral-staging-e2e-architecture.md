@@ -2,6 +2,8 @@
 
 Status: executable provider-side architecture; no deployed staging or browser E2E is claimed.
 
+> Feature 073 executes the API/system portion locally/CI; browser and cloud execution remain blocked.
+
 ## Purpose
 
 Feature 070 defines the deterministic test architecture that must exist before browser E2E is enabled. The machine-readable source is:

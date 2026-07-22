@@ -7,11 +7,11 @@ import { createApiServer } from "../dist/server.js";
 const { Client } = pg;
 const TENANT_A = "aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa";
 const TENANT_B = "bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb";
-const AUTHOR_CREDENTIAL = "21212121-2121-4121-8121-212121212121";
+const CASE_CREDENTIAL = "c4000000-0000-4000-8000-000000000001";
 const REVIEWER_CREDENTIAL = "23232323-2323-4323-8323-232323232323";
-const AUTHOR_PRINCIPAL = "15151515-1515-4515-8515-151515151515";
+const CASE_PRINCIPAL = "c3000000-0000-4000-8000-000000000001";
 const WORKFLOW_ID = "62626262-6262-4262-8262-626262626262";
-const AUTHOR_TOKEN = "workflow-author-api-token-20260721-0000000001";
+const CASE_TOKEN = "procedure-case-operator-token-20260722-0001";
 const REVIEWER_TOKEN = "workflow-reviewer-api-token-20260721-00000001";
 const TENANT_B_VIEWER_TOKEN = "workflow-viewer-b-api-token-20260721-00000001";
 const ORIGIN = "https://admin.example";
@@ -49,13 +49,13 @@ const createBody = (requestId, caseKey) => ({
   jurisdiction: "Municipio de La Antigua Guatemala, Sacatepéquez, Guatemala",
   community_reference: `community:${caseKey}`,
   follow_up_at: "2026-08-01T15:00:00.000Z",
-  provenance: { credential_id: AUTHOR_CREDENTIAL },
+  provenance: { credential_id: CASE_CREDENTIAL },
 });
 
 const request = async (path, options = {}) => {
   const method = options.method ?? "POST";
   const headers = new Headers();
-  if (options.token !== null) headers.set("authorization", `Bearer ${options.token ?? AUTHOR_TOKEN}`);
+  if (options.token !== null) headers.set("authorization", `Bearer ${options.token ?? CASE_TOKEN}`);
   headers.set("x-request-id", options.requestId ?? options.body?.request_id ?? randomUUID());
   if (options.origin) headers.set("origin", options.origin);
   if (method === "POST" || method === "PATCH") {
@@ -111,7 +111,7 @@ const corruptTransportReplay = async (key) => {
         body,
         createHash("sha256").update(body, "utf8").digest("hex"),
         TENANT_A,
-        AUTHOR_PRINCIPAL,
+        CASE_PRINCIPAL,
         createHash("sha256").update(key, "utf8").digest("hex"),
       ]
     );
@@ -223,7 +223,7 @@ try {
       case_id: caseId,
       expected_revision: 1,
       action: { type: "set_step_state", step_id: "need-intake", state: "in_progress" },
-      provenance: { credential_id: AUTHOR_CREDENTIAL },
+      provenance: { credential_id: CASE_CREDENTIAL },
     },
   });
   assert.equal(step.response.status, 200);
@@ -249,7 +249,7 @@ try {
         state: "reviewed",
         document_version_id: invalidDocumentId,
       },
-      provenance: { credential_id: AUTHOR_CREDENTIAL },
+      provenance: { credential_id: CASE_CREDENTIAL },
     },
   });
   assert.equal(invalidDocument.response.status, 404);
@@ -314,7 +314,7 @@ try {
       case_id: caseId,
       expected_revision: 3,
       action: { type: "close_case", note: "Operational tracking closed; no legal conclusion." },
-      provenance: { credential_id: AUTHOR_CREDENTIAL },
+      provenance: { credential_id: CASE_CREDENTIAL },
     },
   });
   assert.equal(closed.response.status, 200);
@@ -333,7 +333,7 @@ try {
       case_id: caseId,
       expected_revision: 4,
       action: { type: "set_follow_up", follow_up_at: null },
-      provenance: { credential_id: AUTHOR_CREDENTIAL },
+      provenance: { credential_id: CASE_CREDENTIAL },
     },
   });
   assert.equal(mutateClosed.response.status, 409);

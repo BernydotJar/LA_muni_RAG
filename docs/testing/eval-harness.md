@@ -1040,3 +1040,13 @@ Not proved:
 
 Therefore `EVAL-PUBLIC-QUERY-GATEWAY-001` is
 `passed_for_disabled_server_bound_public_lexical_gateway_with_real_corpus_edge_infrastructure_load_and_deployment_limitations`.
+
+## EVAL-EPHEMERAL-STAGING-RUNNER-001
+
+Feature 073 adds an executable runner gate beyond the Feature 070 architecture validator.
+
+```bash
+npm run eval:staging-runner
+```
+
+The eval proves exact 20/20 API journey mapping, four fixed test databases, three fixed runtime roles, guarded SQL/smoke scope, no shell or local dotenv inheritance, closed sanitized receipts, reset integrity and CI wiring. The final CI step also runs `npm run staging:run` against the pinned pgvector service and requires complete cleanup. Browser journeys remain blocked and are not counted as passed.

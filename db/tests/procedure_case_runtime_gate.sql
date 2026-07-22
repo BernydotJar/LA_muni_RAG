@@ -29,15 +29,34 @@ GRANT SELECT, INSERT, UPDATE, DELETE ON
 TO la_muni_runtime_test;
 GRANT INSERT ON audit.events TO la_muni_runtime_test;
 
--- Reuse the author credential created by workflow_lifecycle_runtime_gate.sql and
--- grant its principal case operations without creating another secret fixture.
+-- Use a dedicated case operator so the HTTP smoke proves exact persona RBAC.
+INSERT INTO identity.principals (
+  id, tenant_id, principal_kind, external_subject, display_name
+) VALUES (
+  'c3000000-0000-4000-8000-000000000001',
+  'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa',
+  'user', 'procedure-case-operator-a', 'Procedure case operator A'
+)
+ON CONFLICT (id) DO NOTHING;
+
 INSERT INTO identity.memberships (tenant_id, principal_id, role)
 VALUES (
   'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa',
-  '15151515-1515-4515-8515-151515151515',
+  'c3000000-0000-4000-8000-000000000001',
   'case_operator'
 )
 ON CONFLICT DO NOTHING;
+
+INSERT INTO identity.api_credentials (
+  id, tenant_id, principal_id, label, secret_sha256
+) VALUES (
+  'c4000000-0000-4000-8000-000000000001',
+  'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa',
+  'c3000000-0000-4000-8000-000000000001',
+  'Disposable procedure case operator credential',
+  digest('procedure-case-operator-token-20260722-0001', 'sha256')
+)
+ON CONFLICT (id) DO NOTHING;
 
 DO $gate$
 DECLARE

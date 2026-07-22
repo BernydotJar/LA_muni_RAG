@@ -97,6 +97,25 @@ VALUES
   ('34343434-3434-4343-8343-343434343434', 'bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb', '32323232-3232-4323-8323-323232323232', 'Disposable catalog manager B', digest('catalog-manager-b-token-20260721-000000000001', 'sha256'))
 ON CONFLICT (id) DO NOTHING;
 
+INSERT INTO identity.principals (
+  id, tenant_id, principal_kind, external_subject, display_name
+) VALUES
+  ('c1000000-0000-4000-8000-000000000001', 'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa', 'user', 'catalog-platform-admin-a', 'Catalog platform admin A'),
+  ('c1000000-0000-4000-8000-000000000002', 'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa', 'user', 'catalog-tenant-admin-a', 'Catalog tenant admin A')
+ON CONFLICT (id) DO NOTHING;
+
+INSERT INTO identity.memberships (tenant_id, principal_id, role) VALUES
+  ('aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa', 'c1000000-0000-4000-8000-000000000001', 'platform_admin'),
+  ('aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa', 'c1000000-0000-4000-8000-000000000002', 'tenant_admin')
+ON CONFLICT DO NOTHING;
+
+INSERT INTO identity.api_credentials (
+  id, tenant_id, principal_id, label, secret_sha256
+) VALUES
+  ('c2000000-0000-4000-8000-000000000001', 'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa', 'c1000000-0000-4000-8000-000000000001', 'Disposable catalog platform admin A', digest('catalog-platform-admin-a-token-20260722-0001', 'sha256')),
+  ('c2000000-0000-4000-8000-000000000002', 'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa', 'c1000000-0000-4000-8000-000000000002', 'Disposable catalog tenant admin A', digest('catalog-tenant-admin-a-token-20260722-00001', 'sha256'))
+ON CONFLICT (id) DO NOTHING;
+
 INSERT INTO rag.procedures (
   id, tenant_id, procedure_key, title, jurisdiction, created_by_principal_id
 )
