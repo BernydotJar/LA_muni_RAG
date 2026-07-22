@@ -12,13 +12,13 @@ root: /workspace
 branch: feature/search-evidence-api-v1
 base_remote_ref: origin/feature/catalog-api-v1
 base_sha: 4343e5dc14595ff24a559a4e7476cde067be1539
-functional_candidate: uncommitted local worktree pending final review
-pushed: false
+functional_commit: 42d2fda70b27ccc9178c6a8d69bba957ef953105
+pushed: true
 PR_open: false
 merged: false
 deployed: false
 observed_in_production: false
-remote_ci_run: none for Feature 068
+remote_ci_run: 29880372748 success on functional SHA
 ```
 
 `AGENTS.md` and `RTK.md` remain authoritative. Normal feature-branch commits,
@@ -100,7 +100,7 @@ source inventory: 17 valid / 4 verified / 1 acquisition metadata / 0 ingested
 npm audit --audit-level=high: 0 vulnerabilities
 npm audit --omit=dev --audit-level=high: 0 vulnerabilities
 GitHub Pages artifact verification: pass
-git diff --check: pending final staged review
+git diff --check: pass
 ```
 
 Fresh disposable PostgreSQL verification:
@@ -122,6 +122,8 @@ comparative evidence promoted to ordinary claim: false
 exact replay: true
 corrupt replay cleanup committed: true
 ```
+
+Detached verification of `42d2fda70b27ccc9178c6a8d69bba957ef953105` independently repeated npm ci, 30/30 contracts, typecheck, 779/777/0/2 tests, build, both zero-vulnerability audits, fresh migrations 001–015, the non-owner SQL/RLS gate and the compiled HTTP smoke.
 
 The PostgreSQL corpus and query-embedding provider used by the gate are controlled
 test fixtures. They prove integration mechanics and safety boundaries, not
@@ -213,9 +215,9 @@ observed deployment.
 - production deployment and observation window;
 - legal, privacy, security and release approvals.
 
-## Ready work after Feature 068 publication
+## Critical work after Feature 068 publication
 
-1. `WS02-CORPUS-ACQUISITION-001` — authorized durable Antigua-first corpus,
+1. `WS02-CORPUS-ACQUISITION-001` — blocked pending human approval of rights, storage, scanner and privacy controls; then acquire an authorized durable Antigua-first corpus,
    current scan, extraction and ingestion.
 2. `WS04-REAL-CORPUS-RETRIEVAL-001` — judged real-corpus retrieval, citation and
    conflict quality across keyword, phrase, semantic and hybrid modes.
@@ -230,11 +232,7 @@ observed deployment.
 
 1. Verify workspace, branch, HEAD, upstream, worktree and remote SHA.
 2. Finish staged diff review, secret/dependency/license checks and local gates.
-3. Commit Feature 068, verify it from a detached clean checkout and repeat fresh
-   PostgreSQL 001–015 plus compiled smoke.
-4. Push the exact feature SHA and inspect remote CI without inferring merge or
-   deployment.
-5. Reconcile task graph, ledger, roadmap, risk/findings/evals and receipt in a
-   separate checkpoint commit.
-6. Do not merge, deploy, provision paid infrastructure, issue legal conclusions,
-   or implement OS Electoral/Content Agency automatically.
+3. Preserve Backend CI success run 29880372748 on the exact functional SHA without inferring merge or deployment.
+4. Preserve the separate program reconciliation commit and verify its remote SHA.
+5. Continue with authorized Antigua-first corpus acquisition only after source rights, storage, scanner and retention controls are available.
+6. Do not merge, deploy, provision paid infrastructure, issue legal conclusions, or implement OS Electoral/Content Agency automatically.

@@ -1,13 +1,12 @@
 {
-  "updated_at": "2026-07-21T23:20:48Z",
-  "slice": "governed_catalog_api_v1",
-  "functional_head": "9da29720c23d64bc73bdb24e92e67707834f4f84",
+  "updated_at": "2026-07-22T00:35:00Z",
+  "slice": "Feature 068 dedicated Search and EvidenceBundle API v1",
+  "functional_head": "42d2fda70b27ccc9178c6a8d69bba957ef953105",
   "summary": {
-    "critical_open_in_slice_code": 0,
-    "high_open_in_slice_code": 0,
-    "resolved_critical_or_high": 7,
-    "external_or_governance_high_open": 5,
-    "global_production_readiness_unproved": true
+    "resolved_findings": 15,
+    "open_findings": 1,
+    "feature068_critical_or_high_open": 0,
+    "global_blockers_remain": true
   },
   "findings": [
     {
@@ -86,6 +85,103 @@
         "npm ls fast-uri",
         "two zero-vulnerability audits"
       ]
+    },
+    {
+      "id": "SE-TRANS-001",
+      "severity": "high",
+      "status": "resolved",
+      "area": "semantic runtime",
+      "finding": "External query embedding initially executed inside the tenant PostgreSQL transaction.",
+      "resolution": "prepareSearchCapability now executes before opening retrieval transactions; semantic replay is resolved before provider invocation.",
+      "evidence": [
+        "src/searchEvidence/service.ts",
+        "src/api/v1/searchEvidenceHandler.ts",
+        "search-evidence-api-v1.test.ts"
+      ]
+    },
+    {
+      "id": "SE-TIMEOUT-002",
+      "severity": "high",
+      "status": "resolved",
+      "area": "semantic runtime",
+      "finding": "HTTP query embedding transport had no bounded timeout.",
+      "resolution": "AbortController timeout defaults to 10 seconds and is bounded/configurable with QUERY_EMBEDDING_TIMEOUT_MS.",
+      "evidence": [
+        "src/embeddings/httpQueryEmbeddingProvider.ts",
+        "http-query-embedding-provider.test.ts"
+      ]
+    },
+    {
+      "id": "SE-REPLAY-003",
+      "severity": "critical",
+      "status": "resolved",
+      "area": "idempotency",
+      "finding": "Hash-valid replay could have preserved semantically corrupted source/citation/claim relationships.",
+      "resolution": "Replay validates deterministic identity, source/citation linkage, exact excerpt claims, support authority and contradiction references; corrupt completed state is deleted in a committed transaction.",
+      "evidence": [
+        "src/api/v1/searchEvidenceHandler.ts",
+        "eval-evidence-bundle-api-001.test.ts",
+        "search-evidence-postgres-smoke.mjs"
+      ]
+    },
+    {
+      "id": "SE-PHRASE-004",
+      "severity": "medium",
+      "status": "resolved",
+      "area": "retrieval",
+      "finding": "ILIKE phrase search treated percent and underscore as wildcards.",
+      "resolution": "Phrase search now uses literal case-insensitive strpos and smoke proves percent returns zero.",
+      "evidence": [
+        "src/searchEvidence/repository.ts",
+        "search-evidence-postgres-smoke.mjs"
+      ]
+    },
+    {
+      "id": "SE-URL-005",
+      "severity": "high",
+      "status": "resolved",
+      "area": "data minimization",
+      "finding": "Signed or credential-bearing URLs could enter response projections.",
+      "resolution": "Database constraints plus runtime URL filtering reject credentials, signature/token parameters and overlong URLs.",
+      "evidence": [
+        "src/searchEvidence/repository.ts",
+        "search-evidence-api-v1.test.ts"
+      ]
+    },
+    {
+      "id": "SE-RANK-006",
+      "severity": "medium",
+      "status": "resolved",
+      "area": "retrieval",
+      "finding": "Duplicate citation identities and negative cosine values could violate response assumptions.",
+      "resolution": "Candidates dedupe by version/section identity and similarity is clamped to zero with explicit score semantics.",
+      "evidence": [
+        "src/searchEvidence/service.ts",
+        "search-evidence-api-v1.test.ts"
+      ]
+    },
+    {
+      "id": "SE-PRIV-007",
+      "severity": "critical",
+      "status": "resolved",
+      "area": "database privileges",
+      "finding": "Broad artifact/scanner grants could leak private coordinates.",
+      "resolution": "Runtime gate grants only required columns and asserts object/scanner/lease/pipeline fields remain unreadable.",
+      "evidence": [
+        "db/tests/search_evidence_api_runtime_gate.sql"
+      ]
+    },
+    {
+      "id": "SE-PROMOTION-008",
+      "severity": "critical",
+      "status": "resolved",
+      "area": "evidence policy",
+      "finding": "Comparative evidence must never be promoted to an ordinary supported claim.",
+      "resolution": "Bundle mapper promotes only supported exact excerpts; comparative evidence remains citation/gap and replay rejects promotion.",
+      "evidence": [
+        "src/searchEvidence/evidenceBundle.ts",
+        "eval-evidence-bundle-api-001.test.ts"
+      ]
     }
   ],
   "open_external_or_governance_findings": [
@@ -121,7 +217,38 @@
     }
   ],
   "open_global_findings": [
-    "Zero documents are credited as ingested or real-corpus retrieval-validated.",
-    "External consumers, browser accessibility, privacy operations and production recovery remain incomplete."
-  ]
+    "No authorized durable corpus bytes, current production scans or real ingestion exist.",
+    "No judged real-corpus keyword, phrase, semantic or hybrid quality/performance evidence exists.",
+    "No human IdP/session/BFF/provisioning/recovery or authenticated role-aware SaaS surfaces exist.",
+    "No production object store/scanner/dispatcher, observability/SLO, staging/load/HA, coordinated recovery or privacy operations exist.",
+    "No external consumer contract suites, reviewed PR, protected merge or deployment exist."
+  ],
+  "schema_version": "1.7.0",
+  "head": "42d2fda70b27ccc9178c6a8d69bba957ef953105",
+  "open_findings": [
+    {
+      "id": "PROG-CORPUS-001",
+      "severity": "critical",
+      "status": "open",
+      "area": "corpus",
+      "finding": "No authorized durable corpus bytes or real ingestion exist.",
+      "required_next_action": "Resolve BLK-CORPUS-OPS-001 and execute authorized acquisition/scan/ingestion without crediting fixtures."
+    }
+  ],
+  "generated_at": "2026-07-22T00:35:00Z",
+  "current_slice": "Feature 068 dedicated Search and EvidenceBundle API v1",
+  "critical_or_high_open": 0,
+  "warning_open": 0,
+  "publication": {
+    "branch": "feature/search-evidence-api-v1",
+    "functional_sha": "42d2fda70b27ccc9178c6a8d69bba957ef953105",
+    "remote_sha_verified": true,
+    "remote_ci_run": 29880372748,
+    "remote_ci_status": "success",
+    "pr": null,
+    "merged": false,
+    "deployed": false
+  },
+  "global_readiness_gate": "The backend feature is locally and independently verified, but global production readiness remains blocked by real corpus, human review/SaaS, production operations, consumers and release evidence.",
+  "global_state": "PARTIAL_WITH_DOCUMENTED_BLOCKERS"
 }

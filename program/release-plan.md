@@ -1,57 +1,41 @@
 # LA Muni RAG — Release Plan
 
-Updated: 2026-07-21T21:53:16Z
+Updated: 2026-07-22T00:35:00Z
 
-## Current release classification
+## Current release state
 
 ```text
-release_candidate: no
-production_ready: no
-protected_main_contains_cumulative_features: no
-open_pr: no
-staging_verified: no
-production_deployed: no
-observed_in_runtime: no
+functional_branch: feature/search-evidence-api-v1
+functional_sha: 42d2fda70b27ccc9178c6a8d69bba957ef953105
+remote_sha_verified: true
+backend_ci: run 29880372748 success
+pull_request: none
+merged_to_main: false
+staging_deployed: false
+production_deployed: false
+observation_window: none
 ```
 
-The cumulative branch passes extensive local, detached, disposable PostgreSQL and
-remote CI gates. It is still a development checkpoint, not a releasable product.
+## Gates already satisfied for the Feature 068 candidate
 
-## Functional branch receipts
+- 30/30 contracts and examples; OpenAPI 3.1.1.
+- EVAL-SEARCH-API-001 24/24.
+- EVAL-EVIDENCE-BUNDLE-API-001 24/24.
+- Full suite 779 total / 777 pass / 0 fail / 2 explicit skips.
+- Typecheck/build/Pages verification pass; both npm audits report zero vulnerabilities.
+- Detached clean-checkout verification of the exact functional SHA.
+- Fresh PostgreSQL 16.14/pgvector 0.8.5 migrations 001–015, non-owner RLS gate and compiled HTTP smoke.
 
-| Capability | Commit | CI |
-|---|---|---:|
-| Procedure Academy publication repair | `d65e16e3faf1986a7d8eca0683f0f9f5b10081d8` | 29865728313 success |
-| ProcedureCase lifecycle | `cf9449dde7d41d5ecdb5b34996bf73ee6ea803ef` | 29866907067 success |
-| Disposable logical restore drill | `5d4541000d234c6ccf23155f5eeab70b467dd0c6` | 29867846337 success |
-| Remaining required named evals | `e39ad7740324895c914e15106746f453e213de77` | 29871698536 success |
-| Governed Catalog API v1 | `9da29720c23d64bc73bdb24e92e67707834f4f84` | 29876782983 in progress |
+## Blocking gates before any production release
 
-## Required before release candidate
+1. Backend CI succeeded on the exact published SHA; preserve this evidence in any PR/release review.
+2. Authorized real corpus acquisition, current scanning, ingestion and judged retrieval evaluation.
+3. Human authority/vigencia/applicability review and contradiction resolution process.
+4. Human IdP/session/SaaS surfaces and accessibility evidence.
+5. Production infrastructure, secrets/workload identity, observability/SLOs, staging, load/HA and recovery/privacy operations.
+6. External consumer contract suites.
+7. Human-reviewed PR, protected merge, deployment approvals and observed rollout.
 
-- dedicated Search and EvidenceBundle routes complete;
-- durable official corpus bytes, current scan, extraction, ingestion and human review;
-- real-corpus retrieval/citation/refusal thresholds;
-- human identity/session/provisioning and authenticated UI;
-- privacy retention/deletion/legal-hold/DSAR approval;
-- production object/scanner/dispatcher/secrets architecture;
-- staging deployment, telemetry, SLOs/alerts, load/HA;
-- coordinated object/database restore and PITR/KMS exercise;
-- external consumer contract evidence;
-- browser/screen-reader/human WCAG review;
-- no unresolved critical/high findings;
-- human legal, privacy, security and release approvals.
+## Release rule
 
-## Release sequence
-
-1. Create human-reviewed cumulative draft PR(s) from published feature branches.
-2. Run protected-branch CI and migration review.
-3. Deploy immutable candidate to production-shaped staging.
-4. Run corpus, browser, security, privacy, load/HA and recovery gates.
-5. Record reviewer sign-offs and exact image/config/migration digests.
-6. Obtain explicit deployment approval.
-7. Merge protected main and deploy through the approved pipeline.
-8. Observe health/SLOs and complete the release observation window.
-9. Record rollback/forward-fix decision if any hard gate fails.
-
-No step in this sequence is implied by a feature-branch green check.
+A green feature branch or local PostgreSQL gate is not a release. Production readiness may be declared only after every blocking gate has immutable evidence and the deployed revision is observed. No automatic merge or deployment is authorized by this plan.

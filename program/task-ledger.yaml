@@ -1371,7 +1371,7 @@ tasks:
   - Fresh PostgreSQL 15.18/pgvector 0.8.5 migrations 001-014, non-owner SQL gate and compiled HTTP smoke pass.
   - EVAL-SOURCE-API-001 18/18 and EVAL-DOCUMENT-API-001 18/18.
   limitations:
-  - Search and dedicated EvidenceBundle routes remain missing.
+  - Search and dedicated EvidenceBundle routes were subsequently closed by WS05-SEARCH-EVIDENCE-API-001.
   - No durable source acquisition, real ingestion/retrieval, human SaaS, production topology, PR, merge or deployment.
   branch: feature/catalog-api-v1
   pr: null
@@ -1379,9 +1379,16 @@ tasks:
 - id: WS05-SEARCH-EVIDENCE-API-001
   workstream: WS-04
   title: Implement dedicated tenant Search and EvidenceBundle APIs
-  status: ready
+  status: completed_with_limitations
   owner: /root
-  files: []
+  files:
+  - db/migrations/015_search_evidence_api.sql
+  - src/api/v1/searchEvidenceHandler.ts
+  - src/searchEvidence/repository.ts
+  - src/searchEvidence/service.ts
+  - src/searchEvidence/evidenceBundle.ts
+  - contracts/openapi/v1/openapi.json
+  - docs/api/search-evidence-v1.md
   depends_on:
   - WS08-CATALOG-API-001
   - WS03-TENANT-INGESTION-001
@@ -1389,12 +1396,43 @@ tasks:
   blockers: []
   acceptance:
   - POST search supports bounded keyword, phrase, semantic and hybrid modes with tenant/authority/jurisdiction/confidentiality filters.
-  - POST evidence-bundles preserves identity-bound citations, authority and explicit gaps without promotion.
-  - Closed contracts, adversarial HTTP, forced-RLS PostgreSQL and compiled smokes pass.
+  - POST evidence-bundles preserves identity-bound citations, authority and explicit gaps without comparative promotion.
+  - Query embedding runs outside PostgreSQL transactions with bounded timeout and fail-closed 503 semantics.
+  - Exact replay, semantic corruption cleanup, closed contracts, adversarial HTTP, forced-RLS PostgreSQL and compiled smokes pass.
+  evidence:
+  - Functional commit and exact remote SHA 42d2fda70b27ccc9178c6a8d69bba957ef953105.
+  - Detached 777/779 regression with 0 failures and 2 explicit skips; 30/30 contracts; both npm audits zero.
+  - Fresh PostgreSQL 16.14/pgvector 0.8.5 migrations 001-015, non-owner SQL/RLS gate and compiled HTTP smoke pass.
+  - EVAL-SEARCH-API-001 24/24 and EVAL-EVIDENCE-BUNDLE-API-001 24/24.
+  limitations:
+  - Real corpus, human legal review, production provider/SLO/load, human SaaS, external consumers, PR, merge and deployment remain open.
+  branch: feature/search-evidence-api-v1
+  pr: null
+  ci: remote_success_run_29880372748
+- id: WS02-CORPUS-ACQUISITION-001
+  workstream: WS-02
+  title: Acquire and ingest authorized Antigua-first corpus
+  status: blocked
+  owner: human_platform_and_legal
+  files:
+  - .rag/source-inventory.json
+  depends_on:
+  - WS05-SEARCH-EVIDENCE-API-001
+  blockers:
+  - BLK-CORPUS-OPS-001
+  acceptance:
+  - Authorized durable bytes, immutable manifests, current clean scans, processed ingestion and indexed chunks exist for the approved corpus.
+  - No synthetic fixture is credited as production corpus evidence.
   evidence: []
   pr: null
   ci: not_started
 blockers:
+- id: BLK-CORPUS-OPS-001
+  affects:
+  - WS02-CORPUS-ACQUISITION-001
+  state: open
+  condition: Source rights, durable object storage, current scanner operation and retention/legal-hold policy are not available in this repository context.
+  next_safe_action: Human owners approve rights and production storage/scanner/privacy controls before artifact acquisition.
 - id: BLK-CTX7-001
   state: resolved
   condition: Context7 was initially unavailable through MCP and PATH.
@@ -1446,7 +1484,7 @@ blockers:
 farmtable_equivalent_queries:
   GetReadyTasks:
     result: []
-    caveat: No task with satisfied dependencies is marked ready; GAP-001 and several parent workstreams remain in_progress.
+    caveat: Feature 068 is complete with limitations; corpus acquisition is blocked by BLK-CORPUS-OPS-001 and no production task is safe to execute automatically.
   GetDependencyTree:
     root: REL-VERIFY-001
     source: program/task-graph.yaml
@@ -1454,7 +1492,8 @@ farmtable_equivalent_queries:
     source: program/task-graph.yaml
     current_bottlenecks: []
   GetBottlenecks:
-    open: []
+    open:
+    - BLK-CORPUS-OPS-001
     mitigated:
     - BLK-AUTO-001
     - BLK-FARM-001

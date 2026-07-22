@@ -18,6 +18,6 @@
 - [x] Add named evals and CI/package scripts.
 - [x] Run adversarial critic review and repair all critical/high findings.
 - [x] Run focused, PostgreSQL, contract, typecheck, build, full regression, audit and diff gates.
-- [ ] Commit functional slice and verify from detached checkout.
-- [ ] Push exact feature SHA and verify remote ref.
-- [ ] Reconcile program checkpoint separately.
+- [x] Commit functional slice and verify from detached checkout.
+- [x] Push exact feature SHA and verify remote ref.
+- [x] Reconcile program checkpoint separately.

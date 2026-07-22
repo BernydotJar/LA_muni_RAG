@@ -1,97 +1,21 @@
 {
   "updated_at": "2026-07-21T23:20:48Z",
-  "branch": "feature/catalog-api-v1",
-  "functional_head": "9da29720c23d64bc73bdb24e92e67707834f4f84",
-  "status": "detached_clean_postgres_passed_feature_published_remote_ci_in_progress",
+  "branch": "feature/search-evidence-api-v1",
+  "functional_head": "42d2fda70b27ccc9178c6a8d69bba957ef953105",
+  "status": "passed_feature068_with_explicit_global_product_blockers",
   "deterministic": {
+    "tests": 779,
+    "pass": 777,
+    "fail": 0,
+    "skipped": 2,
     "typecheck": "pass",
-    "build": "pass",
-    "contracts": {
-      "schemas": 27,
-      "examples": 27,
-      "openapi_documents": 1,
-      "contract_suite_passed": 27,
-      "contract_suite_failed": 0
-    },
-    "global_tests": {
-      "total": 749,
-      "passed": 747,
-      "failed": 0,
-      "skipped": 2,
-      "skip_reason": "explicit environment-gated database tests"
-    },
-    "source_inventory": {
-      "total": 17,
-      "valid": 17,
-      "verified": 4,
-      "missing_source": 4,
-      "acquisition_metadata": 1,
-      "ingested": 0
-    },
-    "domain_evaluation": {
-      "total": 8,
-      "passed": 8
-    },
-    "pages": "pass",
-    "dependency_audit": {
-      "all_vulnerabilities": 0,
-      "production_vulnerabilities": 0,
-      "fast_uri_version": "3.1.4"
-    },
-    "diff_check": "pass",
-    "secret_scan": "pass",
-    "detached_lockfile_install": "pass"
+    "build": "pass"
   },
   "database": {
-    "postgres_version": "15.18",
-    "pgvector_version": "0.8.5",
-    "runtime_role": "non_owner_nosuperuser_nobypassrls",
-    "clean_database_recreated": true,
-    "procedure_query_sql_gate": "pass",
-    "claim_pack_sql_gate": "pass",
-    "workflow_lifecycle_sql_gate": "pass",
-    "evidence_gap_sql_gate": "pass",
-    "procedure_query_compiled_smoke": "pass",
-    "claim_pack_compiled_smoke": "pass",
-    "workflow_lifecycle_compiled_smoke": "pass",
-    "evidence_gap_compiled_smoke": "pass",
-    "evidence_gap_statuses": [
-      401,
-      200,
-      200,
-      200,
-      200,
-      200,
-      409,
-      409,
-      403,
-      400,
-      400,
-      500,
-      200
-    ],
-    "catalog_sql_gate": "pass",
-    "catalog_compiled_smoke": "pass",
-    "catalog_migrations": "001-014",
-    "catalog_statuses": [
-      401,
-      201,
-      201,
-      409,
-      500,
-      400,
-      201,
-      201,
-      200,
-      200,
-      200,
-      200,
-      403,
-      200
-    ],
-    "catalog_corrupt_replay_cleanup_committed": true,
-    "catalog_cross_tenant_leak": false,
-    "catalog_private_artifact_columns_granted": false
+    "search_evidence_fresh_migrations": "001-015 pass",
+    "non_owner_rls": "pass",
+    "compiled_http_smoke": "pass",
+    "catalog_historical_gate": "preserved in historical_checkpoints"
   },
   "hard_evals": {
     "EVAL-PROCEDURE-001": {
@@ -159,9 +83,48 @@
       "passed": 18,
       "total": 18,
       "status": "passed_for_safe_tenant_document_registration_and_catalog_monitoring_with_artifact_ingestion_retrieval_ui_and_deployment_limitations"
+    },
+    "EVAL-SEARCH-API-001": {
+      "command": "npm run eval:search-api",
+      "passed": 24,
+      "total": 24,
+      "result": "passed_for_explicit_tenant_search_with_real_corpus_human_review_provider_performance_and_deployment_limitations",
+      "evidence": [
+        "42d2fda70b27ccc9178c6a8d69bba957ef953105",
+        "db/tests/search_evidence_api_runtime_gate.sql",
+        "scripts/search-evidence-postgres-smoke.mjs",
+        "docs/api/search-evidence-v1.md"
+      ],
+      "limitations": [
+        "No authorized real corpus is ingested.",
+        "No judged relevance, latency, load, provider SLO or human authority/vigencia review.",
+        "No PR, merge or deployment."
+      ]
+    },
+    "EVAL-EVIDENCE-BUNDLE-API-001": {
+      "command": "npm run eval:evidence-bundle-api",
+      "passed": 24,
+      "total": 24,
+      "result": "passed_for_conservative_dedicated_bundle_with_real_corpus_human_resolution_consumer_operations_and_deployment_limitations",
+      "evidence": [
+        "42d2fda70b27ccc9178c6a8d69bba957ef953105",
+        "src/searchEvidence/evidenceBundle.ts",
+        "src/api/v1/searchEvidenceHandler.ts",
+        "scripts/search-evidence-postgres-smoke.mjs"
+      ],
+      "limitations": [
+        "No real-corpus conflict-resolution study or human approval workflow.",
+        "No external consumer suite, PR, merge or deployment."
+      ]
     }
   },
-  "missing_dedicated_evals": [],
+  "missing_dedicated_evals": [
+    "real_corpus_retrieval_quality",
+    "human_authority_vigencia_applicability_review",
+    "production_provider_latency_cost_slo",
+    "consumer_contracts",
+    "staging_load_ha_recovery_privacy"
+  ],
   "evidence_gap_assertions": {
     "initial_status": "open",
     "request_assertion_status": "requester_supplied_unverified",
@@ -177,53 +140,65 @@
     "documentary_text_in_audit": false
   },
   "publication": {
-    "remote_branch": "feature/catalog-api-v1",
-    "remote_commit": "9da29720c23d64bc73bdb24e92e67707834f4f84",
-    "main_commit": "4950ba3c24dbe7d9891d5cec8d7ba5f57db3ef9c",
-    "pr_state": "absent",
-    "remote_ci": {
-      "run_id": 29876782983,
-      "workflow": "Backend CI",
-      "status": "in_progress",
-      "conclusion": null,
-      "head_sha": "9da29720c23d64bc73bdb24e92e67707834f4f84"
-    },
+    "branch": "feature/search-evidence-api-v1",
+    "functional_sha": "42d2fda70b27ccc9178c6a8d69bba957ef953105",
+    "remote_sha_verified": true,
+    "remote_ci_run": 29880372748,
+    "remote_ci_status": "success",
+    "pr": null,
     "merged": false,
     "deployed": false
   },
   "limitations": [
-    "Source validation, durable acquisition, scan, ingestion and real retrieval quality remain unproved.",
-    "Dedicated Search and EvidenceBundle routes remain unimplemented.",
-    "Human SaaS identity/session and authenticated product UI remain unimplemented.",
-    "Production infrastructure, external consumers, protected merge and deployment remain unproved."
+    "No authorized durable corpus bytes are present and zero real documents are credited as ingested.",
+    "No real-corpus keyword, phrase, semantic or hybrid quality/performance evidence exists.",
+    "No human IdP/session/SaaS shell, production infrastructure, staging/load/HA/privacy operations or consumer contract suites exist.",
+    "Functional branch is published and CI is in progress; there is no PR, protected merge, deployment or observation window."
   ],
-  "generatedAt": "2026-07-21T21:53:16Z",
+  "generatedAt": "2026-07-22T00:35:00Z",
   "summary": {
-    "status": "partial_production_readiness",
-    "requiredNamedFamilies": 19,
-    "requiredNamedFamiliesWithDedicatedGates": 19,
-    "additionalNamedFamilies": [
-      "EVAL-PROCEDURE-ASSESSMENT-001",
-      "EVAL-EVIDENCE-GAP-001"
-    ],
-    "detachedTests": {
-      "total": 724,
-      "passed": 722,
+    "overall": "passed_with_documented_product_blockers",
+    "tests": {
+      "total": 779,
+      "passed": 777,
       "failed": 0,
       "skipped": 2
     },
     "contracts": {
-      "schemas": 19,
-      "examples": 19,
+      "schemas": 30,
+      "examples": 30,
       "openapi": "3.1.1"
     },
-    "sourceInventory": {
+    "domain_pack": {
+      "passed": 8,
+      "total": 8
+    },
+    "source_inventory": {
       "total": 17,
       "verified": 4,
-      "acquisitionMetadata": 1,
+      "with_acquisition_metadata": 1,
       "ingested": 0
     },
-    "productionReady": false
+    "dependency_audit": {
+      "all": "0 vulnerabilities",
+      "production": "0 vulnerabilities"
+    },
+    "pages_artifact": "passed",
+    "postgres_search_evidence": {
+      "postgres": "16.14",
+      "pgvector": "0.8.5",
+      "fresh_migrations": "001-015 passed",
+      "non_owner_rls": "passed",
+      "compiled_http_smoke": "passed"
+    },
+    "remote": {
+      "functional_sha_verified": true,
+      "ci_run": 29880372748,
+      "ci_status": "in_progress",
+      "pr": null,
+      "merged": false,
+      "deployed": false
+    }
   },
   "evaluations": [
     {
@@ -281,5 +256,179 @@
     "signed_url_rejected": true,
     "private_object_or_job_internals_returned": false,
     "cross_tenant_marker_leaked": false
+  },
+  "schema_version": "1.11.0",
+  "generated_at": "2026-07-22T00:35:00Z",
+  "head_commit": "42d2fda70b27ccc9178c6a8d69bba957ef953105",
+  "test_suite": {
+    "command": "npm test",
+    "total": 779,
+    "passed": 777,
+    "failed": 0,
+    "skipped": 2,
+    "limitations": [
+      "Two explicit environment skips remain; no failures.",
+      "Synthetic tests and fixtures do not establish real-corpus retrieval quality or legal correctness."
+    ]
+  },
+  "integration_contracts": {
+    "command": "npm run contracts:validate",
+    "schemas": 30,
+    "examples": 30,
+    "openapi": "3.1.1",
+    "result": "passed"
+  },
+  "operational_gates": {
+    "search_evidence_api": {
+      "database": "PostgreSQL 16.14 / pgvector 0.8.5",
+      "migrations": "fresh 001-015 passed",
+      "role": "la_muni_search_runtime_test; non-owner; NOSUPERUSER; NOBYPASSRLS",
+      "private_artifact_columns_granted": false,
+      "cross_tenant_leak": false,
+      "eligible_fixture_count": 2,
+      "compiled_smoke": "passed",
+      "statuses": [
+        503,
+        401,
+        200,
+        200,
+        200,
+        200,
+        200,
+        200,
+        409,
+        500,
+        403,
+        200
+      ],
+      "exact_replay": true,
+      "corrupt_replay_cleanup_committed": true,
+      "comparative_promoted_to_claim": false
+    }
+  },
+  "historical_checkpoints": {
+    "feature067_catalog": {
+      "functional_head": "9da29720c23d64bc73bdb24e92e67707834f4f84",
+      "deterministic": {
+        "typecheck": "pass",
+        "build": "pass",
+        "contracts": {
+          "schemas": 27,
+          "examples": 27,
+          "openapi_documents": 1,
+          "contract_suite_passed": 27,
+          "contract_suite_failed": 0
+        },
+        "global_tests": {
+          "total": 749,
+          "passed": 747,
+          "failed": 0,
+          "skipped": 2,
+          "skip_reason": "explicit environment-gated database tests"
+        },
+        "source_inventory": {
+          "total": 17,
+          "valid": 17,
+          "verified": 4,
+          "missing_source": 4,
+          "acquisition_metadata": 1,
+          "ingested": 0
+        },
+        "domain_evaluation": {
+          "total": 8,
+          "passed": 8
+        },
+        "pages": "pass",
+        "dependency_audit": {
+          "all_vulnerabilities": 0,
+          "production_vulnerabilities": 0,
+          "fast_uri_version": "3.1.4"
+        },
+        "diff_check": "pass",
+        "secret_scan": "pass",
+        "detached_lockfile_install": "pass"
+      },
+      "database": {
+        "postgres_version": "15.18",
+        "pgvector_version": "0.8.5",
+        "runtime_role": "non_owner_nosuperuser_nobypassrls",
+        "clean_database_recreated": true,
+        "procedure_query_sql_gate": "pass",
+        "claim_pack_sql_gate": "pass",
+        "workflow_lifecycle_sql_gate": "pass",
+        "evidence_gap_sql_gate": "pass",
+        "procedure_query_compiled_smoke": "pass",
+        "claim_pack_compiled_smoke": "pass",
+        "workflow_lifecycle_compiled_smoke": "pass",
+        "evidence_gap_compiled_smoke": "pass",
+        "evidence_gap_statuses": [
+          401,
+          200,
+          200,
+          200,
+          200,
+          200,
+          409,
+          409,
+          403,
+          400,
+          400,
+          500,
+          200
+        ],
+        "catalog_sql_gate": "pass",
+        "catalog_compiled_smoke": "pass",
+        "catalog_migrations": "001-014",
+        "catalog_statuses": [
+          401,
+          201,
+          201,
+          409,
+          500,
+          400,
+          201,
+          201,
+          200,
+          200,
+          200,
+          200,
+          403,
+          200
+        ],
+        "catalog_corrupt_replay_cleanup_committed": true,
+        "catalog_cross_tenant_leak": false,
+        "catalog_private_artifact_columns_granted": false
+      },
+      "publication": {
+        "remote_branch": "feature/catalog-api-v1",
+        "remote_commit": "9da29720c23d64bc73bdb24e92e67707834f4f84",
+        "main_commit": "4950ba3c24dbe7d9891d5cec8d7ba5f57db3ef9c",
+        "pr_state": "absent",
+        "remote_ci": {
+          "run_id": 29876782983,
+          "workflow": "Backend CI",
+          "status": "in_progress",
+          "conclusion": null,
+          "head_sha": "9da29720c23d64bc73bdb24e92e67707834f4f84"
+        },
+        "merged": false,
+        "deployed": false
+      },
+      "missing_dedicated_evals": []
+    }
+  },
+  "vector_validation": {
+    "provider_timeout": "pass",
+    "provider_outside_transaction": "pass",
+    "semantic_fail_closed": "pass",
+    "hybrid_explicit_modes": "pass",
+    "real_corpus_quality": "not_run"
+  },
+  "scans": {
+    "secret_patterns": "none",
+    "dependency_audit": "0 vulnerabilities",
+    "production_dependency_audit": "0 vulnerabilities",
+    "license_denied": 0,
+    "unknown_licenses": 0
   }
 }

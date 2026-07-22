@@ -1235,18 +1235,46 @@ tasks:
     postgres: fresh 001-014, forced RLS, non-owner SQL and compiled HTTP pass
     remote_ci: 29876782983 in_progress
   limitations:
-  - Search/dedicated EvidenceBundle, corpus acquisition/ingestion, human SaaS, production operations, merge and deployment remain open.
+  - Search/dedicated EvidenceBundle was subsequently closed by WS05-SEARCH-EVIDENCE-API-001; corpus acquisition/ingestion, human SaaS, production operations, merge and deployment remain open.
 - id: WS05-SEARCH-EVIDENCE-API-001
   workstream: WS-04
   title: Implement dedicated tenant Search and EvidenceBundle APIs
-  status: ready
+  status: completed_with_limitations
   owner: /root
   depends_on:
   - WS08-CATALOG-API-001
   - WS03-TENANT-INGESTION-001
   - WS07-FOUNDATION-001
-  blockers: []
+  result:
+    functional_commit: 42d2fda70b27ccc9178c6a8d69bba957ef953105
+    branch: feature/search-evidence-api-v1
+    routes:
+    - POST /api/v1/search
+    - POST /api/v1/evidence-bundles
+    eval_search_api: 24/24
+    eval_evidence_bundle_api: 24/24
+    detached_tests: 777/779; zero failures; two explicit environment skips
+    contracts: 30 schemas / 30 examples / OpenAPI 3.1.1
+    postgres: fresh 001-015, forced RLS, non-owner SQL and compiled HTTP pass
+    remote_ci: 29880372748 success
+  limitations:
+  - Real corpus acquisition/ingestion, judged retrieval, human review, SaaS, production operations, consumers, merge and deployment remain open.
+- id: WS02-CORPUS-ACQUISITION-001
+  workstream: WS-02
+  title: Acquire and ingest authorized Antigua-first corpus
+  status: blocked
+  owner: human_platform_and_legal
+  depends_on:
+  - WS05-SEARCH-EVIDENCE-API-001
+  blockers:
+  - BLK-CORPUS-OPS-001
 blockers:
+- id: BLK-CORPUS-OPS-001
+  affects:
+  - WS02-CORPUS-ACQUISITION-001
+  state: open
+  condition: Authorized source rights, durable object storage, current scanner operation and retention/legal-hold policy are not available in this repository context.
+  next_safe_action: Human owners approve source rights and production storage/scanner/privacy controls before any real artifact acquisition is credited.
 - id: BLK-CTX7-001
   affects:
   - PRG-CTX7-001

@@ -1,35 +1,28 @@
 {
-  "updated_at": "2026-07-21T23:20:48Z",
-  "branch": "feature/catalog-api-v1",
-  "head": "9da29720c23d64bc73bdb24e92e67707834f4f84",
+  "updated_at": "2026-07-22T00:35:00Z",
+  "branch": "feature/search-evidence-api-v1",
+  "head": "42d2fda70b27ccc9178c6a8d69bba957ef953105",
   "source": "observed command outputs only",
   "tests": {
-    "global_total": 749,
-    "global_passed": 747,
-    "global_failed": 0,
-    "global_skipped": 2,
-    "eval_source_api_passed": 18,
-    "eval_document_api_passed": 18,
-    "contract_schemas": 27,
-    "contract_examples": 27
+    "total": 779,
+    "passed": 777,
+    "failed": 0,
+    "skipped": 2
   },
   "database": {
-    "postgres": "15.18",
+    "postgres": "16.14",
     "pgvector": "0.8.5",
-    "clean_database_recreated": true,
-    "migrations": "001-014",
-    "catalog_sql_gate": "pass",
-    "catalog_compiled_http_smoke": "pass",
-    "corrupt_replay_cleanup_committed": true,
-    "source_authority_promoted": false,
-    "cross_tenant_leak": false
+    "fresh_migrations": "001-015 pass",
+    "non_owner_rls": "pass",
+    "compiled_http_smoke": "pass"
   },
   "publication": {
+    "branch": "feature/search-evidence-api-v1",
+    "functional_sha": "42d2fda70b27ccc9178c6a8d69bba957ef953105",
     "remote_sha_verified": true,
-    "pr_open": false,
-    "ci_run_id": 29876782983,
-    "ci_status": "in_progress",
-    "ci_conclusion": null,
+    "remote_ci_run": 29880372748,
+    "remote_ci_status": "success",
+    "pr": null,
     "merged": false,
     "deployed": false
   },
@@ -44,8 +37,9 @@
   "functionalHead": "e39ad7740324895c914e15106746f453e213de77",
   "originMain": "4950ba3c24dbe7d9891d5cec8d7ba5f57db3ef9c",
   "contracts": {
-    "schemas": 19,
-    "examples": 19
+    "schemas": 30,
+    "examples": 30,
+    "openapi": "3.1.1"
   },
   "requiredNamedEvals": {
     "required": 19,
@@ -71,5 +65,94 @@
     "fast_uri": "3.1.4",
     "all_vulnerabilities": 0,
     "production_vulnerabilities": 0
-  }
+  },
+  "schema_version": "1.7.0",
+  "checkpoint": {
+    "functional_sha": "42d2fda70b27ccc9178c6a8d69bba957ef953105",
+    "remote_sha_verified": true,
+    "detached_verification": true,
+    "remote_ci_run": 29880372748,
+    "remote_ci_status": "success",
+    "pr": null,
+    "merged": false,
+    "deployed": false
+  },
+  "hard_evals": {
+    "search_api": "24/24",
+    "evidence_bundle_api": "24/24"
+  },
+  "operational_gates": {
+    "search_evidence_postgres": "passed",
+    "search_evidence_compiled_http": "passed",
+    "detached_search_evidence": "passed"
+  },
+  "program_status": "PARTIAL_WITH_DOCUMENTED_BLOCKERS",
+  "blockers": [
+    "BLK-CORPUS-OPS-001: source rights, durable storage, scanner and retention/legal-hold controls unavailable.",
+    "Human IdP/session/SaaS surfaces absent.",
+    "Production infrastructure, observability, staging, load/HA, recovery and privacy operations absent.",
+    "External consumer contracts, reviewed PR, protected merge and deployment absent."
+  ],
+  "historical_checkpoints": {
+    "feature067_catalog": {
+      "database": {
+        "postgres": "15.18",
+        "pgvector": "0.8.5",
+        "clean_database_recreated": true,
+        "migrations": "001-014",
+        "catalog_sql_gate": "pass",
+        "catalog_compiled_http_smoke": "pass",
+        "corrupt_replay_cleanup_committed": true,
+        "source_authority_promoted": false,
+        "cross_tenant_leak": false
+      },
+      "publication": {
+        "remote_sha_verified": true,
+        "pr_open": false,
+        "ci_run_id": 29876782983,
+        "ci_status": "in_progress",
+        "ci_conclusion": null,
+        "merged": false,
+        "deployed": false
+      }
+    }
+  },
+  "generated_at": "2026-07-22T00:35:00Z",
+  "functional_head": "42d2fda70b27ccc9178c6a8d69bba957ef953105",
+  "status": "PARTIAL_WITH_DOCUMENTED_BLOCKERS",
+  "cumulative_test_gate": {
+    "tests": 779,
+    "passed": 777,
+    "failed": 0,
+    "skipped": 2
+  },
+  "deterministic": {
+    "contracts": "30/30",
+    "typecheck": "pass",
+    "build": "pass",
+    "tests": "777/779",
+    "pages": "pass"
+  },
+  "vector_validation": {
+    "semantic_provider_timeout": "pass",
+    "provider_outside_transaction": "pass",
+    "replay_without_provider": "pass",
+    "literal_phrase": "pass",
+    "signed_url_filter": "pass",
+    "real_corpus_quality": "not_run"
+  },
+  "scans": {
+    "secret_patterns": "none",
+    "dependency_audit": "0 vulnerabilities",
+    "production_dependency_audit": "0 vulnerabilities",
+    "license_packages": 351,
+    "denied_licenses": 0,
+    "unknown_licenses": 0
+  },
+  "remaining_blockers": [
+    "BLK-CORPUS-OPS-001: source rights, durable storage, scanner and retention/legal-hold controls unavailable.",
+    "Human IdP/session/SaaS surfaces absent.",
+    "Production infrastructure, observability, staging, load/HA, recovery and privacy operations absent.",
+    "External consumer contracts, reviewed PR, protected merge and deployment absent."
+  ]
 }
