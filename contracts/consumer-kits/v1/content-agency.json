@@ -1,0 +1,68 @@
+{
+  "schema_version": "v1",
+  "kit_version": "1.0.0",
+  "consumer_product": "content_agency",
+  "provider_product": "la_muni_rag",
+  "openapi_document": "contracts/openapi/v1/openapi.json",
+  "interactions": [
+    {
+      "name": "claim_pack_delivery",
+      "method": "POST",
+      "path": "/api/v1/claim-packs",
+      "required_headers": [
+        "Authorization",
+        "Idempotency-Key",
+        "X-Request-Id"
+      ],
+      "success_statuses": [
+        200
+      ],
+      "error_statuses": [
+        400,
+        401,
+        403,
+        409,
+        429,
+        500
+      ],
+      "request": {
+        "schema_file": "claim-pack-request.schema.json",
+        "example_file": "claim-pack-request.valid.json"
+      },
+      "response": {
+        "schema_file": "claim-pack.schema.json",
+        "example_file": "claim-pack.valid.json"
+      },
+      "error_schema_file": "api-error.schema.json",
+      "error_example_files": [
+        "api-error.valid.json",
+        "api-error-unauthorized.valid.json"
+      ],
+      "required_response_headers": [
+        "X-Request-Id"
+      ]
+    }
+  ],
+  "forbidden_response_fields": [
+    "copy",
+    "artifacts",
+    "content_calendar",
+    "channels",
+    "publication_tasks",
+    "campaign_strategy",
+    "electoral_segments",
+    "approved_message",
+    "campaign_id",
+    "community_id"
+  ],
+  "preservation_rules": [
+    "Preserve claim_pack_id, tenant_id, request_id, schema_version and provenance identities.",
+    "Preserve citation refs, source links, jurisdiction, legal disclaimer and allowed paraphrase scope.",
+    "Reject or review expired, superseded, contradictory or out-of-jurisdiction claims.",
+    "Retry network failures with the same Idempotency-Key and never add uncited claims under the same pack identity."
+  ],
+  "limitations": [
+    "This provider-side kit does not prove that the Content Agency repository consumes the contracts correctly.",
+    "The kit does not authorize content generation, campaign strategy, publication or production traffic."
+  ]
+}

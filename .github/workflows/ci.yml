@@ -47,6 +47,9 @@ jobs:
       - name: Validate integration contracts
         run: npm run contracts:validate
 
+      - name: Verify portable consumer contract kits
+        run: npm run contracts:consumer-verify
+
       - name: Validate source inventory
         run: npm run source-inventory:validate
 
@@ -70,6 +73,9 @@ jobs:
 
       - name: Run EVAL-CONTENT-INTEGRATION-001
         run: npm run eval:content-integration
+
+      - name: Run EVAL-CONSUMER-CONTRACT-KIT-001
+        run: npm run eval:consumer-contract-kit
 
       - name: Run EVAL-CONFLICT-001
         run: npm run eval:conflict

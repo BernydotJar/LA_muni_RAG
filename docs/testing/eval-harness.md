@@ -924,3 +924,28 @@ Not proved:
 
 Therefore `EVAL-EVIDENCE-BUNDLE-API-001` is
 `passed_for_conservative_dedicated_bundle_with_real_corpus_human_resolution_consumer_operations_and_deployment_limitations`.
+
+## EVAL-CONSUMER-CONTRACT-KIT-001
+
+Current scope: portable provider-side contract manifests for OS Electoral and
+Content Agency.
+
+Proved:
+
+- two closed manifests expose five bounded interactions;
+- every interaction matches the exact OpenAPI route, method, required headers,
+  success/error statuses and advertised schemas;
+- canonical request, response and error examples validate against draft 2020-12;
+- response examples cannot contain consumer-owned campaign/content fields;
+- manifests do not contain credentials, database URLs or shared-storage paths;
+- the CLI is deterministic, offline and executable in CI.
+
+Not proved:
+
+- installation or execution inside either consumer repository;
+- consumer persistence of IDs, versions, citations, disclaimers and limitations;
+- cross-repository retries, supersession/revocation or production traffic;
+- browser E2E, staging, merge or deployment.
+
+Therefore `EVAL-CONSUMER-CONTRACT-KIT-001` is
+`passed_for_portable_provider_contract_manifests_with_external_consumer_and_e2e_limitations`.

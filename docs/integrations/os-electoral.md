@@ -194,6 +194,10 @@ Un fallo de red se reintenta con la misma key. OS Electoral no debe fabricar una
 - OS Electoral documenta bounded contexts de campaign/governance y contratos internos read-only; no se observó cliente de LA Muni RAG.
 - Por tanto, este documento no autoriza tráfico de producción ni afirma interoperabilidad.
 
+## Kit portable
+
+`contracts/consumer-kits/v1/os-electoral.json` fija cuatro interacciones y puede verificarse sin imports internos mediante `npm run contracts:consumer-verify`. El kit no prueba que OS Electoral preserve IDs, versiones, citas, gaps o limitations en su propio store.
+
 ## Gates de implementación
 
 La integración sólo cambia a operativa cuando:

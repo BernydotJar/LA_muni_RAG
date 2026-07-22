@@ -279,6 +279,7 @@ http://localhost:4010
 
 ```bash
 npm run contracts:validate
+npm run contracts:consumer-verify
 npm run eval:search-api
 npm run eval:evidence-bundle-api
 npm run typecheck
@@ -356,3 +357,5 @@ authenticated enqueue/status contract, and
 version/review/approval boundary, and
 [EvidenceGapRequest API v1](docs/api/evidence-gap-requests-v1.md) for unresolved
 documentary research intake, and [Search and EvidenceBundle API v1](docs/api/search-evidence-v1.md) for explicit retrieval modes, evidence classification, and conservative bundle construction.
+
+See [Portable consumer contract kits](docs/integrations/consumer-contract-kits.md) for the OS Electoral and Content Agency provider-side manifests and limitations.

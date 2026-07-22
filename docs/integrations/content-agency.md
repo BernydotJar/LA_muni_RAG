@@ -143,6 +143,10 @@ LA Muni RAG no recibe este paquete como system of record. Si se usa para audit c
 - Su OpenAPI observado no contiene ClaimPack ni un cliente de LA Muni RAG. Además, la evidencia proviene de una feature branch, por lo que no se asume integrada a su `main`.
 - En consecuencia, el provider de LA Muni RAG es operativo localmente, pero la integración end-to-end con Content Agency sigue incompleta.
 
+## Kit portable
+
+`contracts/consumer-kits/v1/content-agency.json` fija la entrega de ClaimPack y puede verificarse sin imports internos mediante `npm run contracts:consumer-verify`. El kit no prueba que Content Agency preserve el disclaimer, vigencia, citation refs y límites de paráfrasis en su propio store.
+
 ## Gates de implementación
 
 1. JSON Schema/OpenAPI de ClaimPack y su request están versionados y pasan validación local.
