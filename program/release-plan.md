@@ -6,7 +6,7 @@ Updated: 2026-07-23T05:45:00Z
 
 ```text
 functional_branch: feature/gcp-cloudsql-staging-v1
-functional_sha: pending_feature074_cost_guard_commit
+functional_sha: afa0a427080ed7b9555a9ee5a3c7c77d9a2067cd
 remote_base_sha_verified: 7a00f3ee902cb6dd41c153d3ebfb7c943b50f7a1
 prior_backend_ci: run 29980032034 success
 prior_terraform_ci: run 29980032069 success

@@ -13,19 +13,19 @@ program:
 baseline:
   origin_main_commit: 4950ba3c24dbe7d9891d5cec8d7ba5f57db3ef9c
   observed_branch: feature/gcp-cloudsql-staging-v1
-  observed_commit: 7a00f3ee902cb6dd41c153d3ebfb7c943b50f7a1
-  feature_implementation_commit: 66b41b943242d9c4317d35f125de1cd617ebb6e4
-  local_program_branch_commit: 66b41b943242d9c4317d35f125de1cd617ebb6e4
+  observed_commit: afa0a427080ed7b9555a9ee5a3c7c77d9a2067cd
+  feature_implementation_commit: afa0a427080ed7b9555a9ee5a3c7c77d9a2067cd
+  local_program_branch_commit: afa0a427080ed7b9555a9ee5a3c7c77d9a2067cd
   upstream: origin/feature/gcp-cloudsql-staging-v1
   upstream_commit: 7a00f3ee902cb6dd41c153d3ebfb7c943b50f7a1
-  upstream_state: exact_feature_head_published_remote_ci_passed
+  upstream_state: prior_feature074_base_published_checkpoint_pending_push
   divergence:
-    ahead: 0
+    ahead: 1
     behind: 0
   divergence_from_origin_main:
     ahead: 49
     behind: 0
-  worktree: feature074_cost_guard_changes_pending_commit
+  worktree: program_checkpoint_changes_pending_commit
   repository_instructions:
   - AGENTS.md
   - RTK.md
@@ -1387,7 +1387,7 @@ tasks:
   - BLK-GCP-SPEND-074
   result:
     branch: feature/gcp-cloudsql-staging-v1
-    base_commit: 7a00f3ee902cb6dd41c153d3ebfb7c943b50f7a1
+    functional_commit: afa0a427080ed7b9555a9ee5a3c7c77d9a2067cd
     project_id: rag-municipalidades
     project_number: 1059368783280
     region: us-central1

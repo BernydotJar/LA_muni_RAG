@@ -2,7 +2,7 @@
   "schema_version": "1.13.0",
   "generated_at": "2026-07-23T05:45:00Z",
   "branch": "feature/gcp-cloudsql-staging-v1",
-  "functional_head": "pending_feature074_cost_guard_commit",
+  "functional_head": "afa0a427080ed7b9555a9ee5a3c7c77d9a2067cd",
   "source": "observed command outputs only",
   "status": "PARTIAL_WITH_DOCUMENTED_BLOCKERS",
   "tests": {
@@ -68,7 +68,7 @@
   },
   "publication": {
     "branch": "feature/gcp-cloudsql-staging-v1",
-    "functional_sha": "pending_feature074_cost_guard_commit",
+    "functional_sha": "afa0a427080ed7b9555a9ee5a3c7c77d9a2067cd",
     "remote_base_sha_verified": "7a00f3ee902cb6dd41c153d3ebfb7c943b50f7a1",
     "prior_backend_ci_run_id": 29980032034,
     "prior_terraform_ci_run_id": 29980032069,

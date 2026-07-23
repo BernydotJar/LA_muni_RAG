@@ -10,9 +10,9 @@ Program status: **PARTIAL WITH DOCUMENTED BLOCKERS — Feature 074 provides a gu
 workspace_id: 090ec1e4-f130-4801-addd-f6ecb198744a
 root: /workspace
 branch: feature/gcp-cloudsql-staging-v1
-functional_base_commit: 7a00f3ee902cb6dd41c153d3ebfb7c943b50f7a1
-remote_functional_ref: 7a00f3ee902cb6dd41c153d3ebfb7c943b50f7a1
-working_tree: implementation changes pending commit
+functional_commit: afa0a427080ed7b9555a9ee5a3c7c77d9a2067cd
+remote_base_ref_before_push: 7a00f3ee902cb6dd41c153d3ebfb7c943b50f7a1
+working_tree: program checkpoint changes pending commit
 pull_request: 24 draft
 merged: false
 cloud_staging_deployed: false
@@ -113,7 +113,7 @@ Synthetic fixtures, offline plans and database gates do not change those values.
 
 ## Next execution sequence
 
-1. Complete Feature 074 regression, checkpoint commit, push and remote CI observation.
+1. Push the Feature 074 functional and program checkpoint commits and observe remote CI.
 2. Obtain billing-owner, actual budget-alert, residency, IAM, Terraform-state and explicit spend authorization.
 3. Re-review current Cloud SQL pricing and produce a human-reviewed resource-bearing plan only.
 4. After separate authorization, provision a short synthetic-only Cloud SQL pilot and execute the existing twenty journeys.
