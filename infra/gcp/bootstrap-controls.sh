@@ -33,12 +33,18 @@ billing_account_id="${billing_account_name#billingAccounts/}"
 billing_currency="$(gcloud billing accounts describe "$billing_account_id" --format='value(currencyCode)')"
 [[ -n "$billing_currency" ]] || { echo "Unable to determine billing-account currency." >&2; exit 2; }
 if [[ -z "$BUDGET_AMOUNT" ]]; then
-  if [[ "$billing_currency" == "USD" ]]; then
-    BUDGET_AMOUNT="1USD"
-  else
-    echo "Billing currency is $billing_currency. Set BUDGET_AMOUNT to the approved account-currency equivalent of USD 1." >&2
-    exit 2
-  fi
+  case "$billing_currency" in
+    USD)
+      BUDGET_AMOUNT="1USD"
+      ;;
+    COP)
+      BUDGET_AMOUNT="4000COP"
+      ;;
+    *)
+      echo "Billing currency is $billing_currency. Set BUDGET_AMOUNT to the approved account-currency pilot amount." >&2
+      exit 2
+      ;;
+  esac
 fi
 [[ "$BUDGET_AMOUNT" == *"$billing_currency" ]] || {
   echo "BUDGET_AMOUNT=$BUDGET_AMOUNT must use billing-account currency $billing_currency." >&2
