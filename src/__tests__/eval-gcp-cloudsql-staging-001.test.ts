@@ -123,6 +123,7 @@ describe("EVAL-GCP-CLOUDSQL-STAGING-001", () => {
     assert.match(pilot, /max_pilot_runtime_hours\s+= 4/);
     assert.match(pilot, /allow_billable_resources\s+= false/);
     assert.match(outputs, /not a GCP hard spending cap/i);
+    assert.match(workflow, /declared_pilot_budget_usd=1/);
     assert.match(workflow, /reviewed_hourly_compute_usd=0\.06755/);
     assert.match(pkg, /eval:gcp-cloudsql-staging/);
     assert.match(pkg, /gcp:cloudsql:preflight/);
