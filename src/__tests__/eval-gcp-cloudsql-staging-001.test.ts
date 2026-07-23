@@ -130,4 +130,19 @@ describe("EVAL-GCP-CLOUDSQL-STAGING-001", () => {
     assert.match(ci, /Run EVAL-GCP-CLOUDSQL-STAGING-001/);
   });
 
+  it("recovers and preserves bucket IAM administration before removing legacy bindings", async () => {
+    const bootstrap = await read("infra/gcp/bootstrap-controls.sh");
+    assert.match(bootstrap, /DEPLOYMENT_PRINCIPAL is required in --apply mode/);
+    assert.match(bootstrap, /Temporarily granting project-level Storage Admin/);
+    assert.match(bootstrap, /gcloud projects add-iam-policy-binding[\s\S]*--role=roles\/storage\.admin/);
+    assert.match(bootstrap, /gcloud projects remove-iam-policy-binding[\s\S]*--role=roles\/storage\.admin/);
+    assert.match(bootstrap, /gcloud storage buckets add-iam-policy-binding[\s\S]*--role=roles\/storage\.admin/);
+    assert.doesNotMatch(bootstrap, /roles\/storage\.objectAdmin/);
+    const bucketAdmin = bootstrap.indexOf("gcloud storage buckets add-iam-policy-binding");
+    const legacyRemoval = bootstrap.indexOf("legacy_bindings=(");
+    assert.ok(bucketAdmin >= 0 && legacyRemoval > bucketAdmin, "bucket admin must be established before legacy bindings are removed");
+    assert.match(bootstrap, /trap cleanup_temporary_project_storage_admin EXIT/);
+    assert.match(bootstrap, /cleanup_temporary_project_storage_admin\ntrap - EXIT/);
+  });
+
 });

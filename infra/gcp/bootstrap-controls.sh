@@ -10,10 +10,21 @@ BUDGET_AMOUNT="${BUDGET_AMOUNT:-}"
 STATE_BUCKET="${TF_STATE_BUCKET:-la-muni-rag-tfstate-1059368783280}"
 DEPLOYMENT_PRINCIPAL="${DEPLOYMENT_PRINCIPAL:-}"
 MODE="${1:---check}"
+temporary_project_storage_admin=false
 
 fail() {
   echo "$1" >&2
   exit 2
+}
+
+cleanup_temporary_project_storage_admin() {
+  if [[ "$temporary_project_storage_admin" == "true" && -n "$DEPLOYMENT_PRINCIPAL" ]]; then
+    gcloud projects remove-iam-policy-binding "$PROJECT_ID" \
+      --member="$DEPLOYMENT_PRINCIPAL" \
+      --role=roles/storage.admin \
+      --quiet >/dev/null 2>&1 || true
+    temporary_project_storage_admin=false
+  fi
 }
 
 if [[ "$MODE" != "--check" && "$MODE" != "--apply" ]]; then
@@ -21,6 +32,9 @@ if [[ "$MODE" != "--check" && "$MODE" != "--apply" ]]; then
 fi
 if [[ "$MODE" == "--apply" && "${GCP_BOOTSTRAP_CONFIRM:-}" != "APPLY_LA_MUNI_GCP_CONTROLS" ]]; then
   fail "Refusing mutation without GCP_BOOTSTRAP_CONFIRM=APPLY_LA_MUNI_GCP_CONTROLS"
+fi
+if [[ "$MODE" == "--apply" && -z "$DEPLOYMENT_PRINCIPAL" ]]; then
+  fail "DEPLOYMENT_PRINCIPAL is required in --apply mode."
 fi
 for command_name in gcloud jq; do
   command -v "$command_name" >/dev/null || fail "Missing $command_name"
@@ -150,13 +164,42 @@ if [[ "$MODE" == "--apply" ]]; then
     --public-access-prevention \
     --versioning \
     --update-labels=application=la-muni-rag,environment=staging,managed-by=terraform,owner=eduardo-sacahui
-  if [[ -n "$DEPLOYMENT_PRINCIPAL" ]]; then
-    gcloud storage buckets add-iam-policy-binding "$bucket_url" \
-      --member="$DEPLOYMENT_PRINCIPAL" \
-      --role=roles/storage.objectAdmin \
-      --project="$PROJECT_ID" \
-      --quiet
+
+  if ! gcloud storage buckets get-iam-policy "$bucket_url" --project="$PROJECT_ID" >/dev/null 2>&1; then
+    if ! gcloud projects get-iam-policy "$PROJECT_ID" --format=json | jq -e \
+      --arg principal "$DEPLOYMENT_PRINCIPAL" '
+        any(.bindings[]?;
+          .role == "roles/storage.admin" and
+          any(.members[]?; . == $principal))
+      ' >/dev/null; then
+      echo "Temporarily granting project-level Storage Admin to recover bucket IAM administration."
+      gcloud projects add-iam-policy-binding "$PROJECT_ID" \
+        --member="$DEPLOYMENT_PRINCIPAL" \
+        --role=roles/storage.admin \
+        --quiet >/dev/null
+      temporary_project_storage_admin=true
+      trap cleanup_temporary_project_storage_admin EXIT
+    fi
+
+    bucket_policy_ready=false
+    for _ in 1 2 3 4 5 6; do
+      if gcloud storage buckets get-iam-policy "$bucket_url" --project="$PROJECT_ID" >/dev/null 2>&1; then
+        bucket_policy_ready=true
+        break
+      fi
+      sleep 5
+    done
+    [[ "$bucket_policy_ready" == "true" ]] || fail "Temporary Storage Admin did not propagate; retry after IAM propagation."
   fi
+
+  gcloud storage buckets add-iam-policy-binding "$bucket_url" \
+    --member="$DEPLOYMENT_PRINCIPAL" \
+    --role=roles/storage.admin \
+    --project="$PROJECT_ID" \
+    --quiet >/dev/null
+
+  gcloud storage buckets get-iam-policy "$bucket_url" --project="$PROJECT_ID" >/dev/null || \
+    fail "Bucket-level Storage Admin binding was not effective."
 
   legacy_bindings=(
     "projectEditor:$PROJECT_ID|roles/storage.legacyBucketOwner"
@@ -204,11 +247,11 @@ fi
 if [[ -n "$DEPLOYMENT_PRINCIPAL" ]]; then
   if ! jq -e --arg principal "$DEPLOYMENT_PRINCIPAL" '
     any(.bindings[]?;
-      .role == "roles/storage.objectAdmin" and
+      .role == "roles/storage.admin" and
       any(.members[]?; . == $principal))
   ' >/dev/null <<<"$bucket_policy_json"; then
     printf '%s\n' "$bucket_policy_json" | jq . >&2
-    fail "DEPLOYMENT_PRINCIPAL does not have roles/storage.objectAdmin on the state bucket."
+    fail "DEPLOYMENT_PRINCIPAL does not have roles/storage.admin on the state bucket."
   fi
 else
   echo "WARNING: DEPLOYMENT_PRINCIPAL is unset; deployment-principal access was not verified." >&2
@@ -220,5 +263,8 @@ bucket = "$STATE_BUCKET"
 prefix = "cloudsql-staging"
 BACKEND
 chmod 600 "$ROOT_DIR/infra/gcp/cloudsql-staging/backend.gcs.hcl"
+
+cleanup_temporary_project_storage_admin
+trap - EXIT
 
 echo "Administrative controls verified. Cloud SQL was not created. terraform apply was not run."
