@@ -162,6 +162,39 @@ variable "data_residency_approved" {
   default     = false
 }
 
+variable "declared_pilot_budget_usd" {
+  description = "Maximum human-approved pilot budget. This is a plan guard, not a GCP hard spending cap."
+  type        = number
+  default     = 0
+
+  validation {
+    condition     = var.declared_pilot_budget_usd >= 0 && var.declared_pilot_budget_usd <= 500
+    error_message = "declared_pilot_budget_usd must be between 0 and 500."
+  }
+}
+
+variable "reviewed_hourly_compute_usd" {
+  description = "Reviewed hourly Cloud SQL compute and memory estimate for the selected tier and region."
+  type        = number
+  default     = 0
+
+  validation {
+    condition     = var.reviewed_hourly_compute_usd >= 0 && var.reviewed_hourly_compute_usd <= 10
+    error_message = "reviewed_hourly_compute_usd must be between 0 and 10."
+  }
+}
+
+variable "max_pilot_runtime_hours" {
+  description = "Maximum approved runtime window for the cost-bounded pilot before stop or teardown review."
+  type        = number
+  default     = 4
+
+  validation {
+    condition     = var.max_pilot_runtime_hours > 0 && var.max_pilot_runtime_hours <= 24
+    error_message = "max_pilot_runtime_hours must be greater than 0 and no more than 24."
+  }
+}
+
 variable "allow_destroy" {
   description = "Human gate for disabling deletion protection before an intentional destroy."
   type        = bool

@@ -2,19 +2,37 @@
 
 Status: plan-ready only; no GCP resource has been created by this feature.
 
+## Recorded pilot inputs
+
+```text
+project_id: rag-municipalidades
+project_number: 1059368783280
+region: us-central1
+connectivity: AUTH_PROXY_PUBLIC pilot
+proposed_pilot_budget_usd: 5
+reviewed_hourly_compute_usd: 0.06755
+max_pilot_runtime_hours: 4
+estimated_compute_and_memory_usd: 0.2702
+billable_authorization: absent
+```
+
+The estimate excludes storage, backups, network, taxes and other charges. It must be
+refreshed from official pricing before a resource-bearing plan. A budget alert does not
+stop spend automatically, and the Terraform estimate is not a billing hard cap.
+
 ## Human approvals required before any billable action
 
-Record the existing GCP project, billing owner, region, budget and approvers before any
-resource-bearing plan is accepted. The complete gate requires:
+The complete gate still requires:
 
-1. existing project and billing-owner approval;
-2. monthly staging budget and alerts;
+1. billing-owner confirmation for the existing project;
+2. an actual GCP budget and alerts, plus an approved stop/teardown owner;
 3. region and data-residency approval;
 4. platform, database, security and release approvers;
-5. VPC/private-services-access decision or a time-bounded Auth Proxy public pilot;
+5. approval of the time-bounded Auth Proxy public pilot;
 6. Terraform state backend and access policy;
 7. retention, deletion, PITR and incident ownership;
-8. confirmation that only synthetic/non-production fixtures will be used.
+8. confirmation that only synthetic/non-production fixtures will be used;
+9. an explicit spend authorization separate from the project values supplied above.
 
 ## Provisioning boundary
 
@@ -23,10 +41,14 @@ assertions. Committed defaults produce zero resources. The approved plan is cons
 to Cloud SQL API enablement and one protected PostgreSQL instance. Infrastructure
 mutation remains a separate human action outside repository automation.
 
+Use `infra/gcp/cloudsql-staging/rag-municipalidades.pilot.tfvars.example` as the review
+basis. All billable and approval gates remain `false` in that file. Do not edit the
+committed example into an enabled configuration.
+
 The target is PostgreSQL 16 Enterprise with pgvector availability, backups, PITR, IAM
 database authentication, bounded SSD growth, connector enforcement, Query Insights and
-both Terraform/API deletion protection. Private IP is the default. `AUTH_PROXY_PUBLIC`
-is a pilot exception with no authorized networks.
+both Terraform/API deletion protection. Private IP is the long-term default.
+`AUTH_PROXY_PUBLIC` is a time-bounded pilot exception with no authorized networks.
 
 ## Temporary staging operator
 
@@ -47,7 +69,7 @@ cloud-sql-proxy \
   --address 127.0.0.1 \
   --port 5433 \
   --auto-iam-authn \
-  PROJECT_ID:REGION:INSTANCE_NAME
+  rag-municipalidades:us-central1:la-muni-rag-staging
 ```
 
 The proxy uses IAM authorization and an encrypted connection to Cloud SQL. No browser or
@@ -61,7 +83,7 @@ when the proxy uses automatic IAM authentication:
 ```bash
 export GCP_CLOUDSQL_CONFIRM_STAGING=true
 export STAGING_ADMIN_DATABASE_URL='postgresql://iam-user@example.com@127.0.0.1:5433/postgres'
-node --import tsx src/cli/verifyGcpCloudSqlStaging.ts
+npm run gcp:cloudsql:preflight
 ```
 
 Preflight fails unless the endpoint is loopback, PostgreSQL is version 16 or newer,
@@ -70,8 +92,8 @@ the staging runner, the Cloud SQL IAM flag is visible and no unrelated database 
 
 ## Execute the established staging matrix
 
-Only after preflight and approval, execute the exact provider-side matrix already used
-locally and in CI:
+Only after preflight, explicit spend approval and a human start-time record, execute the
+exact provider-side matrix already used locally and in CI:
 
 ```bash
 export STAGING_CONFIRM_EPHEMERAL=true
@@ -88,6 +110,15 @@ The instance must be dedicated to this synthetic staging run. Do not point the r
 production, shared development, an instance containing unrelated databases or a project
 without explicit cost authorization.
 
+## Four-hour pilot boundary
+
+1. Record start time, approver and current price review.
+2. Execute preflight and the staging runner.
+3. Record actual runtime, logs and receipt.
+4. Stop or initiate the protected teardown review before four elapsed hours.
+5. Verify billing export or console observations when available.
+6. Treat any overrun, failed cleanup or missing owner as an incident and stop work.
+
 ## After the run
 
 1. retain only the sanitized SHA-bound receipt;
@@ -95,6 +126,5 @@ without explicit cost authorization.
 3. revoke temporary `cloudsqlsuperuser` membership;
 4. review Cloud Audit Logs and Query Insights without retaining query/document content;
 5. record actual cost and runtime;
-6. decide explicitly whether to keep the protected staging instance or initiate the
-   separate deletion-protection and removal procedure;
+6. stop the instance or initiate the separate deletion-protection and removal procedure;
 7. never treat this as real-corpus, browser, load/HA or production evidence.

@@ -1,13 +1,13 @@
 {
-  "schema_version": "1.12.0",
-  "generated_at": "2026-07-22T21:54:35Z",
-  "branch": "feature/ephemeral-staging-runner-v1",
-  "functional_head": "4f6ab306d383f6d74808b393a88ff8172d666b5b",
+  "schema_version": "1.13.0",
+  "generated_at": "2026-07-23T05:45:00Z",
+  "branch": "feature/gcp-cloudsql-staging-v1",
+  "functional_head": "pending_feature074_cost_guard_commit",
   "source": "observed command outputs only",
   "status": "PARTIAL_WITH_DOCUMENTED_BLOCKERS",
   "tests": {
-    "total": 856,
-    "passed": 854,
+    "total": 869,
+    "passed": 867,
     "failed": 0,
     "skipped": 2
   },
@@ -37,7 +37,18 @@
     "api_system_journeys_passed": 20,
     "databases_destroyed": 4,
     "runtime_roles_destroyed": 3,
-    "cleanup_complete": true
+    "cleanup_complete": true,
+    "gcp_cloudsql_plan": {
+      "project_id": "rag-municipalidades",
+      "project_number": "1059368783280",
+      "region": "us-central1",
+      "default_resource_changes": 0,
+      "approved_offline_resource_count": 2,
+      "declared_pilot_budget_usd": 5,
+      "estimated_compute_and_memory_usd": 0.2702,
+      "max_pilot_runtime_hours": 4,
+      "managed_environment_executed": false
+    }
   },
   "hard_evals": {
     "ephemeral_staging_e2e": "13/13",
@@ -46,7 +57,8 @@
     "evidence_bundle_api": "24/24",
     "production_public_surface": "33/33",
     "public_query_gateway": "23/23",
-    "ephemeral_staging_runner": "14/14"
+    "ephemeral_staging_runner": "14/14",
+    "gcp_cloudsql_staging": "13/13"
   },
   "source_inventory": {
     "total": 17,
@@ -55,13 +67,14 @@
     "ingested": 0
   },
   "publication": {
-    "branch": "feature/ephemeral-staging-runner-v1",
-    "functional_sha": "4f6ab306d383f6d74808b393a88ff8172d666b5b",
-    "remote_sha_verified": true,
-    "ci_run_id": 29959965725,
-    "ci_status": "completed",
-    "ci_conclusion": "success",
-    "pr": null,
+    "branch": "feature/gcp-cloudsql-staging-v1",
+    "functional_sha": "pending_feature074_cost_guard_commit",
+    "remote_base_sha_verified": "7a00f3ee902cb6dd41c153d3ebfb7c943b50f7a1",
+    "prior_backend_ci_run_id": 29980032034,
+    "prior_terraform_ci_run_id": 29980032069,
+    "current_ci_status": "not_started_before_commit",
+    "pr": 24,
+    "pr_state": "draft",
     "merged": false,
     "deployed": false
   },
@@ -73,15 +86,19 @@
     "cloud_resources_created": 0,
     "billable_actions": 0,
     "amount": 0,
-    "currency": "USD"
+    "currency": "USD",
+    "proposed_pilot_budget_usd": 5,
+    "estimated_compute_and_memory_usd": 0.2702,
+    "estimate_is_hard_cap": false
   },
   "duration_seconds": null,
   "token_usage": null,
   "remaining_blockers": [
+    "No billing-owner, actual budget-alert, residency, IAM/state-backend or explicit spend authorization.",
     "No authorized real corpus or real ingestion.",
     "Public gateway remains disabled and undeployed; no edge/load evidence exists.",
     "No human IdP/BFF/session or authenticated role-aware UI; twelve browser journeys remain blocked.",
     "No external consumer repository suite executed.",
-    "No GCP staging deployment, observability, HA/recovery/privacy operation, merge or production deployment."
+    "No managed GCP staging execution, observability, HA/recovery/privacy operation, protected merge or production deployment."
   ]
 }

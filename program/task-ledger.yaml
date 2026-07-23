@@ -1,5 +1,5 @@
 schema_version: 1
-updated_at: '2026-07-22T19:34:37Z'
+updated_at: '2026-07-23T05:45:00Z'
 runtime:
   type: yaml_fallback
   farmtable_available: false
@@ -1630,7 +1630,52 @@ tasks:
   branch: feature/public-query-gateway-v1
   pr: null
   ci: remote_success_run_29955124279
+- id: WS10-GCP-CLOUDSQL-STAGING-001
+  workstream: WS-10
+  title: Define a guarded cost-bounded Cloud SQL staging target
+  status: completed_with_limitations
+  owner: /root
+  depends_on:
+  - WS10-EPHEMERAL-STAGING-RUNNER-001
+  blockers:
+  - BLK-GCP-SPEND-074
+  result:
+    branch: feature/gcp-cloudsql-staging-v1
+    base_commit: 7a00f3ee902cb6dd41c153d3ebfb7c943b50f7a1
+    project_id: rag-municipalidades
+    project_number: 1059368783280
+    project_specific_default_plan_resources: 0
+    approved_offline_shape: google_project_service.sqladmin[0] and google_sql_database_instance.staging[0]
+    declared_pilot_budget_usd: 5
+    estimated_compute_and_memory_usd: 0.2702
+    max_pilot_runtime_hours: 4
+    eval: 13/13
+  files:
+  - infra/gcp/cloudsql-staging/
+  - src/gcp/cloudSqlStaging.ts
+  - src/cli/verifyGcpCloudSqlStaging.ts
+  - src/__tests__/eval-gcp-cloudsql-staging-001.test.ts
+  - docs/operations/gcp-cloudsql-staging-runbook.md
+  - docs/decisions/074-gcp-cloudsql-staging-plan.md
+  evidence:
+  - Terraform 1.15.8 fmt/init/validate passed.
+  - Project-specific zero plan contained zero resource changes.
+  - Approved offline shape contained exactly two addresses and estimated USD 0.2702 compute/memory for four hours.
+  - EVAL-GCP-CLOUDSQL-STAGING-001 13/13 and EVAL-PRODUCTION-PUBLIC-SURFACE-001 33/33 passed.
+  - Existing PR #24 is draft; prior functional base CI runs 29980032034 and 29980032069 succeeded.
+  limitations:
+  - No GCP mutation, resource, cost, apply, managed staging execution, merge or deployment.
+  - Billing owner, actual budget alerts, residency, IAM/state backend and explicit spend authorization remain required.
+  branch: feature/gcp-cloudsql-staging-v1
+  pr: 24
+  ci: pending_for_cost_guard_checkpoint
 blockers:
+- id: BLK-GCP-SPEND-074
+  affects:
+  - WS10-GCP-CLOUDSQL-STAGING-001
+  state: open
+  condition: Project ID/number, region, proposed budget and pilot connectivity are known, but no explicit paid action is authorized.
+  next_safe_action: Obtain billing-owner, actual budget-alert, residency, IAM, Terraform-state and explicit spend approval, then re-review pricing.
 - id: BLK-CORPUS-OPS-001
   affects:
   - WS02-CORPUS-ACQUISITION-001

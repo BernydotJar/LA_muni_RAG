@@ -1,83 +1,101 @@
 # LA Muni RAG — Current Program State
 
-Updated: 2026-07-22T21:54:35Z
+Updated: 2026-07-23T05:45:00Z
 
-Program status: **PARTIAL WITH DOCUMENTED BLOCKERS — Feature 073 executes all twenty API/system staging journeys in disposable PostgreSQL and proves cleanup, while real corpus, browser identity/UI, external consumers, cloud staging and production release remain absent**
+Program status: **PARTIAL WITH DOCUMENTED BLOCKERS — Feature 074 provides a guarded, cost-bounded Cloud SQL staging plan for the supplied GCP project, while billable authorization, real corpus, human identity, managed staging execution and production release remain absent**
 
 ## Authoritative checkout
 
 ```text
 workspace_id: 090ec1e4-f130-4801-addd-f6ecb198744a
 root: /workspace
-branch: feature/ephemeral-staging-runner-v1
-functional_commit: 4f6ab306d383f6d74808b393a88ff8172d666b5b
-remote_functional_ref: 4f6ab306d383f6d74808b393a88ff8172d666b5b
-pushed: true
-remote_ci_run: 29959965725 success
-PR_open: false
+branch: feature/gcp-cloudsql-staging-v1
+functional_base_commit: 7a00f3ee902cb6dd41c153d3ebfb7c943b50f7a1
+remote_functional_ref: 7a00f3ee902cb6dd41c153d3ebfb7c943b50f7a1
+working_tree: implementation changes pending commit
+pull_request: 24 draft
 merged: false
 cloud_staging_deployed: false
 production_deployed: false
-observed_in_production: false
 cloud_resources_created: false
 billable_actions: 0
+cost_generated: USD 0
+preserved_pre_sync_stash: stash@{0}
 ```
 
-`AGENTS.md` and `RTK.md` remain authoritative. Merge, deployment, paid infrastructure, project/billing creation, production credentials and legal conclusions remain human-gated.
+`AGENTS.md` and `RTK.md` remain authoritative. Merge, deployment, paid infrastructure, project/billing mutation, production credentials and legal conclusions remain human-gated.
 
-## Feature 073 — ephemeral staging runner v1
+## Feature 074 — guarded Cloud SQL staging v1
 
-The canonical Feature 070 staging plan is now executable. The runner:
+The plan-only module now records the project-owner inputs without treating them as authorization:
 
-- validates exact coverage of all twenty runnable API/system journeys;
-- preserves all twelve browser journeys as explicitly blocked;
-- requires a dedicated loopback PostgreSQL admin endpoint and explicit ephemeral confirmation;
-- refuses unrelated databases and preserves an unapproved dirty environment;
-- creates four fixed `_test` databases and three non-owner runtime roles;
-- applies repository-controlled migrations/runtime gates and executes compiled HTTP/service smokes;
-- uses exact viewer, document-manager, platform-admin, tenant-admin, integration-client, procedure-author, reviewer, approver and case-operator personas;
-- drops and recreates the catalog database to verify reset-to-empty behavior;
-- disables local dotenv and does not invoke a shell for child processes;
-- requires a clean Git worktree so the receipt cites the exact functional SHA;
-- validates a closed, sanitized receipt before writing mode `0600` under ignored `artifacts/staging/`;
-- destroys run-owned databases and roles in `finally` and re-queries the postcondition.
+```text
+project_id: rag-municipalidades
+project_number: 1059368783280
+region: us-central1
+connectivity: AUTH_PROXY_PUBLIC time-bounded pilot
+proposed_pilot_budget_usd: 5
+selected_tier: db-custom-1-3840
+reviewed_hourly_compute_usd: 0.06755
+max_pilot_runtime_hours: 4
+estimated_compute_and_memory_usd: 0.2702
+billing_approved: false
+budget_approved: false
+data_residency_approved: false
+allow_billable_resources: false
+```
+
+The estimate excludes storage, backups, network, taxes and other charges. It is a plan guard, not a GCP hard cap. Current pricing must be re-reviewed immediately before any resource-bearing plan. A USD 5 budget does not support an always-on instance at the selected tier; only a short, explicitly approved pilot is modeled.
+
+The Terraform boundary:
+
+- produces zero resource changes with the committed project-specific example;
+- requires exact confirmation, billing, budget, residency and bounded cost review before resource planning;
+- permits exactly SQL Admin API enablement and one protected PostgreSQL 16 Enterprise instance in the approved offline shape;
+- configures no authorized network for the Auth Proxy pilot and requires connector enforcement;
+- retains IAM database authentication, backups, PITR, bounded SSD growth, Query Insights and dual deletion protection;
+- contains no SQL user, plaintext password, `terraform apply` or `terraform destroy` automation;
+- exposes named root preflight/eval scripts and a Backend CI eval step.
+
+BigQuery Vector Search was not adopted as a persistence replacement. The current product depends on PostgreSQL transactions, forced RLS, relational constraints, migrations, pgvector repositories and non-owner runtime roles. Replacing those controls is a separate architecture program, not a deployment shortcut.
 
 ## Verification
 
-Exact detached checkout `4f6ab306d383f6d74808b393a88ff8172d666b5b`:
+Current working tree:
 
 ```text
-EVAL-EPHEMERAL-STAGING-RUNNER-001: 14/14 pass
-full suite: 856 total / 854 pass / 0 fail / 2 explicit environment skips
-canonical contracts: 33 schemas / 33 examples / OpenAPI 3.1.1
-consumer contracts: 2 kits / 5 interactions / 0 issues
-staging plan: valid / 0 issues
+EVAL-GCP-CLOUDSQL-STAGING-001: 13/13 pass
+EVAL-PRODUCTION-PUBLIC-SURFACE-001: 33/33 pass
+Terraform 1.15.8 fmt: pass
+Terraform init -backend=false: pass
+Terraform validate: pass
+project-specific zero plan: 0 resource changes
+approved offline shape: exactly 2 addresses
+approved offline estimated compute/memory: USD 0.2702 / 4 hours
 typecheck: pass
-build: pass
-npm audit --audit-level=high: 0 vulnerabilities
-npm audit --omit=dev --audit-level=high: 0 vulnerabilities
-PostgreSQL: 16.14
-pgvector: 0.8.5
-API/system journeys: 20/20 pass
-browser journeys: 12/12 blocked
-created/destroyed databases: 4/4
-created/destroyed runtime roles: 3/3
-independent postcondition: 0 target databases / 0 target roles
-Backend CI 29959965725: success, including Execute ephemeral staging runner
 ```
 
-This proves the synthetic provider-side API/system staging lifecycle. It does not prove deployed cloud staging, human browser sessions, external consumers, real-corpus quality or production operation.
+The prior published Feature 074 base also has successful remote validation:
+
+```text
+Terraform validation run: 29980032069 success
+Backend CI run: 29980032034 success
+PR: #24 draft
+```
+
+No GCP API was enabled, no instance was created, no billing operation was performed and no Terraform apply occurred.
 
 ## Cumulative verified capabilities
 
 - tenant identity/RBAC and transaction-local forced RLS;
 - source/document/procedure catalog APIs;
 - artifact acceptance, ingestion jobs, leases/fencing and tenant vectors;
-- Search, conservative EvidenceBundle and public query gateway APIs;
+- Search, conservative EvidenceBundle and disabled-by-default public query gateway APIs;
 - ProcedureQuery, ClaimPack, EvidenceGap, workflow lifecycle and ProcedureCase APIs;
 - provider-side consumer contract kits;
 - fail-closed public product shell and Procedure Academy;
 - disposable PostgreSQL runner for all twenty API/system staging journeys;
+- plan-only, cost-bounded Cloud SQL staging target;
 - accessibility, corruption, restore, boundary, tenant, artifact and vector hard gates.
 
 ## Current corpus truth
@@ -91,36 +109,40 @@ records credited as ingested: 0
 records retrieval-validated against real corpus: 0
 ```
 
-Synthetic fixtures, staging receipts and database gates do not change those values. Zero documents are credited as ingested against a real, reviewed corpus. The minimum Antigua-first and comparative corpus is incomplete.
+Synthetic fixtures, offline plans and database gates do not change those values.
 
 ## Next execution sequence
 
-1. Obtain authorization for Antigua-first corpus rights, durable storage, scanner, retention/legal-hold and named reviewers.
-2. Acquire, scan, ingest and evaluate real public documents with immutable manifests.
-3. Add guarded GCP Terraform with `apply` disabled by default; create no resource before project, billing, region and budget approval.
-4. Provision isolated cloud staging only after approval and execute the same twenty journeys against deployed revisions.
-5. Configure exact gateway origins, edge protection, telemetry, load/SLO controls and `PAGES_API_URL` only after real-corpus staging passes.
-6. Coordinate consumer-side suites in OS Electoral and Content Agency.
-7. Approve and implement IdP/OIDC/PKCE/BFF/session and role-aware authenticated UI.
-8. Complete browser E2E, human accessibility, load/HA, recovery/privacy, reviewed PR, protected merge, rollout and observation.
+1. Complete Feature 074 regression, checkpoint commit, push and remote CI observation.
+2. Obtain billing-owner, actual budget-alert, residency, IAM, Terraform-state and explicit spend authorization.
+3. Re-review current Cloud SQL pricing and produce a human-reviewed resource-bearing plan only.
+4. After separate authorization, provision a short synthetic-only Cloud SQL pilot and execute the existing twenty journeys.
+5. Obtain rights, durable storage, scanner, retention/legal-hold and named reviewers for the Antigua-first corpus.
+6. Acquire, scan, ingest and judge real public evidence.
+7. Implement human IdP/BFF/session and role-aware authenticated UI, then execute browser E2E.
+8. Complete external consumer, edge/load/SLO, HA/recovery/privacy, protected merge, rollout and observation gates.
 
 ## Critical blockers
 
+- `BLK-GCP-SPEND-074`: project metadata is known, but billing-owner, budget-alert, residency, IAM/state and explicit spend authorization are absent;
 - `PQG-OPEN-ENABLEMENT-001`: public gateway cannot be enabled without authorized ingested evidence, edge controls, deployed staging and approval;
-- `BLK-CORPUS-OPS-001`: source rights, durable storage, scanner and retention/legal-hold controls are unavailable;
-- zero real documents are credited as ingested and no judged real-corpus retrieval evidence exists;
+- `BLK-CORPUS-OPS-001`: source rights, durable object storage, scanner and retention/legal-hold controls are unavailable;
+- the minimum Antigua-first and comparative corpus is incomplete;
+- zero documents are credited as ingested and no judged real-corpus retrieval evidence exists;
 - no approved human IdP/BFF/session or authenticated role-aware UI; twelve browser journeys remain blocked;
 - external consumer repositories have not executed their suites;
-- no GCP project/resources, deployed cloud staging, observability/SLO, load/HA, recovery or privacy operation exists;
-- no reviewed PR, protected merge, deployment or observation window exists.
+- no managed GCP staging execution, observability/SLO, load/HA, coordinated recovery or privacy operation exists;
+- no protected merge, production deployment or observation window exists.
 
 ## Persistent boundary assertions
 
+- A disabled project-specific Terraform example is not spend authorization.
+- A budget alert or repository estimate is not a hard spending cap.
+- An offline approved-shape plan is not a plan against live GCP state and creates no resource.
 - Disposable API/system staging is not deployed cloud staging or production.
 - The twelve browser journeys remain blocked; they were not counted as passed.
-- GCP remains architecture only; zero resources and zero billable actions were created.
 - EvidenceGap is intake-only; no research assignment, resolution lifecycle or notification workflow is implemented.
 - There is no production object store, scanner/definitions monitor or dispatcher operating.
 - Browser authentication/session architecture is not implemented. Human IdP/BFF/session, access review and role-aware navigation remain unimplemented.
 - Provider-side kits do not prove external interoperability.
-- A green feature branch and synthetic staging receipt are not production readiness.
+- A green feature branch, draft PR or synthetic receipt is not production readiness.

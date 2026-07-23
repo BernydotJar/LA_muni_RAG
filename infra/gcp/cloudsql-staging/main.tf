@@ -1,10 +1,12 @@
 locals {
-  creation_confirmed = nonsensitive(var.billable_confirmation) == "CREATE_LA_MUNI_GCP_STAGING"
-  approvals_complete = var.billing_approved && var.budget_approved && var.data_residency_approved
-  destroy_confirmed  = !var.allow_destroy || nonsensitive(var.destroy_confirmation) == "DESTROY_LA_MUNI_GCP_STAGING"
-  create_resources   = var.allow_billable_resources && local.creation_confirmed && local.approvals_complete
-  use_private_ip     = var.connectivity_mode == "PRIVATE"
-  use_public_proxy   = var.connectivity_mode == "AUTH_PROXY_PUBLIC"
+  creation_confirmed          = nonsensitive(var.billable_confirmation) == "CREATE_LA_MUNI_GCP_STAGING"
+  estimated_pilot_compute_usd = var.reviewed_hourly_compute_usd * var.max_pilot_runtime_hours
+  pilot_cost_review_complete  = var.declared_pilot_budget_usd > 0 && var.reviewed_hourly_compute_usd > 0 && local.estimated_pilot_compute_usd <= var.declared_pilot_budget_usd
+  approvals_complete          = var.billing_approved && var.budget_approved && var.data_residency_approved && local.pilot_cost_review_complete
+  destroy_confirmed           = !var.allow_destroy || nonsensitive(var.destroy_confirmation) == "DESTROY_LA_MUNI_GCP_STAGING"
+  create_resources            = var.allow_billable_resources && local.creation_confirmed && local.approvals_complete
+  use_private_ip              = var.connectivity_mode == "PRIVATE"
+  use_public_proxy            = var.connectivity_mode == "AUTH_PROXY_PUBLIC"
 }
 
 resource "google_project_service" "sqladmin" {
@@ -84,7 +86,7 @@ resource "google_sql_database_instance" "staging" {
     }
     precondition {
       condition     = local.approvals_complete
-      error_message = "billing_approved, budget_approved and data_residency_approved must all be true."
+      error_message = "Billing, budget, data-residency and bounded pilot cost review must all be complete."
     }
     precondition {
       condition     = local.destroy_confirmed

@@ -1,6 +1,6 @@
 # LA Muni RAG — Product Roadmap
 
-Updated: 2026-07-22T21:54:35Z
+Updated: 2026-07-23T05:45:00Z
 
 ## Verified feature-branch capabilities
 
@@ -37,15 +37,25 @@ Residual limitation: synthetic provider-side staging is not cloud staging, brows
 
 Exit criterion: real public evidence supports gateway and tenant APIs with judged quality.
 
-## Phase 3 — Guarded GCP staging
+## Phase 3 — Guarded GCP staging — plan checkpoint complete, execution blocked
 
-1. Add Terraform modules with `allow_billable_resources = false` by default.
-2. CI may format, validate and produce sanitized plans; automated `apply` remains forbidden.
-3. After project/billing/region/budget approval, provision isolated staging identities, Artifact Registry, Cloud Run, Cloud SQL, Storage, queueing, secrets, Cloud Armor and telemetry.
-4. Execute the same twenty journeys against immutable deployed revisions and real reviewed fixtures.
-5. Configure budgets, quotas, max instances and reviewed IAM.
+Completed:
 
-Exit criterion: isolated managed staging exists with immutable deployment and execution receipts.
+1. Plan-only Cloud SQL PostgreSQL 16 module with `allow_billable_resources = false` by default.
+2. Project-specific disabled configuration for `rag-municipalidades`, project number `1059368783280`, `us-central1` and Auth Proxy pilot.
+3. Exact two-resource approved offline shape, zero-resource default and named 13/13 eval.
+4. USD 5/four-hour planning envelope with explicit reviewed hourly rate and no hard-cap claim.
+5. Validation-only CI; no `terraform apply` or destroy automation.
+
+Next:
+
+1. Obtain billing-owner, real budget-alert, residency, IAM/state and explicit spend authorization.
+2. Re-review live pricing and produce a human-reviewed resource-bearing plan.
+3. Provision only the short synthetic pilot, then stop or enter protected teardown review within four hours.
+4. Add isolated staging identities, Artifact Registry, Cloud Run, Storage, queueing, secrets, Cloud Armor and telemetry only through separately approved slices.
+5. Execute the same twenty journeys against immutable deployed revisions and later against real reviewed fixtures.
+
+Exit criterion: isolated managed staging exists with immutable deployment, cost and execution receipts.
 
 ## Phase 4 — External consumer conformance
 

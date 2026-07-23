@@ -17,3 +17,18 @@ output "deletion_protection_enabled" {
   description = "Terraform and Cloud SQL deletion-protection state."
   value       = !var.allow_destroy
 }
+
+output "declared_pilot_budget_usd" {
+  description = "Declared pilot budget used by the plan guard; this is not a GCP hard spending cap."
+  value       = var.declared_pilot_budget_usd
+}
+
+output "estimated_pilot_compute_usd" {
+  description = "Reviewed compute and memory estimate for the bounded pilot window, excluding storage, backups and network."
+  value       = local.estimated_pilot_compute_usd
+}
+
+output "max_pilot_runtime_hours" {
+  description = "Maximum approved pilot runtime window before stop or teardown review."
+  value       = var.max_pilot_runtime_hours
+}

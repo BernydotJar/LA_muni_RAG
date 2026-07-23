@@ -1,6 +1,6 @@
 # LA Muni RAG — Open Issues
 
-Updated: 2026-07-22T21:54:35Z
+Updated: 2026-07-23T05:45:00Z
 
 ## Critical
 
@@ -31,9 +31,13 @@ Zero real documents are credited as ingested. Human/platform inputs required:
 
 No approved IdP/OIDC/PKCE/BFF, secure cookie/CSRF, provisioning, logout, revocation, recovery or role-aware authenticated UI exists. All twelve browser journeys remain explicitly blocked.
 
-### PROG-OPS-001 — cloud platform and production operations absent
+### BLK-GCP-SPEND-074 — project inputs exist but paid execution is not authorized
 
-GCP is architecture only. No project, billing, Terraform apply, Cloud Run, Cloud SQL, Storage, queue, Secret Manager configuration, telemetry, load/HA, recovery or privacy operation exists.
+Project ID `rag-municipalidades`, project number `1059368783280`, `us-central1`, an Auth Proxy pilot and a proposed USD 5 budget are recorded. The committed example remains disabled and its plan has zero resource changes. Billing-owner approval, actual budget alerts, residency, IAM/state ownership, current price review and explicit spend authorization are still absent.
+
+### PROG-OPS-001 — managed cloud and production operations absent
+
+A plan-only Cloud SQL module exists, but no repository-created project, billing mutation, Terraform apply, Cloud Run, Cloud SQL instance, Storage, queue, Secret Manager configuration, telemetry, load/HA, recovery or privacy operation exists.
 
 ## High
 
@@ -65,4 +69,4 @@ Unlimited-OCR remains evaluation-only pending pinned revisions, license/security
 - Pages contains no static municipal answers or procedure fixtures.
 - Gateway is disabled by default and no real public corpus is bound.
 - OpenSEO remains deferred until a production public domain and content policy exist.
-- No PR, merge, cloud staging deployment or production deployment has occurred.
+- PR #24 exists as a draft; no protected merge, cloud staging deployment or production deployment has occurred.

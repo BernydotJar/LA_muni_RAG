@@ -228,3 +228,23 @@ Decision: Feature 073 is the authoritative provider-side runner for the Feature 
 Decision: a disposable local/CI PostgreSQL lifecycle is staging evidence for server behavior only. It does not authorize gateway enablement, count as managed cloud staging, prove real-corpus quality, human identity/UI, external consumer conformance, load/HA, merge or deployment.
 
 Evidence: functional SHA `4f6ab306d383f6d74808b393a88ff8172d666b5b`, 14/14 named eval, detached 854/856 regression, 33/33 contracts, PostgreSQL 16.14/pgvector 0.8.5 receipt with 20/20 API/system journeys, 12/12 browser blockers, cleanup 4/4 databases and 3/3 roles, zero/zero postcondition, and Backend CI `29959965725` success including `Execute ephemeral staging runner`.
+
+## 2026-07-23T05:45:00Z — USD 5 authorizes no persistent Cloud SQL environment
+
+Decision: record `rag-municipalidades`, project number `1059368783280`, `us-central1`
+and `AUTH_PROXY_PUBLIC` as a disabled, time-bounded pilot configuration. A resource-bearing
+plan additionally requires a reviewed hourly rate, a maximum runtime whose compute estimate
+fits the declared budget, all human approvals and the exact confirmation phrase.
+
+Decision: treat GCP budgets and the Terraform estimate as planning/alerting controls, not a
+hard spending cap. At the July 2026 reviewed compute/memory rate of USD 0.06755/hour for
+`db-custom-1-3840`, a four-hour pilot estimates USD 0.2702 before storage, backups, network,
+taxes or other charges. Current pricing must be re-reviewed before a live plan.
+
+Decision: do not replace PostgreSQL/pgvector with BigQuery Vector Search in this slice.
+Transactions, forced RLS, migrations, relational integrity and non-owner runtime roles are
+current product controls and require equivalent evidence before any architecture migration.
+
+Evidence: project-specific zero-resource Terraform plan, exact two-resource approved offline
+shape, EVAL-GCP-CLOUDSQL-STAGING-001 13/13 and the Feature 074 ADR/runbook/risk register.
+No resource, API enablement, billing mutation, Terraform apply or cost occurred.

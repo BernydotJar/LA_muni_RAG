@@ -1,5 +1,5 @@
 schema_version: 1
-generated_at: '2026-07-22T19:34:37Z'
+generated_at: '2026-07-23T05:45:00Z'
 program:
   id: LA-MUNI-RAG-PROD
   objective: Make LA Muni RAG production-ready within its evidence, procedure, workflow, case-tracking, and integration domain.
@@ -12,12 +12,12 @@ program:
   - SAFETY_STOP
 baseline:
   origin_main_commit: 4950ba3c24dbe7d9891d5cec8d7ba5f57db3ef9c
-  observed_branch: feature/evidence-gap-request-v1
-  observed_commit: 66b41b943242d9c4317d35f125de1cd617ebb6e4
+  observed_branch: feature/gcp-cloudsql-staging-v1
+  observed_commit: 7a00f3ee902cb6dd41c153d3ebfb7c943b50f7a1
   feature_implementation_commit: 66b41b943242d9c4317d35f125de1cd617ebb6e4
   local_program_branch_commit: 66b41b943242d9c4317d35f125de1cd617ebb6e4
-  upstream: origin/feature/evidence-gap-request-v1
-  upstream_commit: 66b41b943242d9c4317d35f125de1cd617ebb6e4
+  upstream: origin/feature/gcp-cloudsql-staging-v1
+  upstream_commit: 7a00f3ee902cb6dd41c153d3ebfb7c943b50f7a1
   upstream_state: exact_feature_head_published_remote_ci_passed
   divergence:
     ahead: 0
@@ -25,7 +25,7 @@ baseline:
   divergence_from_origin_main:
     ahead: 49
     behind: 0
-  worktree: clean_at_functional_commit
+  worktree: feature074_cost_guard_changes_pending_commit
   repository_instructions:
   - AGENTS.md
   - RTK.md
@@ -1376,7 +1376,43 @@ tasks:
   - Gateway is disabled by default and not deployed.
   - Enablement requires an authorized ingested public corpus, exact reviewed origins, edge abuse controls, load evidence and deployment approval.
   - No PR, merge, Pages API binding, cloud resource or production observation is proved.
+- id: WS10-GCP-CLOUDSQL-STAGING-001
+  workstream: WS-10
+  title: Define a guarded cost-bounded Cloud SQL staging target
+  status: completed_with_limitations
+  owner: /root
+  depends_on:
+  - WS10-EPHEMERAL-STAGING-RUNNER-001
+  blockers:
+  - BLK-GCP-SPEND-074
+  result:
+    branch: feature/gcp-cloudsql-staging-v1
+    base_commit: 7a00f3ee902cb6dd41c153d3ebfb7c943b50f7a1
+    project_id: rag-municipalidades
+    project_number: 1059368783280
+    region: us-central1
+    connectivity: AUTH_PROXY_PUBLIC time-bounded pilot
+    declared_pilot_budget_usd: 5
+    reviewed_hourly_compute_usd: 0.06755
+    max_pilot_runtime_hours: 4
+    estimated_compute_and_memory_usd: 0.2702
+    default_plan_resources: 0
+    approved_offline_shape: 2 resources
+    eval: 13/13
+    pull_request: 24 draft
+    prior_remote_ci: Backend 29980032034 success / Terraform 29980032069 success
+  limitations:
+  - No GCP resource, API enablement, billing mutation, Terraform apply or managed staging execution occurred.
+  - Budget and cost values are planning controls, not a hard spending cap.
+  - Billing owner, actual budget alerts, residency, IAM, state backend and explicit spend authorization remain external gates.
+  - Real corpus, browser E2E, external consumers, load/HA, merge and deployment remain unproved.
 blockers:
+- id: BLK-GCP-SPEND-074
+  affects:
+  - WS10-GCP-CLOUDSQL-STAGING-001
+  state: open
+  condition: Project metadata is known, but billing-owner approval, actual budget alerts, residency approval, IAM/state ownership and explicit spend authorization are absent.
+  next_safe_action: Re-review current pricing and obtain all named approvals before any resource-bearing plan or Terraform apply.
 - id: BLK-CORPUS-OPS-001
   affects:
   - WS02-CORPUS-ACQUISITION-001

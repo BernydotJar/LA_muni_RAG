@@ -1,0 +1,27 @@
+# Existing GCP project supplied by the project owner.
+# Project number: 1059368783280
+project_id    = "rag-municipalidades"
+region        = "us-central1"
+instance_name = "la-muni-rag-staging"
+
+# Time-bounded pilot only. Connector enforcement remains required and no
+# authorized network is configured by this module.
+connectivity_mode         = "AUTH_PROXY_PUBLIC"
+private_network_self_link = null
+
+# July 2026 review basis for db-custom-1-3840 in us-central1:
+# approximately USD 0.06755/hour for compute and memory. A four-hour window
+# estimates USD 0.2702 before storage, backups, egress, taxes or other charges.
+# Re-review current pricing before any resource-bearing plan.
+declared_pilot_budget_usd   = 5
+reviewed_hourly_compute_usd = 0.06755
+max_pilot_runtime_hours     = 4
+
+# Supplying project details is not spend authorization. All gates remain false.
+allow_billable_resources = false
+billable_confirmation    = ""
+billing_approved         = false
+budget_approved          = false
+data_residency_approved  = false
+allow_destroy            = false
+destroy_confirmation     = ""

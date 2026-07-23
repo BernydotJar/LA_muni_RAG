@@ -30,6 +30,11 @@ describe("EVAL-GCP-CLOUDSQL-STAGING-001", () => {
     assert.match(variables, /variable "data_residency_approved"[\s\S]*default\s+= false/);
     assert.match(main, /CREATE_LA_MUNI_GCP_STAGING/);
     assert.match(main, /create_resources\s+= var\.allow_billable_resources && local\.creation_confirmed && local\.approvals_complete/);
+    assert.match(variables, /variable "declared_pilot_budget_usd"[\s\S]*default\s+= 0/);
+    assert.match(variables, /variable "reviewed_hourly_compute_usd"[\s\S]*default\s+= 0/);
+    assert.match(variables, /variable "max_pilot_runtime_hours"[\s\S]*default\s+= 4/);
+    assert.match(main, /estimated_pilot_compute_usd = var\.reviewed_hourly_compute_usd \* var\.max_pilot_runtime_hours/);
+    assert.match(main, /pilot_cost_review_complete/);
     assert.match(main, /count = local\.create_resources \? 1 : 0/g);
   });
 
@@ -93,7 +98,32 @@ describe("EVAL-GCP-CLOUDSQL-STAGING-001", () => {
     assert.match(runbook, /npm run staging:run/);
     assert.match(runbook, /20\/20 API\/system journeys/);
     assert.match(runbook, /twelve browser journeys remain blocked/i);
-    assert.match(runbook, /project, billing owner, region, budget and approvers/i);
+    assert.match(runbook, /billing-owner confirmation/i);
+    assert.match(runbook, /explicit spend authorization/i);
+    assert.match(runbook, /budget alert does not\nstop spend automatically/i);
     assert.match(runbook, /no GCP resource has been created/i);
   });
+  it("records the supplied project as a disabled cost-bounded pilot", async () => {
+    const [pilot, outputs, workflow, pkg, ci] = await Promise.all([
+      read("infra/gcp/cloudsql-staging/rag-municipalidades.pilot.tfvars.example"),
+      read("infra/gcp/cloudsql-staging/outputs.tf"),
+      read(".github/workflows/gcp-cloudsql-terraform.yml"),
+      read("package.json"),
+      read(".github/workflows/ci.yml"),
+    ]);
+    assert.match(pilot, /Project number: 1059368783280/);
+    assert.match(pilot, /project_id\s+= "rag-municipalidades"/);
+    assert.match(pilot, /region\s+= "us-central1"/);
+    assert.match(pilot, /connectivity_mode\s+= "AUTH_PROXY_PUBLIC"/);
+    assert.match(pilot, /declared_pilot_budget_usd\s+= 5/);
+    assert.match(pilot, /reviewed_hourly_compute_usd\s+= 0\.06755/);
+    assert.match(pilot, /max_pilot_runtime_hours\s+= 4/);
+    assert.match(pilot, /allow_billable_resources\s+= false/);
+    assert.match(outputs, /not a GCP hard spending cap/i);
+    assert.match(workflow, /reviewed_hourly_compute_usd=0\.06755/);
+    assert.match(pkg, /eval:gcp-cloudsql-staging/);
+    assert.match(pkg, /gcp:cloudsql:preflight/);
+    assert.match(ci, /Run EVAL-GCP-CLOUDSQL-STAGING-001/);
+  });
+
 });

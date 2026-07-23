@@ -1,18 +1,23 @@
 # LA Muni RAG — Release Plan
 
-Updated: 2026-07-22T21:54:35Z
+Updated: 2026-07-23T05:45:00Z
 
 ## Current release state
 
 ```text
-functional_branch: feature/ephemeral-staging-runner-v1
-functional_sha: 4f6ab306d383f6d74808b393a88ff8172d666b5b
-remote_sha_verified: true
-backend_ci: run 29959965725 success
-pull_request: none
+functional_branch: feature/gcp-cloudsql-staging-v1
+functional_sha: pending_feature074_cost_guard_commit
+remote_base_sha_verified: 7a00f3ee902cb6dd41c153d3ebfb7c943b50f7a1
+prior_backend_ci: run 29980032034 success
+prior_terraform_ci: run 29980032069 success
+pull_request: 24 draft
 merged_to_main: false
-gcp_project_created: false
+gcp_project_id_supplied: rag-municipalidades
+gcp_project_number_supplied: 1059368783280
+repository_created_project: false
 cloud_resources_created: false
+billable_actions: 0
+cost_generated: USD 0
 cloud_staging_deployed: false
 provider_side_staging_executed: true
 gateway_enabled: false
@@ -22,30 +27,30 @@ production_deployed: false
 observation_window: none
 ```
 
-## Feature 073 gates satisfied
+## Feature 074 plan gates satisfied
 
-- canonical staging plan maps all twenty runnable API/system journeys exactly once;
-- twelve browser journeys remain explicitly blocked and are not counted as passed;
-- four fixed disposable `_test` databases and three non-owner runtime roles;
-- loopback `/postgres`, explicit ephemeral confirmation and dedicated-cluster preflight;
-- dirty environment preservation unless explicit cleanup is authorized;
-- guarded repository SQL and compiled smoke scripts only;
-- exact viewer, document-manager, platform-admin, tenant-admin, integration-client, author, reviewer, approver and case-operator personas;
-- no shell and local dotenv disabled for child processes;
-- reset by database recreation and empty source-list HTTP verification;
-- clean-worktree requirement and closed sanitized receipt written mode `0600`;
-- cleanup in `finally`, actual-resource counts and zero-residue postcondition;
-- 14/14 named eval;
-- detached 856 total / 854 pass / 0 fail / 2 skips;
-- 33/33 contracts, typecheck, build and zero-vulnerability audits;
-- PostgreSQL 16.14/pgvector 0.8.5 detached execution: 20/20, 12 blocked, cleanup 4/4 + 3/3;
-- exact remote SHA and Backend CI success, including the real runner step.
+- supplied project ID/number, region and Auth Proxy pilot recorded in a disabled example;
+- committed project-specific plan produces zero resource changes;
+- resource planning requires exact confirmation, billing, budget, residency and bounded cost review;
+- approved offline shape contains only SQL Admin API enablement and one protected instance;
+- PostgreSQL 16 Enterprise, IAM database auth, backups, PITR, bounded SSD, Query Insights and deletion protection;
+- no SQL password, database-user resource, `terraform apply` or destroy automation;
+- reviewed USD 0.06755/hour compute/memory estimate and maximum four-hour pilot;
+- estimated USD 0.2702 compute/memory before storage, backups, network, taxes and other charges;
+- 13/13 named Cloud SQL eval and 33/33 public-surface regression;
+- full 869 total / 867 pass / 0 fail / 2 skips;
+- 33/33 contracts, typecheck, build, Pages and zero-vulnerability audits;
+- Terraform 1.15.8 format/init/validate passed;
+- PR #24 remains draft; current checkpoint CI is not yet claimed.
+
+A budget or estimate is not a hard spending cap. No live GCP plan, apply, API enablement,
+resource, managed staging execution or cost is claimed.
 
 ## Required sequence before public enablement
 
 1. Approve and ingest a real public corpus with human authority/vigencia review.
 2. Add Cloud Armor/WAF, quotas, load/SLO evidence, sanitized telemetry and alerts.
-3. Provision guarded GCP staging only after project, billing, region and budget approval.
+3. Provision the guarded GCP pilot only after billing-owner, budget-alert, residency, IAM/state, current-price and explicit spend approval.
 4. Deploy immutable gateway/API/worker revisions and execute the same twenty journeys against managed services.
 5. Verify rollback and real-corpus quality.
 6. Configure Pages `PAGES_API_URL` only after those gates pass.
