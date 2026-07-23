@@ -269,15 +269,18 @@
       "terraform_run_id": 29980032069,
       "conclusion": "success_on_prior_functional_base"
     },
-    "current_ci_status": "not_started_push_blocked_by_cloud_sandbox_ownership_helper",
+    "current_ci_status": "backend_in_progress_terraform_success",
     "pr": 24,
     "pr_state": "draft",
     "merged": false,
     "deployed": false,
     "local_checkpoint_sha": "5e265e41fe313136c49ebdeedd53a86a61b6f718",
-    "remote_head_sha": "7a00f3ee902cb6dd41c153d3ebfb7c943b50f7a1",
+    "remote_head_sha": "5e265e41fe313136c49ebdeedd53a86a61b6f718",
     "push_attempts": 3,
-    "push_result": "failed_before_remote_contact"
+    "push_result": "remote_updated; helper_reported_post_push_ownership_error",
+    "backend_ci_run_id": 29982794829,
+    "terraform_ci_run_id": 29982794831,
+    "terraform_ci_conclusion": "success"
   },
   "missing_dedicated_evals": [
     "managed_gcp_staging_execution",
