@@ -1639,6 +1639,7 @@ tasks:
   - WS10-EPHEMERAL-STAGING-RUNNER-001
   blockers:
   - BLK-GCP-SPEND-074
+  - BLK-SANDBOX-PUSH-074
   result:
     branch: feature/gcp-cloudsql-staging-v1
     functional_commit: afa0a427080ed7b9555a9ee5a3c7c77d9a2067cd
@@ -1668,8 +1669,14 @@ tasks:
   - Billing owner, actual budget alerts, residency, IAM/state backend and explicit spend authorization remain required.
   branch: feature/gcp-cloudsql-staging-v1
   pr: 24
-  ci: pending_push_and_remote_ci_for_cost_guard_checkpoint
+  ci: push_blocked_before_remote_contact
 blockers:
+- id: BLK-SANDBOX-PUSH-074
+  affects:
+  - WS10-GCP-CLOUDSQL-STAGING-001
+  state: open_external
+  condition: Cloud Sandbox git_push ownership helper cannot initialize Docker networking/iptables and fails before contacting GitHub.
+  next_safe_action: Retry the existing local commits after the service defect is resolved.
 - id: BLK-GCP-SPEND-074
   affects:
   - WS10-GCP-CLOUDSQL-STAGING-001

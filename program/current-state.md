@@ -12,14 +12,16 @@ root: /workspace
 branch: feature/gcp-cloudsql-staging-v1
 functional_commit: afa0a427080ed7b9555a9ee5a3c7c77d9a2067cd
 remote_base_ref_before_push: 7a00f3ee902cb6dd41c153d3ebfb7c943b50f7a1
-working_tree: program checkpoint changes pending commit
-pull_request: 24 draft
+working_tree: clean_before_push_blocker_checkpoint
+pull_request: 24 draft at remote SHA 7a00f3ee902cb6dd41c153d3ebfb7c943b50f7a1
 merged: false
 cloud_staging_deployed: false
 production_deployed: false
 cloud_resources_created: false
 billable_actions: 0
 cost_generated: USD 0
+local_program_checkpoint: 5e265e41fe313136c49ebdeedd53a86a61b6f718
+push_status: blocked_by_cloud_sandbox_git_push_ownership_helper
 preserved_pre_sync_stash: stash@{0}
 ```
 
@@ -113,7 +115,7 @@ Synthetic fixtures, offline plans and database gates do not change those values.
 
 ## Next execution sequence
 
-1. Push the Feature 074 functional and program checkpoint commits and observe remote CI.
+1. Re-run the authorized branch push after the Cloud Sandbox ownership-helper defect is resolved, then observe remote CI.
 2. Obtain billing-owner, actual budget-alert, residency, IAM, Terraform-state and explicit spend authorization.
 3. Re-review current Cloud SQL pricing and produce a human-reviewed resource-bearing plan only.
 4. After separate authorization, provision a short synthetic-only Cloud SQL pilot and execute the existing twenty journeys.
@@ -123,6 +125,8 @@ Synthetic fixtures, offline plans and database gates do not change those values.
 8. Complete external consumer, edge/load/SLO, HA/recovery/privacy, protected merge, rollout and observation gates.
 
 ## Critical blockers
+
+- `BLK-SANDBOX-PUSH-074`: Cloud Sandbox `git_push` fails before contacting GitHub because its ownership helper cannot initialize Docker networking/iptables; local commits remain unpushed;
 
 - `BLK-GCP-SPEND-074`: project metadata is known, but billing-owner, budget-alert, residency, IAM/state and explicit spend authorization are absent;
 - `PQG-OPEN-ENABLEMENT-001`: public gateway cannot be enabled without authorized ingested evidence, edge controls, deployed staging and approval;

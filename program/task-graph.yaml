@@ -18,14 +18,14 @@ baseline:
   local_program_branch_commit: afa0a427080ed7b9555a9ee5a3c7c77d9a2067cd
   upstream: origin/feature/gcp-cloudsql-staging-v1
   upstream_commit: 7a00f3ee902cb6dd41c153d3ebfb7c943b50f7a1
-  upstream_state: prior_feature074_base_published_checkpoint_pending_push
+  upstream_state: prior_feature074_base_published_local_checkpoint_push_blocked
   divergence:
     ahead: 1
     behind: 0
   divergence_from_origin_main:
     ahead: 49
     behind: 0
-  worktree: program_checkpoint_changes_pending_commit
+  worktree: push_blocker_checkpoint_pending_commit
   repository_instructions:
   - AGENTS.md
   - RTK.md
@@ -1385,6 +1385,7 @@ tasks:
   - WS10-EPHEMERAL-STAGING-RUNNER-001
   blockers:
   - BLK-GCP-SPEND-074
+  - BLK-SANDBOX-PUSH-074
   result:
     branch: feature/gcp-cloudsql-staging-v1
     functional_commit: afa0a427080ed7b9555a9ee5a3c7c77d9a2067cd
@@ -1407,6 +1408,12 @@ tasks:
   - Billing owner, actual budget alerts, residency, IAM, state backend and explicit spend authorization remain external gates.
   - Real corpus, browser E2E, external consumers, load/HA, merge and deployment remain unproved.
 blockers:
+- id: BLK-SANDBOX-PUSH-074
+  affects:
+  - WS10-GCP-CLOUDSQL-STAGING-001
+  state: open_external
+  condition: Cloud Sandbox git_push fails in its ownership helper before remote contact because nested Docker networking cannot initialize iptables.
+  next_safe_action: Retry the authorized push after the Cloud Sandbox service defect is resolved; do not recreate history through a parallel API commit.
 - id: BLK-GCP-SPEND-074
   affects:
   - WS10-GCP-CLOUDSQL-STAGING-001
