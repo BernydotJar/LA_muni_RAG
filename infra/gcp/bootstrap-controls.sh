@@ -1,11 +1,14 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 PROJECT_ID="${PROJECT_ID:-rag-municipalidades}"
 EXPECTED_PROJECT_NUMBER="${EXPECTED_PROJECT_NUMBER:-1059368783280}"
 REGION="${REGION:-us-central1}"
-BUDGET_NAME="${BUDGET_NAME:-la-muni-rag-staging-usd-1}"
+BUDGET_NAME="${BUDGET_NAME:-la-muni-rag-staging-pilot}"
+BUDGET_AMOUNT="${BUDGET_AMOUNT:-}"
 STATE_BUCKET="${TF_STATE_BUCKET:-la-muni-rag-tfstate-1059368783280}"
+DEPLOYMENT_PRINCIPAL="${DEPLOYMENT_PRINCIPAL:-}"
 MODE="${1:---check}"
 
 if [[ "$MODE" != "--check" && "$MODE" != "--apply" ]]; then
@@ -27,6 +30,20 @@ project_number="$(gcloud projects describe "$PROJECT_ID" --format='value(project
 billing_account_name="$(gcloud billing projects describe "$PROJECT_ID" --format='value(billingAccountName)')"
 [[ -n "$billing_account_name" ]] || { echo "Billing account is not linked." >&2; exit 2; }
 billing_account_id="${billing_account_name#billingAccounts/}"
+billing_currency="$(gcloud billing accounts describe "$billing_account_id" --format='value(currencyCode)')"
+[[ -n "$billing_currency" ]] || { echo "Unable to determine billing-account currency." >&2; exit 2; }
+if [[ -z "$BUDGET_AMOUNT" ]]; then
+  if [[ "$billing_currency" == "USD" ]]; then
+    BUDGET_AMOUNT="1USD"
+  else
+    echo "Billing currency is $billing_currency. Set BUDGET_AMOUNT to the approved account-currency equivalent of USD 1." >&2
+    exit 2
+  fi
+fi
+[[ "$BUDGET_AMOUNT" == *"$billing_currency" ]] || {
+  echo "BUDGET_AMOUNT=$BUDGET_AMOUNT must use billing-account currency $billing_currency." >&2
+  exit 2
+}
 
 services=(cloudbilling.googleapis.com cloudresourcemanager.googleapis.com billingbudgets.googleapis.com serviceusage.googleapis.com storage.googleapis.com)
 if [[ "$MODE" == "--apply" ]]; then
@@ -35,7 +52,8 @@ fi
 
 echo "Active account: $active_account"
 echo "Project: $PROJECT_ID ($project_number)"
-echo "Billing account: $billing_account_id"
+echo "Billing account: $billing_account_id ($billing_currency)"
+echo "Approved budget amount: $BUDGET_AMOUNT"
 
 echo "Project owners:"
 gcloud projects get-iam-policy "$PROJECT_ID" --flatten='bindings[].members' --filter='bindings.role=roles/owner' --format='value(bindings.members)' | sort -u
@@ -51,7 +69,7 @@ if [[ -z "$budget_resource" && "$MODE" == "--apply" ]]; then
   gcloud billing budgets create \
     --billing-account="$billing_account_id" \
     --display-name="$BUDGET_NAME" \
-    --budget-amount=1USD \
+    --budget-amount="$BUDGET_AMOUNT" \
     --filter-projects="projects/$PROJECT_ID" \
     --calendar-period=month \
     --ownership-scope=billing-account \
@@ -81,15 +99,26 @@ if gcloud storage buckets describe "$bucket_url" --project="$PROJECT_ID" >/dev/n
       --public-access-prevention \
       --versioning \
       --update-labels=application=la-muni-rag,environment=staging,managed-by=terraform,owner=eduardo-sacahui
+    if [[ -n "$DEPLOYMENT_PRINCIPAL" ]]; then
+      gcloud storage buckets add-iam-policy-binding "$bucket_url" \
+        --member="$DEPLOYMENT_PRINCIPAL" \
+        --role=roles/storage.objectAdmin \
+        --project="$PROJECT_ID" \
+        --quiet
+    fi
   fi
   gcloud storage buckets describe "$bucket_url" --project="$PROJECT_ID" --format=json
-  cat > infra/gcp/cloudsql-staging/backend.gcs.hcl <<BACKEND
+  cat > "$ROOT_DIR/infra/gcp/cloudsql-staging/backend.gcs.hcl" <<BACKEND
 bucket = "$STATE_BUCKET"
 prefix = "cloudsql-staging"
 BACKEND
-  chmod 600 infra/gcp/cloudsql-staging/backend.gcs.hcl
+  chmod 600 "$ROOT_DIR/infra/gcp/cloudsql-staging/backend.gcs.hcl"
 else
   echo "State bucket missing; use --apply after review." >&2
+fi
+
+if [[ -z "$DEPLOYMENT_PRINCIPAL" ]]; then
+  echo "DEPLOYMENT_PRINCIPAL is unset; no state-bucket IAM binding was added." >&2
 fi
 
 echo "Cloud SQL was not created. terraform apply was not run."
