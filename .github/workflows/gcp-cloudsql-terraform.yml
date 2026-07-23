@@ -81,7 +81,7 @@ jobs:
             -var='connectivity_mode=AUTH_PROXY_PUBLIC' \
             -out=zero-resource.tfplan \
             -no-color
-          terraform -chdir=infra/gcp/cloudsql-staging show -json zero-resource.tfplan > zero-resource.json
+          terraform -chdir=infra/gcp/cloudsql-staging show -json zero-resource.tfplan > infra/gcp/cloudsql-staging/zero-resource.json
           node -e "const p=require('./infra/gcp/cloudsql-staging/zero-resource.json');if((p.resource_changes??[]).length!==0)throw new Error('default plan created resources');if(p.planned_values.outputs.resources_enabled.value!==false)throw new Error('default resource gate enabled')"
           rm -f infra/gcp/cloudsql-staging/zero-resource.tfplan infra/gcp/cloudsql-staging/zero-resource.json
 
@@ -102,6 +102,6 @@ jobs:
             -var='billable_confirmation=CREATE_LA_MUNI_GCP_STAGING' \
             -out=approved-resource.tfplan \
             -no-color
-          terraform -chdir=infra/gcp/cloudsql-staging show -json approved-resource.tfplan > approved-resource.json
+          terraform -chdir=infra/gcp/cloudsql-staging show -json approved-resource.tfplan > infra/gcp/cloudsql-staging/approved-resource.json
           node -e "const p=require('./infra/gcp/cloudsql-staging/approved-resource.json');const a=(p.resource_changes??[]).map(x=>x.address).sort();const e=['google_project_service.sqladmin[0]','google_sql_database_instance.staging[0]'];if(JSON.stringify(a)!==JSON.stringify(e))throw new Error('authorized resource set drift');if(p.planned_values.outputs.resources_enabled.value!==true)throw new Error('approved resource gate disabled')"
           rm -f infra/gcp/cloudsql-staging/approved-resource.tfplan infra/gcp/cloudsql-staging/approved-resource.json
