@@ -1,0 +1,107 @@
+name: GCP Cloud SQL Terraform validation
+
+on:
+  push:
+    paths:
+      - "infra/gcp/cloudsql-staging/**"
+      - ".github/workflows/gcp-cloudsql-terraform.yml"
+      - "src/gcp/cloudSqlStaging.ts"
+      - "src/cli/verifyGcpCloudSqlStaging.ts"
+      - "src/__tests__/gcp-cloudsql-staging-v1.test.ts"
+      - "src/__tests__/eval-gcp-cloudsql-staging-001.test.ts"
+      - "docs/operations/gcp-cloudsql-staging-runbook.md"
+  pull_request:
+    paths:
+      - "infra/gcp/cloudsql-staging/**"
+      - ".github/workflows/gcp-cloudsql-terraform.yml"
+      - "src/gcp/cloudSqlStaging.ts"
+      - "src/cli/verifyGcpCloudSqlStaging.ts"
+      - "src/__tests__/gcp-cloudsql-staging-v1.test.ts"
+      - "src/__tests__/eval-gcp-cloudsql-staging-001.test.ts"
+      - "docs/operations/gcp-cloudsql-staging-runbook.md"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: gcp-cloudsql-terraform-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    name: Validate plan-only Cloud SQL module
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
+
+      - name: Setup Node.js
+        uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5
+        with:
+          node-version: 24.12.0
+          cache: npm
+
+      - name: Install locked dependencies
+        run: npm ci
+
+      - name: Run Cloud SQL staging hard eval
+        run: >-
+          node --import tsx --test --test-concurrency=1
+          src/__tests__/eval-gcp-cloudsql-staging-001.test.ts
+          src/__tests__/gcp-cloudsql-staging-v1.test.ts
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@dfe3c3f87815947d99a8997f908cb6525fc44e9e # v4.0.1
+        with:
+          terraform_version: 1.15.8
+          terraform_wrapper: false
+
+      - name: Check formatting
+        run: terraform -chdir=infra/gcp/cloudsql-staging fmt -check -recursive
+
+      - name: Initialize providers without a backend
+        run: terraform -chdir=infra/gcp/cloudsql-staging init -backend=false -input=false
+
+      - name: Validate configuration
+        run: terraform -chdir=infra/gcp/cloudsql-staging validate -no-color
+
+      - name: Prove committed defaults plan zero resources
+        env:
+          GOOGLE_OAUTH_ACCESS_TOKEN: offline-validation-token
+        run: |
+          terraform -chdir=infra/gcp/cloudsql-staging plan \
+            -input=false \
+            -refresh=false \
+            -lock=false \
+            -var='project_id=la-muni-staging-123' \
+            -var='connectivity_mode=AUTH_PROXY_PUBLIC' \
+            -out=zero-resource.tfplan \
+            -no-color
+          terraform -chdir=infra/gcp/cloudsql-staging show -json zero-resource.tfplan > zero-resource.json
+          node -e "const p=require('./infra/gcp/cloudsql-staging/zero-resource.json');if((p.resource_changes??[]).length!==0)throw new Error('default plan created resources');if(p.planned_values.outputs.resources_enabled.value!==false)throw new Error('default resource gate enabled')"
+          rm -f infra/gcp/cloudsql-staging/zero-resource.tfplan infra/gcp/cloudsql-staging/zero-resource.json
+
+      - name: Prove approved plan has only API enablement and one instance
+        env:
+          GOOGLE_OAUTH_ACCESS_TOKEN: offline-validation-token
+        run: |
+          terraform -chdir=infra/gcp/cloudsql-staging plan \
+            -input=false \
+            -refresh=false \
+            -lock=false \
+            -var='project_id=la-muni-staging-123' \
+            -var='connectivity_mode=AUTH_PROXY_PUBLIC' \
+            -var='billing_approved=true' \
+            -var='budget_approved=true' \
+            -var='data_residency_approved=true' \
+            -var='allow_billable_resources=true' \
+            -var='billable_confirmation=CREATE_LA_MUNI_GCP_STAGING' \
+            -out=approved-resource.tfplan \
+            -no-color
+          terraform -chdir=infra/gcp/cloudsql-staging show -json approved-resource.tfplan > approved-resource.json
+          node -e "const p=require('./infra/gcp/cloudsql-staging/approved-resource.json');const a=(p.resource_changes??[]).map(x=>x.address).sort();const e=['google_project_service.sqladmin[0]','google_sql_database_instance.staging[0]'];if(JSON.stringify(a)!==JSON.stringify(e))throw new Error('authorized resource set drift');if(p.planned_values.outputs.resources_enabled.value!==true)throw new Error('approved resource gate disabled')"
+          rm -f infra/gcp/cloudsql-staging/approved-resource.tfplan infra/gcp/cloudsql-staging/approved-resource.json
