@@ -8,7 +8,8 @@
 - [x] Add validation-only workflow with zero-resource and exact-two-resource plans.
 - [x] Observe remote Backend CI and Terraform validation success for the functional branch.
 - [x] Record project ID/number, region and requested Auth Proxy pilot without enabling spend.
-- [x] Add USD 5/four-hour cost-review gate and project-specific disabled example.
+- [x] Add USD 1/four-hour cost-review gate and project-specific disabled example.
+- [x] Record Eduardo Sacahui as the non-sensitive billing and emergency stop/teardown owner.
 - [x] Add root package scripts and Backend CI named eval.
 - [x] Add runbook, ADR, risks and traceability.
 - [ ] Obtain billing-owner, budget-alert, residency, IAM, state-backend and explicit spend authorization.

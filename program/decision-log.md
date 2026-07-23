@@ -248,3 +248,17 @@ current product controls and require equivalent evidence before any architecture
 Evidence: project-specific zero-resource Terraform plan, exact two-resource approved offline
 shape, EVAL-GCP-CLOUDSQL-STAGING-001 13/13 and the Feature 074 ADR/runbook/risk register.
 No resource, API enablement, billing mutation, Terraform apply or cost occurred.
+
+
+## 2026-07-23T07:03:38Z — Name the pilot emergency owner without publishing personal contact data
+
+Decision: revise the proposed pilot budget from USD 5 to USD 1. Record Eduardo Sacahui
+as the named billing owner and emergency stop/teardown owner, with the non-sensitive
+resource label `owner=eduardo-sacahui`. The confirmed contact address remains outside
+the repository, Terraform state, resource labels and logs.
+
+Decision: treat the project owner's spend confirmation as conditional authorization for
+a future controlled pilot, not as permission to apply the current configuration. Direct
+billing-role verification, an actual USD 1 budget with 50%, 90% and 100% alerts,
+residency policy review, IAM ownership, a protected GCS state backend, current pricing
+and final approval of the exact live plan remain mandatory.

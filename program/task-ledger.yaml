@@ -1646,7 +1646,10 @@ tasks:
     project_number: 1059368783280
     project_specific_default_plan_resources: 0
     approved_offline_shape: google_project_service.sqladmin[0] and google_sql_database_instance.staging[0]
-    declared_pilot_budget_usd: 5
+    declared_pilot_budget_usd: 1
+    billing_owner: Eduardo Sacahui
+    emergency_stop_teardown_owner: Eduardo Sacahui
+    spend_authorized: true
     estimated_compute_and_memory_usd: 0.2702
     max_pilot_runtime_hours: 4
     eval: 13/13
@@ -1665,17 +1668,17 @@ tasks:
   - Existing PR #24 is draft; prior functional base CI runs 29980032034 and 29980032069 succeeded.
   limitations:
   - No GCP mutation, resource, cost, apply, managed staging execution, merge or deployment.
-  - Billing owner, actual budget alerts, residency, IAM/state backend and explicit spend authorization remain required.
+  - Direct billing-role verification, actual budget alerts, residency, IAM/state backend and final live-plan approval remain required.
   branch: feature/gcp-cloudsql-staging-v1
   pr: 24
-  ci: terraform_29982794831_success_backend_29982794829_in_progress
+  ci: terraform_29982927884_success_backend_29982927859_success
 blockers:
 - id: BLK-GCP-SPEND-074
   affects:
   - WS10-GCP-CLOUDSQL-STAGING-001
   state: open
-  condition: Project ID/number, region, proposed budget and pilot connectivity are known, but no explicit paid action is authorized.
-  next_safe_action: Obtain billing-owner, actual budget-alert, residency, IAM, Terraform-state and explicit spend approval, then re-review pricing.
+  condition: Project inputs, named billing/emergency owner and spend authorization are known, but direct billing-role verification, actual budget alerts, residency, IAM and Terraform-state controls remain incomplete.
+  next_safe_action: Verify the remaining GCP controls, re-review pricing and obtain final live-plan approval.
 - id: BLK-CORPUS-OPS-001
   affects:
   - WS02-CORPUS-ACQUISITION-001

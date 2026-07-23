@@ -1,8 +1,8 @@
 # LA Muni RAG — Current Program State
 
-Updated: 2026-07-23T05:45:00Z
+Updated: 2026-07-23T07:03:38Z
 
-Program status: **PARTIAL WITH DOCUMENTED BLOCKERS — Feature 074 provides a guarded, cost-bounded Cloud SQL staging plan for the supplied GCP project, while billable authorization, real corpus, human identity, managed staging execution and production release remain absent**
+Program status: **PARTIAL WITH DOCUMENTED BLOCKERS — Feature 074 provides a guarded, cost-bounded Cloud SQL staging plan with named billing/emergency ownership and conditional spend authorization, while live GCP control verification, real corpus, human identity, managed staging execution and production release remain absent**
 
 ## Authoritative checkout
 
@@ -12,16 +12,16 @@ root: /workspace
 branch: feature/gcp-cloudsql-staging-v1
 functional_commit: afa0a427080ed7b9555a9ee5a3c7c77d9a2067cd
 remote_base_ref_before_push: 7a00f3ee902cb6dd41c153d3ebfb7c943b50f7a1
-working_tree: publication reconciliation pending commit
-pull_request: 24 draft at remote SHA 5e265e41fe313136c49ebdeedd53a86a61b6f718
+working_tree: clean before administrative-owner reconciliation
+pull_request: 24 draft at remote SHA dc7644def4e223deef30d15c2194bb9f6d29c549
 merged: false
 cloud_staging_deployed: false
 production_deployed: false
 cloud_resources_created: false
 billable_actions: 0
 cost_generated: USD 0
-remote_program_checkpoint: 5e265e41fe313136c49ebdeedd53a86a61b6f718
-push_status: published_through_program_checkpoint
+remote_program_checkpoint: dc7644def4e223deef30d15c2194bb9f6d29c549
+push_status: published_through_ci_reconciled_checkpoint
 preserved_pre_sync_stash: stash@{0}
 ```
 
@@ -36,18 +36,22 @@ project_id: rag-municipalidades
 project_number: 1059368783280
 region: us-central1
 connectivity: AUTH_PROXY_PUBLIC time-bounded pilot
-proposed_pilot_budget_usd: 5
+proposed_pilot_budget_usd: 1
 selected_tier: db-custom-1-3840
 reviewed_hourly_compute_usd: 0.06755
 max_pilot_runtime_hours: 4
 estimated_compute_and_memory_usd: 0.2702
+billing_owner: Eduardo Sacahui
+emergency_stop_teardown_owner: Eduardo Sacahui
+operational_contact: verified out of band; not committed
+spend_authorized: true for a future controlled pilot subject to remaining gates
 billing_approved: false
 budget_approved: false
 data_residency_approved: false
 allow_billable_resources: false
 ```
 
-The estimate excludes storage, backups, network, taxes and other charges. It is a plan guard, not a GCP hard cap. Current pricing must be re-reviewed immediately before any resource-bearing plan. A USD 5 budget does not support an always-on instance at the selected tier; only a short, explicitly approved pilot is modeled.
+The estimate excludes storage, backups, network, taxes and other charges. It is a plan guard, not a GCP hard cap. Current pricing must be re-reviewed immediately before any resource-bearing plan. A USD 1 budget does not support an always-on instance at the selected tier; only a short, explicitly approved pilot is modeled.
 
 The Terraform boundary:
 
@@ -80,9 +84,9 @@ typecheck: pass
 Remote validation state:
 
 ```text
-Terraform validation run: 29982794831 success
-Backend CI run: 29982794829 in progress
-PR: #24 draft at 5e265e41fe313136c49ebdeedd53a86a61b6f718
+Terraform validation run: 29982927884 success
+Backend CI run: 29982927859 success
+PR: #24 draft at dc7644def4e223deef30d15c2194bb9f6d29c549
 ```
 
 No GCP API was enabled, no instance was created, no billing operation was performed and no Terraform apply occurred.
@@ -115,8 +119,8 @@ Synthetic fixtures, offline plans and database gates do not change those values.
 
 ## Next execution sequence
 
-1. Observe Backend CI run 29982794829; Terraform validation run 29982794831 is already successful.
-2. Obtain billing-owner, actual budget-alert, residency, IAM, Terraform-state and explicit spend authorization.
+1. Preserve the successful Backend CI and Terraform validation receipts for the current published head.
+2. Verify the named billing role, actual USD 1 budget alerts, residency, IAM and Terraform-state controls.
 3. Re-review current Cloud SQL pricing and produce a human-reviewed resource-bearing plan only.
 4. After separate authorization, provision a short synthetic-only Cloud SQL pilot and execute the existing twenty journeys.
 5. Obtain rights, durable storage, scanner, retention/legal-hold and named reviewers for the Antigua-first corpus.
@@ -127,7 +131,7 @@ Synthetic fixtures, offline plans and database gates do not change those values.
 ## Critical blockers
 
 
-- `BLK-GCP-SPEND-074`: project metadata is known, but billing-owner, budget-alert, residency, IAM/state and explicit spend authorization are absent;
+- `BLK-GCP-SPEND-074`: billing/emergency ownership and conditional spend authorization are recorded, but direct billing-role verification, budget alerts, residency, IAM/state and final live-plan approval are absent;
 - `PQG-OPEN-ENABLEMENT-001`: public gateway cannot be enabled without authorized ingested evidence, edge controls, deployed staging and approval;
 - `BLK-CORPUS-OPS-001`: source rights, durable object storage, scanner and retention/legal-hold controls are unavailable;
 - the minimum Antigua-first and comparative corpus is incomplete;

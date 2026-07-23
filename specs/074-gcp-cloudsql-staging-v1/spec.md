@@ -14,10 +14,12 @@ creating resources from repository CI.
 - A resource-bearing plan requires exact confirmation, billing, budget, data-residency
   and bounded pilot-cost approval.
 - The approved plan contains only Cloud SQL API enablement and one protected instance.
-- The supplied project ID/number, region, connectivity and USD 5 pilot envelope are
+- The supplied project ID/number, region, connectivity and USD 1 pilot envelope are
   recorded in a disabled example.
 - The selected tier is constrained to a maximum four-hour reviewed pilot; persistent
-  USD 5/month staging is explicitly rejected.
+  USD 1/month staging is explicitly rejected.
+- Eduardo Sacahui is the named billing and emergency stop/teardown owner; personal
+  contact data is maintained outside the repository.
 - Private IP is default; public pilot has no authorized networks and requires connectors.
 - PostgreSQL 16 Enterprise, bounded SSD, backups, PITR, IAM auth and Query Insights are explicit.
 - No plaintext database password or automatic infrastructure mutation path exists.

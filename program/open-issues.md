@@ -31,9 +31,9 @@ Zero real documents are credited as ingested. Human/platform inputs required:
 
 No approved IdP/OIDC/PKCE/BFF, secure cookie/CSRF, provisioning, logout, revocation, recovery or role-aware authenticated UI exists. All twelve browser journeys remain explicitly blocked.
 
-### BLK-GCP-SPEND-074 — project inputs exist but paid execution is not authorized
+### BLK-GCP-SPEND-074 — paid execution is authorized but not operationally cleared
 
-Project ID `rag-municipalidades`, project number `1059368783280`, `us-central1`, an Auth Proxy pilot and a proposed USD 5 budget are recorded. The committed example remains disabled and its plan has zero resource changes. Billing-owner approval, actual budget alerts, residency, IAM/state ownership, current price review and explicit spend authorization are still absent.
+Project ID `rag-municipalidades`, project number `1059368783280`, `us-central1`, an Auth Proxy pilot and a proposed USD 1 budget are recorded. Eduardo Sacahui is the named billing and emergency stop/teardown owner, and spend authorization is confirmed for a future controlled pilot. The committed example remains disabled and its plan has zero resource changes. Direct billing-role verification, actual budget alerts, residency, IAM/state ownership, current price review and final live-plan approval are still absent.
 
 ### PROG-OPS-001 — managed cloud and production operations absent
 

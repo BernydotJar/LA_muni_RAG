@@ -5,7 +5,8 @@
 | Zero-resource default | `allow_billable_resources`, exact confirmation, approvals and cost review | offline project-specific default plan asserts zero resource changes |
 | Narrow approved plan | one API service resource plus one Cloud SQL instance | offline approved plan asserts exact two-address set |
 | Supplied project inputs | disabled `rag-municipalidades.pilot.tfvars.example` | hard eval checks project ID, number, region and connectivity |
-| Bounded USD 5 pilot | declared budget, reviewed hourly rate and four-hour maximum | offline output estimates USD 0.2702 and remains below declared budget |
+| Bounded USD 1 pilot | declared budget, reviewed hourly rate and four-hour maximum | offline output estimates USD 0.2702 and remains below declared budget |
+| Named emergency operator | non-sensitive owner label plus out-of-repository contact handling | `owner=eduardo-sacahui`; runbook names Eduardo Sacahui without publishing personal contact data |
 | Budget is not a hard cap | output descriptions, ADR, runbook and risk register | static hard eval and documentation review |
 | PostgreSQL 16 + pgvector target | pinned instance version and preflight extension check | Terraform validation and preflight unit tests |
 | Private-first connectivity | `PRIVATE` default and required VPC self link | hard eval static assertions |

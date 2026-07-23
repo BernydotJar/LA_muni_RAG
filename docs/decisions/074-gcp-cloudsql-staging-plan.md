@@ -8,9 +8,12 @@ resource-bearing plan requires an explicit enablement flag, exact confirmation, 
 approval, budget approval, data-residency approval and a bounded pilot-cost review.
 
 The project owner supplied project ID `rag-municipalidades`, project number
-`1059368783280`, region `us-central1`, a proposed USD 5 pilot budget and
-`AUTH_PROXY_PUBLIC` connectivity. These values are recorded in a disabled example and
-do not constitute billing approval or spend authorization.
+`1059368783280`, region `us-central1`, a proposed USD 1 pilot budget and
+`AUTH_PROXY_PUBLIC` connectivity. Eduardo Sacahui is the named billing owner and
+emergency stop/teardown owner. His contact address is maintained outside the repository.
+Spend authorization is confirmed for a future controlled pilot, but the disabled example
+does not by itself prove the live billing assignment, budget alerts, residency policy,
+IAM ownership, state backend or final execution approval.
 
 Private IP remains the target posture. The supplied pilot mode configures no authorized
 networks, enforces connectors and must use Cloud SQL Auth Proxy or a supported language
@@ -21,7 +24,7 @@ The selected `db-custom-1-3840` tier was reviewed in July 2026 at approximately 
 0.06755/hour for compute and memory in `us-central1`. The approved-shape offline plan
 uses a maximum four-hour window, producing a USD 0.2702 compute/memory estimate before
 storage, backups, network, taxes or other charges. Pricing must be re-reviewed before
-any resource-bearing plan. A USD 5 budget is incompatible with an always-on instance at
+any resource-bearing plan. A USD 1 budget is incompatible with an always-on instance at
 this tier and is therefore a time-bounded pilot constraint only.
 
 Repository automation is validation-only. Provisioning, destruction, project creation,

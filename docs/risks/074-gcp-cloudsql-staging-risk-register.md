@@ -3,7 +3,7 @@
 | Risk | Severity | Control | Residual limitation |
 |---|---|---|---|
 | Accidental cloud spend | critical | zero-resource default, exact phrase, independent approvals and bounded cost/runtime review | a human can still approve or leave running an expensive resource |
-| USD 5 treated as a hard cap | critical | docs and outputs state that budgets/estimates are planning controls; four-hour stop/teardown owner required | GCP billing and alerts may be delayed and do not automatically stop spend |
+| USD 1 treated as a hard cap | critical | docs and outputs state that budgets/estimates are planning controls; Eduardo Sacahui is the four-hour stop/teardown owner | GCP billing and alerts may be delayed and do not automatically stop spend |
 | Stale price estimate | high | reviewed hourly rate is explicit and must be refreshed before a resource-bearing plan | taxes, storage, backups and network remain outside the compute estimate |
 | Database exposed to the internet | critical | private IP default; public pilot has no authorized networks and requires connectors | public endpoint metadata exists in pilot mode |
 | Shared or production instance targeted | critical | dedicated-instance preflight rejects unrelated databases; runbook forbids production | operator controls the supplied project/instance |

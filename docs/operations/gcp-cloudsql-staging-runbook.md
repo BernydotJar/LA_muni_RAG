@@ -9,11 +9,14 @@ project_id: rag-municipalidades
 project_number: 1059368783280
 region: us-central1
 connectivity: AUTH_PROXY_PUBLIC pilot
-proposed_pilot_budget_usd: 5
+proposed_pilot_budget_usd: 1
 reviewed_hourly_compute_usd: 0.06755
 max_pilot_runtime_hours: 4
 estimated_compute_and_memory_usd: 0.2702
-billable_authorization: absent
+billing_owner: Eduardo Sacahui
+emergency_stop_teardown_owner: Eduardo Sacahui
+operational_contact: verified and maintained outside the repository
+billable_authorization: confirmed for a future controlled pilot, subject to all remaining gates
 ```
 
 The estimate excludes storage, backups, network, taxes and other charges. It must be
@@ -24,15 +27,19 @@ stop spend automatically, and the Terraform estimate is not a billing hard cap.
 
 The complete gate still requires:
 
-1. billing-owner confirmation for the existing project;
-2. an actual GCP budget and alerts, plus an approved stop/teardown owner;
+1. direct GCP verification of the named billing-owner assignment for the existing project;
+2. an actual USD 1 GCP budget with 50%, 90% and 100% alerts;
 3. region and data-residency approval;
 4. platform, database, security and release approvers;
 5. approval of the time-bounded Auth Proxy public pilot;
 6. Terraform state backend and access policy;
 7. retention, deletion, PITR and incident ownership;
 8. confirmation that only synthetic/non-production fixtures will be used;
-9. an explicit spend authorization separate from the project values supplied above.
+9. a final execution authorization tied to the exact live plan, start time and runtime window.
+
+Eduardo Sacahui is the confirmed emergency stop/teardown owner. His contact address was
+verified out of band and must not be committed to the repository, Terraform state,
+resource labels or logs. Use the non-sensitive resource label `owner=eduardo-sacahui`.
 
 ## Provisioning boundary
 
@@ -112,7 +119,7 @@ without explicit cost authorization.
 
 ## Four-hour pilot boundary
 
-1. Record start time, approver and current price review.
+1. Record start time, approver, Eduardo Sacahui as stop/teardown owner, and current price review.
 2. Execute preflight and the staging runner.
 3. Record actual runtime, logs and receipt.
 4. Stop or initiate the protected teardown review before four elapsed hours.

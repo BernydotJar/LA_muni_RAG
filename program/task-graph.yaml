@@ -1392,7 +1392,10 @@ tasks:
     project_number: 1059368783280
     region: us-central1
     connectivity: AUTH_PROXY_PUBLIC time-bounded pilot
-    declared_pilot_budget_usd: 5
+    declared_pilot_budget_usd: 1
+    billing_owner: Eduardo Sacahui
+    emergency_stop_teardown_owner: Eduardo Sacahui
+    spend_authorized: true
     reviewed_hourly_compute_usd: 0.06755
     max_pilot_runtime_hours: 4
     estimated_compute_and_memory_usd: 0.2702
@@ -1404,15 +1407,15 @@ tasks:
   limitations:
   - No GCP resource, API enablement, billing mutation, Terraform apply or managed staging execution occurred.
   - Budget and cost values are planning controls, not a hard spending cap.
-  - Billing owner, actual budget alerts, residency, IAM, state backend and explicit spend authorization remain external gates.
+  - Direct billing-role verification, actual budget alerts, residency, IAM, state backend and final live-plan approval remain external gates.
   - Real corpus, browser E2E, external consumers, load/HA, merge and deployment remain unproved.
 blockers:
 - id: BLK-GCP-SPEND-074
   affects:
   - WS10-GCP-CLOUDSQL-STAGING-001
   state: open
-  condition: Project metadata is known, but billing-owner approval, actual budget alerts, residency approval, IAM/state ownership and explicit spend authorization are absent.
-  next_safe_action: Re-review current pricing and obtain all named approvals before any resource-bearing plan or Terraform apply.
+  condition: Billing and emergency owners plus spend authorization are recorded, but live billing-role verification, actual budget alerts, residency approval, IAM/state ownership and final live-plan approval are absent.
+  next_safe_action: Verify the remaining GCP controls and re-review current pricing before any resource-bearing plan or Terraform apply.
 - id: BLK-CORPUS-OPS-001
   affects:
   - WS02-CORPUS-ACQUISITION-001

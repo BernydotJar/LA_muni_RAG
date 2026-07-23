@@ -22,11 +22,13 @@ project_id: rag-municipalidades
 project_number: 1059368783280
 region: us-central1
 connectivity: AUTH_PROXY_PUBLIC pilot
-proposed_budget: USD 5 for a maximum four-hour pilot
+proposed_budget: USD 1 for a maximum four-hour pilot
+billing_and_emergency_owner: Eduardo Sacahui
 ```
 
-Supplying those values is not billing approval or spend authorization. The current tier
-would exceed USD 5 if left running for a month, so persistent staging is not approved.
+The owner and spend authorization are recorded, but live billing assignment, budget
+alerts, residency, IAM and state controls still require direct verification. The current
+tier would exceed USD 1 if left running for a month, so persistent staging is not approved.
 The cost gate is a planning control; GCP budget alerts are not a hard cap.
 
 Before any billable plan or provisioning action, humans must still approve billing,

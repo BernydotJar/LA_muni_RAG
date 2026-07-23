@@ -13,11 +13,22 @@ private_network_self_link = null
 # approximately USD 0.06755/hour for compute and memory. A four-hour window
 # estimates USD 0.2702 before storage, backups, egress, taxes or other charges.
 # Re-review current pricing before any resource-bearing plan.
-declared_pilot_budget_usd   = 5
+declared_pilot_budget_usd   = 1
 reviewed_hourly_compute_usd = 0.06755
 max_pilot_runtime_hours     = 4
 
-# Supplying project details is not spend authorization. All gates remain false.
+# Public labels must remain non-sensitive. The confirmed emergency operator's
+# email address is maintained outside the repository and must not be encoded in
+# labels, Terraform state, or logs.
+labels = {
+  application = "la-muni-rag"
+  environment = "staging"
+  managed-by  = "terraform"
+  data-class  = "synthetic-only"
+  owner       = "eduardo-sacahui"
+}
+
+# The committed example never enables billable resources. All execution gates remain false.
 allow_billable_resources = false
 billable_confirmation    = ""
 billing_approved         = false

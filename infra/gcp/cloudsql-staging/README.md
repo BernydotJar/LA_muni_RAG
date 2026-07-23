@@ -12,9 +12,10 @@ supported language connector.
 ## Project-specific disabled pilot
 
 `rag-municipalidades.pilot.tfvars.example` records the supplied project ID, project
-number, `us-central1`, the Auth Proxy pilot and a proposed USD 5/four-hour envelope. All
-approval and billable gates remain disabled. The estimate is not a GCP hard cap and must
-be refreshed before any billable plan.
+number, `us-central1`, the Auth Proxy pilot and a proposed USD 1/four-hour envelope.
+Eduardo Sacahui is the named billing and emergency stop/teardown owner. All approval and
+billable gates remain disabled until the remaining live GCP controls are verified. The
+estimate is not a GCP hard cap and must be refreshed before any billable plan.
 
 ## Safe validation
 
@@ -37,7 +38,7 @@ billable_confirmation       = "CREATE_LA_MUNI_GCP_STAGING"
 billing_approved            = true
 budget_approved             = true
 data_residency_approved     = true
-declared_pilot_budget_usd   = 5
+declared_pilot_budget_usd   = 1
 reviewed_hourly_compute_usd = 0.06755
 max_pilot_runtime_hours     = 4
 ```
