@@ -135,6 +135,11 @@ describe("EVAL-GCP-CLOUDSQL-STAGING-001", () => {
   it("recovers and preserves bucket IAM administration before removing legacy bindings", async () => {
     const bootstrap = await read("infra/gcp/bootstrap-controls.sh");
     assert.match(bootstrap, /DEPLOYMENT_PRINCIPAL is required in --apply mode/);
+    assert.match(bootstrap, /placeholders are not accepted/);
+    assert.match(bootstrap, /must use user:, serviceAccount: or group:/);
+    const principalValidation = bootstrap.indexOf("placeholders are not accepted");
+    const cloudAuthentication = bootstrap.indexOf("gcloud auth list");
+    assert.ok(principalValidation >= 0 && cloudAuthentication > principalValidation, "principal validation must run before GCP calls");
     assert.match(bootstrap, /Temporarily granting project-level Storage Admin/);
     assert.match(bootstrap, /gcloud projects add-iam-policy-binding[\s\S]*--role=roles\/storage\.admin/);
     assert.match(bootstrap, /gcloud projects remove-iam-policy-binding[\s\S]*--role=roles\/storage\.admin/);

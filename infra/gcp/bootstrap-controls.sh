@@ -36,6 +36,14 @@ fi
 if [[ "$MODE" == "--apply" && -z "$DEPLOYMENT_PRINCIPAL" ]]; then
   fail "DEPLOYMENT_PRINCIPAL is required in --apply mode."
 fi
+if [[ -n "$DEPLOYMENT_PRINCIPAL" ]]; then
+  if [[ "$DEPLOYMENT_PRINCIPAL" == *"<"* || "$DEPLOYMENT_PRINCIPAL" == *">"* ]]; then
+    fail "DEPLOYMENT_PRINCIPAL must be a concrete IAM member; placeholders are not accepted."
+  fi
+  if [[ ! "$DEPLOYMENT_PRINCIPAL" =~ ^(user|serviceAccount|group):[^[:space:]]+@[^[:space:]]+$ ]]; then
+    fail "DEPLOYMENT_PRINCIPAL must use user:, serviceAccount: or group: followed by a concrete email address."
+  fi
+fi
 for command_name in gcloud jq; do
   command -v "$command_name" >/dev/null || fail "Missing $command_name"
 done
