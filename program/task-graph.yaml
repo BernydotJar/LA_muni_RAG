@@ -1387,7 +1387,7 @@ tasks:
   - BLK-GCP-SPEND-074
   result:
     branch: feature/gcp-cloudsql-staging-v1
-    functional_commit: afa0a427080ed7b9555a9ee5a3c7c77d9a2067cd
+    functional_commit: ce01163ca1f3ff5973bc2f1b99a0736ba9ad05ec
     project_id: rag-municipalidades
     project_number: 1059368783280
     region: us-central1
@@ -1396,26 +1396,33 @@ tasks:
     billing_owner: Eduardo Sacahui
     emergency_stop_teardown_owner: Eduardo Sacahui
     spend_authorized: true
+    live_billing_verified: true
+    live_budget_cop: 4000
+    live_budget_thresholds: 50/90/100 current spend
+    live_residency_us_central1_permitted: true
+    live_state_bucket_created: true
+    state_bucket_iam_recovery_pending: true
+    observed_project_owner_count: 1
     reviewed_hourly_compute_usd: 0.06755
     max_pilot_runtime_hours: 4
     estimated_compute_and_memory_usd: 0.2702
     default_plan_resources: 0
     approved_offline_shape: 2 resources
-    eval: 13/13
+    eval: 14/14
     pull_request: 24 draft
-    prior_remote_ci: Backend 29980032034 success / Terraform 29980032069 success
+    remote_ci: Backend 30042673669 success / Terraform 30042673681 success
   limitations:
-  - No GCP resource, API enablement, billing mutation, Terraform apply or managed staging execution occurred.
+  - Administrative APIs, a live COP budget and a protected GCS state bucket now exist; no Cloud SQL instance or Terraform apply occurred.
   - Budget and cost values are planning controls, not a hard spending cap.
-  - Direct billing-role verification, actual budget alerts, residency, IAM, state backend and final live-plan approval remain external gates.
+  - Bucket IAM recovery, owner redundancy, current pricing and final live-plan approval remain external gates.
   - Real corpus, browser E2E, external consumers, load/HA, merge and deployment remain unproved.
 blockers:
 - id: BLK-GCP-SPEND-074
   affects:
   - WS10-GCP-CLOUDSQL-STAGING-001
   state: open
-  condition: Billing and emergency owners plus spend authorization are recorded, but live billing-role verification, actual budget alerts, residency approval, IAM/state ownership and final live-plan approval are absent.
-  next_safe_action: Verify the remaining GCP controls and re-review current pricing before any resource-bearing plan or Terraform apply.
+  condition: Billing, budget, residency and bucket properties are verified, but bucket IAM recovery, owner redundancy, current pricing and final live-plan approval remain incomplete.
+  next_safe_action: Complete bucket IAM recovery, decide owner redundancy and re-review current pricing before any resource-bearing plan or Terraform apply.
 - id: BLK-CORPUS-OPS-001
   affects:
   - WS02-CORPUS-ACQUISITION-001

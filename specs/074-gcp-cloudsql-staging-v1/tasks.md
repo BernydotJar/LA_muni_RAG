@@ -12,6 +12,9 @@
 - [x] Record Eduardo Sacahui as the non-sensitive billing and emergency stop/teardown owner.
 - [x] Add root package scripts and Backend CI named eval.
 - [x] Add runbook, ADR, risks and traceability.
-- [ ] Obtain billing-owner, budget-alert, residency, IAM, state-backend and explicit spend authorization.
+- [x] Verify linked billing, Billing Account Administrator, COP 4,000 budget alerts, residency policy and conditional spend authorization.
+- [x] Create the protected regional GCS Terraform-state bucket.
+- [ ] Complete and verify state-bucket IAM recovery at commit `ce01163`.
+- [ ] Decide project-owner redundancy with an explicit approved second principal or accepted exception.
 - [ ] Re-review current pricing immediately before a resource-bearing plan.
 - [ ] Execute an approved Cloud SQL staging run with synthetic fixtures.

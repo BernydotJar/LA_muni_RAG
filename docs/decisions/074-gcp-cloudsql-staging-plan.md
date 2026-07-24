@@ -8,12 +8,19 @@ resource-bearing plan requires an explicit enablement flag, exact confirmation, 
 approval, budget approval, data-residency approval and a bounded pilot-cost review.
 
 The project owner supplied project ID `rag-municipalidades`, project number
-`1059368783280`, region `us-central1`, a proposed USD 1 pilot budget and
+`1059368783280`, region `us-central1`, a USD 1 planning envelope and
 `AUTH_PROXY_PUBLIC` connectivity. Eduardo Sacahui is the named billing owner and
 emergency stop/teardown owner. His contact address is maintained outside the repository.
-Spend authorization is confirmed for a future controlled pilot, but the disabled example
-does not by itself prove the live billing assignment, budget alerts, residency policy,
-IAM ownership, state backend or final execution approval.
+Spend authorization is confirmed for a future controlled pilot.
+
+Authenticated Cloud Shell evidence later verified the linked COP billing account, Billing
+Account Administrator assignment, a project-scoped COP 4,000 monthly budget with 50%,
+90% and 100% current-spend alerts, an effective resource-location policy that permits
+`us-central1`, and a protected regional GCS state bucket. The first legacy-IAM cleanup
+removed bucket-policy administration too early; commit `ce01163` adds an idempotent
+recovery that establishes bucket-scoped `roles/storage.admin` before removing legacy
+bindings and removes any temporary project-level grant afterward. Project-owner
+redundancy, current price review and final approval of the exact live plan remain open.
 
 Private IP remains the target posture. The supplied pilot mode configures no authorized
 networks, enforces connectors and must use Cloud SQL Auth Proxy or a supported language
@@ -24,8 +31,9 @@ The selected `db-custom-1-3840` tier was reviewed in July 2026 at approximately 
 0.06755/hour for compute and memory in `us-central1`. The approved-shape offline plan
 uses a maximum four-hour window, producing a USD 0.2702 compute/memory estimate before
 storage, backups, network, taxes or other charges. Pricing must be re-reviewed before
-any resource-bearing plan. A USD 1 budget is incompatible with an always-on instance at
-this tier and is therefore a time-bounded pilot constraint only.
+any resource-bearing plan. The COP 4,000 live budget and USD 1 Terraform planning envelope are both
+incompatible with an always-on instance at this tier and therefore constrain only a
+time-bounded pilot.
 
 Repository automation is validation-only. Provisioning, destruction, project creation,
 billing enablement, IAM assignment and paid operation remain human-gated. GCP budget

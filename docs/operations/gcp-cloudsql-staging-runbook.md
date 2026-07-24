@@ -1,6 +1,8 @@
 # GCP Cloud SQL staging runbook
 
-Status: plan-ready only; no GCP resource has been created by this feature.
+Status: live administrative controls are mostly verified; bucket IAM recovery and final
+live-plan approval remain pending. No Cloud SQL instance has been created and no
+`terraform apply` has been run.
 
 ## Recorded pilot inputs
 
@@ -9,37 +11,60 @@ project_id: rag-municipalidades
 project_number: 1059368783280
 region: us-central1
 connectivity: AUTH_PROXY_PUBLIC pilot
-proposed_pilot_budget_usd: 1
+planning_pilot_budget_usd: 1
+live_billing_currency: COP
+live_monthly_budget_cop: 4000
 reviewed_hourly_compute_usd: 0.06755
 max_pilot_runtime_hours: 4
 estimated_compute_and_memory_usd: 0.2702
 billing_owner: Eduardo Sacahui
 emergency_stop_teardown_owner: Eduardo Sacahui
 operational_contact: verified and maintained outside the repository
-billable_authorization: confirmed for a future controlled pilot, subject to all remaining gates
+billable_authorization: confirmed for a future controlled pilot
 ```
 
-The estimate excludes storage, backups, network, taxes and other charges. It must be
-refreshed from official pricing before a resource-bearing plan. A budget alert does not
+The USD value is the Terraform cost-review envelope; COP 4,000 is the actual recurring
+Cloud Billing budget. The estimate excludes storage, backups, network, taxes and other
+charges. It must be refreshed from official pricing before a resource-bearing plan. A
+budget alert does not
 stop spend automatically, and the Terraform estimate is not a billing hard cap.
 
-## Human approvals required before any billable action
+## Live administrative evidence
 
-The complete gate still requires:
+Out-of-band authenticated Cloud Shell output verified:
 
-1. direct GCP verification of the named billing-owner assignment for the existing project;
-2. an actual USD 1 GCP budget with 50%, 90% and 100% alerts;
-3. region and data-residency approval;
-4. platform, database, security and release approvers;
-5. approval of the time-bounded Auth Proxy public pilot;
-6. Terraform state backend and access policy;
-7. retention, deletion, PITR and incident ownership;
-8. confirmation that only synthetic/non-production fixtures will be used;
-9. a final execution authorization tied to the exact live plan, start time and runtime window.
+- the project is linked to a COP-denominated billing account;
+- the named operator has Billing Account Administrator access;
+- a project-scoped COP 4,000 monthly budget exists with current-spend alerts at 50%,
+  90% and 100%;
+- the effective `constraints/gcp.resourceLocations` policy allows all locations, so
+  `us-central1` is permitted;
+- a dedicated regional Standard GCS state bucket exists with uniform bucket-level
+  access, public access prevention, versioning, seven-day soft delete and the approved
+  non-sensitive labels;
+- only one project `roles/owner` principal was observed;
+- Cloud SQL was not created and `terraform apply` was not run.
 
-Eduardo Sacahui is the confirmed emergency stop/teardown owner. His contact address was
-verified out of band and must not be committed to the repository, Terraform state,
-resource labels or logs. Use the non-sensitive resource label `owner=eduardo-sacahui`.
+The first IAM-hardening attempt removed legacy bucket-owner convenience bindings after
+establishing only object administration. That role cannot read or change bucket IAM, so
+the operator lost `storage.buckets.getIamPolicy`. Commit `ce01163` repairs the sequence:
+it temporarily grants project-level `roles/storage.admin` only when needed, establishes
+bucket-scoped `roles/storage.admin`, removes legacy bindings, verifies the final policy
+and then removes the temporary project-level grant.
+
+## Remaining human approvals and controls
+
+1. run the `ce01163` recovery and obtain the final successful `--check` output;
+2. decide whether to add a second appropriate human project owner; no owner is added
+   automatically;
+3. obtain platform, database, security and release approval for the exact live plan;
+4. approve the time-bounded Auth Proxy public pilot and synthetic-only fixtures;
+5. refresh current pricing and record the start time and four-hour stop window;
+6. issue final execution authorization tied to the exact live plan.
+
+Eduardo Sacahui is the confirmed emergency stop/teardown owner. Personal contact data
+must not be committed to the repository, Terraform state, resource labels or logs. Use
+the non-sensitive resource label `owner=eduardo-sacahui`.
 
 ## Provisioning boundary
 

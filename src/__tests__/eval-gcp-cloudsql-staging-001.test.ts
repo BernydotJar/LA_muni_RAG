@@ -98,12 +98,14 @@ describe("EVAL-GCP-CLOUDSQL-STAGING-001", () => {
     assert.match(runbook, /npm run staging:run/);
     assert.match(runbook, /20\/20 API\/system journeys/);
     assert.match(runbook, /twelve browser journeys remain blocked/i);
-    assert.match(runbook, /direct GCP verification of the named billing-owner assignment/i);
+    assert.match(runbook, /Billing Account Administrator access/i);
     assert.match(runbook, /Eduardo Sacahui is the confirmed emergency stop\/teardown owner/i);
     assert.match(runbook, /billable_authorization: confirmed for a future controlled pilot/i);
     assert.match(runbook, /final execution authorization tied to the exact live plan/i);
     assert.match(runbook, /budget alert does not\nstop spend automatically/i);
-    assert.match(runbook, /no GCP resource has been created/i);
+    assert.match(runbook, /No Cloud SQL instance has been created/i);
+    assert.match(runbook, /live_monthly_budget_cop: 4000/);
+    assert.match(runbook, /bucket IAM recovery/i);
   });
   it("records the supplied project as a disabled cost-bounded pilot", async () => {
     const [pilot, outputs, workflow, pkg, ci] = await Promise.all([

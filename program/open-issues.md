@@ -1,6 +1,6 @@
 # LA Muni RAG — Open Issues
 
-Updated: 2026-07-23T05:45:00Z
+Updated: 2026-07-24T06:40:00Z
 
 ## Critical
 
@@ -33,11 +33,11 @@ No approved IdP/OIDC/PKCE/BFF, secure cookie/CSRF, provisioning, logout, revocat
 
 ### BLK-GCP-SPEND-074 — paid execution is authorized but not operationally cleared
 
-Project ID `rag-municipalidades`, project number `1059368783280`, `us-central1`, an Auth Proxy pilot and a proposed USD 1 budget are recorded. Eduardo Sacahui is the named billing and emergency stop/teardown owner, and spend authorization is confirmed for a future controlled pilot. The committed example remains disabled and its plan has zero resource changes. Direct billing-role verification, actual budget alerts, residency, IAM/state ownership, current price review and final live-plan approval are still absent.
+Authenticated Cloud Shell evidence verifies linked COP billing, Billing Account Administrator access, a project-scoped COP 4,000 monthly budget with 50/90/100 alerts, and an effective location policy permitting `us-central1`. The protected GCS state bucket exists. Its first IAM-hardening sequence removed bucket-policy administration before establishing bucket-scoped administration; commit `ce01163` provides recovery but still requires one successful live rerun. Only one project owner was observed. Current price review, exact live-plan review and final apply authorization remain absent.
 
 ### PROG-OPS-001 — managed cloud and production operations absent
 
-A plan-only Cloud SQL module exists, but no repository-created project, billing mutation, Terraform apply, Cloud Run, Cloud SQL instance, Storage, queue, Secret Manager configuration, telemetry, load/HA, recovery or privacy operation exists.
+A plan-only Cloud SQL module, live billing controls and a protected Terraform-state bucket exist, but no Terraform live plan, Cloud SQL instance, Cloud Run service, queue, Secret Manager configuration, telemetry, load/HA, managed recovery or privacy operation exists.
 
 ## High
 

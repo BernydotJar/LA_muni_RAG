@@ -1,5 +1,5 @@
 schema_version: 1
-updated_at: '2026-07-23T05:45:00Z'
+updated_at: '2026-07-24T06:40:00Z'
 runtime:
   type: yaml_fallback
   farmtable_available: false
@@ -1641,7 +1641,7 @@ tasks:
   - BLK-GCP-SPEND-074
   result:
     branch: feature/gcp-cloudsql-staging-v1
-    functional_commit: afa0a427080ed7b9555a9ee5a3c7c77d9a2067cd
+    functional_commit: ce01163ca1f3ff5973bc2f1b99a0736ba9ad05ec
     project_id: rag-municipalidades
     project_number: 1059368783280
     project_specific_default_plan_resources: 0
@@ -1650,9 +1650,16 @@ tasks:
     billing_owner: Eduardo Sacahui
     emergency_stop_teardown_owner: Eduardo Sacahui
     spend_authorized: true
+    live_billing_verified: true
+    live_budget_cop: 4000
+    live_budget_thresholds: 50/90/100 current spend
+    live_residency_us_central1_permitted: true
+    live_state_bucket_created: true
+    state_bucket_iam_recovery_pending: true
+    observed_project_owner_count: 1
     estimated_compute_and_memory_usd: 0.2702
     max_pilot_runtime_hours: 4
-    eval: 13/13
+    eval: 14/14
   files:
   - infra/gcp/cloudsql-staging/
   - src/gcp/cloudSqlStaging.ts
@@ -1664,21 +1671,23 @@ tasks:
   - Terraform 1.15.8 fmt/init/validate passed.
   - Project-specific zero plan contained zero resource changes.
   - Approved offline shape contained exactly two addresses and estimated USD 0.2702 compute/memory for four hours.
-  - EVAL-GCP-CLOUDSQL-STAGING-001 13/13 and EVAL-PRODUCTION-PUBLIC-SURFACE-001 33/33 passed.
-  - Existing PR #24 is draft; prior functional base CI runs 29980032034 and 29980032069 succeeded.
+  - EVAL-GCP-CLOUDSQL-STAGING-001 14/14 and EVAL-PRODUCTION-PUBLIC-SURFACE-001 33/33 passed.
+  - PR #24 remains draft; recovery-head Terraform run 30042673681 and Backend CI run 30042673669 succeeded.
+  - Live-evidence documentation regression: 870 total / 868 passed / 0 failed / 2 environment skips; typecheck and build passed.
   limitations:
-  - No GCP mutation, resource, cost, apply, managed staging execution, merge or deployment.
-  - Direct billing-role verification, actual budget alerts, residency, IAM/state backend and final live-plan approval remain required.
+  - Live billing, budget, residency and state-bucket properties are verified; the bucket IAM recovery still requires a successful rerun.
+  - No Cloud SQL instance, Terraform apply, managed staging execution, merge or deployment.
+  - Owner redundancy, current price review and final live-plan approval remain required.
   branch: feature/gcp-cloudsql-staging-v1
   pr: 24
-  ci: terraform_29982927884_success_backend_29982927859_success
+  ci: terraform_30042673681_success_backend_30042673669_success
 blockers:
 - id: BLK-GCP-SPEND-074
   affects:
   - WS10-GCP-CLOUDSQL-STAGING-001
   state: open
-  condition: Project inputs, named billing/emergency owner and spend authorization are known, but direct billing-role verification, actual budget alerts, residency, IAM and Terraform-state controls remain incomplete.
-  next_safe_action: Verify the remaining GCP controls, re-review pricing and obtain final live-plan approval.
+  condition: Billing, budget, residency and bucket properties are verified, but bucket IAM recovery, owner redundancy, current pricing and final live-plan approval remain incomplete.
+  next_safe_action: Complete bucket IAM recovery, decide owner redundancy, re-review pricing and obtain final live-plan approval.
 - id: BLK-CORPUS-OPS-001
   affects:
   - WS02-CORPUS-ACQUISITION-001

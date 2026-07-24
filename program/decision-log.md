@@ -262,3 +262,19 @@ a future controlled pilot, not as permission to apply the current configuration.
 billing-role verification, an actual USD 1 budget with 50%, 90% and 100% alerts,
 residency policy review, IAM ownership, a protected GCS state backend, current pricing
 and final approval of the exact live plan remain mandatory.
+
+
+## 2026-07-24T06:40:00Z — Distinguish the live COP budget from the USD planning envelope and recover bucket IAM before planning
+
+Decision: retain USD 1 as the Terraform cost-review envelope and record COP 4,000 as the
+actual recurring Cloud Billing budget. Verified billing, alert and residency controls do
+not authorize Cloud SQL creation.
+
+Decision: do not remove legacy bucket-owner convenience bindings until bucket-scoped
+`roles/storage.admin` is effective. When recovery is required, grant project-level
+Storage Admin temporarily, verify propagation, establish bucket-scoped administration,
+remove legacy bindings, verify the final policy and remove the temporary project grant.
+
+Evidence: authenticated Cloud Shell output, recovery commit `ce01163`, 14/14 focused tests,
+typecheck, Terraform validation workflow 30042673681 and Backend CI workflow 30042673669.
+No Cloud SQL instance or Terraform apply is claimed.
