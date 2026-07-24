@@ -158,13 +158,6 @@ if ! gcloud storage buckets describe "$bucket_url" --project="$PROJECT_ID" >/dev
 fi
 
 if [[ "$MODE" == "--apply" ]]; then
-  gcloud storage buckets update "$bucket_url" \
-    --project="$PROJECT_ID" \
-    --uniform-bucket-level-access \
-    --public-access-prevention \
-    --versioning \
-    --update-labels=application=la-muni-rag,environment=staging,managed-by=terraform,owner=eduardo-sacahui
-
   if ! gcloud storage buckets get-iam-policy "$bucket_url" --project="$PROJECT_ID" >/dev/null 2>&1; then
     if ! gcloud projects get-iam-policy "$PROJECT_ID" --format=json | jq -e \
       --arg principal "$DEPLOYMENT_PRINCIPAL" '
@@ -200,6 +193,21 @@ if [[ "$MODE" == "--apply" ]]; then
 
   gcloud storage buckets get-iam-policy "$bucket_url" --project="$PROJECT_ID" >/dev/null || \
     fail "Bucket-level Storage Admin binding was not effective."
+
+  bucket_update_ready=false
+  for _ in 1 2 3 4 5 6; do
+    if gcloud storage buckets update "$bucket_url" \
+      --project="$PROJECT_ID" \
+      --uniform-bucket-level-access \
+      --public-access-prevention \
+      --versioning \
+      --update-labels=application=la-muni-rag,environment=staging,managed-by=terraform,owner=eduardo-sacahui; then
+      bucket_update_ready=true
+      break
+    fi
+    sleep 5
+  done
+  [[ "$bucket_update_ready" == "true" ]] || fail "Bucket-level Storage Admin did not propagate for bucket updates; retry after IAM propagation."
 
   legacy_bindings=(
     "projectEditor:$PROJECT_ID|roles/storage.legacyBucketOwner"
