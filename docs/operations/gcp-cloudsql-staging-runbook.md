@@ -74,10 +74,11 @@ the non-sensitive resource label `owner=eduardo-sacahui`.
 
 ## Initialize the verified backend and produce a zero-resource live plan
 
-The bootstrap script writes ignored `backend.gcs.hcl` configuration with mode `0600`.
-The committed Terraform declares an empty GCS backend block so backend parameters remain
-outside Git. From authenticated Cloud Shell, first prove the live backend can initialize
-and that committed defaults still plan zero resources:
+The bootstrap script writes ignored `backend.tf` and `backend.gcs.hcl` files with mode
+`0600`. `backend.tf` declares the GCS backend, while `backend.gcs.hcl` supplies the bucket
+and prefix. Keeping both files outside Git lets repository CI initialize without a backend
+and run offline plans. From authenticated Cloud Shell, first prove the live backend can
+initialize and that committed defaults still plan zero resources:
 
 ```bash
 cd ~/LA_muni_RAG/infra/gcp/cloudsql-staging

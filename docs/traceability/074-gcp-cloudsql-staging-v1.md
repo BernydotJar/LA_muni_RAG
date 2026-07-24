@@ -9,7 +9,7 @@
 | Named emergency operator | non-sensitive owner label plus out-of-repository contact handling | `owner=eduardo-sacahui`; runbook names Eduardo Sacahui without publishing personal contact data |
 | Live billing and alerts | guarded Cloud Shell bootstrap and exact budget verification | linked COP account, Billing Account Administrator and 50/90/100 current-spend alerts observed out of band |
 | Live residency | effective `constraints/gcp.resourceLocations` check | `allValues: ALLOW`; `us-central1` permitted |
-| Protected Terraform state | dedicated GCS bucket, PAP, UBLA, versioning, soft delete, labels and externalized backend configuration | live bucket properties and backend controls verified; committed `backend "gcs" {}` declaration |
+| Protected Terraform state | dedicated GCS bucket, PAP, UBLA, versioning, soft delete, labels and externalized backend configuration | live bucket properties verified; bootstrap generates ignored `backend.tf` and `backend.gcs.hcl` files |
 | Bucket IAM recovery | temporary project-level Storage Admin only on lockout, propagation retry, bucket-scoped Storage Admin before legacy cleanup, exit-trap cleanup | authenticated `--apply` and `--check` both succeeded; final policy has no legacy bindings |
 | Owner redundancy | owner enumeration and warning | one owner observed; second-owner decision remains human-gated |
 | Budget is not a hard cap | output descriptions, ADR, runbook and risk register | static hard eval and documentation review |

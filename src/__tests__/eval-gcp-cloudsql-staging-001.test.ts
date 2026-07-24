@@ -12,7 +12,6 @@ describe("EVAL-GCP-CLOUDSQL-STAGING-001", () => {
       read(".github/workflows/gcp-cloudsql-terraform.yml"),
     ]);
     assert.match(versions, /required_version = ">= 1\.15\.0, < 2\.0\.0"/);
-    assert.match(versions, /backend "gcs"/);
     assert.match(versions, /version = "7\.40\.0"/);
     assert.match(lock, /registry\.terraform\.io\/hashicorp\/google/);
     assert.match(lock, /version\s+= "7\.40\.0"/);
@@ -89,7 +88,7 @@ describe("EVAL-GCP-CLOUDSQL-STAGING-001", () => {
 
   it("keeps state, plans, tfvars and crash material local", async () => {
     const ignore = await read("infra/gcp/cloudsql-staging/.gitignore");
-    for (const marker of [".terraform/", "*.tfstate", "*.tfplan", "terraform.tfvars", "*.auto.tfvars", "crash.log"]) {
+    for (const marker of [".terraform/", "*.tfstate", "*.tfplan", "terraform.tfvars", "*.auto.tfvars", "backend.tf", "backend.gcs.hcl", "crash.log"]) {
       assert.ok(ignore.includes(marker), `missing ignore marker ${marker}`);
     }
   });
@@ -148,6 +147,9 @@ describe("EVAL-GCP-CLOUDSQL-STAGING-001", () => {
     assert.doesNotMatch(bootstrap, /roles\/storage\.objectAdmin/);
     assert.match(bootstrap, /for _ in \{1\.\.60\}; do/);
     assert.match(bootstrap, /Waiting for Storage Admin to propagate and establishing bucket-scoped administration/);
+    assert.match(bootstrap, /cloudsql-staging\/backend\.tf/);
+    assert.match(bootstrap, /backend "gcs"/);
+    assert.match(bootstrap, /cloudsql-staging\/backend\.gcs\.hcl/);
     const projectAdmin = bootstrap.indexOf("gcloud projects add-iam-policy-binding");
     const bucketAdmin = bootstrap.indexOf("gcloud storage buckets add-iam-policy-binding");
     const bucketUpdate = bootstrap.indexOf("gcloud storage buckets update");

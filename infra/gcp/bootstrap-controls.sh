@@ -281,11 +281,18 @@ else
 fi
 
 printf '%s\n' "$bucket_json" | jq .
+cat > "$ROOT_DIR/infra/gcp/cloudsql-staging/backend.tf" <<'BACKEND_TERRAFORM'
+terraform {
+  backend "gcs" {}
+}
+BACKEND_TERRAFORM
 cat > "$ROOT_DIR/infra/gcp/cloudsql-staging/backend.gcs.hcl" <<BACKEND
 bucket = "$STATE_BUCKET"
 prefix = "cloudsql-staging"
 BACKEND
-chmod 600 "$ROOT_DIR/infra/gcp/cloudsql-staging/backend.gcs.hcl"
+chmod 600 \
+  "$ROOT_DIR/infra/gcp/cloudsql-staging/backend.tf" \
+  "$ROOT_DIR/infra/gcp/cloudsql-staging/backend.gcs.hcl"
 
 cleanup_temporary_project_storage_admin
 trap - EXIT
