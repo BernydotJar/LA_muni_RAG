@@ -174,28 +174,35 @@ if [[ "$MODE" == "--apply" ]]; then
       trap cleanup_temporary_project_storage_admin EXIT
     fi
 
-    bucket_policy_ready=false
-    for _ in 1 2 3 4 5 6; do
-      if gcloud storage buckets get-iam-policy "$bucket_url" --project="$PROJECT_ID" >/dev/null 2>&1; then
-        bucket_policy_ready=true
-        break
-      fi
-      sleep 5
-    done
-    [[ "$bucket_policy_ready" == "true" ]] || fail "Temporary Storage Admin did not propagate; retry after IAM propagation."
   fi
 
-  gcloud storage buckets add-iam-policy-binding "$bucket_url" \
-    --member="$DEPLOYMENT_PRINCIPAL" \
-    --role=roles/storage.admin \
-    --project="$PROJECT_ID" \
-    --quiet >/dev/null
+  echo "Waiting for Storage Admin to propagate and establishing bucket-scoped administration."
+  bucket_admin_ready=false
+  for _ in {1..60}; do
+    if gcloud storage buckets add-iam-policy-binding "$bucket_url" \
+      --member="$DEPLOYMENT_PRINCIPAL" \
+      --role=roles/storage.admin \
+      --project="$PROJECT_ID" \
+      --quiet >/dev/null 2>&1; then
+      bucket_admin_ready=true
+      break
+    fi
+    sleep 5
+  done
+  [[ "$bucket_admin_ready" == "true" ]] || fail "Storage Admin did not propagate enough to establish bucket-scoped administration."
 
-  gcloud storage buckets get-iam-policy "$bucket_url" --project="$PROJECT_ID" >/dev/null || \
+  bucket_policy_json="$(gcloud storage buckets get-iam-policy "$bucket_url" --project="$PROJECT_ID" --format=json)"
+  if ! jq -e --arg principal "$DEPLOYMENT_PRINCIPAL" '
+    any(.bindings[]?;
+      .role == "roles/storage.admin" and
+      any(.members[]?; . == $principal))
+  ' >/dev/null <<<"$bucket_policy_json"; then
+    printf '%s\n' "$bucket_policy_json" | jq . >&2
     fail "Bucket-level Storage Admin binding was not effective."
+  fi
 
   bucket_update_ready=false
-  for _ in 1 2 3 4 5 6; do
+  for _ in {1..60}; do
     if gcloud storage buckets update "$bucket_url" \
       --project="$PROJECT_ID" \
       --uniform-bucket-level-access \
@@ -207,7 +214,7 @@ if [[ "$MODE" == "--apply" ]]; then
     fi
     sleep 5
   done
-  [[ "$bucket_update_ready" == "true" ]] || fail "Bucket-level Storage Admin did not propagate for bucket updates; retry after IAM propagation."
+  [[ "$bucket_update_ready" == "true" ]] || fail "Bucket-level Storage Admin did not propagate enough for bucket updates."
 
   legacy_bindings=(
     "projectEditor:$PROJECT_ID|roles/storage.legacyBucketOwner"
