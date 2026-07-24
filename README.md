@@ -391,3 +391,21 @@ npm run staging:run
 ```
 
 The PostgreSQL/pgvector cluster must be dedicated and disposable. The runner creates and destroys four fixed `_test` databases and three non-owner runtime roles, writes a sanitized receipt under ignored `artifacts/staging/`, and leaves all twelve browser journeys blocked until human identity and authenticated UI exist. It creates no cloud resource and does not prove real-corpus or production readiness. See `docs/testing/ephemeral-staging-runner.md`.
+
+## GCP Cloud SQL staging plan
+
+The repository includes a guarded, plan-only PostgreSQL 16 Enterprise module under
+`infra/gcp/cloudsql-staging/`. Committed defaults and the project-specific
+`rag-municipalidades.pilot.tfvars.example` produce zero resources. The supplied
+`us-central1`, Auth Proxy and USD 1 inputs describe a maximum four-hour pilot, not an
+always-on staging environment. Eduardo Sacahui is the named billing and emergency
+stop/teardown owner; personal contact details remain outside the repository.
+
+Run the repository gate with:
+
+```bash
+npm run eval:gcp-cloudsql-staging
+```
+
+No repository workflow applies or destroys infrastructure. See the
+[GCP Cloud SQL staging runbook](docs/operations/gcp-cloudsql-staging-runbook.md).

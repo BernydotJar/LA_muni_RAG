@@ -1,6 +1,6 @@
 # LA Muni RAG — Program Risk Register
 
-Updated: 2026-07-22T21:54:35Z
+Updated: 2026-07-23T05:45:00Z
 
 | ID | Severity | Risk | Current control/evidence | Residual action |
 |---|---|---|---|---|
@@ -11,7 +11,8 @@ Updated: 2026-07-22T21:54:35Z
 | R-PUBLIC-02 | critical | Browser supplies tenant/service identity | closed request and server-bound tenant; staged gateway path | deployment security review and penetration test |
 | R-CORPUS-01 | critical | Incomplete/unlicensed corpus is treated as authority | 17/4/1/0 truth and zero-ingestion statements | approve rights, storage, scan and reviewers; ingest exact bytes |
 | R-AUTH-01 | critical | Service credentials are reused as human sessions | browser journeys remain blocked | approve IdP/OIDC/PKCE/BFF/session and secure-cookie design |
-| R-CLOUD-01 | critical | Cloud creation causes uncontrolled cost or exposure | GCP architecture only; zero resources/billable actions | project/budget/region approval, guarded Terraform, quotas and budgets |
+| R-CLOUD-01 | critical | Cloud creation causes uncontrolled cost or exposure | zero-resource default, exact confirmation, independent approvals, four-hour cost envelope, named stop owner and zero billable actions | real budget alerts, current price review, IAM/state ownership and live-plan approval |
+| R-CLOUD-02 | critical | USD 1 or a budget alert is mistaken for a hard cap | docs and Terraform outputs state estimates/alerts are planning controls; persistent selected tier rejected; Eduardo Sacahui owns stop/teardown | actual billing observation and direct GCP control verification remain required |
 | R-OPS-01 | critical | Feature CI is mistaken for production readiness | current-state/release docs deny merge/deploy/observation | immutable cloud deployment/observation receipts required |
 | R-RATE-01 | high | Database rate limits are mistaken for DDoS defense | global/per-client HMAC buckets | Cloud Armor/WAF, quotas, load tests and alerts |
 | R-RETRIEVAL-01 | high | Synthetic gates overstate real retrieval quality | no real-corpus credit | judged corpus, human citation review and latency/load/cost SLOs |
@@ -31,6 +32,6 @@ Production declaration is prohibited while any of these remain true:
 - gateway disabled or not bound to an authorized real corpus;
 - zero authorized real documents credited as ingested;
 - browser identity/session and role-aware UI absent;
-- managed cloud staging and edge/load/telemetry evidence absent;
+- managed cloud staging execution and edge/load/telemetry evidence absent;
 - external consumer suites absent;
 - reviewed PR, protected merge, deployment and observation absent.

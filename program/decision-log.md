@@ -228,3 +228,53 @@ Decision: Feature 073 is the authoritative provider-side runner for the Feature 
 Decision: a disposable local/CI PostgreSQL lifecycle is staging evidence for server behavior only. It does not authorize gateway enablement, count as managed cloud staging, prove real-corpus quality, human identity/UI, external consumer conformance, load/HA, merge or deployment.
 
 Evidence: functional SHA `4f6ab306d383f6d74808b393a88ff8172d666b5b`, 14/14 named eval, detached 854/856 regression, 33/33 contracts, PostgreSQL 16.14/pgvector 0.8.5 receipt with 20/20 API/system journeys, 12/12 browser blockers, cleanup 4/4 databases and 3/3 roles, zero/zero postcondition, and Backend CI `29959965725` success including `Execute ephemeral staging runner`.
+
+## 2026-07-23T05:45:00Z — USD 5 authorizes no persistent Cloud SQL environment
+
+Decision: record `rag-municipalidades`, project number `1059368783280`, `us-central1`
+and `AUTH_PROXY_PUBLIC` as a disabled, time-bounded pilot configuration. A resource-bearing
+plan additionally requires a reviewed hourly rate, a maximum runtime whose compute estimate
+fits the declared budget, all human approvals and the exact confirmation phrase.
+
+Decision: treat GCP budgets and the Terraform estimate as planning/alerting controls, not a
+hard spending cap. At the July 2026 reviewed compute/memory rate of USD 0.06755/hour for
+`db-custom-1-3840`, a four-hour pilot estimates USD 0.2702 before storage, backups, network,
+taxes or other charges. Current pricing must be re-reviewed before a live plan.
+
+Decision: do not replace PostgreSQL/pgvector with BigQuery Vector Search in this slice.
+Transactions, forced RLS, migrations, relational integrity and non-owner runtime roles are
+current product controls and require equivalent evidence before any architecture migration.
+
+Evidence: project-specific zero-resource Terraform plan, exact two-resource approved offline
+shape, EVAL-GCP-CLOUDSQL-STAGING-001 13/13 and the Feature 074 ADR/runbook/risk register.
+No resource, API enablement, billing mutation, Terraform apply or cost occurred.
+
+
+## 2026-07-23T07:03:38Z — Name the pilot emergency owner without publishing personal contact data
+
+Decision: revise the proposed pilot budget from USD 5 to USD 1. Record Eduardo Sacahui
+as the named billing owner and emergency stop/teardown owner, with the non-sensitive
+resource label `owner=eduardo-sacahui`. The confirmed contact address remains outside
+the repository, Terraform state, resource labels and logs.
+
+Decision: treat the project owner's spend confirmation as conditional authorization for
+a future controlled pilot, not as permission to apply the current configuration. Direct
+billing-role verification, an actual USD 1 budget with 50%, 90% and 100% alerts,
+residency policy review, IAM ownership, a protected GCS state backend, current pricing
+and final approval of the exact live plan remain mandatory.
+
+
+## 2026-07-24T06:40:00Z — Distinguish the live COP budget from the USD planning envelope and recover bucket IAM before planning
+
+Decision: retain USD 1 as the Terraform cost-review envelope and record COP 4,000 as the
+actual recurring Cloud Billing budget. Verified billing, alert and residency controls do
+not authorize Cloud SQL creation.
+
+Decision: do not remove legacy bucket-owner convenience bindings until bucket-scoped
+`roles/storage.admin` is effective. When recovery is required, grant project-level
+Storage Admin temporarily, verify propagation, establish bucket-scoped administration,
+remove legacy bindings, verify the final policy and remove the temporary project grant.
+
+Evidence: authenticated Cloud Shell output, recovery commit `ce01163`, 14/14 focused tests,
+typecheck, Terraform validation workflow 30042673681 and Backend CI workflow 30042673669.
+No Cloud SQL instance or Terraform apply is claimed.

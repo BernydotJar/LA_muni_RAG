@@ -1,16 +1,17 @@
 {
-  "schema_version": "1.16.0",
-  "generated_at": "2026-07-22T21:54:35Z",
-  "branch": "feature/ephemeral-staging-runner-v1",
-  "functional_head": "4f6ab306d383f6d74808b393a88ff8172d666b5b",
-  "status": "passed_feature073_ephemeral_staging_runner_with_explicit_browser_corpus_external_consumer_cloud_and_deployment_blockers",
+  "schema_version": "1.17.0",
+  "generated_at": "2026-07-23T05:45:00Z",
+  "branch": "feature/gcp-cloudsql-staging-v1",
+  "functional_head": "afa0a427080ed7b9555a9ee5a3c7c77d9a2067cd",
+  "status": "passed_feature074_guarded_cost_bounded_cloudsql_plan_with_explicit_spend_corpus_identity_managed_staging_and_production_blockers",
   "deterministic": {
-    "tests": 856,
-    "pass": 854,
+    "tests": 869,
+    "pass": 867,
     "fail": 0,
     "skipped": 2,
     "typecheck": "pass",
     "build": "pass",
+    "pages": "pass",
     "audits": "0 vulnerabilities"
   },
   "contracts": {
@@ -42,7 +43,24 @@
     "databases_destroyed": 4,
     "runtime_roles_created": 3,
     "runtime_roles_destroyed": 3,
-    "cleanup_complete": true
+    "cleanup_complete": true,
+    "gcp_cloudsql_plan": {
+      "project_id": "rag-municipalidades",
+      "project_number": "1059368783280",
+      "region": "us-central1",
+      "connectivity": "AUTH_PROXY_PUBLIC time-bounded pilot",
+      "default_resource_changes": 0,
+      "approved_offline_resource_addresses": [
+        "google_project_service.sqladmin[0]",
+        "google_sql_database_instance.staging[0]"
+      ],
+      "declared_pilot_budget_usd": 5,
+      "reviewed_hourly_compute_usd": 0.06755,
+      "max_pilot_runtime_hours": 4,
+      "estimated_compute_and_memory_usd": 0.2702,
+      "apply_executed": false,
+      "cloud_resources_created": 0
+    }
   },
   "hard_evals": {
     "EVAL-PROCEDURE-001": {
@@ -223,21 +241,49 @@
         "Browser E2E remains blocked.",
         "External consumers, cloud staging, load/HA, real corpus, merge and deployment are unproved."
       ]
+    },
+    "EVAL-GCP-CLOUDSQL-STAGING-001": {
+      "command": "npm run eval:gcp-cloudsql-staging",
+      "passed": 13,
+      "total": 13,
+      "result": "passed_for_zero_resource_default_exact_two_resource_approved_offline_shape_and_cost_bounded_project_specific_pilot",
+      "evidence": [
+        "infra/gcp/cloudsql-staging/rag-municipalidades.pilot.tfvars.example",
+        "docs/operations/gcp-cloudsql-staging-runbook.md",
+        "docs/decisions/074-gcp-cloudsql-staging-plan.md",
+        "src/__tests__/eval-gcp-cloudsql-staging-001.test.ts"
+      ],
+      "limitations": [
+        "No live GCP plan, apply, API enablement, instance, billable action or managed staging execution.",
+        "Budget and estimate are planning controls rather than a hard spending cap.",
+        "Billing-owner, budget-alert, residency, IAM, state-backend and explicit spend authorization remain required."
+      ]
     }
   },
   "publication": {
-    "branch": "feature/ephemeral-staging-runner-v1",
-    "functional_sha": "4f6ab306d383f6d74808b393a88ff8172d666b5b",
-    "remote_sha_verified": true,
-    "ci_run_id": 29959965725,
-    "ci_status": "completed",
-    "ci_conclusion": "success",
-    "pr": null,
+    "branch": "feature/gcp-cloudsql-staging-v1",
+    "functional_sha": "afa0a427080ed7b9555a9ee5a3c7c77d9a2067cd",
+    "remote_base_sha_verified": "7a00f3ee902cb6dd41c153d3ebfb7c943b50f7a1",
+    "prior_ci": {
+      "backend_run_id": 29980032034,
+      "terraform_run_id": 29980032069,
+      "conclusion": "success_on_prior_functional_base"
+    },
+    "current_ci_status": "backend_in_progress_terraform_success",
+    "pr": 24,
+    "pr_state": "draft",
     "merged": false,
-    "deployed": false
+    "deployed": false,
+    "local_checkpoint_sha": "5e265e41fe313136c49ebdeedd53a86a61b6f718",
+    "remote_head_sha": "5e265e41fe313136c49ebdeedd53a86a61b6f718",
+    "push_attempts": 3,
+    "push_result": "remote_updated; helper_reported_post_push_ownership_error",
+    "backend_ci_run_id": 29982794829,
+    "terraform_ci_run_id": 29982794831,
+    "terraform_ci_conclusion": "success"
   },
   "missing_dedicated_evals": [
-    "ephemeral_staging_runner_execution",
+    "managed_gcp_staging_execution",
     "external_os_electoral_consumer",
     "external_content_agency_consumer",
     "human_identity_session",
@@ -246,10 +292,12 @@
     "production_load_ha_recovery_privacy"
   ],
   "limitations": [
-    "Ephemeral API/system staging executed with synthetic fixtures; it is not a deployed cloud staging environment.",
+    "The project-specific Terraform example remains disabled and created zero resources.",
+    "No explicit spend authorization, live plan, Terraform apply or managed Cloud SQL execution occurred.",
+    "Ephemeral API/system staging uses synthetic fixtures and is not a deployed cloud environment.",
     "Twelve browser journeys remain blocked by missing human identity/session and authenticated UI.",
-    "Zero real documents are credited as ingested and external consumers have not executed their suites.",
-    "Public gateway remains disabled and undeployed; edge/load/observability/HA/recovery/privacy evidence is absent.",
-    "No PR, merge or production deployment is proved."
+    "Zero documents are credited as ingested and external consumers have not executed their suites.",
+    "Public gateway remains disabled; edge/load/observability/HA/recovery/privacy evidence is absent.",
+    "PR #24 is draft; no protected merge or production deployment is proved."
   ]
 }

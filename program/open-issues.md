@@ -1,6 +1,6 @@
 # LA Muni RAG — Open Issues
 
-Updated: 2026-07-22T21:54:35Z
+Updated: 2026-07-24T06:40:00Z
 
 ## Critical
 
@@ -31,9 +31,13 @@ Zero real documents are credited as ingested. Human/platform inputs required:
 
 No approved IdP/OIDC/PKCE/BFF, secure cookie/CSRF, provisioning, logout, revocation, recovery or role-aware authenticated UI exists. All twelve browser journeys remain explicitly blocked.
 
-### PROG-OPS-001 — cloud platform and production operations absent
+### BLK-GCP-SPEND-074 — paid execution is authorized but not operationally cleared
 
-GCP is architecture only. No project, billing, Terraform apply, Cloud Run, Cloud SQL, Storage, queue, Secret Manager configuration, telemetry, load/HA, recovery or privacy operation exists.
+Authenticated Cloud Shell evidence verifies linked COP billing, Billing Account Administrator access, a project-scoped COP 4,000 monthly budget with 50/90/100 alerts, and an effective location policy permitting `us-central1`. The protected GCS state bucket exists. Its first IAM-hardening sequence removed bucket-policy administration before establishing bucket-scoped administration; commit `ce01163` provides recovery but still requires one successful live rerun. Only one project owner was observed. Current price review, exact live-plan review and final apply authorization remain absent.
+
+### PROG-OPS-001 — managed cloud and production operations absent
+
+A plan-only Cloud SQL module, live billing controls and a protected Terraform-state bucket exist, but no Terraform live plan, Cloud SQL instance, Cloud Run service, queue, Secret Manager configuration, telemetry, load/HA, managed recovery or privacy operation exists.
 
 ## High
 
@@ -65,4 +69,4 @@ Unlimited-OCR remains evaluation-only pending pinned revisions, license/security
 - Pages contains no static municipal answers or procedure fixtures.
 - Gateway is disabled by default and no real public corpus is bound.
 - OpenSEO remains deferred until a production public domain and content policy exist.
-- No PR, merge, cloud staging deployment or production deployment has occurred.
+- PR #24 exists as a draft; no protected merge, cloud staging deployment or production deployment has occurred.

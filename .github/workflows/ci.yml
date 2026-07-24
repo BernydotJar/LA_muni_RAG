@@ -86,6 +86,9 @@ jobs:
       - name: Run EVAL-EPHEMERAL-STAGING-RUNNER-001
         run: npm run eval:staging-runner
 
+      - name: Run EVAL-GCP-CLOUDSQL-STAGING-001
+        run: npm run eval:gcp-cloudsql-staging
+
       - name: Run EVAL-PRODUCTION-PUBLIC-SURFACE-001
         run: npm run eval:production-public-surface
 

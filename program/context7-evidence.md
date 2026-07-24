@@ -350,3 +350,22 @@ Context7 is now available, but every record must still name the official publish
     - "https://github.com/oai/openapi-specification/blob/3.1.1/versions/3.0.3.md"
   limitations: "Context7 surfaced discriminator examples from compatible OpenAPI text; executable Ajv/OpenAPI contract validation remains the acceptance evidence for this 3.1.1 document."
 ```
+
+## 2026-07-23 — Feature 074 Cloud SQL cost and control fallback
+
+```yaml
+- task_id: WS10-GCP-CLOUDSQL-STAGING-001
+  library: Google Cloud SQL and Cloud Billing
+  library_id: official-primary-documentation-fallback
+  installed_version: "Terraform 1.15.8; hashicorp/google 7.40.0; target PostgreSQL 16 Enterprise"
+  query: "Cloud SQL Enterprise pricing in us-central1, shared-core limitations, stopped-instance charging, Cloud Billing budget enforcement, and BigQuery vector index compute"
+  retrieved_at: "2026-07-23T05:22:53Z"
+  documentation_summary: "Official Google documentation lists Cloud SQL compute/memory pricing, identifies shared-core tiers as development/test without SLA, explains that stopped instances stop instance charges, and states that budgets do not impose a hard spending cap. BigQuery vector indexes consume compute and are not free relational/RLS replacements."
+  implementation_decision: "Keep PostgreSQL/pgvector; model the supplied USD 5 input as a maximum four-hour pilot with an explicit reviewed hourly rate and zero-resource defaults. Require price re-review and separate human spend authorization before any live plan."
+  source_links:
+    - "https://cloud.google.com/sql/pricing"
+    - "https://cloud.google.com/sql/docs/postgres/instance-settings"
+    - "https://cloud.google.com/billing/docs/how-to/budgets"
+    - "https://cloud.google.com/bigquery/docs/vector-search"
+  limitations: "Task-specific Context7 CLI fallback failed with ENOTCACHED in the isolated workspace. Official primary documentation was used under VERIFIED_WITH_LIMITATIONS. Prices can change; the estimate excludes storage, backup, network, taxes and other services and is not a billing hard cap."
+```

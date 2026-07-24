@@ -1,84 +1,78 @@
 # LA Muni RAG — Current Program State
 
-Updated: 2026-07-22T21:54:35Z
+Updated: 2026-07-24T06:40:00Z
 
-Program status: **PARTIAL WITH DOCUMENTED BLOCKERS — Feature 073 executes all twenty API/system staging journeys in disposable PostgreSQL and proves cleanup, while real corpus, browser identity/UI, external consumers, cloud staging and production release remain absent**
+Program status: **PARTIAL WITH DOCUMENTED BLOCKERS — Feature 074 now has verified live billing, budget, residency and protected-state-bucket controls; bucket IAM recovery, owner redundancy, live plan approval, managed staging execution, real corpus, human identity and production release remain open**
 
 ## Authoritative checkout
 
 ```text
-workspace_id: 090ec1e4-f130-4801-addd-f6ecb198744a
+workspace_id: 195e1394-f528-4834-a0bb-6ef83478001d
 root: /workspace
-branch: feature/ephemeral-staging-runner-v1
-functional_commit: 4f6ab306d383f6d74808b393a88ff8172d666b5b
-remote_functional_ref: 4f6ab306d383f6d74808b393a88ff8172d666b5b
-pushed: true
-remote_ci_run: 29959965725 success
-PR_open: false
+branch: feature/gcp-cloudsql-staging-v1
+evidence_baseline_head: ce01163ca1f3ff5973bc2f1b99a0736ba9ad05ec
+working_tree_at_baseline: clean
+pull_request: 24 draft
 merged: false
-cloud_staging_deployed: false
+cloud_sql_instance_created: false
+terraform_apply_executed: false
 production_deployed: false
-observed_in_production: false
-cloud_resources_created: false
-billable_actions: 0
 ```
 
-`AGENTS.md` and `RTK.md` remain authoritative. Merge, deployment, paid infrastructure, project/billing creation, production credentials and legal conclusions remain human-gated.
+`AGENTS.md` and `RTK.md` remain authoritative. Merge, production deployment, Cloud SQL
+apply, protected-branch mutation and destructive operations remain human-gated.
 
-## Feature 073 — ephemeral staging runner v1
+## Feature 074 — guarded Cloud SQL staging v1
 
-The canonical Feature 070 staging plan is now executable. The runner:
+```text
+project_id: rag-municipalidades
+project_number: 1059368783280
+region: us-central1
+connectivity: AUTH_PROXY_PUBLIC time-bounded pilot
+terraform_planning_budget_usd: 1
+live_billing_currency: COP
+live_monthly_budget_cop: 4000
+reviewed_hourly_compute_usd: 0.06755
+max_pilot_runtime_hours: 4
+estimated_compute_and_memory_usd: 0.2702
+billing_owner: Eduardo Sacahui
+emergency_stop_teardown_owner: Eduardo Sacahui
+spend_authorized: conditional for a future controlled pilot
+committed_allow_billable_resources: false
+```
 
-- validates exact coverage of all twenty runnable API/system journeys;
-- preserves all twelve browser journeys as explicitly blocked;
-- requires a dedicated loopback PostgreSQL admin endpoint and explicit ephemeral confirmation;
-- refuses unrelated databases and preserves an unapproved dirty environment;
-- creates four fixed `_test` databases and three non-owner runtime roles;
-- applies repository-controlled migrations/runtime gates and executes compiled HTTP/service smokes;
-- uses exact viewer, document-manager, platform-admin, tenant-admin, integration-client, procedure-author, reviewer, approver and case-operator personas;
-- drops and recreates the catalog database to verify reset-to-empty behavior;
-- disables local dotenv and does not invoke a shell for child processes;
-- requires a clean Git worktree so the receipt cites the exact functional SHA;
-- validates a closed, sanitized receipt before writing mode `0600` under ignored `artifacts/staging/`;
-- destroys run-owned databases and roles in `finally` and re-queries the postcondition.
+Authenticated Cloud Shell evidence verified the linked billing account, Billing Account
+Administrator role, the project-scoped COP 4,000 recurring budget and 50/90/100 alerts,
+and an effective resource-location policy that allows `us-central1`. It also created a
+dedicated Standard regional GCS state bucket with public access prevention, uniform
+bucket-level access, versioning, seven-day soft delete and approved labels.
+
+The first legacy-IAM cleanup established only object administration and then removed the
+bucket-owner convenience binding, leaving the operator unable to read bucket IAM. Commit
+`ce01163` provides an idempotent recovery: temporary project-level Storage Admin only when
+needed, bucket-scoped Storage Admin before legacy cleanup, final policy verification and
+cleanup of the temporary project grant. A successful live recovery output is still
+required. Only one project owner was observed.
+
+The USD value remains the Terraform cost-review envelope; the COP value is the actual
+Cloud Billing budget. Neither is a hard cap. Current pricing must be re-reviewed before a
+resource-bearing plan.
 
 ## Verification
 
-Exact detached checkout `4f6ab306d383f6d74808b393a88ff8172d666b5b`:
-
 ```text
-EVAL-EPHEMERAL-STAGING-RUNNER-001: 14/14 pass
-full suite: 856 total / 854 pass / 0 fail / 2 explicit environment skips
-canonical contracts: 33 schemas / 33 examples / OpenAPI 3.1.1
-consumer contracts: 2 kits / 5 interactions / 0 issues
-staging plan: valid / 0 issues
-typecheck: pass
-build: pass
-npm audit --audit-level=high: 0 vulnerabilities
-npm audit --omit=dev --audit-level=high: 0 vulnerabilities
-PostgreSQL: 16.14
-pgvector: 0.8.5
-API/system journeys: 20/20 pass
-browser journeys: 12/12 blocked
-created/destroyed databases: 4/4
-created/destroyed runtime roles: 3/3
-independent postcondition: 0 target databases / 0 target roles
-Backend CI 29959965725: success, including Execute ephemeral staging runner
+EVAL-GCP-CLOUDSQL-STAGING-001: 14/14 pass
+full regression: 870 total / 868 pass / 0 fail / 2 environment skips
+Bash syntax: pass
+Typecheck: pass
+Build: pass
+Terraform validation workflow 30042673681: success
+Backend CI workflow 30042673669: success
+project-specific disabled plan: 0 resource changes
+approved offline shape: SQL Admin API plus one protected Cloud SQL instance
+cloud_sql_instance_created: false
+terraform_apply_executed: false
 ```
-
-This proves the synthetic provider-side API/system staging lifecycle. It does not prove deployed cloud staging, human browser sessions, external consumers, real-corpus quality or production operation.
-
-## Cumulative verified capabilities
-
-- tenant identity/RBAC and transaction-local forced RLS;
-- source/document/procedure catalog APIs;
-- artifact acceptance, ingestion jobs, leases/fencing and tenant vectors;
-- Search, conservative EvidenceBundle and public query gateway APIs;
-- ProcedureQuery, ClaimPack, EvidenceGap, workflow lifecycle and ProcedureCase APIs;
-- provider-side consumer contract kits;
-- fail-closed public product shell and Procedure Academy;
-- disposable PostgreSQL runner for all twenty API/system staging journeys;
-- accessibility, corruption, restore, boundary, tenant, artifact and vector hard gates.
 
 ## Current corpus truth
 
@@ -86,41 +80,53 @@ This proves the synthetic provider-side API/system staging lifecycle. It does no
 source inventory records: 17
 verified records: 4
 records with acquisition metadata: 1
-controlled acquired bytes present in this checkout: 0
 records credited as ingested: 0
 records retrieval-validated against real corpus: 0
 ```
 
-Synthetic fixtures, staging receipts and database gates do not change those values. Zero documents are credited as ingested against a real, reviewed corpus. The minimum Antigua-first and comparative corpus is incomplete.
+Synthetic fixtures, administrative GCP controls and offline plans do not change corpus
+truth.
 
 ## Next execution sequence
 
-1. Obtain authorization for Antigua-first corpus rights, durable storage, scanner, retention/legal-hold and named reviewers.
-2. Acquire, scan, ingest and evaluate real public documents with immutable manifests.
-3. Add guarded GCP Terraform with `apply` disabled by default; create no resource before project, billing, region and budget approval.
-4. Provision isolated cloud staging only after approval and execute the same twenty journeys against deployed revisions.
-5. Configure exact gateway origins, edge protection, telemetry, load/SLO controls and `PAGES_API_URL` only after real-corpus staging passes.
-6. Coordinate consumer-side suites in OS Electoral and Content Agency.
-7. Approve and implement IdP/OIDC/PKCE/BFF/session and role-aware authenticated UI.
-8. Complete browser E2E, human accessibility, load/HA, recovery/privacy, reviewed PR, protected merge, rollout and observation.
+1. Run the `ce01163` bucket-IAM recovery from authenticated Cloud Shell and preserve the
+   sanitized successful `--check` result.
+2. Decide whether to add a second appropriate human project owner or record an accepted
+   governance exception.
+3. Initialize Terraform against the GCS backend and generate a live plan only.
+4. Refresh current pricing and verify that the live plan contains only SQL Admin API
+   enablement and one protected PostgreSQL instance.
+5. Obtain final authorization tied to the exact plan, start time and four-hour window.
+6. Execute the synthetic-only managed staging run and teardown controls.
+7. Continue corpus, human identity, browser E2E, external consumer, edge/load/SLO,
+   recovery/privacy, protected merge and production-release work.
 
 ## Critical blockers
 
-- `PQG-OPEN-ENABLEMENT-001`: public gateway cannot be enabled without authorized ingested evidence, edge controls, deployed staging and approval;
-- `BLK-CORPUS-OPS-001`: source rights, durable storage, scanner and retention/legal-hold controls are unavailable;
-- zero real documents are credited as ingested and no judged real-corpus retrieval evidence exists;
-- no approved human IdP/BFF/session or authenticated role-aware UI; twelve browser journeys remain blocked;
+- `BLK-GCP-SPEND-074`: state-bucket IAM recovery, owner redundancy decision, current
+  price review, live plan review and final apply authorization remain open;
+- `PQG-OPEN-ENABLEMENT-001`: public gateway lacks authorized ingested evidence, edge
+  controls, deployed staging and approval;
+- `BLK-CORPUS-OPS-001`: source rights, durable object storage, scanner and
+  retention/legal-hold controls are unavailable;
+- no approved human IdP/BFF/session or authenticated role-aware UI; twelve browser
+  journeys remain blocked;
 - external consumer repositories have not executed their suites;
-- no GCP project/resources, deployed cloud staging, observability/SLO, load/HA, recovery or privacy operation exists;
-- no reviewed PR, protected merge, deployment or observation window exists.
+- no managed Cloud SQL staging execution, observability/SLO, load/HA, coordinated
+  recovery or privacy operation exists;
+- no protected merge, production deployment or observation window exists.
 
 ## Persistent boundary assertions
 
-- Disposable API/system staging is not deployed cloud staging or production.
-- The twelve browser journeys remain blocked; they were not counted as passed.
-- GCP remains architecture only; zero resources and zero billable actions were created.
-- EvidenceGap is intake-only; no research assignment, resolution lifecycle or notification workflow is implemented.
+- Live budget alerts are not a hard spending cap.
+- A protected state bucket is not a Cloud SQL deployment.
 - There is no production object store, scanner/definitions monitor or dispatcher operating.
-- Browser authentication/session architecture is not implemented. Human IdP/BFF/session, access review and role-aware navigation remain unimplemented.
+- Zero documents are credited as ingested; the minimum Antigua-first and comparative corpus is incomplete.
+- Browser authentication/session architecture is not implemented; human IdP/BFF/session, access review and role-aware navigation remain unimplemented.
+- EvidenceGap is intake-only; no research assignment, resolution lifecycle or notification workflow is implemented.
+- An offline approved-shape plan is not a plan against live GCP state.
+- A live Terraform plan is not authorization to apply it.
+- Disposable API/system staging is not production.
+- The twelve browser journeys remain blocked and were not counted as passed.
 - Provider-side kits do not prove external interoperability.
-- A green feature branch and synthetic staging receipt are not production readiness.
+- A green feature branch, draft PR or synthetic receipt is not production readiness.

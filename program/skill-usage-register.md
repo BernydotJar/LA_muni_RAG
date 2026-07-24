@@ -382,3 +382,15 @@ Before any installation, require an owner to verify every skill file, license, d
 - Critic/fixer scope: preserved unowned dirty environments, disabled local dotenv, avoided shell invocation, required exact personas instead of permission-equivalent roles, counted only resources that existed, re-queried zero-residue postconditions and denied browser/cloud/production overclaims.
 - Independent verification: clean detached 14/14 eval, 854/856 global, 33/33 contracts, PostgreSQL 16.14/pgvector 0.8.5 20/20 journey receipt, 12 blocked browser journeys, cleanup 4/4 databases and 3/3 roles, zero/zero postcondition, zero dependency vulnerabilities and Backend CI 29959965725 success.
 - Product boundary: synthetic provider-side staging only; no real corpus, human browser session, external consumer execution, GCP resource, PR, merge or deployment is claimed.
+
+## 2026-07-23 — Feature 074 cost-bounded GCP pilot checkpoint
+
+- task: `WS10-GCP-CLOUDSQL-STAGING-001`
+- matching installed skill: none; available artifact-authoring and skill-creation skills do not implement repository Terraform/TypeScript/GCP controls
+- execution tools: Cloud Sandbox MCP and GitHub connector
+- AutoSkills: no installation; the previously reviewed offline dry-run remains authoritative and untrusted proposals remain excluded
+- Context7: task-specific offline invocation failed `ENOTCACHED`; official Google primary documentation was used and recorded as `VERIFIED_WITH_LIMITATIONS`
+- inputs: project ID `rag-municipalidades`, project number `1059368783280`, `us-central1`, USD 5 proposed pilot budget and `AUTH_PROXY_PUBLIC`
+- outputs: project-specific disabled tfvars example, bounded cost/runtime Terraform gate, root eval/preflight scripts, CI gate, ADR/runbook/risk/traceability and program checkpoint
+- verification: Terraform fmt/init/validate; zero-resource project plan; exact two-resource approved offline shape; EVAL-GCP-CLOUDSQL-STAGING-001 13/13; EVAL-PRODUCTION-PUBLIC-SURFACE-001 33/33
+- result: implemented and locally verified; no resource, cost, apply, merge or deployment

@@ -1,0 +1,19 @@
+project_id    = "replace-with-approved-project-id"
+region        = "us-central1"
+instance_name = "la-muni-rag-staging"
+
+# Target posture. Requires an existing VPC with private services access.
+connectivity_mode         = "PRIVATE"
+private_network_self_link = "projects/replace-with-approved-project-id/global/networks/la-muni-staging"
+
+# Safety gates remain disabled in the committed example.
+allow_billable_resources = false
+billable_confirmation    = ""
+billing_approved         = false
+budget_approved          = false
+data_residency_approved    = false
+declared_pilot_budget_usd   = 0
+reviewed_hourly_compute_usd = 0
+max_pilot_runtime_hours     = 4
+allow_destroy             = false
+destroy_confirmation     = ""
