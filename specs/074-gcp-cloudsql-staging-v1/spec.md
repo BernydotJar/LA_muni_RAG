@@ -1,6 +1,6 @@
 # Feature 074 — GCP Cloud SQL staging v1
 
-Status: plan-ready; project inputs recorded; external resource creation remains human-gated.
+Status: administrative controls and state-bucket IAM recovery verified; live zero-resource plan and external resource creation remain human-gated.
 
 ## Goal
 
@@ -23,6 +23,7 @@ creating resources from repository CI.
 - Private IP is default; public pilot has no authorized networks and requires connectors.
 - PostgreSQL 16 Enterprise, bounded SSD, backups, PITR, IAM auth and Query Insights are explicit.
 - No plaintext database password or automatic infrastructure mutation path exists.
+- Terraform uses an externalized GCS backend whose parameters, state and plans remain outside Git.
 - Preflight validates Cloud SQL, pgvector, admin capability and dedicated-instance state.
 - The existing 20-journey runner is reused unchanged.
 - Root package scripts and Backend CI expose a named Feature 074 eval.

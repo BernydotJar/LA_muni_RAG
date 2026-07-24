@@ -1,8 +1,8 @@
 # GCP Cloud SQL staging runbook
 
-Status: live administrative controls are mostly verified; bucket IAM recovery and final
-live-plan approval remain pending. No Cloud SQL instance has been created and no
-`terraform apply` has been run.
+Status: live administrative controls and state-bucket IAM recovery are verified.
+Owner redundancy, current-price review, the exact live plan and final execution approval
+remain pending. No Cloud SQL instance has been created and no `terraform apply` has been run.
 
 ## Recorded pilot inputs
 
@@ -42,29 +42,68 @@ Out-of-band authenticated Cloud Shell output verified:
 - a dedicated regional Standard GCS state bucket exists with uniform bucket-level
   access, public access prevention, versioning, seven-day soft delete and the approved
   non-sensitive labels;
+- authenticated `--apply` and `--check` executions both completed successfully;
+- bucket-scoped `roles/storage.admin` is established for the approved operator;
+- no `roles/storage.legacy*` convenience bindings remain on the state bucket;
+- the temporary project-level recovery grant was removed before successful completion;
 - only one project `roles/owner` principal was observed;
 - Cloud SQL was not created and `terraform apply` was not run.
 
-The first IAM-hardening attempt removed legacy bucket-owner convenience bindings after
-establishing only object administration. That role cannot read or change bucket IAM, so
-the operator lost `storage.buckets.getIamPolicy`. Commit `ce01163` repairs the sequence:
-it temporarily grants project-level `roles/storage.admin` only when needed, establishes
-bucket-scoped `roles/storage.admin`, removes legacy bindings, verifies the final policy
-and then removes the temporary project-level grant.
+The recovery sequence is fail-closed and idempotent: it temporarily grants project-level
+`roles/storage.admin` only when bucket IAM is inaccessible, waits for propagation,
+establishes bucket-scoped administration, updates bucket controls, removes legacy
+bindings, verifies the final policy and removes the temporary project-level grant. The
+live recovery completed successfully on 2026-07-24.
 
 ## Remaining human approvals and controls
 
-1. run the `ce01163` recovery and obtain the final successful `--check` output;
-2. decide whether to add a second appropriate human project owner; no owner is added
-   automatically;
-3. obtain platform, database, security and release approval for the exact live plan;
-4. approve the time-bounded Auth Proxy public pilot and synthetic-only fixtures;
-5. refresh current pricing and record the start time and four-hour stop window;
-6. issue final execution authorization tied to the exact live plan.
+1. decide whether to add a second appropriate human project owner or record an
+   accepted governance exception; no owner is added automatically;
+2. initialize Terraform against the verified GCS backend and generate a zero-resource
+   live plan;
+3. refresh current pricing before any resource-bearing plan;
+4. obtain platform, database, security and release approval for the exact live plan;
+5. approve the time-bounded Auth Proxy public pilot and synthetic-only fixtures;
+6. record the start time and four-hour stop window;
+7. issue final execution authorization tied to the exact live plan, which must be the
+   reviewed resource-bearing plan.
 
 Eduardo Sacahui is the confirmed emergency stop/teardown owner. Personal contact data
 must not be committed to the repository, Terraform state, resource labels or logs. Use
 the non-sensitive resource label `owner=eduardo-sacahui`.
+
+## Initialize the verified backend and produce a zero-resource live plan
+
+The bootstrap script writes ignored `backend.gcs.hcl` configuration with mode `0600`.
+The committed Terraform declares an empty GCS backend block so backend parameters remain
+outside Git. From authenticated Cloud Shell, first prove the live backend can initialize
+and that committed defaults still plan zero resources:
+
+```bash
+cd ~/LA_muni_RAG/infra/gcp/cloudsql-staging
+
+test -f backend.gcs.hcl
+test ! -f terraform.tfstate
+
+terraform init -reconfigure -backend-config=backend.gcs.hcl
+terraform plan \
+  -out=default-live.tfplan \
+  -var='project_id=rag-municipalidades' \
+  -var='connectivity_mode=AUTH_PROXY_PUBLIC'
+
+terraform show -json default-live.tfplan > default-live.tfplan.json
+jq -e '
+  ([.resource_changes[]? | select(.change.actions != ["no-op"])] | length) == 0 and
+  (.output_changes.resources_enabled.after == false)
+' default-live.tfplan.json
+
+rm -f default-live.tfplan default-live.tfplan.json
+```
+
+Stop if initialization proposes state migration, if a local `terraform.tfstate` exists,
+or if the plan contains any resource change. Do not commit backend configuration, state,
+plan files or plan JSON. This zero-resource plan is evidence only and does not authorize
+a resource-bearing plan or apply.
 
 ## Provisioning boundary
 

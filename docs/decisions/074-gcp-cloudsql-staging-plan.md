@@ -17,10 +17,11 @@ Authenticated Cloud Shell evidence later verified the linked COP billing account
 Account Administrator assignment, a project-scoped COP 4,000 monthly budget with 50%,
 90% and 100% current-spend alerts, an effective resource-location policy that permits
 `us-central1`, and a protected regional GCS state bucket. The first legacy-IAM cleanup
-removed bucket-policy administration too early; commit `ce01163` adds an idempotent
-recovery that establishes bucket-scoped `roles/storage.admin` before removing legacy
-bindings and removes any temporary project-level grant afterward. Project-owner
-redundancy, current price review and final approval of the exact live plan remain open.
+removed bucket-policy administration too early. The idempotent recovery was hardened
+to tolerate IAM propagation, and authenticated `--apply` plus `--check` executions later
+established bucket-scoped `roles/storage.admin`, removed all legacy bindings and cleaned
+up the temporary project-level grant. Project-owner redundancy, current price review and
+final approval of the exact live plan remain open.
 
 Private IP remains the target posture. The supplied pilot mode configures no authorized
 networks, enforces connectors and must use Cloud SQL Auth Proxy or a supported language

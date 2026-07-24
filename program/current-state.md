@@ -1,16 +1,16 @@
 # LA Muni RAG — Current Program State
 
-Updated: 2026-07-24T06:40:00Z
+Updated: 2026-07-24T22:30:51Z
 
-Program status: **PARTIAL WITH DOCUMENTED BLOCKERS — Feature 074 now has verified live billing, budget, residency and protected-state-bucket controls; bucket IAM recovery, owner redundancy, live plan approval, managed staging execution, real corpus, human identity and production release remain open**
+Program status: **PARTIAL WITH DOCUMENTED BLOCKERS — Feature 074 now has verified live billing, budget, residency and state-bucket IAM recovery; owner redundancy, live plan approval, managed staging execution, real corpus, human identity and production release remain open**
 
 ## Authoritative checkout
 
 ```text
-workspace_id: 195e1394-f528-4834-a0bb-6ef83478001d
+workspace_id: c0bc5839-e724-403b-8dbc-746ca0014a72
 root: /workspace
 branch: feature/gcp-cloudsql-staging-v1
-evidence_baseline_head: ce01163ca1f3ff5973bc2f1b99a0736ba9ad05ec
+evidence_baseline_head: 77279287c521f58c359754b2b8cb8f0a31da4e1a
 working_tree_at_baseline: clean
 pull_request: 24 draft
 merged: false
@@ -47,12 +47,10 @@ and an effective resource-location policy that allows `us-central1`. It also cre
 dedicated Standard regional GCS state bucket with public access prevention, uniform
 bucket-level access, versioning, seven-day soft delete and approved labels.
 
-The first legacy-IAM cleanup established only object administration and then removed the
-bucket-owner convenience binding, leaving the operator unable to read bucket IAM. Commit
-`ce01163` provides an idempotent recovery: temporary project-level Storage Admin only when
-needed, bucket-scoped Storage Admin before legacy cleanup, final policy verification and
-cleanup of the temporary project grant. A successful live recovery output is still
-required. Only one project owner was observed.
+The state-bucket recovery completed successfully through authenticated `--apply` and
+`--check` executions. The final bucket policy contains bucket-scoped Storage Admin for the
+approved operator and no legacy convenience bindings; the temporary project-level grant
+was removed before completion. Only one project owner was observed.
 
 The USD value remains the Terraform cost-review envelope; the COP value is the actual
 Cloud Billing budget. Neither is a hard cap. Current pricing must be re-reviewed before a
@@ -66,8 +64,8 @@ full regression: 870 total / 868 pass / 0 fail / 2 environment skips
 Bash syntax: pass
 Typecheck: pass
 Build: pass
-Terraform validation workflow 30042673681: success
-Backend CI workflow 30042673669: success
+Terraform validation workflow 30130298040: success
+Backend CI workflow 30130298122: success
 project-specific disabled plan: 0 resource changes
 approved offline shape: SQL Admin API plus one protected Cloud SQL instance
 cloud_sql_instance_created: false
@@ -89,22 +87,20 @@ truth.
 
 ## Next execution sequence
 
-1. Run the `ce01163` bucket-IAM recovery from authenticated Cloud Shell and preserve the
-   sanitized successful `--check` result.
-2. Decide whether to add a second appropriate human project owner or record an accepted
+1. Decide whether to add a second appropriate human project owner or record an accepted
    governance exception.
-3. Initialize Terraform against the GCS backend and generate a live plan only.
-4. Refresh current pricing and verify that the live plan contains only SQL Admin API
-   enablement and one protected PostgreSQL instance.
-5. Obtain final authorization tied to the exact plan, start time and four-hour window.
-6. Execute the synthetic-only managed staging run and teardown controls.
-7. Continue corpus, human identity, browser E2E, external consumer, edge/load/SLO,
+2. Initialize Terraform against the verified GCS backend and prove a live zero-resource plan.
+3. Refresh current pricing and generate the exact resource-bearing plan constrained to SQL
+   Admin API enablement and one protected PostgreSQL instance.
+4. Obtain final authorization tied to that exact plan, start time and four-hour window.
+5. Execute the synthetic-only managed staging run and teardown controls.
+6. Continue corpus, human identity, browser E2E, external consumer, edge/load/SLO,
    recovery/privacy, protected merge and production-release work.
 
 ## Critical blockers
 
-- `BLK-GCP-SPEND-074`: state-bucket IAM recovery, owner redundancy decision, current
-  price review, live plan review and final apply authorization remain open;
+- `BLK-GCP-SPEND-074`: owner redundancy decision, live zero-resource plan, current
+  price review, exact resource-bearing plan review and final apply authorization remain open;
 - `PQG-OPEN-ENABLEMENT-001`: public gateway lacks authorized ingested evidence, edge
   controls, deployed staging and approval;
 - `BLK-CORPUS-OPS-001`: source rights, durable object storage, scanner and

@@ -12,6 +12,7 @@ describe("EVAL-GCP-CLOUDSQL-STAGING-001", () => {
       read(".github/workflows/gcp-cloudsql-terraform.yml"),
     ]);
     assert.match(versions, /required_version = ">= 1\.15\.0, < 2\.0\.0"/);
+    assert.match(versions, /backend "gcs"/);
     assert.match(versions, /version = "7\.40\.0"/);
     assert.match(lock, /registry\.terraform\.io\/hashicorp\/google/);
     assert.match(lock, /version\s+= "7\.40\.0"/);
