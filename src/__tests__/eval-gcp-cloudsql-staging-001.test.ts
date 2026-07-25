@@ -108,6 +108,7 @@ describe("EVAL-GCP-CLOUDSQL-STAGING-001", () => {
     assert.match(runbook, /live_monthly_budget_cop: 4000/);
     assert.match(runbook, /bucket IAM recovery/i);
     assert.match(runbook, /live\s+zero-resource Terraform plan and current pricing are verified/i);
+    assert.match(runbook, /-lock-timeout=60s/);
   });
   it("records the supplied project as a disabled cost-bounded pilot", async () => {
     const [pilot, outputs, workflow, pkg, ci] = await Promise.all([

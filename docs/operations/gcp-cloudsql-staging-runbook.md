@@ -158,7 +158,7 @@ test ! -f terraform.tfstate
 terraform init -reconfigure -backend-config=backend.gcs.hcl
 terraform plan \
   -input=false \
-  -lock=false \
+  -lock-timeout=60s \
   -out=approved-live-v2.tfplan \
   -var='project_id=rag-municipalidades' \
   -var='connectivity_mode=AUTH_PROXY_PUBLIC' \
