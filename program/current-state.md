@@ -1,8 +1,8 @@
 # LA Muni RAG — Current Program State
 
-Updated: 2026-07-25T08:05:00Z
+Updated: 2026-07-25T15:25:22Z
 
-Program status: **PARTIAL WITH DOCUMENTED BLOCKERS — Feature 074 has verified administrative controls, a live zero-resource plan and current pricing; its first exact resource-bearing plan was rejected for a missing owner label, so owner redundancy, a corrected plan, managed staging execution, real corpus, human identity and production release remain open**
+Program status: **PARTIAL WITH DOCUMENTED BLOCKERS — Feature 074 now has a verifier-approved immutable resource plan, but owner redundancy, final hash-bound execution authorization, managed staging execution, real corpus, human identity and production release remain open**
 
 ## Authoritative checkout
 
@@ -10,7 +10,7 @@ Program status: **PARTIAL WITH DOCUMENTED BLOCKERS — Feature 074 has verified 
 workspace_id: b909e055-62ae-4625-ac13-10947906a08f
 root: /workspace
 branch: feature/gcp-cloudsql-staging-v1
-evidence_baseline_head: 8d6991d7d025b41a6e26a02c3bc6a034a36e90ca
+evidence_baseline_head: e7c4393b0655d3c660941778ff47b1f31e6be57d
 working_tree_at_baseline: clean
 pull_request: 24 draft
 merged: false
@@ -74,6 +74,15 @@ repository now provides a self-locating fail-fast generator that verifies all pr
 builds in a temporary directory and atomically publishes only verifier-approved non-empty
 artifacts. No Cloud SQL instance was created and `terraform apply` was not run.
 
+The self-locating generator was then executed successfully from authenticated Cloud Shell
+at repository head `e7c4393b0655d3c660941778ff47b1f31e6be57d`. The corrected immutable plan contains exactly SQL
+Admin API enablement and one protected PostgreSQL instance, includes
+`owner=eduardo-sacahui`, and the reusable verifier returned `status=valid` with no issues.
+The published artifact directory is `approved-live-v2-e7c4393b0655-20260725T152522Z`. Its plan, JSON, text and verification
+SHA-256 values are recorded in the evidence register. This is technical plan verification,
+not final execution authorization. No Cloud SQL instance was created and `terraform apply`
+was not run.
+
 ## Verification
 
 ```text
@@ -82,12 +91,14 @@ full regression: 870 total / 868 pass / 0 fail / 2 environment skips
 Bash syntax: pass
 Typecheck: pass
 Build: pass
-Terraform validation workflow 30145537551: success
-Backend CI workflow 30145537557: success
+Terraform validation workflows 30150454585 / 30150453108: success
+Backend CI workflows 30150454584 / 30150453135: success
 project-specific disabled offline plan: 0 resource changes
 live GCS-backed disabled plan: 0 resource changes; resources_enabled=false
 approved offline shape: SQL Admin API plus one protected Cloud SQL instance
 first live resource plan: 2 creates; rejected_missing_owner_label
+corrected live resource plan: 2 creates; verifier_status=valid; final_authorization=false
+corrected plan evidence head: e7c4393b0655d3c660941778ff47b1f31e6be57d
 live plan generator: self-locating, fail-fast, state-locked, atomic verified-artifact publish
 cloud_sql_instance_created: false
 terraform_apply_executed: false
@@ -110,17 +121,16 @@ truth.
 
 1. Decide whether to add a second appropriate human project owner or record an accepted
    governance exception.
-2. Pull the plan-verifier hardening and regenerate the exact resource-bearing plan with
-   `owner=eduardo-sacahui`; require `status: "valid"`.
-3. Obtain final authorization tied to that corrected plan hash, start time and four-hour window.
-4. Execute the synthetic-only managed staging run and teardown controls.
-5. Continue corpus, human identity, browser E2E, external consumer, edge/load/SLO,
+2. Decide whether the technically verified immutable plan is approved for execution, tied
+   to its exact four SHA-256 values, a start time and the four-hour stop window.
+3. Execute the synthetic-only managed staging run and teardown controls only after that
+   explicit final authorization.
+4. Continue corpus, human identity, browser E2E, external consumer, edge/load/SLO,
    recovery/privacy, protected merge and production-release work.
 
 ## Critical blockers
 
-- `BLK-GCP-SPEND-074`: owner redundancy, a corrected verifier-approved resource plan
-  and final plan-bound apply authorization remain open;
+- `BLK-GCP-SPEND-074`: owner redundancy and final hash-bound apply authorization remain open;
 - `PQG-OPEN-ENABLEMENT-001`: public gateway lacks authorized ingested evidence, edge
   controls, deployed staging and approval;
 - `BLK-CORPUS-OPS-001`: source rights, durable object storage, scanner and

@@ -310,3 +310,17 @@ Evidence: authenticated plan output at repository head
 `8d6991d7d025b41a6e26a02c3bc6a034a36e90ca`; exact two-resource shape; SHA-256 plan
 `57851090aa472c2d7263b1de7a742680c174faa73e667ec2cfeb2e54e52b41eb`; no Cloud SQL
 creation and no `terraform apply`.
+
+
+## 2026-07-25T15:25:22Z — Accept the corrected immutable plan for final authorization review
+
+Decision: accept the corrected Cloud SQL resource-bearing plan as technically valid for
+final authorization review. The plan was generated from repository head
+`e7c4393b0655d3c660941778ff47b1f31e6be57d`, contains exactly SQL Admin API enablement and one protected PostgreSQL
+16 instance, includes `owner=eduardo-sacahui`, and passed the reusable verifier with no
+issues.
+
+Decision: technical verification does not authorize execution. Any later `terraform apply`
+must be explicitly authorized against the exact plan, JSON, text and verification hashes
+recorded in the evidence register, together with a start time and four-hour stop window.
+Owner redundancy remains unresolved. No Cloud SQL resource was created and no apply ran.

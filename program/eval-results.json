@@ -1,9 +1,9 @@
 {
   "schema_version": "1.17.0",
-  "generated_at": "2026-07-25T07:11:21Z",
+  "generated_at": "2026-07-25T15:25:22Z",
   "branch": "feature/gcp-cloudsql-staging-v1",
-  "functional_head": "8d6991d7d025b41a6e26a02c3bc6a034a36e90ca",
-  "status": "passed_feature074_guarded_cost_bounded_cloudsql_plan_with_explicit_spend_corpus_identity_managed_staging_and_production_blockers",
+  "functional_head": "e7c4393b0655d3c660941778ff47b1f31e6be57d",
+  "status": "passed_feature074_verifier_valid_immutable_cloudsql_plan_with_final_hash_bound_authorization_and_managed_staging_blockers",
   "deterministic": {
     "tests": 870,
     "pass": 868,
@@ -65,11 +65,21 @@
       "live_zero_resource_plan_verified": true,
       "live_resource_plan_generated": true,
       "live_resource_plan_approved": false,
-      "live_resource_plan_rejection": "missing_required_owner_label",
+      "live_resource_plan_rejection": "first_plan_missing_required_owner_label_superseded_by_verified_v2",
       "required_owner_label": "eduardo-sacahui",
       "plan_verifier_required": true,
       "terraform_apply_executed": false,
-      "cloud_sql_created": false
+      "cloud_sql_created": false,
+      "corrected_live_resource_plan_verified": true,
+      "corrected_live_resource_plan_verifier_status": "valid",
+      "corrected_live_resource_plan_final_authorized": false,
+      "corrected_live_resource_plan_artifact": "approved-live-v2-e7c4393b0655-20260725T152522Z",
+      "corrected_live_resource_plan_hashes": {
+        "plan": "a9c16848cc89d68ad56de2d1344f3e6e20da0a4faca753a060d9a726aa09fe1e",
+        "json": "8e7a01cbc29bbce63c9d05b4a0935765cb6779afd05c7514cb8b7c0d8c0e106a",
+        "text": "efd8f22358385c94f49f2edca40d141e38a274cbc10c47c0a7df1694577cc3e2",
+        "verification": "d6b6a840b05b8ade30e1fca5408ec06d7f4f6ae923607c02b9f819a7baa1adce"
+      }
     }
   },
   "hard_evals": {
@@ -254,25 +264,26 @@
     },
     "EVAL-GCP-CLOUDSQL-STAGING-001": {
       "command": "npm run eval:gcp-cloudsql-staging",
-      "passed": 13,
-      "total": 13,
-      "result": "passed_for_zero_resource_default_exact_two_resource_approved_offline_shape_and_cost_bounded_project_specific_pilot",
+      "passed": 14,
+      "total": 14,
+      "result": "passed_for_zero_resource_default_verifier_valid_immutable_two_resource_live_plan_with_final_authorization_and_managed_staging_limitations",
       "evidence": [
-        "infra/gcp/cloudsql-staging/rag-municipalidades.pilot.tfvars.example",
+        "infra/gcp/generate-cloudsql-live-plan.sh",
+        "src/gcp/cloudSqlTerraformPlan.ts",
         "docs/operations/gcp-cloudsql-staging-runbook.md",
-        "docs/decisions/074-gcp-cloudsql-staging-plan.md",
-        "src/__tests__/eval-gcp-cloudsql-staging-001.test.ts"
+        "program/evidence-register.jsonl"
       ],
       "limitations": [
-        "No live GCP plan, apply, API enablement, instance, billable action or managed staging execution.",
+        "Corrected immutable live plan is verifier-valid but has no final hash-bound execution authorization.",
+        "No Terraform apply, Cloud SQL instance or managed staging execution.",
         "Budget and estimate are planning controls rather than a hard spending cap.",
-        "Billing-owner, budget-alert, residency, IAM, state-backend and explicit spend authorization remain required."
+        "Owner redundancy remains unresolved."
       ]
     }
   },
   "publication": {
     "branch": "feature/gcp-cloudsql-staging-v1",
-    "functional_sha": "afa0a427080ed7b9555a9ee5a3c7c77d9a2067cd",
+    "functional_sha": "e7c4393b0655d3c660941778ff47b1f31e6be57d",
     "remote_base_sha_verified": "7a00f3ee902cb6dd41c153d3ebfb7c943b50f7a1",
     "prior_ci": {
       "backend_run_id": 29980032034,
@@ -284,14 +295,17 @@
     "pr_state": "draft",
     "merged": false,
     "deployed": false,
-    "local_checkpoint_sha": "5e265e41fe313136c49ebdeedd53a86a61b6f718",
-    "remote_head_sha": "8d6991d7d025b41a6e26a02c3bc6a034a36e90ca",
-    "push_attempts": 3,
-    "push_result": "remote_updated; helper_reported_post_push_ownership_error",
-    "backend_ci_run_id": 30145537557,
-    "terraform_ci_run_id": 30145537551,
+    "remote_head_sha": "e7c4393b0655d3c660941778ff47b1f31e6be57d",
     "terraform_ci_conclusion": "success",
-    "backend_ci_conclusion": "success"
+    "backend_ci_conclusion": "success",
+    "backend_ci_run_ids": [
+      30150454584,
+      30150453135
+    ],
+    "terraform_ci_run_ids": [
+      30150454585,
+      30150453108
+    ]
   },
   "missing_dedicated_evals": [
     "managed_gcp_staging_execution",
@@ -303,13 +317,10 @@
     "production_load_ha_recovery_privacy"
   ],
   "limitations": [
-    "The project-specific Terraform example remains disabled and created zero resources.",
-    "No explicit spend authorization, live plan, Terraform apply or managed Cloud SQL execution occurred.",
+    "The corrected immutable Cloud SQL plan is verifier-valid but lacks final hash-bound execution authorization.",
+    "No Terraform apply, Cloud SQL instance or managed staging execution occurred.",
     "Ephemeral API/system staging uses synthetic fixtures and is not a deployed cloud environment.",
     "Twelve browser journeys remain blocked by missing human identity/session and authenticated UI.",
-    "Zero documents are credited as ingested and external consumers have not executed their suites.",
-    "Public gateway remains disabled; edge/load/observability/HA/recovery/privacy evidence is absent.",
-    "PR #24 is draft; no protected merge or production deployment is proved.",
-    "The first exact live Cloud SQL resource plan was rejected because it omitted the required owner label; no apply occurred."
+    "No authorized real corpus, external consumer execution, merge or production deployment."
   ]
 }

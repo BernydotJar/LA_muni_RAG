@@ -168,6 +168,32 @@ Success requires `status: "valid"`, four non-empty artifacts and a `SHA256SUMS` 
 inside an ignored directory named for the repository HEAD and UTC timestamp. A correct
 address set alone is insufficient. The script contains no `terraform apply` command.
 
+## Corrected immutable plan: verifier-valid, not execution-authorized
+
+Authenticated Cloud Shell successfully ran the self-locating generator from repository
+head `e7c4393b0655d3c660941778ff47b1f31e6be57d`. Terraform proposed exactly two creates: SQL Admin API enablement
+and one protected PostgreSQL 16 instance. The plan includes the required
+`owner=eduardo-sacahui` label, and the reusable verifier returned `status: valid` with an
+empty issue list. The immutable artifact directory is:
+
+```text
+approved-live-v2-e7c4393b0655-20260725T152522Z
+```
+
+Artifact identity:
+
+```text
+plan: a9c16848cc89d68ad56de2d1344f3e6e20da0a4faca753a060d9a726aa09fe1e
+json: 8e7a01cbc29bbce63c9d05b4a0935765cb6779afd05c7514cb8b7c0d8c0e106a
+text: efd8f22358385c94f49f2edca40d141e38a274cbc10c47c0a7df1694577cc3e2
+verification: d6b6a840b05b8ade30e1fca5408ec06d7f4f6ae923607c02b9f819a7baa1adce
+```
+
+These hashes supersede the rejected first-plan hashes for review purposes. Technical
+verification does not constitute final execution authorization. Any future authorization
+must name these exact four hashes, the intended start time and the four-hour stop window.
+No Cloud SQL instance was created and `terraform apply` was not run.
+
 ## Provisioning boundary
 
 Repository CI performs formatting, provider initialization, validation and offline plan

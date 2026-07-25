@@ -40,20 +40,19 @@ observation_window: none
 - no SQL password, database-user resource, `terraform apply` or destroy automation;
 - reviewed USD 0.08775/hour compute/memory estimate and maximum four-hour pilot;
 - estimated USD 0.351 compute/memory and USD 0.38826024 including 20 GiB SSD before backups, network, taxes and other charges;
-- 13/13 named Cloud SQL eval and 33/33 public-surface regression;
-- full 869 total / 867 pass / 0 fail / 2 skips;
+- 14/14 named Cloud SQL eval and 33/33 public-surface regression;
+- full 870 total / 868 pass / 0 fail / 2 skips;
 - 33/33 contracts, typecheck, build, Pages and zero-vulnerability audits;
 - Terraform 1.15.8 format/init/validate passed;
-- PR #24 remains draft at `5e265e41fe313136c49ebdeedd53a86a61b6f718`; Terraform validation run 29982794831 succeeded and Backend CI run 29982794829 is in progress.
+- PR #24 remains draft at `e7c4393b0655d3c660941778ff47b1f31e6be57d`; Terraform validation runs 30150454585/30150453108 and Backend CI runs 30150454584/30150453135 succeeded.
 
-A budget or estimate is not a hard spending cap. No live GCP plan, apply, API enablement,
-resource, managed staging execution or cost is claimed.
+A budget or estimate is not a hard spending cap. A verifier-valid immutable live plan exists, but no final hash-bound authorization, Terraform apply, API enablement, Cloud SQL resource, managed staging execution or cost is claimed.
 
 ## Required sequence before public enablement
 
 1. Approve and ingest a real public corpus with human authority/vigencia review.
 2. Add Cloud Armor/WAF, quotas, load/SLO evidence, sanitized telemetry and alerts.
-3. Provision the guarded GCP pilot only after billing-owner, budget-alert, residency, IAM/state, current-price and explicit spend approval.
+3. Provision the guarded GCP pilot only after owner-redundancy disposition and explicit authorization tied to the exact verified plan hashes, start time and four-hour stop window.
 4. Deploy immutable gateway/API/worker revisions and execute the same twenty journeys against managed services.
 5. Verify rollback and real-corpus quality.
 6. Configure Pages `PAGES_API_URL` only after those gates pass.

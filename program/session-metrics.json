@@ -1,8 +1,8 @@
 {
   "schema_version": "1.13.0",
-  "generated_at": "2026-07-23T05:45:00Z",
+  "generated_at": "2026-07-25T15:25:22Z",
   "branch": "feature/gcp-cloudsql-staging-v1",
-  "functional_head": "afa0a427080ed7b9555a9ee5a3c7c77d9a2067cd",
+  "functional_head": "e7c4393b0655d3c660941778ff47b1f31e6be57d",
   "source": "observed command outputs only",
   "status": "PARTIAL_WITH_DOCUMENTED_BLOCKERS",
   "tests": {
@@ -44,10 +44,15 @@
       "region": "us-central1",
       "default_resource_changes": 0,
       "approved_offline_resource_count": 2,
-      "declared_pilot_budget_usd": 5,
-      "estimated_compute_and_memory_usd": 0.2702,
+      "declared_pilot_budget_usd": 1,
+      "estimated_compute_and_memory_usd": 0.351,
       "max_pilot_runtime_hours": 4,
-      "managed_environment_executed": false
+      "managed_environment_executed": false,
+      "reviewed_hourly_compute_usd": 0.08775,
+      "estimated_compute_memory_and_20gb_ssd_usd": 0.38826024,
+      "live_zero_resource_plan_verified": true,
+      "corrected_live_resource_plan_verifier_status": "valid",
+      "corrected_live_resource_plan_final_authorized": false
     }
   },
   "hard_evals": {
@@ -58,7 +63,7 @@
     "production_public_surface": "33/33",
     "public_query_gateway": "23/23",
     "ephemeral_staging_runner": "14/14",
-    "gcp_cloudsql_staging": "13/13"
+    "gcp_cloudsql_staging": "14/14"
   },
   "source_inventory": {
     "total": 17,
@@ -68,22 +73,23 @@
   },
   "publication": {
     "branch": "feature/gcp-cloudsql-staging-v1",
-    "functional_sha": "afa0a427080ed7b9555a9ee5a3c7c77d9a2067cd",
-    "remote_base_sha_verified": "7a00f3ee902cb6dd41c153d3ebfb7c943b50f7a1",
-    "prior_backend_ci_run_id": 29980032034,
-    "prior_terraform_ci_run_id": 29980032069,
-    "current_ci_status": "backend_in_progress_terraform_success",
+    "functional_sha": "e7c4393b0655d3c660941778ff47b1f31e6be57d",
+    "current_ci_status": "backend_success_terraform_success",
     "pr": 24,
     "pr_state": "draft",
     "merged": false,
     "deployed": false,
-    "local_checkpoint_sha": "5e265e41fe313136c49ebdeedd53a86a61b6f718",
-    "remote_head_sha": "5e265e41fe313136c49ebdeedd53a86a61b6f718",
-    "push_attempts": 3,
-    "push_result": "remote_updated; helper_reported_post_push_ownership_error",
-    "backend_ci_run_id": 29982794829,
-    "terraform_ci_run_id": 29982794831,
-    "terraform_ci_conclusion": "success"
+    "remote_head_sha": "e7c4393b0655d3c660941778ff47b1f31e6be57d",
+    "terraform_ci_conclusion": "success",
+    "backend_ci_run_ids": [
+      30150454584,
+      30150453135
+    ],
+    "terraform_ci_run_ids": [
+      30150454585,
+      30150453108
+    ],
+    "backend_ci_conclusion": "success"
   },
   "dependency_audit": {
     "all_vulnerabilities": 0,
