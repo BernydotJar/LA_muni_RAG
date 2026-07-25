@@ -33,11 +33,11 @@ No approved IdP/OIDC/PKCE/BFF, secure cookie/CSRF, provisioning, logout, revocat
 
 ### GCP-EXECUTION-074 — exact pilot authorized; execution receipt pending
 
-Authenticated controls, pricing, state, zero-resource planning and the verifier-valid immutable plan are complete. Because no second approved human GCP principal exists, the project owner accepted a temporary single-owner exception limited to this synthetic pilot; the assistant is not an IAM principal. Final authorization covers only the four recorded hashes during 2026-07-25 09:00-13:00 America/Guatemala. A fail-closed manual applicator is committed. No apply or Cloud SQL creation is claimed until an execution receipt exists.
+Authenticated controls, pricing, state and the verifier-valid immutable plan are complete. Remote Terraform state and Cloud SQL operations prove that the exact authorized plan was applied: the SQL Admin API and one protected PostgreSQL 16 instance exist. The instance was stopped before the window ended and now reports `STOPPED` with activation policy `NEVER`. The temporary single-owner exception expired on stop. No managed synthetic run or destructive teardown is claimed.
 
 ### PROG-OPS-001 — managed cloud and production operations absent
 
-A plan-only Cloud SQL module, live billing controls, a protected Terraform-state bucket and a verified live zero-resource plan exist. A verifier-valid immutable Cloud SQL resource plan now exists, but it has not received final execution authorization. No Cloud SQL instance, Cloud Run service, queue, Secret Manager configuration, telemetry, load/HA, managed recovery or privacy operation exists.
+A protected Cloud SQL PostgreSQL 16 instance now exists and is stopped. Exact-plan apply and bounded stop are proved, but the managed synthetic run and teardown were not executed. No Cloud Run service, queue, Secret Manager configuration, telemetry, load/HA, managed recovery or privacy operation exists.
 
 ## High
 
@@ -70,3 +70,11 @@ Unlimited-OCR remains evaluation-only pending pinned revisions, license/security
 - Gateway is disabled by default and no real public corpus is bound.
 - OpenSEO remains deferred until a production public domain and content policy exist.
 - PR #24 exists as a draft; no protected merge, cloud staging deployment or production deployment has occurred.
+
+
+### BLK-GCP-LIFECYCLE-074 — stopped pilot requires a new lifecycle authorization
+
+The exact authorized instance exists in `STOPPED` state with activation policy `NEVER` and
+deletion protection enabled. The prior single-owner exception expired on stop. Restart for
+the managed synthetic run or destructive teardown requires a new explicit authorization.
+Storage, backup and related charges may continue while the stopped instance remains.

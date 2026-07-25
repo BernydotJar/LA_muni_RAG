@@ -44,7 +44,7 @@ observation_window: none
 - full 870 total / 868 pass / 0 fail / 2 skips;
 - 33/33 contracts, typecheck, build, Pages and zero-vulnerability audits;
 - Terraform 1.15.8 format/init/validate passed;
-- PR #24 remains draft at `2213de5e9f43657d9341c6f87828b14aabb1c30e`; Terraform validation runs 30163816198/30163815155 and Backend CI runs 30163816219/30163815112 succeeded.
+- PR #24 remains draft at `0edf935c7c012d86b2becae4da563046de167903`; Terraform validation runs 30164809307/30164807345 and Backend CI runs 30164809354/30164807333 succeeded.
 
 A budget or estimate is not a hard spending cap. The exact immutable plan is authorized only for 2026-07-25 09:00-13:00 America/Guatemala under a temporary single-owner exception. No Terraform apply, API enablement, Cloud SQL resource, managed staging execution or cost is claimed until receipts exist.
 

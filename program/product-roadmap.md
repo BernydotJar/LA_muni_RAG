@@ -37,7 +37,7 @@ Residual limitation: synthetic provider-side staging is not cloud staging, brows
 
 Exit criterion: real public evidence supports gateway and tenant APIs with judged quality.
 
-## Phase 3 — Guarded GCP staging — immutable plan verified, execution blocked
+## Phase 3 — Guarded GCP staging — instance created and stopped, managed run blocked
 
 Completed:
 
@@ -45,7 +45,7 @@ Completed:
 2. Project-specific disabled configuration for `rag-municipalidades`, project number `1059368783280`, `us-central1` and Auth Proxy pilot.
 3. Exact two-resource offline and live shapes, zero-resource default, reusable plan verifier and named 14/14 eval.
 4. USD 1/four-hour planning envelope with explicit reviewed hourly rate, Eduardo Sacahui as stop/teardown owner and no hard-cap claim.
-5. Validation-only CI; no `terraform apply` or destroy automation.
+5. Validation-only CI plus exact-plan live apply evidence and bounded stop evidence; no destroy automation.
 
 Next:
 

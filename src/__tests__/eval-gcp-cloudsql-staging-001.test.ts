@@ -130,13 +130,17 @@ describe("EVAL-GCP-CLOUDSQL-STAGING-001", () => {
     assert.match(runbook, /twelve browser journeys remain blocked/i);
     assert.match(runbook, /Billing Account Administrator access/i);
     assert.match(runbook, /Eduardo Sacahui is the confirmed emergency stop\/teardown owner/i);
-    assert.match(runbook, /billable_authorization: confirmed for a future controlled pilot/i);
-    assert.match(runbook, /final execution authorization tied to the exact live plan/i);
+    assert.match(runbook, /billable_authorization: consumed for the exact 2026-07-25 bounded pilot; expired on stop/i);
+    assert.match(runbook, /authorized plan was applied/i);
+    assert.match(runbook, /remote Terraform state and Cloud SQL operation history/i);
     assert.match(runbook, /Budget alerts do not\nstop spend automatically/i);
-    assert.match(runbook, /No Cloud SQL\s+instance has been created/i);
+    assert.match(runbook, /instance now reports `STOPPED` with activation policy\s+`NEVER`/i);
+    assert.match(runbook, /Managed synthetic execution and\s+destructive teardown remain pending/i);
+    assert.match(runbook, /single-owner exception expired on stop/i);
     assert.match(runbook, /live_monthly_budget_cop: 4000/);
-    assert.match(runbook, /bucket IAM recovery/i);
-    assert.match(runbook, /live\s+zero-resource Terraform plan and current pricing are verified/i);
+    assert.match(runbook, /bucket-scoped `roles\/storage\.admin`/i);
+    assert.match(runbook, /zero resource changes, `resources_enabled=false`/i);
+    assert.match(runbook, /2026-07-24 review estimates USD 0\.351/i);
     assert.match(runbook, /-lock-timeout=60s/);
   });
   it("records the supplied project as a disabled cost-bounded pilot", async () => {

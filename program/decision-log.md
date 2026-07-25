@@ -340,3 +340,18 @@ America/Guatemala on 2026-07-25. A fail-closed manual applicator must verify the
 hashes, verifier status, plan source, repository/module immutability, empty remote state,
 active project and current time before applying the saved plan. Authorization is not an
 execution receipt; Cloud SQL remains uncreated until apply evidence is supplied.
+
+
+## 2026-07-25T18:42:49Z — Reconstruct the authorized apply and expire the exception on stop
+
+Decision: treat the remote Terraform state plus successful Cloud SQL `CREATE` operation as
+proof that the exact authorized plan was applied, despite the absence of the applicator's
+local success receipt in the conversation. The later applicator refusal is expected because
+the state already contains the two approved addresses.
+
+Decision: accept the successful activation-policy update and final `STOPPED` state as the
+bounded stop receipt. The temporary single-owner exception expired on stop. Do not restart,
+reapply, import, remove state, disable deletion protection or destroy under the expired
+authorization. A new explicit authorization is required either for a managed synthetic run
+or for destructive teardown. Actual billing remains unknown until provider reporting catches
+up; stopped compute does not imply zero storage or backup cost.

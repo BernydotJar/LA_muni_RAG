@@ -1,11 +1,10 @@
 # GCP Cloud SQL staging runbook
 
-Status: live administrative controls, state-bucket IAM recovery, the live
-zero-resource Terraform plan and current pricing are verified. The first exact
-resource-bearing plan was generated but rejected because it omitted the required
-`owner=eduardo-sacahui` label. Owner redundancy, a corrected immutable plan and final
-execution approval remain pending. No Cloud SQL instance has been created and no
-`terraform apply` has been run.
+Status: the exact verifier-approved plan was applied during the bounded window. Remote
+state contains the SQL Admin API and one protected PostgreSQL 16 instance. Compute was
+stopped before the window ended; the instance now reports `STOPPED` with activation policy
+`NEVER`. The single-owner exception expired on stop. Managed synthetic execution and
+destructive teardown remain pending and require new authorization.
 
 ## Recorded pilot inputs
 
@@ -23,7 +22,7 @@ estimated_compute_and_memory_usd: 0.351
 billing_owner: Eduardo Sacahui
 emergency_stop_teardown_owner: Eduardo Sacahui
 operational_contact: verified and maintained outside the repository
-billable_authorization: confirmed for a future controlled pilot
+billable_authorization: consumed for the exact 2026-07-25 bounded pilot; expired on stop
 ```
 
 The USD value is the Terraform cost-review envelope; COP 4,000 is the actual recurring
@@ -51,7 +50,7 @@ Out-of-band authenticated Cloud Shell output verified:
 - no `roles/storage.legacy*` convenience bindings remain on the state bucket;
 - the temporary project-level recovery grant was removed before successful completion;
 - only one project `roles/owner` principal was observed;
-- Cloud SQL was not created and `terraform apply` was not run.
+- at that administrative-control checkpoint, Cloud SQL had not yet been created and `terraform apply` had not run.
 
 The recovery sequence is fail-closed and idempotent: it temporarily grants project-level
 `roles/storage.admin` only when bucket IAM is inaccessible, waits for propagation,
@@ -61,15 +60,12 @@ live recovery completed successfully on 2026-07-24.
 
 ## Remaining human approvals and controls
 
-1. decide whether to add a second appropriate human project owner or record an
-   accepted governance exception; no owner is added automatically;
-2. regenerate and inspect the exact resource-bearing plan using the 2026-07-24
-   reviewed pricing inputs, the required owner label and the repository verifier;
-3. obtain platform, database, security and release approval for that corrected exact plan;
-4. approve the time-bounded Auth Proxy public pilot and synthetic-only fixtures;
-5. record the start time and four-hour stop window;
-6. issue final execution authorization tied to the exact live plan, which must be the
-   reviewed resource-bearing plan.
+1. keep the existing instance stopped; the prior single-owner exception expired on stop;
+2. choose either a new bounded restart authorization for the synthetic-only managed run or
+   a separately reviewed destructive teardown authorization;
+3. do not reuse the saved plan, mutate Terraform state, disable deletion protection or
+   restart/delete the instance under the expired authorization;
+4. record managed-run, teardown and actual billing receipts separately.
 
 Eduardo Sacahui is the confirmed emergency stop/teardown owner. Personal contact data
 must not be committed to the repository, Terraform state, resource labels or logs. Use
@@ -331,3 +327,29 @@ without explicit cost authorization.
 5. record actual cost and runtime;
 6. stop the instance or initiate the separate deletion-protection and removal procedure;
 7. never treat this as real-corpus, browser, load/HA or production evidence.
+
+
+## Applied instance reconstructed from remote state and stopped
+
+The authorized plan was applied during the approved window even though the applicator's
+success receipt was not captured in the conversation. This is proven independently by the
+remote Terraform state and Cloud SQL operation history:
+
+```text
+state addresses:
+  google_project_service.sqladmin[0]
+  google_sql_database_instance.staging[0]
+create operation: 2026-07-25T16:26:48.088Z..2026-07-25T16:34:43.561Z, DONE
+initial backup operation: 2026-07-25T16:34:25.871Z..2026-07-25T16:34:40.660Z, DONE
+stop update: 2026-07-25T18:42:06.989Z..2026-07-25T18:42:49.466Z, DONE
+final instance state: STOPPED
+final activation policy: NEVER
+deletion protection: true
+```
+
+The repeat applicator invocation correctly refused because the expected resources were
+already present in remote state. That refusal does not undo or disprove the earlier apply.
+Do not rerun the saved plan. The single-owner exception expired when compute was stopped.
+The stopped instance still exists and may continue to incur storage, backup or related
+charges. Restart, deletion-protection changes, state mutation and destructive teardown all
+require a new explicit authorization. No managed synthetic journey or teardown is claimed.

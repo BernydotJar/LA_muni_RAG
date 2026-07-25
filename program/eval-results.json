@@ -1,9 +1,9 @@
 {
   "schema_version": "1.17.0",
-  "generated_at": "2026-07-25T15:48:48Z",
+  "generated_at": "2026-07-25T18:42:49.466Z",
   "branch": "feature/gcp-cloudsql-staging-v1",
-  "functional_head": "2213de5e9f43657d9341c6f87828b14aabb1c30e",
-  "status": "passed_feature074_verifier_valid_immutable_cloudsql_plan_with_final_hash_bound_authorization_and_managed_staging_blockers",
+  "functional_head": "0edf935c7c012d86b2becae4da563046de167903",
+  "status": "passed_feature074_exact_plan_applied_instance_stopped_with_managed_run_and_teardown_blockers",
   "deterministic": {
     "tests": 870,
     "pass": 868,
@@ -68,8 +68,8 @@
       "live_resource_plan_rejection": "first_plan_missing_required_owner_label_superseded_by_verified_v2",
       "required_owner_label": "eduardo-sacahui",
       "plan_verifier_required": true,
-      "terraform_apply_executed": false,
-      "cloud_sql_created": false,
+      "terraform_apply_executed": true,
+      "cloud_sql_created": true,
       "corrected_live_resource_plan_verified": true,
       "corrected_live_resource_plan_verifier_status": "valid",
       "corrected_live_resource_plan_final_authorized": true,
@@ -85,7 +85,17 @@
       "authorization_id": "GCP-CLOUDSQL-PILOT-20260725-0900-1300-GT",
       "authorization_start": "2026-07-25T09:00:00-06:00",
       "authorization_end": "2026-07-25T13:00:00-06:00",
-      "apply_script": "infra/gcp/apply-approved-cloudsql-live-plan.sh"
+      "apply_script": "infra/gcp/apply-approved-cloudsql-live-plan.sh",
+      "cloud_sql_instance_state": "STOPPED",
+      "activation_policy": "NEVER",
+      "deletion_protection_enabled": true,
+      "managed_staging_execution": false,
+      "synthetic_journeys_executed": 0,
+      "teardown_executed": false,
+      "governance_exception_status": "expired_on_stop",
+      "authorization_consumed": true,
+      "create_operation_status": "DONE",
+      "stop_operation_status": "DONE"
     }
   },
   "hard_evals": {
@@ -289,7 +299,7 @@
   },
   "publication": {
     "branch": "feature/gcp-cloudsql-staging-v1",
-    "functional_sha": "e7c4393b0655d3c660941778ff47b1f31e6be57d",
+    "functional_sha": "0edf935c7c012d86b2becae4da563046de167903",
     "remote_base_sha_verified": "7a00f3ee902cb6dd41c153d3ebfb7c943b50f7a1",
     "prior_ci": {
       "backend_run_id": 29980032034,
@@ -301,16 +311,16 @@
     "pr_state": "draft",
     "merged": false,
     "deployed": false,
-    "remote_head_sha": "2213de5e9f43657d9341c6f87828b14aabb1c30e",
+    "remote_head_sha": "0edf935c7c012d86b2becae4da563046de167903",
     "terraform_ci_conclusion": "success",
     "backend_ci_conclusion": "success",
     "backend_ci_run_ids": [
-      30163816219,
-      30163815112
+      30164809354,
+      30164807333
     ],
     "terraform_ci_run_ids": [
-      30163816198,
-      30163815155
+      30164809307,
+      30164807345
     ]
   },
   "missing_dedicated_evals": [
@@ -323,10 +333,9 @@
     "production_load_ha_recovery_privacy"
   ],
   "limitations": [
-    "The exact immutable Cloud SQL plan is authorized only for 2026-07-25 09:00-13:00 America/Guatemala; apply and managed staging receipts remain absent.",
-    "No Terraform apply, Cloud SQL instance or managed staging execution occurred.",
-    "Ephemeral API/system staging uses synthetic fixtures and is not a deployed cloud environment.",
-    "Twelve browser journeys remain blocked by missing human identity/session and authenticated UI.",
-    "No authorized real corpus, external consumer execution, merge or production deployment."
+    "The exact authorized Cloud SQL plan was applied and the instance is stopped; managed synthetic execution and destructive teardown remain absent.",
+    "The prior single-owner exception expired on stop; restart or teardown requires new explicit authorization.",
+    "Actual provider billing remains pending and stopped resources may retain storage or backup charges.",
+    "No authorized real corpus, external consumer execution, protected merge or production deployment."
   ]
 }

@@ -1639,10 +1639,11 @@ tasks:
   owner: /root
   depends_on:
   - WS10-EPHEMERAL-STAGING-RUNNER-001
-  blockers: []
+  blockers:
+  - BLK-GCP-LIFECYCLE-074
   result:
     branch: feature/gcp-cloudsql-staging-v1
-    functional_commit: e7c4393b0655d3c660941778ff47b1f31e6be57d
+    functional_commit: 0edf935c7c012d86b2becae4da563046de167903
     project_id: rag-municipalidades
     project_number: 1059368783280
     project_specific_default_plan_resources: 0
@@ -1681,7 +1682,26 @@ tasks:
     authorization_start: '2026-07-25T09:00:00-06:00'
     authorization_end: '2026-07-25T13:00:00-06:00'
     apply_script: infra/gcp/apply-approved-cloudsql-live-plan.sh
-    terraform_apply_executed: false
+    terraform_apply_executed: true
+    cloud_sql_instance_created: true
+    cloud_sql_instance_state: STOPPED
+    activation_policy: NEVER
+    deletion_protection_enabled: true
+    terraform_state_addresses:
+    - google_project_service.sqladmin[0]
+    - google_sql_database_instance.staging[0]
+    create_operation_start: '2026-07-25T16:26:48.088Z'
+    create_operation_end: '2026-07-25T16:34:43.561Z'
+    create_operation_status: DONE
+    initial_backup_operation_status: DONE
+    stop_operation_start: '2026-07-25T18:42:06.989Z'
+    stop_operation_end: '2026-07-25T18:42:49.466Z'
+    stop_operation_status: DONE
+    managed_staging_execution: false
+    synthetic_journeys_executed: 0
+    teardown_executed: false
+    governance_exception_status: expired_on_stop
+    authorization_consumed: true
   files:
   - infra/gcp/cloudsql-staging/
   - infra/gcp/apply-approved-cloudsql-live-plan.sh
@@ -1707,25 +1727,39 @@ tasks:
   - Authenticated Cloud Shell generated the corrected immutable two-create plan from head e7c4393b0655d3c660941778ff47b1f31e6be57d;
     the reusable verifier returned valid with owner=eduardo-sacahui and no issues.
   - Corrected plan artifacts are identified by four SHA-256 values in program/evidence-register.jsonl.
-  - The project owner accepted a temporary single-owner exception and authorized exactly those four hashes for 2026-07-25 09:00-13:00 America/Guatemala; apply and Cloud SQL creation are not yet claimed.
+  - The project owner accepted a temporary single-owner exception and authorized exactly those four hashes for 2026-07-25
+    09:00-13:00 America/Guatemala; apply and Cloud SQL creation are not yet claimed.
+  - Remote Terraform state contains exactly the approved SQL Admin API and Cloud SQL instance addresses.
+  - Cloud SQL CREATE and initial BACKUP_VOLUME operations completed; activation-policy UPDATE completed and final state is
+    STOPPED.
+  - No managed synthetic journey or destructive teardown is claimed.
   limitations:
-  - Live billing, budget, residency, state-bucket controls, zero-resource planning, current pricing and a verifier-valid immutable
-    resource plan are verified.
-  - No Cloud SQL instance, Terraform apply, managed staging execution, merge or deployment.
-  - The temporary single-owner exception and exact authorization expire at teardown or 2026-07-25 13:00 America/Guatemala; apply and teardown receipts remain required.
+  - The exact authorized plan was applied and the protected instance exists in STOPPED state with activation policy NEVER.
+  - The managed synthetic run and destructive teardown did not occur; restart or teardown requires new explicit authorization.
+  - Stopped compute can still incur storage, backup and related charges; actual billing remains pending.
+  - Real corpus, browser E2E, external consumers, load/HA, merge and deployment remain unproved.
   branch: feature/gcp-cloudsql-staging-v1
   pr: 24
-  ci: terraform_30163816198_30163815155_success_backend_30163816219_30163815112_success
+  ci: terraform_30164809307_30164807345_success_backend_30164809354_30164807333_success
 blockers:
+- id: BLK-GCP-LIFECYCLE-074
+  affects:
+  - WS10-GCP-CLOUDSQL-STAGING-001
+  state: open
+  condition: The protected Cloud SQL instance exists in STOPPED state. Managed synthetic execution and destructive teardown
+    are incomplete, and the prior single-owner exception expired on stop.
+  next_safe_action: Keep the instance stopped; obtain a new explicit authorization either to restart for the synthetic managed
+    run or to execute reviewed destructive teardown.
 - id: BLK-GCP-SPEND-074
   affects:
   - WS10-GCP-CLOUDSQL-STAGING-001
   state: resolved
-  condition: A temporary single-owner exception and final authorization are recorded for exactly four immutable plan hashes
-    during 2026-07-25 09:00-13:00 America/Guatemala. The assistant is not an IAM principal.
-  resolution: Exact-plan spend authorization is granted only for the bounded synthetic pilot; the exception expires at teardown
-    or 13:00 and is invalid for production, another plan or a later window.
-  next_safe_action: Run the fail-closed exact-plan applicator within the authorized window, then record apply, staging and teardown receipts.
+  condition: The exact hash-bound authorization was consumed by a successful two-resource apply; the instance was stopped
+    within the bounded window.
+  resolution: Remote state and Cloud SQL operations prove apply; final state is STOPPED with activation policy NEVER and deletion
+    protection enabled.
+  next_safe_action: Do not reuse the expired authorization. Review actual billing and obtain a new explicit lifecycle authorization
+    for restart or destructive teardown.
 - id: BLK-CORPUS-OPS-001
   affects:
   - WS02-CORPUS-ACQUISITION-001

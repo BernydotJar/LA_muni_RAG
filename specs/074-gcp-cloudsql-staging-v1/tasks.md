@@ -23,4 +23,7 @@
 - [x] Add a self-locating fail-fast live-plan generator that atomically publishes only verifier-approved non-empty artifacts.
 - [x] Regenerate the exact live resource plan with `owner=eduardo-sacahui`; reusable verifier returned valid and immutable hashes were recorded.
 - [x] Obtain explicit final execution authorization tied to the four corrected hashes and 2026-07-25 09:00-13:00 America/Guatemala window.
-- [ ] Execute an approved Cloud SQL staging run with synthetic fixtures.
+- [x] Apply the exact authorized two-resource plan within the bounded window.
+- [x] Stop Cloud SQL compute before the window ended; final state is `STOPPED` with activation policy `NEVER`.
+- [ ] Execute an approved Cloud SQL staging run with synthetic fixtures under a new restart authorization.
+- [ ] Execute separately authorized destructive teardown and verify state/resource cleanup.

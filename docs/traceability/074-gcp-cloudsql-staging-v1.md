@@ -1,6 +1,7 @@
 # Feature 074 traceability
 
 | Requirement | Implementation | Verification |
+| Live apply and bounded stop | exact four-hash authorization plus fail-closed applicator and manual stop control | remote state contains exactly two approved addresses; CREATE, BACKUP_VOLUME and stop UPDATE completed; final state `STOPPED` with activation policy `NEVER` |
 |---|---|---|
 | Zero-resource default | `allow_billable_resources`, exact confirmation, approvals and cost review | offline project-specific default plan asserts zero resource changes |
 | Narrow approved plan | one API service resource plus one Cloud SQL instance and reusable JSON verifier | corrected live plan from `e7c4393b0655` passed exact create-only address, region, tier, transport, IAM auth, backup, deletion-protection, label and output checks |

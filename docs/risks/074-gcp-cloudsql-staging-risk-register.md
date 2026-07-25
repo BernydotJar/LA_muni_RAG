@@ -17,3 +17,5 @@
 | Query/document content retained in telemetry | high | no statement-duration flag, client address disabled, minimized review | Query Insights configuration still requires privacy review |
 | Synthetic managed staging mistaken for production | critical | ADR/runbook/non-goals and blocked browser journeys | stakeholder interpretation remains a governance risk |
 | BigQuery suggested as a drop-in replacement | high | ADR preserves PostgreSQL/RLS/transactional source of truth and treats alternatives as separate architecture work | future cost pressure may reopen the decision without equivalent security evidence |
+
+| Stopped instance retained | high | activation policy is `NEVER`, instance state is `STOPPED`, deletion protection remains enabled | storage, backups and related charges may continue until separately authorized teardown |

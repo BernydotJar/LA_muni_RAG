@@ -1,8 +1,8 @@
 {
   "schema_version": "1.13.0",
-  "generated_at": "2026-07-25T15:48:48Z",
+  "generated_at": "2026-07-25T18:42:49.466Z",
   "branch": "feature/gcp-cloudsql-staging-v1",
-  "functional_head": "2213de5e9f43657d9341c6f87828b14aabb1c30e",
+  "functional_head": "0edf935c7c012d86b2becae4da563046de167903",
   "source": "observed command outputs only",
   "status": "PARTIAL_WITH_DOCUMENTED_BLOCKERS",
   "tests": {
@@ -57,7 +57,13 @@
       "governance_exception_id": "GCP-OWNER-EXCEPTION-20260725-PILOT",
       "authorization_start": "2026-07-25T09:00:00-06:00",
       "authorization_end": "2026-07-25T13:00:00-06:00",
-      "terraform_apply_executed": false
+      "terraform_apply_executed": true,
+      "cloud_sql_created": true,
+      "instance_state": "STOPPED",
+      "activation_policy": "NEVER",
+      "teardown_executed": false,
+      "governance_exception_status": "expired_on_stop",
+      "authorization_consumed": true
     }
   },
   "hard_evals": {
@@ -78,21 +84,21 @@
   },
   "publication": {
     "branch": "feature/gcp-cloudsql-staging-v1",
-    "functional_sha": "e7c4393b0655d3c660941778ff47b1f31e6be57d",
+    "functional_sha": "0edf935c7c012d86b2becae4da563046de167903",
     "current_ci_status": "backend_success_terraform_success",
     "pr": 24,
     "pr_state": "draft",
     "merged": false,
     "deployed": false,
-    "remote_head_sha": "2213de5e9f43657d9341c6f87828b14aabb1c30e",
+    "remote_head_sha": "0edf935c7c012d86b2becae4da563046de167903",
     "terraform_ci_conclusion": "success",
     "backend_ci_run_ids": [
-      30163816219,
-      30163815112
+      30164809354,
+      30164807333
     ],
     "terraform_ci_run_ids": [
-      30163816198,
-      30163815155
+      30164809307,
+      30164807345
     ],
     "backend_ci_conclusion": "success"
   },
@@ -101,8 +107,8 @@
     "production_vulnerabilities": 0
   },
   "cost": {
-    "cloud_resources_created": 0,
-    "billable_actions": 0,
+    "cloud_resources_created": 2,
+    "billable_actions": "apply_observed; actual_cost_pending",
     "amount": 0,
     "currency": "USD",
     "proposed_pilot_budget_usd": 1,
@@ -112,11 +118,11 @@
   "duration_seconds": null,
   "token_usage": null,
   "remaining_blockers": [
-    "Exact hash-bound apply, managed synthetic staging and teardown receipts are pending within the authorized window.",
+    "Stopped Cloud SQL instance requires a new explicit authorization for restart or destructive teardown.",
+    "No managed synthetic GCP staging execution or teardown receipt.",
+    "Actual provider billing remains pending; storage and backup charges may continue.",
     "No authorized real corpus or real ingestion.",
-    "Public gateway remains disabled and undeployed; no edge/load evidence exists.",
     "No human IdP/BFF/session or authenticated role-aware UI; twelve browser journeys remain blocked.",
-    "No external consumer repository suite executed.",
-    "No observability, HA/recovery/privacy operation, protected merge or production deployment."
+    "No external consumer repository suite, protected merge or production deployment."
   ]
 }

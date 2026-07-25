@@ -30,8 +30,7 @@ with a reusable JSON plan verifier. A corrected immutable plan subsequently pass
 verifier. On 2026-07-25 the project owner accepted a temporary single-owner governance
 exception and granted final execution authorization tied to the exact four plan-artifact
 hashes and the 09:00-13:00 America/Guatemala window. The assistant is not an IAM principal
-and does not count as owner redundancy. No apply or Cloud SQL creation is claimed until a
-separate execution receipt exists.
+and does not count as owner redundancy. Remote state and Cloud SQL operations later established that the exact authorized apply occurred; compute was then stopped and the exception expired on stop.
 
 Private IP remains the target posture. The supplied pilot mode configures no authorized
 networks, enforces connectors and must use Cloud SQL Auth Proxy or a supported language
@@ -70,3 +69,14 @@ would be a separate architecture program, not a cheaper deployment toggle.
 This feature proves a validated production-shaped plan, not a deployed environment. The
 first approved run uses synthetic fixtures only and does not prove real-corpus quality,
 human identity, browser E2E, load/HA, production readiness, merge or deployment.
+
+
+## Operational outcome — exact plan applied and compute stopped
+
+Remote Terraform state and Cloud SQL operations prove that the exact authorized two-resource
+plan was applied. Creation and initial backup completed successfully. Before the bounded
+window ended, activation policy was changed to `NEVER` and the instance reached `STOPPED`
+with deletion protection and approved labels intact. The exception expired on stop. This
+outcome proves managed resource creation and bounded stop control, but not the twenty-journey
+managed staging run or destructive teardown. Any restart or deletion requires a new explicit
+authorization.
