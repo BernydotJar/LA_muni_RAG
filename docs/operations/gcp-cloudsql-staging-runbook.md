@@ -194,6 +194,49 @@ verification does not constitute final execution authorization. Any future autho
 must name these exact four hashes, the intended start time and the four-hour stop window.
 No Cloud SQL instance was created and `terraform apply` was not run.
 
+## Governance exception and exact execution authorization
+
+On 2026-07-25 the project owner accepted a temporary single-owner governance exception
+for this synthetic staging pilot because no second approved human GCP principal exists in
+the current team. The assistant is not a human principal, cannot hold IAM ownership and
+does not count as owner redundancy. The exception is limited to the exact immutable plan
+below and expires at the earlier of successful teardown or 2026-07-25 13:00
+`America/Guatemala`. It does not authorize production, a different plan, a later window or
+an extension of runtime.
+
+Final execution authorization was granted for exactly these four SHA-256 values:
+
+```text
+plan: a9c16848cc89d68ad56de2d1344f3e6e20da0a4faca753a060d9a726aa09fe1e
+json: 8e7a01cbc29bbce63c9d05b4a0935765cb6779afd05c7514cb8b7c0d8c0e106a
+text: efd8f22358385c94f49f2edca40d141e38a274cbc10c47c0a7df1694577cc3e2
+verification: d6b6a840b05b8ade30e1fca5408ec06d7f4f6ae923607c02b9f819a7baa1adce
+```
+
+Authorized execution window:
+
+```text
+timezone: America/Guatemala
+start: 2026-07-25T09:00:00-06:00
+end: 2026-07-25T13:00:00-06:00
+maximum_runtime_hours: 4
+```
+
+The manual applicator is fail-closed and refuses execution outside this window, when the
+current branch is not aligned with the remote, when the Terraform module or verifier has
+changed since the plan source commit, when remote state is non-empty, or when any artifact
+hash or verification field differs. Run from authenticated Cloud Shell:
+
+```bash
+git -C ~/LA_muni_RAG pull --ff-only && \
+  FINAL_AUTHORIZATION=APPLY_APPROVED_LA_MUNI_GCP_STAGING_20260725 \
+  bash ~/LA_muni_RAG/infra/gcp/apply-approved-cloudsql-live-plan.sh
+```
+
+This authorization records permission to execute the exact plan; it does not claim that
+`terraform apply` has already run. The apply receipt, managed staging receipt and teardown
+evidence must be recorded separately.
+
 ## Provisioning boundary
 
 Repository CI performs formatting, provider initialization, validation and offline plan

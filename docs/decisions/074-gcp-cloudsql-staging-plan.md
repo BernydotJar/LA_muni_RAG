@@ -26,8 +26,12 @@ changes and `resources_enabled=false`; its local plan artifacts were removed.
 The first exact resource-bearing plan was generated from authenticated Cloud Shell and
 correctly proposed only two create actions, but it was rejected because the required
 `owner=eduardo-sacahui` label was absent. Address-only validation is therefore replaced
-with a reusable JSON plan verifier. Project-owner redundancy, a corrected immutable plan
-and final approval tied to that plan remain open.
+with a reusable JSON plan verifier. A corrected immutable plan subsequently passed that
+verifier. On 2026-07-25 the project owner accepted a temporary single-owner governance
+exception and granted final execution authorization tied to the exact four plan-artifact
+hashes and the 09:00-13:00 America/Guatemala window. The assistant is not an IAM principal
+and does not count as owner redundancy. No apply or Cloud SQL creation is claimed until a
+separate execution receipt exists.
 
 Private IP remains the target posture. The supplied pilot mode configures no authorized
 networks, enforces connectors and must use Cloud SQL Auth Proxy or a supported language

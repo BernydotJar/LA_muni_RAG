@@ -1,8 +1,8 @@
 {
   "schema_version": "1.17.0",
-  "generated_at": "2026-07-25T15:25:22Z",
+  "generated_at": "2026-07-25T15:48:48Z",
   "branch": "feature/gcp-cloudsql-staging-v1",
-  "functional_head": "e7c4393b0655d3c660941778ff47b1f31e6be57d",
+  "functional_head": "2213de5e9f43657d9341c6f87828b14aabb1c30e",
   "status": "passed_feature074_verifier_valid_immutable_cloudsql_plan_with_final_hash_bound_authorization_and_managed_staging_blockers",
   "deterministic": {
     "tests": 870,
@@ -64,7 +64,7 @@
       "pricing_reviewed_at": "2026-07-24",
       "live_zero_resource_plan_verified": true,
       "live_resource_plan_generated": true,
-      "live_resource_plan_approved": false,
+      "live_resource_plan_approved": true,
       "live_resource_plan_rejection": "first_plan_missing_required_owner_label_superseded_by_verified_v2",
       "required_owner_label": "eduardo-sacahui",
       "plan_verifier_required": true,
@@ -72,14 +72,20 @@
       "cloud_sql_created": false,
       "corrected_live_resource_plan_verified": true,
       "corrected_live_resource_plan_verifier_status": "valid",
-      "corrected_live_resource_plan_final_authorized": false,
+      "corrected_live_resource_plan_final_authorized": true,
       "corrected_live_resource_plan_artifact": "approved-live-v2-e7c4393b0655-20260725T152522Z",
       "corrected_live_resource_plan_hashes": {
         "plan": "a9c16848cc89d68ad56de2d1344f3e6e20da0a4faca753a060d9a726aa09fe1e",
         "json": "8e7a01cbc29bbce63c9d05b4a0935765cb6779afd05c7514cb8b7c0d8c0e106a",
         "text": "efd8f22358385c94f49f2edca40d141e38a274cbc10c47c0a7df1694577cc3e2",
         "verification": "d6b6a840b05b8ade30e1fca5408ec06d7f4f6ae923607c02b9f819a7baa1adce"
-      }
+      },
+      "single_owner_governance_exception": true,
+      "governance_exception_id": "GCP-OWNER-EXCEPTION-20260725-PILOT",
+      "authorization_id": "GCP-CLOUDSQL-PILOT-20260725-0900-1300-GT",
+      "authorization_start": "2026-07-25T09:00:00-06:00",
+      "authorization_end": "2026-07-25T13:00:00-06:00",
+      "apply_script": "infra/gcp/apply-approved-cloudsql-live-plan.sh"
     }
   },
   "hard_evals": {
@@ -295,16 +301,16 @@
     "pr_state": "draft",
     "merged": false,
     "deployed": false,
-    "remote_head_sha": "e7c4393b0655d3c660941778ff47b1f31e6be57d",
+    "remote_head_sha": "2213de5e9f43657d9341c6f87828b14aabb1c30e",
     "terraform_ci_conclusion": "success",
     "backend_ci_conclusion": "success",
     "backend_ci_run_ids": [
-      30150454584,
-      30150453135
+      30163816219,
+      30163815112
     ],
     "terraform_ci_run_ids": [
-      30150454585,
-      30150453108
+      30163816198,
+      30163815155
     ]
   },
   "missing_dedicated_evals": [
@@ -317,7 +323,7 @@
     "production_load_ha_recovery_privacy"
   ],
   "limitations": [
-    "The corrected immutable Cloud SQL plan is verifier-valid but lacks final hash-bound execution authorization.",
+    "The exact immutable Cloud SQL plan is authorized only for 2026-07-25 09:00-13:00 America/Guatemala; apply and managed staging receipts remain absent.",
     "No Terraform apply, Cloud SQL instance or managed staging execution occurred.",
     "Ephemeral API/system staging uses synthetic fixtures and is not a deployed cloud environment.",
     "Twelve browser journeys remain blocked by missing human identity/session and authenticated UI.",

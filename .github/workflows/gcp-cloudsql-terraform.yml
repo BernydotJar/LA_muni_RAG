@@ -5,6 +5,8 @@ on:
     paths:
       - "infra/gcp/cloudsql-staging/**"
       - "infra/gcp/generate-cloudsql-live-plan.sh"
+      - "infra/gcp/apply-approved-cloudsql-live-plan.sh"
+      - "infra/gcp/apply-approved-cloudsql-live-plan.sh"
       - ".github/workflows/gcp-cloudsql-terraform.yml"
       - "src/gcp/cloudSqlStaging.ts"
       - "src/gcp/cloudSqlTerraformPlan.ts"

@@ -49,9 +49,9 @@ Completed:
 
 Next:
 
-1. Decide project-owner redundancy or record an accepted governance exception.
-2. Obtain explicit final authorization tied to the verifier-valid plan hashes, start time and four-hour stop window.
-3. Provision only the short synthetic pilot after that authorization, then stop or enter protected teardown review within four hours.
+1. Execute the exact hash-bound plan through the fail-closed applicator before 13:00 America/Guatemala.
+2. Run the short synthetic pilot and complete teardown controls within the authorized window.
+3. Record apply, runtime, cleanup and cost receipts.
 4. Add isolated staging identities, Artifact Registry, Cloud Run, Storage, queueing, secrets, Cloud Armor and telemetry only through separately approved slices.
 5. Execute the same twenty journeys against immutable deployed revisions and later against real reviewed fixtures.
 

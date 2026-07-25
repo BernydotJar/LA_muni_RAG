@@ -76,10 +76,11 @@ describe("EVAL-GCP-CLOUDSQL-STAGING-001", () => {
   });
 
   it("contains no database user, plaintext password or automated infrastructure mutation", async () => {
-    const [main, workflow, livePlanScript] = await Promise.all([
+    const [main, workflow, livePlanScript, approvedApplyScript] = await Promise.all([
       read("infra/gcp/cloudsql-staging/main.tf"),
       read(".github/workflows/gcp-cloudsql-terraform.yml"),
       read("infra/gcp/generate-cloudsql-live-plan.sh"),
+      read("infra/gcp/apply-approved-cloudsql-live-plan.sh"),
     ]);
     assert.doesNotMatch(main, /google_sql_user|password\s*=|secret_data/i);
     assert.doesNotMatch(workflow, /terraform\s+(?:apply|destroy)/i);
@@ -97,6 +98,22 @@ describe("EVAL-GCP-CLOUDSQL-STAGING-001", () => {
     const nonEmptyGate = livePlanScript.indexOf('if [[ ! -s "$artifact" ]]');
     const atomicPublish = livePlanScript.indexOf('mv -- "$TMP_DIR" "$artifact_dir"');
     assert.ok(nonEmptyGate >= 0 && atomicPublish > nonEmptyGate, "publish must occur only after non-empty validation");
+    assert.match(approvedApplyScript, /FINAL_AUTHORIZATION/);
+    assert.match(approvedApplyScript, /2026-07-25 09:00:00/);
+    assert.match(approvedApplyScript, /2026-07-25 13:00:00/);
+    assert.match(approvedApplyScript, /America\/Guatemala/);
+    assert.match(approvedApplyScript, /a9c16848cc89d68ad56de2d1344f3e6e20da0a4faca753a060d9a726aa09fe1e/);
+    assert.match(approvedApplyScript, /8e7a01cbc29bbce63c9d05b4a0935765cb6779afd05c7514cb8b7c0d8c0e106a/);
+    assert.match(approvedApplyScript, /efd8f22358385c94f49f2edca40d141e38a274cbc10c47c0a7df1694577cc3e2/);
+    assert.match(approvedApplyScript, /d6b6a840b05b8ade30e1fca5408ec06d7f4f6ae923607c02b9f819a7baa1adce/);
+    assert.match(approvedApplyScript, /diff --quiet "\$PLAN_SOURCE_HEAD\.\.HEAD"/);
+    assert.match(approvedApplyScript, /sha256sum -c/);
+    assert.match(approvedApplyScript, /state list/);
+    assert.match(approvedApplyScript, /No state file was found!/);
+    assert.match(approvedApplyScript, /unable to read the remote Terraform state/);
+    assert.match(approvedApplyScript, /terraform -chdir="\$MODULE_DIR" apply/);
+    assert.match(approvedApplyScript, /-auto-approve/);
+    assert.doesNotMatch(approvedApplyScript, /^\s*terraform\s+destroy\b/im);
   });
 
   it("keeps state, plans, tfvars and crash material local", async () => {

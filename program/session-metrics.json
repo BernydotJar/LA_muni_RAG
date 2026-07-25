@@ -1,13 +1,13 @@
 {
   "schema_version": "1.13.0",
-  "generated_at": "2026-07-25T15:25:22Z",
+  "generated_at": "2026-07-25T15:48:48Z",
   "branch": "feature/gcp-cloudsql-staging-v1",
-  "functional_head": "e7c4393b0655d3c660941778ff47b1f31e6be57d",
+  "functional_head": "2213de5e9f43657d9341c6f87828b14aabb1c30e",
   "source": "observed command outputs only",
   "status": "PARTIAL_WITH_DOCUMENTED_BLOCKERS",
   "tests": {
-    "total": 869,
-    "passed": 867,
+    "total": 870,
+    "passed": 868,
     "failed": 0,
     "skipped": 2
   },
@@ -52,7 +52,12 @@
       "estimated_compute_memory_and_20gb_ssd_usd": 0.38826024,
       "live_zero_resource_plan_verified": true,
       "corrected_live_resource_plan_verifier_status": "valid",
-      "corrected_live_resource_plan_final_authorized": false
+      "corrected_live_resource_plan_final_authorized": true,
+      "single_owner_governance_exception": true,
+      "governance_exception_id": "GCP-OWNER-EXCEPTION-20260725-PILOT",
+      "authorization_start": "2026-07-25T09:00:00-06:00",
+      "authorization_end": "2026-07-25T13:00:00-06:00",
+      "terraform_apply_executed": false
     }
   },
   "hard_evals": {
@@ -79,15 +84,15 @@
     "pr_state": "draft",
     "merged": false,
     "deployed": false,
-    "remote_head_sha": "e7c4393b0655d3c660941778ff47b1f31e6be57d",
+    "remote_head_sha": "2213de5e9f43657d9341c6f87828b14aabb1c30e",
     "terraform_ci_conclusion": "success",
     "backend_ci_run_ids": [
-      30150454584,
-      30150453135
+      30163816219,
+      30163815112
     ],
     "terraform_ci_run_ids": [
-      30150454585,
-      30150453108
+      30163816198,
+      30163815155
     ],
     "backend_ci_conclusion": "success"
   },
@@ -100,18 +105,18 @@
     "billable_actions": 0,
     "amount": 0,
     "currency": "USD",
-    "proposed_pilot_budget_usd": 5,
-    "estimated_compute_and_memory_usd": 0.2702,
+    "proposed_pilot_budget_usd": 1,
+    "estimated_compute_and_memory_usd": 0.351,
     "estimate_is_hard_cap": false
   },
   "duration_seconds": null,
   "token_usage": null,
   "remaining_blockers": [
-    "No billing-owner, actual budget-alert, residency, IAM/state-backend or explicit spend authorization.",
+    "Exact hash-bound apply, managed synthetic staging and teardown receipts are pending within the authorized window.",
     "No authorized real corpus or real ingestion.",
     "Public gateway remains disabled and undeployed; no edge/load evidence exists.",
     "No human IdP/BFF/session or authenticated role-aware UI; twelve browser journeys remain blocked.",
     "No external consumer repository suite executed.",
-    "No managed GCP staging execution, observability, HA/recovery/privacy operation, protected merge or production deployment."
+    "No observability, HA/recovery/privacy operation, protected merge or production deployment."
   ]
 }

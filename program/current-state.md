@@ -1,8 +1,8 @@
 # LA Muni RAG — Current Program State
 
-Updated: 2026-07-25T15:25:22Z
+Updated: 2026-07-25T15:48:48Z
 
-Program status: **PARTIAL WITH DOCUMENTED BLOCKERS — Feature 074 now has a verifier-approved immutable resource plan, but owner redundancy, final hash-bound execution authorization, managed staging execution, real corpus, human identity and production release remain open**
+Program status: **PARTIAL WITH DOCUMENTED BLOCKERS — Feature 074 has a verifier-approved immutable plan, a temporary single-owner governance exception and final hash-bound execution authorization for 09:00-13:00 America/Guatemala; apply, managed staging execution, teardown, real corpus, human identity and production release remain open**
 
 ## Authoritative checkout
 
@@ -10,7 +10,7 @@ Program status: **PARTIAL WITH DOCUMENTED BLOCKERS — Feature 074 now has a ver
 workspace_id: b909e055-62ae-4625-ac13-10947906a08f
 root: /workspace
 branch: feature/gcp-cloudsql-staging-v1
-evidence_baseline_head: e7c4393b0655d3c660941778ff47b1f31e6be57d
+evidence_baseline_head: 2213de5e9f43657d9341c6f87828b14aabb1c30e
 working_tree_at_baseline: clean
 pull_request: 24 draft
 merged: false
@@ -83,6 +83,14 @@ SHA-256 values are recorded in the evidence register. This is technical plan ver
 not final execution authorization. No Cloud SQL instance was created and `terraform apply`
 was not run.
 
+A temporary single-owner governance exception was accepted because no second approved
+human GCP principal exists for the pilot; the assistant is not an IAM principal and does
+not count as redundancy. The exception and exact-plan authorization expire at teardown or
+2026-07-25 13:00 America/Guatemala. Final execution authorization covers only the four
+recorded SHA-256 values of `approved-live-v2-e7c4393b0655-20260725T152522Z`. A
+fail-closed manual applicator has been added. At this checkpoint, authorization exists but
+`terraform apply` has not yet run and Cloud SQL has not been created.
+
 ## Verification
 
 ```text
@@ -91,13 +99,15 @@ full regression: 870 total / 868 pass / 0 fail / 2 environment skips
 Bash syntax: pass
 Typecheck: pass
 Build: pass
-Terraform validation workflows 30150454585 / 30150453108: success
-Backend CI workflows 30150454584 / 30150453135: success
+Terraform validation workflows 30163816198 / 30163815155: success
+Backend CI workflows 30163816219 / 30163815112: success
 project-specific disabled offline plan: 0 resource changes
 live GCS-backed disabled plan: 0 resource changes; resources_enabled=false
 approved offline shape: SQL Admin API plus one protected Cloud SQL instance
 first live resource plan: 2 creates; rejected_missing_owner_label
-corrected live resource plan: 2 creates; verifier_status=valid; final_authorization=false
+corrected live resource plan: 2 creates; verifier_status=valid; final_authorization=true
+governance exception: single_owner_pilot_only; expires=2026-07-25T13:00:00-06:00_or_teardown
+authorized execution window: 2026-07-25T09:00:00-06:00..2026-07-25T13:00:00-06:00
 corrected plan evidence head: e7c4393b0655d3c660941778ff47b1f31e6be57d
 live plan generator: self-locating, fail-fast, state-locked, atomic verified-artifact publish
 cloud_sql_instance_created: false
@@ -119,18 +129,17 @@ truth.
 
 ## Next execution sequence
 
-1. Decide whether to add a second appropriate human project owner or record an accepted
-   governance exception.
-2. Decide whether the technically verified immutable plan is approved for execution, tied
-   to its exact four SHA-256 values, a start time and the four-hour stop window.
-3. Execute the synthetic-only managed staging run and teardown controls only after that
-   explicit final authorization.
+1. Execute the exact authorized plan through the fail-closed applicator before 13:00
+   America/Guatemala.
+2. Execute the synthetic-only managed staging run and teardown controls within the same
+   authorized window.
+3. Record apply, runtime, cleanup and cost receipts.
 4. Continue corpus, human identity, browser E2E, external consumer, edge/load/SLO,
    recovery/privacy, protected merge and production-release work.
 
 ## Critical blockers
 
-- `BLK-GCP-SPEND-074`: owner redundancy and final hash-bound apply authorization remain open;
+- Feature 074 spend/owner gates are resolved only for the exact 09:00-13:00 pilot; apply, managed execution and teardown receipts remain pending;
 - `PQG-OPEN-ENABLEMENT-001`: public gateway lacks authorized ingested evidence, edge
   controls, deployed staging and approval;
 - `BLK-CORPUS-OPS-001`: source rights, durable object storage, scanner and

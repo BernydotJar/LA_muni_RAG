@@ -44,15 +44,15 @@ observation_window: none
 - full 870 total / 868 pass / 0 fail / 2 skips;
 - 33/33 contracts, typecheck, build, Pages and zero-vulnerability audits;
 - Terraform 1.15.8 format/init/validate passed;
-- PR #24 remains draft at `e7c4393b0655d3c660941778ff47b1f31e6be57d`; Terraform validation runs 30150454585/30150453108 and Backend CI runs 30150454584/30150453135 succeeded.
+- PR #24 remains draft at `2213de5e9f43657d9341c6f87828b14aabb1c30e`; Terraform validation runs 30163816198/30163815155 and Backend CI runs 30163816219/30163815112 succeeded.
 
-A budget or estimate is not a hard spending cap. A verifier-valid immutable live plan exists, but no final hash-bound authorization, Terraform apply, API enablement, Cloud SQL resource, managed staging execution or cost is claimed.
+A budget or estimate is not a hard spending cap. The exact immutable plan is authorized only for 2026-07-25 09:00-13:00 America/Guatemala under a temporary single-owner exception. No Terraform apply, API enablement, Cloud SQL resource, managed staging execution or cost is claimed until receipts exist.
 
 ## Required sequence before public enablement
 
 1. Approve and ingest a real public corpus with human authority/vigencia review.
 2. Add Cloud Armor/WAF, quotas, load/SLO evidence, sanitized telemetry and alerts.
-3. Provision the guarded GCP pilot only after owner-redundancy disposition and explicit authorization tied to the exact verified plan hashes, start time and four-hour stop window.
+3. Provision the guarded GCP pilot only through the exact hash-bound applicator during the authorized 09:00-13:00 America/Guatemala window, then record apply and teardown receipts.
 4. Deploy immutable gateway/API/worker revisions and execute the same twenty journeys against managed services.
 5. Verify rollback and real-corpus quality.
 6. Configure Pages `PAGES_API_URL` only after those gates pass.

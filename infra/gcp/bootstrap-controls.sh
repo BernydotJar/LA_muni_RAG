@@ -71,7 +71,7 @@ if [[ -z "$BUDGET_AMOUNT" ]]; then
   esac
 fi
 [[ "$BUDGET_AMOUNT" == *"$billing_currency" ]] || fail "BUDGET_AMOUNT=$BUDGET_AMOUNT must use billing-account currency $billing_currency."
-budget_units="${BUDGET_AMOUNT%$billing_currency}"
+budget_units="${BUDGET_AMOUNT%"$billing_currency"}"
 [[ "$budget_units" =~ ^[0-9]+$ ]] || fail "BUDGET_AMOUNT must be an integer amount followed by $billing_currency."
 
 services=(cloudbilling.googleapis.com cloudresourcemanager.googleapis.com billingbudgets.googleapis.com serviceusage.googleapis.com storage.googleapis.com)
@@ -89,7 +89,7 @@ echo "Project owners:"
 printf '%s\n' "$project_owners"
 owner_count="$(printf '%s\n' "$project_owners" | sed '/^$/d' | wc -l | tr -d ' ')"
 if [[ "$owner_count" -lt 2 ]]; then
-  echo "WARNING: only $owner_count project owner is configured; owner redundancy remains open." >&2
+  echo "WARNING: only $owner_count project owner is configured; paid execution requires a currently valid approved redundancy exception." >&2
 fi
 
 echo "Billing Account Administrators:"

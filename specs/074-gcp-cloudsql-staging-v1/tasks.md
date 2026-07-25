@@ -17,10 +17,10 @@
 - [x] Complete and verify state-bucket IAM recovery with successful live `--apply` and `--check`.
 - [x] Declare the externalized GCS backend without committing backend parameters.
 - [x] Generate and inspect a live zero-resource plan against the verified backend.
-- [ ] Decide project-owner redundancy with an explicit approved second principal or accepted exception.
+- [x] Record a temporary pilot-only single-owner governance exception because no second approved human principal exists.
 - [x] Re-review current pricing from the official Cloud SQL pricing table on 2026-07-24.
 - [x] Generate the first exact live resource plan and reject it because the required owner label was absent.
 - [x] Add a self-locating fail-fast live-plan generator that atomically publishes only verifier-approved non-empty artifacts.
 - [x] Regenerate the exact live resource plan with `owner=eduardo-sacahui`; reusable verifier returned valid and immutable hashes were recorded.
-- [ ] Obtain explicit final execution authorization tied to the corrected plan hashes, start time and four-hour stop window.
+- [x] Obtain explicit final execution authorization tied to the four corrected hashes and 2026-07-25 09:00-13:00 America/Guatemala window.
 - [ ] Execute an approved Cloud SQL staging run with synthetic fixtures.

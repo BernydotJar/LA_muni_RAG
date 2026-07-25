@@ -12,7 +12,7 @@
 | Protected Terraform state | dedicated GCS bucket, PAP, UBLA, versioning, soft delete, labels and externalized backend configuration | live bucket properties verified; bootstrap generates ignored `backend.tf` and `backend.gcs.hcl` files |
 | Live zero-resource plan | authenticated backend initialization with committed billable gates disabled | Terraform 1.15.8 plan reported zero resource changes and `resources_enabled=false`; plan artifacts removed |
 | Bucket IAM recovery | temporary project-level Storage Admin only on lockout, propagation retry, bucket-scoped Storage Admin before legacy cleanup, exit-trap cleanup | authenticated `--apply` and `--check` both succeeded; final policy has no legacy bindings |
-| Owner redundancy | owner enumeration and warning | one owner observed; second-owner decision remains human-gated |
+| Owner redundancy | owner enumeration, warning and scoped exception record | one owner observed; temporary pilot-only exception accepted through teardown or 2026-07-25 13:00 America/Guatemala |
 | Budget is not a hard cap | output descriptions, ADR, runbook and risk register | static hard eval and documentation review |
 | PostgreSQL 16 + pgvector target | pinned instance version and preflight extension check | Terraform validation and preflight unit tests |
 | Private-first connectivity | `PRIVATE` default and required VPC self link | hard eval static assertions |
@@ -23,4 +23,5 @@
 | No password/state/plan in Git | no SQL user resource; module-local ignore covers binary plans and JSON/text derivatives | hard eval sensitive-material checks |
 | Existing journey matrix reused | Feature 073 runner invoked after proxy preflight | runbook and future approved execution receipt |
 | Named repository eval | root scripts and Backend CI step | `npm run eval:gcp-cloudsql-staging` |
-| No automatic infrastructure mutation | validation-only workflow | workflow hard eval |
+| Exact human-gated mutation | one manually invoked applicator bound to four hashes, plan source commit and closed time window | static hard eval asserts phrase, hashes, time window, state/module drift checks and exact saved-plan apply |
+| No automatic infrastructure mutation | validation-only workflow; applicator is never invoked by CI | workflow hard eval |

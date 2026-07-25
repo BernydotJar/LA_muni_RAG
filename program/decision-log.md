@@ -324,3 +324,19 @@ Decision: technical verification does not authorize execution. Any later `terraf
 must be explicitly authorized against the exact plan, JSON, text and verification hashes
 recorded in the evidence register, together with a start time and four-hour stop window.
 Owner redundancy remains unresolved. No Cloud SQL resource was created and no apply ran.
+
+
+## 2026-07-25T15:48:48Z — Accept a temporary single-owner exception and authorize the exact pilot plan
+
+Decision: accept a temporary governance exception for one project owner because the
+current pilot has no second approved human GCP principal. The assistant is not a human or
+IAM principal and cannot satisfy redundancy. The exception is scoped only to the corrected
+immutable synthetic-staging plan, expires at teardown or 2026-07-25 13:00
+America/Guatemala, and is invalid for production, another plan or a later window.
+
+Decision: authorize Terraform apply only for the four recorded SHA-256 values of artifact
+`approved-live-v2-e7c4393b0655-20260725T152522Z`, during 09:00-13:00
+America/Guatemala on 2026-07-25. A fail-closed manual applicator must verify the exact
+hashes, verifier status, plan source, repository/module immutability, empty remote state,
+active project and current time before applying the saved plan. Authorization is not an
+execution receipt; Cloud SQL remains uncreated until apply evidence is supplied.

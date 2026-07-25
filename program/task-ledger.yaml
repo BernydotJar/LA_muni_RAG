@@ -1639,8 +1639,7 @@ tasks:
   owner: /root
   depends_on:
   - WS10-EPHEMERAL-STAGING-RUNNER-001
-  blockers:
-  - BLK-GCP-SPEND-074
+  blockers: []
   result:
     branch: feature/gcp-cloudsql-staging-v1
     functional_commit: e7c4393b0655d3c660941778ff47b1f31e6be57d
@@ -1660,7 +1659,7 @@ tasks:
     state_bucket_iam_recovery_verified: true
     live_zero_resource_plan_verified: true
     live_resource_plan_generated: true
-    live_resource_plan_approved: false
+    live_resource_plan_approved: true
     live_resource_plan_rejection: first_plan_missing_required_owner_label_superseded_by_verified_v2
     plan_verifier_required: true
     observed_project_owner_count: 1
@@ -1669,14 +1668,23 @@ tasks:
     eval: 14/14
     corrected_live_resource_plan_verified: true
     corrected_live_resource_plan_verifier_status: valid
-    corrected_live_resource_plan_final_authorized: false
+    corrected_live_resource_plan_final_authorized: true
     corrected_live_resource_plan_artifact: approved-live-v2-e7c4393b0655-20260725T152522Z
     corrected_live_resource_plan_sha256: a9c16848cc89d68ad56de2d1344f3e6e20da0a4faca753a060d9a726aa09fe1e
     corrected_live_resource_plan_json_sha256: 8e7a01cbc29bbce63c9d05b4a0935765cb6779afd05c7514cb8b7c0d8c0e106a
     corrected_live_resource_plan_text_sha256: efd8f22358385c94f49f2edca40d141e38a274cbc10c47c0a7df1694577cc3e2
     corrected_live_resource_plan_verification_sha256: d6b6a840b05b8ade30e1fca5408ec06d7f4f6ae923607c02b9f819a7baa1adce
+    single_owner_governance_exception: true
+    governance_exception_id: GCP-OWNER-EXCEPTION-20260725-PILOT
+    authorization_id: GCP-CLOUDSQL-PILOT-20260725-0900-1300-GT
+    authorization_source_head: 2213de5e9f43657d9341c6f87828b14aabb1c30e
+    authorization_start: '2026-07-25T09:00:00-06:00'
+    authorization_end: '2026-07-25T13:00:00-06:00'
+    apply_script: infra/gcp/apply-approved-cloudsql-live-plan.sh
+    terraform_apply_executed: false
   files:
   - infra/gcp/cloudsql-staging/
+  - infra/gcp/apply-approved-cloudsql-live-plan.sh
   - src/gcp/cloudSqlStaging.ts
   - src/cli/verifyGcpCloudSqlStaging.ts
   - src/__tests__/eval-gcp-cloudsql-staging-001.test.ts
@@ -1698,26 +1706,26 @@ tasks:
   - Published-head regression: 870 total / 868 passed / 0 failed / 2 environment skips; typecheck and build passed.
   - Authenticated Cloud Shell generated the corrected immutable two-create plan from head e7c4393b0655d3c660941778ff47b1f31e6be57d;
     the reusable verifier returned valid with owner=eduardo-sacahui and no issues.
-  - Corrected plan artifacts are identified by four SHA-256 values in program/evidence-register.jsonl; no Terraform apply
-    or Cloud SQL creation occurred.
+  - Corrected plan artifacts are identified by four SHA-256 values in program/evidence-register.jsonl.
+  - The project owner accepted a temporary single-owner exception and authorized exactly those four hashes for 2026-07-25 09:00-13:00 America/Guatemala; apply and Cloud SQL creation are not yet claimed.
   limitations:
   - Live billing, budget, residency, state-bucket controls, zero-resource planning, current pricing and a verifier-valid immutable
     resource plan are verified.
   - No Cloud SQL instance, Terraform apply, managed staging execution, merge or deployment.
-  - Owner redundancy and explicit final authorization tied to the exact plan hashes remain required.
+  - The temporary single-owner exception and exact authorization expire at teardown or 2026-07-25 13:00 America/Guatemala; apply and teardown receipts remain required.
   branch: feature/gcp-cloudsql-staging-v1
   pr: 24
-  ci: terraform_30150454585_30150453108_success_backend_30150454584_30150453135_success
+  ci: terraform_30163816198_30163815155_success_backend_30163816219_30163815112_success
 blockers:
 - id: BLK-GCP-SPEND-074
   affects:
   - WS10-GCP-CLOUDSQL-STAGING-001
-  state: open
-  condition: Billing, budget, residency, bucket controls, live zero-resource planning, current pricing and a corrected verifier-valid
-    immutable resource plan are verified. Owner redundancy and explicit final authorization tied to the exact plan hashes
-    remain incomplete.
-  next_safe_action: Decide owner redundancy and obtain explicit final authorization tied to the corrected plan hashes, start
-    time and four-hour stop window before apply.
+  state: resolved
+  condition: A temporary single-owner exception and final authorization are recorded for exactly four immutable plan hashes
+    during 2026-07-25 09:00-13:00 America/Guatemala. The assistant is not an IAM principal.
+  resolution: Exact-plan spend authorization is granted only for the bounded synthetic pilot; the exception expires at teardown
+    or 13:00 and is invalid for production, another plan or a later window.
+  next_safe_action: Run the fail-closed exact-plan applicator within the authorized window, then record apply, staging and teardown receipts.
 - id: BLK-CORPUS-OPS-001
   affects:
   - WS02-CORPUS-ACQUISITION-001

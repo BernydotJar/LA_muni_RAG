@@ -31,9 +31,9 @@ Zero real documents are credited as ingested. Human/platform inputs required:
 
 No approved IdP/OIDC/PKCE/BFF, secure cookie/CSRF, provisioning, logout, revocation, recovery or role-aware authenticated UI exists. All twelve browser journeys remain explicitly blocked.
 
-### BLK-GCP-SPEND-074 — paid execution is authorized but not operationally cleared
+### GCP-EXECUTION-074 — exact pilot authorized; execution receipt pending
 
-Authenticated Cloud Shell evidence verifies linked COP billing, Billing Account Administrator access, a project-scoped COP 4,000 monthly budget with 50/90/100 alerts, and an effective location policy permitting `us-central1`. The protected GCS state bucket exists; live `--apply`/`--check` recovery established bucket-scoped administration, removed legacy bindings and cleaned up the temporary project grant. Terraform 1.15.8 initialized that backend and a live disabled plan verified zero resource changes with `resources_enabled=false`; plan artifacts were removed. Official pricing was re-reviewed on 2026-07-24. A first exact plan was rejected because it omitted `owner=eduardo-sacahui`. A corrected immutable two-create plan was subsequently generated from the published head; the reusable verifier returned `valid` with no issues and all four artifact hashes are recorded. No apply occurred. Only one project owner was observed, and final authorization tied to the exact corrected hashes remains absent.
+Authenticated controls, pricing, state, zero-resource planning and the verifier-valid immutable plan are complete. Because no second approved human GCP principal exists, the project owner accepted a temporary single-owner exception limited to this synthetic pilot; the assistant is not an IAM principal. Final authorization covers only the four recorded hashes during 2026-07-25 09:00-13:00 America/Guatemala. A fail-closed manual applicator is committed. No apply or Cloud SQL creation is claimed until an execution receipt exists.
 
 ### PROG-OPS-001 — managed cloud and production operations absent
 
