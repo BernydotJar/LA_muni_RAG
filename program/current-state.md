@@ -1,6 +1,6 @@
 # LA Muni RAG — Current Program State
 
-Updated: 2026-07-25T19:25:00Z
+Updated: 2026-07-25T21:12:37Z
 
 Program status: **PARTIAL WITH DOCUMENTED BLOCKERS — Feature 074 has a second bounded authorization active for the managed synthetic run from 13:25-17:25 America/Guatemala; destructive teardown, real corpus, human identity and production release remain open**
 

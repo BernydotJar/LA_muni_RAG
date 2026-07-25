@@ -1464,6 +1464,10 @@ tasks:
     managed_run_authorization_scope: restart_ephemeral_operator_proxy_preflight_20_journeys_cleanup_stop
     managed_run_authorization_active: true
     managed_run_script: infra/gcp/run-approved-cloudsql-managed-staging.sh
+    managed_run_first_attempt_status: failed_safe_transient_startup
+    managed_run_first_attempt_artifact: managed-run-20260725T204351Z
+    managed_run_first_attempt_cleanup_reported_complete: true
+    managed_run_retry_hotfix: users_api_after_runnable_and_transient_preflight_retries
   limitations:
   - The exact authorized plan was applied and the protected instance exists in STOPPED state with activation policy NEVER.
   - The managed synthetic run and destructive teardown did not occur; restart or teardown requires new explicit authorization.

@@ -82,10 +82,6 @@ jq -e '
   and .settings.userLabels.owner == "eduardo-sacahui"
 ' <<<"$instance_json" >/dev/null || fail "instance is not the expected protected stopped staging target"
 
-if gcloud sql users list --instance="$INSTANCE_NAME" --project="$PROJECT_ID" --format='value(name)' | grep -Fx "$OPERATOR_USER" >/dev/null; then
-  fail "temporary operator already exists: $OPERATOR_USER"
-fi
-
 run_stamp="$(TZ=UTC date +%Y%m%dT%H%M%SZ)"
 artifact_dir="$MODULE_DIR/plan-artifacts/managed-run-$run_stamp"
 mkdir -p "$artifact_dir"
@@ -116,7 +112,7 @@ wait_for_state() {
 
 cleanup() {
   local original_status=$?
-  trap - EXIT INT TERM
+  trap - EXIT INT TERM HUP
   set +e
   if [[ -n "$proxy_pid" ]]; then
     kill "$proxy_pid" 2>/dev/null
@@ -164,8 +160,49 @@ gcloud sql instances patch "$INSTANCE_NAME" --project="$PROJECT_ID" --activation
 instance_started=true
 wait_for_state RUNNABLE 1200 || fail "instance did not become RUNNABLE within 20 minutes"
 
-gcloud sql users create "$OPERATOR_USER" --instance="$INSTANCE_NAME" --project="$PROJECT_ID" --password="$operator_password" --quiet >"$artifact_dir/operator-create.log" 2>&1
-user_created=true
+users_ready=false
+for attempt in $(seq 1 30); do
+  if gcloud sql users list --instance="$INSTANCE_NAME" --project="$PROJECT_ID" --format='value(name)' \
+    >"$artifact_dir/users-before.txt" 2>"$artifact_dir/users-list.stderr"; then
+    users_ready=true
+    break
+  fi
+  if grep -Eqi 'instance is not running|operation.*in progress|temporar|unavailable|timeout' "$artifact_dir/users-list.stderr"; then
+    sleep 10
+    continue
+  fi
+  cat "$artifact_dir/users-list.stderr" >&2
+  fail "Cloud SQL users API failed with a non-transient error"
+done
+[[ "$users_ready" == true ]] || fail "Cloud SQL users API did not become ready within five minutes"
+
+if grep -Fx "$OPERATOR_USER" "$artifact_dir/users-before.txt" >/dev/null; then
+  gcloud sql users delete "$OPERATOR_USER" --instance="$INSTANCE_NAME" --project="$PROJECT_ID" --quiet \
+    >"$artifact_dir/stale-operator-cleanup.log" 2>&1
+fi
+
+operator_created=false
+for attempt in $(seq 1 12); do
+  if gcloud sql users create "$OPERATOR_USER" --instance="$INSTANCE_NAME" --project="$PROJECT_ID" \
+    --password="$operator_password" --quiet >"$artifact_dir/operator-create.log" 2>&1; then
+    operator_created=true
+    user_created=true
+    break
+  fi
+  if gcloud sql users list --instance="$INSTANCE_NAME" --project="$PROJECT_ID" --format='value(name)' 2>/dev/null \
+    | grep -Fx "$OPERATOR_USER" >/dev/null; then
+    operator_created=true
+    user_created=true
+    break
+  fi
+  if grep -Eqi 'instance is not running|operation.*in progress|temporar|unavailable|timeout' "$artifact_dir/operator-create.log"; then
+    sleep 10
+    continue
+  fi
+  cat "$artifact_dir/operator-create.log" >&2
+  fail "temporary operator creation failed with a non-transient error"
+done
+[[ "$operator_created" == true ]] || fail "temporary operator could not be created after retries"
 
 case "$(uname -m)" in
   x86_64) proxy_arch=amd64; proxy_sha="$PROXY_AMD64_SHA256" ;;
@@ -193,7 +230,28 @@ if [[ ! -x "$REPO_ROOT/node_modules/.bin/tsx" ]]; then
 fi
 STAGING_ADMIN_DATABASE_URL="postgresql://$OPERATOR_USER:$operator_password@127.0.0.1:$PROXY_PORT/postgres"
 export STAGING_ADMIN_DATABASE_URL
-GCP_CLOUDSQL_CONFIRM_STAGING=true npm --silent --prefix "$REPO_ROOT" run gcp:cloudsql:preflight > "$artifact_dir/preflight.json"
+preflight_ready=false
+preflight_attempt_log="$artifact_dir/preflight-attempts.log"
+: >"$preflight_attempt_log"
+for attempt in $(seq 1 24); do
+  preflight_json_tmp="$proxy_dir/preflight-$attempt.json"
+  preflight_error_tmp="$proxy_dir/preflight-$attempt.stderr"
+  if GCP_CLOUDSQL_CONFIRM_STAGING=true npm --silent --prefix "$REPO_ROOT" run gcp:cloudsql:preflight \
+    >"$preflight_json_tmp" 2>"$preflight_error_tmp"; then
+    mv -- "$preflight_json_tmp" "$artifact_dir/preflight.json"
+    preflight_ready=true
+    break
+  fi
+  printf '%s\n' "--- preflight attempt $attempt ---" >>"$preflight_attempt_log"
+  cat "$preflight_error_tmp" >>"$preflight_attempt_log"
+  if grep -Eqi 'ECONNRESET|ECONNREFUSED|ETIMEDOUT|socket hang up|server closed the connection|connection terminated|57P01' "$preflight_error_tmp"; then
+    sleep 10
+    continue
+  fi
+  cat "$preflight_error_tmp" >&2
+  fail "Cloud SQL preflight failed with a non-transient error"
+done
+[[ "$preflight_ready" == true ]] || fail "Cloud SQL PostgreSQL connectivity did not become ready within four minutes"
 jq -e '.status == "ready" and .postgresMajor == 16 and .vectorAvailable == true and .adminCapabilities == true and .cloudSqlDetected == true and .unrelatedDatabases == 0' "$artifact_dir/preflight.json" >/dev/null
 
 run_id="$(python3 -c 'import uuid; print(uuid.uuid4())')"

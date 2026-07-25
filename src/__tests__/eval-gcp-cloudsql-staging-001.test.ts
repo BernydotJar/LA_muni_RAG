@@ -124,6 +124,14 @@ describe("EVAL-GCP-CLOUDSQL-STAGING-001", () => {
     assert.match(managedRunScript, /nohup bash -c/);
     assert.match(managedRunScript, /gcloud sql users create/);
     assert.match(managedRunScript, /gcloud sql users delete/);
+    assert.ok(
+      managedRunScript.indexOf('wait_for_state RUNNABLE') < managedRunScript.indexOf('gcloud sql users list'),
+      "user API checks must occur only after RUNNABLE"
+    );
+    assert.match(managedRunScript, /users API did not become ready within five minutes/);
+    assert.match(managedRunScript, /preflight-attempts\.log/);
+    assert.match(managedRunScript, /ECONNRESET\|ECONNREFUSED\|ETIMEDOUT/);
+    assert.match(managedRunScript, /PostgreSQL connectivity did not become ready within four minutes/);
     assert.match(managedRunScript, /cloud-sql-proxy\.linux/);
     assert.match(managedRunScript, /sha256sum -c/);
     assert.match(managedRunScript, /GCP_CLOUDSQL_CONFIRM_STAGING=true/);

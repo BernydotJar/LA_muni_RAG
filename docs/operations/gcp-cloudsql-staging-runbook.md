@@ -383,3 +383,18 @@ FINAL_AUTHORIZATION=RUN_APPROVED_LA_MUNI_GCP_STAGING_20260725_1325   bash ~/LA_m
 The script pins and verifies Cloud SQL Auth Proxy 2.23.0, installs a watchdog that stops the
 instance at the window boundary, reserves a 15-minute stop buffer and performs user deletion,
 proxy termination and instance stop in an exit trap even when preflight or a journey fails.
+
+
+### First managed-run attempt: transient startup failure, cleanup complete
+
+The first invocation in the second window produced two startup-transient signals: the Cloud
+SQL users API returned `instance is not running` while the instance was still stopped, and the
+first PostgreSQL preflight connection returned `ECONNRESET` shortly after restart. The script's
+exit cleanup completed and reported the instance stop and temporary-user cleanup as successful.
+No journey receipt was produced and no managed journey is claimed. The ignored artifact basename
+is `managed-run-20260725T204351Z`.
+
+The hotfix moves all user API checks after `RUNNABLE`, retries the users API and temporary-user
+creation during control-plane convergence, and retries only recognized transient PostgreSQL
+connection errors for up to four minutes. Semantic preflight failures remain fail-closed and are
+not retried.
