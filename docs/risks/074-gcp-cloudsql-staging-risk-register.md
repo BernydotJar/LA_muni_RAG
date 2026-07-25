@@ -8,6 +8,7 @@
 | State-bucket IAM lockout | high | live `--apply`/`--check` recovery established bucket-scoped `roles/storage.admin`, removed legacy bindings and cleaned up the temporary project grant | future IAM changes or interrupted administration can still require recovery from an authorized project owner |
 | Excessive state-bucket privilege | high | `roles/storage.admin` is scoped to the dedicated state bucket; project-level recovery grant is temporary | the current operator can administer state objects and bucket IAM; a separate deployment identity remains preferable |
 | Single project owner | high | bootstrap enumerates owners and warns when fewer than two exist | no second appropriate human principal has been supplied or approved |
+| Plan metadata drift | high | reusable JSON verifier asserts required owner label and all critical instance controls; plan JSON/text derivatives are ignored | the first exact live plan was rejected because address-only validation did not detect a missing owner label |
 | Database exposed to the internet | critical | private IP default; public pilot has no authorized networks and requires connectors | public endpoint metadata exists in pilot mode |
 | Shared or production instance targeted | critical | dedicated-instance preflight rejects unrelated databases; runbook forbids production | operator controls the supplied project and instance |
 | Credential committed or emitted | critical | IAM auth, no SQL user/password resource, ignored tfvars/state/plans | IAM tokens exist transiently in proxy memory |

@@ -291,3 +291,22 @@ backups, network, taxes or other charges.
 Decision: retain the USD 1 Terraform planning envelope and four-hour maximum because the
 reviewed base estimate remains within that envelope. This review does not authorize a
 resource-bearing plan or `terraform apply`; both remain tied to an exact immutable plan.
+
+
+## 2026-07-25T07:11:21Z — Reject address-correct plans that omit required operational metadata
+
+Decision: reject the first exact resource-bearing Cloud SQL plan even though it contained
+only the approved two create actions and retained the core database safeguards. The plan
+omitted the required non-sensitive `owner=eduardo-sacahui` label and is therefore not
+eligible for approval or apply.
+
+Decision: replace address-only plan validation with a reusable JSON verifier that checks
+actions, project, region, instance identity, PostgreSQL version, tier, transport,
+authorized networks, connector enforcement, IAM authentication, backups, PITR, disk
+bounds, Query Insights, deletion protection, required labels and bounded-cost outputs.
+Ignore binary plan files and JSON/text derivatives.
+
+Evidence: authenticated plan output at repository head
+`8d6991d7d025b41a6e26a02c3bc6a034a36e90ca`; exact two-resource shape; SHA-256 plan
+`57851090aa472c2d7263b1de7a742680c174faa73e667ec2cfeb2e54e52b41eb`; no Cloud SQL
+creation and no `terraform apply`.

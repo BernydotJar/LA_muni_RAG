@@ -44,9 +44,12 @@ max_pilot_runtime_hours     = 4
 ```
 
 Repository workflows perform formatting, provider initialization, validation and two
-offline plans only. They contain no infrastructure mutation command. A human platform
-owner must review current pricing, estimated and non-estimated charges, IAM principals,
-state backend, deletion protection and data classification before provisioning.
+offline plans only. They contain no infrastructure mutation command. The approved-plan
+workflow invokes `npm run gcp:cloudsql:verify-plan` and fails unless the exact plan has the
+approved create-only address set, required owner label and all database safeguards. A
+human platform owner must review current pricing, estimated and non-estimated charges,
+IAM principals, state backend, deletion protection and data classification before
+provisioning.
 
 To intentionally remove deletion protection, a separate reviewed plan must set:
 

@@ -1,6 +1,6 @@
 # Feature 074 — GCP Cloud SQL staging v1
 
-Status: administrative controls, state-bucket IAM recovery and live zero-resource plan verified; external resource creation remains human-gated.
+Status: administrative controls, state-bucket IAM recovery, live zero-resource plan and current pricing verified; the first exact resource plan was rejected for a missing owner label and external resource creation remains human-gated.
 
 ## Goal
 
@@ -14,6 +14,7 @@ creating resources from repository CI.
 - A resource-bearing plan requires exact confirmation, billing, budget, data-residency
   and bounded pilot-cost approval.
 - The approved plan contains only Cloud SQL API enablement and one protected instance.
+- The exact plan must pass the reusable JSON verifier, including the required `owner=eduardo-sacahui` label and all database safeguards.
 - The supplied project ID/number, region, connectivity and USD 1 pilot envelope are
   recorded in a disabled example.
 - The selected tier is constrained to a maximum four-hour reviewed pilot; persistent

@@ -1,5 +1,5 @@
 schema_version: 1
-generated_at: '2026-07-25T05:08:10Z'
+generated_at: '2026-07-25T07:11:21Z'
 program:
   id: LA-MUNI-RAG-PROD
   objective: Make LA Muni RAG production-ready within its evidence, procedure, workflow, case-tracking, and integration domain.
@@ -13,12 +13,12 @@ program:
 baseline:
   origin_main_commit: 4950ba3c24dbe7d9891d5cec8d7ba5f57db3ef9c
   observed_branch: feature/gcp-cloudsql-staging-v1
-  observed_commit: b0a267401e18f9470c4c248da506fd5ee22938d7
-  feature_implementation_commit: b0a267401e18f9470c4c248da506fd5ee22938d7
-  local_program_branch_commit: b0a267401e18f9470c4c248da506fd5ee22938d7
+  observed_commit: 8d6991d7d025b41a6e26a02c3bc6a034a36e90ca
+  feature_implementation_commit: 8d6991d7d025b41a6e26a02c3bc6a034a36e90ca
+  local_program_branch_commit: 8d6991d7d025b41a6e26a02c3bc6a034a36e90ca
   upstream: origin/feature/gcp-cloudsql-staging-v1
-  upstream_commit: b0a267401e18f9470c4c248da506fd5ee22938d7
-  upstream_state: feature074_live_zero_plan_verified_remote_ci_green
+  upstream_commit: 8d6991d7d025b41a6e26a02c3bc6a034a36e90ca
+  upstream_state: feature074_first_resource_plan_rejected_verifier_hardening_in_progress
   divergence:
     ahead: 0
     behind: 0
@@ -76,7 +76,7 @@ baseline:
     pages_verification: passed
     dependency_audit: 0 vulnerabilities
     remote_ci:
-      run_id: 30131987996
+      run_id: 30145537557
       status: completed
       conclusion: success
       check_run_id: null
@@ -1387,7 +1387,7 @@ tasks:
   - BLK-GCP-SPEND-074
   result:
     branch: feature/gcp-cloudsql-staging-v1
-    functional_commit: b0a267401e18f9470c4c248da506fd5ee22938d7
+    functional_commit: 8d6991d7d025b41a6e26a02c3bc6a034a36e90ca
     project_id: rag-municipalidades
     project_number: 1059368783280
     region: us-central1
@@ -1403,6 +1403,10 @@ tasks:
     live_state_bucket_created: true
     state_bucket_iam_recovery_verified: true
     live_zero_resource_plan_verified: true
+    live_resource_plan_generated: true
+    live_resource_plan_approved: false
+    live_resource_plan_rejection: missing_required_owner_label
+    plan_verifier_required: true
     observed_project_owner_count: 1
     reviewed_hourly_compute_usd: 0.08775
     max_pilot_runtime_hours: 4
@@ -1411,19 +1415,19 @@ tasks:
     approved_offline_shape: 2 resources
     eval: 14/14
     pull_request: 24 draft
-    remote_ci: Backend 30131987996 success / Terraform 30131987981 success
+    remote_ci: Backend 30145537557 success / Terraform 30145537551 success
   limitations:
   - Administrative APIs, a live COP budget and a protected GCS state bucket now exist; no Cloud SQL instance or Terraform apply occurred.
   - Budget and cost values are planning controls, not a hard spending cap.
-  - Bucket IAM recovery, a live zero-resource plan and current pricing are verified; owner redundancy and final resource-bearing-plan approval remain external gates.
+  - Bucket IAM recovery, a live zero-resource plan and current pricing are verified; the first resource plan was rejected for missing owner metadata, so owner redundancy and corrected plan approval remain external gates.
   - Real corpus, browser E2E, external consumers, load/HA, merge and deployment remain unproved.
 blockers:
 - id: BLK-GCP-SPEND-074
   affects:
   - WS10-GCP-CLOUDSQL-STAGING-001
   state: open
-  condition: Billing, budget, residency, bucket properties, bucket IAM recovery, a live zero-resource plan and current pricing are verified, but owner redundancy and final resource-bearing-plan approval remain incomplete.
-  next_safe_action: Decide owner redundancy, generate the exact resource-bearing plan and require plan-bound approval before Terraform apply.
+  condition: Billing, budget, residency, bucket properties, bucket IAM recovery, a live zero-resource plan and current pricing are verified. The first exact resource plan was rejected for a missing owner label; owner redundancy, a corrected verifier-approved plan and final authorization remain incomplete.
+  next_safe_action: Decide owner redundancy, regenerate the exact resource plan with the required owner label, require verifier status valid and obtain plan-bound approval before Terraform apply.
 - id: BLK-CORPUS-OPS-001
   affects:
   - WS02-CORPUS-ACQUISITION-001
@@ -1759,7 +1763,7 @@ ci:
       status: completed
       conclusion: success
       check_run_id: null
-      head_sha: b0a267401e18f9470c4c248da506fd5ee22938d7
+      head_sha: 8d6991d7d025b41a6e26a02c3bc6a034a36e90ca
 gates:
 - id: GATE-PROD-001
   status: not_evaluated

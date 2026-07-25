@@ -3,10 +3,10 @@
 | Requirement | Implementation | Verification |
 |---|---|---|
 | Zero-resource default | `allow_billable_resources`, exact confirmation, approvals and cost review | offline project-specific default plan asserts zero resource changes |
-| Narrow approved plan | one API service resource plus one Cloud SQL instance | offline approved plan asserts exact two-address set |
+| Narrow approved plan | one API service resource plus one Cloud SQL instance and reusable JSON verifier | verifier asserts exact create-only addresses plus region, tier, transport, IAM auth, backups, deletion protection, required labels and outputs |
 | Supplied project inputs | disabled `rag-municipalidades.pilot.tfvars.example` | hard eval checks project ID, number, region and connectivity |
 | Bounded pilot | USD 1 Terraform planning envelope, COP 4,000 live budget, reviewed hourly rate and four-hour maximum | official 2026-07-24 review: USD 0.08775/hour compute+memory, USD 0.351 for four hours, and USD 0.38826024 including 20 GiB SSD before backups/network/taxes |
-| Named emergency operator | non-sensitive owner label plus out-of-repository contact handling | `owner=eduardo-sacahui`; runbook names Eduardo Sacahui without publishing personal contact data |
+| Named emergency operator | non-sensitive owner label plus out-of-repository contact handling | first live resource plan was rejected for omitting `owner=eduardo-sacahui`; corrected plans must pass the reusable verifier |
 | Live billing and alerts | guarded Cloud Shell bootstrap and exact budget verification | linked COP account, Billing Account Administrator and 50/90/100 current-spend alerts observed out of band |
 | Live residency | effective `constraints/gcp.resourceLocations` check | `allValues: ALLOW`; `us-central1` permitted |
 | Protected Terraform state | dedicated GCS bucket, PAP, UBLA, versioning, soft delete, labels and externalized backend configuration | live bucket properties verified; bootstrap generates ignored `backend.tf` and `backend.gcs.hcl` files |
@@ -20,7 +20,7 @@
 | IAM database authentication | Cloud SQL flag plus proxy preflight | hard eval and preflight unit tests |
 | Bounded staging storage and recovery | SSD, autoresize ceiling, backups and PITR | Terraform provider validation |
 | Deletion safeguards | Terraform/API protection and separate confirmation | hard eval assertions |
-| No password/state/plan in Git | no SQL user resource; module-local ignore | hard eval sensitive-material checks |
+| No password/state/plan in Git | no SQL user resource; module-local ignore covers binary plans and JSON/text derivatives | hard eval sensitive-material checks |
 | Existing journey matrix reused | Feature 073 runner invoked after proxy preflight | runbook and future approved execution receipt |
 | Named repository eval | root scripts and Backend CI step | `npm run eval:gcp-cloudsql-staging` |
 | No automatic infrastructure mutation | validation-only workflow | workflow hard eval |

@@ -1,12 +1,12 @@
 {
   "schema_version": "1.17.0",
-  "generated_at": "2026-07-23T05:45:00Z",
+  "generated_at": "2026-07-25T07:11:21Z",
   "branch": "feature/gcp-cloudsql-staging-v1",
-  "functional_head": "afa0a427080ed7b9555a9ee5a3c7c77d9a2067cd",
+  "functional_head": "8d6991d7d025b41a6e26a02c3bc6a034a36e90ca",
   "status": "passed_feature074_guarded_cost_bounded_cloudsql_plan_with_explicit_spend_corpus_identity_managed_staging_and_production_blockers",
   "deterministic": {
-    "tests": 869,
-    "pass": 867,
+    "tests": 870,
+    "pass": 868,
     "fail": 0,
     "skipped": 2,
     "typecheck": "pass",
@@ -54,14 +54,22 @@
         "google_project_service.sqladmin[0]",
         "google_sql_database_instance.staging[0]"
       ],
-      "declared_pilot_budget_usd": 5,
+      "declared_pilot_budget_usd": 1,
       "reviewed_hourly_compute_usd": 0.08775,
       "max_pilot_runtime_hours": 4,
       "estimated_compute_and_memory_usd": 0.351,
       "apply_executed": false,
       "cloud_resources_created": 0,
       "estimated_compute_memory_and_20gb_ssd_usd": 0.38826024,
-      "pricing_reviewed_at": "2026-07-24"
+      "pricing_reviewed_at": "2026-07-24",
+      "live_zero_resource_plan_verified": true,
+      "live_resource_plan_generated": true,
+      "live_resource_plan_approved": false,
+      "live_resource_plan_rejection": "missing_required_owner_label",
+      "required_owner_label": "eduardo-sacahui",
+      "plan_verifier_required": true,
+      "terraform_apply_executed": false,
+      "cloud_sql_created": false
     }
   },
   "hard_evals": {
@@ -271,18 +279,19 @@
       "terraform_run_id": 29980032069,
       "conclusion": "success_on_prior_functional_base"
     },
-    "current_ci_status": "backend_in_progress_terraform_success",
+    "current_ci_status": "backend_success_terraform_success",
     "pr": 24,
     "pr_state": "draft",
     "merged": false,
     "deployed": false,
     "local_checkpoint_sha": "5e265e41fe313136c49ebdeedd53a86a61b6f718",
-    "remote_head_sha": "5e265e41fe313136c49ebdeedd53a86a61b6f718",
+    "remote_head_sha": "8d6991d7d025b41a6e26a02c3bc6a034a36e90ca",
     "push_attempts": 3,
     "push_result": "remote_updated; helper_reported_post_push_ownership_error",
-    "backend_ci_run_id": 29982794829,
-    "terraform_ci_run_id": 29982794831,
-    "terraform_ci_conclusion": "success"
+    "backend_ci_run_id": 30145537557,
+    "terraform_ci_run_id": 30145537551,
+    "terraform_ci_conclusion": "success",
+    "backend_ci_conclusion": "success"
   },
   "missing_dedicated_evals": [
     "managed_gcp_staging_execution",
@@ -300,6 +309,7 @@
     "Twelve browser journeys remain blocked by missing human identity/session and authenticated UI.",
     "Zero documents are credited as ingested and external consumers have not executed their suites.",
     "Public gateway remains disabled; edge/load/observability/HA/recovery/privacy evidence is absent.",
-    "PR #24 is draft; no protected merge or production deployment is proved."
+    "PR #24 is draft; no protected merge or production deployment is proved.",
+    "The first exact live Cloud SQL resource plan was rejected because it omitted the required owner label; no apply occurred."
   ]
 }

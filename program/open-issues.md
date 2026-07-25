@@ -1,6 +1,6 @@
 # LA Muni RAG — Open Issues
 
-Updated: 2026-07-25T05:08:10Z
+Updated: 2026-07-25T07:11:21Z
 
 ## Critical
 
@@ -33,11 +33,11 @@ No approved IdP/OIDC/PKCE/BFF, secure cookie/CSRF, provisioning, logout, revocat
 
 ### BLK-GCP-SPEND-074 — paid execution is authorized but not operationally cleared
 
-Authenticated Cloud Shell evidence verifies linked COP billing, Billing Account Administrator access, a project-scoped COP 4,000 monthly budget with 50/90/100 alerts, and an effective location policy permitting `us-central1`. The protected GCS state bucket exists; live `--apply`/`--check` recovery established bucket-scoped administration, removed legacy bindings and cleaned up the temporary project grant. Terraform 1.15.8 initialized that backend and a live disabled plan verified zero resource changes with `resources_enabled=false`; plan artifacts were removed. Only one project owner was observed. Official pricing was re-reviewed on 2026-07-24; the exact resource-bearing plan review and final apply authorization remain absent.
+Authenticated Cloud Shell evidence verifies linked COP billing, Billing Account Administrator access, a project-scoped COP 4,000 monthly budget with 50/90/100 alerts, and an effective location policy permitting `us-central1`. The protected GCS state bucket exists; live `--apply`/`--check` recovery established bucket-scoped administration, removed legacy bindings and cleaned up the temporary project grant. Terraform 1.15.8 initialized that backend and a live disabled plan verified zero resource changes with `resources_enabled=false`; plan artifacts were removed. Official pricing was re-reviewed on 2026-07-24. A first exact two-create resource plan was generated but rejected because it omitted `owner=eduardo-sacahui`; no apply occurred. Only one project owner was observed. A corrected verifier-approved plan and final plan-bound authorization remain absent.
 
 ### PROG-OPS-001 — managed cloud and production operations absent
 
-A plan-only Cloud SQL module, live billing controls, a protected Terraform-state bucket and a verified live zero-resource plan exist, but no resource-bearing live plan, Cloud SQL instance, Cloud Run service, queue, Secret Manager configuration, telemetry, load/HA, managed recovery or privacy operation exists.
+A plan-only Cloud SQL module, live billing controls, a protected Terraform-state bucket and a verified live zero-resource plan exist. One resource-bearing plan was generated but rejected for metadata drift; no approvable plan, Cloud SQL instance, Cloud Run service, queue, Secret Manager configuration, telemetry, load/HA, managed recovery or privacy operation exists.
 
 ## High
 

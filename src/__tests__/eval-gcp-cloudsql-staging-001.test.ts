@@ -83,12 +83,13 @@ describe("EVAL-GCP-CLOUDSQL-STAGING-001", () => {
     assert.doesNotMatch(main, /google_sql_user|password\s*=|secret_data/i);
     assert.doesNotMatch(workflow, /terraform\s+(?:apply|destroy)/i);
     assert.match(workflow, /default plan created resources/);
-    assert.match(workflow, /authorized resource set drift/);
+    assert.match(workflow, /gcp:cloudsql:verify-plan/);
+    assert.ok(workflow.includes('owner\":\"eduardo-sacahui'));
   });
 
   it("keeps state, plans, tfvars and crash material local", async () => {
     const ignore = await read("infra/gcp/cloudsql-staging/.gitignore");
-    for (const marker of [".terraform/", "*.tfstate", "*.tfplan", "terraform.tfvars", "*.auto.tfvars", "backend.tf", "backend.gcs.hcl", "crash.log"]) {
+    for (const marker of [".terraform/", "*.tfstate", "*.tfplan", "*.tfplan.json", "*.tfplan.txt", "plan-artifacts/", "terraform.tfvars", "*.auto.tfvars", "backend.tf", "backend.gcs.hcl", "crash.log"]) {
       assert.ok(ignore.includes(marker), `missing ignore marker ${marker}`);
     }
   });
@@ -130,6 +131,8 @@ describe("EVAL-GCP-CLOUDSQL-STAGING-001", () => {
     assert.match(workflow, /reviewed_hourly_compute_usd=0\.08775/);
     assert.match(pkg, /eval:gcp-cloudsql-staging/);
     assert.match(pkg, /gcp:cloudsql:preflight/);
+    assert.match(pkg, /gcp:cloudsql:verify-plan/);
+    assert.ok(workflow.includes('owner\":\"eduardo-sacahui'));
     assert.match(ci, /Run EVAL-GCP-CLOUDSQL-STAGING-001/);
   });
 

@@ -1,9 +1,11 @@
 # GCP Cloud SQL staging runbook
 
 Status: live administrative controls, state-bucket IAM recovery, the live
-zero-resource Terraform plan and current pricing are verified. Owner redundancy, the
-exact resource-bearing plan and final execution approval remain pending. No Cloud SQL
-instance has been created and no `terraform apply` has been run.
+zero-resource Terraform plan and current pricing are verified. The first exact
+resource-bearing plan was generated but rejected because it omitted the required
+`owner=eduardo-sacahui` label. Owner redundancy, a corrected immutable plan and final
+execution approval remain pending. No Cloud SQL instance has been created and no
+`terraform apply` has been run.
 
 ## Recorded pilot inputs
 
@@ -61,9 +63,9 @@ live recovery completed successfully on 2026-07-24.
 
 1. decide whether to add a second appropriate human project owner or record an
    accepted governance exception; no owner is added automatically;
-2. generate and inspect the exact resource-bearing plan using the 2026-07-24 reviewed
-   pricing inputs;
-3. obtain platform, database, security and release approval for that exact plan;
+2. regenerate and inspect the exact resource-bearing plan using the 2026-07-24
+   reviewed pricing inputs, the required owner label and the repository verifier;
+3. obtain platform, database, security and release approval for that corrected exact plan;
 4. approve the time-bounded Auth Proxy public pilot and synthetic-only fixtures;
 5. record the start time and four-hour stop window;
 6. issue final execution authorization tied to the exact live plan, which must be the
@@ -111,6 +113,75 @@ Authenticated Cloud Shell evidence on 2026-07-24 verified Terraform 1.15.8, succ
 GCS backend initialization, zero resource changes, `resources_enabled=false`, successful
 JSON assertion and removal of the local plan and JSON files. Cloud SQL was not created
 and `terraform apply` was not run.
+
+## First resource-bearing plan: generated and rejected
+
+Authenticated Cloud Shell generated an exact two-resource plan from repository head
+`8d6991d7d025b41a6e26a02c3bc6a034a36e90ca`. The plan proposed only SQL Admin API
+enablement and one protected PostgreSQL instance, with PostgreSQL 16, connector
+enforcement, encrypted-only transport, no authorized networks, IAM database
+authentication, backups, PITR, bounded SSD, Query Insights and both deletion-protection
+layers. The JSON assertion passed and `terraform apply` was not run.
+
+The plan is **not eligible for approval or apply** because its `user_labels` omitted the
+required non-sensitive `owner=eduardo-sacahui` label. Its SHA-256 evidence is retained
+only to identify the rejected artifact:
+
+```text
+plan: 57851090aa472c2d7263b1de7a742680c174faa73e667ec2cfeb2e54e52b41eb
+json: a176802dc2814ec7ee63461b31068a397993dbbb36ba31976bf3a93b41e8795d
+text: 0ba3e348227400cb1e75fd495624e95a86819eb1410e682bedaeb32c7fa83bf6
+review_status: rejected_missing_owner_label
+```
+
+Do not apply or approve those hashes. Keep the rejected files outside Git or remove them
+after the evidence record is secured.
+
+## Regenerate and verify the corrected exact plan
+
+Pull the repository hardening first. Generate a new artifact under a new filename so it
+cannot be confused with the rejected plan:
+
+```bash
+set -euo pipefail
+export PATH="$HOME/.local/bin:$PATH"
+
+cd ~/LA_muni_RAG
+git checkout feature/gcp-cloudsql-staging-v1
+git pull --ff-only
+cd infra/gcp/cloudsql-staging
+
+test -f backend.tf
+test -f backend.gcs.hcl
+test ! -f terraform.tfstate
+
+terraform init -reconfigure -backend-config=backend.gcs.hcl
+terraform plan \
+  -input=false \
+  -lock=false \
+  -out=approved-live-v2.tfplan \
+  -var='project_id=rag-municipalidades' \
+  -var='connectivity_mode=AUTH_PROXY_PUBLIC' \
+  -var='billing_approved=true' \
+  -var='budget_approved=true' \
+  -var='data_residency_approved=true' \
+  -var='declared_pilot_budget_usd=1' \
+  -var='reviewed_hourly_compute_usd=0.08775' \
+  -var='max_pilot_runtime_hours=4' \
+  -var='labels={"application":"la-muni-rag","environment":"staging","managed-by":"terraform","data-class":"synthetic-only","owner":"eduardo-sacahui"}' \
+  -var='allow_billable_resources=true' \
+  -var='billable_confirmation=CREATE_LA_MUNI_GCP_STAGING'
+
+terraform show -json approved-live-v2.tfplan > approved-live-v2.tfplan.json
+npm run gcp:cloudsql:verify-plan -- \
+  approved-live-v2.tfplan.json \
+  rag-municipalidades
+terraform show -no-color approved-live-v2.tfplan > approved-live-v2.tfplan.txt
+sha256sum approved-live-v2.tfplan approved-live-v2.tfplan.json approved-live-v2.tfplan.txt
+```
+
+The verifier must return `status: "valid"`. A correct address set alone is insufficient.
+Do not execute the `terraform apply` command printed by Terraform.
 
 ## Provisioning boundary
 

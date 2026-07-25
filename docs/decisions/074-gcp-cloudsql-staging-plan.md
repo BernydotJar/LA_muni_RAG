@@ -23,8 +23,11 @@ established bucket-scoped `roles/storage.admin`, removed all legacy bindings and
 up the temporary project-level grant. A later authenticated Terraform 1.15.8 run
 initialized the externalized GCS backend and verified a live plan with zero resource
 changes and `resources_enabled=false`; its local plan artifacts were removed.
-Project-owner redundancy and final approval of the exact resource-bearing plan remain
-open.
+The first exact resource-bearing plan was generated from authenticated Cloud Shell and
+correctly proposed only two create actions, but it was rejected because the required
+`owner=eduardo-sacahui` label was absent. Address-only validation is therefore replaced
+with a reusable JSON plan verifier. Project-owner redundancy, a corrected immutable plan
+and final approval tied to that plan remain open.
 
 Private IP remains the target posture. The supplied pilot mode configures no authorized
 networks, enforces connectors and must use Cloud SQL Auth Proxy or a supported language

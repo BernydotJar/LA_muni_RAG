@@ -69,7 +69,8 @@
     "staging:run": "node --import tsx src/cli/runEphemeralStaging.ts",
     "eval:staging-runner": "node --import tsx --test --test-concurrency=1 src/__tests__/eval-ephemeral-staging-runner-001.test.ts src/__tests__/ephemeral-staging-runner-v1.test.ts",
     "gcp:cloudsql:preflight": "node --import tsx src/cli/verifyGcpCloudSqlStaging.ts",
-    "eval:gcp-cloudsql-staging": "node --import tsx --test --test-concurrency=1 src/__tests__/eval-gcp-cloudsql-staging-001.test.ts src/__tests__/gcp-cloudsql-staging-v1.test.ts"
+    "eval:gcp-cloudsql-staging": "node --import tsx --test --test-concurrency=1 src/__tests__/eval-gcp-cloudsql-staging-001.test.ts src/__tests__/gcp-cloudsql-staging-v1.test.ts",
+    "gcp:cloudsql:verify-plan": "node --import tsx src/cli/verifyGcpCloudSqlPlan.ts"
   },
   "keywords": [],
   "author": "",

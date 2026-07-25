@@ -1,8 +1,8 @@
 # LA Muni RAG — Current Program State
 
-Updated: 2026-07-25T05:08:10Z
+Updated: 2026-07-25T07:11:21Z
 
-Program status: **PARTIAL WITH DOCUMENTED BLOCKERS — Feature 074 now has verified live billing, budget, residency, state-bucket IAM recovery and a live zero-resource plan; owner redundancy, resource-bearing plan approval, managed staging execution, real corpus, human identity and production release remain open**
+Program status: **PARTIAL WITH DOCUMENTED BLOCKERS — Feature 074 has verified administrative controls, a live zero-resource plan and current pricing; its first exact resource-bearing plan was rejected for a missing owner label, so owner redundancy, a corrected plan, managed staging execution, real corpus, human identity and production release remain open**
 
 ## Authoritative checkout
 
@@ -10,7 +10,7 @@ Program status: **PARTIAL WITH DOCUMENTED BLOCKERS — Feature 074 now has verif
 workspace_id: b909e055-62ae-4625-ac13-10947906a08f
 root: /workspace
 branch: feature/gcp-cloudsql-staging-v1
-evidence_baseline_head: b0a267401e18f9470c4c248da506fd5ee22938d7
+evidence_baseline_head: 8d6991d7d025b41a6e26a02c3bc6a034a36e90ca
 working_tree_at_baseline: clean
 pull_request: 24 draft
 merged: false
@@ -60,6 +60,13 @@ Cloud Billing budget. Neither is a hard cap. Official pricing was re-reviewed on
 2026-07-24: USD 0.08775/hour compute+memory, USD 0.351 for four hours and
 USD 0.38826024 including 20 GiB SSD before backups, network and taxes.
 
+Authenticated Cloud Shell then generated an exact two-create resource plan from head
+`8d6991d7d025b41a6e26a02c3bc6a034a36e90ca`. The plan retained PostgreSQL 16,
+connector enforcement, encrypted-only transport, IAM database authentication, backups,
+PITR, bounded SSD, Query Insights and both deletion-protection layers. It is rejected and
+not eligible for apply because the required `owner=eduardo-sacahui` label was absent.
+No Cloud SQL instance was created and `terraform apply` was not run.
+
 ## Verification
 
 ```text
@@ -68,11 +75,12 @@ full regression: 870 total / 868 pass / 0 fail / 2 environment skips
 Bash syntax: pass
 Typecheck: pass
 Build: pass
-Terraform validation workflow 30131987981: success
-Backend CI workflow 30131987996: success
+Terraform validation workflow 30145537551: success
+Backend CI workflow 30145537557: success
 project-specific disabled offline plan: 0 resource changes
 live GCS-backed disabled plan: 0 resource changes; resources_enabled=false
 approved offline shape: SQL Admin API plus one protected Cloud SQL instance
+first live resource plan: 2 creates; rejected_missing_owner_label
 cloud_sql_instance_created: false
 terraform_apply_executed: false
 ```
@@ -94,17 +102,17 @@ truth.
 
 1. Decide whether to add a second appropriate human project owner or record an accepted
    governance exception.
-2. Generate the exact resource-bearing plan constrained to SQL Admin API enablement and
-   one protected PostgreSQL instance, using the 2026-07-24 reviewed price inputs.
-3. Obtain final authorization tied to that exact plan, start time and four-hour window.
+2. Pull the plan-verifier hardening and regenerate the exact resource-bearing plan with
+   `owner=eduardo-sacahui`; require `status: "valid"`.
+3. Obtain final authorization tied to that corrected plan hash, start time and four-hour window.
 4. Execute the synthetic-only managed staging run and teardown controls.
 5. Continue corpus, human identity, browser E2E, external consumer, edge/load/SLO,
    recovery/privacy, protected merge and production-release work.
 
 ## Critical blockers
 
-- `BLK-GCP-SPEND-074`: owner redundancy decision, exact resource-bearing plan review
-  and final apply authorization remain open;
+- `BLK-GCP-SPEND-074`: owner redundancy, a corrected verifier-approved resource plan
+  and final plan-bound apply authorization remain open;
 - `PQG-OPEN-ENABLEMENT-001`: public gateway lacks authorized ingested evidence, edge
   controls, deployed staging and approval;
 - `BLK-CORPUS-OPS-001`: source rights, durable object storage, scanner and

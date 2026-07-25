@@ -7,3 +7,6 @@ terraform.tfvars
 backend.tf
 backend.gcs.hcl
 crash.log
+*.tfplan.json
+*.tfplan.txt
+plan-artifacts/

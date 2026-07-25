@@ -6,7 +6,9 @@ on:
       - "infra/gcp/cloudsql-staging/**"
       - ".github/workflows/gcp-cloudsql-terraform.yml"
       - "src/gcp/cloudSqlStaging.ts"
+      - "src/gcp/cloudSqlTerraformPlan.ts"
       - "src/cli/verifyGcpCloudSqlStaging.ts"
+      - "src/cli/verifyGcpCloudSqlPlan.ts"
       - "src/__tests__/gcp-cloudsql-staging-v1.test.ts"
       - "src/__tests__/eval-gcp-cloudsql-staging-001.test.ts"
       - "docs/operations/gcp-cloudsql-staging-runbook.md"
@@ -15,7 +17,9 @@ on:
       - "infra/gcp/cloudsql-staging/**"
       - ".github/workflows/gcp-cloudsql-terraform.yml"
       - "src/gcp/cloudSqlStaging.ts"
+      - "src/gcp/cloudSqlTerraformPlan.ts"
       - "src/cli/verifyGcpCloudSqlStaging.ts"
+      - "src/cli/verifyGcpCloudSqlPlan.ts"
       - "src/__tests__/gcp-cloudsql-staging-v1.test.ts"
       - "src/__tests__/eval-gcp-cloudsql-staging-001.test.ts"
       - "docs/operations/gcp-cloudsql-staging-runbook.md"
@@ -101,10 +105,11 @@ jobs:
             -var='declared_pilot_budget_usd=1' \
             -var='reviewed_hourly_compute_usd=0.08775' \
             -var='max_pilot_runtime_hours=4' \
+            -var='labels={"application":"la-muni-rag","environment":"staging","managed-by":"terraform","data-class":"synthetic-only","owner":"eduardo-sacahui"}' \
             -var='allow_billable_resources=true' \
             -var='billable_confirmation=CREATE_LA_MUNI_GCP_STAGING' \
             -out=approved-resource.tfplan \
             -no-color
           terraform -chdir=infra/gcp/cloudsql-staging show -json approved-resource.tfplan > infra/gcp/cloudsql-staging/approved-resource.json
-          node -e "const p=require('./infra/gcp/cloudsql-staging/approved-resource.json');const a=(p.resource_changes??[]).map(x=>x.address).sort();const e=['google_project_service.sqladmin[0]','google_sql_database_instance.staging[0]'];if(JSON.stringify(a)!==JSON.stringify(e))throw new Error('authorized resource set drift');if(p.planned_values.outputs.resources_enabled.value!==true)throw new Error('approved resource gate disabled')"
+          npm run gcp:cloudsql:verify-plan -- infra/gcp/cloudsql-staging/approved-resource.json la-muni-staging-123
           rm -f infra/gcp/cloudsql-staging/approved-resource.tfplan infra/gcp/cloudsql-staging/approved-resource.json
