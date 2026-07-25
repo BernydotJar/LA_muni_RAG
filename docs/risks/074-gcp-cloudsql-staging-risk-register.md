@@ -2,7 +2,7 @@
 
 | Risk | Severity | Control | Residual limitation |
 |---|---|---|---|
-| Accidental cloud spend | critical | zero-resource Terraform default, exact phrase, independent approvals, COP 4,000 budget alerts and bounded cost/runtime review | budgets and alerts do not stop spend; a human can still leave a resource running |
+| Accidental cloud spend | critical | zero-resource Terraform default, verified live zero-resource plan, exact phrase, independent approvals, COP 4,000 budget alerts and bounded cost/runtime review | budgets and alerts do not stop spend; a human can still authorize or leave a resource running |
 | COP 4,000 treated as a hard cap | critical | docs distinguish the live COP budget from the USD planning envelope; Eduardo Sacahui is the four-hour stop/teardown owner | billing data and notifications may be delayed |
 | Stale price estimate | high | reviewed hourly rate is explicit and must be refreshed before a resource-bearing plan | storage, backups, network, taxes and other charges remain outside the compute estimate |
 | State-bucket IAM lockout | high | live `--apply`/`--check` recovery established bucket-scoped `roles/storage.admin`, removed legacy bindings and cleaned up the temporary project grant | future IAM changes or interrupted administration can still require recovery from an authorized project owner |

@@ -1,16 +1,16 @@
 # LA Muni RAG — Current Program State
 
-Updated: 2026-07-24T22:30:51Z
+Updated: 2026-07-25T05:08:10Z
 
-Program status: **PARTIAL WITH DOCUMENTED BLOCKERS — Feature 074 now has verified live billing, budget, residency and state-bucket IAM recovery; owner redundancy, live plan approval, managed staging execution, real corpus, human identity and production release remain open**
+Program status: **PARTIAL WITH DOCUMENTED BLOCKERS — Feature 074 now has verified live billing, budget, residency, state-bucket IAM recovery and a live zero-resource plan; owner redundancy, resource-bearing plan approval, managed staging execution, real corpus, human identity and production release remain open**
 
 ## Authoritative checkout
 
 ```text
-workspace_id: c0bc5839-e724-403b-8dbc-746ca0014a72
+workspace_id: b909e055-62ae-4625-ac13-10947906a08f
 root: /workspace
 branch: feature/gcp-cloudsql-staging-v1
-evidence_baseline_head: 77279287c521f58c359754b2b8cb8f0a31da4e1a
+evidence_baseline_head: b0a267401e18f9470c4c248da506fd5ee22938d7
 working_tree_at_baseline: clean
 pull_request: 24 draft
 merged: false
@@ -50,7 +50,10 @@ bucket-level access, versioning, seven-day soft delete and approved labels.
 The state-bucket recovery completed successfully through authenticated `--apply` and
 `--check` executions. The final bucket policy contains bucket-scoped Storage Admin for the
 approved operator and no legacy convenience bindings; the temporary project-level grant
-was removed before completion. Only one project owner was observed.
+was removed before completion. Authenticated Terraform 1.15.8 then initialized the GCS
+backend and produced a live plan with zero resource changes and
+`resources_enabled=false`; the local plan and JSON artifacts were removed. Only one
+project owner was observed.
 
 The USD value remains the Terraform cost-review envelope; the COP value is the actual
 Cloud Billing budget. Neither is a hard cap. Current pricing must be re-reviewed before a
@@ -64,9 +67,10 @@ full regression: 870 total / 868 pass / 0 fail / 2 environment skips
 Bash syntax: pass
 Typecheck: pass
 Build: pass
-Terraform validation workflow 30130298040: success
-Backend CI workflow 30130298122: success
-project-specific disabled plan: 0 resource changes
+Terraform validation workflow 30131987981: success
+Backend CI workflow 30131987996: success
+project-specific disabled offline plan: 0 resource changes
+live GCS-backed disabled plan: 0 resource changes; resources_enabled=false
 approved offline shape: SQL Admin API plus one protected Cloud SQL instance
 cloud_sql_instance_created: false
 terraform_apply_executed: false
@@ -89,18 +93,17 @@ truth.
 
 1. Decide whether to add a second appropriate human project owner or record an accepted
    governance exception.
-2. Initialize Terraform against the verified GCS backend and prove a live zero-resource plan.
-3. Refresh current pricing and generate the exact resource-bearing plan constrained to SQL
+2. Refresh current pricing and generate the exact resource-bearing plan constrained to SQL
    Admin API enablement and one protected PostgreSQL instance.
-4. Obtain final authorization tied to that exact plan, start time and four-hour window.
-5. Execute the synthetic-only managed staging run and teardown controls.
-6. Continue corpus, human identity, browser E2E, external consumer, edge/load/SLO,
+3. Obtain final authorization tied to that exact plan, start time and four-hour window.
+4. Execute the synthetic-only managed staging run and teardown controls.
+5. Continue corpus, human identity, browser E2E, external consumer, edge/load/SLO,
    recovery/privacy, protected merge and production-release work.
 
 ## Critical blockers
 
-- `BLK-GCP-SPEND-074`: owner redundancy decision, live zero-resource plan, current
-  price review, exact resource-bearing plan review and final apply authorization remain open;
+- `BLK-GCP-SPEND-074`: owner redundancy decision, current price review, exact
+  resource-bearing plan review and final apply authorization remain open;
 - `PQG-OPEN-ENABLEMENT-001`: public gateway lacks authorized ingested evidence, edge
   controls, deployed staging and approval;
 - `BLK-CORPUS-OPS-001`: source rights, durable object storage, scanner and

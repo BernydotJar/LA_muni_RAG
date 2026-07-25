@@ -20,8 +20,11 @@ Account Administrator assignment, a project-scoped COP 4,000 monthly budget with
 removed bucket-policy administration too early. The idempotent recovery was hardened
 to tolerate IAM propagation, and authenticated `--apply` plus `--check` executions later
 established bucket-scoped `roles/storage.admin`, removed all legacy bindings and cleaned
-up the temporary project-level grant. Project-owner redundancy, current price review and
-final approval of the exact live plan remain open.
+up the temporary project-level grant. A later authenticated Terraform 1.15.8 run
+initialized the externalized GCS backend and verified a live plan with zero resource
+changes and `resources_enabled=false`; its local plan artifacts were removed.
+Project-owner redundancy, current price review and final approval of the exact
+resource-bearing plan remain open.
 
 Private IP remains the target posture. The supplied pilot mode configures no authorized
 networks, enforces connectors and must use Cloud SQL Auth Proxy or a supported language

@@ -16,7 +16,7 @@
 - [x] Create the protected regional GCS Terraform-state bucket.
 - [x] Complete and verify state-bucket IAM recovery with successful live `--apply` and `--check`.
 - [x] Declare the externalized GCS backend without committing backend parameters.
-- [ ] Generate and inspect a live zero-resource plan against the verified backend.
+- [x] Generate and inspect a live zero-resource plan against the verified backend.
 - [ ] Decide project-owner redundancy with an explicit approved second principal or accepted exception.
 - [ ] Re-review current pricing immediately before a resource-bearing plan.
 - [ ] Execute an approved Cloud SQL staging run with synthetic fixtures.

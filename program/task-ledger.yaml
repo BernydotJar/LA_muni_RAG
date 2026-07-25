@@ -1,5 +1,5 @@
 schema_version: 1
-updated_at: '2026-07-24T22:30:51Z'
+updated_at: '2026-07-25T05:08:10Z'
 runtime:
   type: yaml_fallback
   farmtable_available: false
@@ -1641,7 +1641,7 @@ tasks:
   - BLK-GCP-SPEND-074
   result:
     branch: feature/gcp-cloudsql-staging-v1
-    functional_commit: 77279287c521f58c359754b2b8cb8f0a31da4e1a
+    functional_commit: b0a267401e18f9470c4c248da506fd5ee22938d7
     project_id: rag-municipalidades
     project_number: 1059368783280
     project_specific_default_plan_resources: 0
@@ -1656,6 +1656,7 @@ tasks:
     live_residency_us_central1_permitted: true
     live_state_bucket_created: true
     state_bucket_iam_recovery_verified: true
+    live_zero_resource_plan_verified: true
     observed_project_owner_count: 1
     estimated_compute_and_memory_usd: 0.2702
     max_pilot_runtime_hours: 4
@@ -1672,23 +1673,24 @@ tasks:
   - Project-specific zero plan contained zero resource changes.
   - Approved offline shape contained exactly two addresses and estimated USD 0.2702 compute/memory for four hours.
   - EVAL-GCP-CLOUDSQL-STAGING-001 14/14 and EVAL-PRODUCTION-PUBLIC-SURFACE-001 33/33 passed.
-  - PR #24 remains draft; Terraform run 30130298040 and Backend CI run 30130298122 succeeded at the recovery-verification head.
+  - PR #24 remains draft; Terraform run 30131987981 and Backend CI run 30131987996 succeeded at the published evidence-source head.
   - Live `--apply` and `--check` both succeeded; final bucket IAM has scoped Storage Admin, no legacy bindings and no retained temporary project grant.
-  - Recovery-head regression: 870 total / 868 passed / 0 failed / 2 environment skips; typecheck and build passed.
+  - Authenticated Terraform 1.15.8 initialized the GCS backend; the live disabled plan had zero resource changes and `resources_enabled=false`; plan artifacts were removed.
+  - Published-head regression: 870 total / 868 passed / 0 failed / 2 environment skips; typecheck and build passed.
   limitations:
-  - Live billing, budget, residency, state-bucket properties and bucket IAM recovery are verified; a live zero-resource Terraform plan is still required.
+  - Live billing, budget, residency, state-bucket properties, bucket IAM recovery and a GCS-backed zero-resource Terraform plan are verified.
   - No Cloud SQL instance, Terraform apply, managed staging execution, merge or deployment.
   - Owner redundancy, current price review and final live-plan approval remain required.
   branch: feature/gcp-cloudsql-staging-v1
   pr: 24
-  ci: terraform_30130298040_success_backend_30130298122_success
+  ci: terraform_30131987981_success_backend_30131987996_success
 blockers:
 - id: BLK-GCP-SPEND-074
   affects:
   - WS10-GCP-CLOUDSQL-STAGING-001
   state: open
-  condition: Billing, budget, residency, bucket properties and bucket IAM recovery are verified, but owner redundancy, a live zero-resource plan, current pricing and final resource-bearing-plan approval remain incomplete.
-  next_safe_action: Decide owner redundancy, initialize the verified backend, prove a zero-resource live plan, re-review pricing and obtain final resource-bearing-plan approval.
+  condition: Billing, budget, residency, bucket properties, bucket IAM recovery and a live zero-resource plan are verified, but owner redundancy, current pricing and final resource-bearing-plan approval remain incomplete.
+  next_safe_action: Decide owner redundancy, re-review pricing, generate the exact resource-bearing plan and obtain approval tied to that plan.
 - id: BLK-CORPUS-OPS-001
   affects:
   - WS02-CORPUS-ACQUISITION-001

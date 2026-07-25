@@ -1,6 +1,6 @@
 # Feature 074 — GCP Cloud SQL staging v1
 
-Status: administrative controls and state-bucket IAM recovery verified; live zero-resource plan and external resource creation remain human-gated.
+Status: administrative controls, state-bucket IAM recovery and live zero-resource plan verified; external resource creation remains human-gated.
 
 ## Goal
 
@@ -10,7 +10,7 @@ creating resources from repository CI.
 
 ## Acceptance
 
-- Default Terraform creates zero resources.
+- Default Terraform creates zero resources, verified against the live GCS backend.
 - A resource-bearing plan requires exact confirmation, billing, budget, data-residency
   and bounded pilot-cost approval.
 - The approved plan contains only Cloud SQL API enablement and one protected instance.

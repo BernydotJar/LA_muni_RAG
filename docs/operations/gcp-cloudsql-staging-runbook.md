@@ -1,8 +1,9 @@
 # GCP Cloud SQL staging runbook
 
-Status: live administrative controls and state-bucket IAM recovery are verified.
-Owner redundancy, current-price review, the exact live plan and final execution approval
-remain pending. No Cloud SQL instance has been created and no `terraform apply` has been run.
+Status: live administrative controls, state-bucket IAM recovery and the live
+zero-resource Terraform plan are verified. Owner redundancy, current-price review, the
+exact resource-bearing plan and final execution approval remain pending. No Cloud SQL
+instance has been created and no `terraform apply` has been run.
 
 ## Recorded pilot inputs
 
@@ -59,13 +60,11 @@ live recovery completed successfully on 2026-07-24.
 
 1. decide whether to add a second appropriate human project owner or record an
    accepted governance exception; no owner is added automatically;
-2. initialize Terraform against the verified GCS backend and generate a zero-resource
-   live plan;
-3. refresh current pricing before any resource-bearing plan;
-4. obtain platform, database, security and release approval for the exact live plan;
-5. approve the time-bounded Auth Proxy public pilot and synthetic-only fixtures;
-6. record the start time and four-hour stop window;
-7. issue final execution authorization tied to the exact live plan, which must be the
+2. refresh current pricing before any resource-bearing plan;
+3. obtain platform, database, security and release approval for the exact live plan;
+4. approve the time-bounded Auth Proxy public pilot and synthetic-only fixtures;
+5. record the start time and four-hour stop window;
+6. issue final execution authorization tied to the exact live plan, which must be the
    reviewed resource-bearing plan.
 
 Eduardo Sacahui is the confirmed emergency stop/teardown owner. Personal contact data
@@ -105,6 +104,11 @@ Stop if initialization proposes state migration, if a local `terraform.tfstate` 
 or if the plan contains any resource change. Do not commit backend configuration, state,
 plan files or plan JSON. This zero-resource plan is evidence only and does not authorize
 a resource-bearing plan or apply.
+
+Authenticated Cloud Shell evidence on 2026-07-24 verified Terraform 1.15.8, successful
+GCS backend initialization, zero resource changes, `resources_enabled=false`, successful
+JSON assertion and removal of the local plan and JSON files. Cloud SQL was not created
+and `terraform apply` was not run.
 
 ## Provisioning boundary
 

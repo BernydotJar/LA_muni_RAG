@@ -103,9 +103,10 @@ describe("EVAL-GCP-CLOUDSQL-STAGING-001", () => {
     assert.match(runbook, /billable_authorization: confirmed for a future controlled pilot/i);
     assert.match(runbook, /final execution authorization tied to the exact live plan/i);
     assert.match(runbook, /budget alert does not\nstop spend automatically/i);
-    assert.match(runbook, /No Cloud SQL instance has been created/i);
+    assert.match(runbook, /No Cloud SQL\s+instance has been created/i);
     assert.match(runbook, /live_monthly_budget_cop: 4000/);
     assert.match(runbook, /bucket IAM recovery/i);
+    assert.match(runbook, /live\s+zero-resource Terraform plan are verified/i);
   });
   it("records the supplied project as a disabled cost-bounded pilot", async () => {
     const [pilot, outputs, workflow, pkg, ci] = await Promise.all([
