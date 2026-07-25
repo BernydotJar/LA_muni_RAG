@@ -4,6 +4,7 @@ on:
   push:
     paths:
       - "infra/gcp/cloudsql-staging/**"
+      - "infra/gcp/generate-cloudsql-live-plan.sh"
       - ".github/workflows/gcp-cloudsql-terraform.yml"
       - "src/gcp/cloudSqlStaging.ts"
       - "src/gcp/cloudSqlTerraformPlan.ts"
@@ -15,6 +16,7 @@ on:
   pull_request:
     paths:
       - "infra/gcp/cloudsql-staging/**"
+      - "infra/gcp/generate-cloudsql-live-plan.sh"
       - ".github/workflows/gcp-cloudsql-terraform.yml"
       - "src/gcp/cloudSqlStaging.ts"
       - "src/gcp/cloudSqlTerraformPlan.ts"

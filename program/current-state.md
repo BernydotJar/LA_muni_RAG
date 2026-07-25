@@ -1,6 +1,6 @@
 # LA Muni RAG — Current Program State
 
-Updated: 2026-07-25T07:11:21Z
+Updated: 2026-07-25T08:05:00Z
 
 Program status: **PARTIAL WITH DOCUMENTED BLOCKERS — Feature 074 has verified administrative controls, a live zero-resource plan and current pricing; its first exact resource-bearing plan was rejected for a missing owner label, so owner redundancy, a corrected plan, managed staging execution, real corpus, human identity and production release remain open**
 
@@ -67,6 +67,13 @@ PITR, bounded SSD, Query Insights and both deletion-protection layers. It is rej
 not eligible for apply because the required `owner=eduardo-sacahui` label was absent.
 No Cloud SQL instance was created and `terraform apply` was not run.
 
+A subsequent manual regeneration attempt started from the Cloud Shell home directory and
+failed before plan creation because no Terraform configuration or `package.json` was
+present there. Empty derivative files and the trailing success echo are not evidence. The
+repository now provides a self-locating fail-fast generator that verifies all prerequisites,
+builds in a temporary directory and atomically publishes only verifier-approved non-empty
+artifacts. No Cloud SQL instance was created and `terraform apply` was not run.
+
 ## Verification
 
 ```text
@@ -81,6 +88,7 @@ project-specific disabled offline plan: 0 resource changes
 live GCS-backed disabled plan: 0 resource changes; resources_enabled=false
 approved offline shape: SQL Admin API plus one protected Cloud SQL instance
 first live resource plan: 2 creates; rejected_missing_owner_label
+live plan generator: self-locating, fail-fast, state-locked, atomic verified-artifact publish
 cloud_sql_instance_created: false
 terraform_apply_executed: false
 ```

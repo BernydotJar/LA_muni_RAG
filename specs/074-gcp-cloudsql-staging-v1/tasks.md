@@ -20,5 +20,6 @@
 - [ ] Decide project-owner redundancy with an explicit approved second principal or accepted exception.
 - [x] Re-review current pricing from the official Cloud SQL pricing table on 2026-07-24.
 - [x] Generate the first exact live resource plan and reject it because the required owner label was absent.
+- [x] Add a self-locating fail-fast live-plan generator that atomically publishes only verifier-approved non-empty artifacts.
 - [ ] Regenerate the exact live resource plan with `owner=eduardo-sacahui` and require the reusable verifier to return valid.
 - [ ] Execute an approved Cloud SQL staging run with synthetic fixtures.

@@ -76,15 +76,27 @@ describe("EVAL-GCP-CLOUDSQL-STAGING-001", () => {
   });
 
   it("contains no database user, plaintext password or automated infrastructure mutation", async () => {
-    const [main, workflow] = await Promise.all([
+    const [main, workflow, livePlanScript] = await Promise.all([
       read("infra/gcp/cloudsql-staging/main.tf"),
       read(".github/workflows/gcp-cloudsql-terraform.yml"),
+      read("infra/gcp/generate-cloudsql-live-plan.sh"),
     ]);
     assert.doesNotMatch(main, /google_sql_user|password\s*=|secret_data/i);
     assert.doesNotMatch(workflow, /terraform\s+(?:apply|destroy)/i);
     assert.match(workflow, /default plan created resources/);
     assert.match(workflow, /gcp:cloudsql:verify-plan/);
     assert.ok(workflow.includes('owner\":\"eduardo-sacahui'));
+    assert.match(livePlanScript, /set -euo pipefail/);
+    assert.match(livePlanScript, /SCRIPT_DIR=.*BASH_SOURCE/);
+    assert.match(livePlanScript, /git -C "\$REPO_ROOT" fetch/);
+    assert.match(livePlanScript, /-lock-timeout=60s/);
+    assert.match(livePlanScript, /verifyGcpCloudSqlPlan\.ts/);
+    assert.match(livePlanScript, /-s "\$artifact"/);
+    assert.match(livePlanScript, /SHA256SUMS/);
+    assert.doesNotMatch(livePlanScript, /^\s*terraform\s+(?:apply|destroy)\b/im);
+    const nonEmptyGate = livePlanScript.indexOf('if [[ ! -s "$artifact" ]]');
+    const atomicPublish = livePlanScript.indexOf('mv -- "$TMP_DIR" "$artifact_dir"');
+    assert.ok(nonEmptyGate >= 0 && atomicPublish > nonEmptyGate, "publish must occur only after non-empty validation");
   });
 
   it("keeps state, plans, tfvars and crash material local", async () => {

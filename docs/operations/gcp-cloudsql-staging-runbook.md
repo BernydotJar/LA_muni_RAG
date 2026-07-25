@@ -139,49 +139,34 @@ after the evidence record is secured.
 
 ## Regenerate and verify the corrected exact plan
 
-Pull the repository hardening first. Generate a new artifact under a new filename so it
-cannot be confused with the rejected plan:
+The first manual regeneration attempt was started from the Cloud Shell home directory
+instead of the repository module. Terraform therefore initialized an empty directory,
+no plan was created, `npm` could not find `package.json`, and the shell continued because
+the fail-fast preamble had not been included. The resulting zero-byte JSON/text files and
+success message are invalid evidence. No infrastructure mutation occurred.
+
+The repository now provides a self-locating, fail-fast generator. It verifies the branch,
+remote HEAD, clean tracked worktree, active GCP project, gcloud authentication, exact
+Terraform version, backend files and absence of local state. The live plan uses
+`-lock-timeout=60s` rather than disabling state locking. The script writes into a temporary
+directory, invokes the reusable plan verifier, requires every output to be non-empty and
+only then atomically publishes an ignored artifact directory with SHA-256 hashes.
+
+Run this single command from any Cloud Shell directory:
 
 ```bash
-set -euo pipefail
-export PATH="$HOME/.local/bin:$PATH"
-
-cd ~/LA_muni_RAG
-git checkout feature/gcp-cloudsql-staging-v1
-git pull --ff-only
-cd infra/gcp/cloudsql-staging
-
-test -f backend.tf
-test -f backend.gcs.hcl
-test ! -f terraform.tfstate
-
-terraform init -reconfigure -backend-config=backend.gcs.hcl
-terraform plan \
-  -input=false \
-  -lock-timeout=60s \
-  -out=approved-live-v2.tfplan \
-  -var='project_id=rag-municipalidades' \
-  -var='connectivity_mode=AUTH_PROXY_PUBLIC' \
-  -var='billing_approved=true' \
-  -var='budget_approved=true' \
-  -var='data_residency_approved=true' \
-  -var='declared_pilot_budget_usd=1' \
-  -var='reviewed_hourly_compute_usd=0.08775' \
-  -var='max_pilot_runtime_hours=4' \
-  -var='labels={"application":"la-muni-rag","environment":"staging","managed-by":"terraform","data-class":"synthetic-only","owner":"eduardo-sacahui"}' \
-  -var='allow_billable_resources=true' \
-  -var='billable_confirmation=CREATE_LA_MUNI_GCP_STAGING'
-
-terraform show -json approved-live-v2.tfplan > approved-live-v2.tfplan.json
-npm run gcp:cloudsql:verify-plan -- \
-  approved-live-v2.tfplan.json \
-  rag-municipalidades
-terraform show -no-color approved-live-v2.tfplan > approved-live-v2.tfplan.txt
-sha256sum approved-live-v2.tfplan approved-live-v2.tfplan.json approved-live-v2.tfplan.txt
+git -C ~/LA_muni_RAG pull --ff-only && \
+  bash ~/LA_muni_RAG/infra/gcp/generate-cloudsql-live-plan.sh
 ```
 
-The verifier must return `status: "valid"`. A correct address set alone is insufficient.
-Do not execute the `terraform apply` command printed by Terraform.
+The script moves any original `approved-live.*` files found in the Terraform module into
+`plan-artifacts/rejected-missing-owner/`. It does not touch similarly named files outside
+the repository. Empty files accidentally created in the Cloud Shell home directory may
+be removed separately after confirming their size is zero.
+
+Success requires `status: "valid"`, four non-empty artifacts and a `SHA256SUMS` manifest
+inside an ignored directory named for the repository HEAD and UTC timestamp. A correct
+address set alone is insufficient. The script contains no `terraform apply` command.
 
 ## Provisioning boundary
 

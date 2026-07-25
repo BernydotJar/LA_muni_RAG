@@ -43,6 +43,16 @@ reviewed_hourly_compute_usd = 0.08775
 max_pilot_runtime_hours     = 4
 ```
 
+Generate the live corrected plan only through the self-locating fail-fast script:
+
+```bash
+git -C ~/LA_muni_RAG pull --ff-only && \
+  bash ~/LA_muni_RAG/infra/gcp/generate-cloudsql-live-plan.sh
+```
+
+The script may be called from any working directory, publishes only verifier-approved
+non-empty artifacts under ignored `plan-artifacts/`, and never runs `terraform apply`.
+
 Repository workflows perform formatting, provider initialization, validation and two
 offline plans only. They contain no infrastructure mutation command. The approved-plan
 workflow invokes `npm run gcp:cloudsql:verify-plan` and fails unless the exact plan has the
