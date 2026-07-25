@@ -75,6 +75,6 @@ Unlimited-OCR remains evaluation-only pending pinned revisions, license/security
 ### BLK-GCP-LIFECYCLE-074 — stopped pilot requires a new lifecycle authorization
 
 The exact authorized instance exists in `STOPPED` state with activation policy `NEVER` and
-deletion protection enabled. The prior single-owner exception expired on stop. Restart for
-the managed synthetic run or destructive teardown requires a new explicit authorization.
-Storage, backup and related charges may continue while the stopped instance remains.
+deletion protection enabled. A second temporary exception authorizes only the managed
+synthetic run until 17:25 America/Guatemala. Destructive teardown remains unauthorized.
+Storage, backup and related charges may continue while the instance remains.

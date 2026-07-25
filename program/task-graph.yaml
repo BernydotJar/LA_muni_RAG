@@ -1458,6 +1458,12 @@ tasks:
     teardown_executed: false
     governance_exception_status: expired_on_stop
     authorization_consumed: true
+    managed_run_authorization_id: GCP-CLOUDSQL-MANAGED-RUN-20260725-1325-1725-GT
+    managed_run_authorization_start: '2026-07-25T13:25:00-06:00'
+    managed_run_authorization_end: '2026-07-25T17:25:00-06:00'
+    managed_run_authorization_scope: restart_ephemeral_operator_proxy_preflight_20_journeys_cleanup_stop
+    managed_run_authorization_active: true
+    managed_run_script: infra/gcp/run-approved-cloudsql-managed-staging.sh
   limitations:
   - The exact authorized plan was applied and the protected instance exists in STOPPED state with activation policy NEVER.
   - The managed synthetic run and destructive teardown did not occur; restart or teardown requires new explicit authorization.
@@ -1468,10 +1474,10 @@ blockers:
   affects:
   - WS10-GCP-CLOUDSQL-STAGING-001
   state: open
-  condition: The protected Cloud SQL instance exists in STOPPED state. Managed synthetic execution and destructive teardown
-    are incomplete, and the prior single-owner exception expired on stop.
-  next_safe_action: Keep the instance stopped; obtain a new explicit authorization either to restart for the synthetic managed
-    run or to execute reviewed destructive teardown.
+  condition: A second bounded authorization is active for the managed synthetic run until 17:25 America/Guatemala; destructive
+    teardown remains unauthorized.
+  next_safe_action: Execute the fail-closed managed-run script before 17:25, verify 20 journeys and cleanup, and return the
+    instance to STOPPED.
 - id: BLK-GCP-SPEND-074
   affects:
   - WS10-GCP-CLOUDSQL-STAGING-001

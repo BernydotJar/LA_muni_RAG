@@ -1,8 +1,8 @@
 # LA Muni RAG — Current Program State
 
-Updated: 2026-07-25T18:42:49.466Z
+Updated: 2026-07-25T19:25:00Z
 
-Program status: **PARTIAL WITH DOCUMENTED BLOCKERS — Feature 074 created the exact authorized Cloud SQL instance and then stopped compute within the bounded window; managed staging execution, destructive teardown, real corpus, human identity and production release remain open**
+Program status: **PARTIAL WITH DOCUMENTED BLOCKERS — Feature 074 has a second bounded authorization active for the managed synthetic run from 13:25-17:25 America/Guatemala; destructive teardown, real corpus, human identity and production release remain open**
 
 ## Authoritative checkout
 
@@ -144,10 +144,9 @@ truth.
 
 ## Next execution sequence
 
-1. Keep the instance stopped; the prior execution authorization and single-owner exception
-   are no longer valid for additional cloud mutation.
-2. Decide between a new bounded restart authorization for the synthetic-only managed staging
-   run or a separately reviewed destructive teardown authorization.
+1. Execute the authorized managed synthetic run through the fail-closed script before 17:25
+   America/Guatemala; the script must return the instance to `STOPPED`.
+2. Record the 20-journey receipt, cleanup receipt, temporary-user deletion and final stop.
 3. Review actual billing after export latency and record cost, managed-run and teardown
    receipts without treating the budget as a hard cap.
 4. Continue corpus, human identity, browser E2E, external consumer, edge/load/SLO,
@@ -155,7 +154,7 @@ truth.
 
 ## Critical blockers
 
-- `BLK-GCP-LIFECYCLE-074`: the authorized apply occurred and compute is stopped; restart for managed execution or destructive teardown requires a new explicit authorization;
+- `BLK-GCP-LIFECYCLE-074`: restart for the managed synthetic run is authorized only until 17:25; destructive teardown remains unauthorized;
 - `PQG-OPEN-ENABLEMENT-001`: public gateway lacks authorized ingested evidence, edge
   controls, deployed staging and approval;
 - `BLK-CORPUS-OPS-001`: source rights, durable object storage, scanner and

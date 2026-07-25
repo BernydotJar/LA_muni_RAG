@@ -355,3 +355,14 @@ reapply, import, remove state, disable deletion protection or destroy under the 
 authorization. A new explicit authorization is required either for a managed synthetic run
 or for destructive teardown. Actual billing remains unknown until provider reporting catches
 up; stopped compute does not imply zero storage or backup cost.
+
+
+## 2026-07-25T19:25:00Z — Reopen a four-hour managed-run window
+
+Decision: accept a second temporary single-owner exception from 13:25 through 17:25
+America/Guatemala for the managed synthetic run. The scope is restart, one ephemeral
+built-in PostgreSQL operator, loopback-only pinned Auth Proxy, preflight, the existing 20
+API/system journeys, verified cleanup, operator deletion and final stop. The maximum
+additional compute-and-memory planning amount is USD 0.351. A watchdog and exit trap must
+return the instance to `STOPPED`. Terraform apply, state mutation, deletion-protection
+changes and destructive teardown are excluded.

@@ -76,11 +76,12 @@ describe("EVAL-GCP-CLOUDSQL-STAGING-001", () => {
   });
 
   it("contains no database user, plaintext password or automated infrastructure mutation", async () => {
-    const [main, workflow, livePlanScript, approvedApplyScript] = await Promise.all([
+    const [main, workflow, livePlanScript, approvedApplyScript, managedRunScript] = await Promise.all([
       read("infra/gcp/cloudsql-staging/main.tf"),
       read(".github/workflows/gcp-cloudsql-terraform.yml"),
       read("infra/gcp/generate-cloudsql-live-plan.sh"),
       read("infra/gcp/apply-approved-cloudsql-live-plan.sh"),
+      read("infra/gcp/run-approved-cloudsql-managed-staging.sh"),
     ]);
     assert.doesNotMatch(main, /google_sql_user|password\s*=|secret_data/i);
     assert.doesNotMatch(workflow, /terraform\s+(?:apply|destroy)/i);
@@ -114,6 +115,23 @@ describe("EVAL-GCP-CLOUDSQL-STAGING-001", () => {
     assert.match(approvedApplyScript, /terraform -chdir="\$MODULE_DIR" apply/);
     assert.match(approvedApplyScript, /-auto-approve/);
     assert.doesNotMatch(approvedApplyScript, /^\s*terraform\s+destroy\b/im);
+    assert.match(managedRunScript, /GCP-CLOUDSQL-MANAGED-RUN-20260725-1325-1725-GT/);
+    assert.match(managedRunScript, /2026-07-25 13:25:00/);
+    assert.match(managedRunScript, /2026-07-25 17:25:00/);
+    assert.match(managedRunScript, /less than one hour remains/);
+    assert.match(managedRunScript, /activation-policy=ALWAYS/);
+    assert.match(managedRunScript, /activation-policy=NEVER/);
+    assert.match(managedRunScript, /nohup bash -c/);
+    assert.match(managedRunScript, /gcloud sql users create/);
+    assert.match(managedRunScript, /gcloud sql users delete/);
+    assert.match(managedRunScript, /cloud-sql-proxy\.linux/);
+    assert.match(managedRunScript, /sha256sum -c/);
+    assert.match(managedRunScript, /GCP_CLOUDSQL_CONFIRM_STAGING=true/);
+    assert.match(managedRunScript, /STAGING_CONFIRM_EPHEMERAL=true/);
+    assert.match(managedRunScript, /\.cleanup\.databases_destroyed == 4/);
+    assert.match(managedRunScript, /\.cleanup\.roles_destroyed == 3/);
+    assert.match(managedRunScript, /Managed staging run completed and instance returned to STOPPED/);
+    assert.doesNotMatch(managedRunScript, /terraform\s+(?:apply|destroy)/i);
   });
 
   it("keeps state, plans, tfvars and crash material local", async () => {

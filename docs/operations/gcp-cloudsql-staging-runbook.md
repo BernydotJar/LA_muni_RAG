@@ -353,3 +353,33 @@ Do not rerun the saved plan. The single-owner exception expired when compute was
 The stopped instance still exists and may continue to incur storage, backup or related
 charges. Restart, deletion-protection changes, state mutation and destructive teardown all
 require a new explicit authorization. No managed synthetic journey or teardown is claimed.
+
+
+## Second bounded window — managed synthetic run
+
+The project owner reopened a four-hour single-owner exception from
+`2026-07-25T13:25:00-06:00` through `2026-07-25T17:25:00-06:00`. Authorization
+`GCP-CLOUDSQL-MANAGED-RUN-20260725-1325-1725-GT` permits only:
+
+1. restart the existing protected instance;
+2. create one random-password built-in PostgreSQL operator for the run;
+3. run the loopback-only pinned Cloud SQL Auth Proxy;
+4. execute preflight and the existing 20 API/system journeys with synthetic fixtures;
+5. verify four database and three role cleanups plus twelve documented browser blockers;
+6. delete the temporary operator and return the instance to `STOPPED` with activation policy `NEVER`.
+
+The maximum additional compute-and-memory planning amount is USD 0.351 for four hours.
+Storage, backups, network and taxes are outside that amount. The authorization expires at
+the earlier of successful stop or 17:25 America/Guatemala. It does not authorize Terraform
+apply, state mutation, deletion-protection changes, destructive teardown, production use or
+real corpus processing.
+
+Run from authenticated Cloud Shell after pulling the authorization commit:
+
+```bash
+FINAL_AUTHORIZATION=RUN_APPROVED_LA_MUNI_GCP_STAGING_20260725_1325   bash ~/LA_muni_RAG/infra/gcp/run-approved-cloudsql-managed-staging.sh
+```
+
+The script pins and verifies Cloud SQL Auth Proxy 2.23.0, installs a watchdog that stops the
+instance at the window boundary, reserves a 15-minute stop buffer and performs user deletion,
+proxy termination and instance stop in an exit trap even when preflight or a journey fails.
