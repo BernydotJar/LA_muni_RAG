@@ -39,7 +39,7 @@ billing_approved            = true
 budget_approved             = true
 data_residency_approved     = true
 declared_pilot_budget_usd   = 1
-reviewed_hourly_compute_usd = 0.06755
+reviewed_hourly_compute_usd = 0.08775
 max_pilot_runtime_hours     = 4
 ```
 

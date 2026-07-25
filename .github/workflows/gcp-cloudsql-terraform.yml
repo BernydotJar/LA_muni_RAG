@@ -99,7 +99,7 @@ jobs:
             -var='budget_approved=true' \
             -var='data_residency_approved=true' \
             -var='declared_pilot_budget_usd=1' \
-            -var='reviewed_hourly_compute_usd=0.06755' \
+            -var='reviewed_hourly_compute_usd=0.08775' \
             -var='max_pilot_runtime_hours=4' \
             -var='allow_billable_resources=true' \
             -var='billable_confirmation=CREATE_LA_MUNI_GCP_STAGING' \

@@ -18,5 +18,5 @@
 - [x] Declare the externalized GCS backend without committing backend parameters.
 - [x] Generate and inspect a live zero-resource plan against the verified backend.
 - [ ] Decide project-owner redundancy with an explicit approved second principal or accepted exception.
-- [ ] Re-review current pricing immediately before a resource-bearing plan.
+- [x] Re-review current pricing from the official Cloud SQL pricing table on 2026-07-24.
 - [ ] Execute an approved Cloud SQL staging run with synthetic fixtures.

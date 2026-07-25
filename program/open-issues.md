@@ -33,7 +33,7 @@ No approved IdP/OIDC/PKCE/BFF, secure cookie/CSRF, provisioning, logout, revocat
 
 ### BLK-GCP-SPEND-074 — paid execution is authorized but not operationally cleared
 
-Authenticated Cloud Shell evidence verifies linked COP billing, Billing Account Administrator access, a project-scoped COP 4,000 monthly budget with 50/90/100 alerts, and an effective location policy permitting `us-central1`. The protected GCS state bucket exists; live `--apply`/`--check` recovery established bucket-scoped administration, removed legacy bindings and cleaned up the temporary project grant. Terraform 1.15.8 initialized that backend and a live disabled plan verified zero resource changes with `resources_enabled=false`; plan artifacts were removed. Only one project owner was observed. Current price review, exact resource-bearing plan review and final apply authorization remain absent.
+Authenticated Cloud Shell evidence verifies linked COP billing, Billing Account Administrator access, a project-scoped COP 4,000 monthly budget with 50/90/100 alerts, and an effective location policy permitting `us-central1`. The protected GCS state bucket exists; live `--apply`/`--check` recovery established bucket-scoped administration, removed legacy bindings and cleaned up the temporary project grant. Terraform 1.15.8 initialized that backend and a live disabled plan verified zero resource changes with `resources_enabled=false`; plan artifacts were removed. Only one project owner was observed. Official pricing was re-reviewed on 2026-07-24; the exact resource-bearing plan review and final apply authorization remain absent.
 
 ### PROG-OPS-001 — managed cloud and production operations absent
 

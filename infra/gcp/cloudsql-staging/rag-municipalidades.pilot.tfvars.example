@@ -9,12 +9,14 @@ instance_name = "la-muni-rag-staging"
 connectivity_mode         = "AUTH_PROXY_PUBLIC"
 private_network_self_link = null
 
-# July 2026 review basis for db-custom-1-3840 in us-central1:
-# approximately USD 0.06755/hour for compute and memory. A four-hour window
-# estimates USD 0.2702 before storage, backups, egress, taxes or other charges.
-# Re-review current pricing before any resource-bearing plan.
+# 2026-07-24 official us-central1 review basis for db-custom-1-3840:
+# 1 vCPU at USD 0.054/hour plus 3.75 GiB at USD 0.009/GiB-hour =
+# USD 0.08775/hour compute and memory. A four-hour window is USD 0.351.
+# The configured 20 GiB SSD adds about USD 0.03726024 over four hours, for
+# USD 0.38826024 before backups, egress, taxes or other charges.
+# Re-review current pricing before any later resource-bearing plan.
 declared_pilot_budget_usd   = 1
-reviewed_hourly_compute_usd = 0.06755
+reviewed_hourly_compute_usd = 0.08775
 max_pilot_runtime_hours     = 4
 
 # Public labels must remain non-sensitive. The confirmed emergency operator's

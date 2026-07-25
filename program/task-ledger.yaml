@@ -1658,7 +1658,7 @@ tasks:
     state_bucket_iam_recovery_verified: true
     live_zero_resource_plan_verified: true
     observed_project_owner_count: 1
-    estimated_compute_and_memory_usd: 0.2702
+    estimated_compute_and_memory_usd: 0.351
     max_pilot_runtime_hours: 4
     eval: 14/14
   files:
@@ -1671,7 +1671,7 @@ tasks:
   evidence:
   - Terraform 1.15.8 fmt/init/validate passed.
   - Project-specific zero plan contained zero resource changes.
-  - Approved offline shape contained exactly two addresses and estimated USD 0.2702 compute/memory for four hours.
+  - Approved offline shape contained exactly two addresses; the 2026-07-24 official review estimates USD 0.351 compute/memory and USD 0.38826024 including 20 GiB SSD for four hours.
   - EVAL-GCP-CLOUDSQL-STAGING-001 14/14 and EVAL-PRODUCTION-PUBLIC-SURFACE-001 33/33 passed.
   - PR #24 remains draft; Terraform run 30131987981 and Backend CI run 30131987996 succeeded at the published evidence-source head.
   - Live `--apply` and `--check` both succeeded; final bucket IAM has scoped Storage Admin, no legacy bindings and no retained temporary project grant.
@@ -1680,7 +1680,7 @@ tasks:
   limitations:
   - Live billing, budget, residency, state-bucket properties, bucket IAM recovery and a GCS-backed zero-resource Terraform plan are verified.
   - No Cloud SQL instance, Terraform apply, managed staging execution, merge or deployment.
-  - Owner redundancy, current price review and final live-plan approval remain required.
+  - Owner redundancy, exact resource-bearing plan review and final plan-bound authorization remain required.
   branch: feature/gcp-cloudsql-staging-v1
   pr: 24
   ci: terraform_30131987981_success_backend_30131987996_success
@@ -1689,8 +1689,8 @@ blockers:
   affects:
   - WS10-GCP-CLOUDSQL-STAGING-001
   state: open
-  condition: Billing, budget, residency, bucket properties, bucket IAM recovery and a live zero-resource plan are verified, but owner redundancy, current pricing and final resource-bearing-plan approval remain incomplete.
-  next_safe_action: Decide owner redundancy, re-review pricing, generate the exact resource-bearing plan and obtain approval tied to that plan.
+  condition: Billing, budget, residency, bucket properties, bucket IAM recovery, a live zero-resource plan and current pricing are verified, but owner redundancy and final resource-bearing-plan approval remain incomplete.
+  next_safe_action: Decide owner redundancy, generate the exact resource-bearing plan and obtain approval tied to that immutable plan before apply.
 - id: BLK-CORPUS-OPS-001
   affects:
   - WS02-CORPUS-ACQUISITION-001

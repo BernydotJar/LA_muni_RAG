@@ -102,11 +102,11 @@ describe("EVAL-GCP-CLOUDSQL-STAGING-001", () => {
     assert.match(runbook, /Eduardo Sacahui is the confirmed emergency stop\/teardown owner/i);
     assert.match(runbook, /billable_authorization: confirmed for a future controlled pilot/i);
     assert.match(runbook, /final execution authorization tied to the exact live plan/i);
-    assert.match(runbook, /budget alert does not\nstop spend automatically/i);
+    assert.match(runbook, /Budget alerts do not\nstop spend automatically/i);
     assert.match(runbook, /No Cloud SQL\s+instance has been created/i);
     assert.match(runbook, /live_monthly_budget_cop: 4000/);
     assert.match(runbook, /bucket IAM recovery/i);
-    assert.match(runbook, /live\s+zero-resource Terraform plan are verified/i);
+    assert.match(runbook, /live\s+zero-resource Terraform plan and current pricing are verified/i);
   });
   it("records the supplied project as a disabled cost-bounded pilot", async () => {
     const [pilot, outputs, workflow, pkg, ci] = await Promise.all([
@@ -122,12 +122,12 @@ describe("EVAL-GCP-CLOUDSQL-STAGING-001", () => {
     assert.match(pilot, /connectivity_mode\s+= "AUTH_PROXY_PUBLIC"/);
     assert.match(pilot, /declared_pilot_budget_usd\s+= 1/);
     assert.match(pilot, /owner\s+= "eduardo-sacahui"/);
-    assert.match(pilot, /reviewed_hourly_compute_usd\s+= 0\.06755/);
+    assert.match(pilot, /reviewed_hourly_compute_usd\s+= 0\.08775/);
     assert.match(pilot, /max_pilot_runtime_hours\s+= 4/);
     assert.match(pilot, /allow_billable_resources\s+= false/);
     assert.match(outputs, /not a GCP hard spending cap/i);
     assert.match(workflow, /declared_pilot_budget_usd=1/);
-    assert.match(workflow, /reviewed_hourly_compute_usd=0\.06755/);
+    assert.match(workflow, /reviewed_hourly_compute_usd=0\.08775/);
     assert.match(pkg, /eval:gcp-cloudsql-staging/);
     assert.match(pkg, /gcp:cloudsql:preflight/);
     assert.match(ci, /Run EVAL-GCP-CLOUDSQL-STAGING-001/);

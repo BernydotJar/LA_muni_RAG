@@ -55,11 +55,13 @@
         "google_sql_database_instance.staging[0]"
       ],
       "declared_pilot_budget_usd": 5,
-      "reviewed_hourly_compute_usd": 0.06755,
+      "reviewed_hourly_compute_usd": 0.08775,
       "max_pilot_runtime_hours": 4,
-      "estimated_compute_and_memory_usd": 0.2702,
+      "estimated_compute_and_memory_usd": 0.351,
       "apply_executed": false,
-      "cloud_resources_created": 0
+      "cloud_resources_created": 0,
+      "estimated_compute_memory_and_20gb_ssd_usd": 0.38826024,
+      "pricing_reviewed_at": "2026-07-24"
     }
   },
   "hard_evals": {

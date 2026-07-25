@@ -1,7 +1,7 @@
 # GCP Cloud SQL staging runbook
 
-Status: live administrative controls, state-bucket IAM recovery and the live
-zero-resource Terraform plan are verified. Owner redundancy, current-price review, the
+Status: live administrative controls, state-bucket IAM recovery, the live
+zero-resource Terraform plan and current pricing are verified. Owner redundancy, the
 exact resource-bearing plan and final execution approval remain pending. No Cloud SQL
 instance has been created and no `terraform apply` has been run.
 
@@ -15,9 +15,9 @@ connectivity: AUTH_PROXY_PUBLIC pilot
 planning_pilot_budget_usd: 1
 live_billing_currency: COP
 live_monthly_budget_cop: 4000
-reviewed_hourly_compute_usd: 0.06755
+reviewed_hourly_compute_usd: 0.08775
 max_pilot_runtime_hours: 4
-estimated_compute_and_memory_usd: 0.2702
+estimated_compute_and_memory_usd: 0.351
 billing_owner: Eduardo Sacahui
 emergency_stop_teardown_owner: Eduardo Sacahui
 operational_contact: verified and maintained outside the repository
@@ -25,9 +25,10 @@ billable_authorization: confirmed for a future controlled pilot
 ```
 
 The USD value is the Terraform cost-review envelope; COP 4,000 is the actual recurring
-Cloud Billing budget. The estimate excludes storage, backups, network, taxes and other
-charges. It must be refreshed from official pricing before a resource-bearing plan. A
-budget alert does not
+Cloud Billing budget. The 2026-07-24 review estimates USD 0.351 for four hours of
+compute and memory and USD 0.38826024 when the configured 20 GiB SSD capacity is
+included. Backups, network, taxes and other charges remain excluded. Pricing must be
+refreshed again if the plan is generated after this review window. Budget alerts do not
 stop spend automatically, and the Terraform estimate is not a billing hard cap.
 
 ## Live administrative evidence
@@ -60,8 +61,9 @@ live recovery completed successfully on 2026-07-24.
 
 1. decide whether to add a second appropriate human project owner or record an
    accepted governance exception; no owner is added automatically;
-2. refresh current pricing before any resource-bearing plan;
-3. obtain platform, database, security and release approval for the exact live plan;
+2. generate and inspect the exact resource-bearing plan using the 2026-07-24 reviewed
+   pricing inputs;
+3. obtain platform, database, security and release approval for that exact plan;
 4. approve the time-bounded Auth Proxy public pilot and synthetic-only fixtures;
 5. record the start time and four-hour stop window;
 6. issue final execution authorization tied to the exact live plan, which must be the
@@ -188,7 +190,7 @@ without explicit cost authorization.
 
 ## Four-hour pilot boundary
 
-1. Record start time, approver, Eduardo Sacahui as stop/teardown owner, and current price review.
+1. Record start time, approver, Eduardo Sacahui as stop/teardown owner, and confirmation that the reviewed price inputs remain current.
 2. Execute preflight and the staging runner.
 3. Record actual runtime, logs and receipt.
 4. Stop or initiate the protected teardown review before four elapsed hours.

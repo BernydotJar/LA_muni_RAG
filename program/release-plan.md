@@ -38,8 +38,8 @@ observation_window: none
 - approved offline shape contains only SQL Admin API enablement and one protected instance;
 - PostgreSQL 16 Enterprise, IAM database auth, backups, PITR, bounded SSD, Query Insights and deletion protection;
 - no SQL password, database-user resource, `terraform apply` or destroy automation;
-- reviewed USD 0.06755/hour compute/memory estimate and maximum four-hour pilot;
-- estimated USD 0.2702 compute/memory before storage, backups, network, taxes and other charges;
+- reviewed USD 0.08775/hour compute/memory estimate and maximum four-hour pilot;
+- estimated USD 0.351 compute/memory and USD 0.38826024 including 20 GiB SSD before backups, network, taxes and other charges;
 - 13/13 named Cloud SQL eval and 33/33 public-surface regression;
 - full 869 total / 867 pass / 0 fail / 2 skips;
 - 33/33 contracts, typecheck, build, Pages and zero-vulnerability audits;

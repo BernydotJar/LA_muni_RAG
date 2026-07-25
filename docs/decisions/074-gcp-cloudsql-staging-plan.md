@@ -23,19 +23,20 @@ established bucket-scoped `roles/storage.admin`, removed all legacy bindings and
 up the temporary project-level grant. A later authenticated Terraform 1.15.8 run
 initialized the externalized GCS backend and verified a live plan with zero resource
 changes and `resources_enabled=false`; its local plan artifacts were removed.
-Project-owner redundancy, current price review and final approval of the exact
-resource-bearing plan remain open.
+Project-owner redundancy and final approval of the exact resource-bearing plan remain
+open.
 
 Private IP remains the target posture. The supplied pilot mode configures no authorized
 networks, enforces connectors and must use Cloud SQL Auth Proxy or a supported language
 connector. IAM database authentication, backups, PITR, bounded storage growth, Query
 Insights and both Terraform and Cloud SQL deletion protection remain mandatory.
 
-The selected `db-custom-1-3840` tier was reviewed in July 2026 at approximately USD
-0.06755/hour for compute and memory in `us-central1`. The approved-shape offline plan
-uses a maximum four-hour window, producing a USD 0.2702 compute/memory estimate before
-storage, backups, network, taxes or other charges. Pricing must be re-reviewed before
-any resource-bearing plan. The COP 4,000 live budget and USD 1 Terraform planning envelope are both
+The selected `db-custom-1-3840` tier was re-reviewed against official pricing on
+2026-07-24. In `us-central1`, 1 vCPU at USD 0.054/hour plus 3.75 GiB memory at
+USD 0.009/GiB-hour produces USD 0.08775/hour and USD 0.351 for four hours. The
+configured 20 GiB SSD adds approximately USD 0.03726024 for that window, producing
+USD 0.38826024 before backups, network, taxes or other charges. Pricing must be
+re-reviewed again before any later resource-bearing plan. The COP 4,000 live budget and USD 1 Terraform planning envelope are both
 incompatible with an always-on instance at this tier and therefore constrain only a
 time-bounded pilot.
 

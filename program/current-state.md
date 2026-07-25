@@ -32,9 +32,9 @@ connectivity: AUTH_PROXY_PUBLIC time-bounded pilot
 terraform_planning_budget_usd: 1
 live_billing_currency: COP
 live_monthly_budget_cop: 4000
-reviewed_hourly_compute_usd: 0.06755
+reviewed_hourly_compute_usd: 0.08775
 max_pilot_runtime_hours: 4
-estimated_compute_and_memory_usd: 0.2702
+estimated_compute_and_memory_usd: 0.351
 billing_owner: Eduardo Sacahui
 emergency_stop_teardown_owner: Eduardo Sacahui
 spend_authorized: conditional for a future controlled pilot
@@ -56,8 +56,9 @@ backend and produced a live plan with zero resource changes and
 project owner was observed.
 
 The USD value remains the Terraform cost-review envelope; the COP value is the actual
-Cloud Billing budget. Neither is a hard cap. Current pricing must be re-reviewed before a
-resource-bearing plan.
+Cloud Billing budget. Neither is a hard cap. Official pricing was re-reviewed on
+2026-07-24: USD 0.08775/hour compute+memory, USD 0.351 for four hours and
+USD 0.38826024 including 20 GiB SSD before backups, network and taxes.
 
 ## Verification
 
@@ -93,8 +94,8 @@ truth.
 
 1. Decide whether to add a second appropriate human project owner or record an accepted
    governance exception.
-2. Refresh current pricing and generate the exact resource-bearing plan constrained to SQL
-   Admin API enablement and one protected PostgreSQL instance.
+2. Generate the exact resource-bearing plan constrained to SQL Admin API enablement and
+   one protected PostgreSQL instance, using the 2026-07-24 reviewed price inputs.
 3. Obtain final authorization tied to that exact plan, start time and four-hour window.
 4. Execute the synthetic-only managed staging run and teardown controls.
 5. Continue corpus, human identity, browser E2E, external consumer, edge/load/SLO,
@@ -102,8 +103,8 @@ truth.
 
 ## Critical blockers
 
-- `BLK-GCP-SPEND-074`: owner redundancy decision, current price review, exact
-  resource-bearing plan review and final apply authorization remain open;
+- `BLK-GCP-SPEND-074`: owner redundancy decision, exact resource-bearing plan review
+  and final apply authorization remain open;
 - `PQG-OPEN-ENABLEMENT-001`: public gateway lacks authorized ingested evidence, edge
   controls, deployed staging and approval;
 - `BLK-CORPUS-OPS-001`: source rights, durable object storage, scanner and

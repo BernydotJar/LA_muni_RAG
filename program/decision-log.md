@@ -278,3 +278,16 @@ remove legacy bindings, verify the final policy and remove the temporary project
 Evidence: authenticated Cloud Shell output, recovery commit `ce01163`, 14/14 focused tests,
 typecheck, Terraform validation workflow 30042673681 and Backend CI workflow 30042673669.
 No Cloud SQL instance or Terraform apply is claimed.
+
+## 2026-07-25T05:20:00Z — Refresh Cloud SQL pilot pricing before a resource-bearing plan
+
+Decision: supersede the prior USD 0.06755/hour compute-and-memory estimate for future
+planning. Official Cloud SQL Enterprise pricing for `us-central1` lists USD 0.054 per
+vCPU-hour and USD 0.009 per GiB-hour. `db-custom-1-3840` therefore reviews at
+USD 0.08775/hour and USD 0.351 for four hours. The configured 20 GiB SSD capacity adds
+approximately USD 0.03726024 for the same window, producing USD 0.38826024 before
+backups, network, taxes or other charges.
+
+Decision: retain the USD 1 Terraform planning envelope and four-hour maximum because the
+reviewed base estimate remains within that envelope. This review does not authorize a
+resource-bearing plan or `terraform apply`; both remain tied to an exact immutable plan.
