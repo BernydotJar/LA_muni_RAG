@@ -1,13 +1,13 @@
 {
   "schema_version": "1.13.0",
-  "generated_at": "2026-07-26T00:13:51Z",
+  "generated_at": "2026-07-26T23:00:13Z",
   "branch": "feature/gcp-cloudsql-staging-v1",
   "functional_head": "2232147de0c6869e3f3452cf2d9bf1abe3e14120",
   "source": "observed command outputs only",
   "status": "PARTIAL_WITH_DOCUMENTED_BLOCKERS",
   "tests": {
-    "total": 875,
-    "passed": 873,
+    "total": 880,
+    "passed": 878,
     "failed": 0,
     "skipped": 2
   },
@@ -77,7 +77,8 @@
     "public_query_gateway": "23/23",
     "ephemeral_staging_runner": "14/14",
     "gcp_cloudsql_staging": "14/14",
-    "public_browser_gate": "5/5"
+    "public_browser_gate": "5/5",
+    "online_pages_release": "5/5"
   },
   "source_inventory": {
     "total": 17,
@@ -130,7 +131,8 @@
     "Actual provider billing remains pending; storage and backup charges may continue.",
     "No authorized real corpus or real ingestion.",
     "Public Chromium browser gate passes 10/10, but no human IdP/BFF/session or authenticated role-aware UI exists; twelve authenticated journeys remain blocked.",
-    "No external consumer repository suite, protected merge or production deployment."
+    "No external consumer repository suite, protected merge or production deployment.",
+    "Public Pages still serves legacy main content; exact-SHA deployment and rollback require explicit authorization."
   ],
   "public_browser_gate": {
     "status": "passed_local_and_remote",

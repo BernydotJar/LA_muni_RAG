@@ -1,6 +1,6 @@
 # LA Muni RAG — Open Issues
 
-Updated: 2026-07-25T23:57:58Z
+Updated: 2026-07-26T23:00:13Z
 
 ## Critical
 
@@ -40,6 +40,14 @@ Authenticated controls, exact-plan apply and bounded stop are proven. A second r
 A protected Cloud SQL PostgreSQL 16 instance now exists and is stopped. Exact-plan apply and bounded stop are proved, but the managed synthetic run and teardown were not executed; the second restart authorization expired. No Cloud Run service, queue, Secret Manager configuration, telemetry, load/HA, managed recovery or privacy operation exists.
 
 ## High
+
+### PAGES-ONLINE-DRIFT-001 — public Pages serves legacy main, not the product artifact
+
+The public repository URL returns HTTP 200 but currently serves a legacy Jekyll-style main-page
+publication. It does not expose the product navigation, widget, favicon, focusable product main
+target, exact SHA marker or `build-metadata.json`; one resource request returns 404. Feature 076
+now rejects this state. Replacing the public site requires explicit exact-SHA deployment and
+rollback authorization. No deployment has been executed.
 
 ### E2E-OPEN-CONSUMERS-003 — external consumer suites absent
 

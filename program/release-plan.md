@@ -90,3 +90,14 @@ A green synthetic staging receipt is not a release. Production readiness require
 - Local browser evidence: 10/10 Chromium desktop/mobile executions; integrated regression 875 total / 873 passed / 0 failed / 2 environment skips.
 - Scope remains public Pages only. Twelve authenticated role-aware browser journeys remain blocked.
 - No merge, deployment, Cloud SQL restart or destructive teardown is authorized by this checkpoint.
+
+
+## Feature 076 online Pages release verification
+
+- Current public URL inspection: HTTP 200 but legacy main/Jekyll content, not the product artifact.
+- Missing online controls observed: exact SHA metadata, product navigation, widget, favicon, and focusable product main target; one resource 404.
+- Exact-SHA loopback verification passes in Chromium desktop/mobile.
+- The legacy public site is rejected because `build-metadata.json` returns 404.
+- Future Pages deploys build with `github.sha` and run post-deploy Chromium verification against the deployment output URL.
+- No deployment is authorized or executed by Feature 076. Workflow dispatch from a feature branch would replace the only public Pages site.
+- Required human gate: exact source SHA, public review window, fail-closed API posture, rollback SHA/ref, and rollback owner.

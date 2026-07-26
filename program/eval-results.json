@@ -1,12 +1,12 @@
 {
   "schema_version": "1.17.0",
-  "generated_at": "2026-07-26T00:13:51Z",
+  "generated_at": "2026-07-26T23:00:13Z",
   "branch": "feature/gcp-cloudsql-staging-v1",
   "functional_head": "2232147de0c6869e3f3452cf2d9bf1abe3e14120",
   "status": "passed_feature074_exact_plan_applied_instance_stopped_with_managed_run_and_teardown_blockers",
   "deterministic": {
-    "tests": 875,
-    "pass": 873,
+    "tests": 880,
+    "pass": 878,
     "fail": 0,
     "skipped": 2,
     "typecheck": "pass",
@@ -323,6 +323,28 @@
         "Firefox/WebKit, screen-reader and human WCAG review are absent.",
         "No deployed production browser observation."
       ]
+    },
+    "EVAL-ONLINE-PAGES-RELEASE-001": {
+      "command": "npm run eval:online-pages-release",
+      "passed": 5,
+      "total": 5,
+      "result": "passed_for_exact_sha_pages_build_and_online_verification_with_public_deployment_and_rollback_limitations",
+      "evidence": [
+        "scripts/pages-build-metadata.mjs",
+        "scripts/verify-pages-online.mjs",
+        ".github/workflows/deploy-pages.yml",
+        "docs/testing/online-pages-release-verification.md"
+      ],
+      "execution": {
+        "loopback_scenarios": "2/2",
+        "legacy_public_site_rejected": true,
+        "deployment_executed": false
+      },
+      "limitations": [
+        "Current public URL serves legacy main content.",
+        "No exact-SHA public deployment or rollback receipt.",
+        "Deployment remains human-gated."
+      ]
     }
   },
   "publication": {
@@ -368,7 +390,8 @@
     "The exact authorized Cloud SQL plan was applied and the instance is stopped; managed synthetic execution and destructive teardown remain absent.",
     "The prior single-owner exception expired on stop; restart or teardown requires new explicit authorization.",
     "Actual provider billing remains pending and stopped resources may retain storage or backup charges.",
-    "No authorized real corpus, external consumer execution, protected merge or production deployment."
+    "No authorized real corpus, external consumer execution, protected merge or production deployment.",
+    "No exact-SHA public Pages deployment or rollback receipt; the current public URL serves legacy main content."
   ],
   "public_browser_gate": {
     "status": "passed_local_and_remote",

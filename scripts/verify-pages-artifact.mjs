@@ -1,5 +1,6 @@
 import { access, readFile } from "node:fs/promises";
 import { join } from "node:path";
+import { normalizeBuildSha } from "./pages-build-metadata.mjs";
 
 const repoRoot = process.cwd();
 const outputDir = join(repoRoot, "dist-pages");
@@ -30,6 +31,7 @@ const requiredFiles = [
   "product.css",
   "product.js",
   "pages-security-guard.js",
+  "build-metadata.json",
   ".nojekyll",
 ];
 
@@ -52,10 +54,20 @@ const procedureDeepDiveJs = await readFile(join(outputDir, "procedure-deep-dive.
 const procedureSourceAttributionJs = await readFile(join(outputDir, "procedure-source-attribution.js"), "utf-8");
 const procedureCaseWorkspaceJs = await readFile(join(outputDir, "procedure-case-workspace.js"), "utf-8");
 const procedureCaseOpenJs = await readFile(join(outputDir, "procedure-case-open.js"), "utf-8");
+const buildMetadata = JSON.parse(await readFile(join(outputDir, "build-metadata.json"), "utf-8"));
 
 const pagesApiBridge = await readFile(join(outputDir, "pages-api-bridge.js"), "utf-8");
 const productCss = await readFile(join(outputDir, "product.css"), "utf-8");
 const productJs = await readFile(join(outputDir, "product.js"), "utf-8");
+
+const expectedBuildSha = normalizeBuildSha(
+  process.env.PAGES_BUILD_SHA || process.env.GITHUB_SHA || buildMetadata.buildSha,
+  "expected Pages build SHA"
+);
+if (buildMetadata.schemaVersion !== "1.0.0") throw new Error("Pages build metadata schema is invalid.");
+if (buildMetadata.buildSha !== expectedBuildSha) throw new Error("Pages build metadata does not match the expected Git SHA.");
+if (typeof buildMetadata.apiConfigured !== "boolean") throw new Error("Pages build metadata apiConfigured must be boolean.");
+if (!indexHtml.includes(`name="la-muni-rag-build-sha" content="${expectedBuildSha}"`)) throw new Error("Homepage is missing the exact Pages build SHA marker.");
 
 const forbiddenRootRelativePatterns = [
   'href="/"', 'href="/glass-wall.html"', 'href="/procedure-training.html"', 'href="/procedure-workflow.html"',

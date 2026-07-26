@@ -1,9 +1,11 @@
 import { cp, mkdir, rm, writeFile, readFile, readdir, stat } from "node:fs/promises";
 import { join } from "node:path";
+import { resolveBuildSha } from "./pages-build-metadata.mjs";
 
 const repoRoot = process.cwd();
 const sourceDir = join(repoRoot, "public");
 const outputDir = join(repoRoot, "dist-pages");
+const pagesBuildSha = resolveBuildSha();
 
 const isLocalhost = (hostname) => hostname === "localhost" || hostname === "127.0.0.1" || hostname === "::1";
 const sanitizePagesApiUrl = (value) => {
@@ -22,6 +24,12 @@ const procedureEntrypointTag = '<script src="./procedure-widget-entrypoint.js"><
 
 const injectPagesRuntimeScripts = (html) => {
   let patched = html.replaceAll("<!-- PAGES_API_BRIDGE -->", `${bridgeTag}${guardTag}`);
+  if (!patched.includes('name="la-muni-rag-build-sha"')) {
+    patched = patched.replace(
+      "</head>",
+      `  <meta name="la-muni-rag-build-sha" content="${pagesBuildSha}">\n</head>`
+    );
+  }
   if (!/rel=["']icon["']/i.test(patched)) {
     patched = patched.replace("</head>", '  <link rel="icon" href="./favicon.svg" type="image/svg+xml">\n</head>');
   }
@@ -71,5 +79,14 @@ await mkdir(outputDir, { recursive: true });
 await cp(sourceDir, outputDir, { recursive: true });
 await writeFile(join(outputDir, ".nojekyll"), "", "utf-8");
 await patchHtmlForProjectPages(outputDir);
+await writeFile(
+  join(outputDir, "build-metadata.json"),
+  `${JSON.stringify({
+    schemaVersion: "1.0.0",
+    buildSha: pagesBuildSha,
+    apiConfigured: Boolean(pagesApiUrl),
+  }, null, 2)}\n`,
+  "utf-8"
+);
 
-console.log(`GitHub Pages artifact prepared at ${outputDir}${pagesApiUrl ? " with configured API" : " in fail-closed mode"}`);
+console.log(`GitHub Pages artifact prepared at ${outputDir} for ${pagesBuildSha}${pagesApiUrl ? " with configured API" : " in fail-closed mode"}`);

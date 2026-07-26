@@ -1,8 +1,8 @@
 # LA Muni RAG — Current Program State
 
-Updated: 2026-07-26T00:13:51Z
+Updated: 2026-07-26T23:00:13Z
 
-Program status: **PARTIAL WITH DOCUMENTED BLOCKERS — Feature 075 adds a real public Chromium browser gate with 10/10 desktop/mobile executions; the managed Cloud SQL restart window expired without a successful run, and authenticated browser journeys, real corpus, destructive teardown and production release remain open**
+Program status: **PARTIAL WITH DOCUMENTED BLOCKERS — Feature 076 adds exact-SHA online Pages verification; the current public URL still serves a legacy main publication, and deployment authorization, authenticated browser journeys, real corpus, managed staging, teardown and production release remain open**
 
 ## Authoritative checkout
 
@@ -119,13 +119,32 @@ This is public-surface evidence only. The twelve authenticated role-aware journe
 blocked by missing human IdP/BFF/session and authenticated UI. Firefox/WebKit, screen-reader
 and human WCAG review remain pending.
 
+## Feature 076 — online Pages release verification v1
+
+The Pages build now emits one exact full Git SHA in every generated HTML document and in a
+three-field `build-metadata.json`. Artifact verification rejects malformed or mismatched
+metadata before upload. A new desktop/mobile Chromium verifier rejects insecure target URLs,
+stale or wrong SHAs, missing product navigation, browser/runtime errors, failed requests and
+widget/API configuration drift.
+
+The current public URL was inspected on 2026-07-26 and returned HTTP 200, but it served the
+legacy Jekyll-style `main` publication rather than the product artifact: no build metadata,
+product navigation, widget, favicon or focusable product main target was present, and the page
+emitted one resource 404. The exact-SHA verifier correctly rejected it because
+`build-metadata.json` returned 404. No deployment was executed.
+
+A future workflow-dispatch deployment from this feature branch would replace the repository's
+only public Pages site. It therefore requires explicit authorization tied to the exact source
+SHA, review window, fail-closed API posture, rollback SHA/ref and rollback owner.
+
 ## Verification
 
 ```text
 EVAL-GCP-CLOUDSQL-STAGING-001: 14/14 pass
 EVAL-PUBLIC-BROWSER-GATE-001: 5/5 pass
+EVAL-ONLINE-PAGES-RELEASE-001: 5/5 pass
 Playwright public browser gate: 10/10 pass (Chromium desktop + mobile); remote runs 30180490148 / 30180488768 success
-full regression: 875 total / 873 pass / 0 fail / 2 environment skips
+full regression: 880 total / 878 pass / 0 fail / 2 environment skips
 Bash syntax: pass
 Typecheck: pass
 Build: pass
@@ -165,13 +184,15 @@ truth.
 
 1. Keep Cloud SQL stopped; the managed-run authorization expired without a successful receipt.
 2. Preserve the green Public Browser Gate as a required public-only check; do not count it as authenticated E2E.
-3. Review actual billing after export latency; obtain a new explicit authorization for any restart or teardown.
-4. Continue corpus, human identity, twelve authenticated browser journeys, external consumer,
+3. Obtain an exact-SHA, bounded, rollback-defined authorization before replacing the legacy public Pages site.
+4. Review actual billing after export latency; obtain a new explicit authorization for any restart or teardown.
+5. Continue corpus, human identity, twelve authenticated browser journeys, external consumer,
    edge/load/SLO, recovery/privacy, protected merge and production-release work.
 
 ## Critical blockers
 
 - `BLK-GCP-LIFECYCLE-074`: the restart authorization expired without a successful managed-run receipt; restart and destructive teardown require new explicit authorization;
+- `BLK-PAGES-DEPLOYMENT-076`: the public URL serves legacy `main`; replacing it with the product requires exact-SHA deployment and rollback authorization;
 - `PQG-OPEN-ENABLEMENT-001`: public gateway lacks authorized ingested evidence, edge
   controls, deployed staging and approval;
 - `BLK-CORPUS-OPS-001`: source rights, durable object storage, scanner and
@@ -195,4 +216,5 @@ truth.
 - Disposable API/system staging is not production.
 - The twelve browser journeys remain blocked and were not counted as passed.
 - Provider-side kits do not prove external interoperability.
+- The current legacy Pages URL is not product deployment evidence.
 - A green feature branch, draft PR or synthetic receipt is not production readiness.

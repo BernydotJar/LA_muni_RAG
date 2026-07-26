@@ -95,6 +95,9 @@ jobs:
       - name: Run EVAL-PUBLIC-BROWSER-GATE-001
         run: npm run eval:public-browser-gate
 
+      - name: Run EVAL-ONLINE-PAGES-RELEASE-001
+        run: npm run eval:online-pages-release
+
       - name: Run EVAL-PUBLIC-QUERY-GATEWAY-001
         run: npm run eval:public-query-gateway
 
