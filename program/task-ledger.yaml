@@ -1,5 +1,5 @@
 schema_version: 1
-updated_at: '2026-07-25T15:25:22Z'
+updated_at: '2026-07-25T23:57:58Z'
 runtime:
   type: yaml_fallback
   farmtable_available: false
@@ -1643,7 +1643,7 @@ tasks:
   - BLK-GCP-LIFECYCLE-074
   result:
     branch: feature/gcp-cloudsql-staging-v1
-    functional_commit: 0edf935c7c012d86b2becae4da563046de167903
+    functional_commit: f2640400b6415fa7e5c12035c9e6d1a70f746cf9
     project_id: rag-municipalidades
     project_number: 1059368783280
     project_specific_default_plan_resources: 0
@@ -1706,12 +1706,14 @@ tasks:
     managed_run_authorization_start: '2026-07-25T13:25:00-06:00'
     managed_run_authorization_end: '2026-07-25T17:25:00-06:00'
     managed_run_authorization_scope: restart_ephemeral_operator_proxy_preflight_20_journeys_cleanup_stop
-    managed_run_authorization_active: true
+    managed_run_authorization_active: false
     managed_run_script: infra/gcp/run-approved-cloudsql-managed-staging.sh
     managed_run_first_attempt_status: failed_safe_transient_startup
     managed_run_first_attempt_artifact: managed-run-20260725T204351Z
     managed_run_first_attempt_cleanup_reported_complete: true
     managed_run_retry_hotfix: users_api_after_runnable_and_transient_preflight_retries
+    managed_run_authorization_status: expired_without_successful_managed_run_receipt
+    remote_ci: Backend 30175249675/30175248512 success / Terraform 30175249662/30175248520 success
   files:
   - infra/gcp/cloudsql-staging/
   - infra/gcp/apply-approved-cloudsql-live-plan.sh
@@ -1750,7 +1752,50 @@ tasks:
   - Real corpus, browser E2E, external consumers, load/HA, merge and deployment remain unproved.
   branch: feature/gcp-cloudsql-staging-v1
   pr: 24
-  ci: terraform_30164809307_30164807345_success_backend_30164809354_30164807333_success
+  ci: terraform_30175249662_30175248520_success_backend_30175249675_30175248512_success
+- id: WS11-PUBLIC-BROWSER-GATE-001
+  workstream: WS-11
+  title: Execute a real-browser gate for public Pages surfaces
+  status: completed_with_limitations
+  owner: /root
+  depends_on:
+  - WS09-PRODUCTION-PUBLIC-SURFACE-001
+  - WS10-EPHEMERAL-STAGING-E2E-ARCH-001
+  blockers:
+  - BLK-AUTHENTICATED-BROWSER-075
+  result:
+    implementation_base_head: f2640400b6415fa7e5c12035c9e6d1a70f746cf9
+    playwright_version: 1.62.0
+    browser: Chromium
+    projects:
+    - chromium-desktop
+    - chromium-mobile
+    executions: 10
+    passed: 10
+    failed: 0
+    public_surface_defects_fixed:
+    - missing_favicon
+    - skip_link_target_not_programmatically_focusable
+    - academy_missing_pages_api_bridge
+    authenticated_browser_journeys_passed: 0
+    authenticated_browser_journeys_blocked: 12
+    remote_ci: pending_publication
+  files:
+  - playwright.config.ts
+  - tests/browser/public-pages.spec.ts
+  - scripts/serve-pages-test.mjs
+  - .github/workflows/public-browser.yml
+  - docs/testing/public-browser-gate.md
+  evidence:
+  - Playwright public gate passed 10/10 in Chromium desktop and Pixel 7 mobile emulation.
+  - EVAL-PUBLIC-BROWSER-GATE-001 passed 5/5.
+  - GitHub Pages artifact verifier passed after favicon, focus target and Academy bridge corrections.
+  - Integrated regression passed 875 total / 873 passed / 0 failed / 2 environment skips; typecheck, build and dependency
+    audit passed.
+  limitations:
+  - No human identity/session or role-aware authenticated UI.
+  - Twelve authenticated journeys remain blocked.
+  - Firefox/WebKit, screen-reader, human WCAG, deployed browser monitoring, merge and production deployment remain unproved.
 blockers:
 - id: BLK-GCP-LIFECYCLE-074
   affects:
@@ -1823,6 +1868,14 @@ blockers:
   residual_limitation: Remote CI still uses PostgreSQL 16/pgvector 0.8.5 and has not been verified on the published feature
     head.
   next_safe_action: Retain the remote CI gate and execute it on the exact published HEAD.
+- id: BLK-AUTHENTICATED-BROWSER-075
+  affects:
+  - WS11-PUBLIC-BROWSER-GATE-001
+  state: open
+  condition: Public Chromium surfaces are verified, but human IdP/BFF/session and authenticated role-aware UI do not exist;
+    twelve authenticated journeys remain blocked.
+  next_safe_action: Approve and implement human identity/session and role-aware UI before enabling the authenticated browser
+    matrix.
 farmtable_equivalent_queries:
   GetReadyTasks:
     result: []

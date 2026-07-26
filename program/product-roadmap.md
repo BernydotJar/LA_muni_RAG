@@ -73,9 +73,11 @@ Exit criterion: isolated managed staging exists with immutable deployment, cost 
 
 ## Phase 6 — Browser E2E and accessibility
 
-1. Enable the twelve blocked browser journeys only after identity, gateway, corpus and deployed staging are stable.
-2. Keep the suite bounded to critical user outcomes.
-3. Run supported browsers, keyboard, screen readers and human WCAG review.
+Completed foundation: Playwright public Pages gate passes 10/10 in Chromium desktop/mobile for responsive layout, keyboard focus, reduced motion, fail-closed behavior, bounded storage and bridge credential stripping. This does not count as authenticated E2E.
+
+1. Enable the twelve blocked authenticated browser journeys only after identity, gateway, corpus and deployed staging are stable.
+2. Keep the authenticated suite bounded to critical user outcomes and separate from the public gate.
+3. Add Firefox/WebKit, screen readers and human WCAG review.
 
 ## Phase 7 — Production operations and release
 

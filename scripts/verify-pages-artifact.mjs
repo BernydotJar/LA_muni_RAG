@@ -6,6 +6,7 @@ const outputDir = join(repoRoot, "dist-pages");
 
 const requiredFiles = [
   "index.html",
+  "favicon.svg",
   "glass-wall.html",
   "procedure-training.html",
   "procedure-training.css",
@@ -74,6 +75,8 @@ for (const pattern of forbiddenRootRelativePatterns) {
 }
 
 if (!indexHtml.includes('src="./pages-api-bridge.js"')) throw new Error("GitHub Pages artifact is missing the fail-closed API bridge before the widget.");
+if (!indexHtml.includes('href="./favicon.svg"') || !indexHtml.includes('main id="contenido" tabindex="-1"')) throw new Error("Homepage is missing its icon or focusable skip-link target.");
+if (!procedureTrainingHtml.includes('src="./pages-api-bridge.js"')) throw new Error("Procedure training page is missing the Pages fail-closed API bridge.");
 if (!indexHtml.includes('src="./pages-security-guard.js"')) throw new Error("GitHub Pages artifact is missing the source-link security guard.");
 if (!indexHtml.includes('src="./procedure-widget-entrypoint.js"')) throw new Error("GitHub Pages artifact is missing the procedure workflow widget entrypoint.");
 if (!indexHtml.includes('href="./product.css"') || !indexHtml.includes('src="./product.js"')) throw new Error("GitHub Pages artifact is missing the modular product assets.");

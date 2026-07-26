@@ -15,3 +15,8 @@ data/raw/
 .restore-artifacts/
 *.pgdump
 *.dump
+
+# Playwright browser diagnostics are CI/local artifacts.
+dist-pages/
+playwright-report/
+test-results/

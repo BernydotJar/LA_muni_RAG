@@ -92,6 +92,9 @@ jobs:
       - name: Run EVAL-PRODUCTION-PUBLIC-SURFACE-001
         run: npm run eval:production-public-surface
 
+      - name: Run EVAL-PUBLIC-BROWSER-GATE-001
+        run: npm run eval:public-browser-gate
+
       - name: Run EVAL-PUBLIC-QUERY-GATEWAY-001
         run: npm run eval:public-query-gateway
 

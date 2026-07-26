@@ -1,8 +1,8 @@
 # LA Muni RAG — Current Program State
 
-Updated: 2026-07-25T21:12:37Z
+Updated: 2026-07-25T23:57:58Z
 
-Program status: **PARTIAL WITH DOCUMENTED BLOCKERS — Feature 074 has a second bounded authorization active for the managed synthetic run from 13:25-17:25 America/Guatemala; destructive teardown, real corpus, human identity and production release remain open**
+Program status: **PARTIAL WITH DOCUMENTED BLOCKERS — Feature 075 adds a real public Chromium browser gate with 10/10 desktop/mobile executions; the managed Cloud SQL restart window expired without a successful run, and authenticated browser journeys, real corpus, destructive teardown and production release remain open**
 
 ## Authoritative checkout
 
@@ -10,7 +10,7 @@ Program status: **PARTIAL WITH DOCUMENTED BLOCKERS — Feature 074 has a second 
 workspace_id: b909e055-62ae-4625-ac13-10947906a08f
 root: /workspace
 branch: feature/gcp-cloudsql-staging-v1
-evidence_baseline_head: 0edf935c7c012d86b2becae4da563046de167903
+evidence_baseline_head: f2640400b6415fa7e5c12035c9e6d1a70f746cf9
 working_tree_at_baseline: clean
 pull_request: 24 draft
 merged: false
@@ -100,18 +100,37 @@ remote state already contained the SQL Admin API and Cloud SQL instance addresse
 operator then changed activation policy from `ALWAYS` to `NEVER`; the update completed at
 2026-07-25T18:42:49.466Z and the instance reports `STOPPED`, PostgreSQL 16, the approved
 tier and labels, and deletion protection enabled. The exception expired on stop. No
-synthetic managed staging journey or destructive teardown is claimed.
+synthetic managed staging journey or destructive teardown is claimed. The second restart
+window expired at 17:25 America/Guatemala after one transient startup failure whose script
+reported complete temporary-user cleanup and return to `STOPPED`; no retry or managed
+journey receipt was captured before expiry.
+
+## Feature 075 — public browser gate v1
+
+Playwright 1.62.0 now executes the generated fail-closed Pages artifact in real Chromium
+for desktop and Pixel 7 mobile emulation. Ten executions verify responsive geometry,
+keyboard skip-link focus, reduced motion, the disabled assistant, Academy fallback and
+bounded learning progress, procedure-workflow HTTP 503 behavior, and Pages bridge
+credential stripping. Unexpected page or console errors fail the gate.
+
+The browser run found and fixed three public-surface defects: missing favicon, a skip-link
+target that could not receive programmatic focus, and Academia missing the Pages API bridge.
+This is public-surface evidence only. The twelve authenticated role-aware journeys remain
+blocked by missing human IdP/BFF/session and authenticated UI. Firefox/WebKit, screen-reader
+and human WCAG review remain pending.
 
 ## Verification
 
 ```text
 EVAL-GCP-CLOUDSQL-STAGING-001: 14/14 pass
-full regression: 870 total / 868 pass / 0 fail / 2 environment skips
+EVAL-PUBLIC-BROWSER-GATE-001: 5/5 pass
+Playwright public browser gate: 10/10 pass (Chromium desktop + mobile)
+full regression: 875 total / 873 pass / 0 fail / 2 environment skips
 Bash syntax: pass
 Typecheck: pass
 Build: pass
-Terraform validation workflows 30164809307 / 30164807345: success
-Backend CI workflows 30164809354 / 30164807333: success
+Terraform validation workflows 30175249662 / 30175248520: success
+Backend CI workflows 30175249675 / 30175248512: success
 project-specific disabled offline plan: 0 resource changes
 live GCS-backed disabled plan: 0 resource changes; resources_enabled=false
 approved offline shape: SQL Admin API plus one protected Cloud SQL instance
@@ -144,23 +163,20 @@ truth.
 
 ## Next execution sequence
 
-1. Execute the authorized managed synthetic run through the fail-closed script before 17:25
-   America/Guatemala; the script must return the instance to `STOPPED`.
-2. Record the 20-journey receipt, cleanup receipt, temporary-user deletion and final stop.
-3. Review actual billing after export latency and record cost, managed-run and teardown
-   receipts without treating the budget as a hard cap.
-4. Continue corpus, human identity, browser E2E, external consumer, edge/load/SLO,
-   recovery/privacy, protected merge and production-release work.
+1. Keep Cloud SQL stopped; the managed-run authorization expired without a successful receipt.
+2. Observe the new Public Browser Gate on the published feature SHA and preserve its public-only scope.
+3. Review actual billing after export latency; obtain a new explicit authorization for any restart or teardown.
+4. Continue corpus, human identity, twelve authenticated browser journeys, external consumer,
+   edge/load/SLO, recovery/privacy, protected merge and production-release work.
 
 ## Critical blockers
 
-- `BLK-GCP-LIFECYCLE-074`: restart for the managed synthetic run is authorized only until 17:25; destructive teardown remains unauthorized;
+- `BLK-GCP-LIFECYCLE-074`: the restart authorization expired without a successful managed-run receipt; restart and destructive teardown require new explicit authorization;
 - `PQG-OPEN-ENABLEMENT-001`: public gateway lacks authorized ingested evidence, edge
   controls, deployed staging and approval;
 - `BLK-CORPUS-OPS-001`: source rights, durable object storage, scanner and
   retention/legal-hold controls are unavailable;
-- no approved human IdP/BFF/session or authenticated role-aware UI; twelve browser
-  journeys remain blocked;
+- public Chromium browser checks pass 10/10, but no approved human IdP/BFF/session or authenticated role-aware UI exists; twelve authenticated journeys remain blocked;
 - external consumer repositories have not executed their suites;
 - no managed Cloud SQL staging execution, observability/SLO, load/HA, coordinated
   recovery or privacy operation exists;

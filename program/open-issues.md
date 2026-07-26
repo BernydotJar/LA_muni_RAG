@@ -1,6 +1,6 @@
 # LA Muni RAG — Open Issues
 
-Updated: 2026-07-25T07:11:21Z
+Updated: 2026-07-25T23:57:58Z
 
 ## Critical
 
@@ -31,13 +31,13 @@ Zero real documents are credited as ingested. Human/platform inputs required:
 
 No approved IdP/OIDC/PKCE/BFF, secure cookie/CSRF, provisioning, logout, revocation, recovery or role-aware authenticated UI exists. All twelve browser journeys remain explicitly blocked.
 
-### GCP-EXECUTION-074 — exact pilot authorized; execution receipt pending
+### GCP-EXECUTION-074 — managed restart window expired without a successful receipt
 
-Authenticated controls, pricing, state and the verifier-valid immutable plan are complete. Remote Terraform state and Cloud SQL operations prove that the exact authorized plan was applied: the SQL Admin API and one protected PostgreSQL 16 instance exist. The instance was stopped before the window ended and now reports `STOPPED` with activation policy `NEVER`. The temporary single-owner exception expired on stop. No managed synthetic run or destructive teardown is claimed.
+Authenticated controls, exact-plan apply and bounded stop are proven. A second restart window produced one transient startup failure; the fail-closed script reported temporary-user cleanup and return to `STOPPED`. The window expired without a successful managed-run receipt. Restart and destructive teardown now require new explicit authorization.
 
 ### PROG-OPS-001 — managed cloud and production operations absent
 
-A protected Cloud SQL PostgreSQL 16 instance now exists and is stopped. Exact-plan apply and bounded stop are proved, but the managed synthetic run and teardown were not executed. No Cloud Run service, queue, Secret Manager configuration, telemetry, load/HA, managed recovery or privacy operation exists.
+A protected Cloud SQL PostgreSQL 16 instance now exists and is stopped. Exact-plan apply and bounded stop are proved, but the managed synthetic run and teardown were not executed; the second restart authorization expired. No Cloud Run service, queue, Secret Manager configuration, telemetry, load/HA, managed recovery or privacy operation exists.
 
 ## High
 
@@ -55,7 +55,7 @@ Database-backed rate limits are defense in depth, not DDoS protection. Cloud Arm
 
 ### ACCESSIBILITY-HUMAN-001 — human accessibility evidence absent
 
-Automated contrast/focus/reduced-motion gates pass; supported-browser, keyboard, screen-reader and human WCAG review do not.
+Automated contrast plus Chromium desktop/mobile focus, keyboard, reduced-motion and fail-closed public-surface gates pass. Firefox/WebKit, screen-reader and human WCAG review do not.
 
 ### OCR-EVAL-001 — OCR production candidate unbenchmarked
 
@@ -75,6 +75,6 @@ Unlimited-OCR remains evaluation-only pending pinned revisions, license/security
 ### BLK-GCP-LIFECYCLE-074 — stopped pilot requires a new lifecycle authorization
 
 The exact authorized instance exists in `STOPPED` state with activation policy `NEVER` and
-deletion protection enabled. A second temporary exception authorizes only the managed
-synthetic run until 17:25 America/Guatemala. Destructive teardown remains unauthorized.
+deletion protection enabled. The second temporary restart exception expired at 17:25 America/Guatemala without a
+successful managed-run receipt. Restart and destructive teardown are unauthorized.
 Storage, backup and related charges may continue while the instance remains.

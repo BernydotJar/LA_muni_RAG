@@ -1,5 +1,5 @@
 schema_version: 1
-generated_at: '2026-07-25T15:25:22Z'
+generated_at: '2026-07-25T23:57:58Z'
 program:
   id: LA-MUNI-RAG-PROD
   objective: Make LA Muni RAG production-ready within its evidence, procedure, workflow, case-tracking, and integration domain.
@@ -1394,7 +1394,7 @@ tasks:
   - BLK-GCP-LIFECYCLE-074
   result:
     branch: feature/gcp-cloudsql-staging-v1
-    functional_commit: 0edf935c7c012d86b2becae4da563046de167903
+    functional_commit: f2640400b6415fa7e5c12035c9e6d1a70f746cf9
     project_id: rag-municipalidades
     project_number: 1059368783280
     region: us-central1
@@ -1422,7 +1422,7 @@ tasks:
     approved_offline_shape: 2 resources
     eval: 14/14
     pull_request: 24 draft
-    remote_ci: Backend 30164809354/30164807333 success / Terraform 30164809307/30164807345 success
+    remote_ci: Backend 30175249675/30175248512 success / Terraform 30175249662/30175248520 success
     corrected_live_resource_plan_verified: true
     corrected_live_resource_plan_verifier_status: valid
     corrected_live_resource_plan_final_authorized: true
@@ -1462,17 +1462,61 @@ tasks:
     managed_run_authorization_start: '2026-07-25T13:25:00-06:00'
     managed_run_authorization_end: '2026-07-25T17:25:00-06:00'
     managed_run_authorization_scope: restart_ephemeral_operator_proxy_preflight_20_journeys_cleanup_stop
-    managed_run_authorization_active: true
+    managed_run_authorization_active: false
     managed_run_script: infra/gcp/run-approved-cloudsql-managed-staging.sh
     managed_run_first_attempt_status: failed_safe_transient_startup
     managed_run_first_attempt_artifact: managed-run-20260725T204351Z
     managed_run_first_attempt_cleanup_reported_complete: true
     managed_run_retry_hotfix: users_api_after_runnable_and_transient_preflight_retries
+    managed_run_authorization_status: expired_without_successful_managed_run_receipt
   limitations:
   - The exact authorized plan was applied and the protected instance exists in STOPPED state with activation policy NEVER.
   - The managed synthetic run and destructive teardown did not occur; restart or teardown requires new explicit authorization.
   - Stopped compute can still incur storage, backup and related charges; actual billing remains pending.
   - Real corpus, browser E2E, external consumers, load/HA, merge and deployment remain unproved.
+- id: WS11-PUBLIC-BROWSER-GATE-001
+  workstream: WS-11
+  title: Execute a real-browser gate for public Pages surfaces
+  status: completed_with_limitations
+  owner: /root
+  depends_on:
+  - WS09-PRODUCTION-PUBLIC-SURFACE-001
+  - WS10-EPHEMERAL-STAGING-E2E-ARCH-001
+  blockers:
+  - BLK-AUTHENTICATED-BROWSER-075
+  result:
+    implementation_base_head: f2640400b6415fa7e5c12035c9e6d1a70f746cf9
+    playwright_version: 1.62.0
+    browser: Chromium
+    projects:
+    - chromium-desktop
+    - chromium-mobile
+    executions: 10
+    passed: 10
+    failed: 0
+    public_surface_defects_fixed:
+    - missing_favicon
+    - skip_link_target_not_programmatically_focusable
+    - academy_missing_pages_api_bridge
+    authenticated_browser_journeys_passed: 0
+    authenticated_browser_journeys_blocked: 12
+    remote_ci: pending_publication
+  files:
+  - playwright.config.ts
+  - tests/browser/public-pages.spec.ts
+  - scripts/serve-pages-test.mjs
+  - .github/workflows/public-browser.yml
+  - docs/testing/public-browser-gate.md
+  evidence:
+  - Playwright public gate passed 10/10 in Chromium desktop and Pixel 7 mobile emulation.
+  - EVAL-PUBLIC-BROWSER-GATE-001 passed 5/5.
+  - GitHub Pages artifact verifier passed after favicon, focus target and Academy bridge corrections.
+  - Integrated regression passed 875 total / 873 passed / 0 failed / 2 environment skips; typecheck, build and dependency
+    audit passed.
+  limitations:
+  - No human identity/session or role-aware authenticated UI.
+  - Twelve authenticated journeys remain blocked.
+  - Firefox/WebKit, screen-reader, human WCAG, deployed browser monitoring, merge and production deployment remain unproved.
 blockers:
 - id: BLK-GCP-LIFECYCLE-074
   affects:
@@ -1549,6 +1593,14 @@ blockers:
   resolution: Fresh PostgreSQL 15.18/pgvector 0.8.5 non-owner SQL gates and compiled ProcedureQuery, ClaimPack, and lifecycle
     smokes passed from a clean database.
   residual_limitation: Remote CI remains unverified on the published feature head.
+- id: BLK-AUTHENTICATED-BROWSER-075
+  affects:
+  - WS11-PUBLIC-BROWSER-GATE-001
+  state: open
+  condition: Public Chromium surfaces are verified, but human IdP/BFF/session and authenticated role-aware UI do not exist;
+    twelve authenticated journeys remain blocked.
+  next_safe_action: Approve and implement human identity/session and role-aware UI before enabling the authenticated browser
+    matrix.
 critical_path:
   parallel_entry:
   - GAP-001

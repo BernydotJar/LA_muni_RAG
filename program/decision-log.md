@@ -366,3 +366,16 @@ API/system journeys, verified cleanup, operator deletion and final stop. The max
 additional compute-and-memory planning amount is USD 0.351. A watchdog and exit trap must
 return the instance to `STOPPED`. Terraform apply, state mutation, deletion-protection
 changes and destructive teardown are excluded.
+
+
+## 2026-07-25T23:57:58Z — Establish a public Playwright gate without unblocking authenticated journeys
+
+Decision: require a separate Playwright gate for the generated public Pages artifact in
+Chromium desktop and mobile. The gate covers responsive geometry, focus/keyboard behavior,
+reduced motion, fail-closed public experiences, bounded Academy progress and Pages bridge
+credential stripping. Browser console/page errors fail the gate.
+
+Decision: do not count these ten public executions toward the twelve authenticated
+role-aware journeys. Human IdP/BFF/session, secure cookies/CSRF and authenticated UI remain
+required before those journeys can become runnable. The expired Cloud SQL restart window
+is not extended by this work and no cloud mutation is authorized.

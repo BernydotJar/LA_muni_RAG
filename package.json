@@ -9,6 +9,10 @@
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "build:pages": "node scripts/build-pages.mjs",
+    "browser:serve": "npm run build:pages && node scripts/serve-pages-test.mjs",
+    "test:browser:public": "playwright test",
+    "test:browser:public:headed": "playwright test --headed",
+    "eval:public-browser-gate": "node --import tsx --test src/__tests__/eval-public-browser-gate-001.test.ts",
     "contracts:validate": "node --import tsx src/cli/validateIntegrationContracts.ts",
     "dev:api": "tsx watch src/server.ts",
     "dev:start": "node scripts/dev-start.mjs",
@@ -86,6 +90,7 @@
     "pg": "^8.22.0"
   },
   "devDependencies": {
+    "@playwright/test": "1.62.0",
     "@types/node": "^26.0.0",
     "@types/pg": "^8.20.0",
     "tsx": "^4.22.4",

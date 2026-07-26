@@ -1,13 +1,13 @@
 {
   "schema_version": "1.13.0",
-  "generated_at": "2026-07-25T18:42:49.466Z",
+  "generated_at": "2026-07-25T23:57:58Z",
   "branch": "feature/gcp-cloudsql-staging-v1",
-  "functional_head": "0edf935c7c012d86b2becae4da563046de167903",
+  "functional_head": "f2640400b6415fa7e5c12035c9e6d1a70f746cf9",
   "source": "observed command outputs only",
   "status": "PARTIAL_WITH_DOCUMENTED_BLOCKERS",
   "tests": {
-    "total": 870,
-    "passed": 868,
+    "total": 875,
+    "passed": 873,
     "failed": 0,
     "skipped": 2
   },
@@ -63,7 +63,9 @@
       "activation_policy": "NEVER",
       "teardown_executed": false,
       "governance_exception_status": "expired_on_stop",
-      "authorization_consumed": true
+      "authorization_consumed": true,
+      "managed_run_authorization_status": "expired_without_successful_managed_run_receipt",
+      "managed_staging_execution": false
     }
   },
   "hard_evals": {
@@ -74,7 +76,8 @@
     "production_public_surface": "33/33",
     "public_query_gateway": "23/23",
     "ephemeral_staging_runner": "14/14",
-    "gcp_cloudsql_staging": "14/14"
+    "gcp_cloudsql_staging": "14/14",
+    "public_browser_gate": "5/5"
   },
   "source_inventory": {
     "total": 17,
@@ -84,21 +87,21 @@
   },
   "publication": {
     "branch": "feature/gcp-cloudsql-staging-v1",
-    "functional_sha": "0edf935c7c012d86b2becae4da563046de167903",
-    "current_ci_status": "backend_success_terraform_success",
+    "functional_sha": "f2640400b6415fa7e5c12035c9e6d1a70f746cf9",
+    "current_ci_status": "backend_success_terraform_success_public_browser_pending_publication",
     "pr": 24,
     "pr_state": "draft",
     "merged": false,
     "deployed": false,
-    "remote_head_sha": "0edf935c7c012d86b2becae4da563046de167903",
+    "remote_head_sha": "f2640400b6415fa7e5c12035c9e6d1a70f746cf9",
     "terraform_ci_conclusion": "success",
     "backend_ci_run_ids": [
-      30164809354,
-      30164807333
+      30175249675,
+      30175248512
     ],
     "terraform_ci_run_ids": [
-      30164809307,
-      30164807345
+      30175249662,
+      30175248520
     ],
     "backend_ci_conclusion": "success"
   },
@@ -119,10 +122,25 @@
   "token_usage": null,
   "remaining_blockers": [
     "Stopped Cloud SQL instance requires a new explicit authorization for restart or destructive teardown.",
-    "No managed synthetic GCP staging execution or teardown receipt.",
+    "No managed synthetic GCP staging execution or teardown receipt; the second restart window expired.",
     "Actual provider billing remains pending; storage and backup charges may continue.",
     "No authorized real corpus or real ingestion.",
-    "No human IdP/BFF/session or authenticated role-aware UI; twelve browser journeys remain blocked.",
+    "Public Chromium browser gate passes 10/10, but no human IdP/BFF/session or authenticated role-aware UI exists; twelve authenticated journeys remain blocked.",
     "No external consumer repository suite, protected merge or production deployment."
-  ]
+  ],
+  "public_browser_gate": {
+    "status": "passed_locally",
+    "playwright_version": "1.62.0",
+    "browser": "Chromium",
+    "projects": [
+      "chromium-desktop",
+      "chromium-mobile"
+    ],
+    "executions": 10,
+    "passed": 10,
+    "failed": 0,
+    "authenticated_browser_journeys_passed": 0,
+    "authenticated_browser_journeys_blocked": 12,
+    "remote_ci": "pending_publication"
+  }
 }

@@ -22,6 +22,9 @@ const procedureEntrypointTag = '<script src="./procedure-widget-entrypoint.js"><
 
 const injectPagesRuntimeScripts = (html) => {
   let patched = html.replaceAll("<!-- PAGES_API_BRIDGE -->", `${bridgeTag}${guardTag}`);
+  if (!/rel=["']icon["']/i.test(patched)) {
+    patched = patched.replace("</head>", '  <link rel="icon" href="./favicon.svg" type="image/svg+xml">\n</head>');
+  }
   if (patched.includes('<script src="./widget.js"></script>') && !patched.includes('src="./pages-api-bridge.js"')) {
     patched = patched.replaceAll('<script src="./widget.js"></script>', `${bridgeTag}${guardTag}<script src="./widget.js"></script>${procedureEntrypointTag}`);
   } else if (patched.includes('<script src="./widget.js"></script>') && !patched.includes(procedureEntrypointTag)) {

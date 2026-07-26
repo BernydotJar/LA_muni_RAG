@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="LA Muni RAG">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#8b5cf6"/>
+      <stop offset="1" stop-color="#22d3ee"/>
+    </linearGradient>
+  </defs>
+  <rect width="64" height="64" rx="16" fill="#070812"/>
+  <path d="M12 48V22h8v18h12v8H12Zm24 0 9-26h8l9 26h-8l-1.5-5h-8.8l-1.5 5H36Zm9.8-12h4.4L48 28.5 45.8 36Z" fill="url(#g)"/>
+  <path d="M10 14h44" stroke="#67e8f9" stroke-width="3" stroke-linecap="round" opacity=".72"/>
+</svg>
