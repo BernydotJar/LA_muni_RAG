@@ -94,6 +94,7 @@ A green synthetic staging receipt is not a release. Production readiness require
 
 ## Feature 076 online Pages release verification
 
+- Published Feature 076 functional SHA: `9a823b2311633f8b682d13d495ccacfb7ac3615f`; Backend CI 30224476425/30224475379, Public Browser Gate 30224476426/30224475314, and Terraform validation 30224476434 succeeded.
 - Current public URL inspection: HTTP 200 but legacy main/Jekyll content, not the product artifact.
 - Missing online controls observed: exact SHA metadata, product navigation, widget, favicon, and focusable product main target; one resource 404.
 - Exact-SHA loopback verification passes in Chromium desktop/mobile.

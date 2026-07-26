@@ -1,8 +1,8 @@
 {
   "schema_version": "1.13.0",
-  "generated_at": "2026-07-26T23:00:13Z",
+  "generated_at": "2026-07-26T23:14:06Z",
   "branch": "feature/gcp-cloudsql-staging-v1",
-  "functional_head": "2232147de0c6869e3f3452cf2d9bf1abe3e14120",
+  "functional_head": "9a823b2311633f8b682d13d495ccacfb7ac3615f",
   "source": "observed command outputs only",
   "status": "PARTIAL_WITH_DOCUMENTED_BLOCKERS",
   "tests": {
@@ -88,25 +88,25 @@
   },
   "publication": {
     "branch": "feature/gcp-cloudsql-staging-v1",
-    "functional_sha": "2232147de0c6869e3f3452cf2d9bf1abe3e14120",
-    "current_ci_status": "backend_success_terraform_success_public_browser_success",
+    "functional_sha": "9a823b2311633f8b682d13d495ccacfb7ac3615f",
+    "current_ci_status": "backend_success_public_browser_success_terraform_success",
     "pr": 24,
     "pr_state": "draft",
     "merged": false,
     "deployed": false,
-    "remote_head_sha": "2232147de0c6869e3f3452cf2d9bf1abe3e14120",
+    "remote_head_sha": "9a823b2311633f8b682d13d495ccacfb7ac3615f",
     "terraform_ci_conclusion": "success",
     "backend_ci_run_ids": [
-      30180490197,
-      30180488753
+      30224476425,
+      30224475379
     ],
     "terraform_ci_run_ids": [
-      30180490141
+      30224476434
     ],
     "backend_ci_conclusion": "success",
     "public_browser_ci_run_ids": [
-      30180490148,
-      30180488768
+      30224476426,
+      30224475314
     ],
     "public_browser_ci_conclusion": "success"
   },

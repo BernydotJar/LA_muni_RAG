@@ -8,6 +8,7 @@
 - [x] Prove the verifier against the loopback Pages artifact.
 - [x] Record that the current public URL serves legacy `main`, not the product artifact.
 - [x] Add EVAL, ADR, risk register, traceability, and runbook.
+- [x] Observe remote Backend CI, Public Browser Gate, and Terraform validation on the published SHA.
 - [ ] Obtain explicit authorization for a bounded public Pages deployment.
 - [ ] Deploy an exact SHA and capture the online verification receipt.
 - [ ] Execute or document rollback to the approved prior public state.

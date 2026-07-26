@@ -1,6 +1,6 @@
 # Feature 076 — Online Pages release verification v1
 
-Status: implemented and locally verified; no deployment executed.
+Status: implemented, published, and remotely verified; no deployment executed.
 
 ## Goal
 

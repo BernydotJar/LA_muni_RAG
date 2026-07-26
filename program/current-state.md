@@ -10,7 +10,7 @@ Program status: **PARTIAL WITH DOCUMENTED BLOCKERS — Feature 076 adds exact-SH
 workspace_id: b909e055-62ae-4625-ac13-10947906a08f
 root: /workspace
 branch: feature/gcp-cloudsql-staging-v1
-evidence_baseline_head: 2232147de0c6869e3f3452cf2d9bf1abe3e14120
+evidence_baseline_head: 9a823b2311633f8b682d13d495ccacfb7ac3615f
 working_tree_at_baseline: clean
 pull_request: 24 draft
 merged: false
@@ -143,6 +143,7 @@ SHA, review window, fail-closed API posture, rollback SHA/ref and rollback owner
 EVAL-GCP-CLOUDSQL-STAGING-001: 14/14 pass
 EVAL-PUBLIC-BROWSER-GATE-001: 5/5 pass
 EVAL-ONLINE-PAGES-RELEASE-001: 5/5 pass
+Feature 076 remote CI: Backend 30224476425 / 30224475379 success; Public Browser 30224476426 / 30224475314 success; Terraform 30224476434 success
 Playwright public browser gate: 10/10 pass (Chromium desktop + mobile); remote runs 30180490148 / 30180488768 success
 full regression: 880 total / 878 pass / 0 fail / 2 environment skips
 Bash syntax: pass

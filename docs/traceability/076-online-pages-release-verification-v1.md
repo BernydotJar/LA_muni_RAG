@@ -10,5 +10,5 @@
 | Desktop/mobile online smoke | `scripts/verify-pages-online.mjs` | local loopback receipt passes both scenarios |
 | Product identity | online title/nav/favicon/main/widget assertions | legacy Jekyll publication is rejected |
 | Runtime/network health | pageerror, console error, request-failure collectors | any collected issue fails verification |
-| Post-deploy enforcement | `.github/workflows/deploy-pages.yml` | deploy output URL and `github.sha` feed verifier job |
+| Post-deploy enforcement | `.github/workflows/deploy-pages.yml` | deploy output URL and `github.sha` feed verifier job; workflow static gate passed remotely |
 | Human deployment boundary | runbook, ADR, Feature 076 spec | no deployment executed by this slice |

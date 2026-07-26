@@ -1,5 +1,5 @@
 schema_version: 1
-updated_at: '2026-07-26T23:00:13Z'
+updated_at: '2026-07-26T23:14:06Z'
 runtime:
   type: yaml_fallback
   farmtable_available: false
@@ -1821,13 +1821,14 @@ tasks:
   - BLK-PAGES-DEPLOYMENT-076
   result:
     branch: feature/gcp-cloudsql-staging-v1
-    functional_commit: pending_publication
+    functional_commit: 9a823b2311633f8b682d13d495ccacfb7ac3615f
     eval: 5/5
     loopback_online_scenarios: 2/2
     current_public_url_http_status: 200
     current_public_artifact: legacy_main_not_product
     current_public_exact_sha_verified: false
     deployment_executed: false
+    remote_ci: backend_30224476425_30224475379_success_public_browser_30224476426_30224475314_success_terraform_30224476434_success
   files:
   - scripts/pages-build-metadata.mjs
   - scripts/pages-build-metadata.d.mts
@@ -1839,10 +1840,15 @@ tasks:
   - Desktop/mobile loopback online verification passed.
   - Current public URL was rejected because build-metadata.json returned 404.
   - 'Integrated regression passed: 880 total / 878 passed / 0 failed / 2 environment skips; typecheck, build and audit passed.'
+  - Published SHA 9a823b2311633f8b682d13d495ccacfb7ac3615f passed Backend CI, Public Browser Gate, and Terraform validation
+    for push and pull request events.
   limitations:
   - No public deployment or rollback receipt.
   - Current public URL still serves legacy main content.
   - Deployment requires explicit exact-SHA and rollback authorization.
+  branch: feature/gcp-cloudsql-staging-v1
+  pr: 24
+  ci: backend_30224476425_30224475379_success_public_browser_30224476426_30224475314_success_terraform_30224476434_success
 blockers:
 - id: BLK-GCP-LIFECYCLE-074
   affects:
