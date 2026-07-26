@@ -80,3 +80,13 @@ A budget or estimate is not a hard spending cap. The exact immutable plan is aut
 ## Release rule
 
 A green synthetic staging receipt is not a release. Production readiness requires immutable evidence for every blocking gate and observation of the deployed revision. No automatic merge, Terraform apply or production deployment is authorized.
+
+
+## Feature 075 public browser gate checkpoint
+
+- Published functional SHA: `2232147de0c6869e3f3452cf2d9bf1abe3e14120`.
+- Public Browser Gate runs 30180490148 and 30180488768 succeeded.
+- Backend CI runs 30180490197 and 30180488753 succeeded; Terraform validation run 30180490141 succeeded.
+- Local browser evidence: 10/10 Chromium desktop/mobile executions; integrated regression 875 total / 873 passed / 0 failed / 2 environment skips.
+- Scope remains public Pages only. Twelve authenticated role-aware browser journeys remain blocked.
+- No merge, deployment, Cloud SQL restart or destructive teardown is authorized by this checkpoint.

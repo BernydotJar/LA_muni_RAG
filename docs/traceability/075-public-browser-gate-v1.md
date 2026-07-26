@@ -12,5 +12,5 @@
 | Bounded browser storage | Academy progress key | exactly one allowed key; no credential/case markers |
 | Workflow failure state | Pages bridge 503 | explicit error, enabled retry control, no fabricated workflow |
 | Credential stripping | configured bridge harness | Authorization, Cookie and custom headers absent upstream |
-| CI enforcement | `.github/workflows/public-browser.yml` | named public browser workflow |
+| CI enforcement | `.github/workflows/public-browser.yml` | Public Browser Gate runs 30180490148 and 30180488768 succeeded on `2232147de0c6` |
 | Authenticated scope preserved | Feature 075 docs and EVAL | twelve authenticated journeys remain blocked |

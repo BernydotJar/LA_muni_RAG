@@ -1,8 +1,8 @@
 {
   "schema_version": "1.17.0",
-  "generated_at": "2026-07-25T23:57:58Z",
+  "generated_at": "2026-07-26T00:13:51Z",
   "branch": "feature/gcp-cloudsql-staging-v1",
-  "functional_head": "f2640400b6415fa7e5c12035c9e6d1a70f746cf9",
+  "functional_head": "2232147de0c6869e3f3452cf2d9bf1abe3e14120",
   "status": "passed_feature074_exact_plan_applied_instance_stopped_with_managed_run_and_teardown_blockers",
   "deterministic": {
     "tests": 875,
@@ -327,29 +327,33 @@
   },
   "publication": {
     "branch": "feature/gcp-cloudsql-staging-v1",
-    "functional_sha": "f2640400b6415fa7e5c12035c9e6d1a70f746cf9",
+    "functional_sha": "2232147de0c6869e3f3452cf2d9bf1abe3e14120",
     "remote_base_sha_verified": "7a00f3ee902cb6dd41c153d3ebfb7c943b50f7a1",
     "prior_ci": {
       "backend_run_id": 29980032034,
       "terraform_run_id": 29980032069,
       "conclusion": "success_on_prior_functional_base"
     },
-    "current_ci_status": "backend_success_terraform_success_public_browser_pending_publication",
+    "current_ci_status": "backend_success_terraform_success_public_browser_success",
     "pr": 24,
     "pr_state": "draft",
     "merged": false,
     "deployed": false,
-    "remote_head_sha": "f2640400b6415fa7e5c12035c9e6d1a70f746cf9",
+    "remote_head_sha": "2232147de0c6869e3f3452cf2d9bf1abe3e14120",
     "terraform_ci_conclusion": "success",
     "backend_ci_conclusion": "success",
     "backend_ci_run_ids": [
-      30175249675,
-      30175248512
+      30180490197,
+      30180488753
     ],
     "terraform_ci_run_ids": [
-      30175249662,
-      30175248520
-    ]
+      30180490141
+    ],
+    "public_browser_ci_run_ids": [
+      30180490148,
+      30180488768
+    ],
+    "public_browser_ci_conclusion": "success"
   },
   "missing_dedicated_evals": [
     "managed_gcp_staging_execution",
@@ -367,7 +371,7 @@
     "No authorized real corpus, external consumer execution, protected merge or production deployment."
   ],
   "public_browser_gate": {
-    "status": "passed_locally",
+    "status": "passed_local_and_remote",
     "playwright_version": "1.62.0",
     "browser": "Chromium",
     "projects": [
@@ -379,6 +383,11 @@
     "failed": 0,
     "authenticated_browser_journeys_passed": 0,
     "authenticated_browser_journeys_blocked": 12,
-    "remote_ci": "pending_publication"
+    "remote_ci": "success",
+    "remote_run_ids": [
+      30180490148,
+      30180488768
+    ],
+    "functional_sha": "2232147de0c6869e3f3452cf2d9bf1abe3e14120"
   }
 }

@@ -1,6 +1,6 @@
 # LA Muni RAG — Current Program State
 
-Updated: 2026-07-25T23:57:58Z
+Updated: 2026-07-26T00:13:51Z
 
 Program status: **PARTIAL WITH DOCUMENTED BLOCKERS — Feature 075 adds a real public Chromium browser gate with 10/10 desktop/mobile executions; the managed Cloud SQL restart window expired without a successful run, and authenticated browser journeys, real corpus, destructive teardown and production release remain open**
 
@@ -10,7 +10,7 @@ Program status: **PARTIAL WITH DOCUMENTED BLOCKERS — Feature 075 adds a real p
 workspace_id: b909e055-62ae-4625-ac13-10947906a08f
 root: /workspace
 branch: feature/gcp-cloudsql-staging-v1
-evidence_baseline_head: f2640400b6415fa7e5c12035c9e6d1a70f746cf9
+evidence_baseline_head: 2232147de0c6869e3f3452cf2d9bf1abe3e14120
 working_tree_at_baseline: clean
 pull_request: 24 draft
 merged: false
@@ -124,13 +124,13 @@ and human WCAG review remain pending.
 ```text
 EVAL-GCP-CLOUDSQL-STAGING-001: 14/14 pass
 EVAL-PUBLIC-BROWSER-GATE-001: 5/5 pass
-Playwright public browser gate: 10/10 pass (Chromium desktop + mobile)
+Playwright public browser gate: 10/10 pass (Chromium desktop + mobile); remote runs 30180490148 / 30180488768 success
 full regression: 875 total / 873 pass / 0 fail / 2 environment skips
 Bash syntax: pass
 Typecheck: pass
 Build: pass
-Terraform validation workflows 30175249662 / 30175248520: success
-Backend CI workflows 30175249675 / 30175248512: success
+Terraform validation workflow 30180490141: success
+Backend CI workflows 30180490197 / 30180488753: success
 project-specific disabled offline plan: 0 resource changes
 live GCS-backed disabled plan: 0 resource changes; resources_enabled=false
 approved offline shape: SQL Admin API plus one protected Cloud SQL instance
@@ -164,7 +164,7 @@ truth.
 ## Next execution sequence
 
 1. Keep Cloud SQL stopped; the managed-run authorization expired without a successful receipt.
-2. Observe the new Public Browser Gate on the published feature SHA and preserve its public-only scope.
+2. Preserve the green Public Browser Gate as a required public-only check; do not count it as authenticated E2E.
 3. Review actual billing after export latency; obtain a new explicit authorization for any restart or teardown.
 4. Continue corpus, human identity, twelve authenticated browser journeys, external consumer,
    edge/load/SLO, recovery/privacy, protected merge and production-release work.

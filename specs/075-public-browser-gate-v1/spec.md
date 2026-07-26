@@ -1,6 +1,6 @@
 # Feature 075 — Public browser gate v1
 
-Status: implemented and verified locally in Chromium desktop and mobile; remote CI pending publication.
+Status: implemented, published and verified in local plus remote Chromium desktop/mobile gates.
 
 ## Goal
 

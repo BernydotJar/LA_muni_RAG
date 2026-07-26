@@ -11,5 +11,5 @@
 - [x] Inject the fail-closed Pages bridge into Academia.
 - [x] Add a separate GitHub Actions browser gate.
 - [x] Add named EVAL, ADR, risk register, traceability and testing runbook.
-- [ ] Observe remote browser-gate success on the published SHA.
+- [x] Observe remote browser-gate success on the published SHA.
 - [ ] Add authenticated browser journeys only after a real IdP/BFF/session contract exists.

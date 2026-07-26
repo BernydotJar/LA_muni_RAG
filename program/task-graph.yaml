@@ -1,5 +1,5 @@
 schema_version: 1
-generated_at: '2026-07-25T23:57:58Z'
+generated_at: '2026-07-26T00:13:51Z'
 program:
   id: LA-MUNI-RAG-PROD
   objective: Make LA Muni RAG production-ready within its evidence, procedure, workflow, case-tracking, and integration domain.
@@ -1500,7 +1500,16 @@ tasks:
     - academy_missing_pages_api_bridge
     authenticated_browser_journeys_passed: 0
     authenticated_browser_journeys_blocked: 12
-    remote_ci: pending_publication
+    remote_ci: success
+    functional_commit: 2232147de0c6869e3f3452cf2d9bf1abe3e14120
+    public_browser_ci_run_ids:
+    - 30180490148
+    - 30180488768
+    backend_ci_run_ids:
+    - 30180490197
+    - 30180488753
+    terraform_ci_run_ids:
+    - 30180490141
   files:
   - playwright.config.ts
   - tests/browser/public-pages.spec.ts
@@ -1513,10 +1522,15 @@ tasks:
   - GitHub Pages artifact verifier passed after favicon, focus target and Academy bridge corrections.
   - Integrated regression passed 875 total / 873 passed / 0 failed / 2 environment skips; typecheck, build and dependency
     audit passed.
+  - Remote Public Browser Gate runs 30180490148/30180488768, Backend CI 30180490197/30180488753 and Terraform 30180490141
+    succeeded on 2232147de0c6869e3f3452cf2d9bf1abe3e14120.
   limitations:
   - No human identity/session or role-aware authenticated UI.
   - Twelve authenticated journeys remain blocked.
   - Firefox/WebKit, screen-reader, human WCAG, deployed browser monitoring, merge and production deployment remain unproved.
+  branch: feature/gcp-cloudsql-staging-v1
+  pr: 24
+  ci: public_browser_30180490148_30180488768_success_backend_30180490197_30180488753_success_terraform_30180490141_success
 blockers:
 - id: BLK-GCP-LIFECYCLE-074
   affects:
