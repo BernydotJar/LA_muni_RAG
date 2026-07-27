@@ -48,7 +48,9 @@ No permissive CORS header is emitted.
 
 ## Accessibility
 
-The shell provides Spanish labels, a skip link, semantic header/navigation/main landmarks, live status regions, visible keyboard focus, responsive navigation, a 320-pixel minimum layout, and reduced-motion handling. Automated checks are complementary; human accessibility review remains required before release.
+The shell provides Spanish labels, a skip link, semantic header/navigation/main landmarks, live status regions, visible keyboard focus, responsive navigation, a 320-pixel minimum layout, and reduced-motion handling. Feature 081 runs anonymous and authenticated audits in Chromium, Firefox and WebKit for unique IDs, interactive names, minimum target size, heading progression, hidden focus containment, current-page state, keyboard skip behavior and 320-pixel overflow.
+
+These checks are complementary. They do not assert WCAG conformance or replace keyboard-only human, screen-reader, zoom/reflow, contrast, forced-colors, cognitive/usability or assistive-technology review before release. See [Human product shell accessibility complement](./human-product-shell-accessibility.md).
 
 ## Verification boundary
 

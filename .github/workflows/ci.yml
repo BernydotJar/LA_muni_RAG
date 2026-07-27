@@ -161,6 +161,9 @@ jobs:
       - name: Run EVAL-HUMAN-DECISION-PACKETS-001
         run: npm run eval:human-decision-packets
 
+      - name: Run EVAL-HUMAN-PRODUCT-SHELL-ACCESSIBILITY-001
+        run: npm run eval:human-product-shell-accessibility
+
       - name: Run EVAL-INGEST-001
         run: npm run eval:ingest
 

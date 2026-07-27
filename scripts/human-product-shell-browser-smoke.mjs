@@ -95,6 +95,95 @@ const browser = await browserType.launch({
   ...(executablePath ? { executablePath } : {}),
 });
 
+const assertAccessibleShell = async (page, options) => {
+  const expectedAuthenticated = options.state === "authenticated";
+  assert.equal(await page.locator("html").getAttribute("lang"), "es");
+  assert.match(await page.title(), /LA Muni RAG/);
+  assert.equal(await page.getByRole("main").count(), 1);
+  assert.equal(
+    await page.getByRole("navigation", { name: "Navegación del producto" }).count(),
+    expectedAuthenticated ? 1 : 0
+  );
+  assert.equal(await page.getByRole("link", { name: "Saltar al espacio de trabajo" }).count(), 1);
+
+  const audit = await page.evaluate(() => {
+    const visible = (element) => {
+      if (!(element instanceof HTMLElement)) return false;
+      const style = getComputedStyle(element);
+      return !element.hidden && style.display !== "none" && style.visibility !== "hidden" &&
+        Boolean(element.offsetWidth || element.offsetHeight || element.getClientRects().length);
+    };
+    const accessibleName = (element) => {
+      const ariaLabel = element.getAttribute("aria-label")?.trim();
+      if (ariaLabel) return ariaLabel;
+      const labelledBy = element.getAttribute("aria-labelledby");
+      if (labelledBy) {
+        const value = labelledBy.split(/\s+/).map((id) => document.getElementById(id)?.textContent?.trim() || "").join(" ").trim();
+        if (value) return value;
+      }
+      if (element instanceof HTMLImageElement && element.alt.trim()) return element.alt.trim();
+      const title = element.getAttribute("title")?.trim();
+      if (title) return title;
+      return element.textContent?.replace(/\s+/g, " ").trim() || "";
+    };
+    const ids = [...document.querySelectorAll("[id]")].map((element) => element.id);
+    const duplicateIds = [...new Set(ids.filter((id, index) => ids.indexOf(id) !== index))];
+    const interactive = [...document.querySelectorAll("a[href], button, input, select, textarea, [role=button], [tabindex]")]
+      .filter((element) => visible(element) && element.getAttribute("tabindex") !== "-1");
+    const unnamedInteractive = interactive
+      .filter((element) => accessibleName(element).length === 0)
+      .map((element) => element.id || element.tagName.toLowerCase());
+    const undersizedTargets = interactive
+      .map((element) => ({ element, rect: element.getBoundingClientRect() }))
+      .filter(({ element, rect }) => !element.classList.contains("skip-link") && (rect.width < 24 || rect.height < 24))
+      .map(({ element, rect }) => ({ id: element.id || element.tagName.toLowerCase(), width: rect.width, height: rect.height }));
+    const headingLevels = [...document.querySelectorAll("h1,h2,h3,h4,h5,h6")]
+      .filter(visible)
+      .map((heading) => Number(heading.tagName.slice(1)));
+    const headingJumps = headingLevels.filter((level, index) => index > 0 && level > headingLevels[index - 1] + 1);
+    const hiddenFocusableVisible = [...document.querySelectorAll("[hidden] a[href], [hidden] button, [hidden] input, [hidden] select, [hidden] textarea, [hidden] [tabindex]")]
+      .filter(visible)
+      .length;
+    return {
+      duplicateIds,
+      unnamedInteractive,
+      undersizedTargets,
+      headingLevels,
+      headingJumps,
+      hiddenFocusableVisible,
+      currentPageCount: [...document.querySelectorAll('[aria-current="page"]')].filter(visible).length,
+      liveRegionCount: document.querySelectorAll('[aria-live="polite"], [role="status"]').length,
+    };
+  });
+  assert.deepEqual(audit.duplicateIds, []);
+  assert.deepEqual(audit.unnamedInteractive, []);
+  assert.deepEqual(audit.undersizedTargets, []);
+  assert.deepEqual(audit.headingJumps, []);
+  assert.equal(audit.hiddenFocusableVisible, 0);
+  assert.ok(audit.liveRegionCount >= 2);
+  assert.equal(audit.currentPageCount, expectedAuthenticated ? 1 : 0);
+
+  const originalViewport = page.viewportSize() || { width: 1280, height: 720 };
+  await page.setViewportSize({ width: 320, height: 900 });
+  await page.waitForTimeout(25);
+  const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
+  assert.ok(overflow <= 1, `document overflowed narrow viewport by ${overflow}px`);
+  await page.setViewportSize(originalViewport);
+
+  if (expectedAuthenticated) {
+    assert.equal(await page.getByRole("heading", { name: "Espacio municipal", level: 1 }).count(), 1);
+    assert.equal(await page.getByRole("button", { name: "Cerrar sesión" }).count(), 1);
+    for (const route of options.visibleRoutes) {
+      const button = page.locator(`[data-route="${route}"]`);
+      assert.equal(await button.isVisible(), true);
+      assert.ok((await button.textContent())?.trim());
+    }
+  } else {
+    assert.equal(await page.getByRole("heading", { name: "Inicia sesión para continuar.", level: 1 }).count(), 1);
+    assert.equal(await page.getByRole("link", { name: "Iniciar sesión" }).count(), 1);
+  }
+};
+
 const runRole = async ({ subject, expectedRole, visible, hidden }) => {
   const context = await browser.newContext({
     locale: "es-GT",
@@ -134,6 +223,7 @@ const runRole = async ({ subject, expectedRole, visible, hidden }) => {
   await page.waitForFunction(() => document.body.dataset.shellState === "unauthenticated");
   assert.equal(await page.locator("#sign-in").isVisible(), true);
   assert.equal(await page.locator("#authenticated-workspace").isVisible(), false);
+  await assertAccessibleShell(page, { state: "unauthenticated", visibleRoutes: [] });
   await page.keyboard.press("Tab");
   assert.equal(await page.locator(".skip-link").evaluate((element) => element === document.activeElement), true);
 
@@ -185,6 +275,7 @@ const runRole = async ({ subject, expectedRole, visible, hidden }) => {
   for (const route of hidden) {
     assert.equal(await page.locator(`[data-route="${route}"]`).isVisible(), false, `${route} should be hidden`);
   }
+  await assertAccessibleShell(page, { state: "authenticated", visibleRoutes: visible });
 
   const storage = await page.evaluate(() => ({
     local: localStorage.length,
@@ -266,6 +357,9 @@ try {
     logout_revocation: true,
     web_storage_credentials: false,
     document_cookie_exposure: false,
+    automated_accessibility_checks: true,
+    narrow_viewport: 320,
+    minimum_target_px: 24,
     productive_authenticated_journeys: "0/12",
   }));
 } finally {

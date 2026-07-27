@@ -87,7 +87,10 @@
     "smoke:human-session-reliability": "npm run build && node scripts/human-session-reliability-harness.mjs",
     "eval:human-session-reliability": "node --import tsx --test --test-concurrency=1 src/__tests__/eval-human-session-reliability-001.test.ts",
     "decision-packets:validate": "node scripts/validate-human-decision-packets.mjs",
-    "eval:human-decision-packets": "node --import tsx --test --test-concurrency=1 src/__tests__/eval-human-decision-packets-001.test.ts"
+    "eval:human-decision-packets": "node --import tsx --test --test-concurrency=1 src/__tests__/eval-human-decision-packets-001.test.ts",
+    "test:human-product-shell-accessibility": "node --import tsx --test --test-concurrency=1 src/__tests__/human-product-shell-accessibility-v1.test.ts",
+    "smoke:human-product-shell-cross-browser": "npm run build && for browser in chromium firefox webkit; do HUMAN_SHELL_BROWSER=$browser node scripts/human-product-shell-browser-smoke.mjs; done",
+    "eval:human-product-shell-accessibility": "node --import tsx --test --test-concurrency=1 src/__tests__/eval-human-product-shell-accessibility-001.test.ts"
   },
   "keywords": [],
   "author": "",

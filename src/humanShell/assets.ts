@@ -28,7 +28,7 @@ export const HUMAN_SHELL_HTML = String.raw`<!doctype html>
     </header>
 
     <aside class="sidebar" aria-label="Navegación del producto">
-      <nav id="product-navigation">
+      <nav id="product-navigation" hidden>
         <button type="button" data-route="overview" aria-current="page">Resumen</button>
         <button type="button" data-route="evidence" data-permission="evidence:query" hidden>Consulta y evidencia</button>
         <button type="button" data-route="procedures" data-permission="procedure:read" hidden>Procedimientos</button>
@@ -283,6 +283,7 @@ export const HUMAN_SHELL_JS = String.raw`(() => {
     }
     const authenticated = state === "authenticated";
     byId("authenticated-workspace").hidden = !authenticated;
+    byId("product-navigation").hidden = !authenticated;
     byId("rotate-session").hidden = !authenticated;
     byId("logout").hidden = !authenticated;
   };
