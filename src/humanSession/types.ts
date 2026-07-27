@@ -1,4 +1,4 @@
-import type { SecurityPermission, SecurityRole } from "../security/rbac.js";
+import type { HumanSecurityRole, SecurityPermission } from "../security/rbac.js";
 
 export type HumanIdentityProviderKind = "oidc" | "test";
 
@@ -59,7 +59,7 @@ export interface HumanMembershipRecord {
   humanSubjectId: string;
   tenantId: string;
   principalId: string;
-  roles: readonly SecurityRole[];
+  roles: readonly HumanSecurityRole[];
 }
 
 export interface HumanSessionRecord extends HumanMembershipRecord {
@@ -169,7 +169,7 @@ export interface AuthenticatedHumanSession {
   tenantId: string;
   principalId: string;
   humanSubjectId: string;
-  roles: readonly SecurityRole[];
+  roles: readonly HumanSecurityRole[];
   permissions: readonly SecurityPermission[];
   issuedAt: Date;
   expiresAt: Date;

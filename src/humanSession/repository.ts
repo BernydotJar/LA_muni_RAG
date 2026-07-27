@@ -1,7 +1,7 @@
 import { randomUUID } from "node:crypto";
 import type { Pool, QueryResultRow } from "pg";
 import { pool as defaultPool } from "../db.js";
-import { isSecurityRole, type SecurityRole } from "../security/rbac.js";
+import { isHumanSecurityRole, type HumanSecurityRole } from "../security/rbac.js";
 import { isCanonicalUuid } from "../security/tenant.js";
 import type {
   ConsumedLoginTransaction,
@@ -35,8 +35,8 @@ const dateValue = (value: unknown): Date | null => {
   return null;
 };
 
-const validRoles = (value: unknown): value is SecurityRole[] =>
-  Array.isArray(value) && value.length > 0 && value.every(isSecurityRole);
+const validRoles = (value: unknown): value is HumanSecurityRole[] =>
+  Array.isArray(value) && value.length > 0 && value.every(isHumanSecurityRole);
 
 const cloneMembership = (record: HumanMembershipRecord): HumanMembershipRecord => ({
   humanSubjectId: record.humanSubjectId.toLowerCase(),

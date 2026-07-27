@@ -41,7 +41,7 @@ const boundedInteger = (
 };
 
 const normalizeReturnPaths = (values: readonly string[] | undefined): readonly string[] => {
-  const paths = values ?? ["/"];
+  const paths = values ?? ["/", "/app"];
   if (paths.length < 1 || paths.length > 16) throw new Error("Human session return paths are invalid");
   const normalized = paths.map((path) => {
     if (

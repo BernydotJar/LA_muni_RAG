@@ -149,6 +149,9 @@ jobs:
       - name: Run EVAL-HUMAN-SESSION-BFF-001
         run: npm run eval:human-session-bff
 
+      - name: Run EVAL-HUMAN-PRODUCT-SHELL-001
+        run: npm run eval:human-product-shell
+
       - name: Run EVAL-INGEST-001
         run: npm run eval:ingest
 

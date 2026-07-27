@@ -65,6 +65,10 @@ describe("human session BFF migration 017", () => {
     }
     assert.match(sql, /principal\.principal_kind = 'user'/);
     assert.match(sql, /array_agg\(membership\.role::text/);
+    assert.ok(
+      [...sql.matchAll(/membership\.role::text <> 'integration_client'/g)].length >= 4,
+      "human membership, creation, authentication and revocation must exclude integration_client"
+    );
     assert.match(sql, /FOR UPDATE/);
     assert.match(sql, /replaced_by_session_id/);
   });

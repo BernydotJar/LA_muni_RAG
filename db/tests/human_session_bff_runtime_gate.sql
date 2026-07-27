@@ -88,12 +88,15 @@ INSERT INTO identity.principals (
   ('22222222-2222-4222-8222-222222222222', 'bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb',
    'user', NULL, 'Opaque human B'),
   ('33333333-3333-4333-8333-333333333333', 'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa',
-   'integration', NULL, 'Integration principal');
+   'integration', NULL, 'Integration principal'),
+  ('aaaaaaaa-1111-4111-8111-111111111111', 'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa',
+   'user', NULL, 'Human with integration-only membership');
 
 INSERT INTO identity.memberships (tenant_id, principal_id, role) VALUES
   ('aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa', '11111111-1111-4111-8111-111111111111', 'viewer'),
   ('bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb', '22222222-2222-4222-8222-222222222222', 'researcher'),
-  ('aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa', '33333333-3333-4333-8333-333333333333', 'integration_client');
+  ('aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa', '33333333-3333-4333-8333-333333333333', 'integration_client'),
+  ('aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa', 'aaaaaaaa-1111-4111-8111-111111111111', 'integration_client');
 
 INSERT INTO identity.human_subjects (
   id, tenant_id, principal_id, provider_id, issuer_sha256, subject_sha256
@@ -103,7 +106,10 @@ INSERT INTO identity.human_subjects (
    digest('https://issuer.example', 'sha256'), digest('opaque-subject-a', 'sha256')),
   ('55555555-5555-4555-8555-555555555555', 'bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb',
    '22222222-2222-4222-8222-222222222222', 'approved-provider',
-   digest('https://issuer.example', 'sha256'), digest('opaque-subject-b', 'sha256'));
+   digest('https://issuer.example', 'sha256'), digest('opaque-subject-b', 'sha256')),
+  ('aaaaaaaa-2222-4222-8222-222222222222', 'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa',
+   'aaaaaaaa-1111-4111-8111-111111111111', 'approved-provider',
+   digest('https://issuer.example', 'sha256'), digest('integration-only-human', 'sha256'));
 
 SET ROLE la_muni_human_runtime_test;
 
@@ -116,6 +122,8 @@ DECLARE
   code_replay BOOLEAN;
   membership_count INTEGER;
   membership_roles TEXT[];
+  integration_only_count INTEGER;
+  integration_only_created BOOLEAN;
   created_session BOOLEAN;
   authenticated_count INTEGER;
   rotated BOOLEAN;
@@ -185,6 +193,30 @@ BEGIN
     )
   ) THEN
     RAISE EXCEPTION 'unknown human subject resolved';
+  END IF;
+
+  SELECT count(*) INTO integration_only_count
+  FROM identity.resolve_human_membership(
+    'approved-provider', digest('https://issuer.example', 'sha256'),
+    digest('integration-only-human', 'sha256')
+  );
+  IF integration_only_count <> 0 THEN
+    RAISE EXCEPTION 'integration-only role was accepted as human membership';
+  END IF;
+
+  integration_only_created := identity.create_human_session(
+    'aaaaaaaa-3333-4333-8333-333333333333',
+    'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa',
+    'aaaaaaaa-1111-4111-8111-111111111111',
+    'aaaaaaaa-2222-4222-8222-222222222222',
+    digest('integration-only-session', 'sha256'),
+    digest('integration-only-csrf', 'sha256'),
+    statement_timestamp(),
+    statement_timestamp() + interval '1 hour',
+    1
+  );
+  IF integration_only_created IS DISTINCT FROM false THEN
+    RAISE EXCEPTION 'integration-only human session was created';
   END IF;
 
   created_session := identity.create_human_session(
@@ -282,7 +314,7 @@ BEGIN
 
   PERFORM set_config('app.tenant_id', 'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa', true);
   SELECT count(*) INTO visible_tenant_a FROM identity.human_subjects;
-  IF visible_tenant_a <> 1 THEN
+  IF visible_tenant_a <> 2 THEN
     RAISE EXCEPTION 'tenant A human subject visibility failed: %', visible_tenant_a;
   END IF;
 

@@ -42,14 +42,15 @@ The environment has a 120-minute maximum TTL, uses loopback-only networking, a f
 
 ## Test identity
 
-Current browser authentication remains blocked. Feature 077 implements a provider-neutral BFF/session foundation and deterministic local test adapter, while productive human identity and the role-aware UI are still absent. Therefore:
+Productive browser authentication remains blocked. Feature 077 implements a provider-neutral BFF/session foundation and deterministic local test adapter; Feature 078 adds a same-origin role-aware shell exercised locally in Chromium. Productive human identity, complete module workflows and real ephemeral browser deployment are still absent. Therefore:
 
 - committed files contain only credential references, never raw values;
 - raw ephemeral service credentials are injected at runtime and persist only as server-side digests;
 - browser Bearer credentials, local-storage tokens, passwords, refresh tokens, private keys, signed URLs, and production endpoints are forbidden;
 - BFF cookies are HttpOnly and only the test adapter may exercise them locally; that adapter is not productive identity evidence;
-- browser journeys remain blocked by `BLK-HUMAN-IDP-BFF-001` and `BLK-AUTHENTICATED-UI-001` (`0/12` authenticated);
-- enabling browser E2E still requires an approved productive IdP adapter/configuration, recovery/MFA and access-review decisions, ephemeral deployment composition, role-aware UI, and real browser execution.
+- the shell rejects browser Bearer, excludes `integration_client`, and keeps session proof out of persistent browser storage;
+- browser journeys remain blocked by productive identity, complete-workflow and real-environment prerequisites (`0/12` authenticated);
+- enabling the official browser matrix still requires an approved productive IdP adapter/configuration, recovery/MFA and access-review decisions, ephemeral deployment composition, complete role-aware workflows, and real external browser execution.
 
 ## Deterministic tenants and fixtures
 

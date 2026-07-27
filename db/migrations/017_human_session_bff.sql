@@ -262,6 +262,7 @@ AS $function$
     AND principal.status = 'active'
     AND principal.principal_kind = 'user'
     AND tenant.status = 'active'
+    AND membership.role::text <> 'integration_client'
   GROUP BY human_subject.id, human_subject.tenant_id, principal.id;
 $function$;
 
@@ -295,6 +296,9 @@ BEGIN
         ON principal.id = human_subject.principal_id
        AND principal.tenant_id = human_subject.tenant_id
       JOIN identity.tenants AS tenant ON tenant.id = human_subject.tenant_id
+      JOIN identity.memberships AS membership
+        ON membership.principal_id = principal.id
+       AND membership.tenant_id = principal.tenant_id
       WHERE human_subject.id = requested_human_subject_id
         AND human_subject.tenant_id = requested_tenant_id
         AND human_subject.principal_id = requested_principal_id
@@ -302,6 +306,7 @@ BEGIN
         AND principal.status = 'active'
         AND principal.principal_kind = 'user'
         AND tenant.status = 'active'
+        AND membership.role::text <> 'integration_client'
     )
   THEN
     RETURN FALSE;
@@ -370,6 +375,7 @@ AS $function$
     AND principal.status = 'active'
     AND principal.principal_kind = 'user'
     AND tenant.status = 'active'
+    AND membership.role::text <> 'integration_client'
   GROUP BY session.id, session.human_subject_id, session.tenant_id,
     session.principal_id, session.issued_at, session.expires_at,
     session.csrf_sha256, session.generation;
@@ -487,6 +493,7 @@ BEGIN
   FROM identity.memberships AS membership
   WHERE membership.tenant_id = revoked_session.tenant_id
     AND membership.principal_id = revoked_session.principal_id
+    AND membership.role::text <> 'integration_client'
   GROUP BY revoked_session.id, revoked_session.human_subject_id,
     revoked_session.tenant_id, revoked_session.principal_id,
     revoked_session.issued_at, revoked_session.expires_at,

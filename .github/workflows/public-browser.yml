@@ -36,6 +36,9 @@ jobs:
       - name: Run public browser gate
         run: npm run test:browser:public
 
+      - name: Run deterministic human product shell smoke
+        run: npm run smoke:human-product-shell-browser
+
       - name: Upload browser diagnostics on failure
         if: failure()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4

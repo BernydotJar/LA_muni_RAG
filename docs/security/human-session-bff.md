@@ -11,6 +11,7 @@ Human browser identity and integration identity are independent mechanisms:
 - `/api/v1/*` service/provider routes retain opaque Bearer authentication and do not treat browser cookies as service credentials;
 - OIDC output is authentication evidence only. `issuer` and `subject` are hashed, mapped to an active local user principal, and authorized through `identity.memberships`;
 - a provider role, tenant, group, email, display name, or other free-form claim cannot grant an application role.
+- `integration_client` is service-only and cannot resolve or persist as a human-session role.
 
 ## Login lifecycle
 
@@ -88,8 +89,16 @@ The default server exposes the routes but returns bounded 503 responses. Enablin
 
 The repository does not infer a productive provider from environment variables. `NODE_ENV=production` rejects the deterministic provider and deterministic protector. No productive IdP, client credential, issuer, redirect registration, discovery document, or JWKS endpoint is committed.
 
-## Remaining security gates
+## Local product shell and remaining security gates
 
-The twelve authenticated browser journeys remain blocked (`0/12` authenticated). The deterministic adapter is executable test evidence only and cannot satisfy the external IdP or role-aware UI prerequisites.
+Feature 078 adds a same-origin `/app` shell that validates the BFF payload against
+closed human-role and permission allowlists, keeps CSRF only in memory, and hides
+denied modules. Chromium deterministic evidence covers `viewer` and `tenant_admin`.
+That shell is a local foundation, not a deployed authenticated product, and backend
+RBAC/RLS remain authoritative.
+
+The twelve productive authenticated browser journeys remain blocked (`0/12`). The
+deterministic adapter and shell smoke cannot satisfy external IdP interoperability,
+real ephemeral deployment, complete module workflows, or human accessibility review.
 
 Before productive use, humans must approve the IdP, tenancy model, MFA/step-up policy, enrollment/recovery, role administration, access review, emergency access, session/failure retention, purge, monitoring, incident response, privacy terms, and deployment topology. The productive adapter must validate discovery metadata, issuer, audience, signature, algorithm, nonce, code exchange endpoint, token time bounds, and transport trust. These requirements are not satisfied by the deterministic test adapter.

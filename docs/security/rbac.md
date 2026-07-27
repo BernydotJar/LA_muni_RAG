@@ -3,8 +3,8 @@
 Status: service/integration RBAC is implemented and enforced by procedure-query,
 EvidenceGapRequest, ClaimPack, ingestion-job, and governed workflow lifecycle v1
 slices. Feature 077 adds a disabled-by-default provider-neutral human BFF
-foundation; productive IdP integration, authenticated UI, and broader API migration
-remain pending.
+foundation and Feature 078 adds a same-origin role-aware shell. Productive IdP
+integration, complete authenticated workflows, and broader API migration remain pending.
 
 ## Authentication
 
@@ -34,8 +34,10 @@ Origin checks, and CSRF/bootstrap proofs. Provider output cannot grant tenant or
 roles: issuer/subject digests must resolve exactly one active local `user`
 principal and its `identity.memberships`. The foundation is disabled unless an
 explicitly approved provider adapter, exact origin, repository, and protector are
-injected. No productive IdP or authenticated browser UI is approved or deployed.
-See [Human session and BFF security contract](./human-session-bff.md).
+injected. Feature 078's `/app` shell consumes only this local permission view and
+never accepts `integration_client` as a human role. No productive IdP or authenticated
+browser deployment is approved. See [Human session and BFF security contract](./human-session-bff.md)
+and [Authenticated role-aware product shell](../product/human-product-shell.md).
 
 ## Roles
 
@@ -54,6 +56,11 @@ The exact application roles are:
 
 They are application roles stored in `identity.memberships`; they are not
 PostgreSQL login roles.
+
+`integration_client` is service-only. It may authenticate through the opaque Bearer
+service boundary but is excluded from human subject resolution, human session
+creation/authentication/revocation, and the `/app` shell. Human sessions use the
+remaining nine roles through the `HumanSecurityRole` contract.
 
 ## Explicit permission map
 

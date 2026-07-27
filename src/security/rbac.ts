@@ -16,6 +16,12 @@ export const SECURITY_ROLES = [
 
 export type SecurityRole = (typeof SECURITY_ROLES)[number];
 
+export type HumanSecurityRole = Exclude<SecurityRole, "integration_client">;
+
+export const HUMAN_SECURITY_ROLES: readonly HumanSecurityRole[] = Object.freeze(
+  SECURITY_ROLES.filter((role): role is HumanSecurityRole => role !== "integration_client")
+);
+
 export const SECURITY_PERMISSIONS = [
   "platform:admin",
   "tenant:manage",
@@ -126,6 +132,10 @@ export const ROLE_PERMISSIONS: Readonly<Record<SecurityRole, readonly SecurityPe
 
 export const isSecurityRole = (value: unknown): value is SecurityRole =>
   typeof value === "string" && (SECURITY_ROLES as readonly string[]).includes(value);
+
+
+export const isHumanSecurityRole = (value: unknown): value is HumanSecurityRole =>
+  typeof value === "string" && (HUMAN_SECURITY_ROLES as readonly string[]).includes(value);
 
 export const isSecurityPermission = (value: unknown): value is SecurityPermission =>
   typeof value === "string" && (SECURITY_PERMISSIONS as readonly string[]).includes(value);

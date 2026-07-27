@@ -69,6 +69,7 @@ import {
   handleHumanSessionBff,
   type HumanSessionBffOptions,
 } from "./humanSession/index.js";
+import { handleHumanShell } from "./humanShell/index.js";
 import { processChatWithDependencies } from "./chat.js";
 import { closeDb } from "./db.js";
 import {
@@ -216,6 +217,7 @@ export const createRequestHandler = (options: ServerOptions = {}): RequestListen
       const url = requestUrl(req);
 
       if (await handleHumanSessionBff(req, res, url, humanSessionDependencies)) return;
+      if (handleHumanShell(req, res, url)) return;
 
       if (url.pathname === PUBLIC_QUERY_ROUTE) {
         if (await handlePublicQueryV1(req, res, url.pathname, publicQueryV1Dependencies)) return;
@@ -342,6 +344,11 @@ export const createRequestHandler = (options: ServerOptions = {}): RequestListen
               humanSessionDependencies.enabled && humanSessionDependencies.approvedProvider,
             bearerAcceptedInBrowser: false,
             csrfRequiredForMutations: true,
+          },
+          humanProductShell: {
+            route: "/app",
+            sameOriginBffRequired: true,
+            browserBearerAccepted: false,
           },
           workflowLifecycleApi: {
             enabled: true,

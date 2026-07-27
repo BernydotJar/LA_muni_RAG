@@ -1,6 +1,6 @@
 import { timingSafeEqual } from "node:crypto";
 import type { IncomingMessage, ServerResponse } from "node:http";
-import { isSecurityRole, permissionsForRoles } from "../security/rbac.js";
+import { isHumanSecurityRole, permissionsForRoles } from "../security/rbac.js";
 import { isCanonicalUuid } from "../security/tenant.js";
 import { digestsEqual, pkceChallenge, sha256Hex } from "./crypto.js";
 import type {
@@ -305,7 +305,7 @@ const validateSessionRecord = (
     !Number.isSafeInteger(record.generation) ||
     record.generation < 1 ||
     record.roles.length < 1 ||
-    !record.roles.every(isSecurityRole)
+    !record.roles.every(isHumanSecurityRole)
   ) {
     return null;
   }
@@ -559,7 +559,7 @@ const handleCallback = async (
     !isCanonicalUuid(membership.tenantId) ||
     !isCanonicalUuid(membership.principalId) ||
     membership.roles.length < 1 ||
-    !membership.roles.every(isSecurityRole)
+    !membership.roles.every(isHumanSecurityRole)
   ) {
     throw new HumanSessionHttpError(403, "human_membership_required", "Tenant membership is required", "membership_rejected", true);
   }
