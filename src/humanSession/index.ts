@@ -1,7 +1,9 @@
 import { randomUUID } from "node:crypto";
+import { performance } from "node:perf_hooks";
 import { randomOpaqueToken } from "./crypto.js";
 import { handleHumanSessionBff } from "./handler.js";
 import { PostgresHumanSessionRepository } from "./repository.js";
+import { NoopHumanSessionTelemetry } from "./telemetry.js";
 import type {
   HumanSessionBffDependencies,
   HumanSessionBffOptions,
@@ -130,6 +132,8 @@ export const createHumanSessionBffDependencies = (
     now: options.now ?? (() => new Date()),
     randomOpaque: options.randomOpaque ?? randomOpaqueToken,
     createUuid: options.createUuid ?? randomUUID,
+    monotonicNow: options.monotonicNow ?? (() => performance.now()),
+    telemetry: options.telemetry ?? new NoopHumanSessionTelemetry(),
   };
 };
 
@@ -155,3 +159,9 @@ export {
 } from "./repository.js";
 export { DeterministicHumanIdentityProvider } from "./testAdapter.js";
 export * from "./types.js";
+
+export {
+  InMemoryHumanSessionTelemetry,
+  NoopHumanSessionTelemetry,
+  type HumanSessionTelemetrySummary,
+} from "./telemetry.js";

@@ -152,6 +152,9 @@ jobs:
       - name: Run EVAL-HUMAN-PRODUCT-SHELL-001
         run: npm run eval:human-product-shell
 
+      - name: Run EVAL-HUMAN-SESSION-RELIABILITY-001
+        run: npm run eval:human-session-reliability
+
       - name: Run EVAL-INGEST-001
         run: npm run eval:ingest
 
@@ -321,6 +324,9 @@ jobs:
         env:
           DATABASE_URL: postgresql://la_muni_human_runtime_test:disposable-human-runtime-password-20260727@127.0.0.1:5432/la_muni_human_session_test
         run: npm run smoke:human-session-bff
+
+      - name: Verify local human session reliability harness
+        run: npm run smoke:human-session-reliability
 
       - name: Verify tenant ingestion migrations and non-owner RLS
         env:

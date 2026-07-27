@@ -89,6 +89,21 @@ The default server exposes the routes but returns bounded 503 responses. Enablin
 
 The repository does not infer a productive provider from environment variables. `NODE_ENV=production` rejects the deterministic provider and deterministic protector. No productive IdP, client credential, issuer, redirect registration, discovery document, or JWKS endpoint is committed.
 
+## Telemetry minimization and reliability evidence
+
+Feature 079 records one route-level event containing only operation, method class,
+outcome class, HTTP status and bounded monotonic duration. It never records tenant,
+principal, subject, session, request, role, permission, state, nonce, code, cookie,
+CSRF, issuer, URL, user-agent, IP address, body, query or error text. The default
+exporter is no-op, and exporter or clock failures cannot alter authentication
+behavior.
+
+Local failure injection covers repository authentication outage, provider exchange
+outage, exporter/clock outage and concurrent rotation. The load harness uses the
+deterministic provider and in-memory repository, so its latency thresholds are local
+regression evidence only and not productive SLOs. No productive exporter, alert,
+dashboard, retention policy, error budget or recovery operation exists.
+
 ## Local product shell and remaining security gates
 
 Feature 078 adds a same-origin `/app` shell that validates the BFF payload against

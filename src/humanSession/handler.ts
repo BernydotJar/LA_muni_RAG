@@ -28,6 +28,63 @@ const OPAQUE_TOKEN = /^[A-Za-z0-9_-]{43,172}$/;
 const AUTHORIZATION_CODE = /^[A-Za-z0-9._~-]{8,512}$/;
 const PROVIDER_VALUE_CONTROL = /[\u0000-\u001f\u007f]/;
 
+
+const TELEMETRY_OPERATION_BY_PATH = new Map([
+  [HUMAN_LOGIN_ROUTE, "login"],
+  [HUMAN_CALLBACK_ROUTE, "callback"],
+  [HUMAN_SESSION_ROUTE, "session_bootstrap"],
+  [HUMAN_SESSION_ROTATE_ROUTE, "session_rotate"],
+  [HUMAN_LOGOUT_ROUTE, "logout"],
+] as const);
+
+const telemetryOutcome = (statusCode: number):
+  | "success"
+  | "denied"
+  | "unavailable"
+  | "server_error" => {
+  if (statusCode >= 200 && statusCode < 400) return "success";
+  if (statusCode === 503) return "unavailable";
+  if (statusCode >= 400 && statusCode < 500) return "denied";
+  return "server_error";
+};
+
+
+const safeMonotonicNow = (dependencies: HumanSessionBffDependencies): number => {
+  try {
+    const value = dependencies.monotonicNow();
+    return Number.isFinite(value) ? value : 0;
+  } catch {
+    return 0;
+  }
+};
+
+const recordTelemetry = (
+  dependencies: HumanSessionBffDependencies,
+  input: {
+    operation: "login" | "callback" | "session_bootstrap" | "session_rotate" | "logout";
+    method: string | undefined;
+    statusCode: number;
+    startedAt: number;
+  }
+): void => {
+  try {
+    const finishedAt = safeMonotonicNow(dependencies);
+    const rawDuration = finishedAt - input.startedAt;
+    const durationMs = Number.isFinite(rawDuration)
+      ? Math.min(60_000, Math.max(0, Number(rawDuration.toFixed(3))))
+      : 60_000;
+    dependencies.telemetry.record({
+      operation: input.operation,
+      method: input.method === "GET" || input.method === "POST" ? input.method : "OTHER",
+      outcome: telemetryOutcome(input.statusCode),
+      statusCode: input.statusCode,
+      durationMs,
+    });
+  } catch {
+    // Telemetry is observational only and can never alter authentication behavior.
+  }
+};
+
 class HumanSessionHttpError extends Error {
   constructor(
     readonly statusCode: 400 | 401 | 403 | 405 | 500 | 503,
@@ -799,6 +856,9 @@ export const handleHumanSessionBff = async (
   dependencies: HumanSessionBffDependencies
 ): Promise<boolean> => {
   if (!HUMAN_SESSION_ROUTES.has(url.pathname)) return false;
+  const operation = TELEMETRY_OPERATION_BY_PATH.get(url.pathname);
+  if (!operation) return false;
+  const startedAt = safeMonotonicNow(dependencies);
   const requestIdValue = requestId(req, dependencies);
   try {
     if (url.pathname === HUMAN_LOGIN_ROUTE) {
@@ -832,6 +892,13 @@ export const handleHumanSessionBff = async (
       requestIdValue,
       cookies
     );
+  } finally {
+    recordTelemetry(dependencies, {
+      operation,
+      method: req.method,
+      statusCode: res.statusCode,
+      startedAt,
+    });
   }
   return true;
 };

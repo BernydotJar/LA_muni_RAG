@@ -82,7 +82,10 @@
     "eval:human-session-bff": "node --import tsx --test --test-concurrency=1 src/__tests__/eval-human-session-bff-001.test.ts",
     "test:human-product-shell": "node --import tsx --test --test-concurrency=1 src/__tests__/human-product-shell-v1.test.ts",
     "smoke:human-product-shell-browser": "npm run build && node scripts/human-product-shell-browser-smoke.mjs",
-    "eval:human-product-shell": "node --import tsx --test --test-concurrency=1 src/__tests__/eval-human-product-shell-001.test.ts"
+    "eval:human-product-shell": "node --import tsx --test --test-concurrency=1 src/__tests__/eval-human-product-shell-001.test.ts",
+    "test:human-session-reliability": "node --import tsx --test --test-concurrency=1 src/__tests__/human-session-reliability-v1.test.ts",
+    "smoke:human-session-reliability": "npm run build && node scripts/human-session-reliability-harness.mjs",
+    "eval:human-session-reliability": "node --import tsx --test --test-concurrency=1 src/__tests__/eval-human-session-reliability-001.test.ts"
   },
   "keywords": [],
   "author": "",

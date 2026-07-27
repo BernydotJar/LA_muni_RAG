@@ -23,6 +23,8 @@ The shell never reads the HttpOnly cookie. It calls the BFF with `credentials: s
 
 The CSRF value is never displayed, persisted, placed in a URL, or written to Web Storage. The shell does not accept or construct an Authorization/Bearer header. Unexpected session payloads fail closed.
 
+Feature 079 telemetry observes only BFF route operation, method class, outcome, status and duration. The shell does not emit identity/session analytics, and no productive telemetry exporter is configured.
+
 ## Role-aware navigation
 
 The BFF returns roles and effective permissions derived from local membership. The shell validates both against closed allowlists and reveals modules only when the corresponding permission exists. Direct hash navigation to a denied module resolves to the overview.
