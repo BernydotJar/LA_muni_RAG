@@ -101,7 +101,7 @@ A green synthetic staging receipt is not a release. Production readiness require
 - The legacy public site is rejected because `build-metadata.json` returns 404.
 - Future Pages deploys build with `github.sha` and run post-deploy Chromium verification against the deployment output URL.
 - Feature 076 deployment authorization was consumed for the exact temporary SHA and observation window.
-- Rollback to the authorized main SHA remains pending and must be verified before closure.
+- Rollback to the authorized main SHA completed and was verified before closure.
 
 
 ## Feature 076 temporary online deployment receipt
@@ -115,3 +115,14 @@ A green synthetic staging receipt is not a release. Production readiness require
 - `PAGES_API_URL`: absent; public assistant remains fail-closed.
 - Rollback target: `4950ba3c24dbe7d9891d5cec8d7ba5f57db3ef9c` at 2026-07-27T01:14:34Z.
 - No merge, backend deployment, Cloud SQL, Terraform or destructive operation occurred.
+
+
+## Feature 076 rollback receipt
+
+- Rollback workflow run: `30229913868` from `main`.
+- Exact rollback SHA: `4950ba3c24dbe7d9891d5cec8d7ba5f57db3ef9c`.
+- Latest `github-pages` deployment SHA: `4950ba3c24dbe7d9891d5cec8d7ba5f57db3ef9c`.
+- Public URL response: HTTP 200.
+- Candidate metadata removed: `build-metadata.json` returned 404 and `b646aa6ce5d7231587ae311f5acb59f84fc35a0e` was absent from public HTML.
+- The `github-pages` environment allowlist contains only `main`.
+- No merge, backend deployment, Cloud SQL restart, Terraform action or destructive infrastructure operation occurred.

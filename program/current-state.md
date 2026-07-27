@@ -1,8 +1,8 @@
 # LA Muni RAG — Current Program State
 
-Updated: 2026-07-27T00:17:05Z
+Updated: 2026-07-27T01:29:50Z
 
-Program status: **PARTIAL WITH DOCUMENTED BLOCKERS — Feature 076 is temporarily deployed and exact-SHA verified online in fail-closed mode; rollback, authenticated browser journeys, real corpus, managed staging, teardown and production release remain open**
+Program status: **PARTIAL WITH DOCUMENTED BLOCKERS — Feature 076 completed its bounded exact-SHA Pages deployment and verified rollback to the prior main publication; authenticated browser journeys, real corpus, managed staging, teardown and production release remain open**
 
 ## Authoritative checkout
 
@@ -136,7 +136,7 @@ The first dispatch was rejected before publication because the `github-pages` en
 allowed only `main`. A temporary policy for the exact feature branch enabled one run and was
 removed immediately after success; the environment again allows only `main`. Deployment run
 `30226975010` succeeded, and both workflow and independent Chromium desktop/mobile verification
-confirmed the exact SHA at https://bernydotjar.github.io/LA_muni_RAG/. Rollback is scheduled for 2026-07-27T01:14:34Z.
+confirmed the exact SHA at https://bernydotjar.github.io/LA_muni_RAG/. Rollback run `30229913868` completed successfully from `main` at exact SHA `4950ba3c24dbe7d9891d5cec8d7ba5f57db3ef9c`. The latest `github-pages` deployment now references that SHA, the public URL returns HTTP 200, `build-metadata.json` returns 404 as expected for the prior publication, and the temporary candidate SHA is absent from public HTML.
 
 ## Verification
 
@@ -186,7 +186,7 @@ truth.
 
 1. Keep Cloud SQL stopped; the managed-run authorization expired without a successful receipt.
 2. Preserve the green Public Browser Gate as a required public-only check; do not count it as authenticated E2E.
-3. Obtain an exact-SHA, bounded, rollback-defined authorization before replacing the legacy public Pages site.
+3. Preserve the completed Feature 076 deployment and rollback receipts; require a new exact-SHA, bounded authorization for any future Pages replacement.
 4. Review actual billing after export latency; obtain a new explicit authorization for any restart or teardown.
 5. Continue corpus, human identity, twelve authenticated browser journeys, external consumer,
    edge/load/SLO, recovery/privacy, protected merge and production-release work.
@@ -194,7 +194,7 @@ truth.
 ## Critical blockers
 
 - `BLK-GCP-LIFECYCLE-074`: the restart authorization expired without a successful managed-run receipt; restart and destructive teardown require new explicit authorization;
-- `BLK-PAGES-DEPLOYMENT-076`: the exact-SHA temporary Pages deployment is active and verified; rollback to the authorized main SHA remains pending;
+- `BLK-PAGES-DEPLOYMENT-076`: closed for this pilot; exact-SHA deployment and rollback to the authorized main SHA are both verified;
 - `PQG-OPEN-ENABLEMENT-001`: public gateway lacks authorized ingested evidence, edge
   controls, deployed staging and approval;
 - `BLK-CORPUS-OPS-001`: source rights, durable object storage, scanner and
