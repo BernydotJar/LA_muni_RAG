@@ -42,13 +42,14 @@ The environment has a 120-minute maximum TTL, uses loopback-only networking, a f
 
 ## Test identity
 
-Current browser authentication remains blocked. The repository has service/integration Bearer credentials, not a human browser session model. Therefore:
+Current browser authentication remains blocked. Feature 077 implements a provider-neutral BFF/session foundation and deterministic local test adapter, while productive human identity and the role-aware UI are still absent. Therefore:
 
 - committed files contain only credential references, never raw values;
-- raw ephemeral credentials are injected at runtime and persist only as server-side digests;
-- browser credentials, local-storage tokens, passwords, session cookies, refresh tokens, private keys, signed URLs, and production endpoints are forbidden;
-- browser journeys remain blocked by `BLK-HUMAN-IDP-BFF-001` and `BLK-AUTHENTICATED-UI-001`;
-- enabling browser E2E requires an approved IdP/OIDC/PKCE/BFF/session design, secure cookies, CSRF, logout, revocation, recovery, and role-aware UI.
+- raw ephemeral service credentials are injected at runtime and persist only as server-side digests;
+- browser Bearer credentials, local-storage tokens, passwords, refresh tokens, private keys, signed URLs, and production endpoints are forbidden;
+- BFF cookies are HttpOnly and only the test adapter may exercise them locally; that adapter is not productive identity evidence;
+- browser journeys remain blocked by `BLK-HUMAN-IDP-BFF-001` and `BLK-AUTHENTICATED-UI-001` (`0/12` authenticated);
+- enabling browser E2E still requires an approved productive IdP adapter/configuration, recovery/MFA and access-review decisions, ephemeral deployment composition, role-aware UI, and real browser execution.
 
 ## Deterministic tenants and fixtures
 

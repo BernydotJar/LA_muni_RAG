@@ -14,7 +14,7 @@ runtime roles: 3
 cloud resources: 0
 ```
 
-The browser journeys remain blocked by `BLK-HUMAN-IDP-BFF-001` and `BLK-AUTHENTICATED-UI-001`. The runner does not convert them into fake API checks.
+The browser journeys remain blocked by `BLK-HUMAN-IDP-BFF-001` and `BLK-AUTHENTICATED-UI-001`. Feature 077's deterministic BFF adapter is local foundation evidence only; the runner does not convert it into fake authenticated browser journeys or productive IdP evidence.
 
 ## Safety contract
 

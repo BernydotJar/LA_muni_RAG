@@ -76,7 +76,10 @@
     "eval:gcp-cloudsql-staging": "node --import tsx --test --test-concurrency=1 src/__tests__/eval-gcp-cloudsql-staging-001.test.ts src/__tests__/gcp-cloudsql-staging-v1.test.ts",
     "gcp:cloudsql:verify-plan": "node --import tsx src/cli/verifyGcpCloudSqlPlan.ts",
     "verify:pages:online": "node scripts/verify-pages-online.mjs",
-    "eval:online-pages-release": "node --import tsx --test src/__tests__/eval-online-pages-release-001.test.ts"
+    "eval:online-pages-release": "node --import tsx --test src/__tests__/eval-online-pages-release-001.test.ts",
+    "test:human-session-bff": "node --import tsx --test --test-concurrency=1 src/__tests__/human-session-bff-v1.test.ts src/__tests__/human-session-bff-migration.test.ts",
+    "smoke:human-session-bff": "node scripts/human-session-bff-postgres-smoke.mjs",
+    "eval:human-session-bff": "node --import tsx --test --test-concurrency=1 src/__tests__/eval-human-session-bff-001.test.ts"
   },
   "keywords": [],
   "author": "",

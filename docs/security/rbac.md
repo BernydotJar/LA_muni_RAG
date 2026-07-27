@@ -1,8 +1,10 @@
 # Identity and RBAC Foundation
 
-Status: implemented and enforced by procedure-query, EvidenceGapRequest,
-ClaimPack, ingestion-job, and governed workflow lifecycle v1 slices; broader API
-migration pending.
+Status: service/integration RBAC is implemented and enforced by procedure-query,
+EvidenceGapRequest, ClaimPack, ingestion-job, and governed workflow lifecycle v1
+slices. Feature 077 adds a disabled-by-default provider-neutral human BFF
+foundation; productive IdP integration, authenticated UI, and broader API migration
+remain pending.
 
 ## Authentication
 
@@ -23,6 +25,17 @@ SHA-256 is suitable here only because credentials are high-entropy random values
 not user-selected passwords. Rotation creates a new digest and revokes the old
 credential. Expiration and revocation are enforced inside the fixed-search-path
 `SECURITY DEFINER` lookup function.
+
+Human browser authentication is a separate boundary. `/auth/*` rejects Bearer
+headers and uses opaque HttpOnly BFF cookies whose raw values are never persisted.
+State, a separate browser binding, nonce, and PKCE S256 bind login; callback and
+session lifecycle use single-use code/state claims, rotation, revocation, exact
+Origin checks, and CSRF/bootstrap proofs. Provider output cannot grant tenant or
+roles: issuer/subject digests must resolve exactly one active local `user`
+principal and its `identity.memberships`. The foundation is disabled unless an
+explicitly approved provider adapter, exact origin, repository, and protector are
+injected. No productive IdP or authenticated browser UI is approved or deployed.
+See [Human session and BFF security contract](./human-session-bff.md).
 
 ## Roles
 

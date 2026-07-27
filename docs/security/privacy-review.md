@@ -1,7 +1,7 @@
 # Privacy review
 
 Status: pre-production review; legal decisions and named owner pending
-Last reviewed: 2026-07-21
+Last reviewed: 2026-07-27
 Technical owner: Product Engineering
 Privacy/Legal owner: pending human assignment
 
@@ -25,6 +25,7 @@ If an integration payload contains internal campaign strategy, voter-level data,
 | Derived evidence | extracted text, chunks, embeddings, citations, contradictions | retrieval and traceability | inherits source and tenant restrictions; not automatically public |
 | Query/case content | question, jurisdiction, limited case facts, missing evidence | answer, assess a procedure, or derive a ClaimPack | may contain personal or confidential data; minimize and do not log bodies by default |
 | Account/integration identity | principal ID, tenant membership, roles, credential digest/status | authentication, authorization, accountability | protected security metadata; raw tokens must not be stored |
+| Human BFF identity/session | provider ID, opaque issuer/subject digests, local principal/membership, state/browser/code/session/CSRF digests, protected nonce/PKCE verifier, expiry/revocation/generation | browser authentication, local authorization, replay/fixation/CSRF defense | Feature 077 local foundation only; no email/name/profile claim is required or stored; productive IdP, lawful vendor terms, notices and retention are unapproved |
 | Feedback and workflow review | rating, type, notes, workflow/step/source references | quality improvement and correction | may identify an operator or case; schema currently sets a 180-day visibility window but no purge job is evidenced |
 | ClaimPack replay state | tenant/principal IDs, key/request digests, validated response, audit ID, expiry | exact replay and abuse control | protected tenant data; request body, Bearer token, brief, copy, and publication assets are excluded |
 | EvidenceGap intake/replay | bounded subject, missing-document need, reason, opaque campaign ref, IDs, response, hashes and audit | track unresolved documentary research and exact replay | protected tenant data; may contain personal/confidential context; no raw key/token or authority claim; retention not approved |
@@ -37,7 +38,8 @@ The source inventory is incomplete and not a full personal-data inventory. Each 
 ## Data minimization rules
 
 - Collect a stable opaque principal ID rather than names, email addresses, or free-form profile data unless a reviewed use case requires them.
-- Derive tenant and role from authenticated server-side state; do not preserve client assertions as trusted identity evidence.
+- Derive tenant and role from authenticated server-side state; do not preserve client or IdP role/tenant assertions as trusted identity evidence.
+- Human BFF audit is limited to tenant/principal/session/request IDs, closed event/outcome/reason values, and bounded aggregate pre-tenant failures. Never persist raw state, nonce, PKCE verifier, authorization code, session/CSRF cookie, issuer, subject, provider token, profile claim, email, or name.
 - Keep query/case facts out of ordinary logs, metric labels, traces, error messages, idempotency keys, and URLs.
 - Hash or otherwise protect credential and idempotency material; never log raw Bearer tokens, database URLs, cookies, or secret-manager references containing values.
 - Store document bytes and extracted content only when source authority, purpose, tenant, confidentiality, version, and provenance are known.
@@ -58,6 +60,7 @@ Retention is not fully approved. The following are decision records, not promise
 | Query/case content | no complete server-side case lifecycle exists | whether content is persisted, purpose, duration, tenant deletion, and legal hold |
 | Feedback | `retention_until` defaults to 180 days and expired rows are excluded from normal reads | physical deletion job, exception/legal hold, and owner approval |
 | Audit/security events | schema/foundation exists but operational retention is not set | minimum/maximum duration, immutable storage, access review, and legal hold |
+| Human login/session state | login/code state is bounded and opportunistically cleaned; sessions expire within eight hours; failure buckets delete entries older than 30 days on write; no scheduled purge/backup-aging proof exists | productive session duration, idle timeout, access review, physical purge, incident hold, backup aging, and provider-account deletion mapping |
 | Idempotency/rate-limit records | ClaimPack and EvidenceGap replay expire after 24 hours and per-principal rate buckets are cleaned opportunistically; no scheduled purge proof exists | shortest operational window, physical purge/backup aging, and collision/investigation needs |
 | EvidenceGap aggregate | immutable `open` request is preserved; no delete/update route exists | purpose, tenant-visible retention, resolution event model, legal hold and deletion exception |
 | Operational logs/traces | centralized service not selected | field allowlist, duration, sampling, regional storage, vendor access, and deletion |
