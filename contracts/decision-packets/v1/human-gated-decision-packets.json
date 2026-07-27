@@ -1,0 +1,127 @@
+{
+  "schema_version": "1.0.0",
+  "project": "LA Muni RAG",
+  "status": "human_decision_required",
+  "production_readiness_claim": false,
+  "generated_date": "2026-07-27",
+  "current_state": {
+    "real_documents_ingested": 0,
+    "real_corpus_retrieval_evaluation": 0,
+    "productive_authenticated_browser_journeys": {
+      "passed": 0,
+      "total": 12
+    },
+    "managed_gcp_staging_receipt_present": false,
+    "cloud_sql": {
+      "state": "STOPPED",
+      "activation_policy": "NEVER",
+      "restart_authorized": false,
+      "apply_authorized": false,
+      "destroy_authorized": false
+    },
+    "productive_idp_selected": false,
+    "productive_telemetry_exporter_selected": false,
+    "protected_merge_completed": false,
+    "production_release_completed": false
+  },
+  "global_prohibited_actions_without_receipt": [
+    "select_or_provision_productive_idp",
+    "create_or_use_productive_idp_credentials",
+    "ingest_real_corpus",
+    "restart_cloud_sql",
+    "apply_or_destroy_cloud_sql",
+    "mutate_terraform",
+    "change_billing",
+    "merge_protected_branch",
+    "publish_or_release_to_production",
+    "claim_production_readiness"
+  ],
+  "packets": [
+    {
+      "packet_id": "HDP-IDP-001",
+      "topic": "productive_human_identity_provider",
+      "document": "docs/decision-packets/080-productive-idp-decision.md",
+      "decision_status": "pending_human_decision",
+      "selected_option": null,
+      "authorized_actions": [],
+      "required_authorities": [
+        "product_owner",
+        "security_owner",
+        "privacy_or_legal_owner",
+        "operations_owner"
+      ],
+      "prohibited_until_receipt": [
+        "provider_selection",
+        "client_registration",
+        "credential_creation",
+        "productive_adapter_configuration",
+        "productive_user_onboarding"
+      ]
+    },
+    {
+      "packet_id": "HDP-CORPUS-001",
+      "topic": "real_municipal_corpus",
+      "document": "docs/decision-packets/080-real-corpus-decision.md",
+      "decision_status": "pending_human_decision",
+      "selected_option": null,
+      "authorized_actions": [],
+      "required_authorities": [
+        "product_owner",
+        "source_or_records_owner",
+        "privacy_or_legal_owner",
+        "security_owner"
+      ],
+      "prohibited_until_receipt": [
+        "source_acquisition",
+        "real_document_ingestion",
+        "real_corpus_evaluation",
+        "publication_of_restricted_content"
+      ]
+    },
+    {
+      "packet_id": "HDP-CLOUDSQL-001",
+      "topic": "cloud_sql_lifecycle",
+      "document": "docs/decision-packets/080-cloud-sql-lifecycle-decision.md",
+      "decision_status": "pending_human_decision",
+      "selected_option": null,
+      "authorized_actions": [],
+      "required_authorities": [
+        "product_owner",
+        "cloud_operations_owner",
+        "security_owner",
+        "billing_owner"
+      ],
+      "prohibited_until_receipt": [
+        "instance_restart",
+        "terraform_apply",
+        "terraform_destroy",
+        "activation_policy_change",
+        "billing_change",
+        "data_or_backup_deletion"
+      ]
+    },
+    {
+      "packet_id": "HDP-PRODUCTION-001",
+      "topic": "production_controls_and_release",
+      "document": "docs/decision-packets/080-production-controls-decision.md",
+      "decision_status": "pending_human_decision",
+      "selected_option": null,
+      "authorized_actions": [],
+      "required_authorities": [
+        "product_owner",
+        "security_owner",
+        "privacy_or_legal_owner",
+        "operations_owner",
+        "release_authority"
+      ],
+      "prohibited_until_receipt": [
+        "production_release",
+        "public_enablement",
+        "protected_merge",
+        "production_readiness_claim",
+        "productive_slo_commitment"
+      ]
+    }
+  ],
+  "receipt_schema": "contracts/decision-packets/v1/human-decision-receipt.schema.json"
+}

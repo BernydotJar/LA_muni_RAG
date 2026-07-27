@@ -56,6 +56,9 @@ jobs:
       - name: Validate source inventory
         run: npm run source-inventory:validate
 
+      - name: Validate human decision packets
+        run: npm run decision-packets:validate
+
       - name: Audit dependencies
         run: npm audit --audit-level=high
 
@@ -154,6 +157,9 @@ jobs:
 
       - name: Run EVAL-HUMAN-SESSION-RELIABILITY-001
         run: npm run eval:human-session-reliability
+
+      - name: Run EVAL-HUMAN-DECISION-PACKETS-001
+        run: npm run eval:human-decision-packets
 
       - name: Run EVAL-INGEST-001
         run: npm run eval:ingest

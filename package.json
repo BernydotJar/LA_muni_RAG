@@ -85,7 +85,9 @@
     "eval:human-product-shell": "node --import tsx --test --test-concurrency=1 src/__tests__/eval-human-product-shell-001.test.ts",
     "test:human-session-reliability": "node --import tsx --test --test-concurrency=1 src/__tests__/human-session-reliability-v1.test.ts",
     "smoke:human-session-reliability": "npm run build && node scripts/human-session-reliability-harness.mjs",
-    "eval:human-session-reliability": "node --import tsx --test --test-concurrency=1 src/__tests__/eval-human-session-reliability-001.test.ts"
+    "eval:human-session-reliability": "node --import tsx --test --test-concurrency=1 src/__tests__/eval-human-session-reliability-001.test.ts",
+    "decision-packets:validate": "node scripts/validate-human-decision-packets.mjs",
+    "eval:human-decision-packets": "node --import tsx --test --test-concurrency=1 src/__tests__/eval-human-decision-packets-001.test.ts"
   },
   "keywords": [],
   "author": "",
