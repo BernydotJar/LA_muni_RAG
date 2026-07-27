@@ -100,5 +100,18 @@ A green synthetic staging receipt is not a release. Production readiness require
 - Exact-SHA loopback verification passes in Chromium desktop/mobile.
 - The legacy public site is rejected because `build-metadata.json` returns 404.
 - Future Pages deploys build with `github.sha` and run post-deploy Chromium verification against the deployment output URL.
-- No deployment is authorized or executed by Feature 076. Workflow dispatch from a feature branch would replace the only public Pages site.
-- Required human gate: exact source SHA, public review window, fail-closed API posture, rollback SHA/ref, and rollback owner.
+- Feature 076 deployment authorization was consumed for the exact temporary SHA and observation window.
+- Rollback to the authorized main SHA remains pending and must be verified before closure.
+
+
+## Feature 076 temporary online deployment receipt
+
+- Authorized source SHA: `b646aa6ce5d7231587ae311f5acb59f84fc35a0e`.
+- First dispatch `30226914441`: rejected before publication by the `github-pages` branch policy.
+- Temporary exact-branch policy: created for one deployment and removed after success; only `main` remains allowed.
+- Successful deployment run: `30226975010`.
+- Public URL: https://bernydotjar.github.io/LA_muni_RAG/
+- Exact-SHA online verification: 2/2 Chromium desktop/mobile, workflow and independent sandbox checks.
+- `PAGES_API_URL`: absent; public assistant remains fail-closed.
+- Rollback target: `4950ba3c24dbe7d9891d5cec8d7ba5f57db3ef9c` at 2026-07-27T01:14:34Z.
+- No merge, backend deployment, Cloud SQL, Terraform or destructive operation occurred.

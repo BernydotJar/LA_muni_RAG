@@ -58,8 +58,10 @@ describe("EVAL-ONLINE-PAGES-RELEASE-001", () => {
       read("docs/decisions/076-online-pages-release-verification-v1.md"),
       read("docs/testing/online-pages-release-verification.md"),
     ]);
-    assert.match(spec, /no deployment executed/i);
+    assert.match(spec, /temporarily deployed and exact-SHA verified online/i);
+    assert.match(spec, /rollback pending/i);
     assert.match(spec, /authenticated browser journey/i);
+    assert.match(spec, /No permanent Pages deployment, merge, production API enablement/i);
     assert.match(decision, /human authorization/i);
     assert.match(runbook, /rollback SHA\/ref/);
   });

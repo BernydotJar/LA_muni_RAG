@@ -41,13 +41,12 @@ A protected Cloud SQL PostgreSQL 16 instance now exists and is stopped. Exact-pl
 
 ## High
 
-### PAGES-ONLINE-DRIFT-001 — public Pages serves legacy main, not the product artifact
+### PAGES-ONLINE-ROLLBACK-001 — temporary exact-SHA Pages deployment awaits rollback
 
-The public repository URL returns HTTP 200 but currently serves a legacy Jekyll-style main-page
-publication. It does not expose the product navigation, widget, favicon, focusable product main
-target, exact SHA marker or `build-metadata.json`; one resource request returns 404. Feature 076
-now rejects this state. Replacing the public site requires explicit exact-SHA deployment and
-rollback authorization. No deployment has been executed.
+The legacy publication was rejected, and exact SHA `b646aa6ce5d7231587ae311f5acb59f84fc35a0e` is now temporarily deployed
+at https://bernydotjar.github.io/LA_muni_RAG/ with `PAGES_API_URL` absent. Deployment run `30226975010` and independent Chromium
+desktop/mobile checks passed. The temporary branch policy was removed after deployment. Rollback
+to `4950ba3c24dbe7d9891d5cec8d7ba5f57db3ef9c` is scheduled for 2026-07-27T01:14:34Z and remains the active gate.
 
 ### E2E-OPEN-CONSUMERS-003 — external consumer suites absent
 

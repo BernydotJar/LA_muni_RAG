@@ -11,4 +11,8 @@
 | Product identity | online title/nav/favicon/main/widget assertions | legacy Jekyll publication is rejected |
 | Runtime/network health | pageerror, console error, request-failure collectors | any collected issue fails verification |
 | Post-deploy enforcement | `.github/workflows/deploy-pages.yml` | deploy output URL and `github.sha` feed verifier job; workflow static gate passed remotely |
-| Human deployment boundary | runbook, ADR, Feature 076 spec | no deployment executed by this slice |
+| Human deployment boundary | formal exact-SHA authorization and workflow receipt | temporary deployment verified; rollback pending |
+
+| Temporary public deployment | workflow run `30226975010` | exact SHA `b646aa6ce5d7231587ae311f5acb59f84fc35a0e`, 2/2 online Chromium pass |
+| Environment policy restoration | GitHub environment policy API | only `main` remains allowed after deployment |
+| Rollback | scheduled for 2026-07-27T01:14:34Z | pending exact `4950ba3c24dbe7d9891d5cec8d7ba5f57db3ef9c` receipt |

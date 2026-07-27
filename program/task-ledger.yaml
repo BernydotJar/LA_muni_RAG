@@ -1,5 +1,5 @@
 schema_version: 1
-updated_at: '2026-07-26T23:14:06Z'
+updated_at: '2026-07-27T00:17:55Z'
 runtime:
   type: yaml_fallback
   farmtable_available: false
@@ -1821,14 +1821,21 @@ tasks:
   - BLK-PAGES-DEPLOYMENT-076
   result:
     branch: feature/gcp-cloudsql-staging-v1
-    functional_commit: 9a823b2311633f8b682d13d495ccacfb7ac3615f
+    functional_commit: b646aa6ce5d7231587ae311f5acb59f84fc35a0e
     eval: 5/5
     loopback_online_scenarios: 2/2
     current_public_url_http_status: 200
-    current_public_artifact: legacy_main_not_product
-    current_public_exact_sha_verified: false
-    deployment_executed: false
-    remote_ci: backend_30224476425_30224475379_success_public_browser_30224476426_30224475314_success_terraform_30224476434_success
+    current_public_artifact: temporary_exact_sha_product
+    current_public_exact_sha_verified: true
+    deployment_executed: true
+    deployment_run_id: 30226975010
+    public_online_scenarios: 2/2
+    api_configured: false
+    temporary_environment_policy_removed: true
+    rollback_sha: 4950ba3c24dbe7d9891d5cec8d7ba5f57db3ef9c
+    rollback_due_at: '2026-07-27T01:14:34Z'
+    rollback_status: scheduled
+    remote_ci: backend_30224836298_30224834914_success_public_browser_30224836291_30224834919_success_terraform_30224836307_success
   files:
   - scripts/pages-build-metadata.mjs
   - scripts/pages-build-metadata.d.mts
@@ -1838,17 +1845,18 @@ tasks:
   evidence:
   - Exact-SHA artifact build and artifact verification passed.
   - Desktop/mobile loopback online verification passed.
-  - Current public URL was rejected because build-metadata.json returned 404.
+  - The legacy public URL was rejected before deployment because build-metadata.json returned 404.
+  - The first dispatch was rejected before publication by the github-pages branch policy.
+  - A temporary exact-branch environment policy allowed one deployment and was removed after success.
+  - Deployment run 30226975010 and independent desktop/mobile online verification passed for the exact SHA.
   - 'Integrated regression passed: 880 total / 878 passed / 0 failed / 2 environment skips; typecheck, build and audit passed.'
-  - Published SHA 9a823b2311633f8b682d13d495ccacfb7ac3615f passed Backend CI, Public Browser Gate, and Terraform validation
-    for push and pull request events.
   limitations:
-  - No public deployment or rollback receipt.
-  - Current public URL still serves legacy main content.
-  - Deployment requires explicit exact-SHA and rollback authorization.
+  - Rollback to the authorized main SHA is scheduled but not yet verified.
+  - PAGES_API_URL is absent and the public assistant remains fail-closed.
+  - No authenticated browser, backend, merge, or production-release claim is made.
   branch: feature/gcp-cloudsql-staging-v1
   pr: 24
-  ci: backend_30224476425_30224475379_success_public_browser_30224476426_30224475314_success_terraform_30224476434_success
+  ci: backend_30224836298_30224834914_success_public_browser_30224836291_30224834919_success_terraform_30224836307_success
 blockers:
 - id: BLK-GCP-LIFECYCLE-074
   affects:
@@ -1932,10 +1940,10 @@ blockers:
 - id: BLK-PAGES-DEPLOYMENT-076
   affects:
   - WS11-ONLINE-PAGES-RELEASE-001
-  state: open
-  condition: The repository has one public Pages site; a feature-branch dispatch would replace the current legacy publication.
-  next_safe_action: Obtain explicit authorization tied to the exact source SHA, review window, fail-closed API posture, rollback
-    SHA/ref and rollback owner.
+  state: rollback_pending
+  condition: The exact-SHA temporary public deployment is active and verified; rollback to the authorized main SHA remains pending.
+  next_safe_action: At 2026-07-27T01:14:34Z dispatch the Pages workflow for the exact rollback SHA, verify the deployment receipt
+    and public response, and record closure.
 farmtable_equivalent_queries:
   GetReadyTasks:
     result: []

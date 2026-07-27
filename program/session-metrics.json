@@ -1,6 +1,6 @@
 {
   "schema_version": "1.13.0",
-  "generated_at": "2026-07-26T23:14:06Z",
+  "generated_at": "2026-07-27T00:17:05Z",
   "branch": "feature/gcp-cloudsql-staging-v1",
   "functional_head": "9a823b2311633f8b682d13d495ccacfb7ac3615f",
   "source": "observed command outputs only",
@@ -89,12 +89,12 @@
   "publication": {
     "branch": "feature/gcp-cloudsql-staging-v1",
     "functional_sha": "9a823b2311633f8b682d13d495ccacfb7ac3615f",
-    "current_ci_status": "backend_success_public_browser_success_terraform_success",
+    "current_ci_status": "backend_success_public_browser_success_terraform_success_temporary_pages_deployment_active",
     "pr": 24,
     "pr_state": "draft",
     "merged": false,
     "deployed": false,
-    "remote_head_sha": "9a823b2311633f8b682d13d495ccacfb7ac3615f",
+    "remote_head_sha": "b646aa6ce5d7231587ae311f5acb59f84fc35a0e",
     "terraform_ci_conclusion": "success",
     "backend_ci_run_ids": [
       30224476425,
@@ -108,7 +108,17 @@
       30224476426,
       30224475314
     ],
-    "public_browser_ci_conclusion": "success"
+    "public_browser_ci_conclusion": "success",
+    "pages_temporary_deployment": {
+      "sha": "b646aa6ce5d7231587ae311f5acb59f84fc35a0e",
+      "run_id": 30226975010,
+      "url": "https://bernydotjar.github.io/LA_muni_RAG/",
+      "online_scenarios": "2/2",
+      "api_configured": false,
+      "rollback_sha": "4950ba3c24dbe7d9891d5cec8d7ba5f57db3ef9c",
+      "rollback_due_at": "2026-07-27T01:14:34Z",
+      "rollback_status": "scheduled"
+    }
   },
   "dependency_audit": {
     "all_vulnerabilities": 0,
@@ -132,7 +142,7 @@
     "No authorized real corpus or real ingestion.",
     "Public Chromium browser gate passes 10/10, but no human IdP/BFF/session or authenticated role-aware UI exists; twelve authenticated journeys remain blocked.",
     "No external consumer repository suite, protected merge or production deployment.",
-    "Public Pages still serves legacy main content; exact-SHA deployment and rollback require explicit authorization."
+    "Temporary exact-SHA Pages deployment is active; rollback to the authorized main SHA is scheduled and must be verified."
   ],
   "public_browser_gate": {
     "status": "passed_local_and_remote",

@@ -1,8 +1,8 @@
 # LA Muni RAG — Current Program State
 
-Updated: 2026-07-26T23:00:13Z
+Updated: 2026-07-27T00:17:05Z
 
-Program status: **PARTIAL WITH DOCUMENTED BLOCKERS — Feature 076 adds exact-SHA online Pages verification; the current public URL still serves a legacy main publication, and deployment authorization, authenticated browser journeys, real corpus, managed staging, teardown and production release remain open**
+Program status: **PARTIAL WITH DOCUMENTED BLOCKERS — Feature 076 is temporarily deployed and exact-SHA verified online in fail-closed mode; rollback, authenticated browser journeys, real corpus, managed staging, teardown and production release remain open**
 
 ## Authoritative checkout
 
@@ -10,7 +10,7 @@ Program status: **PARTIAL WITH DOCUMENTED BLOCKERS — Feature 076 adds exact-SH
 workspace_id: b909e055-62ae-4625-ac13-10947906a08f
 root: /workspace
 branch: feature/gcp-cloudsql-staging-v1
-evidence_baseline_head: 9a823b2311633f8b682d13d495ccacfb7ac3615f
+evidence_baseline_head: b646aa6ce5d7231587ae311f5acb59f84fc35a0e
 working_tree_at_baseline: clean
 pull_request: 24 draft
 merged: false
@@ -127,15 +127,16 @@ metadata before upload. A new desktop/mobile Chromium verifier rejects insecure 
 stale or wrong SHAs, missing product navigation, browser/runtime errors, failed requests and
 widget/API configuration drift.
 
-The current public URL was inspected on 2026-07-26 and returned HTTP 200, but it served the
-legacy Jekyll-style `main` publication rather than the product artifact: no build metadata,
-product navigation, widget, favicon or focusable product main target was present, and the page
-emitted one resource 404. The exact-SHA verifier correctly rejected it because
-`build-metadata.json` returned 404. No deployment was executed.
+The previous public URL served a legacy Jekyll-style `main` publication and was correctly
+rejected because `build-metadata.json` returned 404. Formal authorization then permitted a
+60-minute deployment of exact SHA `b646aa6ce5d7231587ae311f5acb59f84fc35a0e` with `PAGES_API_URL` absent and rollback to
+`4950ba3c24dbe7d9891d5cec8d7ba5f57db3ef9c`.
 
-A future workflow-dispatch deployment from this feature branch would replace the repository's
-only public Pages site. It therefore requires explicit authorization tied to the exact source
-SHA, review window, fail-closed API posture, rollback SHA/ref and rollback owner.
+The first dispatch was rejected before publication because the `github-pages` environment
+allowed only `main`. A temporary policy for the exact feature branch enabled one run and was
+removed immediately after success; the environment again allows only `main`. Deployment run
+`30226975010` succeeded, and both workflow and independent Chromium desktop/mobile verification
+confirmed the exact SHA at https://bernydotjar.github.io/LA_muni_RAG/. Rollback is scheduled for 2026-07-27T01:14:34Z.
 
 ## Verification
 
@@ -143,7 +144,7 @@ SHA, review window, fail-closed API posture, rollback SHA/ref and rollback owner
 EVAL-GCP-CLOUDSQL-STAGING-001: 14/14 pass
 EVAL-PUBLIC-BROWSER-GATE-001: 5/5 pass
 EVAL-ONLINE-PAGES-RELEASE-001: 5/5 pass
-Feature 076 remote CI: Backend 30224476425 / 30224475379 success; Public Browser 30224476426 / 30224475314 success; Terraform 30224476434 success
+Feature 076 final CI: Backend 30224836298 / 30224834914 success; Public Browser 30224836291 / 30224834919 success; Terraform 30224836307 success
 Playwright public browser gate: 10/10 pass (Chromium desktop + mobile); remote runs 30180490148 / 30180488768 success
 full regression: 880 total / 878 pass / 0 fail / 2 environment skips
 Bash syntax: pass
@@ -193,7 +194,7 @@ truth.
 ## Critical blockers
 
 - `BLK-GCP-LIFECYCLE-074`: the restart authorization expired without a successful managed-run receipt; restart and destructive teardown require new explicit authorization;
-- `BLK-PAGES-DEPLOYMENT-076`: the public URL serves legacy `main`; replacing it with the product requires exact-SHA deployment and rollback authorization;
+- `BLK-PAGES-DEPLOYMENT-076`: the exact-SHA temporary Pages deployment is active and verified; rollback to the authorized main SHA remains pending;
 - `PQG-OPEN-ENABLEMENT-001`: public gateway lacks authorized ingested evidence, edge
   controls, deployed staging and approval;
 - `BLK-CORPUS-OPS-001`: source rights, durable object storage, scanner and
@@ -217,5 +218,5 @@ truth.
 - Disposable API/system staging is not production.
 - The twelve browser journeys remain blocked and were not counted as passed.
 - Provider-side kits do not prove external interoperability.
-- The current legacy Pages URL is not product deployment evidence.
+- A temporary exact-SHA Pages deployment is not a protected merge or production-release approval.
 - A green feature branch, draft PR or synthetic receipt is not production readiness.

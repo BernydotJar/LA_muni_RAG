@@ -1,6 +1,6 @@
 # Feature 076 — Online Pages release verification v1
 
-Status: implemented, published, and remotely verified; no deployment executed.
+Status: temporarily deployed and exact-SHA verified online; rollback pending.
 
 ## Goal
 
@@ -24,5 +24,5 @@ smoke must reject stale, legacy, partial, or mismatched publications.
 
 ## Non-goals
 
-No Pages deployment, merge, production API enablement, Cloud SQL restart, Terraform mutation,
+No permanent Pages deployment, merge, production API enablement, Cloud SQL restart, Terraform mutation,
 real-corpus claim, authenticated browser journey, OS Electoral implementation, or Content Agency implementation.
