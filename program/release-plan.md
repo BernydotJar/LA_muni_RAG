@@ -1,31 +1,29 @@
 # LA Muni RAG — Release Plan
 
-Updated: 2026-07-23T05:45:00Z
+Updated: 2026-07-27T18:31:32Z
 
 ## Current release state
 
 ```text
 functional_branch: feature/gcp-cloudsql-staging-v1
-functional_sha: afa0a427080ed7b9555a9ee5a3c7c77d9a2067cd
-remote_program_checkpoint_sha: 5e265e41fe313136c49ebdeedd53a86a61b6f718
-remote_head_sha: 5e265e41fe313136c49ebdeedd53a86a61b6f718
-push_status: published_through_program_checkpoint
-remote_base_sha_verified: 7a00f3ee902cb6dd41c153d3ebfb7c943b50f7a1
-prior_backend_ci: run 29980032034 success
-prior_terraform_ci: run 29980032069 success
-pull_request: 24 draft
+remote_head_sha: 17a6e0cbc7f58a14d1d22497dc324c5448632c54
+working_tree_at_handoff: clean
+push_status: published_and_aligned
+pull_request: 24 draft, open, mergeable, CLEAN
 merged_to_main: false
-gcp_project_id_supplied: rag-municipalidades
-gcp_project_number_supplied: 1059368783280
-repository_created_project: false
-cloud_resources_created: false
-billable_actions: 0
-cost_generated: USD 0
-cloud_staging_deployed: false
-provider_side_staging_executed: true
-gateway_enabled: false
+cloud_sql_instance_created: true
+cloud_sql_instance_state: STOPPED
+cloud_sql_activation_policy: NEVER
+terraform_apply_executed: true
+managed_cloud_staging_executed: false
+cloud_sql_teardown_executed: false
+public_browser_gate: 10/10 Chromium desktop/mobile
+online_pages_exact_sha_pilot: completed_and_verified
+online_pages_rollback: completed_to_4950ba3c24dbe7d9891d5cec8d7ba5f57db3ef9c
 pages_api_bound: false
-browser_e2e_executed: false
+human_session_bff: absent
+authenticated_browser_journeys: 0/12 blocked
+real_documents_ingested: 0
 production_deployed: false
 observation_window: none
 ```

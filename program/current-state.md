@@ -1,6 +1,6 @@
 # LA Muni RAG — Current Program State
 
-Updated: 2026-07-27T01:29:50Z
+Updated: 2026-07-27T18:31:32Z
 
 Program status: **PARTIAL WITH DOCUMENTED BLOCKERS — Feature 076 completed its bounded exact-SHA Pages deployment and verified rollback to the prior main publication; authenticated browser journeys, real corpus, managed staging, teardown and production release remain open**
 
@@ -10,7 +10,7 @@ Program status: **PARTIAL WITH DOCUMENTED BLOCKERS — Feature 076 completed its
 workspace_id: b909e055-62ae-4625-ac13-10947906a08f
 root: /workspace
 branch: feature/gcp-cloudsql-staging-v1
-evidence_baseline_head: b646aa6ce5d7231587ae311f5acb59f84fc35a0e
+evidence_baseline_head: 17a6e0cbc7f58a14d1d22497dc324c5448632c54
 working_tree_at_baseline: clean
 pull_request: 24 draft
 merged: false
@@ -136,7 +136,9 @@ The first dispatch was rejected before publication because the `github-pages` en
 allowed only `main`. A temporary policy for the exact feature branch enabled one run and was
 removed immediately after success; the environment again allows only `main`. Deployment run
 `30226975010` succeeded, and both workflow and independent Chromium desktop/mobile verification
-confirmed the exact SHA at https://bernydotjar.github.io/LA_muni_RAG/. Rollback run `30229913868` completed successfully from `main` at exact SHA `4950ba3c24dbe7d9891d5cec8d7ba5f57db3ef9c`. The latest `github-pages` deployment now references that SHA, the public URL returns HTTP 200, `build-metadata.json` returns 404 as expected for the prior publication, and the temporary candidate SHA is absent from public HTML.
+confirmed the exact SHA at https://bernydotjar.github.io/LA_muni_RAG/. Rollback run `30229913868` completed successfully from `main` at exact SHA `4950ba3c24dbe7d9891d5cec8d7ba5f57db3ef9c`. The latest `github-pages` deployment now references that SHA, the public URL returns HTTP 200, `build-metadata.json` returns 404 as expected for the prior publication, and the temporary candidate SHA is absent from public HTML. The product owner later reported completing the requested manual smoke review. This is user-attested manual acceptance only, not a structured WCAG, screen-reader, legal, authenticated-session or real-corpus evaluation.
+
+The continuation contract is persisted at `docs/handoffs/2026-07-27-development-completion-handoff.md`; the recommended first increment is a provider-neutral human session/BFF foundation that reuses existing service identity, tenant and RBAC controls.
 
 ## Verification
 

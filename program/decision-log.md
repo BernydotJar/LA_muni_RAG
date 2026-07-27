@@ -379,3 +379,10 @@ Decision: do not count these ten public executions toward the twelve authenticat
 role-aware journeys. Human IdP/BFF/session, secure cookies/CSRF and authenticated UI remain
 required before those journeys can become runnable. The expired Cloud SQL restart window
 is not extended by this work and no cloud mutation is authorized.
+
+
+## 2026-07-27T18:31:32Z — Hand off completion work through a repository-native closed loop
+
+Decision: persist the next-agent execution contract in `docs/handoffs/2026-07-27-development-completion-handoff.md` rather than relying on chat context. The handoff reconstructs verified Cloud SQL, public-browser, exact-SHA deployment and rollback evidence; records the product owner's manual smoke review as user-attested evidence with explicit limitations; and selects a provider-neutral human session/BFF foundation as the next critical-path increment.
+
+Decision: keep merge, public deployment, Cloud SQL lifecycle, production IdP provisioning, real-corpus acquisition and destructive operations human-gated. The next agent may implement and test local provider-neutral session interfaces and synthetic adapters, but may not claim approved human identity or authenticated E2E solely from those adapters.

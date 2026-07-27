@@ -1,5 +1,5 @@
 schema_version: 1
-generated_at: '2026-07-27T00:17:55Z'
+generated_at: '2026-07-27T18:31:32Z'
 program:
   id: LA-MUNI-RAG-PROD
   objective: Make LA Muni RAG production-ready within its evidence, procedure, workflow, case-tracking, and integration domain.
@@ -1538,16 +1538,16 @@ tasks:
   owner: /root
   depends_on:
   - WS11-PUBLIC-BROWSER-GATE-001
-  blockers:
-  - BLK-PAGES-DEPLOYMENT-076
+  blockers: []
   result:
     branch: feature/gcp-cloudsql-staging-v1
     functional_commit: b646aa6ce5d7231587ae311f5acb59f84fc35a0e
     eval: 5/5
     loopback_online_scenarios: 2/2
     current_public_url_http_status: 200
-    current_public_artifact: temporary_exact_sha_product
-    current_public_exact_sha_verified: true
+    current_public_artifact: legacy_main_rollback_verified
+    current_public_exact_sha_verified: false
+    rollback_deployment_sha_verified: true
     deployment_executed: true
     deployment_run_id: 30226975010
     public_online_scenarios: 2/2
@@ -1555,7 +1555,10 @@ tasks:
     temporary_environment_policy_removed: true
     rollback_sha: 4950ba3c24dbe7d9891d5cec8d7ba5f57db3ef9c
     rollback_due_at: '2026-07-27T01:14:34Z'
-    rollback_status: scheduled
+    rollback_status: completed
+    rollback_run_id: 30229913868
+    latest_pages_deployment_sha: 4950ba3c24dbe7d9891d5cec8d7ba5f57db3ef9c
+    manual_smoke_review: user_attested_completed
     remote_ci: backend_30224836298_30224834914_success_public_browser_30224836291_30224834919_success_terraform_30224836307_success
   files:
   - scripts/pages-build-metadata.mjs
@@ -1572,7 +1575,8 @@ tasks:
   - Deployment run 30226975010 and independent desktop/mobile online verification passed for the exact SHA.
   - 'Integrated regression passed: 880 total / 878 passed / 0 failed / 2 environment skips; typecheck, build and audit passed.'
   limitations:
-  - Rollback to the authorized main SHA is scheduled but not yet verified.
+  - Rollback run 30229913868 restored and verified the authorized main SHA.
+  - The product owner reported completing the bounded manual smoke review.
   - PAGES_API_URL is absent and the public assistant remains fail-closed.
   - No authenticated browser, backend, merge, or production-release claim is made.
   branch: feature/gcp-cloudsql-staging-v1
@@ -1583,10 +1587,8 @@ blockers:
   affects:
   - WS10-GCP-CLOUDSQL-STAGING-001
   state: open
-  condition: A second bounded authorization is active for the managed synthetic run until 17:25 America/Guatemala; destructive
-    teardown remains unauthorized.
-  next_safe_action: Execute the fail-closed managed-run script before 17:25, verify 20 journeys and cleanup, and return the
-    instance to STOPPED.
+  condition: The second bounded managed-run authorization expired without a successful receipt; the instance must remain STOPPED and destructive teardown remains unauthorized.
+  next_safe_action: Review actual billing and obtain a new explicit, time-bounded authorization before any restart or destructive teardown.
 - id: BLK-GCP-SPEND-074
   affects:
   - WS10-GCP-CLOUDSQL-STAGING-001
@@ -1665,10 +1667,10 @@ blockers:
 - id: BLK-PAGES-DEPLOYMENT-076
   affects:
   - WS11-ONLINE-PAGES-RELEASE-001
-  state: rollback_pending
-  condition: The exact-SHA temporary public deployment is active and verified; rollback to the authorized main SHA remains pending.
-  next_safe_action: At 2026-07-27T01:14:34Z dispatch the Pages workflow for the exact rollback SHA, verify the deployment receipt
-    and public response, and record closure.
+  state: resolved
+  condition: The bounded exact-SHA Pages pilot required verified rollback to the authorized main SHA.
+  resolution: Rollback run 30229913868 restored exact main SHA 4950ba3c24dbe7d9891d5cec8d7ba5f57db3ef9c; the public URL responds and only main remains allowed.
+  next_safe_action: Require a new exact-SHA, bounded human authorization for any future Pages replacement.
 critical_path:
   parallel_entry:
   - GAP-001

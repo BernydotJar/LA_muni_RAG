@@ -1,6 +1,6 @@
 # LA Muni RAG — Open Issues
 
-Updated: 2026-07-26T23:00:13Z
+Updated: 2026-07-27T18:31:32Z
 
 ## Critical
 
@@ -41,12 +41,9 @@ A protected Cloud SQL PostgreSQL 16 instance now exists and is stopped. Exact-pl
 
 ## High
 
-### PAGES-ONLINE-ROLLBACK-001 — temporary exact-SHA Pages deployment awaits rollback
+### PAGES-ONLINE-ROLLBACK-001 — closed with verified rollback
 
-The legacy publication was rejected, and exact SHA `b646aa6ce5d7231587ae311f5acb59f84fc35a0e` is now temporarily deployed
-at https://bernydotjar.github.io/LA_muni_RAG/ with `PAGES_API_URL` absent. Deployment run `30226975010` and independent Chromium
-desktop/mobile checks passed. The temporary branch policy was removed after deployment. Rollback
-to `4950ba3c24dbe7d9891d5cec8d7ba5f57db3ef9c` is scheduled for 2026-07-27T01:14:34Z and remains the active gate.
+Rollback workflow `30229913868` restored exact main SHA `4950ba3c24dbe7d9891d5cec8d7ba5f57db3ef9c`. The latest `github-pages` deployment references that SHA, the public URL responds HTTP 200, the temporary candidate metadata is absent, and the environment allowlist contains only `main`. The product owner reported completing the bounded manual smoke review; this does not replace human WCAG, screen-reader, authenticated-session or legal review. Any future Pages replacement requires a new exact-SHA, time-bounded authorization.
 
 ### E2E-OPEN-CONSUMERS-003 — external consumer suites absent
 
