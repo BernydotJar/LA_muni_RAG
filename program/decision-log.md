@@ -386,3 +386,14 @@ is not extended by this work and no cloud mutation is authorized.
 Decision: persist the next-agent execution contract in `docs/handoffs/2026-07-27-development-completion-handoff.md` rather than relying on chat context. The handoff reconstructs verified Cloud SQL, public-browser, exact-SHA deployment and rollback evidence; records the product owner's manual smoke review as user-attested evidence with explicit limitations; and selects a provider-neutral human session/BFF foundation as the next critical-path increment.
 
 Decision: keep merge, public deployment, Cloud SQL lifecycle, production IdP provisioning, real-corpus acquisition and destructive operations human-gated. The next agent may implement and test local provider-neutral session interfaces and synthetic adapters, but may not claim approved human identity or authenticated E2E solely from those adapters.
+
+
+## 2026-07-27T20:37:30Z — Separate human BFF sessions from service Bearer identity
+
+Decision: implement Feature 077 as a provider-neutral, disabled-by-default backend-for-frontend session boundary. Human login uses state plus a separate HttpOnly browser binding, nonce and PKCE S256; state and authorization codes are single-use; sessions rotate, revoke and expire; browser mutations require exact Origin and session-bound proof; `/auth/*` rejects Bearer headers.
+
+Decision: treat provider issuer/subject as authentication evidence only. Tenant, principal, roles and permissions are resolved from local governed membership, and ambiguous multi-tenant mappings fail closed. Persist only digests or protected challenge material and closed minimized audit metadata. Deterministic adapters are test-only and forbidden in production mode.
+
+Evidence: functional commit `1af3f0ecdca4fe49b47e5e1209f563c30a314adf`; 20/20 focused lifecycle/migration tests; 9/9 `EVAL-HUMAN-SESSION-BFF-001`; PostgreSQL 15.18/pgvector 0.8.5 non-owner forced-RLS gate; compiled smoke; 905/908 regression with zero failures and three explicit environment skips; typecheck/build, dependency, structured, secret/PII and diff gates passed.
+
+Limit: no productive IdP, client registration/credential, discovery/JWKS/token adapter, MFA/recovery/access review, authenticated role-aware UI, browser journey, merge or deployment is claimed. The authenticated matrix remains `0/12`.

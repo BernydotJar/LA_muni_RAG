@@ -1,8 +1,8 @@
 # LA Muni RAG — Current Program State
 
-Updated: 2026-07-27T18:31:32Z
+Updated: 2026-07-27T20:37:30Z
 
-Program status: **PARTIAL WITH DOCUMENTED BLOCKERS — Feature 076 completed its bounded exact-SHA Pages deployment and verified rollback to the prior main publication; authenticated browser journeys, real corpus, managed staging, teardown and production release remain open**
+Program status: **PARTIAL WITH DOCUMENTED BLOCKERS — Feature 077 completed a provider-neutral human session/BFF foundation with local adversarial and PostgreSQL evidence; productive IdP integration, authenticated role-aware UI, browser journeys, real corpus, managed staging, teardown and production release remain open**
 
 ## Authoritative checkout
 
@@ -10,7 +10,7 @@ Program status: **PARTIAL WITH DOCUMENTED BLOCKERS — Feature 076 completed its
 workspace_id: b909e055-62ae-4625-ac13-10947906a08f
 root: /workspace
 branch: feature/gcp-cloudsql-staging-v1
-evidence_baseline_head: 17a6e0cbc7f58a14d1d22497dc324c5448632c54
+evidence_baseline_head: 1af3f0ecdca4fe49b47e5e1209f563c30a314adf
 working_tree_at_baseline: clean
 pull_request: 24 draft
 merged: false
@@ -140,15 +140,44 @@ confirmed the exact SHA at https://bernydotjar.github.io/LA_muni_RAG/. Rollback 
 
 The continuation contract is persisted at `docs/handoffs/2026-07-27-development-completion-handoff.md`; the recommended first increment is a provider-neutral human session/BFF foundation that reuses existing service identity, tenant and RBAC controls.
 
+## Feature 077 — provider-neutral human session/BFF foundation v1
+
+Feature 077 separates human browser sessions from integration Bearer credentials and adds a
+disabled-by-default BFF boundary. Login is bound by state, a separate HttpOnly browser cookie,
+nonce and PKCE S256. Callback state and authorization codes are single-use; new sessions are
+unrelated to incoming cookies, rotate on bootstrap and explicit rotation, and revoke on logout.
+Browser mutations require exact Origin plus session-bound proof. Browser routes reject Bearer
+headers.
+
+Provider output is limited to validated issuer, opaque subject and nonce. Application tenant,
+principal, roles and permissions come only from local governed `human_subjects`, `principals`
+and `memberships`; ambiguous cross-tenant mappings fail closed. Persistence contains digests or
+protected challenge material, forced RLS, fixed-search-path security-definer functions and
+minimized audit/failure aggregates. The deterministic provider, protector and repository are
+test-only and production mode rejects them.
+
+Local evidence passed 20/20 focused lifecycle/migration tests, 9/9
+`EVAL-HUMAN-SESSION-BFF-001`, PostgreSQL 15.18/pgvector 0.8.5 non-owner gates, a compiled
+Node/PostgreSQL smoke, typecheck, build, dependency audits, structured validation,
+secret/PII scan and 905/908 integrated tests with three explicit environment skips and zero
+failures. Functional commit: `1af3f0ecdca4fe49b47e5e1209f563c30a314adf`.
+
+No productive IdP, discovery/JWKS/token adapter, client credential, MFA/recovery policy,
+access-review operation, role-aware product shell or authenticated browser journey is claimed.
+The authenticated matrix remains `0/12`; this is not production readiness.
+
 ## Verification
 
 ```text
 EVAL-GCP-CLOUDSQL-STAGING-001: 14/14 pass
 EVAL-PUBLIC-BROWSER-GATE-001: 5/5 pass
 EVAL-ONLINE-PAGES-RELEASE-001: 5/5 pass
+EVAL-HUMAN-SESSION-BFF-001: 9/9 pass
+Feature 077 focused lifecycle/migration: 20/20 pass
+Feature 077 PostgreSQL non-owner gate and compiled smoke: pass
 Feature 076 final CI: Backend 30224836298 / 30224834914 success; Public Browser 30224836291 / 30224834919 success; Terraform 30224836307 success
 Playwright public browser gate: 10/10 pass (Chromium desktop + mobile); remote runs 30180490148 / 30180488768 success
-full regression: 880 total / 878 pass / 0 fail / 2 environment skips
+full regression: 908 total / 905 pass / 0 fail / 3 environment skips
 Bash syntax: pass
 Typecheck: pass
 Build: pass
@@ -201,7 +230,7 @@ truth.
   controls, deployed staging and approval;
 - `BLK-CORPUS-OPS-001`: source rights, durable object storage, scanner and
   retention/legal-hold controls are unavailable;
-- public Chromium browser checks pass 10/10, but no approved human IdP/BFF/session or authenticated role-aware UI exists; twelve authenticated journeys remain blocked;
+- the provider-neutral BFF/session foundation passes local gates, but no approved productive IdP adapter/configuration or authenticated role-aware UI exists; twelve authenticated journeys remain blocked;
 - external consumer repositories have not executed their suites;
 - no managed Cloud SQL staging execution, observability/SLO, load/HA, coordinated
   recovery or privacy operation exists;
@@ -213,7 +242,7 @@ truth.
 - A protected state bucket is not a Cloud SQL deployment.
 - There is no production object store, scanner/definitions monitor or dispatcher operating.
 - Zero documents are credited as ingested; the minimum Antigua-first and comparative corpus is incomplete.
-- Browser authentication/session architecture is not implemented; human IdP/BFF/session, access review and role-aware navigation remain unimplemented.
+- A provider-neutral BFF/session foundation is implemented and disabled by default; productive IdP integration, recovery/MFA, access review and role-aware navigation remain unimplemented.
 - EvidenceGap is intake-only; no research assignment, resolution lifecycle or notification workflow is implemented.
 - An offline approved-shape plan is not a plan against live GCP state.
 - A live Terraform plan is not authorization to apply it.

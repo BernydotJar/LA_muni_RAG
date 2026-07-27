@@ -1,5 +1,5 @@
 schema_version: 1
-generated_at: '2026-07-27T18:31:32Z'
+generated_at: '2026-07-27T20:37:30Z'
 program:
   id: LA-MUNI-RAG-PROD
   objective: Make LA Muni RAG production-ready within its evidence, procedure, workflow, case-tracking, and integration domain.
@@ -13,14 +13,14 @@ program:
 baseline:
   origin_main_commit: 4950ba3c24dbe7d9891d5cec8d7ba5f57db3ef9c
   observed_branch: feature/gcp-cloudsql-staging-v1
-  observed_commit: 0edf935c7c012d86b2becae4da563046de167903
-  feature_implementation_commit: 0edf935c7c012d86b2becae4da563046de167903
-  local_program_branch_commit: 0edf935c7c012d86b2becae4da563046de167903
+  observed_commit: 1af3f0ecdca4fe49b47e5e1209f563c30a314adf
+  feature_implementation_commit: 1af3f0ecdca4fe49b47e5e1209f563c30a314adf
+  local_program_branch_commit: 1af3f0ecdca4fe49b47e5e1209f563c30a314adf
   upstream: origin/feature/gcp-cloudsql-staging-v1
-  upstream_commit: 0edf935c7c012d86b2becae4da563046de167903
-  upstream_state: feature074_exact_plan_applied_instance_stopped_managed_run_not_executed
+  upstream_commit: f858cecab6b24b00ad625c3986fbc03d347ef59e
+  upstream_state: feature077_local_release_gate_passed_pending_publication
   divergence:
-    ahead: 0
+    ahead: 1
     behind: 0
   divergence_from_origin_main:
     ahead: 89
@@ -33,9 +33,9 @@ baseline:
   canonical_gate:
     status: passed_local_regression_and_remote_ci
     tests:
-      passed: 868
-      total: 870
-      skipped: 2
+      passed: 905
+      total: 908
+      skipped: 3
       failed: 0
     typecheck: passed
     build: passed
@@ -65,6 +65,7 @@ baseline:
       EVAL-ARTIFACT-001: passed_with_external_storage_and_scanner_limitations
       EVAL-VECTOR-001: passed_with_real_corpus_and_load_limitations
       EVAL-JOB-LEASE-001: passed_with_deployment_and_operations_limitations
+      EVAL-HUMAN-SESSION-BFF-001: passed_for_provider_neutral_local_foundation_with_productive_idp_ui_and_deployment_limitations
     missing_dedicated_evals:
     - EVAL-SOURCE-001
     - EVAL-MISSING-001
@@ -395,6 +396,37 @@ tasks:
   - BOUND-001
   - PRG-CTX7-001
   - WS07-FOUNDATION-001
+  result:
+    completed_slices:
+    - WS07-FOUNDATION-001
+    - WS07-HUMAN-SESSION-BFF-001
+    current_state: Service identity and provider-neutral human BFF/session foundations are locally verified; productive IdP, recovery/access review and authenticated UI remain open.
+- id: WS07-HUMAN-SESSION-BFF-001
+  workstream: WS-07
+  title: Implement provider-neutral human session/BFF foundation v1
+  status: completed_with_limitations
+  owner: /root
+  depends_on:
+  - WS07-FOUNDATION-001
+  outputs:
+  - src/humanSession/
+  - db/migrations/017_human_session_bff.sql
+  - db/tests/human_session_bff_runtime_gate.sql
+  - specs/077-provider-neutral-human-session-bff-v1/
+  - docs/security/human-session-bff.md
+  result:
+    functional_commit: 1af3f0ecdca4fe49b47e5e1209f563c30a314adf
+    focused_tests: 20/20 passed
+    named_eval: EVAL-HUMAN-SESSION-BFF-001 9/9 passed
+    integrated_regression: 905/908 passed; 0 failed; 3 explicit environment skips
+    postgres: 15.18 with pgvector 0.8.5; non-owner NOSUPERUSER/NOBYPASSRLS gate passed
+    compiled_smoke: passed
+    authenticated_browser_journeys: 0/12
+    productive_idp: absent
+    production_ready: false
+  limitations:
+  - Productive OIDC discovery/JWKS/token validation, provider selection, client registration and credentials require explicit human approval.
+  - Authenticated role-aware UI, MFA/recovery, access review, retention/purge operations, deployment and browser journeys are absent.
 - id: WS03-ING-001
   workstream: WS-03
   title: Audit and harden authenticated ingestion, idempotency, corrupt-input handling, and retry
@@ -1885,6 +1917,17 @@ claims:
   limitations:
   - No research assignment/resolution lifecycle, approved retention/legal-hold, OS Electoral consumer, staging/load/restore,
     PR, merge or deployment.
+- id: CLAIM-HUMAN-SESSION-BFF-V1
+  statement: A provider-neutral human BFF/session foundation fails closed locally without exposing service Bearer credentials or trusting IdP role/tenant claims.
+  status: supported_with_productive_idp_ui_and_operations_limitations
+  evidence:
+  - Functional commit 1af3f0ecdca4fe49b47e5e1209f563c30a314adf; focused lifecycle/migration 20/20; EVAL-HUMAN-SESSION-BFF-001 9/9.
+  - PostgreSQL 15.18/pgvector 0.8.5 non-owner forced-RLS gate and compiled BFF smoke passed.
+  - Integrated regression 905/908 with zero failures and three explicit environment skips; typecheck/build, dependency, structured, secret/PII and diff gates passed.
+  - State/browser binding, nonce, PKCE S256, code replay, fixation, CSRF/bootstrap proof, rotation, expiry, revocation, ambiguous tenancy, local-role-only mapping and audit minimization are covered.
+  limitations:
+  - No approved productive IdP adapter/configuration, client credential, discovery/JWKS/token interoperability, MFA/recovery/access review or authenticated product shell.
+  - Twelve authenticated browser journeys remain blocked; no merge, deployment or production-readiness claim.
 owners:
   orchestrator: /root
   current_control_files_owner: /root/program_tooling

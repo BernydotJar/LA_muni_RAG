@@ -1,5 +1,5 @@
 schema_version: 1
-updated_at: '2026-07-27T00:17:55Z'
+updated_at: '2026-07-27T20:37:30Z'
 runtime:
   type: yaml_fallback
   farmtable_available: false
@@ -286,18 +286,54 @@ tasks:
   - PRG-CTX7-001
   - WS07-FOUNDATION-001
   blockers:
-  - Human OIDC/session/BFF, provisioning/revocation/recovery and access review require an approved identity architecture.
+  - Productive IdP selection/configuration, external OIDC validation, provisioning/recovery/access review and authenticated UI require explicit human decisions.
   acceptance:
   - Minimum roles are enforced and cross-tenant access is denied, audited, and leak-free.
   evidence:
   - Ten-role closed server permission matrix, credential tenant binding, transaction-local context, forced RLS and uniform
     cross-tenant denial pass EVAL-TENANT/RBAC.
-  - Current credentials are service/integration credentials, not a browser human-login solution.
+  - Current service credentials remain separate from Feature 077 human BFF cookies; browser routes reject Bearer headers.
+  - Feature 077 passes 20/20 focused tests, EVAL-HUMAN-SESSION-BFF-001 9/9, non-owner PostgreSQL and compiled smoke gates.
   limitations:
-  - Production provisioning/rotation and equivalent enforcement for all future v1 endpoints remain incomplete.
-  next_action: Implement Feature 077 provider-neutral human session/BFF foundation per docs/handoffs/2026-07-27-development-completion-handoff.md.
+  - Productive IdP validation/configuration, MFA/recovery, access review, authenticated UI and deployment remain incomplete.
+  next_action: Implement the local authenticated role-aware product shell against the BFF contract while preserving the 0/12 productive browser-journey count.
   pr: null
   ci: passed_current_server_surface
+- id: WS07-HUMAN-SESSION-BFF-001
+  workstream: WS-07
+  title: Implement provider-neutral human session/BFF foundation v1
+  status: completed_with_limitations
+  owner: /root
+  files:
+  - src/humanSession/
+  - src/server.ts
+  - db/migrations/017_human_session_bff.sql
+  - db/tests/human_session_bff_runtime_gate.sql
+  - scripts/human-session-bff-postgres-smoke.mjs
+  - specs/077-provider-neutral-human-session-bff-v1/
+  - docs/security/human-session-bff.md
+  - docs/decisions/077-provider-neutral-human-session-bff-foundation.md
+  - docs/risks/077-human-session-bff-risk-register.md
+  - docs/traceability/077-human-session-bff-v1.md
+  - docs/reviews/077-human-session-bff-independent-review.md
+  depends_on:
+  - WS07-FOUNDATION-001
+  blockers:
+  - BLK-PRODUCTIVE-HUMAN-IDP-077
+  evidence:
+  - Functional commit 1af3f0ecdca4fe49b47e5e1209f563c30a314adf.
+  - Focused lifecycle/migration tests 20/20 and EVAL-HUMAN-SESSION-BFF-001 9/9 passed.
+  - PostgreSQL 15.18/pgvector 0.8.5 migration/runtime gate passed with a non-owner NOSUPERUSER/NOBYPASSRLS role.
+  - Compiled BFF smoke proved local viewer mapping while injected provider platform role and tenant claims were ignored.
+  - Integrated regression 908 total / 905 pass / 0 fail / 3 explicit environment skips; typecheck and build passed.
+  - Contracts, inventory, workflow template, JSON/YAML/JSONL, CI YAML, dependency audit, secret/PII and diff gates passed.
+  limitations:
+  - Deterministic provider/protector/repository are test-only and forbidden in production mode.
+  - No productive IdP, client registration/credential, discovery/JWKS/token validation, MFA/recovery/access review, authenticated UI, deployment or browser journey.
+  - Authenticated browser journeys remain 0/12; production readiness is not claimed.
+  branch: feature/gcp-cloudsql-staging-v1
+  pr: 24
+  ci: local_release_gate_passed_remote_pending
 - id: WS03-ING-001
   workstream: WS-03
   title: Harden authenticated ingestion, idempotency, corrupt input, and retry
@@ -1863,6 +1899,13 @@ tasks:
   pr: 24
   ci: backend_30224836298_30224834914_success_public_browser_30224836291_30224834919_success_terraform_30224836307_success
 blockers:
+- id: BLK-PRODUCTIVE-HUMAN-IDP-077
+  affects:
+  - WS07-ID-001
+  - WS07-HUMAN-SESSION-BFF-001
+  state: open
+  condition: The provider-neutral local BFF foundation exists, but no productive IdP product, adapter/configuration, client registration/credential, discovery/JWKS/token interoperability, MFA/recovery, access review or deployment decision is approved.
+  next_safe_action: Prepare a human decision packet; do not provision or select a productive IdP without explicit approval.
 - id: BLK-GCP-LIFECYCLE-074
   affects:
   - WS10-GCP-CLOUDSQL-STAGING-001
@@ -1936,10 +1979,8 @@ blockers:
   affects:
   - WS11-PUBLIC-BROWSER-GATE-001
   state: open
-  condition: Public Chromium surfaces are verified, but human IdP/BFF/session and authenticated role-aware UI do not exist;
-    twelve authenticated journeys remain blocked.
-  next_safe_action: Approve and implement human identity/session and role-aware UI before enabling the authenticated browser
-    matrix.
+  condition: Public Chromium surfaces and the local provider-neutral BFF/session foundation are verified, but no approved productive IdP adapter/configuration or authenticated role-aware UI exists; twelve authenticated journeys remain blocked.
+  next_safe_action: Implement the local role-aware shell, then obtain explicit productive IdP approval and real ephemeral browser evidence before enabling the authenticated matrix.
 - id: BLK-PAGES-DEPLOYMENT-076
   affects:
   - WS11-ONLINE-PAGES-RELEASE-001

@@ -1,19 +1,21 @@
 {
-  "schema_version": "1.17.0",
-  "generated_at": "2026-07-27T18:31:32Z",
+  "schema_version": "1.18.0",
+  "generated_at": "2026-07-27T20:37:30Z",
   "branch": "feature/gcp-cloudsql-staging-v1",
-  "functional_head": "2232147de0c6869e3f3452cf2d9bf1abe3e14120",
-  "status": "passed_feature074_exact_plan_applied_instance_stopped_with_managed_run_and_teardown_blockers",
+  "functional_head": "1af3f0ecdca4fe49b47e5e1209f563c30a314adf",
+  "status": "passed_feature077_provider_neutral_human_session_bff_local_foundation_with_productive_idp_ui_and_deployment_blockers",
   "deterministic": {
-    "tests": 880,
-    "pass": 878,
+    "tests": 908,
+    "pass": 905,
     "fail": 0,
-    "skipped": 2,
+    "skipped": 3,
     "typecheck": "pass",
     "build": "pass",
     "pages": "pass",
     "audits": "0 vulnerabilities",
-    "public_browser_gate": "10/10 Chromium desktop/mobile pass"
+    "public_browser_gate": "10/10 Chromium desktop/mobile pass",
+    "secret_pii_scan": "pass",
+    "structured_validation": "pass"
   },
   "contracts": {
     "canonical_schemas": 33,
@@ -349,23 +351,47 @@
         "PAGES_API_URL remains absent and the current public main publication is fail-closed/legacy.",
         "No merge, backend deployment, production release, or authenticated browser journey is claimed."
       ]
+    },
+    "EVAL-HUMAN-SESSION-BFF-001": {
+      "command": "npm run eval:human-session-bff",
+      "passed": 9,
+      "total": 9,
+      "result": "passed_for_provider_neutral_local_bff_with_productive_idp_authenticated_ui_and_deployment_limitations",
+      "evidence": [
+        "1af3f0ecdca4fe49b47e5e1209f563c30a314adf",
+        "src/humanSession/",
+        "db/migrations/017_human_session_bff.sql",
+        "db/tests/human_session_bff_runtime_gate.sql",
+        "docs/security/human-session-bff.md"
+      ],
+      "execution": {
+        "focused_lifecycle_migration": "20/20",
+        "postgres_non_owner_gate": "pass",
+        "compiled_postgres_smoke": "pass",
+        "authenticated_browser_journeys": "0/12"
+      },
+      "limitations": [
+        "No approved productive IdP adapter/configuration or external OIDC interoperability evidence.",
+        "No authenticated role-aware UI or browser journey.",
+        "No merge or deployment."
+      ]
     }
   },
   "publication": {
     "branch": "feature/gcp-cloudsql-staging-v1",
-    "functional_sha": "9a823b2311633f8b682d13d495ccacfb7ac3615f",
-    "remote_base_sha_verified": "7a00f3ee902cb6dd41c153d3ebfb7c943b50f7a1",
+    "functional_sha": "1af3f0ecdca4fe49b47e5e1209f563c30a314adf",
+    "remote_base_sha_verified": "f858cecab6b24b00ad625c3986fbc03d347ef59e",
     "prior_ci": {
       "backend_run_id": 29980032034,
       "terraform_run_id": 29980032069,
       "conclusion": "success_on_prior_functional_base"
     },
-    "current_ci_status": "backend_success_public_browser_success_terraform_success",
+    "current_ci_status": "pending_publication",
     "pr": 24,
     "pr_state": "draft",
     "merged": false,
     "deployed": false,
-    "remote_head_sha": "9a823b2311633f8b682d13d495ccacfb7ac3615f",
+    "remote_head_sha": "f858cecab6b24b00ad625c3986fbc03d347ef59e",
     "terraform_ci_conclusion": "success",
     "backend_ci_conclusion": "success",
     "backend_ci_run_ids": [
@@ -385,17 +411,18 @@
     "managed_gcp_staging_execution",
     "external_os_electoral_consumer",
     "external_content_agency_consumer",
-    "human_identity_session",
     "browser_e2e",
     "real_corpus_quality",
-    "production_load_ha_recovery_privacy"
+    "production_load_ha_recovery_privacy",
+    "productive_human_idp_and_authenticated_ui"
   ],
   "limitations": [
     "The exact authorized Cloud SQL plan was applied and the instance is stopped; managed synthetic execution and destructive teardown remain absent.",
     "The prior single-owner exception expired on stop; restart or teardown requires new explicit authorization.",
     "Actual provider billing remains pending and stopped resources may retain storage or backup charges.",
     "No authorized real corpus, external consumer execution, protected merge or production deployment.",
-    "No exact-SHA public Pages deployment or rollback receipt; the current public URL serves legacy main content."
+    "No exact-SHA public Pages deployment or rollback receipt; the current public URL serves legacy main content.",
+    "Feature 077 is a local provider-neutral foundation only; productive IdP integration, authenticated UI and all twelve authenticated browser journeys remain blocked."
   ],
   "public_browser_gate": {
     "status": "passed_local_and_remote",
@@ -416,5 +443,21 @@
       30180488768
     ],
     "functional_sha": "2232147de0c6869e3f3452cf2d9bf1abe3e14120"
+  },
+  "human_session_bff": {
+    "status": "local_foundation_verified_disabled_by_default",
+    "functional_sha": "1af3f0ecdca4fe49b47e5e1209f563c30a314adf",
+    "provider_neutral": true,
+    "service_bearer_in_browser": false,
+    "focused_tests": "20/20",
+    "named_eval": "9/9",
+    "postgres": "15.18",
+    "pgvector": "0.8.5",
+    "non_owner_forced_rls_gate": "pass",
+    "compiled_smoke": "pass",
+    "productive_idp_configured": false,
+    "authenticated_role_aware_ui": false,
+    "authenticated_browser_journeys_passed": 0,
+    "authenticated_browser_journeys_blocked": 12
   }
 }

@@ -1,6 +1,6 @@
 # LA Muni RAG — Open Issues
 
-Updated: 2026-07-27T18:31:32Z
+Updated: 2026-07-27T20:37:30Z
 
 ## Critical
 
@@ -27,9 +27,9 @@ Zero real documents are credited as ingested. Human/platform inputs required:
 - retention, deletion and legal-hold policy;
 - named source, authority and vigencia reviewers.
 
-### E2E-OPEN-IDP-002 — human identity/session absent
+### E2E-OPEN-IDP-002 — productive human identity and authenticated UI absent
 
-No approved IdP/OIDC/PKCE/BFF, secure cookie/CSRF, provisioning, logout, revocation, recovery or role-aware authenticated UI exists. All twelve browser journeys remain explicitly blocked.
+Feature 077 implements and locally verifies a provider-neutral BFF/session foundation with state/browser binding, nonce, PKCE S256, secure cookie policy, CSRF/bootstrap proof, rotation, logout, revocation, local membership mapping and minimized audit. It remains disabled by default. No productive IdP product or adapter/configuration, client registration/credential, discovery/JWKS/token interoperability, MFA/recovery, access review, role-aware authenticated UI or deployed browser environment exists. All twelve browser journeys remain explicitly blocked (`0/12`).
 
 ### GCP-EXECUTION-074 — managed restart window expired without a successful receipt
 
@@ -38,6 +38,11 @@ Authenticated controls, exact-plan apply and bounded stop are proven. A second r
 ### PROG-OPS-001 — managed cloud and production operations absent
 
 A protected Cloud SQL PostgreSQL 16 instance now exists and is stopped. Exact-plan apply and bounded stop are proved, but the managed synthetic run and teardown were not executed; the second restart authorization expired. No Cloud Run service, queue, Secret Manager configuration, telemetry, load/HA, managed recovery or privacy operation exists.
+
+
+### HUMAN-SESSION-OPS-077 — productive session operations and retention absent
+
+The local schema bounds login/code/session state and failure-bucket aging, but no scheduled purge, backup-aging proof, idle-timeout policy, device/session management, access-review operation, provider-account deletion mapping, telemetry alert, incident runbook or reverse-proxy Origin verification exists. These controls require approved deployment and privacy/security decisions.
 
 ## High
 
