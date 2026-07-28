@@ -19,7 +19,7 @@ Scope: authenticated workspace presentation, path routing and inherited reliabil
 | Narrow authenticated view overflows | minmax zero grid tracks and element-level diagnostics | 320 px cross-browser gate | human zoom and magnifier acceptance absent |
 | Reference implementation is copied without fit review | only task-first principles recorded; no code/assets/dependencies imported | diff review and ADR | future design work needs ownership review |
 | Reliability commit cannot compile | missing telemetry types/options restored | typecheck and Feature 079 EVAL | productive exporter remains absent |
-| Provider outage misclassified as denial | unexpected exchange outage returns generic 500 and clears transient state | failure-injection test | productive provider error taxonomy/retry UX absent |
+| Provider outage misclassified as denial | unexpected exchange outage returns generic 503 and clears transient state | failure-injection test | productive provider retry UX and operations absent |
 | Local shell is mistaken for production completion | empty states and records retain 0/12/productive blockers | named EVAL and program gate | human IdP, corpus, staging and release gates remain open |
 
 ## Review conclusion

@@ -36,10 +36,10 @@ const decodeKey = (value: string | Buffer): Buffer => {
 
 export class AesGcmSecretProtector implements SecretProtector {
   readonly kind = "aes-256-gcm" as const;
-  private readonly key: Buffer;
+  readonly #key: Buffer;
 
   constructor(key: string | Buffer) {
-    this.key = decodeKey(key);
+    this.#key = decodeKey(key);
   }
 
   seal(plaintext: string): string {
@@ -47,7 +47,7 @@ export class AesGcmSecretProtector implements SecretProtector {
       throw new Error("Protected human session value is outside policy");
     }
     const iv = randomBytes(12);
-    const cipher = createCipheriv("aes-256-gcm", this.key, iv);
+    const cipher = createCipheriv("aes-256-gcm", this.#key, iv);
     const ciphertext = Buffer.concat([cipher.update(plaintext, "utf8"), cipher.final()]);
     const tag = cipher.getAuthTag();
     return Buffer.concat([iv, tag, ciphertext]).toString("base64url");
@@ -67,7 +67,7 @@ export class AesGcmSecretProtector implements SecretProtector {
     const tag = value.subarray(12, 28);
     const ciphertext = value.subarray(28);
     try {
-      const decipher = createDecipheriv("aes-256-gcm", this.key, iv);
+      const decipher = createDecipheriv("aes-256-gcm", this.#key, iv);
       decipher.setAuthTag(tag);
       return Buffer.concat([decipher.update(ciphertext), decipher.final()]).toString("utf8");
     } catch {

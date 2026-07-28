@@ -159,6 +159,15 @@ export {
 } from "./repository.js";
 export { DeterministicHumanIdentityProvider } from "./testAdapter.js";
 export {
+  OIDC_ALLOWED_SIGNING_ALGORITHMS,
+  OIDC_TOKEN_ENDPOINT_AUTH_METHODS,
+  OidcHumanIdentityProvider,
+  type OidcAllowedSigningAlgorithm,
+  type OidcHumanIdentityProviderOptions,
+  type OidcTokenEndpointAuthMethod,
+} from "./oidcAdapter.js";
+export { loadHumanSessionBffOptionsFromEnv } from "./config.js";
+export {
   HumanIdentityProviderAuthenticationError,
   HumanIdentityProviderUnavailableError,
 } from "./providerErrors.js";

@@ -55,7 +55,7 @@ Positive:
 
 Costs and residual work:
 
-- productive discovery/JWKS/token validation remains adapter work after approval;
+- Feature 083 later implements generic discovery/JWKS/token validation; productive provider selection, registration, credentials and interoperability remain approval-gated;
 - multi-tenant human selection, enrollment, recovery, MFA/step-up, access review, and role-aware UI remain separate increments;
 - the twelve authenticated browser journeys remain blocked;
 - server-side session persistence and audit add operational state requiring retention, purge, monitoring, backup, and incident procedures.

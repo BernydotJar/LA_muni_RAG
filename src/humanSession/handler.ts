@@ -3,7 +3,10 @@ import type { IncomingMessage, ServerResponse } from "node:http";
 import { isHumanSecurityRole, permissionsForRoles } from "../security/rbac.js";
 import { isCanonicalUuid } from "../security/tenant.js";
 import { digestsEqual, pkceChallenge, sha256Hex } from "./crypto.js";
-import { HumanIdentityProviderAuthenticationError } from "./providerErrors.js";
+import {
+  HumanIdentityProviderAuthenticationError,
+  HumanIdentityProviderUnavailableError,
+} from "./providerErrors.js";
 import type {
   AuthenticatedHumanSession,
   HumanAuthenticationFailureReason,
@@ -499,12 +502,33 @@ const handleLogin = async (
   const browserBinding = dependencies.randomOpaque(32);
   const challenge = pkceChallenge(codeVerifier);
   const callbackUrl = `${dependencies.publicOrigin}${HUMAN_CALLBACK_ROUTE}`;
-  const authorizationUrl = dependencies.provider.buildAuthorizationUrl({
-    state,
-    nonce,
-    codeChallenge: challenge,
-    redirectUri: callbackUrl,
-  });
+  let authorizationUrl: URL;
+  try {
+    authorizationUrl = await dependencies.provider.buildAuthorizationUrl({
+      state,
+      nonce,
+      codeChallenge: challenge,
+      redirectUri: callbackUrl,
+    });
+  } catch (error) {
+    if (
+      error instanceof HumanIdentityProviderUnavailableError ||
+      error instanceof HumanIdentityProviderAuthenticationError
+    ) {
+      throw new HumanSessionHttpError(
+        503,
+        "human_identity_unavailable",
+        "Human sign-in is temporarily unavailable",
+        "provider_rejected"
+      );
+    }
+    throw new HumanSessionHttpError(
+      500,
+      "internal_error",
+      "Unexpected server error",
+      "provider_rejected"
+    );
+  }
   if (
     authorizationUrl.protocol !== "https:" ||
     authorizationUrl.username ||
@@ -606,6 +630,16 @@ const handleCallback = async (
         "human_authentication_failed",
         "Authentication failed",
         "provider_rejected",
+        true
+      );
+    }
+    if (error instanceof HumanIdentityProviderUnavailableError) {
+      throw new HumanSessionHttpError(
+        503,
+        "human_identity_unavailable",
+        "Human sign-in is temporarily unavailable",
+        "provider_rejected",
+        true,
         true
       );
     }

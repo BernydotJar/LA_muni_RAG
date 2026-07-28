@@ -152,6 +152,12 @@ jobs:
       - name: Run EVAL-HUMAN-SESSION-BFF-001
         run: npm run eval:human-session-bff
 
+      - name: Run Feature 083 OIDC provider tests
+        run: npm run test:human-oidc-provider
+
+      - name: Run EVAL-HUMAN-OIDC-PROVIDER-001
+        run: npm run eval:human-oidc-provider
+
       - name: Run EVAL-HUMAN-PRODUCT-SHELL-001
         run: npm run eval:human-product-shell
 

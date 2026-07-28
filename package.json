@@ -92,7 +92,9 @@
     "smoke:human-product-shell-cross-browser": "npm run build && for browser in chromium firefox webkit; do HUMAN_SHELL_BROWSER=$browser node scripts/human-product-shell-browser-smoke.mjs; done",
     "eval:human-product-shell-accessibility": "node --import tsx --test --test-concurrency=1 src/__tests__/eval-human-product-shell-accessibility-001.test.ts",
     "test:human-workspace": "node --import tsx --test --test-concurrency=1 src/__tests__/human-product-workspace-v1.test.ts",
-    "eval:human-workspace": "node --import tsx --test --test-concurrency=1 src/__tests__/eval-human-workspace-001.test.ts"
+    "eval:human-workspace": "node --import tsx --test --test-concurrency=1 src/__tests__/eval-human-workspace-001.test.ts",
+    "test:human-oidc-provider": "node --import tsx --test --test-concurrency=1 src/__tests__/human-oidc-provider-v1.test.ts",
+    "eval:human-oidc-provider": "node --import tsx --test --test-concurrency=1 src/__tests__/eval-human-oidc-provider-001.test.ts"
   },
   "keywords": [],
   "author": "",
@@ -103,6 +105,7 @@
     "ajv": "8.20.0",
     "ajv-formats": "3.0.1",
     "dotenv": "^17.4.2",
+    "jose": "6.2.4",
     "mammoth": "^1.12.0",
     "pdfjs-dist": "6.1.200",
     "pg": "^8.22.0"

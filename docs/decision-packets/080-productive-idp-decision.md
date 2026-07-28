@@ -15,7 +15,7 @@ No action is authorized by this packet alone.
 - Feature 078 provides a same-origin role-aware shell and rejects browser Bearer credentials.
 - Feature 079 provides privacy-minimized local telemetry and bounded recovery/load evidence.
 - Deterministic adapters are test-only and prohibited in production mode.
-- No productive provider, client registration, credential, discovery/JWKS/token adapter, MFA/recovery policy, user lifecycle or external interoperability receipt exists.
+- No productive provider, client registration, credential, provider-specific configuration, MFA/recovery policy, user lifecycle or external interoperability receipt exists. Feature 083 supplies only a generic discovery/JWKS/token adapter.
 - Productive authenticated browser journeys remain `0/12`.
 
 ## Options

@@ -264,10 +264,13 @@ describe("Feature 079 human-session reliability and telemetry", () => {
     const harness = await startHarness({ provider, telemetry });
     const firstLogin = await beginLogin(harness);
     const failed = await callback(harness, firstLogin);
-    assert.equal(failed.response.status, 500);
+    assert.equal(failed.response.status, 503);
     const failedBody = await failed.response.json() as { error: { code: string; message: string } };
     assert.deepEqual(failedBody, {
-      error: { code: "internal_error", message: "Unexpected server error" },
+      error: {
+        code: "human_identity_unavailable",
+        message: "Human sign-in is temporarily unavailable",
+      },
     });
     assert.equal(JSON.stringify(failedBody).includes("authorization-code-secret"), false);
     assert.ok(setCookies(failed.response).some((value) => value.startsWith("la_muni_session=;")));
@@ -276,7 +279,7 @@ describe("Feature 079 human-session reliability and telemetry", () => {
     const recovered = await callback(harness, secondLogin);
     assert.equal(recovered.response.status, 303);
     assert.ok(cookiePair(recovered.response, "la_muni_session"));
-    assert.equal(telemetry.summary("callback").serverErrorCount, 1);
+    assert.equal(telemetry.summary("callback").unavailableCount, 1);
     assert.equal(telemetry.summary("callback").successCount, 1);
   });
 

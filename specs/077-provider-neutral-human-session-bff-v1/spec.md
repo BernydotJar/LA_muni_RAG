@@ -1,6 +1,6 @@
 # Feature 077 — Provider-neutral human session/BFF foundation v1
 
-Status: implemented locally; productive IdP selection and authenticated UI remain human-gated and absent
+Status: implemented locally; later Features 078 and 083 add the shell and generic OIDC adapter, while productive IdP approval remains absent
 
 ## Goal
 
@@ -48,7 +48,7 @@ All responses use `Cache-Control: no-store`; no route emits permissive CORS head
 ## Explicit limitations
 
 - No productive IdP has been selected, approved, configured, contacted, or provisioned.
-- No discovery/JWKS/token implementation is bundled; the productive adapter remains a human-approved integration decision.
+- Feature 083 later adds a provider-neutral discovery/JWKS/token adapter; provider selection, registration, credentials and external interoperability remain human-approved decisions.
 - No account recovery, invitation, enrollment, MFA policy, step-up authentication, tenant chooser, access review UI, or emergency administrator procedure exists.
 - No authenticated product shell or browser journey is implemented by this feature.
 - Local deterministic provider evidence is not external interoperability evidence.

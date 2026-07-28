@@ -27,7 +27,7 @@ export interface HumanProviderIdentity {
 export interface HumanIdentityProviderAdapter {
   readonly kind: HumanIdentityProviderKind;
   readonly providerId: string;
-  buildAuthorizationUrl(request: HumanAuthorizationRequest): URL;
+  buildAuthorizationUrl(request: HumanAuthorizationRequest): URL | Promise<URL>;
   exchangeAuthorizationCode(
     request: HumanAuthorizationCodeExchange
   ): Promise<HumanProviderIdentity>;

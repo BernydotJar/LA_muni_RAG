@@ -1,6 +1,6 @@
 # Human session and BFF security contract
 
-Status: local provider-neutral foundation implemented; productive IdP and authenticated product UI absent
+Status: provider-neutral BFF, shell and generic OIDC adapter implemented locally; productive IdP approval and deployment absent
 Last reviewed: 2026-07-27
 
 ## Trust boundaries
@@ -87,7 +87,7 @@ The default server exposes the routes but returns bounded 503 responses. Enablin
 - session repository;
 - secret protector.
 
-The repository does not infer a productive provider from environment variables. `NODE_ENV=production` rejects the deterministic provider and deterministic protector. No productive IdP, client credential, issuer, redirect registration, discovery document, or JWKS endpoint is committed.
+Feature 083 adds a provider-neutral confidential OIDC adapter and explicit environment composition. Human sessions remain disabled unless `HUMAN_SESSION_ENABLED=true`, `HUMAN_SESSION_PROVIDER_APPROVED=true`, and all required server-side identifiers and secrets are present. The adapter validates exact discovery issuer, allowlisted HTTPS endpoint origins, authorization code plus PKCE S256, confidential token exchange, asymmetric JWKS, signature, audience, authorized party, nonce presence and bounded token time. `NODE_ENV=production` still rejects the deterministic provider and deterministic protector. No productive IdP selection, client registration, credential, issuer, redirect registration or external interoperability receipt is committed.
 
 ## Telemetry minimization and reliability evidence
 
@@ -116,4 +116,4 @@ The twelve productive authenticated browser journeys remain blocked (`0/12`). Th
 deterministic adapter and shell smoke cannot satisfy external IdP interoperability,
 real ephemeral deployment, complete module workflows, or human accessibility review.
 
-Before productive use, humans must approve the IdP, tenancy model, MFA/step-up policy, enrollment/recovery, role administration, access review, emergency access, session/failure retention, purge, monitoring, incident response, privacy terms, and deployment topology. The productive adapter must validate discovery metadata, issuer, audience, signature, algorithm, nonce, code exchange endpoint, token time bounds, and transport trust. These requirements are not satisfied by the deterministic test adapter.
+Before productive use, humans must approve the IdP, exact client and callback registration, tenancy model, MFA/step-up policy, enrollment/recovery, role administration, access review, emergency access, managed secret storage and rotation, session/failure retention, purge, monitoring, incident response, privacy terms, egress policy and deployment topology. Feature 083 verifies the generic protocol behavior locally, but no external provider metadata, credentials, user or interoperability receipt exists. These requirements are not satisfied by either the deterministic test adapter or generic adapter tests alone.

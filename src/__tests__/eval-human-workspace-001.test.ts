@@ -94,7 +94,7 @@ describe("EVAL-HUMAN-WORKSPACE-001", () => {
     assert.match(types, /telemetry: HumanSessionTelemetry/);
     assert.match(handler, /HumanSessionTelemetryOperation/);
     assert.match(handler, /HumanIdentityProviderAuthenticationError/);
-    assert.match(handler, /500,[\s\S]*"internal_error",[\s\S]*"provider_rejected",[\s\S]*true,[\s\S]*true/);
+    assert.match(handler, /HumanIdentityProviderUnavailableError[\s\S]*503,[\s\S]*"human_identity_unavailable",[\s\S]*"provider_rejected",[\s\S]*true,[\s\S]*true/);
     assert.match(providerErrors, /HumanIdentityProviderUnavailableError/);
     assert.match(testAdapter, /throw new HumanIdentityProviderAuthenticationError\(\)/);
     assert.match(server, /allowedReturnPaths:[\s\S]*HUMAN_SHELL_RETURN_PATHS/);

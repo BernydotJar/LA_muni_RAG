@@ -67,6 +67,7 @@ import {
 import {
   createHumanSessionBffDependencies,
   handleHumanSessionBff,
+  loadHumanSessionBffOptionsFromEnv,
   type HumanSessionBffOptions,
 } from "./humanSession/index.js";
 import { handleHumanShell, HUMAN_SHELL_RETURN_PATHS } from "./humanShell/index.js";
@@ -202,7 +203,7 @@ export const createRequestHandler = (options: ServerOptions = {}): RequestListen
     options.searchEvidenceV1
   );
   const publicQueryV1Dependencies = createPublicQueryDependencies(options.publicQueryV1);
-  const humanSessionOptions = options.humanSession ?? {};
+  const humanSessionOptions = options.humanSession ?? loadHumanSessionBffOptionsFromEnv();
   const humanSessionDependencies = createHumanSessionBffDependencies({
     ...humanSessionOptions,
     allowedReturnPaths:

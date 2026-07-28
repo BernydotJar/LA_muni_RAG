@@ -50,7 +50,7 @@ Productive browser authentication remains blocked. Feature 077 implements a prov
 - BFF cookies are HttpOnly and only the test adapter may exercise them locally; that adapter is not productive identity evidence;
 - the shell rejects browser Bearer, excludes `integration_client`, and keeps session proof out of persistent browser storage;
 - browser journeys remain blocked by productive identity, complete-workflow and real-environment prerequisites (`0/12` authenticated);
-- enabling the official browser matrix still requires an approved productive IdP adapter/configuration, recovery/MFA and access-review decisions, ephemeral deployment composition, complete role-aware workflows, and real external browser execution.
+- enabling the official browser matrix still requires an approved productive IdP configuration/registration and credentials, recovery/MFA and access-review decisions, ephemeral deployment composition, complete role-aware workflows, and real external browser execution. Feature 083 supplies only the generic adapter.
 
 ## Deterministic tenants and fixtures
 

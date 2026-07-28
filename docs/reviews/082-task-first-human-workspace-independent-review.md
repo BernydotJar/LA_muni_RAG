@@ -37,11 +37,11 @@ The independent red-team gate did not pass the first Feature 082 candidate. It f
 - fixed non-reflective denial message;
 - zero-minimum responsive tracks plus element-level overflow diagnostics;
 - restored closed telemetry interfaces and dependency options;
-- generic 500, cookie clearing and fresh-login semantics for transient provider outages;
+- generic unavailable response, cookie clearing and fresh-login semantics for transient provider outages;
 - deterministic browser checks retain rotation, logout, malformed route, storage, cookie and accessibility assertions.
 - protected `/app/login` and server-composed deep-link return allowlist;
 - dynamic `return_to`, retained deep-link after callback, and Back/Forward browser checks;
-- closed provider error taxonomy: ordinary rejection is a generic 401, transient outage a generic 500;
+- closed provider error taxonomy: ordinary rejection is a generic 401, transient outage a generic 503;
 - focus colors with deterministic contrast checks for light and sidebar surfaces;
 - warning-specific denial styling that clears on valid navigation;
 - repaired Feature 079 risk row and a civic light favicon.

@@ -24,7 +24,7 @@ Telemetry runs after the response and is observational only. Exporter exceptions
 The focused failure-injection gate establishes:
 
 - repository authentication outage: generic 500, no internal error leakage, same unmodified session can be retried;
-- provider code-exchange outage: generic 500, browser session state cleared, consumed transaction requires a fresh login;
+- provider code-exchange outage: generic 503, browser session state cleared, consumed transaction requires a fresh login;
 - concurrent rotation: exactly one replacement succeeds, contenders fail, old token is rejected and the winning replacement remains usable;
 - exporter outage: the original response remains unchanged.
 
