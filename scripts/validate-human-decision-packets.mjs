@@ -67,7 +67,7 @@ for (const packet of index.packets) {
   const document = await readFile(packet.document, "utf8");
   assert.match(document, /^# /);
   assert.match(document, /Status: pending human decision/);
-  assert.match(document, new RegExp(`Packet ID: \\`${packet.packet_id}\\``));
+  assert.match(document, new RegExp("Packet ID: `" + packet.packet_id + "`"));
   for (const heading of REQUIRED_HEADINGS) assert.ok(document.includes(heading), `${packet.packet_id} missing ${heading}`);
   assert.match(document, /No action is authorized by this packet alone\./);
   assert.match(document, /human-decision-receipt\.schema\.json/);

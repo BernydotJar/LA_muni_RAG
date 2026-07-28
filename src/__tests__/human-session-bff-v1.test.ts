@@ -278,6 +278,18 @@ describe("Feature 077 provider-neutral human session/BFF foundation", () => {
     );
     assert.equal(malformedCode.status, 401);
 
+    const rejectedCode = await fetch(
+      `${harness.baseUrl}/auth/callback?state=${login.state}&code=valid-code-not-issued-0001`,
+      { redirect: "manual", headers: { cookie: login.loginCookie } }
+    );
+    assert.equal(rejectedCode.status, 401);
+    assert.deepEqual(await rejectedCode.json(), {
+      error: {
+        code: "human_authentication_failed",
+        message: "Authentication failed",
+      },
+    });
+
     const code = harness.provider.issueAuthorizationCode(login.state, {
       issuer: ISSUER,
       subject: SUBJECT,

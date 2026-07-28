@@ -178,6 +178,41 @@ export interface AuthenticatedHumanSession {
   sessionTokenSha256: string;
 }
 
+export const HUMAN_SESSION_TELEMETRY_OPERATIONS = [
+  "login",
+  "callback",
+  "session_bootstrap",
+  "session_rotate",
+  "logout",
+] as const;
+
+export type HumanSessionTelemetryOperation =
+  (typeof HUMAN_SESSION_TELEMETRY_OPERATIONS)[number];
+
+export const HUMAN_SESSION_TELEMETRY_OUTCOMES = [
+  "success",
+  "denied",
+  "unavailable",
+  "server_error",
+] as const;
+
+export type HumanSessionTelemetryOutcome =
+  (typeof HUMAN_SESSION_TELEMETRY_OUTCOMES)[number];
+
+export type HumanSessionTelemetryMethod = "GET" | "POST" | "OTHER";
+
+export interface HumanSessionTelemetryEvent {
+  operation: HumanSessionTelemetryOperation;
+  method: HumanSessionTelemetryMethod;
+  outcome: HumanSessionTelemetryOutcome;
+  statusCode: number;
+  durationMs: number;
+}
+
+export interface HumanSessionTelemetry {
+  record(event: HumanSessionTelemetryEvent): void;
+}
+
 export interface HumanSessionBffDependencies {
   enabled: boolean;
   approvedProvider: boolean;
@@ -195,6 +230,8 @@ export interface HumanSessionBffDependencies {
   now: () => Date;
   randomOpaque: (bytes: number) => string;
   createUuid: () => string;
+  monotonicNow: () => number;
+  telemetry: HumanSessionTelemetry;
 }
 
 export interface HumanSessionBffOptions

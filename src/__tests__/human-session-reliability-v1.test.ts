@@ -4,6 +4,7 @@ import { afterEach, describe, it } from "node:test";
 import {
   DeterministicHumanIdentityProvider,
   DeterministicTestSecretProtector,
+  HumanIdentityProviderUnavailableError,
   InMemoryHumanSessionRepository,
   InMemoryHumanSessionTelemetry,
   sha256Hex,
@@ -48,7 +49,7 @@ class FailExchangeOnceProvider extends DeterministicHumanIdentityProvider {
   ): ReturnType<DeterministicHumanIdentityProvider["exchangeAuthorizationCode"]> {
     if (this.failExchange) {
       this.failExchange = false;
-      throw new Error("simulated provider outage with authorization-code-secret");
+      throw new HumanIdentityProviderUnavailableError();
     }
     return super.exchangeAuthorizationCode(input);
   }

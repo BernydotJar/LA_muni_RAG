@@ -113,6 +113,6 @@ describe("EVAL-HUMAN-PRODUCT-SHELL-001", () => {
     const backendCi = await read(".github/workflows/ci.yml");
     const browserCi = await read(".github/workflows/public-browser.yml");
     assert.match(backendCi, /EVAL-HUMAN-PRODUCT-SHELL-001/);
-    assert.match(browserCi, /smoke:human-product-shell-browser/);
+    assert.match(browserCi, /smoke:human-product-shell-cross-browser/);
   });
 });

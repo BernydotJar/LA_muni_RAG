@@ -99,7 +99,7 @@ describe("EVAL-HUMAN-SESSION-BFF-001", () => {
     assert.match(spec, /No authenticated product shell/);
     assert.match(spec, /not production readiness/i);
     assert.match(adr, /productive provider decision pending/i);
-    assert.match(security, /twelve authenticated browser journeys remain blocked/i);
+    assert.match(security, /twelve productive authenticated browser journeys remain blocked/i);
   });
 
   it("keeps all twelve browser journeys blocked rather than substituting the test adapter", async () => {

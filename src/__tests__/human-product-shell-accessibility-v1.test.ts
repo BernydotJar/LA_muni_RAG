@@ -7,7 +7,7 @@ const declaredIds = (): string[] =>
 
 describe("Feature 081 automated accessibility complement", () => {
   it("keeps unauthenticated product navigation out of the accessibility tree", () => {
-    assert.match(HUMAN_SHELL_HTML, /<nav id="product-navigation" hidden>/);
+    assert.match(HUMAN_SHELL_HTML, /<nav id="product-navigation"[^>]*hidden>/);
     assert.match(
       HUMAN_SHELL_JS,
       /byId\("product-navigation"\)\.hidden = !authenticated/
@@ -63,7 +63,7 @@ describe("Feature 081 automated accessibility complement", () => {
     assert.match(source, /hiddenFocusableVisible/);
     assert.match(source, /rect\.width < 24 \|\| rect\.height < 24/);
     assert.match(source, /setViewportSize\(\{ width: 320, height: 900 \}\)/);
-    assert.match(source, /scrollWidth - document\.documentElement\.clientWidth/);
+    assert.match(source, /document\.documentElement\.scrollWidth - viewportWidth/);
   });
 
   it("checks both anonymous and permission-aware authenticated states", async () => {

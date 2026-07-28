@@ -93,8 +93,10 @@ describe("EVAL-RBAC-001 — server-side role and tenant enforcement", () => {
       readFile("program/current-state.md", "utf8"),
       readFile("docs/decisions/063-public-training-before-authenticated-saas.md", "utf8"),
     ]);
-    assert.match(state, /browser authentication\/session architecture/i);
-    assert.match(state, /role-aware navigation/i);
+    assert.match(state, /provider-neutral human session\/BFF/i);
+    assert.match(state, /productive IdP integration/i);
+    assert.match(state, /access review/i);
+    assert.match(state, /role-aware (?:UI|navigation)/i);
     assert.match(decision, /OIDC|session|BFF/i);
     assert.match(decision, /Integration[\s\S]*credentials/i);
   });

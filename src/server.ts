@@ -69,7 +69,7 @@ import {
   handleHumanSessionBff,
   type HumanSessionBffOptions,
 } from "./humanSession/index.js";
-import { handleHumanShell } from "./humanShell/index.js";
+import { handleHumanShell, HUMAN_SHELL_RETURN_PATHS } from "./humanShell/index.js";
 import { processChatWithDependencies } from "./chat.js";
 import { closeDb } from "./db.js";
 import {
@@ -202,7 +202,12 @@ export const createRequestHandler = (options: ServerOptions = {}): RequestListen
     options.searchEvidenceV1
   );
   const publicQueryV1Dependencies = createPublicQueryDependencies(options.publicQueryV1);
-  const humanSessionDependencies = createHumanSessionBffDependencies(options.humanSession);
+  const humanSessionOptions = options.humanSession ?? {};
+  const humanSessionDependencies = createHumanSessionBffDependencies({
+    ...humanSessionOptions,
+    allowedReturnPaths:
+      humanSessionOptions.allowedReturnPaths ?? HUMAN_SHELL_RETURN_PATHS,
+  });
   const v1CorsAllowedOrigins =
     options.v1CorsAllowedOrigins ??
     (process.env.V1_CORS_ALLOWED_ORIGINS ?? "")

@@ -7,8 +7,8 @@ const read = (path: string): Promise<string> => readFile(path, "utf8");
 describe("EVAL-HUMAN-PRODUCT-SHELL-ACCESSIBILITY-001", () => {
   it("removes product navigation from anonymous accessibility state", async () => {
     const assets = await read("src/humanShell/assets.ts");
-    assert.match(assets, /<nav id=\?"product-navigation\?" hidden>/);
-    assert.match(assets, /byId\(\?"product-navigation\?"\)\.hidden = !authenticated/);
+    assert.ok(assets.includes('<nav id="product-navigation" aria-label="Navegación del producto" hidden>'));
+    assert.match(assets, /byId\("product-navigation"\)\.hidden = !authenticated/);
   });
 
   it("checks accessible names, IDs, targets, headings and hidden focus", async () => {
@@ -27,19 +27,19 @@ describe("EVAL-HUMAN-PRODUCT-SHELL-ACCESSIBILITY-001", () => {
 
   it("checks keyboard skip navigation and narrow viewport reflow", async () => {
     const smoke = await read("scripts/human-product-shell-browser-smoke.mjs");
-    assert.match(smoke, /page\.keyboard\.press\(\?"Tab\?"\)/);
+    assert.match(smoke, /page\.keyboard\.press\("Tab"\)/);
     assert.match(smoke, /element === document\.activeElement/);
     assert.match(smoke, /setViewportSize\(\{ width: 320, height: 900 \}\)/);
-    assert.match(smoke, /scrollWidth - document\.documentElement\.clientWidth/);
+    assert.match(smoke, /document\.documentElement\.scrollWidth - viewportWidth/);
     assert.match(smoke, /overflow <= 1/);
   });
 
   it("audits anonymous and permission-aware authenticated states", async () => {
     const smoke = await read("scripts/human-product-shell-browser-smoke.mjs");
-    assert.match(smoke, /state: \?"unauthenticated\?", visibleRoutes: \[\]/);
-    assert.match(smoke, /state: \?"authenticated\?", visibleRoutes: visible/);
+    assert.match(smoke, /state: "unauthenticated", visibleRoutes: \[\]/);
+    assert.match(smoke, /state: "authenticated", visibleRoutes: visible/);
     assert.match(smoke, /expectedAuthenticated \? 1 : 0/);
-    assert.match(smoke, /productive_authenticated_journeys: \?"0\/12\?"/);
+    assert.match(smoke, /productive_authenticated_journeys: "0\/12"/);
   });
 
   it("preserves role, malformed-route, session and storage protections", async () => {

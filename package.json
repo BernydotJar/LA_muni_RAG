@@ -90,7 +90,9 @@
     "eval:human-decision-packets": "node --import tsx --test --test-concurrency=1 src/__tests__/eval-human-decision-packets-001.test.ts",
     "test:human-product-shell-accessibility": "node --import tsx --test --test-concurrency=1 src/__tests__/human-product-shell-accessibility-v1.test.ts",
     "smoke:human-product-shell-cross-browser": "npm run build && for browser in chromium firefox webkit; do HUMAN_SHELL_BROWSER=$browser node scripts/human-product-shell-browser-smoke.mjs; done",
-    "eval:human-product-shell-accessibility": "node --import tsx --test --test-concurrency=1 src/__tests__/eval-human-product-shell-accessibility-001.test.ts"
+    "eval:human-product-shell-accessibility": "node --import tsx --test --test-concurrency=1 src/__tests__/eval-human-product-shell-accessibility-001.test.ts",
+    "test:human-workspace": "node --import tsx --test --test-concurrency=1 src/__tests__/human-product-workspace-v1.test.ts",
+    "eval:human-workspace": "node --import tsx --test --test-concurrency=1 src/__tests__/eval-human-workspace-001.test.ts"
   },
   "keywords": [],
   "author": "",

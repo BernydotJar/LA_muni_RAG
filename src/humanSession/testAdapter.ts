@@ -1,4 +1,5 @@
 import { pkceChallenge } from "./crypto.js";
+import { HumanIdentityProviderAuthenticationError } from "./providerErrors.js";
 import type {
   HumanAuthorizationCodeExchange,
   HumanAuthorizationRequest,
@@ -70,7 +71,7 @@ export class DeterministicHumanIdentityProvider implements HumanIdentityProvider
       pending.redirectUri !== request.redirectUri ||
       pkceChallenge(request.codeVerifier) !== pending.codeChallenge
     ) {
-      throw new Error("Test provider rejected authorization code");
+      throw new HumanIdentityProviderAuthenticationError();
     }
     this.issuedCodes.delete(request.code);
     return {

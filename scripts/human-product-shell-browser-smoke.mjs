@@ -166,8 +166,31 @@ const assertAccessibleShell = async (page, options) => {
   const originalViewport = page.viewportSize() || { width: 1280, height: 720 };
   await page.setViewportSize({ width: 320, height: 900 });
   await page.waitForTimeout(25);
-  const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
-  assert.ok(overflow <= 1, `document overflowed narrow viewport by ${overflow}px`);
+  const reflow = await page.evaluate(() => {
+    const viewportWidth = document.documentElement.clientWidth;
+    const overflowElements = [...document.querySelectorAll("body *")]
+      .filter((element) => {
+        const rect = element.getBoundingClientRect();
+        return rect.right > viewportWidth + 1 || rect.left < -1;
+      })
+      .slice(0, 12)
+      .map((element) => ({
+        tag: element.tagName.toLowerCase(),
+        id: element.id || "",
+        className: typeof element.className === "string" ? element.className : "",
+        right: Math.round(element.getBoundingClientRect().right),
+        scrollWidth: element.scrollWidth,
+        clientWidth: element.clientWidth,
+      }));
+    return {
+      overflow: document.documentElement.scrollWidth - viewportWidth,
+      overflowElements,
+    };
+  });
+  assert.ok(
+    reflow.overflow <= 1,
+    `document overflowed narrow viewport: ${JSON.stringify(reflow)}`
+  );
   await page.setViewportSize(originalViewport);
 
   if (expectedAuthenticated) {
@@ -218,7 +241,7 @@ const runRole = async ({ subject, expectedRole, visible, hidden }) => {
 
 
 
-  await page.goto(`${origin}/app`, { waitUntil: "domcontentloaded" });
+  await page.goto(`${origin}/app/search`, { waitUntil: "domcontentloaded" });
   await page.locator("body").waitFor({ state: "visible" });
   await page.waitForFunction(() => document.body.dataset.shellState === "unauthenticated");
   assert.equal(await page.locator("#sign-in").isVisible(), true);
@@ -228,7 +251,7 @@ const runRole = async ({ subject, expectedRole, visible, hidden }) => {
   assert.equal(await page.locator(".skip-link").evaluate((element) => element === document.activeElement), true);
 
   const signInHref = await page.locator("#sign-in").getAttribute("href");
-  assert.equal(signInHref, "/auth/login?return_to=%2Fapp");
+  assert.equal(signInHref, "/auth/login?return_to=%2Fapp%2Fsearch");
   const loginResponse = await context.request.get(`${origin}${signInHref}`, {
     failOnStatusCode: false,
     maxRedirects: 0,
@@ -265,6 +288,8 @@ const runRole = async ({ subject, expectedRole, visible, hidden }) => {
       pageErrors,
     })}`, { cause: error });
   }
+  assert.equal(new URL(page.url()).pathname, "/app/search");
+  assert.equal(await page.locator('[data-panel="evidence"]').isVisible(), true);
   assert.equal(await page.locator("#role-list").textContent(), expectedRole.replaceAll("_", " "));
   assert.equal(await page.locator("#tenant-id").textContent(), TENANT);
   assert.match(await page.locator("#principal-id").textContent(), /^[0-9a-f-]{36}$/);
@@ -276,6 +301,33 @@ const runRole = async ({ subject, expectedRole, visible, hidden }) => {
     assert.equal(await page.locator(`[data-route="${route}"]`).isVisible(), false, `${route} should be hidden`);
   }
   await assertAccessibleShell(page, { state: "authenticated", visibleRoutes: visible });
+  await page.locator('[data-route="overview"]').click();
+  await page.waitForFunction(() => location.pathname === "/app");
+  assert.equal(await page.locator('[data-panel="overview"]').isVisible(), true);
+
+  if (process.env.HUMAN_SHELL_SCREENSHOT_PATH && expectedRole === "tenant_admin") {
+    await page.screenshot({
+      path: process.env.HUMAN_SHELL_SCREENSHOT_PATH,
+      type: "jpeg",
+      quality: 72,
+      fullPage: false,
+    });
+  }
+
+  const primaryAction = page.locator('[data-action-route="evidence"]');
+  assert.equal(await primaryAction.isVisible(), true);
+  await primaryAction.click();
+  await page.waitForFunction(() => location.pathname === "/app/search");
+  assert.equal(await page.locator('[data-panel="evidence"]').isVisible(), true);
+  await page.locator('[data-route="overview"]').click();
+  await page.waitForFunction(() => location.pathname === "/app");
+  assert.equal(await page.locator('[data-panel="overview"]').isVisible(), true);
+  await page.goBack();
+  await page.waitForFunction(() => location.pathname === "/app/search");
+  assert.equal(await page.locator('[data-panel="evidence"]').isVisible(), true);
+  await page.goForward();
+  await page.waitForFunction(() => location.pathname === "/app");
+  assert.equal(await page.locator('[data-panel="overview"]').isVisible(), true);
 
   const storage = await page.evaluate(() => ({
     local: localStorage.length,
@@ -308,8 +360,15 @@ const runRole = async ({ subject, expectedRole, visible, hidden }) => {
 
   if (visible.includes("identity")) {
     await page.locator('[data-route="identity"]').click();
+    await page.waitForFunction(() => location.pathname === "/app/admin/identity");
     assert.equal(await page.locator('[data-panel="identity"]').isVisible(), true);
   } else {
+    await page.evaluate(() => {
+      history.pushState(null, "", "/app/admin/identity");
+      window.dispatchEvent(new PopStateEvent("popstate"));
+    });
+    await page.waitForFunction(() => location.pathname === "/app");
+    assert.equal(await page.locator('[data-panel="identity"]').isVisible(), false);
     await page.evaluate(() => { location.hash = "identity"; });
     await page.waitForFunction(() => location.hash === "#overview");
     assert.equal(await page.locator('[data-panel="identity"]').isVisible(), false);
@@ -358,6 +417,8 @@ try {
     web_storage_credentials: false,
     document_cookie_exposure: false,
     automated_accessibility_checks: true,
+    canonical_deep_links: true,
+    task_first_workspace: true,
     narrow_viewport: 320,
     minimum_target_px: 24,
     productive_authenticated_journeys: "0/12",

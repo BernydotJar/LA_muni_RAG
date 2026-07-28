@@ -12,7 +12,7 @@ Scope: local BFF/shell telemetry, load, failure injection and recovery evidence
 | Repository outage leaks secrets | generic 500, no internal text, no cookie mutation before authentication | transient repository failure test | database outage/retry storms and circuit breaking absent |
 | Provider outage leaves partial session | state/code consumed before exchange; generic 500; session cleared; fresh login required | transient provider exchange test | productive IdP retry/backoff/outage UX absent |
 | Concurrent rotation creates two sessions | repository atomic rotation; one winner, contenders denied | concurrent rotation test | multi-instance/database contention needs managed-state load evidence |
-| Local load gives false production confidence | output says local/non-productive; conservative thresholds; no productive SLO claim | harness output and named EVAL | representative TLS/ingress/IdP/Cloud SQL/user load absent |
+| Loopback latency could be misreported as a production SLO | output says local/non-productive; conservative thresholds; no productive SLO claim | harness output and named EVAL | representative TLS/ingress/IdP/Cloud SQL/user load absent |
 | Harness ignores expected denials | expected 401 count separated from unexpected/server errors | load assertions and telemetry summary | productive SLI semantics need approved error-budget policy |
 | In-memory collector leaks or grows indefinitely | test-only process-local collector; no production composition | source/EVAL assertions | productive aggregation/storage architecture absent |
 | Recovery evidence omits restart/failover | limitation explicitly documented | operations doc and program blockers | process restart, backup restore, DB failover and regional recovery required |

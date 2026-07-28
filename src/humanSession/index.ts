@@ -44,7 +44,7 @@ const boundedInteger = (
 
 const normalizeReturnPaths = (values: readonly string[] | undefined): readonly string[] => {
   const paths = values ?? ["/", "/app"];
-  if (paths.length < 1 || paths.length > 16) throw new Error("Human session return paths are invalid");
+  if (paths.length < 1 || paths.length > 32) throw new Error("Human session return paths are invalid");
   const normalized = paths.map((path) => {
     if (
       path.length < 1 ||
@@ -158,6 +158,10 @@ export {
   PostgresHumanSessionRepository,
 } from "./repository.js";
 export { DeterministicHumanIdentityProvider } from "./testAdapter.js";
+export {
+  HumanIdentityProviderAuthenticationError,
+  HumanIdentityProviderUnavailableError,
+} from "./providerErrors.js";
 export * from "./types.js";
 
 export {

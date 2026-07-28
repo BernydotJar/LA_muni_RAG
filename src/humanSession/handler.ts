@@ -3,12 +3,14 @@ import type { IncomingMessage, ServerResponse } from "node:http";
 import { isHumanSecurityRole, permissionsForRoles } from "../security/rbac.js";
 import { isCanonicalUuid } from "../security/tenant.js";
 import { digestsEqual, pkceChallenge, sha256Hex } from "./crypto.js";
+import { HumanIdentityProviderAuthenticationError } from "./providerErrors.js";
 import type {
   AuthenticatedHumanSession,
   HumanAuthenticationFailureReason,
   HumanSessionAuditReasonCode,
   HumanSessionBffDependencies,
   HumanSessionRecord,
+  HumanSessionTelemetryOperation,
 } from "./types.js";
 
 export const HUMAN_LOGIN_ROUTE = "/auth/login";
@@ -29,7 +31,7 @@ const AUTHORIZATION_CODE = /^[A-Za-z0-9._~-]{8,512}$/;
 const PROVIDER_VALUE_CONTROL = /[\u0000-\u001f\u007f]/;
 
 
-const TELEMETRY_OPERATION_BY_PATH = new Map([
+const TELEMETRY_OPERATION_BY_PATH = new Map<string, HumanSessionTelemetryOperation>([
   [HUMAN_LOGIN_ROUTE, "login"],
   [HUMAN_CALLBACK_ROUTE, "callback"],
   [HUMAN_SESSION_ROUTE, "session_bootstrap"],
@@ -61,7 +63,7 @@ const safeMonotonicNow = (dependencies: HumanSessionBffDependencies): number => 
 const recordTelemetry = (
   dependencies: HumanSessionBffDependencies,
   input: {
-    operation: "login" | "callback" | "session_bootstrap" | "session_rotate" | "logout";
+    operation: HumanSessionTelemetryOperation;
     method: string | undefined;
     statusCode: number;
     startedAt: number;
@@ -598,7 +600,23 @@ const handleCallback = async (
     );
   } catch (error) {
     if (error instanceof HumanSessionHttpError) throw error;
-    throw new HumanSessionHttpError(401, "human_authentication_failed", "Authentication failed", "provider_rejected", true);
+    if (error instanceof HumanIdentityProviderAuthenticationError) {
+      throw new HumanSessionHttpError(
+        401,
+        "human_authentication_failed",
+        "Authentication failed",
+        "provider_rejected",
+        true
+      );
+    }
+    throw new HumanSessionHttpError(
+      500,
+      "internal_error",
+      "Unexpected server error",
+      "provider_rejected",
+      true,
+      true
+    );
   }
   const actualNonce = Buffer.from(sha256Hex(providerIdentity.nonce), "hex");
   const expectedNonce = Buffer.from(sha256Hex(challenge.nonce), "hex");

@@ -1,15 +1,17 @@
 # Authenticated role-aware product shell
 
-Status: local deterministic foundation verified; productive authentication and browser journeys absent
-Last reviewed: 2026-07-27
+Status: local deterministic task-first foundation verified; productive authentication, data workflows and browser journeys absent
+Last reviewed: 2026-07-28
 
 ## Surface
 
 The API server exposes:
 
-- `/app` — semantic product shell;
-- `/app/shell.css` — responsive, reduced-motion-aware styling;
-- `/app/shell.js` — same-origin BFF session lifecycle and permission rendering.
+- `/app` — semantic task-first product shell;
+- `/app/shell.css` — responsive, reduced-motion and forced-colors-aware styling;
+- `/app/shell.js` — same-origin BFF session lifecycle, closed deep-link mapping and permission rendering.
+
+Feature 082 also serves an exact set of protected journey entry paths under `/app`, including search, research, procedures, cases, corpus, workflow, identity, audit, platform, accessibility and tenant-boundary paths. They all return the same no-store shell and reject mutation methods.
 
 These files are not part of the public GitHub Pages build. The shell can load without a session, but it renders no tenant workspace until `POST /auth/session` returns a valid locally authorized session.
 
@@ -27,7 +29,9 @@ Feature 079 telemetry observes only BFF route operation, method class, outcome, 
 
 ## Role-aware navigation
 
-The BFF returns roles and effective permissions derived from local membership. The shell validates both against closed allowlists and reveals modules only when the corresponding permission exists. Direct hash navigation to a denied module resolves to the overview.
+The BFF returns roles and effective permissions derived from local membership. The shell validates both against closed allowlists and reveals modules and task shortcuts only when the corresponding permission exists. Direct hash or path navigation to a denied module resolves to the overview with a fixed, non-reflective message.
+
+The workspace begins with municipal evidence tasks rather than technical session metrics. Navigation is grouped into work, corpus and governance. Session identifiers and counts remain available in a secondary disclosure. Empty states explicitly report that real corpus, productive identity and complete productive journeys are absent; the shell does not fabricate municipal results.
 
 A human session cannot carry the `integration_client` role. The in-memory repository, PostgreSQL resolution, session creation, authentication, and revocation paths exclude that service-only role.
 
@@ -54,4 +58,4 @@ These checks are complementary. They do not assert WCAG conformance or replace k
 
 ## Verification boundary
 
-A deterministic Chromium smoke verifies `viewer` and `tenant_admin` visibility, same-origin login, rotation, logout, HttpOnly cookie behavior, and empty local/session storage. That smoke uses the test-only provider and does not prove productive IdP interoperability or satisfy the twelve authenticated product journeys. Their official result remains `0/12`.
+A deterministic cross-browser smoke verifies canonical task navigation and deep-link authorization in addition to `viewer` and `tenant_admin` visibility, same-origin login, rotation, logout, HttpOnly cookie behavior, and empty local/session storage. That smoke uses the test-only provider and does not prove productive IdP interoperability or satisfy the twelve authenticated product journeys. Their official result remains `0/12`.

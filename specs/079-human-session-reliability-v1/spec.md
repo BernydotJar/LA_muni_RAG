@@ -40,4 +40,5 @@ Add a bounded, privacy-minimized telemetry contract and reproducible local relia
 - No productive telemetry backend, sampling policy, dashboard, alert, on-call rotation, burn-rate policy or retention/deletion operation exists.
 - No multi-instance coordination, process restart recovery, database failover, backup restore or regional recovery is exercised.
 - The official productive authenticated browser matrix remains `0/12`.
+- The local evidence is not a production SLO and cannot be promoted into one without representative infrastructure, an approved policy and operational ownership.
 - This feature is not production readiness.

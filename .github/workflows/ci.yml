@@ -164,6 +164,12 @@ jobs:
       - name: Run EVAL-HUMAN-PRODUCT-SHELL-ACCESSIBILITY-001
         run: npm run eval:human-product-shell-accessibility
 
+      - name: Run Feature 082 focused workspace tests
+        run: npm run test:human-workspace
+
+      - name: Run EVAL-HUMAN-WORKSPACE-001
+        run: npm run eval:human-workspace
+
       - name: Run EVAL-INGEST-001
         run: npm run eval:ingest
 

@@ -11,6 +11,36 @@ export const HUMAN_SHELL_CSS_ROUTE = "/app/shell.css";
 export const HUMAN_SHELL_JS_ROUTE = "/app/shell.js";
 export const HUMAN_SHELL_FAVICON_ROUTE = "/app/favicon.svg";
 export const HUMAN_SHELL_LEGACY_FAVICON_ROUTE = "/favicon.ico";
+export const HUMAN_SHELL_DEEP_LINK_ROUTES = Object.freeze([
+  "/app/login",
+  "/app/search",
+  "/app/research",
+  "/app/procedures",
+  "/app/cases",
+  "/app/sources",
+  "/app/documents",
+  "/app/ingestion",
+  "/app/workflows",
+  "/app/workflows/author",
+  "/app/workflows/review",
+  "/app/workflows/approve",
+  "/app/admin/identity",
+  "/app/audit",
+  "/app/platform",
+  "/app/accessibility",
+  "/app/tenant-boundary",
+]);
+export const HUMAN_SHELL_RETURN_PATHS = Object.freeze([
+  "/",
+  HUMAN_SHELL_ROUTE,
+  ...HUMAN_SHELL_DEEP_LINK_ROUTES,
+]);
+
+const SHELL_HTML_ROUTES = new Set<string>([
+  HUMAN_SHELL_ROUTE,
+  `${HUMAN_SHELL_ROUTE}/`,
+  ...HUMAN_SHELL_DEEP_LINK_ROUTES,
+]);
 
 const CONTENT = new Map<string, { body: string; contentType: string }>([
   [HUMAN_SHELL_ROUTE, { body: HUMAN_SHELL_HTML, contentType: "text/html; charset=utf-8" }],
@@ -67,7 +97,11 @@ export const handleHumanShell = (
   res: ServerResponse,
   url: URL
 ): boolean => {
-  const content = CONTENT.get(url.pathname);
+  const content = CONTENT.get(url.pathname) ?? (
+    SHELL_HTML_ROUTES.has(url.pathname)
+      ? { body: HUMAN_SHELL_HTML, contentType: "text/html; charset=utf-8" }
+      : undefined
+  );
   if (!content) return false;
 
   if (req.method !== "GET" && req.method !== "HEAD") {
