@@ -419,3 +419,14 @@ non-owner forced-RLS gate; typecheck/build, dependency, structured, secret/PII a
 Limit: deterministic browser evidence is not productive IdP interoperability, complete
 workflow evidence, WCAG conformance, human acceptance, branch publication, merge, deployment
 or production readiness. Productive authenticated journeys remain `0/12`.
+
+
+## 2026-07-28T19:42:05Z — Add a generic confidential OIDC adapter without selecting a productive provider
+
+Decision: implement Feature 083 behind the existing BFF using path-aware OIDC discovery, exact HTTPS endpoint-origin allowlists, authorization code plus PKCE S256, bounded confidential token exchange, public asymmetric JWKS validation and issuer/audience/`azp`/time checks. Provider output is reduced to issuer, opaque subject and nonce; local memberships remain the only tenant and authorization source.
+
+Decision: require explicit `HUMAN_SESSION_ENABLED=true` and `HUMAN_SESSION_PROVIDER_APPROVED=true` plus complete server-side configuration. The repository does not select, provision or approve an IdP and commits no registration or credentials. Provider 4xx rejection remains generic 401; timeout, 429 and 5xx remain generic 503.
+
+Evidence: functional commit `7ec7037af4af5601c5c515be1bdf4aef35682a0a`; focused 10/10; `EVAL-HUMAN-OIDC-PROVIDER-001` 9/9; regression 995/997 with zero failures and two explicit environment skips; public browser 10/10; Chromium/Firefox/WebKit deterministic authenticated smoke; typecheck/build/contracts/audits/structured/secret-PII/diff gates passed.
+
+Limit: no productive provider selection, client registration, credential, external interoperability, MFA/recovery/access review, productive user or managed environment exists. Productive journeys remain `0/12`; no merge, deployment or production-readiness claim is made.

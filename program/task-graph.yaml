@@ -1,5 +1,5 @@
 schema_version: 1
-generated_at: '2026-07-28T18:05:28Z'
+generated_at: '2026-07-28T19:42:23Z'
 program:
   id: LA-MUNI-RAG-PROD
   objective: Make LA Muni RAG production-ready within its evidence, procedure, workflow, case-tracking, and integration domain.
@@ -13,14 +13,14 @@ program:
 baseline:
   origin_main_commit: 4950ba3c24dbe7d9891d5cec8d7ba5f57db3ef9c
   observed_branch: feature/gcp-cloudsql-staging-v1
-  observed_commit: ffa30433db9ba62812dd0dac680963759b4868cb
-  feature_implementation_commit: ffa30433db9ba62812dd0dac680963759b4868cb
-  local_program_branch_commit: ffa30433db9ba62812dd0dac680963759b4868cb
+  observed_commit: 7ec7037af4af5601c5c515be1bdf4aef35682a0a
+  feature_implementation_commit: 7ec7037af4af5601c5c515be1bdf4aef35682a0a
+  local_program_branch_commit: 7ec7037af4af5601c5c515be1bdf4aef35682a0a
   upstream: origin/feature/gcp-cloudsql-staging-v1
   upstream_commit: f858cecab6b24b00ad625c3986fbc03d347ef59e
-  upstream_state: features077_through082_local_release_gate_passed_publication_pending
+  upstream_state: features077_through083_local_release_gate_passed_publication_pending
   divergence:
-    ahead: 8
+    ahead: 10
     behind: 0
   divergence_from_origin_main:
     ahead: 89
@@ -33,8 +33,8 @@ baseline:
   canonical_gate:
     status: passed_local_release_gate_remote_publication_pending
     tests:
-      passed: 976
-      total: 978
+      passed: 995
+      total: 997
       skipped: 2
       failed: 0
     typecheck: passed
@@ -71,6 +71,7 @@ baseline:
       EVAL-HUMAN-DECISION-PACKETS-001: passed_for_four_pending_human_gates_with_zero_selected_options_and_actions
       EVAL-HUMAN-PRODUCT-SHELL-ACCESSIBILITY-001: passed_for_cross_browser_automated_complement_without_conformance_claim
       EVAL-HUMAN-WORKSPACE-001: passed_for_task_first_local_workspace_with_productive_workflow_limitations
+      EVAL-HUMAN-OIDC-PROVIDER-001: passed_for_generic_oidc_adapter_with_productive_provider_limitations
     missing_dedicated_evals:
     - EVAL-SOURCE-001
     - EVAL-MISSING-001
@@ -430,7 +431,7 @@ tasks:
     productive_idp: absent
     production_ready: false
   limitations:
-  - Productive OIDC discovery/JWKS/token validation, provider selection, client registration and credentials require explicit human approval.
+  - Generic OIDC validation is supplied by Feature 083; productive provider selection, registration, credentials and external interoperability require explicit human approval.
   - Authenticated role-aware UI, MFA/recovery, access review, retention/purge operations, deployment and browser journeys are absent.
 - id: WS07-HUMAN-PRODUCT-SHELL-001
   workstream: WS-07
@@ -537,6 +538,34 @@ tasks:
     production_ready: false
   limitations:
   - No productive IdP, real corpus, complete browser-to-domain workflows, managed browser environment or external municipal users.
+- id: WS07-HUMAN-OIDC-PROVIDER-001
+  workstream: WS-07
+  title: Implement provider-neutral confidential OIDC adapter v1
+  status: completed_with_limitations
+  owner: /root
+  depends_on:
+  - WS07-HUMAN-SESSION-BFF-001
+  outputs:
+  - src/humanSession/oidcAdapter.ts
+  - src/humanSession/config.ts
+  - specs/083-provider-neutral-oidc-adapter-v1/
+  - docs/decisions/083-provider-neutral-oidc-adapter.md
+  - docs/risks/083-provider-neutral-oidc-adapter-risk-register.md
+  - docs/traceability/083-provider-neutral-oidc-adapter-v1.md
+  - docs/reviews/083-provider-neutral-oidc-adapter-independent-review.md
+  result:
+    functional_commit: 7ec7037af4af5601c5c515be1bdf4aef35682a0a
+    focused_tests: 10/10 passed
+    named_eval: EVAL-HUMAN-OIDC-PROVIDER-001 9/9 passed
+    integrated_regression: 995/997 passed; 0 failed; 2 explicit environment skips
+    public_browser: 10/10 passed
+    browsers: Chromium, Firefox and WebKit passed deterministic authenticated smoke
+    dependency_audit: 0 vulnerabilities
+    secret_pii_scan: 1398 added lines; no findings
+    productive_authenticated_journeys: 0/12
+    production_ready: false
+  limitations:
+  - No productive provider selection, client registration, credentials, external interoperability, MFA/recovery, access review, managed secrets or deployment.
 - id: WS03-ING-001
   workstream: WS-03
   title: Audit and harden authenticated ingestion, idempotency, corrupt-input handling, and retry
@@ -1730,8 +1759,9 @@ blockers:
   - WS07-HUMAN-SESSION-BFF-001
   - WS07-HUMAN-PRODUCT-SHELL-001
   - WS09-HUMAN-WORKSPACE-001
+  - WS07-HUMAN-OIDC-PROVIDER-001
   state: open
-  condition: Local BFF and shell foundations exist, but no productive IdP adapter/configuration, credentials, interoperability, MFA/recovery or access-review decision is approved.
+  condition: Local BFF, shell and generic OIDC adapter exist, but no productive IdP selection, provider-specific configuration, client registration/credential, external interoperability, MFA/recovery or access-review decision is approved.
   next_safe_action: Require a conforming human receipt before selecting or provisioning productive identity.
 - id: BLK-HUMAN-WORKFLOWS-082
   affects:
@@ -1762,8 +1792,9 @@ blockers:
 - id: BLK-BRANCH-PUBLICATION-082
   affects:
   - WS09-HUMAN-WORKSPACE-001
+  - WS07-HUMAN-OIDC-PROVIDER-001
   state: open
-  condition: Local Features 077–082 are verified but remote branch and draft PR #24 remain at f858cecab6b24b00ad625c3986fbc03d347ef59e.
+  condition: Local Features 077–083 are verified but remote branch and draft PR #24 remain at f858cecab6b24b00ad625c3986fbc03d347ef59e.
   next_safe_action: Publish by audited non-forced fast-forward push and observe exact-SHA CI.
 - id: BLK-GCP-LIFECYCLE-074
   affects:
@@ -2112,6 +2143,15 @@ claims:
   - Public browser 10/10, Chromium/Firefox/WebKit authenticated local smoke, PostgreSQL non-owner gate, typecheck/build/audits/scans pass.
   limitations:
   - Productive journeys remain 0/12; no productive IdP, real corpus, complete workflows, external users, managed environment, merge or deployment.
+- id: CLAIM-HUMAN-OIDC-PROVIDER-V1
+  statement: The BFF has a provider-neutral confidential OIDC adapter with bounded discovery, token exchange and asymmetric ID-token verification.
+  status: supported_with_productive_provider_registration_interoperability_and_operations_limitations
+  evidence:
+  - Functional commit 7ec7037af4af5601c5c515be1bdf4aef35682a0a; focused 10/10; EVAL-HUMAN-OIDC-PROVIDER-001 9/9; regression 995/997 with zero failures.
+  - Public browser 10/10, Chromium/Firefox/WebKit deterministic authenticated smoke, typecheck/build/contracts/audits/scans pass.
+  limitations:
+  - No provider is selected, provisioned or approved; no registration, credential, external interoperability, productive user, managed environment, merge or deployment.
+  - Productive authenticated journeys remain 0/12 and production readiness is not claimed.
 owners:
   orchestrator: /root
   current_control_files_owner: /root/program_tooling

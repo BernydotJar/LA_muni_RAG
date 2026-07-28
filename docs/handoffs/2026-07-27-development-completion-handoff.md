@@ -18,7 +18,7 @@ Repository: https://github.com/BernydotJar/LA_muni_RAG.git
 Workspace preferido: b909e055-62ae-4625-ac13-10947906a08f
 Root: /workspace
 Working branch: feature/gcp-cloudsql-staging-v1
-Expected handoff HEAD: ffa30433db9ba62812dd0dac680963759b4868cb
+Expected handoff functional HEAD: 7ec7037af4af5601c5c515be1bdf4aef35682a0a
 Draft PR: #24, base feature/ephemeral-staging-runner-v1
 
 Fuentes de verdad:
@@ -69,7 +69,7 @@ No declares production readiness.
 
 - documentos reales autorizados acreditados como ingested: 0;
 - retrieval quality sobre corpus real: 0;
-- provider-neutral human IdP/OIDC/PKCE/BFF/session foundation: verified locally; productive IdP/configuration/credentials absent;
+- provider-neutral human IdP/OIDC/PKCE/BFF/session foundation: verified locally; generic adapter verified; productive provider selection/registration/configuration/credentials and external interoperability absent;
 - local task-first role-aware shell: verified in Chromium/Firefox/WebKit with a deterministic test provider; productive authenticated journeys: 0/12, blocked;
 - consumer executions en repos externos: ausentes;
 - managed GCP staging receipt: ausente;
@@ -81,7 +81,7 @@ No implementes capacidades pertenecientes a OS Electoral o Content Agency. Mant�
 
 ## Misión y prioridades
 
-Features 077–082 are implemented and locally verified. Do not repeat them. Preserve their
+Features 077–083 are implemented and locally verified. Do not repeat them. Preserve their
 focused and named EVAL gates and continue only where real prerequisites exist.
 
 ### Completed local foundations
@@ -92,8 +92,9 @@ focused and named EVAL gates and continue only where real prerequisites exist.
 - Feature 080: four human decision packets; zero selected options, zero authorized actions and zero receipts.
 - Feature 081: Chromium/Firefox/WebKit automated accessibility complement; no WCAG or human-acceptance claim.
 - Feature 082: task-first municipal evidence workspace, canonical protected deep links, exact login return allowlist, history-safe navigation and honest zero-data states.
+- Feature 083: provider-neutral confidential OIDC adapter with bounded discovery/token/JWKS validation; no provider selected or approved.
 
-Functional head: `ffa30433db9ba62812dd0dac680963759b4868cb`.
+Functional head: `7ec7037af4af5601c5c515be1bdf4aef35682a0a`.
 Release gate: 978 total / 976 pass / 0 fail / 2 explicit environment skips; public browser 10/10; Chromium/Firefox/WebKit authenticated local smoke; PostgreSQL 15.18/pgvector 0.8.5 non-owner forced-RLS gate; typecheck/build/audits/scans pass.
 
 ### Next safe priorities

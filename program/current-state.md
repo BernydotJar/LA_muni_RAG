@@ -1,8 +1,8 @@
 # LA Muni RAG — Current Program State
 
-Updated: 2026-07-28T18:04:37Z
+Updated: 2026-07-28T19:41:48Z
 
-Program status: **PARTIAL WITH DOCUMENTED BLOCKERS — Features 077–082 provide a locally verified provider-neutral human BFF, task-first role-aware shell, reliability harness, human decision packets and cross-browser accessibility complement; productive identity, complete workflows, real corpus, managed staging evidence, publication and production release remain open**
+Program status: **PARTIAL WITH DOCUMENTED BLOCKERS — Features 077–083 provide a locally verified provider-neutral human BFF, generic OIDC adapter, task-first role-aware shell, reliability harness, human decision packets and cross-browser accessibility complement; productive identity, complete workflows, real corpus, managed staging evidence, publication and production release remain open**
 
 ## Authoritative checkout
 
@@ -10,7 +10,7 @@ Program status: **PARTIAL WITH DOCUMENTED BLOCKERS — Features 077–082 provid
 workspace_id: b909e055-62ae-4625-ac13-10947906a08f
 root: /workspace
 branch: feature/gcp-cloudsql-staging-v1
-evidence_baseline_head: ffa30433db9ba62812dd0dac680963759b4868cb
+evidence_baseline_head: 7ec7037af4af5601c5c515be1bdf4aef35682a0a
 working_tree_at_baseline: clean
 pull_request: 24 draft
 merged: false
@@ -115,7 +115,7 @@ credential stripping. Unexpected page or console errors fail the gate.
 
 The browser run found and fixed three public-surface defects: missing favicon, a skip-link
 target that could not receive programmatic focus, and Academia missing the Pages API bridge.
-This was public-surface evidence only and did not test human identity. Features 077–082
+This was public-surface evidence only and did not test human identity. Features 077–083
 subsequently added a local provider-neutral BFF and role-aware UI/navigation shell with
 Chromium, Firefox and WebKit evidence. Productive IdP interoperability, complete workflows,
 screen-reader acceptance and all twelve productive journeys remain pending.
@@ -139,7 +139,7 @@ removed immediately after success; the environment again allows only `main`. Dep
 `30226975010` succeeded, and both workflow and independent Chromium desktop/mobile verification
 confirmed the exact SHA at https://bernydotjar.github.io/LA_muni_RAG/. Rollback run `30229913868` completed successfully from `main` at exact SHA `4950ba3c24dbe7d9891d5cec8d7ba5f57db3ef9c`. The latest `github-pages` deployment now references that SHA, the public URL returns HTTP 200, `build-metadata.json` returns 404 as expected for the prior publication, and the temporary candidate SHA is absent from public HTML. The product owner later reported completing the requested manual smoke review. This is user-attested manual acceptance only, not a structured WCAG, screen-reader, legal, authenticated-session or real-corpus evaluation.
 
-The continuation contract is persisted at `docs/handoffs/2026-07-27-development-completion-handoff.md`. Its original Feature 077 recommendation has been completed and superseded by the Features 077–082 checkpoint recorded below.
+The continuation contract is persisted at `docs/handoffs/2026-07-27-development-completion-handoff.md`. Its original Feature 077 recommendation has been completed and superseded by the Features 077–083 checkpoint recorded below.
 
 ## Feature 077 — provider-neutral human session/BFF foundation v1
 
@@ -163,9 +163,10 @@ Node/PostgreSQL smoke, typecheck, build, dependency audits, structured validatio
 secret/PII scan and 905/908 integrated tests with three explicit environment skips and zero
 failures. Functional commit: `1af3f0ecdca4fe49b47e5e1209f563c30a314adf`.
 
-No productive IdP, discovery/JWKS/token adapter, client credential, MFA/recovery policy,
-access-review operation or complete productive browser workflow is claimed. A later local
-role-aware UI/navigation shell exists only with the deterministic test provider. The productive
+Feature 083 later supplies a generic discovery/JWKS/token adapter. No productive IdP selection,
+client registration or credential, MFA/recovery policy, access-review operation, external OIDC
+interoperability or complete productive browser workflow is claimed. The local role-aware
+UI/navigation shell still uses only the deterministic test provider. The productive
 matrix remains `0/12`; this is not production readiness.
 
 
@@ -225,6 +226,27 @@ The deterministic identity adapter is test-only. Productive authenticated journe
 `0/12`; no productive IdP, complete browser-to-domain workflow, real municipal corpus,
 external municipal user or managed browser environment is claimed.
 
+## Feature 083 — provider-neutral OIDC adapter v1
+
+The BFF now has a confidential provider-neutral OIDC adapter with path-aware discovery, exact
+issuer and endpoint-origin validation, authorization code plus PKCE S256, bounded token/JWKS
+reads, asymmetric RS256/PS256/ES256 verification, audience/`azp`/time validation, unique public
+verification keys and URI-bound JWKS caching. Provider roles, groups, tenant and profile claims
+are discarded; only issuer, opaque subject and nonce reach local membership resolution.
+Environment composition remains disabled by default and fails closed without explicit enablement,
+provider approval and complete server-side configuration.
+
+Feature 083 focused tests passed 10/10 and `EVAL-HUMAN-OIDC-PROVIDER-001` passed 9/9. Full
+regression passed 995/997 with zero failures and two explicit environment skips; public browser
+passed 10/10; Chromium, Firefox and WebKit passed deterministic authenticated smoke; typecheck,
+build, contracts, kits, inventory, packets, audits, structured validation, secret/PII and diff gates
+passed. Functional commit: `7ec7037af4af5601c5c515be1bdf4aef35682a0a`.
+
+Productive IdP integration remains absent. No productive IdP is selected, provisioned or approved. Client registration, credentials, provider
+metadata receipt, external interoperability, MFA/recovery, access review, managed secrets, external
+users and deployed browser environment remain absent. Productive journeys remain `0/12`; this is
+not production readiness.
+
 ## Verification
 
 ```text
@@ -237,6 +259,8 @@ EVAL-HUMAN-SESSION-RELIABILITY-001: 9/9 pass
 EVAL-HUMAN-DECISION-PACKETS-001: 9/9 pass
 EVAL-HUMAN-PRODUCT-SHELL-ACCESSIBILITY-001: 9/9 pass
 EVAL-HUMAN-WORKSPACE-001: 8/8 pass
+EVAL-HUMAN-OIDC-PROVIDER-001: 9/9 pass
+Feature 083 focused OIDC adapter: 10/10 pass
 Feature 082 focused workspace: 6/6 pass
 Public browser gate: 10/10 pass
 Authenticated local shell smoke: Chromium / Firefox / WebKit pass
@@ -244,7 +268,7 @@ Feature 077 focused lifecycle/migration: 20/20 pass
 Feature 077 PostgreSQL non-owner gate and compiled smoke: pass
 Feature 076 final CI: Backend 30224836298 / 30224834914 success; Public Browser 30224836291 / 30224834919 success; Terraform 30224836307 success
 Playwright public browser gate: 10/10 pass (Chromium desktop + mobile); remote runs 30180490148 / 30180488768 success
-full regression: 978 total / 976 pass / 0 fail / 2 environment skips
+full regression: 997 total / 995 pass / 0 fail / 2 environment skips
 Bash syntax: pass
 Typecheck: pass
 Build: pass
@@ -286,7 +310,7 @@ truth.
 2. Preserve the green Public Browser Gate as a required public-only check; do not count it as authenticated E2E.
 3. Preserve the completed Feature 076 deployment and rollback receipts; require a new exact-SHA, bounded authorization for any future Pages replacement.
 4. Review actual billing after export latency; obtain a new explicit authorization for any restart or teardown.
-5. Preserve the local Features 077–082 gates; obtain productive IdP, corpus, workflow, accessibility, observability and managed-environment approvals/evidence before counting any authenticated journey.
+5. Preserve the local Features 077–083 gates; obtain productive IdP, corpus, workflow, accessibility, observability and managed-environment approvals/evidence before counting any authenticated journey.
 6. Publish the fast-forward branch only through the audited push capability, then observe exact-SHA CI and update draft PR #24.
 
 ## Critical blockers
@@ -297,7 +321,7 @@ truth.
   controls, deployed staging and approval;
 - `BLK-CORPUS-OPS-001`: source rights, durable object storage, scanner and
   retention/legal-hold controls are unavailable;
-- the provider-neutral BFF and task-first role-aware shell pass local deterministic gates, but no approved productive IdP, complete browser-to-domain workflows or real managed environment exists; twelve productive journeys remain blocked;
+- the provider-neutral BFF, generic OIDC adapter and task-first role-aware shell pass local gates, but no approved productive IdP registration/credentials, external interoperability, complete browser-to-domain workflows or real managed environment exists; twelve productive journeys remain blocked;
 - external consumer repositories have not executed their suites;
 - no managed Cloud SQL staging execution, observability/SLO, load/HA, coordinated
   recovery or privacy operation exists;
@@ -309,7 +333,7 @@ truth.
 - A protected state bucket is not a Cloud SQL deployment.
 - There is no production object store, scanner/definitions monitor or dispatcher operating.
 - Zero documents are credited as ingested; the minimum Antigua-first and comparative corpus is incomplete.
-- A provider-neutral BFF/session foundation and role-aware UI/navigation task-first shell are implemented locally; productive IdP integration, recovery/MFA, access review, complete workflows and human accessibility acceptance remain unimplemented.
+- A provider-neutral BFF/session foundation, generic OIDC adapter and role-aware UI/navigation task-first shell are implemented locally; productive IdP approval/registration/credentials, recovery/MFA, access review, complete workflows and human accessibility acceptance remain absent.
 - EvidenceGap is intake-only; no research assignment, resolution lifecycle or notification workflow is implemented.
 - An offline approved-shape plan is not a plan against live GCP state.
 - A live Terraform plan is not authorization to apply it.

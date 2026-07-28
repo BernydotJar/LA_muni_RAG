@@ -1,6 +1,6 @@
 # LA Muni RAG — Open Issues
 
-Updated: 2026-07-28T18:04:37Z
+Updated: 2026-07-28T19:41:48Z
 
 ## Critical
 
@@ -29,7 +29,7 @@ Zero real documents are credited as ingested. Human/platform inputs required:
 
 ### E2E-OPEN-IDP-002 — productive human identity and authenticated UI absent
 
-Feature 077 implements and locally verifies a provider-neutral BFF/session foundation with state/browser binding, nonce, PKCE S256, secure cookie policy, CSRF/bootstrap proof, rotation, logout, revocation, local membership mapping and minimized audit. It remains disabled by default. No productive IdP product or adapter/configuration, client registration/credential, discovery/JWKS/token interoperability, MFA/recovery, access review or deployed browser environment exists. A local role-aware shell exists but is test-adapter-only and does not implement complete productive workflows. All twelve browser journeys remain explicitly blocked (`0/12`).
+Features 077 and 083 implement and locally verify a provider-neutral BFF/session foundation plus a generic confidential discovery/JWKS/token adapter. Composition remains disabled by default. No productive IdP selection, provider-specific configuration, client registration/credential, external interoperability, MFA/recovery, access review or deployed browser environment exists. A local role-aware shell exists but is test-adapter-only and does not implement complete productive workflows. All twelve browser journeys remain explicitly blocked (`0/12`).
 
 ### GCP-EXECUTION-074 — managed restart window expired without a successful receipt
 
@@ -65,9 +65,9 @@ The IdP, corpus, Cloud SQL lifecycle and production-control packets remain pendi
 selected options and zero authorized actions. No packet authenticates authority or permits
 execution by itself.
 
-### BRANCH-PUBLICATION-082 — local verified commits are not on PR #24
+### BRANCH-PUBLICATION-083 — local verified commits are not on PR #24
 
-The local branch contains Features 077–082 through `ffa3043`, while the remote branch and
+The local branch contains Features 077–083 through `7ec7037`, while the remote branch and
 draft PR remain at `f858cec`. Audited non-forced publication and exact-SHA CI observation are
 required; shell `git push` is not an approved bypass.
 
@@ -91,7 +91,7 @@ Database-backed rate limits are defense in depth, not DDoS protection. Cloud Arm
 
 ### ACCESSIBILITY-HUMAN-001 — human accessibility evidence absent
 
-Automated contrast plus Chromium desktop/mobile focus, keyboard, reduced-motion and fail-closed public-surface gates pass. Firefox/WebKit, screen-reader and human WCAG review do not.
+Automated contrast plus Chromium desktop/mobile focus, keyboard, reduced-motion and fail-closed public-surface gates pass. Firefox/WebKit automated checks pass; screen-reader and human WCAG review do not.
 
 ### OCR-EVAL-001 — OCR production candidate unbenchmarked
 

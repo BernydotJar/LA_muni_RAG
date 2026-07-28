@@ -1,12 +1,12 @@
 {
   "schema_version": "1.23.0",
-  "generated_at": "2026-07-28T18:06:51Z",
+  "generated_at": "2026-07-28T19:43:10Z",
   "branch": "feature/gcp-cloudsql-staging-v1",
-  "functional_head": "ffa30433db9ba62812dd0dac680963759b4868cb",
-  "status": "passed_features077_through082_local_foundations_with_productive_identity_workflow_data_environment_accessibility_publication_and_release_blockers",
+  "functional_head": "7ec7037af4af5601c5c515be1bdf4aef35682a0a",
+  "status": "passed_features077_through083_local_foundations_with_productive_identity_workflow_data_environment_accessibility_publication_and_release_blockers",
   "deterministic": {
-    "tests": 978,
-    "pass": 976,
+    "tests": 997,
+    "pass": 995,
     "fail": 0,
     "skipped": 2,
     "typecheck": "pass",
@@ -14,9 +14,9 @@
     "pages": "pass",
     "audits": "0 vulnerabilities",
     "public_browser_gate": "10/10 Chromium desktop/mobile pass",
-    "secret_pii_scan": "pass",
+    "secret_pii_scan": "pass_1398_added_lines",
     "structured_validation": "pass",
-    "authenticated_shell_cross_browser": "Chromium Firefox WebKit pass"
+    "authenticated_shell_cross_browser": "chromium_firefox_webkit_pass"
   },
   "contracts": {
     "canonical_schemas": 33,
@@ -438,18 +438,28 @@
       "non_owner_forced_rls_gate": "pass",
       "independent_review": "PASS WITH LIMITATIONS",
       "productive_authenticated_journeys": "0/12"
+    },
+    "EVAL-HUMAN-OIDC-PROVIDER-001": {
+      "command": "npm run eval:human-oidc-provider",
+      "passed": 9,
+      "total": 9,
+      "result": "passed_for_generic_confidential_oidc_adapter_with_productive_provider_registration_interoperability_and_operations_limitations",
+      "functional_sha": "7ec7037af4af5601c5c515be1bdf4aef35682a0a",
+      "focused_tests": "10/10",
+      "independent_review": "PASS WITH LIMITATIONS",
+      "productive_authenticated_journeys": "0/12"
     }
   },
   "publication": {
     "branch": "feature/gcp-cloudsql-staging-v1",
-    "functional_sha": "ffa30433db9ba62812dd0dac680963759b4868cb",
+    "functional_sha": "7ec7037af4af5601c5c515be1bdf4aef35682a0a",
     "remote_base_sha_verified": "f858cecab6b24b00ad625c3986fbc03d347ef59e",
     "prior_ci": {
       "backend_run_id": 29980032034,
       "terraform_run_id": 29980032069,
       "conclusion": "success_on_prior_functional_base"
     },
-    "current_ci_status": "pending_audited_publication",
+    "current_ci_status": "pending_audited_publication_host_runtime_blocked",
     "pr": 24,
     "pr_state": "draft",
     "merged": false,
@@ -481,7 +491,7 @@
     "human_assistive_technology_acceptance",
     "productive_observability_slo_and_on_call",
     "human_decision_receipts",
-    "exact_sha_ci_for_features077_through082"
+    "exact_sha_ci_for_features077_through083"
   ],
   "limitations": [
     "The exact authorized Cloud SQL plan was applied and the instance is stopped; managed synthetic execution and destructive teardown remain absent.",
@@ -489,7 +499,7 @@
     "Actual provider billing remains pending and stopped resources may retain storage or backup charges.",
     "No authorized real corpus, external consumer execution, protected merge or production deployment.",
     "No exact-SHA public Pages deployment or rollback receipt; the current public URL serves legacy main content.",
-    "Features 077–082 are local provider-neutral foundations; productive IdP interoperability, complete workflows, real corpus, managed users/environment and all twelve productive journeys remain blocked.",
+    "Features 077–083 are local provider-neutral foundations; generic OIDC validation exists, but productive IdP selection/registration/credentials and interoperability, complete workflows, real corpus, managed users/environment and all twelve productive journeys remain blocked.",
     "Cross-browser accessibility automation does not establish WCAG conformance or human assistive-technology acceptance.",
     "Four decision packets contain zero selected options, zero authorized actions and zero receipts.",
     "Local telemetry/load evidence is not a productive SLO or operating model.",
@@ -530,7 +540,9 @@
     "authenticated_role_aware_ui": true,
     "authenticated_browser_journeys_passed": 0,
     "authenticated_browser_journeys_blocked": 12,
-    "local_task_first_workspace": true
+    "local_task_first_workspace": true,
+    "generic_oidc_adapter": true,
+    "generic_oidc_adapter_sha": "7ec7037af4af5601c5c515be1bdf4aef35682a0a"
   },
   "human_product_shell": {
     "status": "local_role_aware_task_first_foundation_verified",
@@ -587,6 +599,23 @@
     "browser_history": true,
     "provider_error_taxonomy": true,
     "independent_review": "PASS WITH LIMITATIONS",
+    "productive_authenticated_journeys": "0/12",
+    "production_ready": false
+  },
+  "human_oidc_provider": {
+    "status": "local_generic_adapter_verified_disabled_by_default",
+    "functional_sha": "7ec7037af4af5601c5c515be1bdf4aef35682a0a",
+    "focused_tests": "10/10",
+    "named_eval": "9/9",
+    "allowed_algorithms": [
+      "RS256",
+      "PS256",
+      "ES256"
+    ],
+    "provider_selected": false,
+    "client_registered": false,
+    "productive_credentials": false,
+    "external_interoperability": false,
     "productive_authenticated_journeys": "0/12",
     "production_ready": false
   }

@@ -1,15 +1,15 @@
 # LA Muni RAG — Release Plan
 
-Updated: 2026-07-28T18:04:37Z
+Updated: 2026-07-28T19:42:05Z
 
 ## Current release state
 
 ```text
 functional_branch: feature/gcp-cloudsql-staging-v1
-functional_candidate_sha: ffa30433db9ba62812dd0dac680963759b4868cb
+functional_candidate_sha: 7ec7037af4af5601c5c515be1bdf4aef35682a0a
 remote_parent_sha: f858cecab6b24b00ad625c3986fbc03d347ef59e
 working_tree_at_handoff: clean
-push_status: local_features077_through082_verified_publication_pending_audited_push
+push_status: local_features077_through083_verified_publication_pending_audited_push_host_runtime_blocked
 pull_request: 24 draft, open, mergeable, CLEAN
 merged_to_main: false
 cloud_sql_instance_created: true
@@ -22,7 +22,7 @@ public_browser_gate: 10/10 Chromium desktop/mobile
 online_pages_exact_sha_pilot: completed_and_verified
 online_pages_rollback: completed_to_4950ba3c24dbe7d9891d5cec8d7ba5f57db3ef9c
 pages_api_bound: false
-human_session_bff: local_provider_neutral_foundation_verified_disabled_by_default
+human_session_bff: local_provider_neutral_foundation_and_generic_oidc_adapter_verified_disabled_by_default
 authenticated_browser_journeys: 0/12 blocked
 real_documents_ingested: 0
 production_deployed: false
@@ -73,6 +73,17 @@ A budget or estimate is not a hard spending cap. The exact immutable plan is aut
 - Typecheck, build, contracts, consumer kits, staging plan, source inventory, decision packets, canonical workflow template, dependency audits, JSON/YAML/JSONL, secret/PII and diff gates pass.
 - Productive IdP, real corpus, complete workflows, human accessibility acceptance, managed staging receipt, publication, protected merge and production release remain absent. Productive journeys stay `0/12`.
 
+## Feature 083 provider-neutral OIDC adapter checkpoint
+
+- Functional SHA: `7ec7037af4af5601c5c515be1bdf4aef35682a0a`.
+- Focused adapter tests: 10/10; `EVAL-HUMAN-OIDC-PROVIDER-001`: 9/9.
+- Path-aware discovery, exact endpoint origins, PKCE S256, confidential exchange, bounded reads, public asymmetric JWKS, issuer/audience/`azp`/time validation and URI-bound key caching pass.
+- Provider roles, groups, tenant and profile claims are ignored; local memberships remain authoritative.
+- Integrated regression: 997 total / 995 pass / 0 fail / 2 explicit environment skips.
+- Public browser 10/10; Chromium, Firefox and WebKit deterministic authenticated smoke pass.
+- Typecheck, build, contracts, kits, inventory, packets, dependency audits, JSON/YAML/JSONL, secret/PII and diff gates pass.
+- No provider is selected, provisioned or approved; productive registration, credentials, external interoperability, MFA/recovery/access review, managed users/environment, merge and deployment remain absent. Productive journeys remain `0/12`.
+
 ## Required sequence before public enablement
 
 1. Approve and ingest a real public corpus with human authority/vigencia review.
@@ -86,7 +97,7 @@ A budget or estimate is not a hard spending cap. The exact immutable plan is aut
 ## Required sequence before authenticated browser E2E
 
 1. Coordinate consumer-side contract tests in OS Electoral and Content Agency.
-2. Approve a productive IdP and implement the provider adapter/configuration, client registration, discovery/JWKS/token validation, MFA/recovery and access-review operations against the verified BFF contract.
+2. Approve a productive IdP, register the exact client/callback, provision managed credentials, execute external discovery/JWKS/token interoperability, and define MFA/recovery and access-review operations against the verified generic adapter and BFF contract.
 3. Build role-aware authenticated UI routes; local deterministic-provider execution remains test evidence only.
 4. Enable the twelve browser journeys only in a real ephemeral environment and collect cross-browser, keyboard, screen-reader and human accessibility evidence.
 

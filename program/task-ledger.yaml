@@ -1,5 +1,5 @@
 schema_version: 1
-updated_at: '2026-07-28T18:06:14Z'
+updated_at: '2026-07-28T19:42:43Z'
 runtime:
   type: yaml_fallback
   farmtable_available: false
@@ -447,6 +447,36 @@ tasks:
   - Independent review disposition PASS WITH LIMITATIONS.
   limitations:
   - Productive IdP, real corpus, complete workflows, managed browser environment, external users, human accessibility acceptance, merge and deployment absent.
+  - Productive authenticated journeys remain 0/12; production readiness is not claimed.
+  branch: feature/gcp-cloudsql-staging-v1
+  pr: 24
+  ci: local_release_gate_passed_remote_publication_pending
+- id: WS07-HUMAN-OIDC-PROVIDER-001
+  workstream: WS-07
+  title: Implement provider-neutral confidential OIDC adapter v1
+  status: completed_with_limitations
+  owner: /root
+  files:
+  - src/humanSession/oidcAdapter.ts
+  - src/humanSession/config.ts
+  - specs/083-provider-neutral-oidc-adapter-v1/
+  - docs/decisions/083-provider-neutral-oidc-adapter.md
+  - docs/risks/083-provider-neutral-oidc-adapter-risk-register.md
+  - docs/traceability/083-provider-neutral-oidc-adapter-v1.md
+  - docs/reviews/083-provider-neutral-oidc-adapter-independent-review.md
+  depends_on:
+  - WS07-HUMAN-SESSION-BFF-001
+  blockers:
+  - BLK-PRODUCTIVE-HUMAN-IDP-077
+  - BLK-HUMAN-WORKFLOWS-082
+  - BLK-BRANCH-PUBLICATION-082
+  evidence:
+  - Functional commit 7ec7037af4af5601c5c515be1bdf4aef35682a0a; focused 10/10; EVAL-HUMAN-OIDC-PROVIDER-001 9/9.
+  - Regression 997 total / 995 pass / 0 fail / 2 explicit environment skips; public browser 10/10; Chromium/Firefox/WebKit deterministic authenticated smoke.
+  - Typecheck/build, contracts, consumer kits, inventory, decision packets, audits, structured and secret/PII scans passed.
+  - Independent review disposition PASS WITH LIMITATIONS.
+  limitations:
+  - No productive provider selection, registration, credentials, external interoperability, productive user, managed environment, MFA/recovery/access review, merge or deployment.
   - Productive authenticated journeys remain 0/12; production readiness is not claimed.
   branch: feature/gcp-cloudsql-staging-v1
   pr: 24
@@ -2045,8 +2075,9 @@ blockers:
 - id: BLK-BRANCH-PUBLICATION-082
   affects:
   - WS09-HUMAN-WORKSPACE-001
+  - WS07-HUMAN-OIDC-PROVIDER-001
   state: open
-  condition: Local Features 077–082 are verified but remote branch and draft PR #24 remain at f858cecab6b24b00ad625c3986fbc03d347ef59e.
+  condition: Local Features 077–083 are verified but remote branch and draft PR #24 remain at f858cecab6b24b00ad625c3986fbc03d347ef59e.
   next_safe_action: Publish by audited non-forced fast-forward push and observe exact-SHA CI.
 - id: BLK-PRODUCTIVE-HUMAN-IDP-077
   affects:
@@ -2054,8 +2085,9 @@ blockers:
   - WS07-HUMAN-SESSION-BFF-001
   - WS07-HUMAN-PRODUCT-SHELL-001
   - WS09-HUMAN-WORKSPACE-001
+  - WS07-HUMAN-OIDC-PROVIDER-001
   state: open
-  condition: Local BFF and shell foundations exist, but no productive IdP product, adapter/configuration, client registration/credential, discovery/JWKS/token interoperability, MFA/recovery, access review or deployment decision is approved.
+  condition: Local BFF, shell and generic OIDC adapter exist, but no productive IdP selection, provider-specific configuration, client registration/credential, external interoperability, MFA/recovery, access review or deployment decision is approved.
   next_safe_action: Prepare a human decision packet; do not provision or select a productive IdP without explicit approval.
 - id: BLK-GCP-LIFECYCLE-074
   affects:
