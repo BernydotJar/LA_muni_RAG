@@ -1,15 +1,15 @@
 # LA Muni RAG — Release Plan
 
-Updated: 2026-07-27T20:37:30Z
+Updated: 2026-07-28T18:04:37Z
 
 ## Current release state
 
 ```text
 functional_branch: feature/gcp-cloudsql-staging-v1
-functional_candidate_sha: 1af3f0ecdca4fe49b47e5e1209f563c30a314adf
+functional_candidate_sha: ffa30433db9ba62812dd0dac680963759b4868cb
 remote_parent_sha: f858cecab6b24b00ad625c3986fbc03d347ef59e
 working_tree_at_handoff: clean
-push_status: functional_commit_local_pending_program_checkpoint_and_publication
+push_status: local_features077_through082_verified_publication_pending_audited_push
 pull_request: 24 draft, open, mergeable, CLEAN
 merged_to_main: false
 cloud_sql_instance_created: true
@@ -57,6 +57,21 @@ A budget or estimate is not a hard spending cap. The exact immutable plan is aut
 - Contracts, inventory, workflow, JSON/YAML/JSONL/CI YAML, dependency audit, secret/PII scan and diff checks pass.
 - Default is disabled; no productive IdP, external OIDC interoperability, client credential, MFA/recovery/access review, role-aware UI, authenticated journey, merge or deployment is claimed.
 - Authenticated browser result remains `0/12`; this checkpoint is not production readiness.
+
+
+## Features 078–082 accumulated checkpoint
+
+- Feature 078 functional SHA: `442623e05308011d7384f2b2fcbe779775898b67`.
+- Feature 079 functional SHA: `04dbb125c15e9c429e7319a6506bfd787f51d940`.
+- Feature 080 functional SHA: `706109c3820dba326573ddc796d9a0095e5446eb`.
+- Feature 081 functional SHA: `282b2441912828b193f82133543c4823f5f14659`.
+- Feature 082 functional SHA: `ffa30433db9ba62812dd0dac680963759b4868cb`.
+- Focused/named gates: shell 8/8 + 9/9; reliability 5/5 + 9/9; decision packets 9/9; accessibility 6/6 + 9/9; workspace 6/6 + 8/8.
+- Public browser: 10/10; authenticated local shell: Chromium, Firefox and WebKit pass.
+- PostgreSQL 15.18 / pgvector 0.8.5 non-owner forced-RLS gate and compiled BFF smoke pass.
+- Integrated regression: 978 total / 976 pass / 0 fail / 2 explicit environment skips.
+- Typecheck, build, contracts, consumer kits, staging plan, source inventory, decision packets, canonical workflow template, dependency audits, JSON/YAML/JSONL, secret/PII and diff gates pass.
+- Productive IdP, real corpus, complete workflows, human accessibility acceptance, managed staging receipt, publication, protected merge and production release remain absent. Productive journeys stay `0/12`.
 
 ## Required sequence before public enablement
 

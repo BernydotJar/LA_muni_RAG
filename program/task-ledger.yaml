@@ -1,5 +1,5 @@
 schema_version: 1
-updated_at: '2026-07-27T20:37:30Z'
+updated_at: '2026-07-28T18:06:14Z'
 runtime:
   type: yaml_fallback
   farmtable_available: false
@@ -334,6 +334,123 @@ tasks:
   branch: feature/gcp-cloudsql-staging-v1
   pr: 24
   ci: local_release_gate_passed_remote_pending
+- id: WS07-HUMAN-PRODUCT-SHELL-001
+  workstream: WS-07
+  title: Implement authenticated role-aware product shell v1
+  status: completed_with_limitations
+  owner: /root
+  files:
+  - src/humanShell/
+  - specs/078-authenticated-role-aware-product-shell-v1/
+  - docs/product/human-product-shell.md
+  depends_on:
+  - WS07-HUMAN-SESSION-BFF-001
+  blockers:
+  - BLK-PRODUCTIVE-HUMAN-IDP-077
+  - BLK-HUMAN-WORKFLOWS-082
+  evidence:
+  - Functional commit 442623e05308011d7384f2b2fcbe779775898b67; focused 8/8; EVAL-HUMAN-PRODUCT-SHELL-001 9/9.
+  - Chromium, Firefox and WebKit local deterministic viewer/admin smoke passed without browser Bearer or Web Storage credentials.
+  limitations:
+  - Productive identity, complete workflows, managed environment and external users absent; journeys remain 0/12.
+  branch: feature/gcp-cloudsql-staging-v1
+  pr: 24
+  ci: local_release_gate_passed_remote_publication_pending
+- id: WS11-HUMAN-SESSION-RELIABILITY-001
+  workstream: WS-11
+  title: Add local human-session telemetry, load, failure injection and recovery evidence
+  status: completed_with_limitations
+  owner: /root
+  files:
+  - src/humanSession/telemetry.ts
+  - scripts/human-session-reliability-harness.mjs
+  - specs/079-human-session-reliability-v1/
+  depends_on:
+  - WS07-HUMAN-SESSION-BFF-001
+  blockers:
+  - BLK-HUMAN-OBSERVABILITY-079
+  evidence:
+  - Functional commit 04dbb125c15e9c429e7319a6506bfd787f51d940; focused 5/5; EVAL-HUMAN-SESSION-RELIABILITY-001 9/9.
+  - Local harness completed 160 BFF events with zero unexpected failures and no productive SLO claim.
+  limitations:
+  - Productive exporter, retention, dashboards, alerting, error budget, on-call and representative managed load absent.
+  branch: feature/gcp-cloudsql-staging-v1
+  pr: 24
+  ci: local_release_gate_passed_remote_publication_pending
+- id: WS10-HUMAN-DECISION-PACKETS-001
+  workstream: WS-10
+  title: Add human-gated decision packets for productive prerequisites
+  status: completed_with_limitations
+  owner: /root
+  files:
+  - program/human-decision-packets.json
+  - docs/decision-packets/
+  - contracts/schemas/human-decision-receipt.schema.json
+  blockers:
+  - BLK-HUMAN-DECISIONS-080
+  evidence:
+  - Functional commit 706109c3820dba326573ddc796d9a0095e5446eb; EVAL-HUMAN-DECISION-PACKETS-001 9/9.
+  - Four packets validate with zero selected options, zero authorized actions and zero receipts.
+  limitations:
+  - Packets do not authenticate decision authority or permit execution.
+  branch: feature/gcp-cloudsql-staging-v1
+  pr: 24
+  ci: local_release_gate_passed_remote_publication_pending
+- id: WS11-HUMAN-SHELL-ACCESSIBILITY-001
+  workstream: WS-11
+  title: Add cross-browser automated accessibility complement v1
+  status: completed_with_limitations
+  owner: /root
+  files:
+  - specs/081-human-product-shell-accessibility-v1/
+  - docs/product/human-product-shell-accessibility.md
+  - scripts/human-product-shell-browser-smoke.mjs
+  depends_on:
+  - WS07-HUMAN-PRODUCT-SHELL-001
+  blockers:
+  - BLK-HUMAN-ACCESSIBILITY-081
+  evidence:
+  - Functional commit 282b2441912828b193f82133543c4823f5f14659; focused 6/6; EVAL-HUMAN-PRODUCT-SHELL-ACCESSIBILITY-001 9/9.
+  - Chromium, Firefox and WebKit passed names, IDs, targets, headings, focus, keyboard skip and 320-pixel reflow checks.
+  limitations:
+  - Automation does not establish WCAG conformance or human assistive-technology acceptance.
+  branch: feature/gcp-cloudsql-staging-v1
+  pr: 24
+  ci: local_release_gate_passed_remote_publication_pending
+- id: WS09-HUMAN-WORKSPACE-001
+  workstream: WS-09
+  title: Deliver task-first municipal workspace v1
+  status: completed_with_limitations
+  owner: /root
+  files:
+  - src/humanShell/
+  - src/humanSession/providerErrors.ts
+  - specs/082-task-first-human-workspace-v1/
+  - docs/decisions/082-task-first-civic-workspace.md
+  - docs/risks/082-task-first-human-workspace-risk-register.md
+  - docs/traceability/082-task-first-human-workspace-v1.md
+  - docs/reviews/082-task-first-human-workspace-independent-review.md
+  depends_on:
+  - WS07-HUMAN-PRODUCT-SHELL-001
+  - WS11-HUMAN-SESSION-RELIABILITY-001
+  - WS11-HUMAN-SHELL-ACCESSIBILITY-001
+  blockers:
+  - BLK-PRODUCTIVE-HUMAN-IDP-077
+  - BLK-HUMAN-WORKFLOWS-082
+  - BLK-HUMAN-ACCESSIBILITY-081
+  - BLK-BRANCH-PUBLICATION-082
+  evidence:
+  - Functional commit ffa30433db9ba62812dd0dac680963759b4868cb; focused 6/6; EVAL-HUMAN-WORKSPACE-001 8/8.
+  - Regression 978 total / 976 pass / 0 fail / 2 explicit environment skips; public browser 10/10; Chromium/Firefox/WebKit authenticated local smoke.
+  - PostgreSQL 15.18/pgvector 0.8.5 non-owner forced-RLS gate and compiled BFF smoke passed.
+  - Contracts, kits, staging plan, inventory, packets, workflow template, typecheck/build, audits, structured and secret/PII scans passed.
+  - Independent review disposition PASS WITH LIMITATIONS.
+  limitations:
+  - Productive IdP, real corpus, complete workflows, managed browser environment, external users, human accessibility acceptance, merge and deployment absent.
+  - Productive authenticated journeys remain 0/12; production readiness is not claimed.
+  branch: feature/gcp-cloudsql-staging-v1
+  pr: 24
+  ci: local_release_gate_passed_remote_publication_pending
 - id: WS03-ING-001
   workstream: WS-03
   title: Harden authenticated ingestion, idempotency, corrupt input, and retry
@@ -1899,12 +2016,46 @@ tasks:
   pr: 24
   ci: backend_30224836298_30224834914_success_public_browser_30224836291_30224834919_success_terraform_30224836307_success
 blockers:
+- id: BLK-HUMAN-WORKFLOWS-082
+  affects:
+  - WS09-HUMAN-WORKSPACE-001
+  - WS11-QA-001
+  state: open
+  condition: Local route foundations pass, but productive identity, real data, complete browser-to-domain workflows, managed environment and external users are absent; journeys remain 0/12.
+  next_safe_action: Keep 0/12 until every journey has real prerequisites and an environment receipt.
+- id: BLK-HUMAN-OBSERVABILITY-079
+  affects:
+  - WS11-HUMAN-SESSION-RELIABILITY-001
+  state: open
+  condition: Local telemetry/load/recovery evidence exists without productive exporter, SLO/error budget, alerting, on-call or representative managed load.
+  next_safe_action: Require approved operations design and managed evidence before productive SLO claims.
+- id: BLK-HUMAN-ACCESSIBILITY-081
+  affects:
+  - WS11-HUMAN-SHELL-ACCESSIBILITY-001
+  - WS09-HUMAN-WORKSPACE-001
+  state: open
+  condition: Cross-browser automation passes but human keyboard, screen-reader, zoom, contrast, forced-colors and usability acceptance is absent.
+  next_safe_action: Run human acceptance after complete representative workflows and environment exist.
+- id: BLK-HUMAN-DECISIONS-080
+  affects:
+  - WS10-HUMAN-DECISION-PACKETS-001
+  state: open
+  condition: Four packets exist with zero selected options, zero authorized actions and zero conforming receipts.
+  next_safe_action: Keep gated actions disabled until an independently validated human receipt exists.
+- id: BLK-BRANCH-PUBLICATION-082
+  affects:
+  - WS09-HUMAN-WORKSPACE-001
+  state: open
+  condition: Local Features 077–082 are verified but remote branch and draft PR #24 remain at f858cecab6b24b00ad625c3986fbc03d347ef59e.
+  next_safe_action: Publish by audited non-forced fast-forward push and observe exact-SHA CI.
 - id: BLK-PRODUCTIVE-HUMAN-IDP-077
   affects:
   - WS07-ID-001
   - WS07-HUMAN-SESSION-BFF-001
+  - WS07-HUMAN-PRODUCT-SHELL-001
+  - WS09-HUMAN-WORKSPACE-001
   state: open
-  condition: The provider-neutral local BFF foundation exists, but no productive IdP product, adapter/configuration, client registration/credential, discovery/JWKS/token interoperability, MFA/recovery, access review or deployment decision is approved.
+  condition: Local BFF and shell foundations exist, but no productive IdP product, adapter/configuration, client registration/credential, discovery/JWKS/token interoperability, MFA/recovery, access review or deployment decision is approved.
   next_safe_action: Prepare a human decision packet; do not provision or select a productive IdP without explicit approval.
 - id: BLK-GCP-LIFECYCLE-074
   affects:
@@ -1979,8 +2130,8 @@ blockers:
   affects:
   - WS11-PUBLIC-BROWSER-GATE-001
   state: open
-  condition: Public Chromium surfaces and the local provider-neutral BFF/session foundation are verified, but no approved productive IdP adapter/configuration or authenticated role-aware UI exists; twelve authenticated journeys remain blocked.
-  next_safe_action: Implement the local role-aware shell, then obtain explicit productive IdP approval and real ephemeral browser evidence before enabling the authenticated matrix.
+  condition: Public and local authenticated browser foundations are verified, but no productive IdP, complete workflows, real data, managed environment or external users exist; twelve productive journeys remain blocked.
+  next_safe_action: Preserve local browser gates and 0/12 until productive prerequisites and receipts exist.
 - id: BLK-PAGES-DEPLOYMENT-076
   affects:
   - WS11-ONLINE-PAGES-RELEASE-001

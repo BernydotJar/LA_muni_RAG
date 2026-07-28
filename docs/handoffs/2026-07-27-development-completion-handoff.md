@@ -1,6 +1,7 @@
 # LA Muni RAG — Development Completion Handoff
 
 Generated: 2026-07-27T18:31:32Z
+Continued and reconciled: 2026-07-28T18:07:20Z
 
 ## Copy/paste prompt
 
@@ -17,7 +18,7 @@ Repository: https://github.com/BernydotJar/LA_muni_RAG.git
 Workspace preferido: b909e055-62ae-4625-ac13-10947906a08f
 Root: /workspace
 Working branch: feature/gcp-cloudsql-staging-v1
-Expected handoff HEAD: 17a6e0cbc7f58a14d1d22497dc324c5448632c54
+Expected handoff HEAD: ffa30433db9ba62812dd0dac680963759b4868cb
 Draft PR: #24, base feature/ephemeral-staging-runner-v1
 
 Fuentes de verdad:
@@ -53,7 +54,7 @@ Feature 076 — exact-SHA Pages release verification:
 - El product owner reportó completar el smoke manual solicitado. Regístralo como evidencia declarada por usuario, no como auditoría WCAG, screen-reader, legal, real-corpus o authenticated E2E.
 
 Baseline de validación:
-- full regression: 880 total / 878 pass / 0 fail / 2 environment skips;
+- full regression: 978 total / 976 pass / 0 fail / 2 environment skips;
 - EVAL-GCP-CLOUDSQL-STAGING-001: 14/14;
 - EVAL-PUBLIC-BROWSER-GATE-001: 5/5;
 - EVAL-ONLINE-PAGES-RELEASE-001: 5/5;
@@ -68,8 +69,8 @@ No declares production readiness.
 
 - documentos reales autorizados acreditados como ingested: 0;
 - retrieval quality sobre corpus real: 0;
-- human IdP/OIDC/PKCE/BFF/session: ausente;
-- authenticated role-aware browser journeys: 0/12, bloqueadas;
+- provider-neutral human IdP/OIDC/PKCE/BFF/session foundation: verified locally; productive IdP/configuration/credentials absent;
+- local task-first role-aware shell: verified in Chromium/Firefox/WebKit with a deterministic test provider; productive authenticated journeys: 0/12, blocked;
 - consumer executions en repos externos: ausentes;
 - managed GCP staging receipt: ausente;
 - Cloud SQL teardown: no autorizado/no ejecutado;
@@ -80,54 +81,30 @@ No implementes capacidades pertenecientes a OS Electoral o Content Agency. Mant�
 
 ## Misión y prioridades
 
-Avanza el critical path hacia un producto completo y revisable. No te detengas después del mapping, una spec, scaffolding o un solo commit.
+Features 077–082 are implemented and locally verified. Do not repeat them. Preserve their
+focused and named EVAL gates and continue only where real prerequisites exist.
 
-### Priority 1 — Feature 077: human session/BFF foundation v1
+### Completed local foundations
 
-Esta es la primera recomendación porque ya existen service Bearer identity, tenant isolation y RBAC; falta la sesión humana de navegador.
+- Feature 077: provider-neutral human session/BFF, local membership mapping, replay/fixation/CSRF/rotation/revocation controls.
+- Feature 078: same-origin authenticated role-aware shell without browser Bearer or Web Storage credentials.
+- Feature 079: minimized telemetry, local load/SLO evidence, failure injection and recovery harness.
+- Feature 080: four human decision packets; zero selected options, zero authorized actions and zero receipts.
+- Feature 081: Chromium/Firefox/WebKit automated accessibility complement; no WCAG or human-acceptance claim.
+- Feature 082: task-first municipal evidence workspace, canonical protected deep links, exact login return allowlist, history-safe navigation and honest zero-data states.
 
-Inspecciona y reutiliza:
-- src/security/auth.ts, src/security/rbac.ts, src/security/tenant.ts;
-- src/api/v1/persistence.ts;
-- db/migrations/003_identity_tenancy_rbac.sql;
-- docs/security/rbac.md;
-- specs/070-ephemeral-staging-e2e-architecture-v1/;
-- patrones existentes de denial audit y handlers v1.
+Functional head: `ffa30433db9ba62812dd0dac680963759b4868cb`.
+Release gate: 978 total / 976 pass / 0 fail / 2 explicit environment skips; public browser 10/10; Chromium/Firefox/WebKit authenticated local smoke; PostgreSQL 15.18/pgvector 0.8.5 non-owner forced-RLS gate; typecheck/build/audits/scans pass.
 
-Implementa el mayor slice provider-neutral que pueda probarse localmente:
-- human principal/session separado de integration credentials;
-- BFF session lifecycle interfaces;
-- cookies HttpOnly, Secure fuera de local, SameSite y expiración acotadas;
-- CSRF para mutaciones de navegador;
-- login initiation/callback boundaries sin secrets comprometidos;
-- state/nonce, rotation, logout, revocation y errores no enumerantes;
-- tenant membership y role mapping separados de OIDC claims;
-- audit minimizado sin tokens, authorization codes, cookies ni PII;
-- deterministic local test provider/session adapter solo para tests;
-- configuración fail-closed sin IdP aprobado;
-- spec, ADR, threat/risk update, docs, traceability y named EVAL.
+### Next safe priorities
 
-No selecciones ni despliegues IdP productivo sin decisión humana. No uses browser Bearer tokens. No debilites service credentials existentes.
+1. Publish the fast-forward working branch only through the audited push capability, then observe exact-SHA Backend, Public Browser and Terraform checks and update draft PR #24.
+2. Keep productive journeys at `0/12` until an approved productive IdP, complete browser-to-domain workflows, real data, managed ephemeral environment and external-user evidence exist.
+3. Obtain conforming human decision receipts before any productive IdP, real-corpus, Cloud SQL lifecycle or production-control action.
+4. Define productive observability/SLO/error-budget/on-call and human accessibility acceptance only when representative workflows and environment exist.
+5. Preserve Cloud SQL `STOPPED` / activation policy `NEVER`; do not restart, apply, destroy or mutate Terraform without a new exact authorization.
 
-Acceptance:
-- session/BFF foundation real y testeada en código;
-- secrets no comprometidos ni reflejados;
-- malformed state/nonce/code, replay, fixation, CSRF, cross-tenant membership y revoked sessions fallan cerrado;
-- API/RBAC regression permanece verde;
-- docs separan synthetic local identity de approved human identity;
-- cada defecto hallado deja regression test;
-- ninguna journey se marca autenticada solo por un test adapter.
-
-### Priority 2
-Construye authenticated product shell role-aware sobre el contrato de sesión. Habilita únicamente journeys con prerequisitos reales en entorno ephemeral local; conserva bloqueadas las afirmaciones de IdP humano externo.
-
-### Priority 3
-Amplía QA: Firefox/WebKit estable, accessibility automatizada complementaria, adversarial session security y cross-artifact consistency EVALs.
-
-### Priority 4
-Avanza operations sin cloud mutation: local load/SLO harness, sanitized telemetry, failure injection, retry/idempotency y recovery verification.
-
-Cuando una decisión humana bloquee un workstream, produce un decision packet preciso y continúa otro frente. Paquetes esperados: IdP/provisioning; corpus rights/reviewers/storage/scanner/retention; nueva lifecycle authorization de Cloud SQL; production topology/edge/deployment.
+Do not select or provision a productive IdP, ingest real corpus, restart Cloud SQL, deploy publicly, merge or mutate protected branches without explicit human authorization. No local deterministic browser result is a productive journey.
 
 ## Multi-agent contract
 
@@ -136,7 +113,7 @@ Usa subagentes nativos cuando existan; si no, simula roles secuencialmente y per
 Separación mínima:
 Producer -> Critic/Red Team -> Fixer -> Independent Verifier -> Release Gate.
 
-Roles recomendados para Feature 077:
+Roles recomendados para el siguiente incremento:
 1. Repository Mapper / Spec Analyst, read-only.
 2. Security/Identity Specialist.
 3. Implementation Agent con write locks explícitos.

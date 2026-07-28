@@ -1,21 +1,22 @@
 {
-  "schema_version": "1.18.0",
-  "generated_at": "2026-07-27T20:37:30Z",
+  "schema_version": "1.23.0",
+  "generated_at": "2026-07-28T18:06:51Z",
   "branch": "feature/gcp-cloudsql-staging-v1",
-  "functional_head": "1af3f0ecdca4fe49b47e5e1209f563c30a314adf",
-  "status": "passed_feature077_provider_neutral_human_session_bff_local_foundation_with_productive_idp_ui_and_deployment_blockers",
+  "functional_head": "ffa30433db9ba62812dd0dac680963759b4868cb",
+  "status": "passed_features077_through082_local_foundations_with_productive_identity_workflow_data_environment_accessibility_publication_and_release_blockers",
   "deterministic": {
-    "tests": 908,
-    "pass": 905,
+    "tests": 978,
+    "pass": 976,
     "fail": 0,
-    "skipped": 3,
+    "skipped": 2,
     "typecheck": "pass",
     "build": "pass",
     "pages": "pass",
     "audits": "0 vulnerabilities",
     "public_browser_gate": "10/10 Chromium desktop/mobile pass",
     "secret_pii_scan": "pass",
-    "structured_validation": "pass"
+    "structured_validation": "pass",
+    "authenticated_shell_cross_browser": "Chromium Firefox WebKit pass"
   },
   "contracts": {
     "canonical_schemas": 33,
@@ -375,18 +376,80 @@
         "No authenticated role-aware UI or browser journey.",
         "No merge or deployment."
       ]
+    },
+    "EVAL-HUMAN-PRODUCT-SHELL-001": {
+      "command": "npm run eval:human-product-shell",
+      "passed": 9,
+      "total": 9,
+      "result": "passed_for_local_role_aware_shell_with_productive_identity_workflow_and_environment_limitations",
+      "functional_sha": "442623e05308011d7384f2b2fcbe779775898b67",
+      "productive_authenticated_journeys": "0/12"
+    },
+    "EVAL-HUMAN-SESSION-RELIABILITY-001": {
+      "command": "npm run eval:human-session-reliability",
+      "passed": 9,
+      "total": 9,
+      "result": "passed_for_local_non_productive_telemetry_load_failure_injection_and_recovery_evidence",
+      "functional_sha": "04dbb125c15e9c429e7319a6506bfd787f51d940",
+      "unexpected_harness_failures": 0,
+      "productive_slo_claim": false
+    },
+    "EVAL-HUMAN-DECISION-PACKETS-001": {
+      "command": "npm run eval:human-decision-packets",
+      "passed": 9,
+      "total": 9,
+      "result": "passed_for_four_pending_human_gates_with_zero_selected_options_actions_and_receipts",
+      "functional_sha": "706109c3820dba326573ddc796d9a0095e5446eb",
+      "packets": 4,
+      "selected_options": 0,
+      "authorized_actions": 0,
+      "receipts": 0
+    },
+    "EVAL-HUMAN-PRODUCT-SHELL-ACCESSIBILITY-001": {
+      "command": "npm run eval:human-product-shell-accessibility",
+      "passed": 9,
+      "total": 9,
+      "result": "passed_for_cross_browser_automated_accessibility_complement_without_conformance_or_human_acceptance_claim",
+      "functional_sha": "282b2441912828b193f82133543c4823f5f14659",
+      "focused_tests": "6/6",
+      "browsers": {
+        "chromium": "pass",
+        "firefox": "pass",
+        "webkit": "pass"
+      },
+      "wcag_conformance_claim": false,
+      "human_acceptance": false
+    },
+    "EVAL-HUMAN-WORKSPACE-001": {
+      "command": "npm run eval:human-workspace",
+      "passed": 8,
+      "total": 8,
+      "result": "passed_for_task_first_local_municipal_workspace_with_productive_identity_data_workflow_environment_and_user_limitations",
+      "functional_sha": "ffa30433db9ba62812dd0dac680963759b4868cb",
+      "focused_tests": "6/6",
+      "public_browser": "10/10",
+      "authenticated_shell_browsers": {
+        "chromium": "pass",
+        "firefox": "pass",
+        "webkit": "pass"
+      },
+      "postgres": "15.18",
+      "pgvector": "0.8.5",
+      "non_owner_forced_rls_gate": "pass",
+      "independent_review": "PASS WITH LIMITATIONS",
+      "productive_authenticated_journeys": "0/12"
     }
   },
   "publication": {
     "branch": "feature/gcp-cloudsql-staging-v1",
-    "functional_sha": "1af3f0ecdca4fe49b47e5e1209f563c30a314adf",
+    "functional_sha": "ffa30433db9ba62812dd0dac680963759b4868cb",
     "remote_base_sha_verified": "f858cecab6b24b00ad625c3986fbc03d347ef59e",
     "prior_ci": {
       "backend_run_id": 29980032034,
       "terraform_run_id": 29980032069,
       "conclusion": "success_on_prior_functional_base"
     },
-    "current_ci_status": "pending_publication",
+    "current_ci_status": "pending_audited_publication",
     "pr": 24,
     "pr_state": "draft",
     "merged": false,
@@ -414,7 +477,11 @@
     "browser_e2e",
     "real_corpus_quality",
     "production_load_ha_recovery_privacy",
-    "productive_human_idp_and_authenticated_ui"
+    "productive_human_idp_and_complete_authenticated_workflows",
+    "human_assistive_technology_acceptance",
+    "productive_observability_slo_and_on_call",
+    "human_decision_receipts",
+    "exact_sha_ci_for_features077_through082"
   ],
   "limitations": [
     "The exact authorized Cloud SQL plan was applied and the instance is stopped; managed synthetic execution and destructive teardown remain absent.",
@@ -422,7 +489,11 @@
     "Actual provider billing remains pending and stopped resources may retain storage or backup charges.",
     "No authorized real corpus, external consumer execution, protected merge or production deployment.",
     "No exact-SHA public Pages deployment or rollback receipt; the current public URL serves legacy main content.",
-    "Feature 077 is a local provider-neutral foundation only; productive IdP integration, authenticated UI and all twelve authenticated browser journeys remain blocked."
+    "Features 077–082 are local provider-neutral foundations; productive IdP interoperability, complete workflows, real corpus, managed users/environment and all twelve productive journeys remain blocked.",
+    "Cross-browser accessibility automation does not establish WCAG conformance or human assistive-technology acceptance.",
+    "Four decision packets contain zero selected options, zero authorized actions and zero receipts.",
+    "Local telemetry/load evidence is not a productive SLO or operating model.",
+    "Remote branch and draft PR #24 do not include the local commits until audited publication succeeds."
   ],
   "public_browser_gate": {
     "status": "passed_local_and_remote",
@@ -456,8 +527,67 @@
     "non_owner_forced_rls_gate": "pass",
     "compiled_smoke": "pass",
     "productive_idp_configured": false,
-    "authenticated_role_aware_ui": false,
+    "authenticated_role_aware_ui": true,
+    "authenticated_browser_journeys_passed": 0,
+    "authenticated_browser_journeys_blocked": 12,
+    "local_task_first_workspace": true
+  },
+  "human_product_shell": {
+    "status": "local_role_aware_task_first_foundation_verified",
+    "functional_sha": "442623e05308011d7384f2b2fcbe779775898b67",
+    "task_first_sha": "ffa30433db9ba62812dd0dac680963759b4868cb",
+    "browser_bearer": false,
+    "web_storage_credentials": false,
+    "browsers": [
+      "chromium",
+      "firefox",
+      "webkit"
+    ],
+    "productive_idp": false,
+    "complete_productive_workflows": false,
     "authenticated_browser_journeys_passed": 0,
     "authenticated_browser_journeys_blocked": 12
+  },
+  "human_session_reliability": {
+    "status": "local_non_productive_evidence_verified",
+    "functional_sha": "04dbb125c15e9c429e7319a6506bfd787f51d940",
+    "focused_tests": "5/5",
+    "named_eval": "9/9",
+    "events": 160,
+    "unexpected_failures": 0,
+    "productive_exporter": false,
+    "productive_slo_claim": false
+  },
+  "human_decision_packets": {
+    "status": "pending_human_decisions",
+    "functional_sha": "706109c3820dba326573ddc796d9a0095e5446eb",
+    "packets": 4,
+    "selected_options": 0,
+    "authorized_actions": 0,
+    "receipts": 0
+  },
+  "human_shell_accessibility": {
+    "status": "local_cross_browser_automated_complement_verified",
+    "functional_sha": "282b2441912828b193f82133543c4823f5f14659",
+    "browsers": [
+      "chromium",
+      "firefox",
+      "webkit"
+    ],
+    "wcag_conformance_claim": false,
+    "human_assistive_technology_acceptance": false
+  },
+  "human_workspace": {
+    "status": "local_task_first_workspace_verified",
+    "functional_sha": "ffa30433db9ba62812dd0dac680963759b4868cb",
+    "focused_tests": "6/6",
+    "named_eval": "8/8",
+    "canonical_deep_links": true,
+    "login_return_allowlist": true,
+    "browser_history": true,
+    "provider_error_taxonomy": true,
+    "independent_review": "PASS WITH LIMITATIONS",
+    "productive_authenticated_journeys": "0/12",
+    "production_ready": false
   }
 }

@@ -1,6 +1,6 @@
 # LA Muni RAG — Open Issues
 
-Updated: 2026-07-27T20:37:30Z
+Updated: 2026-07-28T18:04:37Z
 
 ## Critical
 
@@ -29,7 +29,7 @@ Zero real documents are credited as ingested. Human/platform inputs required:
 
 ### E2E-OPEN-IDP-002 — productive human identity and authenticated UI absent
 
-Feature 077 implements and locally verifies a provider-neutral BFF/session foundation with state/browser binding, nonce, PKCE S256, secure cookie policy, CSRF/bootstrap proof, rotation, logout, revocation, local membership mapping and minimized audit. It remains disabled by default. No productive IdP product or adapter/configuration, client registration/credential, discovery/JWKS/token interoperability, MFA/recovery, access review, role-aware authenticated UI or deployed browser environment exists. All twelve browser journeys remain explicitly blocked (`0/12`).
+Feature 077 implements and locally verifies a provider-neutral BFF/session foundation with state/browser binding, nonce, PKCE S256, secure cookie policy, CSRF/bootstrap proof, rotation, logout, revocation, local membership mapping and minimized audit. It remains disabled by default. No productive IdP product or adapter/configuration, client registration/credential, discovery/JWKS/token interoperability, MFA/recovery, access review or deployed browser environment exists. A local role-aware shell exists but is test-adapter-only and does not implement complete productive workflows. All twelve browser journeys remain explicitly blocked (`0/12`).
 
 ### GCP-EXECUTION-074 — managed restart window expired without a successful receipt
 
@@ -43,6 +43,33 @@ A protected Cloud SQL PostgreSQL 16 instance now exists and is stopped. Exact-pl
 ### HUMAN-SESSION-OPS-077 — productive session operations and retention absent
 
 The local schema bounds login/code/session state and failure-bucket aging, but no scheduled purge, backup-aging proof, idle-timeout policy, device/session management, access-review operation, provider-account deletion mapping, telemetry alert, incident runbook or reverse-proxy Origin verification exists. These controls require approved deployment and privacy/security decisions.
+
+
+### HUMAN-WORKSPACE-082 — productive authenticated workflows remain absent
+
+Features 078–082 verify a local task-first shell, exact deep-link login return, role-aware
+navigation, history, recovery and cross-browser accessibility behavior. The shell panels are
+honest route/readiness foundations, not complete browser-to-domain workflows. No productive
+IdP, managed ephemeral browser environment, external municipal user or productive journey
+receipt exists; the official count remains `0/12`.
+
+### HUMAN-OBSERVABILITY-079 — productive SLO and operations absent
+
+Local low-cardinality telemetry and failure-injection/load evidence pass, but no approved
+exporter, retention, dashboards, alerting, error budget, incident ownership, on-call or
+representative TLS/ingress/IdP/Cloud SQL load exists.
+
+### HUMAN-DECISIONS-080 — required human receipts absent
+
+The IdP, corpus, Cloud SQL lifecycle and production-control packets remain pending with zero
+selected options and zero authorized actions. No packet authenticates authority or permits
+execution by itself.
+
+### BRANCH-PUBLICATION-082 — local verified commits are not on PR #24
+
+The local branch contains Features 077–082 through `ffa3043`, while the remote branch and
+draft PR remain at `f858cec`. Audited non-forced publication and exact-SHA CI observation are
+required; shell `git push` is not an approved bypass.
 
 ## High
 

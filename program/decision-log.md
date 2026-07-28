@@ -397,3 +397,25 @@ Decision: treat provider issuer/subject as authentication evidence only. Tenant,
 Evidence: functional commit `1af3f0ecdca4fe49b47e5e1209f563c30a314adf`; 20/20 focused lifecycle/migration tests; 9/9 `EVAL-HUMAN-SESSION-BFF-001`; PostgreSQL 15.18/pgvector 0.8.5 non-owner forced-RLS gate; compiled smoke; 905/908 regression with zero failures and three explicit environment skips; typecheck/build, dependency, structured, secret/PII and diff gates passed.
 
 Limit: no productive IdP, client registration/credential, discovery/JWKS/token adapter, MFA/recovery/access review, authenticated role-aware UI, browser journey, merge or deployment is claimed. The authenticated matrix remains `0/12`.
+
+
+## 2026-07-28T18:04:37Z — Reconcile Features 078–082 as local foundations, not productive journeys
+
+Decision: record the authenticated role-aware shell, local reliability/telemetry harness,
+human-gated decision packets, cross-browser accessibility complement and task-first municipal
+workspace as five verified local increments on the existing provider-neutral BFF. The UI uses
+closed route/permission maps, exact allowlisted login returns, history-safe navigation, honest
+empty states and generic provider error taxonomy. PixelRAG informed only task hierarchy and
+progressive disclosure; no code, assets or deployment architecture were copied.
+
+Evidence: functional SHAs `442623e05308011d7384f2b2fcbe779775898b67`,
+`04dbb125c15e9c429e7319a6506bfd787f51d940`,
+`706109c3820dba326573ddc796d9a0095e5446eb`,
+`282b2441912828b193f82133543c4823f5f14659` and `ffa30433db9ba62812dd0dac680963759b4868cb`; full regression
+976/978 with zero failures and two explicit environment skips; public browser 10/10;
+Chromium/Firefox/WebKit local authenticated smoke; PostgreSQL 15.18/pgvector 0.8.5
+non-owner forced-RLS gate; typecheck/build, dependency, structured, secret/PII and diff gates.
+
+Limit: deterministic browser evidence is not productive IdP interoperability, complete
+workflow evidence, WCAG conformance, human acceptance, branch publication, merge, deployment
+or production readiness. Productive authenticated journeys remain `0/12`.
