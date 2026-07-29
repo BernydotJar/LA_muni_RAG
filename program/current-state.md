@@ -1,8 +1,8 @@
 # LA Muni RAG — Current Program State
 
-Updated: 2026-07-29T06:42:07Z
+Updated: 2026-07-29T16:36:22Z
 
-Program status: **PARTIAL WITH DOCUMENTED BLOCKERS — Features 077–083 and the localized Graph Harness exact-SHA CI repair are published and green on the draft branch; productive identity, complete workflows, real corpus, managed staging evidence, protected merge and production release remain open**
+Program status: **PARTIAL WITH DOCUMENTED BLOCKERS — Features 077–084 and the localized Graph Harness exact-SHA CI repair are published and green on the draft branch; productive identity, complete workflows, real corpus, managed staging evidence, protected merge and production release remain open**
 
 ## Authoritative checkout
 
@@ -10,11 +10,12 @@ Program status: **PARTIAL WITH DOCUMENTED BLOCKERS — Features 077–083 and th
 workspace_id: b909e055-62ae-4625-ac13-10947906a08f
 root: /workspace
 branch: feature/gcp-cloudsql-staging-v1
-evidence_baseline_head: 82d75711f28a03de4e7df35d5ec6435cc7610319
+evidence_baseline_head: 6995dd81025d593752a9e87b32aa9e2844e17510
 functional_repair_parent: ba6acf3cc654e798f46b104d4eaac6d5c78712ab
-graph_harness_framework_observed_head: 0eb0d5fe09e3b1ecaf561b4a1cc9b32510480a26
-graph_harness_events: 43
-graph_harness_required_gates: 4/4 PASS
+graph_harness_framework_merge_pin: 1bebce3db35303072049233786464bb01163c98b
+graph_harness_executable_runtime: fef364bc66849b98c08d3c1dcb91caf9701027cd
+graph_harness_events: 60
+graph_harness_required_gates: 5/5 PASS
 working_tree_at_baseline: clean
 pull_request: 24 draft
 merged: false
@@ -263,7 +264,7 @@ Exact-SHA GitHub Actions passed:
 - Public Browser Gate run `30428162850`;
 - GCP Cloud SQL Terraform validation run `30428162725`.
 
-The framework runtime was executed from the separate Graph Harness workspace at observed HEAD `0eb0d5fe09e3b1ecaf561b4a1cc9b32510480a26`. Its executable runtime files were uncommitted there, so this repository records the observed runtime and evidence chain but does not claim a durable immutable framework pin. That pin remains an explicit follow-up.
+Feature 084 closes the runtime provenance blocker. Backend CI installs Graph Harness SDLC from immutable published merge `1bebce3db35303072049233786464bb01163c98b`, containing executable runtime `fef364bc66849b98c08d3c1dcb91caf9701027cd`, and replays the application event chain without copied framework source. Exact-SHA runs Backend `30470555533`, Public Browser `30470546856` and Terraform `30470549087` all passed for functional commit `6995dd81025d593752a9e87b32aa9e2844e17510`.
 
 This repair changes no productive capability: productive authenticated journeys remain `0/12`, real documents ingested remain `0`, and no merge, deployment, IdP provisioning, corpus acquisition or Cloud SQL lifecycle mutation was authorized.
 
@@ -281,7 +282,7 @@ EVAL-HUMAN-PRODUCT-SHELL-ACCESSIBILITY-001: 9/9 pass
 EVAL-HUMAN-WORKSPACE-001: 8/8 pass
 EVAL-HUMAN-OIDC-PROVIDER-001: 9/9 pass
 Feature 083 focused OIDC adapter: 10/10 pass
-Graph Harness repair: 43 events / 2 repair plans / 4 required gates PASS / 1 checkpoint
+Graph Harness: 60 events / 2 repair plans / 5 required gates PASS / 1 checkpoint; immutable runtime pin done
 Exact-SHA repair CI: Backend 30428162887 success; Public Browser 30428162850 success; Terraform 30428162725 success
 Reliability repair: 12 validated warm-up requests; 80 measured shell requests; unchanged shell p95 limit 500 ms
 Feature 082 focused workspace: 6/6 pass
@@ -335,7 +336,7 @@ truth.
 4. Review actual billing after export latency; obtain a new explicit authorization for any restart or teardown.
 5. Preserve the local Features 077–083 gates; obtain productive IdP, corpus, workflow, accessibility, observability and managed-environment approvals/evidence before counting any authenticated journey.
 6. Preserve published functional repair `82d75711f28a03de4e7df35d5ec6435cc7610319` and its three green exact-SHA workflows; keep PR #24 draft until all remaining human-gated product and environment prerequisites are satisfied.
-7. Publish the Graph Harness executable runtime and schemas at an immutable framework commit before claiming a durable framework pin.
+7. Preserve immutable Graph Harness merge pin `1bebce3db35303072049233786464bb01163c98b`; the controlled corpus node is now running under the typed graph.
 
 ## Critical blockers
 

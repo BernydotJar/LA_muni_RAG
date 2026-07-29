@@ -1,6 +1,6 @@
 # LA Muni RAG — Open Issues
 
-Updated: 2026-07-29T06:42:07Z
+Updated: 2026-07-29T16:36:22Z
 
 ## Critical
 
@@ -69,9 +69,9 @@ execution by itself.
 
 Features 077–083 and localized repair `82d75711f28a03de4e7df35d5ec6435cc7610319` are published on the draft PR branch through audited non-forced fast-forward pushes. Backend CI `30428162887`, Public Browser Gate `30428162850` and Terraform validation `30428162725` all succeeded for the exact repair SHA. This closes branch publication only; merge and release remain unauthorized.
 
-### GRAPH-HARNESS-PIN-001 — framework runtime lacks an immutable published pin
+### GRAPH-HARNESS-PIN-001 — resolved with immutable published runtime
 
-The Graph Harness runtime executed successfully from framework workspace `520ffab2-149d-4559-bb08-d4e05ff92769` at observed HEAD `0eb0d5fe09e3b1ecaf561b4a1cc9b32510480a26`, but its executable runtime files are uncommitted in that workspace. The application persists the typed projection, 43-event hash chain and state snapshot, but durable framework adoption requires the framework owner to publish the runtime and schemas at an immutable commit. No application runtime code was copied.
+Graph Harness SDLC is pinned to published merge `1bebce3db35303072049233786464bb01163c98b`, which contains executable runtime commit `fef364bc66849b98c08d3c1dcb91caf9701027cd`. Backend CI `30470555533` installed that exact package, replayed the application ledger and passed `EVAL-GRAPH-HARNESS-RUNTIME-PIN-001`; Public Browser `30470546856` and Terraform `30470549087` also passed. No framework runtime source was copied into LA Muni RAG.
 ## High
 
 ### PAGES-ONLINE-ROLLBACK-001 — closed with verified rollback

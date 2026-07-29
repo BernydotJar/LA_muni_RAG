@@ -1,19 +1,26 @@
 {
   "checkpoint_count": 1,
-  "event_count": 52,
-  "last_event_id": "308ebcc3-f367-4510-94e2-54c176586d25",
+  "event_count": 60,
+  "last_event_id": "d130d539-90cd-47f1-a04d-a59c33a30973",
   "mode": "SHIP",
   "nodes": [
     {
-      "active_evidence_ids": [],
-      "active_gates": {},
+      "active_evidence_ids": [
+        "43282723-ccaf-4749-87c1-945b6475e29b",
+        "73352777-21d1-4d59-a549-53e94fa51480",
+        "98be17ad-b522-4dbb-bb8f-c701ffb77888",
+        "dd5097d3-3ac4-4955-a40b-cc24ad32074b"
+      ],
+      "active_gates": {
+        "GATE-GRAPH-HARNESS-PIN-002": "PASS"
+      },
       "approval_count": 1,
       "capability": "immutable_graph_runtime_pin",
       "depends_on": [],
       "id": "PRG-GRAPH-HARNESS-PIN-002",
       "kind": "program_control",
       "revision": 0,
-      "status": "review",
+      "status": "done",
       "title": "Pin published Graph Harness runtime and replay state"
     },
     {
@@ -47,7 +54,7 @@
       "id": "WS02-CORPUS-ACQUISITION-001",
       "kind": "feature",
       "revision": 0,
-      "status": "approved",
+      "status": "running",
       "title": "Acquire and ingest authorized Antigua-first corpus"
     },
     {

@@ -1,5 +1,5 @@
 schema_version: 1
-updated_at: '2026-07-29T06:43:03Z'
+updated_at: '2026-07-29T16:36:22Z'
 runtime:
   type: graph_harness_sdlc_projection
   framework_repository: BernydotJar/Graph-harness-sdlc
@@ -508,18 +508,49 @@ tasks:
   - WS09-HUMAN-WORKSPACE-001
   - WS07-HUMAN-OIDC-PROVIDER-001
   blockers:
-  - BLK-GRAPH-HARNESS-PIN-001
+  blockers: []
   evidence:
   - Functional repair 82d75711f28a03de4e7df35d5ec6435cc7610319; parent ba6acf3cc654e798f46b104d4eaac6d5c78712ab; audited fast-forward publication succeeded.
   - Graph Harness persisted 43 events, two repair plans, four passing gates and one checkpoint; OIDC node preserved.
   - Backend CI 30428162887, Public Browser 30428162850 and Terraform validation 30428162725 succeeded on the exact SHA.
   - Productive journeys remain 0/12; real documents ingested remain 0; production readiness is not claimed.
   limitations:
-  - Framework executable runtime at observed HEAD 0eb0d5fe09e3b1ecaf561b4a1cc9b32510480a26 was uncommitted; immutable pin remains open.
+  - Historical repair runtime provenance is superseded by the completed immutable pin task PRG-GRAPH-HARNESS-PIN-002.
   - Draft checkpoint authorizes no merge, deployment, productive identity, corpus or Cloud SQL mutation.
   branch: feature/gcp-cloudsql-staging-v1
   pr: 24
   ci: backend_30428162887_success_public_browser_30428162850_success_terraform_30428162725_success
+- id: PRG-GRAPH-HARNESS-PIN-002
+  workstream: WS-11
+  title: Pin published Graph Harness runtime and replay typed state
+  status: completed
+  owner: /root
+  files:
+  - scripts/verify-graph-harness-runtime.sh
+  - specs/084-graph-harness-immutable-pin-v1/spec.md
+  - src/__tests__/eval-graph-harness-runtime-pin-001.test.ts
+  - docs/reviews/084-graph-harness-runtime-pin-independent-review.md
+  - docs/traceability/084-graph-harness-immutable-pin-v1.md
+  - program/graph-harness/project.json
+  - program/graph-harness/events.jsonl
+  - program/graph-harness/state.json
+  depends_on:
+  - PRG-GRAPH-HARNESS-REPAIR-001
+  blockers: []
+  acceptance:
+  - Backend CI installs Graph Harness directly from immutable published merge 1bebce3db35303072049233786464bb01163c98b.
+  - The runtime replays the application event chain without copied framework source.
+  - Independent review, regression and exact-SHA CI pass.
+  evidence:
+  - Functional commit 6995dd81025d593752a9e87b32aa9e2844e17510; framework merge 1bebce3db35303072049233786464bb01163c98b; runtime commit fef364bc66849b98c08d3c1dcb91caf9701027cd.
+  - EVAL-GRAPH-HARNESS-RUNTIME-PIN-001 4/4; full regression 1001/999/0/2; typecheck/build/audit pass.
+  - Backend CI 30470555533, Public Browser 30470546856 and Terraform validation 30470549087 succeeded on the exact SHA.
+  - Graph event 58 closed GATE-GRAPH-HARNESS-PIN-002; event 60 advanced approved corpus work to running.
+  limitations:
+  - Public Git availability is required for a fresh install; no product production-readiness claim follows from the pin.
+  branch: feature/gcp-cloudsql-staging-v1
+  pr: 24
+  ci: backend_30470555533_success_public_browser_30470546856_success_terraform_30470549087_success
 - id: WS03-ING-001
   workstream: WS-03
   title: Harden authenticated ingestion, idempotency, corrupt input, and retry
@@ -2123,9 +2154,11 @@ blockers:
 - id: BLK-GRAPH-HARNESS-PIN-001
   affects:
   - PRG-GRAPH-HARNESS-REPAIR-001
-  state: open
-  condition: The observed Graph Harness executable runtime at 0eb0d5fe09e3b1ecaf561b4a1cc9b32510480a26 was uncommitted in the framework workspace.
-  next_safe_action: Publish runtime and schemas at an immutable framework commit before durable pin claims.
+  - PRG-GRAPH-HARNESS-PIN-002
+  state: resolved
+  condition: Published merge 1bebce3db35303072049233786464bb01163c98b contains executable runtime fef364bc66849b98c08d3c1dcb91caf9701027cd and is installed directly by CI.
+  resolution: Exact-SHA runtime replay, named EVAL, regression and all three workflows passed for 6995dd81025d593752a9e87b32aa9e2844e17510.
+  next_safe_action: Preserve the pin and continue the ready corpus node.
 - id: BLK-PRODUCTIVE-HUMAN-IDP-077
   affects:
   - WS07-ID-001

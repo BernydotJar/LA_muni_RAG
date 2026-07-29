@@ -1,12 +1,12 @@
 {
-  "schema_version": "1.24.0",
-  "generated_at": "2026-07-29T06:42:07Z",
+  "schema_version": "1.25.0",
+  "generated_at": "2026-07-29T16:36:22Z",
   "branch": "feature/gcp-cloudsql-staging-v1",
-  "functional_head": "82d75711f28a03de4e7df35d5ec6435cc7610319",
+  "functional_head": "6995dd81025d593752a9e87b32aa9e2844e17510",
   "status": "passed_features077_through083_and_graph_harness_exact_sha_ci_repair_with_productive_identity_workflow_data_environment_accessibility_merge_and_release_blockers",
   "deterministic": {
-    "tests": 997,
-    "pass": 995,
+    "tests": 1001,
+    "pass": 999,
     "fail": 0,
     "skipped": 2,
     "typecheck": "pass",
@@ -448,6 +448,10 @@
       "focused_tests": "10/10",
       "independent_review": "PASS WITH LIMITATIONS",
       "productive_authenticated_journeys": "0/12"
+    },
+    "EVAL-GRAPH-HARNESS-RUNTIME-PIN-001": {
+      "passed": 4,
+      "total": 4
     }
   },
   "publication": {
@@ -642,5 +646,19 @@
     "events_sha256": "bd2e875076a9f916f1e88121f5a9e8b7dabaf2ab97127527240a7f931eda8d23",
     "state_sha256": "bcb28538df8997f7c0ee02fb3ec4a09ca6720d59d095d02376d8571468da8ece",
     "production_ready": false
+  },
+  "graph_harness_pin": {
+    "functional_sha": "6995dd81025d593752a9e87b32aa9e2844e17510",
+    "framework_merge_commit": "1bebce3db35303072049233786464bb01163c98b",
+    "runtime_commit": "fef364bc66849b98c08d3c1dcb91caf9701027cd",
+    "event_count_after_corpus_unlock": 60,
+    "gate": "GATE-GRAPH-HARNESS-PIN-002 PASS",
+    "runtime_copied": false,
+    "remote_ci": {
+      "backend": 30470555533,
+      "public_browser": 30470546856,
+      "terraform": 30470549087,
+      "conclusion": "success"
+    }
   }
 }

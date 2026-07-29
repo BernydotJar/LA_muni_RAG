@@ -1,5 +1,5 @@
 schema_version: 1
-generated_at: '2026-07-29T06:43:03Z'
+generated_at: '2026-07-29T16:36:22Z'
 program:
   id: LA-MUNI-RAG-PROD
   objective: Make LA Muni RAG production-ready within its evidence, procedure, workflow, case-tracking, and integration domain.
@@ -605,7 +605,10 @@ tasks:
     parent_commit: ba6acf3cc654e798f46b104d4eaac6d5c78712ab
     framework_repository: BernydotJar/Graph-harness-sdlc
     framework_observed_commit: 0eb0d5fe09e3b1ecaf561b4a1cc9b32510480a26
-    event_count: 43
+    immutable_framework_merge_commit: 1bebce3db35303072049233786464bb01163c98b
+    executable_runtime_commit: fef364bc66849b98c08d3c1dcb91caf9701027cd
+    immutable_pin_functional_commit: 6995dd81025d593752a9e87b32aa9e2844e17510
+    event_count: 60
     repair_plans: 2
     required_gates: 4/4 passed
     checkpoint_count: 1
@@ -615,8 +618,33 @@ tasks:
     real_documents_ingested: 0
     production_ready: false
   limitations:
-  - The framework executable runtime was observed in an uncommitted workspace; immutable framework pin remains open.
+  - The historical repair used an observed workspace; Feature 084 now provides the immutable published runtime pin and replay gate.
   - This checkpoint is draft and pre-production; it authorizes no merge, deployment, IdP, corpus or Cloud SQL mutation.
+- id: PRG-GRAPH-HARNESS-PIN-002
+  workstream: WS-11
+  title: Pin published Graph Harness runtime and replay typed state
+  status: completed
+  owner: /root
+  depends_on:
+  - PRG-GRAPH-HARNESS-REPAIR-001
+  outputs:
+  - scripts/verify-graph-harness-runtime.sh
+  - specs/084-graph-harness-immutable-pin-v1/
+  - docs/reviews/084-graph-harness-runtime-pin-independent-review.md
+  - docs/traceability/084-graph-harness-immutable-pin-v1.md
+  result:
+    functional_commit: 6995dd81025d593752a9e87b32aa9e2844e17510
+    framework_merge_commit: 1bebce3db35303072049233786464bb01163c98b
+    executable_runtime_commit: fef364bc66849b98c08d3c1dcb91caf9701027cd
+    graph_harness_gate: GATE-GRAPH-HARNESS-PIN-002 PASS
+    event_count_after_unlocking_corpus: 60
+    named_eval: EVAL-GRAPH-HARNESS-RUNTIME-PIN-001 4/4 passed
+    regression: 1001 total / 999 pass / 0 fail / 2 explicit skips
+    exact_sha_ci: backend_30470555533_success_public_browser_30470546856_success_terraform_30470549087_success
+    runtime_copied_into_application: false
+  limitations:
+  - A fresh verification requires read access to the immutable public framework commit.
+  - Runtime pin closure grants no merge, deployment, identity, corpus-storage, spending or infrastructure authority.
 - id: WS03-ING-001
   workstream: WS-03
   title: Audit and harden authenticated ingestion, idempotency, corrupt-input handling, and retry
@@ -1852,9 +1880,11 @@ blockers:
 - id: BLK-GRAPH-HARNESS-PIN-001
   affects:
   - PRG-GRAPH-HARNESS-REPAIR-001
-  state: open
-  condition: Graph Harness executed from observed framework HEAD 0eb0d5fe09e3b1ecaf561b4a1cc9b32510480a26, but its executable runtime files were uncommitted in the framework workspace.
-  next_safe_action: Publish the framework runtime and schemas at an immutable commit before claiming a durable framework pin.
+  - PRG-GRAPH-HARNESS-PIN-002
+  state: resolved
+  condition: Graph Harness is pinned to published merge 1bebce3db35303072049233786464bb01163c98b containing executable runtime fef364bc66849b98c08d3c1dcb91caf9701027cd.
+  resolution: Exact-SHA Backend CI 30470555533 installed the immutable package, replayed the event ledger and passed the named pin EVAL; Public Browser 30470546856 and Terraform 30470549087 also passed.
+  next_safe_action: Preserve the immutable pin and advance only dependency-ready application nodes.
 - id: BLK-GCP-LIFECYCLE-074
   affects:
   - WS10-GCP-CLOUDSQL-STAGING-001
