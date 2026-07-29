@@ -251,9 +251,9 @@ const runRateGate = async (
 };
 
 const safeText = (value: string, maximum: number): string | null => {
-  if (!value || CONTROL_CHARACTER.test(value)) return null;
+  if (!value) return null;
   const normalized = value.replace(/\s+/g, " ").trim();
-  if (!normalized) return null;
+  if (!normalized || CONTROL_CHARACTER.test(normalized)) return null;
   return normalized.length > maximum ? `${normalized.slice(0, Math.max(1, maximum - 1))}…` : normalized;
 };
 

@@ -213,6 +213,36 @@ describe("public query gateway v1", () => {
     } finally { await stopHarness(harness); }
   });
 
+  it("normalizes PDF line breaks in public citations without accepting other control characters", async () => {
+    const harness = await startHarness({
+      candidates: [candidate({
+        citationLabel: "PDM-OT,\npágina 12",
+        excerpt: "Ordenamiento territorial\nmunicipal\tcon evidencia pública.",
+      })],
+    });
+    try {
+      const response = await postQuery(harness);
+      assert.equal(response.status, 200);
+      const body = await response.json() as PublicQueryResponseV1;
+      assert.equal(body.citations.length, 1);
+      assert.equal(body.citations[0]?.citationLabel, "PDM-OT, página 12");
+      assert.equal(
+        body.citations[0]?.excerpt,
+        "Ordenamiento territorial municipal con evidencia pública."
+      );
+    } finally { await stopHarness(harness); }
+
+    const rejected = await startHarness({
+      candidates: [candidate({ excerpt: "Texto público\u0001no permitido" })],
+    });
+    try {
+      const response = await postQuery(rejected);
+      const body = await response.json() as PublicQueryResponseV1;
+      assert.equal(body.citations.length, 0);
+      assert.equal(body.meta.responseLabel, "not_found");
+    } finally { await stopHarness(rejected); }
+  });
+
   it("rejects missing or foreign origins before reading/searching", async () => {
     const harness = await startHarness();
     try {

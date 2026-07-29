@@ -1745,6 +1745,34 @@ tasks:
   branch: feature/gcp-cloudsql-staging-v1
   pr: 24
   ci: exact_sha_success
+- id: REL-PUBLIC-CORPUS-PILOT-STAGING-001
+  workstream: WS-10
+  title: Deploy public PDM-OT corpus pilot to managed staging
+  status: in_progress
+  owner: /root
+  depends_on:
+  - WS05-REAL-CORPUS-RETRIEVAL-EVAL-001
+  blockers: []
+  files:
+  - specs/087-public-corpus-pilot-staging-v1/
+  - src/ingestion/publicSectionProjection.ts
+  - src/cli/projectPublicCorpusSections.ts
+  acceptance:
+  - Cloud SQL uses a dedicated database and non-owner NOBYPASSRLS runtime role.
+  - Accepted vector chunks are projected reproducibly into public keyword/phrase sections.
+  - Multiline PDF excerpts produce bounded public citations without admitting unsafe control characters.
+  - An immutable Cloud Run backend is connected to GitHub Pages and passes online smoke checks.
+  result:
+    graph_node: REL-PUBLIC-CORPUS-PILOT-STAGING-001 running
+    authorization: anonymous PDM-OT pilot, managed GCP staging lifecycle, bounded spend, Pages, merge and release approved
+    managed_database: la-muni-rag-staging/la_muni_rag_public RUNNABLE
+    corpus_projection: 444 vectors / 444 sections
+    local_cloudsql_smoke: keyword and phrase return 5 citations; unrelated phrase returns not_found
+    regression: 1053 total / 1052 pass / 0 fail / 1 environment skip
+  limitations:
+  - PDM-OT temporal status remains undetermined until publication/effective dates receive documentary review.
+  - DMP OCR, productive identity/MFA and authenticated journeys are out of this public-pilot scope.
+  - Cloud Run, Pages, observability and exact-SHA remote CI remain pending at this checkpoint.
 - id: WS08-CONSUMER-CONTRACT-KIT-001
   workstream: WS-08
   title: Publish portable provider-side consumer contract kits v1

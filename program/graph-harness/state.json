@@ -1,7 +1,7 @@
 {
   "checkpoint_count": 2,
-  "event_count": 82,
-  "last_event_id": "3dd6e3eb-c152-4426-a95e-5e3c933e02d6",
+  "event_count": 86,
+  "last_event_id": "bba5364f-f01e-4f53-8160-45e596f81132",
   "mode": "SHIP",
   "nodes": [
     {
@@ -42,6 +42,20 @@
       "revision": 2,
       "status": "done",
       "title": "Draft PR 24 exact-SHA release checkpoint"
+    },
+    {
+      "active_evidence_ids": [],
+      "active_gates": {},
+      "approval_count": 1,
+      "capability": "public_corpus_pilot_staging",
+      "depends_on": [
+        "WS05-REAL-CORPUS-RETRIEVAL-EVAL-001"
+      ],
+      "id": "REL-PUBLIC-CORPUS-PILOT-STAGING-001",
+      "kind": "release_checkpoint",
+      "revision": 0,
+      "status": "running",
+      "title": "Deploy public PDM-OT corpus pilot to managed staging"
     },
     {
       "active_evidence_ids": [

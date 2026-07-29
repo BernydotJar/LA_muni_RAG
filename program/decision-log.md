@@ -448,3 +448,13 @@ Decision: accept Feature 086 as complete with limitations because the frozen eig
 Decision: do not convert the measured result into a broad retrieval-quality claim. Phrase, keyword and hybrid MRR/top-1 citation targets remain below threshold; the vector mode is deterministic lexical hashing rather than semantic retrieval. Further ranking work requires a broader corpus and held-out human judgments instead of repeated tuning on the same twelve cases.
 
 Decision: record Graph Harness terminal state `PARTIAL_WITH_DOCUMENTED_BLOCKERS`. The executable projection contains 82 append-only events, two localized repair plans, seven passing gates, eight done nodes, two checkpoints and zero ready nodes. No public HTTPS backend is deployed or connected to Pages, productive authenticated journeys remain `0/12`, and Cloud SQL restart, Cloud Run/Secret Manager deployment, IdP registration, OCR review, protected merge and release remain externally human-gated.
+
+## 2026-07-29T23:39:49Z — Authorize and start the anonymous public PDM-OT pilot
+
+Decision: accept the product owner's explicit authorization for the anonymous PDM-OT public pilot, Cloud SQL lifecycle, bounded managed-staging spend, Cloud Run, Artifact Registry, Secret Manager, GitHub Pages connection, merge and release. MFA and productive OIDC remain deferred and are not prerequisites for this credential-free public gateway. RevPDF and PixelRAG are not incorporated.
+
+Decision: reuse the protected `la-muni-rag-staging` instance rather than create a duplicate. Create a dedicated `la_muni_rag_public` database, a non-owner `la_muni_public_runtime` role with no superuser/database/role/RLS-bypass capability, and Secret Manager-backed credentials. Preserve deletion protection, backups, PITR, connector enforcement and exact-origin CORS.
+
+Evidence at this checkpoint: all 17 migrations applied; exact PDM-OT bytes scanned and ingested into 444 vectors; DMP remains failed closed with `pdf_no_extractable_text`; the reproducible public-section projection produces 444 sections; keyword and phrase return five bounded HTTPS citations against managed Cloud SQL; unrelated phrase returns `not_found`; focused 15/15 and full 1052/1053 with zero failures and one environment skip; typecheck/build/audit pass.
+
+Limit: no Cloud Run or connected Pages URL is claimed at this checkpoint. PDM-OT dates remain unreviewed, so public results are correctly labeled `insufficient_evidence` / `validation_required` rather than current official conclusions.

@@ -105,7 +105,9 @@
     "retrieval:run:real-corpus": "bash scripts/run-real-corpus-retrieval-eval.sh",
     "retrieval:evaluate:real-corpus": "npm run build && node dist/cli/evaluateRealCorpusRetrieval.js evals/real-corpus/retrieval-cases.json",
     "retrieval:verify:real-corpus": "npm run build && node dist/cli/verifyRealCorpusRetrievalEvidence.js",
-    "eval:real-corpus-retrieval": "node --import tsx --test --test-concurrency=1 src/__tests__/eval-real-corpus-retrieval-001.test.ts"
+    "eval:real-corpus-retrieval": "node --import tsx --test --test-concurrency=1 src/__tests__/eval-real-corpus-retrieval-001.test.ts",
+    "corpus:project:public-sections": "npm run build && node dist/cli/projectPublicCorpusSections.js",
+    "eval:public-corpus-pilot": "node --import tsx --test --test-concurrency=1 src/__tests__/public-section-projection.test.ts src/__tests__/public-query-gateway-v1.test.ts"
   },
   "keywords": [],
   "author": "",

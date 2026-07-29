@@ -73,6 +73,20 @@
         "remote_ci"
       ],
       "blocking": true
+    },
+    {
+      "id": "GATE-PUBLIC-CORPUS-PILOT-STAGING-001",
+      "required_evidence_kinds": [
+        "local_regression",
+        "managed_database",
+        "corpus_projection",
+        "public_gateway_smoke",
+        "immutable_image",
+        "online_pages",
+        "observability",
+        "remote_ci"
+      ],
+      "blocking": true
     }
   ],
   "nodes": [
@@ -304,6 +318,43 @@
       "metadata": {
         "quality_claim_scope": "bounded_corpus_and_query_set_only",
         "legal_correctness_claim": false
+      }
+    },
+    {
+      "id": "REL-PUBLIC-CORPUS-PILOT-STAGING-001",
+      "kind": "release_checkpoint",
+      "title": "Deploy public PDM-OT corpus pilot to managed staging",
+      "status": "spec_ready",
+      "depends_on": [
+        "WS05-REAL-CORPUS-RETRIEVAL-EVAL-001"
+      ],
+      "capability": "public_corpus_pilot_staging",
+      "gates": {
+        "done": [
+          "GATE-PUBLIC-CORPUS-PILOT-STAGING-001"
+        ]
+      },
+      "allowed_paths": [
+        ".github/workflows/**",
+        "docs/**",
+        "infra/**",
+        "package.json",
+        "package-lock.json",
+        "program/**",
+        "scripts/**",
+        "specs/087-public-corpus-pilot-staging-v1/**",
+        "src/**"
+      ],
+      "metadata": {
+        "gcp_project": "rag-municipalidades",
+        "cloud_sql_instance": "la-muni-rag-staging",
+        "public_tenant_id": "a7100000-0000-4000-8000-000000000001",
+        "approved_corpus": [
+          "antigua-pdm-ot"
+        ],
+        "mfa_deferred": true,
+        "dmp_ocr_in_scope": false,
+        "productive_authenticated_journeys": "0/12"
       }
     }
   ]

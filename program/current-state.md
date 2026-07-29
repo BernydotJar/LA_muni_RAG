@@ -382,3 +382,11 @@ truth.
 - Provider-side kits do not prove external interoperability.
 - A temporary exact-SHA Pages deployment is not a protected merge or production-release approval.
 - A green feature branch, draft PR or synthetic receipt is not production readiness.
+
+## Feature 087 — public corpus pilot staging in progress
+
+The product owner approved the anonymous PDM-OT pilot and managed GCP staging lifecycle. Cloud SQL `la-muni-rag-staging` is RUNNABLE with deletion protection, backups, PITR and connector enforcement preserved. A dedicated `la_muni_rag_public` database and non-owner `la_muni_public_runtime` role are active; credentials and the public rate-limit key are stored in Secret Manager.
+
+The exact PDM-OT corpus is present as 444 accepted vectors and 444 reproducibly projected `document_sections`. A real production-mode backend smoke against Cloud SQL returns five HTTPS citations for keyword and phrase queries and `not_found` for an unrelated phrase. Multiline PDF excerpts are normalized safely; other control characters remain rejected. PDM-OT temporal status is still undetermined, so citations are exposed as `validation_required` without a false vigencia claim. DMP remains excluded with `pdf_no_extractable_text`.
+
+Graph Harness Feature 087 is `running` at event 86. Local regression is 1053 total / 1052 pass / 0 fail / 1 environment skip; typecheck, build and dependency audit pass. The remaining executable sequence is exact-SHA commit and CI, immutable image build, Cloud Run deployment, Pages `PAGES_API_URL`, live browser smoke, observability evidence and release closure. MFA and the twelve authenticated journeys remain separate future work.
