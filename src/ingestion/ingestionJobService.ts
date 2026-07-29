@@ -15,6 +15,7 @@ import {
   type FailIngestionJobInput,
   type HeartbeatIngestionJobInput,
   type IngestionPipelineConfigV1,
+  type LeasedDocumentIdentity,
   type LeasedIngestionJob,
 } from "./jobTypes.js";
 
@@ -511,6 +512,22 @@ const rowToJob = (row: Record<string, unknown> | undefined): DurableIngestionJob
   };
 };
 
+const rowToLeasedDocumentIdentity = (row: Record<string, unknown> | undefined): LeasedDocumentIdentity => {
+  if (
+    !row ||
+    typeof row.document_key !== "string" || row.document_key.length < 1 || row.document_key.length > 512 ||
+    typeof row.document_title !== "string" || row.document_title.length < 1 || row.document_title.length > 1_000 ||
+    typeof row.version_label !== "string" || row.version_label.length < 1 || row.version_label.length > 256
+  ) {
+    throw new IngestionJobError("ingestion_persistence_invalid", "Stored document identity is invalid.");
+  }
+  return {
+    documentKey: row.document_key,
+    documentTitle: row.document_title,
+    documentVersion: row.version_label,
+  };
+};
+
 const boundedLeaseSeconds = (value = DEFAULT_LEASE_SECONDS): number => {
   if (!Number.isSafeInteger(value) || value < MIN_LEASE_SECONDS || value > MAX_LEASE_SECONDS) {
     throw new IngestionJobError(
@@ -694,8 +711,16 @@ export class PostgresIngestionJobService {
         throw new IngestionJobError("ingestion_persistence_invalid", "Lease claim returned multiple jobs.");
       }
       const job = rowToJob(rows[0]);
+      const identityRows = rowsFrom(await client.query(LOCK_DOCUMENT_VERSION_SQL, [
+        job.documentVersionId,
+        job.tenantId,
+      ]));
+      if (identityRows.length !== 1) {
+        throw new IngestionJobError("ingestion_document_version_missing", "Leased job lost its document identity.");
+      }
+      const documentIdentity = rowToLeasedDocumentIdentity(identityRows[0]);
       await this.audit(client, job, "rag.ingestion_job.leased", "success", "job_leased");
-      return { job, leaseToken: token };
+      return { job, leaseToken: token, documentIdentity };
     });
   }
 

@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "tenantId": "a7100000-0000-4000-8000-000000000001",
+  "principalId": "a7100000-0000-4000-8000-000000000002",
+  "sources": [
+    {
+      "sourceId": "antigua-pdm-ot",
+      "documentId": "a7100000-0000-4000-8000-000000000010",
+      "documentVersionId": "a7100000-0000-4000-8000-000000000011",
+      "documentKey": "antigua-pdm-ot",
+      "documentVersion": "official-municipal-pdf-2026-06-22",
+      "title": "Plan de Desarrollo Municipal y Ordenamiento Territorial de Antigua Guatemala - Modulo 1",
+      "relativePath": "antigua-pdm-ot/antigua-pdm-ot--official-municipal-pdf.pdf",
+      "originalFilename": "antigua-pdm-ot.pdf",
+      "expectedSha256": "824f0ee47106f062269a7c65cb3433435470bbe609054972eb29c360f368cd0b",
+      "expectedByteLength": 34822596
+    },
+    {
+      "sourceId": "antigua-mnp-dmp-v3-2026",
+      "documentId": "a7100000-0000-4000-8000-000000000020",
+      "documentVersionId": "a7100000-0000-4000-8000-000000000021",
+      "documentKey": "antigua-mnp-dmp-v3-2026",
+      "documentVersion": "official-municipal-pdf-2026-02-17-v3",
+      "title": "Manual de Normas y Procedimientos - DMP - Version 3",
+      "relativePath": "antigua-mnp-dmp-v3-2026/antigua-mnp-dmp-v3-2026--official-municipal-pdf-2026-02-17-v3.pdf",
+      "originalFilename": "antigua-mnp-dmp-v3-2026.pdf",
+      "expectedSha256": "4cbd35993b345c1f2bdb308825f1d3a6cac24ad239bdc9b087e2d99f2297e8f9",
+      "expectedByteLength": 49052885
+    }
+  ]
+}

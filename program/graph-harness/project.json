@@ -262,7 +262,10 @@
         "program/**",
         "scripts/**",
         "specs/085-controlled-real-corpus-ingestion-v1/**",
-        "src/**"
+        "src/**",
+        ".gitignore",
+        ".github/workflows/ci.yml",
+        "evals/**"
       ],
       "metadata": {
         "authorized_sources": [

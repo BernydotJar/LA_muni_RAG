@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { access, readFile } from "node:fs/promises";
+import { readFile } from "node:fs/promises";
 import { describe, it } from "node:test";
 import {
   MIXCO_COMPARATIVE_LIMITATION,
@@ -26,10 +26,11 @@ describe("EVAL-SOURCE-001 — governed municipal source inventory", () => {
     assert.equal(manifest.schemaVersion, 1);
     assert.match(manifest.targetJurisdiction, /Antigua Guatemala/i);
     assert.equal(summary.total, 17);
-    assert.equal(summary.acquired, 1);
-    assert.equal(summary.ingested, 0);
-    assert.equal(summary.byStatus.ingested, 0);
-    assert.ok(summary.byStatus.verified >= 4);
+    assert.equal(summary.acquired, 2);
+    assert.equal(summary.ingested, 1);
+    assert.equal(summary.byStatus.ingested, 1);
+    assert.equal(summary.byStatus.failed, 1);
+    assert.ok(summary.byStatus.verified >= 3);
     assert.ok(summary.comparative >= 8);
 
     for (const record of manifest.records) {
@@ -56,7 +57,7 @@ describe("EVAL-SOURCE-001 — governed municipal source inventory", () => {
     }
   });
 
-  it("does not promote catalog discovery or acquisition metadata to ingestion", async () => {
+  it("distinguishes catalog discovery, failed extraction and completed ingestion", async () => {
     const manifest = await load();
     const catalog = manifest.records.find(
       (record) => record.sourceId === "antigua-manuales-procedimientos"
@@ -71,31 +72,36 @@ describe("EVAL-SOURCE-001 — governed municipal source inventory", () => {
     assert.equal(catalog.indexing, undefined);
 
     assert.ok(acquired);
-    assert.equal(acquired.status, "acquired");
+    assert.equal(acquired.status, "failed");
     assert.match(acquired.acquisition?.contentSha256 ?? "", /^[a-f0-9]{64}$/);
     assert.ok((acquired.acquisition?.byteLength ?? 0) > 0);
+    assert.equal(acquired.artifactSafety?.verdict, "clean");
+    assert.deepEqual(acquired.failureCodes, ["pdf_no_extractable_text"]);
     assert.equal(acquired.extraction, undefined);
     assert.equal(acquired.indexing, undefined);
+
+    const evidenceManifest = JSON.parse(
+      await readFile("evals/real-corpus/controlled-corpus-manifest.json", "utf8")
+    ) as { records: Parameters<typeof reconcileSourceInventoryWithCorpusManifest>[1] };
     assert.equal(
-      reconcileSourceInventoryWithCorpusManifest(manifest.records, []).valid,
+      reconcileSourceInventoryWithCorpusManifest(manifest.records, evidenceManifest.records).valid,
       true,
-      "no source is declared ingested, so an empty operational manifest must not be contradicted"
+      "the one ingested source must reconcile while the no-text source remains outside the index"
     );
   });
 
-  it("records that acquired bytes are external to this checkout instead of pretending durability", async () => {
+  it("keeps raw acquisition bytes outside Git while preserving durable evidence", async () => {
     const manifest = await load();
     const acquired = manifest.records.find(
       (record) => record.sourceId === "antigua-mnp-dmp-v3-2026"
     );
     assert.ok(acquired?.acquisition?.artifactPath);
-    await assert.rejects(
-      () => access(acquired.acquisition!.artifactPath),
-      /ENOENT/,
-      "the checkout must not silently claim possession of ignored acquisition bytes"
-    );
-    const gitignore = await readFile(".gitignore", "utf8");
+    const [gitignore, receipt] = await Promise.all([
+      readFile(".gitignore", "utf8"),
+      readFile("evals/real-corpus/results/controlled-ingestion-receipt.json", "utf8"),
+    ]);
     assert.match(gitignore, /^\.rag\/library\/$/m);
+    assert.match(receipt, /"rawBytesCommittedToGit": false/);
     assert.ok(acquired.limitations.some((item) => /checksum|licencia|adquis/i.test(item)));
   });
 

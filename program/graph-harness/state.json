@@ -1,7 +1,7 @@
 {
   "checkpoint_count": 1,
-  "event_count": 60,
-  "last_event_id": "d130d539-90cd-47f1-a04d-a59c33a30973",
+  "event_count": 61,
+  "last_event_id": "4f996969-d3ba-4168-95f9-a32b15d68164",
   "mode": "SHIP",
   "nodes": [
     {
@@ -54,7 +54,7 @@
       "id": "WS02-CORPUS-ACQUISITION-001",
       "kind": "feature",
       "revision": 0,
-      "status": "running",
+      "status": "review",
       "title": "Acquire and ingest authorized Antigua-first corpus"
     },
     {

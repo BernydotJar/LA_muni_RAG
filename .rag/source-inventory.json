@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "targetJurisdiction": "Municipio de La Antigua Guatemala, Sacatepéquez, Guatemala",
-  "generatedAt": "2026-07-19T04:08:28.814Z",
+  "generatedAt": "2026-07-29T17:07:35.453Z",
   "records": [
     {
       "sourceId": "gt-codigo-municipal-index",
@@ -295,7 +295,7 @@
       "documentVersion": "official-municipal-pdf-2026-06-22",
       "title": "PDM-OT de La Antigua Guatemala",
       "category": "planning",
-      "status": "verified",
+      "status": "ingested",
       "targetJurisdiction": "Municipio de La Antigua Guatemala, Sacatepéquez, Guatemala",
       "sourceJurisdiction": "Municipio de La Antigua Guatemala, Sacatepéquez, Guatemala",
       "municipality": "antigua guatemala",
@@ -307,19 +307,61 @@
       "verifiedAt": "2026-06-22",
       "limitations": [
         "La evidencia disponible corresponde al Módulo 1 del PDM-OT; no demuestra por sí sola completitud, vigencia ni ausencia de reformas o módulos adicionales.",
-        "El PDF, su huella y los artefactos de extracción legacy existen sólo como evidencia local ignorada por Git; deben importarse y reconciliarse mediante Feature 054 antes de afirmar estado acquired o ingested."
+        "Ingestión acreditada en un PostgreSQL/pgvector local desechable con FORCE RLS; no acredita almacenamiento de objetos, retención ni operación productiva.",
+        "Los embeddings local-eval-hashing son una representación léxica determinista de evaluación, no un modelo semántico productivo.",
+        "La ingestión no demuestra vigencia, aplicabilidad jurídica, completitud del corpus ni aprobación institucional.",
+        "Ingestión acreditada en un PostgreSQL/pgvector local desechable con FORCE RLS; no acredita almacenamiento de objetos, retención ni operación productiva.",
+        "Los embeddings local-eval-hashing son una representación léxica determinista de evaluación, no un modelo semántico productivo.",
+        "La ingestión no demuestra vigencia, aplicabilidad jurídica, completitud del corpus ni aprobación institucional."
       ],
       "provenanceNotes": [
         "La URL municipal oficial y el SHA-256 están registrados en docs/core-document-download-log.md, actualizado el 2026-06-22.",
         "db/seeds/002_document_versions.sql registra la misma versión, ruta, URL, huella, fecha de descarga y tamaño de archivo.",
-        "La identidad del PDF local se verificó sobre bytes crudos, pero data/raw/ está excluido del repositorio y no existe una importación controlada de Feature 054; no se trasladó evidencia legacy a acquisition, extraction o indexing."
+        "La identidad del PDF local se verificó sobre bytes crudos, pero data/raw/ está excluido del repositorio y no existe una importación controlada de Feature 054; no se trasladó evidencia legacy a acquisition, extraction o indexing.",
+        "Feature 085 verificó bytes exactos, ClamAV, extracción acotada y 444 chunks tenant-scoped.",
+        "Feature 085 verificó bytes exactos, ClamAV, extracción acotada y 444 chunks tenant-scoped."
       ],
       "tags": [
         "antigua",
         "pdm-ot",
         "verified",
-        "feature-054-reconciliation-pending"
-      ]
+        "ingested",
+        "controlled-real-corpus-v1"
+      ],
+      "acquisition": {
+        "acquiredAt": "2026-07-29T17:06:40.925Z",
+        "artifactPath": ".rag/library/antigua-pdm-ot/antigua-pdm-ot--official-municipal-pdf.pdf",
+        "contentSha256": "824f0ee47106f062269a7c65cb3433435470bbe609054972eb29c360f368cd0b",
+        "mediaType": "application/pdf",
+        "byteLength": 34822596
+      },
+      "artifactSafety": {
+        "inspectedAt": "2026-07-29T17:06:40.925Z",
+        "artifactPath": ".rag/library/antigua-pdm-ot/antigua-pdm-ot--official-municipal-pdf.pdf",
+        "contentSha256": "824f0ee47106f062269a7c65cb3433435470bbe609054972eb29c360f368cd0b",
+        "byteLength": 34822596,
+        "observedContentSha256": "824f0ee47106f062269a7c65cb3433435470bbe609054972eb29c360f368cd0b",
+        "observedByteLength": 34822596,
+        "declaredMediaType": "application/pdf",
+        "detectedMediaType": "application/pdf",
+        "signature": "pdf-header-eof-v1",
+        "scannerEngine": "clamav",
+        "scannerVersion": "1.4.3",
+        "scannerDefinitionsVersion": "28076/Wed-Jul-29-06:25:25-2026",
+        "verdict": "clean",
+        "failureCodes": []
+      },
+      "extraction": {
+        "extractedAt": "2026-07-29T17:06:42.623Z",
+        "extractor": "pdfjs_isolated_process_v1",
+        "sectionCount": 224
+      },
+      "indexing": {
+        "indexedAt": "2026-07-29T17:06:42.623Z",
+        "indexer": "local-eval-hashing/token-bigram-hash-1536-v1",
+        "chunkCount": 444,
+        "manifestDocumentKey": "antigua-pdm-ot"
+      }
     },
     {
       "sourceId": "antigua-poa",
@@ -462,7 +504,7 @@
       "documentVersion": "official-municipal-pdf-2026-02-17-v3",
       "title": "Manual de Normas y Procedimientos - Dirección Municipal de Planificación (versión 3)",
       "category": "procedure_manual",
-      "status": "acquired",
+      "status": "failed",
       "targetJurisdiction": "Municipio de La Antigua Guatemala, Sacatepéquez, Guatemala",
       "sourceJurisdiction": "Municipio de La Antigua Guatemala, Sacatepéquez, Guatemala",
       "municipality": "antigua guatemala",
@@ -473,29 +515,56 @@
       "publicUrl": "https://muniantigua.gob.gt/assets/backend/info/6_2026_eu9Z7.pdf",
       "verifiedAt": "2026-07-19T03:53:06.000Z",
       "limitations": [
-        "Los bytes fueron adquiridos y hasheados de forma controlada, pero la inspección segura, aprobación interna y vigencia permanecen pendientes.",
         "El servidor no publica checksum criptográfico y la fecha Last-Modified posterior a la publicación indica que la URL puede ser mutable.",
-        "No se encontró licencia expresa de redistribución; conservar atribución y exigir revisión jurídica antes de republicar."
+        "No se encontró licencia expresa de redistribución; conservar atribución y exigir revisión jurídica antes de republicar.",
+        "El PDF oficial es un escaneo de 170 páginas sin capa de texto extraíble; el extractor acotado falló cerrado con pdf_no_extractable_text.",
+        "No se ejecutó OCR jurídico en español sin un gate separado de exactitud y revisión humana.",
+        "La adquisición y el scan limpio no equivalen a ingestión, vigencia, aplicabilidad jurídica ni aprobación institucional.",
+        "El PDF oficial es un escaneo de 170 páginas sin capa de texto extraíble; el extractor acotado falló cerrado con pdf_no_extractable_text.",
+        "No se ejecutó OCR jurídico en español sin un gate separado de exactitud y revisión humana.",
+        "La adquisición y el scan limpio no equivalen a ingestión, vigencia, aplicabilidad jurídica ni aprobación institucional."
       ],
       "provenanceNotes": [
         "La API municipal oficial lo registró para 2026 con publicación 2026-02-17 17:59:00 sin zona horaria declarada.",
         "HEAD devolvió HTTP 200, application/pdf y Content-Length 49052885; esos metadatos no sustituyen el hash de los bytes adquiridos.",
-        "Feature 054 copió los bytes originales a la biblioteca local acotada y verificó SHA-256 después de la copia; no ejecutó extracción ni indexación."
+        "Feature 054 copió los bytes originales a la biblioteca local acotada y verificó SHA-256 después de la copia; no ejecutó extracción ni indexación.",
+        "Feature 085 verificó bytes exactos y ClamAV, pero conservó el documento fuera del índice por ausencia de texto extraíble.",
+        "Feature 085 verificó bytes exactos y ClamAV, pero conservó el documento fuera del índice por ausencia de texto extraíble."
       ],
       "tags": [
         "antigua",
         "procedimientos",
         "planificacion",
         "dmp",
-        "acquired"
+        "clean-scan",
+        "extraction-blocked-no-text"
       ],
       "acquisition": {
-        "acquiredAt": "2026-07-19T04:08:28.813Z",
+        "acquiredAt": "2026-07-29T17:07:34.903Z",
         "artifactPath": ".rag/library/antigua-mnp-dmp-v3-2026/antigua-mnp-dmp-v3-2026--official-municipal-pdf-2026-02-17-v3.pdf",
         "contentSha256": "4cbd35993b345c1f2bdb308825f1d3a6cac24ad239bdc9b087e2d99f2297e8f9",
         "mediaType": "application/pdf",
         "byteLength": 49052885
-      }
+      },
+      "artifactSafety": {
+        "inspectedAt": "2026-07-29T17:07:34.903Z",
+        "artifactPath": ".rag/library/antigua-mnp-dmp-v3-2026/antigua-mnp-dmp-v3-2026--official-municipal-pdf-2026-02-17-v3.pdf",
+        "contentSha256": "4cbd35993b345c1f2bdb308825f1d3a6cac24ad239bdc9b087e2d99f2297e8f9",
+        "byteLength": 49052885,
+        "observedContentSha256": "4cbd35993b345c1f2bdb308825f1d3a6cac24ad239bdc9b087e2d99f2297e8f9",
+        "observedByteLength": 49052885,
+        "declaredMediaType": "application/pdf",
+        "detectedMediaType": "application/pdf",
+        "signature": "pdf-header-eof-v1",
+        "scannerEngine": "clamav",
+        "scannerVersion": "1.4.3",
+        "scannerDefinitionsVersion": "28076/Wed-Jul-29-06:25:25-2026",
+        "verdict": "clean",
+        "failureCodes": []
+      },
+      "failureCodes": [
+        "pdf_no_extractable_text"
+      ]
     }
   ]
 }

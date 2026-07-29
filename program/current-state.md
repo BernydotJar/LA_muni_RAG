@@ -2,7 +2,7 @@
 
 Updated: 2026-07-29T16:36:22Z
 
-Program status: **PARTIAL WITH DOCUMENTED BLOCKERS — Features 077–084 and the localized Graph Harness exact-SHA CI repair are published and green on the draft branch; productive identity, complete workflows, real corpus, managed staging evidence, protected merge and production release remain open**
+Program status: **PARTIAL WITH DOCUMENTED BLOCKERS — Features 077–084 and the localized Graph Harness exact-SHA CI repair are published and green; Feature 085 has a locally verified controlled real-corpus candidate pending exact-SHA CI; productive identity, complete corpus coverage, managed staging evidence, protected merge and production release remain open**
 
 ## Authoritative checkout
 
@@ -14,8 +14,8 @@ evidence_baseline_head: 6995dd81025d593752a9e87b32aa9e2844e17510
 functional_repair_parent: ba6acf3cc654e798f46b104d4eaac6d5c78712ab
 graph_harness_framework_merge_pin: 1bebce3db35303072049233786464bb01163c98b
 graph_harness_executable_runtime: fef364bc66849b98c08d3c1dcb91caf9701027cd
-graph_harness_events: 60
-graph_harness_required_gates: 5/5 PASS
+graph_harness_events: 61
+graph_harness_required_gates: 5 PASS; corpus and retrieval gates pending
 working_tree_at_baseline: clean
 pull_request: 24 draft
 merged: false
@@ -266,7 +266,15 @@ Exact-SHA GitHub Actions passed:
 
 Feature 084 closes the runtime provenance blocker. Backend CI installs Graph Harness SDLC from immutable published merge `1bebce3db35303072049233786464bb01163c98b`, containing executable runtime `fef364bc66849b98c08d3c1dcb91caf9701027cd`, and replays the application event chain without copied framework source. Exact-SHA runs Backend `30470555533`, Public Browser `30470546856` and Terraform `30470549087` all passed for functional commit `6995dd81025d593752a9e87b32aa9e2844e17510`.
 
-This repair changes no productive capability: productive authenticated journeys remain `0/12`, real documents ingested remain `0`, and no merge, deployment, IdP provisioning, corpus acquisition or Cloud SQL lifecycle mutation was authorized.
+At the Feature 084 checkpoint, this repair changed no productive capability and no corpus acquisition was yet credited. Feature 085 subsequently supersedes that corpus count with one controlled real municipal ingestion while productive authenticated journeys remain `0/12`.
+
+## Feature 085 — controlled real corpus ingestion v1 candidate
+
+Two previously identified official municipal PDFs were reacquired from their registered HTTPS URLs and matched the historical exact hashes and byte lengths. PDM-OT module 1 passed structural and ClamAV gates, produced 224 extracted sections and 444 tenant-scoped chunks in PostgreSQL 15.18 with pgvector 0.8.5, and is now credited as `ingested`. DMP v3 passed exact-byte and ClamAV gates but is a 170-page EPSON scan without extractable text; it remains `failed` with `pdf_no_extractable_text`, zero sections and zero chunks. No OCR was attempted without a separate Spanish legal-document accuracy and human-review gate.
+
+The real run exposed and repaired a canonical identity defect: the worker lease did not carry server-owned document key, title and version, so completion rejected real vectors with `vector_record_scope_mismatch`. The lease now carries those values and completion still independently rechecks them. The disposable evidence runtime used a loopback-only PostgreSQL cluster, a non-owner `NOBYPASSRLS` role and five `FORCE RLS` tables. Raw PDFs remain outside Git.
+
+One real municipal document is credited as ingested. The vector representation is explicitly `local-eval-hashing/token-bigram-hash-1536-v1`; it is deterministic lexical evaluation infrastructure, not a semantic model or productive embedding provider. Retrieval quality against the real corpus remains unevaluated until Feature 086 completes. Exact-SHA remote CI remains pending for this candidate.
 
 ## Verification
 
@@ -282,7 +290,7 @@ EVAL-HUMAN-PRODUCT-SHELL-ACCESSIBILITY-001: 9/9 pass
 EVAL-HUMAN-WORKSPACE-001: 8/8 pass
 EVAL-HUMAN-OIDC-PROVIDER-001: 9/9 pass
 Feature 083 focused OIDC adapter: 10/10 pass
-Graph Harness: 60 events / 2 repair plans / 5 required gates PASS / 1 checkpoint; immutable runtime pin done
+Graph Harness: 61 events / 2 repair plans / 5 gates PASS / corpus in review / retrieval dependency-gated
 Exact-SHA repair CI: Backend 30428162887 success; Public Browser 30428162850 success; Terraform 30428162725 success
 Reliability repair: 12 validated warm-up requests; 80 measured shell requests; unchanged shell p95 limit 500 ms
 Feature 082 focused workspace: 6/6 pass
@@ -319,9 +327,10 @@ teardown_executed: false
 
 ```text
 source inventory records: 17
-verified records: 4
-records with acquisition metadata: 1
-records credited as ingested: 0
+verified records: 3
+records with acquisition metadata: 2
+records credited as ingested: 1
+records failed after clean acquisition: 1 (pdf_no_extractable_text)
 records retrieval-validated against real corpus: 0
 ```
 
@@ -334,9 +343,9 @@ truth.
 2. Preserve the green Public Browser Gate as a required public-only check; do not count it as authenticated E2E.
 3. Preserve the completed Feature 076 deployment and rollback receipts; require a new exact-SHA, bounded authorization for any future Pages replacement.
 4. Review actual billing after export latency; obtain a new explicit authorization for any restart or teardown.
-5. Preserve the local Features 077–083 gates; obtain productive IdP, corpus, workflow, accessibility, observability and managed-environment approvals/evidence before counting any authenticated journey.
+5. Preserve the local Features 077–085 gates; complete the judged real-corpus retrieval node, and obtain productive IdP, workflow, accessibility, observability and managed-environment approvals/evidence before counting any authenticated journey.
 6. Preserve published functional repair `82d75711f28a03de4e7df35d5ec6435cc7610319` and its three green exact-SHA workflows; keep PR #24 draft until all remaining human-gated product and environment prerequisites are satisfied.
-7. Preserve immutable Graph Harness merge pin `1bebce3db35303072049233786464bb01163c98b`; the controlled corpus node is now running under the typed graph.
+7. Preserve immutable Graph Harness merge pin `1bebce3db35303072049233786464bb01163c98b`; keep the controlled corpus node in review until exact-SHA CI passes, then advance the real-corpus retrieval evaluation.
 
 ## Critical blockers
 
@@ -344,8 +353,7 @@ truth.
 - `BLK-PAGES-DEPLOYMENT-076`: closed for this pilot; exact-SHA deployment and rollback to the authorized main SHA are both verified;
 - `PQG-OPEN-ENABLEMENT-001`: public gateway lacks authorized ingested evidence, edge
   controls, deployed staging and approval;
-- `BLK-CORPUS-OPS-001`: source rights, durable object storage, scanner and
-  retention/legal-hold controls are unavailable;
+- `BLK-CORPUS-OPS-001`: one controlled public document is ingested, but durable production object storage, scanner operations, retention/legal-hold controls, OCR validation for the no-text DMP scan and broader corpus coverage remain unavailable;
 - the provider-neutral BFF, generic OIDC adapter and task-first role-aware shell pass local gates, but no approved productive IdP registration/credentials, external interoperability, complete browser-to-domain workflows or real managed environment exists; twelve productive journeys remain blocked;
 - external consumer repositories have not executed their suites;
 - no managed Cloud SQL staging execution, observability/SLO, load/HA, coordinated
@@ -357,7 +365,7 @@ truth.
 - Live budget alerts are not a hard spending cap.
 - A protected state bucket is not a Cloud SQL deployment.
 - There is no production object store, scanner/definitions monitor or dispatcher operating.
-- Zero documents are credited as ingested; the minimum Antigua-first and comparative corpus is incomplete.
+- One real municipal document is credited as ingested; the minimum Antigua-first and comparative corpus remains incomplete, and DMP v3 is not credited because it has no extractable text.
 - A provider-neutral BFF/session foundation, generic OIDC adapter and role-aware UI/navigation task-first shell are implemented locally; productive IdP approval/registration/credentials, recovery/MFA, access review, complete workflows and human accessibility acceptance remain absent.
 - EvidenceGap is intake-only; no research assignment, resolution lifecycle or notification workflow is implemented.
 - An offline approved-shape plan is not a plan against live GCP state.

@@ -16,7 +16,7 @@ const contentSha256 = "824f0ee47106f062269a7c65cb3433435470bbe609054972eb29c360f
 const byteLength = 34_822_596;
 
 describe("PDM-OT source inventory reconciliation", () => {
-  it("keeps the official Antigua source verified without claiming controlled acquisition or ingestion", async () => {
+  it("credits exact clean PDM-OT ingestion without legal or completeness overclaims", async () => {
     const manifest = parseSourceInventoryManifest(await readFile(inventoryPath, "utf-8"));
     const matches = manifest.records.filter((record) => record.sourceId === "antigua-pdm-ot");
 
@@ -24,18 +24,22 @@ describe("PDM-OT source inventory reconciliation", () => {
     const record = matches[0]!;
     assert.equal(record.documentKey, "antigua-pdm-ot");
     assert.equal(record.documentVersion, documentVersion);
-    assert.equal(record.status, "verified");
+    assert.equal(record.status, "ingested");
     assert.equal(record.publicUrl, officialUrl);
     assert.equal(record.verifiedAt, "2026-06-22");
     assert.equal(record.authorityClass, "official_municipal");
     assert.equal(record.authorityLevel, "primary");
     assert.equal(record.officialSource, true);
     assert.equal(record.officialForTargetJurisdiction, true);
-    assert.equal(record.acquisition, undefined);
-    assert.equal(record.extraction, undefined);
-    assert.equal(record.indexing, undefined);
-    assert.ok(record.limitations.some((item) => item.includes("Feature 054")));
-    assert.ok(record.provenanceNotes.some((item) => item.includes("data/raw/")));
+    assert.equal(record.acquisition?.contentSha256, contentSha256);
+    assert.equal(record.acquisition?.byteLength, byteLength);
+    assert.equal(record.artifactSafety?.verdict, "clean");
+    assert.equal(record.extraction?.sectionCount, 224);
+    assert.equal(record.indexing?.chunkCount, 444);
+    assert.equal(record.indexing?.manifestDocumentKey, "antigua-pdm-ot");
+    assert.ok(record.limitations.some((item) => item.includes("no demuestra vigencia")));
+    assert.ok(record.limitations.some((item) => item.includes("no un modelo semántico productivo")));
+    assert.ok(record.provenanceNotes.some((item) => item.includes("Feature 085")));
 
     const validation = validateSourceInventoryRecord(record);
     assert.equal(validation.valid, true, JSON.stringify(validation.failures));

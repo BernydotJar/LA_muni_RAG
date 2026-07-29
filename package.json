@@ -96,7 +96,12 @@
     "test:human-oidc-provider": "node --import tsx --test --test-concurrency=1 src/__tests__/human-oidc-provider-v1.test.ts",
     "eval:human-oidc-provider": "node --import tsx --test --test-concurrency=1 src/__tests__/eval-human-oidc-provider-001.test.ts",
     "graph-harness:verify": "bash scripts/verify-graph-harness-runtime.sh",
-    "eval:graph-harness-runtime-pin": "node --import tsx --test --test-concurrency=1 src/__tests__/eval-graph-harness-runtime-pin-001.test.ts"
+    "eval:graph-harness-runtime-pin": "node --import tsx --test --test-concurrency=1 src/__tests__/eval-graph-harness-runtime-pin-001.test.ts",
+    "corpus:acquire:controlled": "node scripts/acquire-controlled-real-corpus.mjs evals/real-corpus/controlled-ingestion-config.json",
+    "corpus:ingest:controlled": "npm run build && node dist/cli/controlledCorpusIngestion.js --config evals/real-corpus/controlled-ingestion-config.json",
+    "corpus:verify:controlled": "npm run build && node dist/cli/verifyControlledCorpusEvidence.js",
+    "corpus:run:controlled": "bash scripts/run-controlled-real-corpus.sh",
+    "eval:controlled-real-corpus-ingestion": "node --import tsx --test --test-concurrency=1 src/__tests__/eval-controlled-real-corpus-ingestion-001.test.ts"
   },
   "keywords": [],
   "author": "",

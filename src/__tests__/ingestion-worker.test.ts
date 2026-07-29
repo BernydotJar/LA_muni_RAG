@@ -29,6 +29,11 @@ const ARTIFACT_SCAN_ID = "77777777-7777-4777-8777-777777777777";
 const FIXED_TIME = new Date("2026-07-19T21:00:00.000Z");
 const CONTENT = Buffer.from("Procedimiento municipal verificado para pruebas.", "utf8");
 const DIGEST = artifactSha256(CONTENT);
+const DOCUMENT_IDENTITY = {
+  documentKey: "manual-procedimientos",
+  documentTitle: "Manual de procedimientos",
+  documentVersion: "v1",
+};
 
 const job = (overrides: Partial<DurableIngestionJob> = {}): DurableIngestionJob => ({
   jobId: JOB_ID,
@@ -100,7 +105,11 @@ class StubResolver implements AcceptedArtifactResolver {
 }
 
 class StubWorkerService implements IngestionWorkerJobService {
-  lease: LeasedIngestionJob | null = { job: job(), leaseToken: "l".repeat(43) };
+  lease: LeasedIngestionJob | null = {
+    job: job(),
+    leaseToken: "l".repeat(43),
+    documentIdentity: DOCUMENT_IDENTITY,
+  };
   heartbeatInputs: HeartbeatIngestionJobInput[] = [];
   completeInputs: Array<{
     tenantId: string;
@@ -225,6 +234,12 @@ describe("tenant ingestion worker", () => {
     assert.equal(service.completeInputs.length, 1);
     assert.equal(service.completeInputs[0]?.artifactSha256, DIGEST);
     assert.ok((service.completeInputs[0]?.records.length ?? 0) > 0);
+    const firstRecord = service.completeInputs[0]?.records[0] as {
+      chunk?: { source?: { documentKey?: string; documentTitle?: string; documentVersion?: string } };
+    };
+    assert.equal(firstRecord.chunk?.source?.documentKey, DOCUMENT_IDENTITY.documentKey);
+    assert.equal(firstRecord.chunk?.source?.documentTitle, DOCUMENT_IDENTITY.documentTitle);
+    assert.equal(firstRecord.chunk?.source?.documentVersion, DOCUMENT_IDENTITY.documentVersion);
     assert.equal(service.failInputs.length, 0);
     assert.doesNotMatch(JSON.stringify(result), /lease|llll/i);
   });
@@ -396,6 +411,7 @@ describe("tenant ingestion worker", () => {
         },
       }),
       leaseToken: "l".repeat(43),
+      documentIdentity: DOCUMENT_IDENTITY,
     };
     const resolver = new StubResolver();
     const result = await worker(service, resolver).runOnce();

@@ -10,6 +10,7 @@ artifacts/
 data/raw/
 .rag/library/
 .rag/quarantine/
+.rag/corpus-manifest.json
 
 # Local database recovery artifacts must never enter Git.
 .restore-artifacts/

@@ -77,9 +77,16 @@ export type EnqueueIngestionJobResult =
   | { kind: "new" | "replay" | "duplicate_work"; job: DurableIngestionJob }
   | { kind: "conflict" };
 
+export interface LeasedDocumentIdentity {
+  documentKey: string;
+  documentTitle: string;
+  documentVersion: string;
+}
+
 export interface LeasedIngestionJob {
   job: DurableIngestionJob;
   leaseToken: string;
+  documentIdentity: LeasedDocumentIdentity;
 }
 
 export interface CompleteIngestionJobInput {

@@ -62,6 +62,12 @@ jobs:
       - name: Validate source inventory
         run: npm run source-inventory:validate
 
+      - name: Verify controlled real-corpus evidence
+        run: npm run corpus:verify:controlled
+
+      - name: Run EVAL-CONTROLLED-REAL-CORPUS-INGESTION-001
+        run: npm run eval:controlled-real-corpus-ingestion
+
       - name: Validate human decision packets
         run: npm run decision-packets:validate
 

@@ -76,14 +76,15 @@ const acquiredRecord = (): SourceInventoryRecord => baseRecord({
 });
 
 describe("municipal source inventory", () => {
-  it("validates the committed inventory with one controlled acquisition and no ingestion", async () => {
+  it("validates one controlled ingestion and one clean no-text extraction failure", async () => {
     const manifest = parseSourceInventoryManifest(await readFile(".rag/source-inventory.json", "utf-8"));
     const validation = validateSourceInventory(manifest.records);
     const summary = summarizeSourceInventory(manifest.records);
 
     assert.equal(validation.valid, true, JSON.stringify(validation.failures));
-    assert.equal(summary.acquired, 1);
-    assert.equal(summary.ingested, 0);
+    assert.equal(summary.acquired, 2);
+    assert.equal(summary.ingested, 1);
+    assert.equal(summary.byStatus.failed, 1);
     assert.ok(summary.comparative >= 8);
   });
 

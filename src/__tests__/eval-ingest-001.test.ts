@@ -72,7 +72,7 @@ describe("EVAL-INGEST-001 — durable tenant ingestion pipeline", () => {
     assert.match(tenantSmoke, /concurrent|Promise\.all|50/);
   });
 
-  it("does not claim a production object store, scanner, dispatcher or real corpus ingestion", async () => {
+  it("credits only the controlled local ingestion without production infrastructure claims", async () => {
     const [state, inventory] = await Promise.all([
       readFile("program/current-state.md", "utf8"),
       readFile(".rag/source-inventory.json", "utf8"),
@@ -80,8 +80,10 @@ describe("EVAL-INGEST-001 — durable tenant ingestion pipeline", () => {
     assert.match(state, /no production object store/i);
     assert.match(state, /scanner\/definitions monitor/i);
     assert.match(state, /dispatcher/i);
-    assert.match(state, /zero documents are\s+credited as ingested/i);
-    const parsed = JSON.parse(inventory) as { records: Array<{ status: string }> };
-    assert.equal(parsed.records.filter((record) => record.status === "ingested").length, 0);
+    assert.match(state, /one real municipal document is credited as ingested/i);
+    assert.match(state, /local-eval-hashing/i);
+    const parsed = JSON.parse(inventory) as { records: Array<{ status: string; failureCodes?: string[] }> };
+    assert.equal(parsed.records.filter((record) => record.status === "ingested").length, 1);
+    assert.equal(parsed.records.filter((record) => record.failureCodes?.includes("pdf_no_extractable_text")).length, 1);
   });
 });

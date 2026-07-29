@@ -26,13 +26,15 @@ describe("Antigua procedure-manual source reconciliation", () => {
     assert.equal(record.officialSource, true);
     assert.equal(record.officialForTargetJurisdiction, true);
     assert.equal(record.acquisition, undefined);
+    assert.equal(record.artifactSafety, undefined);
+    assert.equal(record.failureCodes, undefined);
     assert.equal(record.extraction, undefined);
     assert.equal(record.indexing, undefined);
     assert.ok(record.limitations.some((item) => item.includes("no se consideran adquiridos")));
     assert.equal(validateSourceInventoryRecord(record).valid, true);
   });
 
-  it("records controlled DMP v3 acquisition without inventing extraction or ingestion", async () => {
+  it("records clean DMP v3 acquisition and preserves the no-text extraction blocker", async () => {
     const manifest = parseSourceInventoryManifest(await readFile(inventoryPath, "utf8"));
     const matches = manifest.records.filter(
       (record) => record.sourceId === "antigua-mnp-dmp-v3-2026"
@@ -40,7 +42,7 @@ describe("Antigua procedure-manual source reconciliation", () => {
 
     assert.equal(matches.length, 1);
     const record = matches[0]!;
-    assert.equal(record.status, "acquired");
+    assert.equal(record.status, "failed");
     assert.equal(record.publicUrl, dmpPdfUrl);
     assert.equal(record.documentVersion, "official-municipal-pdf-2026-02-17-v3");
     assert.equal(
@@ -53,12 +55,17 @@ describe("Antigua procedure-manual source reconciliation", () => {
     );
     assert.equal(record.acquisition?.byteLength, 49_052_885);
     assert.equal(record.acquisition?.mediaType, "application/pdf");
+    assert.equal(record.artifactSafety?.verdict, "clean");
+    assert.deepEqual(record.failureCodes, ["pdf_no_extractable_text"]);
     assert.equal(record.extraction, undefined);
     assert.equal(record.indexing, undefined);
     assert.ok(record.limitations.some((item) => item.includes("no publica checksum")));
     assert.ok(record.limitations.some((item) => item.includes("licencia expresa")));
     assert.ok(record.provenanceNotes.some((item) => item.includes("49052885")));
     assert.ok(record.provenanceNotes.some((item) => item.includes("Feature 054")));
+    assert.ok(record.provenanceNotes.some((item) => item.includes("Feature 085")));
+    assert.ok(record.limitations.some((item) => item.includes("170 páginas")));
+    assert.ok(record.limitations.some((item) => item.includes("No se ejecutó OCR")));
     assert.equal(validateSourceInventoryRecord(record).valid, true);
   });
 });

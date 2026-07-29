@@ -85,6 +85,12 @@ export interface TenantIngestionWorkerOptions extends VerifyAcceptedArtifactOpti
     sourcePath: string,
     input: Omit<ExtractorInput, "sourcePath">
   ) => Promise<NormalizedDocument> | NormalizedDocument;
+  failureObserver?: (diagnostic: {
+    errorName: string;
+    stableCode: string;
+    sourceCode: string | null;
+    retryable: boolean;
+  }) => void;
 }
 
 interface ClassifiedWorkerFailure {
@@ -297,7 +303,7 @@ export class TenantIngestionWorker {
       );
       await heartbeat.checkpoint();
       const document = await this.extract(artifact.originalFilename, {
-        title: artifact.originalFilename,
+        title: lease.documentIdentity.documentTitle,
         content: artifact.content,
         metadata: {
           sourceFormat: "accepted_artifact_v1",
@@ -313,8 +319,8 @@ export class TenantIngestionWorker {
       const prepared = await prepareDocumentEmbeddings(
         document,
         {
-          documentKey: lease.job.documentVersionId,
-          documentVersion: "accepted-v1",
+          documentKey: lease.documentIdentity.documentKey,
+          documentVersion: lease.documentIdentity.documentVersion,
         },
         this.embeddingProvider,
         {
@@ -359,6 +365,21 @@ export class TenantIngestionWorker {
     } catch (error) {
       await heartbeat.stop();
       const failure = safeFailure(classifyFailure(error));
+      const sourceCode = typeof error === "object" && error !== null &&
+        "code" in error && typeof (error as { code?: unknown }).code === "string" &&
+        /^[A-Za-z0-9_]{1,64}$/.test((error as { code: string }).code)
+        ? (error as { code: string }).code
+        : null;
+      try {
+        this.options.failureObserver?.({
+          errorName: error instanceof Error ? error.name.slice(0, 64) : "UnknownError",
+          stableCode: failure.code,
+          sourceCode,
+          retryable: failure.retryable,
+        });
+      } catch {
+        // Diagnostic observers cannot alter worker failure handling.
+      }
       if (failure.code === "ingestion_lease_lost") {
         return { kind: "lease_lost", jobId: lease.job.jobId };
       }

@@ -64,6 +64,6 @@ describe("EVAL-MISSING-001 — explicit no-evidence and gap behavior", () => {
     const state = await read("program/current-state.md");
     assert.match(state, /EvidenceGap is intake-only/i);
     assert.match(state, /no research assignment, resolution lifecycle/i);
-    assert.match(state, /minimum Antigua-first and comparative corpus is incomplete/i);
+    assert.match(state, /minimum Antigua-first and comparative corpus (?:is|remains) incomplete/i);
   });
 });
