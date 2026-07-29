@@ -1,9 +1,21 @@
 {
   "checkpoint_count": 1,
-  "event_count": 43,
-  "last_event_id": "de527ff9-0d35-4ace-9217-2de7e9672066",
+  "event_count": 52,
+  "last_event_id": "308ebcc3-f367-4510-94e2-54c176586d25",
   "mode": "SHIP",
   "nodes": [
+    {
+      "active_evidence_ids": [],
+      "active_gates": {},
+      "approval_count": 1,
+      "capability": "immutable_graph_runtime_pin",
+      "depends_on": [],
+      "id": "PRG-GRAPH-HARNESS-PIN-002",
+      "kind": "program_control",
+      "revision": 0,
+      "status": "review",
+      "title": "Pin published Graph Harness runtime and replay state"
+    },
     {
       "active_evidence_ids": [
         "5c8c5501-90bb-44e7-8950-be04dde88364",
@@ -23,6 +35,34 @@
       "revision": 2,
       "status": "done",
       "title": "Draft PR 24 exact-SHA release checkpoint"
+    },
+    {
+      "active_evidence_ids": [],
+      "active_gates": {},
+      "approval_count": 1,
+      "capability": "controlled_real_corpus_ingestion",
+      "depends_on": [
+        "PRG-GRAPH-HARNESS-PIN-002"
+      ],
+      "id": "WS02-CORPUS-ACQUISITION-001",
+      "kind": "feature",
+      "revision": 0,
+      "status": "approved",
+      "title": "Acquire and ingest authorized Antigua-first corpus"
+    },
+    {
+      "active_evidence_ids": [],
+      "active_gates": {},
+      "approval_count": 1,
+      "capability": "judged_real_corpus_retrieval",
+      "depends_on": [
+        "WS02-CORPUS-ACQUISITION-001"
+      ],
+      "id": "WS05-REAL-CORPUS-RETRIEVAL-EVAL-001",
+      "kind": "evaluation",
+      "revision": 0,
+      "status": "approved",
+      "title": "Evaluate retrieval against controlled real corpus"
     },
     {
       "active_evidence_ids": [],

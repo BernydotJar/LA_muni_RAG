@@ -5,11 +5,11 @@ This directory is an application-specific projection consumed by the Graph Harne
 ## Runtime source
 
 - Framework repository: `BernydotJar/Graph-harness-sdlc`
-- Framework workspace used for this execution: `520ffab2-149d-4559-bb08-d4e05ff92769`
-- Observed framework branch: `feature/executable-graph-runtime-v1`
-- Observed framework HEAD: `0eb0d5fe09e3b1ecaf561b4a1cc9b32510480a26`
+- Immutable published pin: `1bebce3db35303072049233786464bb01163c98b`
+- Executable runtime commit contained by that merge: `fef364bc66849b98c08d3c1dcb91caf9701027cd`
+- Verification command: `npm run graph-harness:verify`
 
-The executable runtime files in the framework workspace are currently uncommitted. Therefore this repository does **not** claim a durable pinned framework adoption. The current files preserve the typed project projection and append-only event chain produced by that runtime; pinning remains blocked until the framework publishes an immutable commit containing the runtime.
+Backend CI installs the framework package directly from the immutable published pin, executes `validate`, `status`, and `ready` over this application projection, and rejects a copied application-local `graph_harness` runtime directory. The framework remains the execution runtime; this repository stores only its application-specific project, event ledger, typed state, and evidence.
 
 ## Application sources of truth
 

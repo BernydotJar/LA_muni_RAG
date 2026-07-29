@@ -44,6 +44,12 @@ jobs:
       - name: Install locked dependencies
         run: npm ci
 
+      - name: Verify immutable Graph Harness runtime
+        run: npm run graph-harness:verify
+
+      - name: Run EVAL-GRAPH-HARNESS-RUNTIME-PIN-001
+        run: npm run eval:graph-harness-runtime-pin
+
       - name: Validate integration contracts
         run: npm run contracts:validate
 

@@ -94,7 +94,9 @@
     "test:human-workspace": "node --import tsx --test --test-concurrency=1 src/__tests__/human-product-workspace-v1.test.ts",
     "eval:human-workspace": "node --import tsx --test --test-concurrency=1 src/__tests__/eval-human-workspace-001.test.ts",
     "test:human-oidc-provider": "node --import tsx --test --test-concurrency=1 src/__tests__/human-oidc-provider-v1.test.ts",
-    "eval:human-oidc-provider": "node --import tsx --test --test-concurrency=1 src/__tests__/eval-human-oidc-provider-001.test.ts"
+    "eval:human-oidc-provider": "node --import tsx --test --test-concurrency=1 src/__tests__/eval-human-oidc-provider-001.test.ts",
+    "graph-harness:verify": "bash scripts/verify-graph-harness-runtime.sh",
+    "eval:graph-harness-runtime-pin": "node --import tsx --test --test-concurrency=1 src/__tests__/eval-graph-harness-runtime-pin-001.test.ts"
   },
   "keywords": [],
   "author": "",

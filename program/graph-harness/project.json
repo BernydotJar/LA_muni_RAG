@@ -40,6 +40,39 @@
         "remote_ci"
       ],
       "blocking": true
+    },
+    {
+      "id": "GATE-GRAPH-HARNESS-PIN-002",
+      "required_evidence_kinds": [
+        "framework_validation",
+        "independent_review",
+        "regression",
+        "remote_ci"
+      ],
+      "blocking": true
+    },
+    {
+      "id": "GATE-CONTROLLED-REAL-CORPUS-001",
+      "required_evidence_kinds": [
+        "source_verification",
+        "malware_scan",
+        "ingestion_runtime",
+        "inventory_reconciliation",
+        "independent_review",
+        "regression",
+        "remote_ci"
+      ],
+      "blocking": true
+    },
+    {
+      "id": "GATE-REAL-CORPUS-RETRIEVAL-001",
+      "required_evidence_kinds": [
+        "retrieval_eval",
+        "adversarial_review",
+        "regression",
+        "remote_ci"
+      ],
+      "blocking": true
     }
   ],
   "nodes": [
@@ -172,6 +205,101 @@
         "failed_head": "ba6acf3cc654e798f46b104d4eaac6d5c78712ab",
         "merge_authorized": false,
         "production_release_authorized": false
+      }
+    },
+    {
+      "id": "PRG-GRAPH-HARNESS-PIN-002",
+      "kind": "program_control",
+      "title": "Pin published Graph Harness runtime and replay state",
+      "status": "spec_ready",
+      "depends_on": [],
+      "capability": "immutable_graph_runtime_pin",
+      "gates": {
+        "done": [
+          "GATE-GRAPH-HARNESS-PIN-002"
+        ]
+      },
+      "allowed_paths": [
+        "program/**",
+        "docs/handoffs/**",
+        "specs/084-graph-harness-immutable-pin-v1/**",
+        ".github/workflows/ci.yml",
+        "package.json",
+        "scripts/verify-graph-harness-runtime.sh",
+        "src/__tests__/eval-graph-harness-runtime-pin-001.test.ts",
+        "docs/reviews/084-graph-harness-runtime-pin-independent-review.md",
+        "docs/traceability/084-graph-harness-immutable-pin-v1.md",
+        "specs/085-controlled-real-corpus-ingestion-v1/**",
+        "specs/086-real-corpus-retrieval-eval-v1/**"
+      ],
+      "metadata": {
+        "framework_repository": "BernydotJar/Graph-harness-sdlc",
+        "framework_commit": "1bebce3db35303072049233786464bb01163c98b",
+        "runtime_commit": "fef364bc66849b98c08d3c1dcb91caf9701027cd"
+      }
+    },
+    {
+      "id": "WS02-CORPUS-ACQUISITION-001",
+      "kind": "feature",
+      "title": "Acquire and ingest authorized Antigua-first corpus",
+      "status": "spec_ready",
+      "depends_on": [
+        "PRG-GRAPH-HARNESS-PIN-002"
+      ],
+      "capability": "controlled_real_corpus_ingestion",
+      "gates": {
+        "done": [
+          "GATE-CONTROLLED-REAL-CORPUS-001"
+        ]
+      },
+      "allowed_paths": [
+        ".rag/source-inventory.json",
+        "contracts/**",
+        "db/**",
+        "docs/**",
+        "package.json",
+        "package-lock.json",
+        "program/**",
+        "scripts/**",
+        "specs/085-controlled-real-corpus-ingestion-v1/**",
+        "src/**"
+      ],
+      "metadata": {
+        "authorized_sources": [
+          "antigua-pdm-ot",
+          "antigua-mnp-dmp-v3-2026"
+        ],
+        "raw_bytes_in_git": false,
+        "production_infrastructure_authorized": false
+      }
+    },
+    {
+      "id": "WS05-REAL-CORPUS-RETRIEVAL-EVAL-001",
+      "kind": "evaluation",
+      "title": "Evaluate retrieval against controlled real corpus",
+      "status": "spec_ready",
+      "depends_on": [
+        "WS02-CORPUS-ACQUISITION-001"
+      ],
+      "capability": "judged_real_corpus_retrieval",
+      "gates": {
+        "done": [
+          "GATE-REAL-CORPUS-RETRIEVAL-001"
+        ]
+      },
+      "allowed_paths": [
+        "docs/**",
+        "evals/**",
+        "package.json",
+        "package-lock.json",
+        "program/**",
+        "scripts/**",
+        "specs/086-real-corpus-retrieval-eval-v1/**",
+        "src/**"
+      ],
+      "metadata": {
+        "quality_claim_scope": "bounded_corpus_and_query_set_only",
+        "legal_correctness_claim": false
       }
     }
   ]
