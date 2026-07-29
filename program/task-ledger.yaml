@@ -1,5 +1,5 @@
 schema_version: 1
-updated_at: '2026-07-29T16:36:22Z'
+updated_at: '2026-07-29T17:34:00Z'
 runtime:
   type: graph_harness_sdlc_projection
   framework_repository: BernydotJar/Graph-harness-sdlc
@@ -1679,21 +1679,54 @@ tasks:
 - id: WS02-CORPUS-ACQUISITION-001
   workstream: WS-02
   title: Acquire and ingest authorized Antigua-first corpus
-  status: blocked
-  owner: human_platform_and_legal
+  status: completed_with_limitations
+  owner: /root
   files:
   - .rag/source-inventory.json
+  - evals/real-corpus/controlled-corpus-manifest.json
+  - evals/real-corpus/results/controlled-ingestion-receipt.json
+  - scripts/acquire-controlled-real-corpus.mjs
+  - scripts/run-controlled-real-corpus.sh
+  - src/cli/controlledCorpusIngestion.ts
+  - src/cli/verifyControlledCorpusEvidence.ts
   depends_on:
   - WS05-SEARCH-EVIDENCE-API-001
-  blockers:
-  - BLK-CORPUS-OPS-001
+  - PRG-GRAPH-HARNESS-PIN-002
+  blockers: []
   acceptance:
-  - Authorized durable bytes, immutable manifests, current clean scans, processed ingestion and indexed chunks exist for the
-    approved corpus.
-  - No synthetic fixture is credited as production corpus evidence.
+  - Exact public bytes, clean scans, non-owner FORCE-RLS processing and tenant chunks exist for every document credited as ingested.
+  - A scan without text is not credited as ingested and no synthetic fixture is counted as corpus evidence.
+  evidence:
+  - Functional commit 4aa7dc72679a029348650b9207f3866709f9d7df; GATE-CONTROLLED-REAL-CORPUS-001 PASS.
+  - PDM-OT exact SHA 824f0ee47106f062269a7c65cb3433435470bbe609054972eb29c360f368cd0b; 224 sections and 444 chunks.
+  - DMP v3 exact SHA 4cbd35993b345c1f2bdb308825f1d3a6cac24ad239bdc9b087e2d99f2297e8f9; clean scan, pdf_no_extractable_text, zero chunks.
+  - PostgreSQL 15.18/pgvector 0.8.5; non-owner NOBYPASSRLS role; five FORCE-RLS tables; teardown pass.
+  - Named EVAL 11/11; regression 1021/1019/0/2; Backend 30474973082, Public Browser 30474974657 and Terraform 30474973360 success.
+  limitations:
+  - One document is ingested; corpus completeness, OCR validation, legal review and productive corpus operations remain open.
+  branch: feature/gcp-cloudsql-staging-v1
+  pr: 24
+  ci: exact_sha_success
+- id: WS05-REAL-CORPUS-RETRIEVAL-EVAL-001
+  workstream: WS-05
+  title: Evaluate retrieval against the controlled real corpus
+  status: in_progress
+  owner: /root
+  files:
+  - evals/real-corpus/
+  - specs/086-real-corpus-retrieval-eval-v1/spec.md
+  depends_on:
+  - WS02-CORPUS-ACQUISITION-001
+  blockers: []
+  acceptance:
+  - Persist judged query cases and measured retrieval metrics against exact PDM-OT chunks.
+  - Fail closed for unavailable modes and keep claims bounded to the corpus/query set.
   evidence: []
-  pr: null
-  ci: not_started
+  limitations:
+  - Only one ingested document is available; legal correctness and broad coverage are not measured.
+  branch: feature/gcp-cloudsql-staging-v1
+  pr: 24
+  ci: in_progress
 - id: WS08-CONSUMER-CONTRACT-KIT-001
   workstream: WS-08
   title: Publish portable provider-side consumer contract kits v1

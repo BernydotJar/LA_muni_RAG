@@ -1,12 +1,12 @@
 {
-  "schema_version": "1.25.0",
-  "generated_at": "2026-07-29T16:36:22Z",
+  "schema_version": "1.26.0",
+  "generated_at": "2026-07-29T17:34:00Z",
   "branch": "feature/gcp-cloudsql-staging-v1",
-  "functional_head": "6995dd81025d593752a9e87b32aa9e2844e17510",
+  "functional_head": "4aa7dc72679a029348650b9207f3866709f9d7df",
   "status": "passed_features077_through083_and_graph_harness_exact_sha_ci_repair_with_productive_identity_workflow_data_environment_accessibility_merge_and_release_blockers",
   "deterministic": {
-    "tests": 1001,
-    "pass": 999,
+    "tests": 1021,
+    "pass": 1019,
     "fail": 0,
     "skipped": 2,
     "typecheck": "pass",
@@ -452,6 +452,10 @@
     "EVAL-GRAPH-HARNESS-RUNTIME-PIN-001": {
       "passed": 4,
       "total": 4
+    },
+    "EVAL-CONTROLLED-REAL-CORPUS-INGESTION-001": {
+      "passed": 11,
+      "total": 11
     }
   },
   "publication": {
@@ -477,25 +481,24 @@
     "external_os_electoral_consumer",
     "external_content_agency_consumer",
     "browser_e2e",
-    "real_corpus_quality",
     "production_load_ha_recovery_privacy",
     "productive_human_idp_and_complete_authenticated_workflows",
     "human_assistive_technology_acceptance",
     "productive_observability_slo_and_on_call",
     "human_decision_receipts",
-    "exact_sha_ci_for_features077_through083"
+    "exact_sha_ci_for_features077_through083",
+    "judged_real_corpus_retrieval_quality_feature086_running"
   ],
   "limitations": [
     "The exact authorized Cloud SQL plan was applied and the instance is stopped; managed synthetic execution and destructive teardown remain absent.",
     "The prior single-owner exception expired on stop; restart or teardown requires new explicit authorization.",
     "Actual provider billing remains pending and stopped resources may retain storage or backup charges.",
-    "No authorized real corpus, external consumer execution, protected merge or production deployment.",
     "No exact-SHA public Pages deployment or rollback receipt; the current public URL serves legacy main content.",
-    "Features 077–083 are local provider-neutral foundations; generic OIDC validation exists, but productive IdP selection/registration/credentials and interoperability, complete workflows, real corpus, managed users/environment and all twelve productive journeys remain blocked.",
     "Cross-browser accessibility automation does not establish WCAG conformance or human assistive-technology acceptance.",
     "Four decision packets contain zero selected options, zero authorized actions and zero receipts.",
     "Local telemetry/load evidence is not a productive SLO or operating model.",
-    "The remote draft branch now includes the verified repair and exact-SHA CI is green; protected merge and production release remain absent."
+    "The remote draft branch now includes the verified repair and exact-SHA CI is green; protected merge and production release remain absent.",
+    "One exact clean PDM-OT document is ingested locally; DMP v3 has no extractable text and broader productive corpus operations remain absent."
   ],
   "public_browser_gate": {
     "status": "passed_local_and_remote",
@@ -658,6 +661,27 @@
       "backend": 30470555533,
       "public_browser": 30470546856,
       "terraform": 30470549087,
+      "conclusion": "success"
+    }
+  },
+  "controlled_real_corpus_ingestion": {
+    "status": "passed_with_one_ingested_and_one_no_text_blocker",
+    "functional_sha": "4aa7dc72679a029348650b9207f3866709f9d7df",
+    "gate": "GATE-CONTROLLED-REAL-CORPUS-001 PASS",
+    "exact_sources": 2,
+    "clean_sources": 2,
+    "ingested_sources": 1,
+    "blocked_no_text_sources": 1,
+    "pdm_sections": 224,
+    "pdm_chunks": 444,
+    "postgres": "15.18",
+    "pgvector": "0.8.5",
+    "embedding_provider": "local-eval-hashing",
+    "semantic_claim": false,
+    "remote_ci": {
+      "backend": 30474973082,
+      "public_browser": 30474974657,
+      "terraform": 30474973360,
       "conclusion": "success"
     }
   }

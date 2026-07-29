@@ -1,5 +1,5 @@
 schema_version: 1
-generated_at: '2026-07-29T16:36:22Z'
+generated_at: '2026-07-29T17:34:00Z'
 program:
   id: LA-MUNI-RAG-PROD
   objective: Make LA Muni RAG production-ready within its evidence, procedure, workflow, case-tracking, and integration domain.
@@ -1515,12 +1515,53 @@ tasks:
 - id: WS02-CORPUS-ACQUISITION-001
   workstream: WS-02
   title: Acquire and ingest authorized Antigua-first corpus
-  status: blocked
-  owner: human_platform_and_legal
+  status: completed_with_limitations
+  owner: /root
   depends_on:
   - WS05-SEARCH-EVIDENCE-API-001
-  blockers:
-  - BLK-CORPUS-OPS-001
+  - PRG-GRAPH-HARNESS-PIN-002
+  blockers: []
+  outputs:
+  - .rag/source-inventory.json
+  - evals/real-corpus/controlled-corpus-manifest.json
+  - evals/real-corpus/results/controlled-ingestion-receipt.json
+  - scripts/run-controlled-real-corpus.sh
+  result:
+    functional_commit: 4aa7dc72679a029348650b9207f3866709f9d7df
+    graph_harness_gate: GATE-CONTROLLED-REAL-CORPUS-001 PASS
+    graph_harness_event_count_after_retrieval_start: 72
+    exact_sources_verified: 2
+    exact_sources_clean: 2
+    real_documents_ingested: 1
+    blocked_no_text_documents: 1
+    pdm_sections: 224
+    pdm_chunks: 444
+    postgres: 15.18
+    pgvector: 0.8.5
+    named_eval: EVAL-CONTROLLED-REAL-CORPUS-INGESTION-001 11/11 passed
+    regression: 1021 total / 1019 pass / 0 fail / 2 explicit skips
+    exact_sha_ci: backend_30474973082_success_public_browser_30474974657_success_terraform_30474973360_success
+  limitations:
+  - DMP v3 is a 170-page scan with no extractable text and remains failed with pdf_no_extractable_text; no OCR was credited.
+  - Local lexical hashing is not a semantic production embedding provider or a general retrieval-quality claim.
+  - Durable production object storage, retention/legal hold, broader corpus coverage, legal review, managed deployment and operations remain open.
+- id: WS05-REAL-CORPUS-RETRIEVAL-EVAL-001
+  workstream: WS-05
+  title: Evaluate retrieval against the controlled real corpus
+  status: in_progress
+  owner: /root
+  depends_on:
+  - WS02-CORPUS-ACQUISITION-001
+  blockers: []
+  outputs:
+  - evals/real-corpus/
+  - specs/086-real-corpus-retrieval-eval-v1/
+  acceptance:
+  - Judged queries bind expected document and citation identities to the exact PDM-OT corpus.
+  - Hit rate at 5, MRR, citation identity, unsupported-answer rate and cross-document leakage are measured.
+  - Unavailable semantic capabilities fail closed and are not relabeled as hybrid or semantic.
+  limitations:
+  - Results will be bounded to one ingested document and the committed query set.
 - id: WS08-CONSUMER-CONTRACT-KIT-001
   workstream: WS-08
   title: Publish portable provider-side consumer contract kits v1

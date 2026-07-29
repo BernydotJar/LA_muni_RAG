@@ -1,7 +1,7 @@
 {
   "checkpoint_count": 1,
-  "event_count": 61,
-  "last_event_id": "4f996969-d3ba-4168-95f9-a32b15d68164",
+  "event_count": 72,
+  "last_event_id": "8cfa4c4b-f7ac-4862-a20e-041d8f2e83cb",
   "mode": "SHIP",
   "nodes": [
     {
@@ -44,8 +44,18 @@
       "title": "Draft PR 24 exact-SHA release checkpoint"
     },
     {
-      "active_evidence_ids": [],
-      "active_gates": {},
+      "active_evidence_ids": [
+        "0f0b99ef-ef9c-4b3f-bd0f-101cd856ca6a",
+        "27c79adc-627d-4365-a4ad-f4171bb5c33a",
+        "3e67a637-0d1d-4202-97b0-102f7196b884",
+        "5a0007b2-30da-400b-98dd-40e99c96bfe8",
+        "9b37ddf0-6b79-401e-a3aa-fd5676ad26a0",
+        "cdd3720a-6752-4445-a736-f1b2cec4e09f",
+        "f5839e09-0d3b-4a00-b70f-ccebd805072a"
+      ],
+      "active_gates": {
+        "GATE-CONTROLLED-REAL-CORPUS-001": "PASS"
+      },
       "approval_count": 1,
       "capability": "controlled_real_corpus_ingestion",
       "depends_on": [
@@ -54,7 +64,7 @@
       "id": "WS02-CORPUS-ACQUISITION-001",
       "kind": "feature",
       "revision": 0,
-      "status": "review",
+      "status": "done",
       "title": "Acquire and ingest authorized Antigua-first corpus"
     },
     {
@@ -68,7 +78,7 @@
       "id": "WS05-REAL-CORPUS-RETRIEVAL-EVAL-001",
       "kind": "evaluation",
       "revision": 0,
-      "status": "approved",
+      "status": "running",
       "title": "Evaluate retrieval against controlled real corpus"
     },
     {

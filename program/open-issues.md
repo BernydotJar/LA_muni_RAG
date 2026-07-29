@@ -1,6 +1,6 @@
 # LA Muni RAG — Open Issues
 
-Updated: 2026-07-29T16:36:22Z
+Updated: 2026-07-29T17:34:00Z
 
 ## Critical
 
@@ -17,15 +17,16 @@ Required closure:
 - deployment approval and immutable revision receipt;
 - Pages `PAGES_API_URL` configured only after those gates pass.
 
-### BLK-CORPUS-OPS-001 — authorized corpus operations unavailable
+### BLK-CORPUS-OPS-001 — partially resolved controlled corpus; productive operations incomplete
 
-Zero real documents are credited as ingested. Human/platform inputs required:
+Feature 085 credits one exact, clean PDM-OT document as ingested with 224 sections and 444 tenant-scoped chunks. DMP v3 is exact and clean but remains failed with `pdf_no_extractable_text`; no OCR or chunks are credited. Still required:
 
-- source rights and acquisition approval;
-- durable immutable object storage;
-- current malware scanner and definitions monitoring;
+- approved OCR accuracy and human review for scanned legal documents;
+- durable immutable production object storage and definitions monitoring;
 - retention, deletion and legal-hold policy;
-- named source, authority and vigencia reviewers.
+- broader Antigua-first and comparative source coverage;
+- named source, authority and vigencia reviewers;
+- managed ingestion operations and observation.
 
 ### E2E-OPEN-IDP-002 — productive human identity and authenticated UI absent
 

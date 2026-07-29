@@ -2,7 +2,7 @@
 
 Updated: 2026-07-29T16:36:22Z
 
-Program status: **PARTIAL WITH DOCUMENTED BLOCKERS — Features 077–084 and the localized Graph Harness exact-SHA CI repair are published and green; Feature 085 has a locally verified controlled real-corpus candidate pending exact-SHA CI; productive identity, complete corpus coverage, managed staging evidence, protected merge and production release remain open**
+Program status: **PARTIAL WITH DOCUMENTED BLOCKERS — Features 077–084 and the localized Graph Harness exact-SHA CI repair are published and green; Feature 085 is published and exact-SHA verified; Feature 086 real-corpus retrieval evaluation is running; productive identity, complete corpus coverage, managed staging evidence, protected merge and production release remain open**
 
 ## Authoritative checkout
 
@@ -14,8 +14,8 @@ evidence_baseline_head: 6995dd81025d593752a9e87b32aa9e2844e17510
 functional_repair_parent: ba6acf3cc654e798f46b104d4eaac6d5c78712ab
 graph_harness_framework_merge_pin: 1bebce3db35303072049233786464bb01163c98b
 graph_harness_executable_runtime: fef364bc66849b98c08d3c1dcb91caf9701027cd
-graph_harness_events: 61
-graph_harness_required_gates: 5 PASS; corpus and retrieval gates pending
+graph_harness_events: 72
+graph_harness_required_gates: 6 PASS; retrieval gate pending
 working_tree_at_baseline: clean
 pull_request: 24 draft
 merged: false
@@ -274,7 +274,7 @@ Two previously identified official municipal PDFs were reacquired from their reg
 
 The real run exposed and repaired a canonical identity defect: the worker lease did not carry server-owned document key, title and version, so completion rejected real vectors with `vector_record_scope_mismatch`. The lease now carries those values and completion still independently rechecks them. The disposable evidence runtime used a loopback-only PostgreSQL cluster, a non-owner `NOBYPASSRLS` role and five `FORCE RLS` tables. Raw PDFs remain outside Git.
 
-One real municipal document is credited as ingested. The vector representation is explicitly `local-eval-hashing/token-bigram-hash-1536-v1`; it is deterministic lexical evaluation infrastructure, not a semantic model or productive embedding provider. Retrieval quality against the real corpus remains unevaluated until Feature 086 completes. Exact-SHA remote CI remains pending for this candidate.
+One real municipal document is credited as ingested. The vector representation is explicitly `local-eval-hashing/token-bigram-hash-1536-v1`; it is deterministic lexical evaluation infrastructure, not a semantic model or productive embedding provider. Retrieval quality against the real corpus remains unevaluated until Feature 086 completes. Exact-SHA Backend `30474973082`, Public Browser `30474974657` and Terraform `30474973360` passed for functional commit `4aa7dc72679a029348650b9207f3866709f9d7df`.
 
 ## Verification
 
@@ -290,7 +290,7 @@ EVAL-HUMAN-PRODUCT-SHELL-ACCESSIBILITY-001: 9/9 pass
 EVAL-HUMAN-WORKSPACE-001: 8/8 pass
 EVAL-HUMAN-OIDC-PROVIDER-001: 9/9 pass
 Feature 083 focused OIDC adapter: 10/10 pass
-Graph Harness: 61 events / 2 repair plans / 5 gates PASS / corpus in review / retrieval dependency-gated
+Graph Harness: 72 events / 2 repair plans / 6 gates PASS / corpus done / retrieval running
 Exact-SHA repair CI: Backend 30428162887 success; Public Browser 30428162850 success; Terraform 30428162725 success
 Reliability repair: 12 validated warm-up requests; 80 measured shell requests; unchanged shell p95 limit 500 ms
 Feature 082 focused workspace: 6/6 pass
@@ -345,7 +345,7 @@ truth.
 4. Review actual billing after export latency; obtain a new explicit authorization for any restart or teardown.
 5. Preserve the local Features 077–085 gates; complete the judged real-corpus retrieval node, and obtain productive IdP, workflow, accessibility, observability and managed-environment approvals/evidence before counting any authenticated journey.
 6. Preserve published functional repair `82d75711f28a03de4e7df35d5ec6435cc7610319` and its three green exact-SHA workflows; keep PR #24 draft until all remaining human-gated product and environment prerequisites are satisfied.
-7. Preserve immutable Graph Harness merge pin `1bebce3db35303072049233786464bb01163c98b`; keep the controlled corpus node in review until exact-SHA CI passes, then advance the real-corpus retrieval evaluation.
+7. Preserve immutable Graph Harness merge pin `1bebce3db35303072049233786464bb01163c98b`; preserve the completed controlled corpus gate and complete the running real-corpus retrieval evaluation.
 
 ## Critical blockers
 
