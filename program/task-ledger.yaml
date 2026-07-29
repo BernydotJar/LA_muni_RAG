@@ -919,22 +919,30 @@ tasks:
 - id: WS04-RET-001
   workstream: WS-04
   title: Measure retrieval quality and citation fidelity
-  status: in_progress
-  owner: unassigned
-  files: []
+  status: completed_with_limitations
+  owner: /root
+  files:
+  - evals/real-corpus/retrieval-cases.json
+  - evals/real-corpus/results/retrieval-eval-receipt.json
+  - docs/reviews/086-real-corpus-retrieval-independent-review.md
   depends_on:
   - WS02-CORP-001
   - WS03-ING-001
   - PRG-CTX7-001
-  blockers:
-  - No durable real Antigua corpus is ingested, so real-corpus retrieval quality cannot be evaluated.
+  blockers: []
   acceptance:
-  - Authority, conflicts, missing evidence, and citations are visible and no facts are invented.
+  - Authority, conflicts, missing evidence, citations and no-answer behavior are visible without invented facts.
   evidence:
-  - Keyword, phrase and tenant-vector foundations plus citation/conflict/missing-evidence behavior are tested.
-  - Dedicated /api/v1/search and /api/v1/evidence-bundles endpoints remain missing.
-  pr: null
-  ci: passed_foundation_only
+  - Feature 086 evaluates eight positive and four no-answer cases against 444 exact PDM-OT chunks.
+  - Unsupported-answer and cross-document leakage rates are zero in every measured mode.
+  - Phrase, keyword and hybrid MRR/top-1 citation targets remain below threshold and are not relabeled as passing quality.
+  - GATE-REAL-CORPUS-RETRIEVAL-001 PASS; exact-SHA Backend 30477447935, Public Browser 30477448607 and Terraform 30477447915 success.
+  limitations:
+  - Results are bounded to one document and twelve judged cases.
+  - The vector mode is lexical hashing, not semantic retrieval.
+  - Broader corpus coverage, held-out human judgments and legal-correctness review remain open.
+  pr: 24
+  ci: exact_sha_success
 - id: WS05-WATER-001
   workstream: WS-05
   title: Compile and hard-evaluate the 47-category potable-water research workflow
@@ -1710,10 +1718,12 @@ tasks:
 - id: WS05-REAL-CORPUS-RETRIEVAL-EVAL-001
   workstream: WS-05
   title: Evaluate retrieval against the controlled real corpus
-  status: in_progress
+  status: completed_with_limitations
   owner: /root
   files:
   - evals/real-corpus/
+  - evals/real-corpus/results/retrieval-eval-receipt.json
+  - docs/reviews/086-real-corpus-retrieval-independent-review.md
   - specs/086-real-corpus-retrieval-eval-v1/spec.md
   depends_on:
   - WS02-CORPUS-ACQUISITION-001
@@ -1721,12 +1731,20 @@ tasks:
   acceptance:
   - Persist judged query cases and measured retrieval metrics against exact PDM-OT chunks.
   - Fail closed for unavailable modes and keep claims bounded to the corpus/query set.
-  evidence: []
+  evidence:
+  - Functional commit 70ec287f1a8705637e04374ca2562fafa175e0da; GATE-REAL-CORPUS-RETRIEVAL-001 PASS.
+  - Eight positive and four no-answer cases executed against 444 exact PDM-OT chunks in PostgreSQL/pgvector.
+  - Unsupported-answer rate and cross-document leakage rate are zero in phrase, keyword, lexical-vector and hybrid modes.
+  - Hybrid hit@5 is 0.875; phrase, keyword and hybrid MRR/top-1 citation targets remain below threshold.
+  - Named EVAL 11/11; final program revalidation 1050/1049/0/1; Backend 30477447935, Public Browser 30477448607 and Terraform 30477447915 success.
+  - Graph Harness contains 82 append-only events, seven passing gates, two checkpoints and no ready nodes.
   limitations:
-  - Only one ingested document is available; legal correctness and broad coverage are not measured.
+  - Only one ingested document and twelve judged cases are measured; legal correctness and broad coverage are not established.
+  - The vector mode is deterministic lexical hashing, not semantic retrieval.
+  - Further ranking tuning requires a larger corpus and held-out human judgments rather than reuse of this benchmark.
   branch: feature/gcp-cloudsql-staging-v1
   pr: 24
-  ci: in_progress
+  ci: exact_sha_success
 - id: WS08-CONSUMER-CONTRACT-KIT-001
   workstream: WS-08
   title: Publish portable provider-side consumer contract kits v1
@@ -2222,9 +2240,9 @@ blockers:
   affects:
   - WS02-CORPUS-ACQUISITION-001
   state: open
-  condition: Source rights, durable object storage, current scanner operation and retention/legal-hold policy are not available
-    in this repository context.
-  next_safe_action: Human owners approve rights and production storage/scanner/privacy controls before artifact acquisition.
+  condition: One exact clean PDM-OT document is ingested and evaluated, but durable object storage, managed scanner operation,
+    retention/legal-hold controls, DMP OCR review, broader coverage and named authority/vigencia reviewers remain absent.
+  next_safe_action: Human owners approve the public pilot corpus, OCR policy, production storage/scanner/privacy controls and held-out review plan before deployment or broader quality claims.
 - id: BLK-CTX7-001
   state: resolved
   condition: Context7 was initially unavailable through MCP and PATH.

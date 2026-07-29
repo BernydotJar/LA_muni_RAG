@@ -1,8 +1,8 @@
 # LA Muni RAG — Current Program State
 
-Updated: 2026-07-29T16:36:22Z
+Updated: 2026-07-29T20:16:31Z
 
-Program status: **PARTIAL WITH DOCUMENTED BLOCKERS — Features 077–084 and the localized Graph Harness exact-SHA CI repair are published and green; Feature 085 is published and exact-SHA verified; Feature 086 real-corpus retrieval evaluation is running; productive identity, complete corpus coverage, managed staging evidence, protected merge and production release remain open**
+Program status: **PARTIAL WITH DOCUMENTED BLOCKERS — all 8 projected Graph Harness nodes are done and all 7 required gates pass; one exact PDM-OT document is ingested and retrieval-evaluated with explicit quality gaps; no public backend staging URL, productive identity, complete corpus, protected merge or production release is authorized or deployed**
 
 ## Authoritative checkout
 
@@ -10,13 +10,13 @@ Program status: **PARTIAL WITH DOCUMENTED BLOCKERS — Features 077–084 and th
 workspace_id: b909e055-62ae-4625-ac13-10947906a08f
 root: /workspace
 branch: feature/gcp-cloudsql-staging-v1
-evidence_baseline_head: 6995dd81025d593752a9e87b32aa9e2844e17510
+evidence_baseline_head: 70ec287f1a8705637e04374ca2562fafa175e0da
 functional_repair_parent: ba6acf3cc654e798f46b104d4eaac6d5c78712ab
 graph_harness_framework_merge_pin: 1bebce3db35303072049233786464bb01163c98b
 graph_harness_executable_runtime: fef364bc66849b98c08d3c1dcb91caf9701027cd
-graph_harness_events: 72
-graph_harness_required_gates: 6 PASS; retrieval gate pending
-working_tree_at_baseline: clean
+graph_harness_events: 82
+graph_harness_required_gates: 7 PASS
+working_tree_at_checkpoint: user-generated dist-pages build modifications preserved outside the program commit
 pull_request: 24 draft
 merged: false
 cloud_sql_instance_created: true
@@ -274,7 +274,15 @@ Two previously identified official municipal PDFs were reacquired from their reg
 
 The real run exposed and repaired a canonical identity defect: the worker lease did not carry server-owned document key, title and version, so completion rejected real vectors with `vector_record_scope_mismatch`. The lease now carries those values and completion still independently rechecks them. The disposable evidence runtime used a loopback-only PostgreSQL cluster, a non-owner `NOBYPASSRLS` role and five `FORCE RLS` tables. Raw PDFs remain outside Git.
 
-One real municipal document is credited as ingested. The vector representation is explicitly `local-eval-hashing/token-bigram-hash-1536-v1`; it is deterministic lexical evaluation infrastructure, not a semantic model or productive embedding provider. Retrieval quality against the real corpus remains unevaluated until Feature 086 completes. Exact-SHA Backend `30474973082`, Public Browser `30474974657` and Terraform `30474973360` passed for functional commit `4aa7dc72679a029348650b9207f3866709f9d7df`.
+One real municipal document is credited as ingested. The vector representation is explicitly `local-eval-hashing/token-bigram-hash-1536-v1`; it is deterministic lexical evaluation infrastructure, not a semantic model or productive embedding provider. Feature 086 now supplies bounded retrieval measurements. Exact-SHA Backend `30474973082`, Public Browser `30474974657` and Terraform `30474973360` passed for functional commit `4aa7dc72679a029348650b9207f3866709f9d7df`.
+
+## Feature 086 — real-corpus retrieval evaluation v1
+
+A frozen benchmark of eight positive and four no-answer queries was executed against the exact 444 chunks produced from PDM-OT module 1. Phrase, Spanish full-text keyword, deterministic lexical-vector and existing hybrid retrieval were measured in PostgreSQL/pgvector. The safety gate passes: unsupported-answer rate and cross-document leakage rate are zero in every mode.
+
+Measured quality remains mixed and is not promoted into a broad claim. Phrase achieved hit@5 `0.750`, MRR `0.6458333333` and top-1 citation identity `0.500`; keyword achieved `0.750`, `0.5803571429` and `0.375`; lexical-vector achieved `0.750`, `0.6180555556` and `0.500`; hybrid achieved `0.875`, `0.6041666667` and `0.375`. Phrase, keyword and hybrid MRR/top-1 citation targets remain below threshold. The vector mode is explicitly lexical hashing, not semantic retrieval.
+
+`EVAL-REAL-CORPUS-RETRIEVAL-001` passed 11/11, the final program revalidation passed 1049/1050 with zero failures and one explicit environment skip, and exact-SHA Backend `30477447935`, Public Browser `30477448607` and Terraform `30477447915` all succeeded for functional commit `70ec287f1a8705637e04374ca2562fafa175e0da`. Graph Harness gate `GATE-REAL-CORPUS-RETRIEVAL-001` is `PASS`; the node is `done` with documented quality limitations. Further ranking work requires a broader corpus and held-out human judgments rather than tuning repeatedly against the same twelve cases.
 
 ## Verification
 
@@ -290,7 +298,7 @@ EVAL-HUMAN-PRODUCT-SHELL-ACCESSIBILITY-001: 9/9 pass
 EVAL-HUMAN-WORKSPACE-001: 8/8 pass
 EVAL-HUMAN-OIDC-PROVIDER-001: 9/9 pass
 Feature 083 focused OIDC adapter: 10/10 pass
-Graph Harness: 72 events / 2 repair plans / 6 gates PASS / corpus done / retrieval running
+Graph Harness: 82 events / 2 repair plans / 7 gates PASS / 8 nodes done / 2 checkpoints / no ready nodes
 Exact-SHA repair CI: Backend 30428162887 success; Public Browser 30428162850 success; Terraform 30428162725 success
 Reliability repair: 12 validated warm-up requests; 80 measured shell requests; unchanged shell p95 limit 500 ms
 Feature 082 focused workspace: 6/6 pass
@@ -300,7 +308,7 @@ Feature 077 focused lifecycle/migration: 20/20 pass
 Feature 077 PostgreSQL non-owner gate and compiled smoke: pass
 Feature 076 final CI: Backend 30224836298 / 30224834914 success; Public Browser 30224836291 / 30224834919 success; Terraform 30224836307 success
 Playwright public browser gate: 10/10 pass (Chromium desktop + mobile); remote runs 30180490148 / 30180488768 success
-full regression: 997 total / 995 pass / 0 fail / 2 environment skips
+Final program revalidation: 1050 total / 1049 pass / 0 fail / 1 explicit environment skip
 Bash syntax: pass
 Typecheck: pass
 Build: pass
@@ -331,7 +339,7 @@ verified records: 3
 records with acquisition metadata: 2
 records credited as ingested: 1
 records failed after clean acquisition: 1 (pdf_no_extractable_text)
-records retrieval-validated against real corpus: 0
+records retrieval-validated against real corpus: 1 document / 12 judged cases; safety pass; quality targets not met
 ```
 
 Synthetic fixtures, administrative GCP controls and offline plans do not change corpus
@@ -343,17 +351,16 @@ truth.
 2. Preserve the green Public Browser Gate as a required public-only check; do not count it as authenticated E2E.
 3. Preserve the completed Feature 076 deployment and rollback receipts; require a new exact-SHA, bounded authorization for any future Pages replacement.
 4. Review actual billing after export latency; obtain a new explicit authorization for any restart or teardown.
-5. Preserve the local Features 077–085 gates; complete the judged real-corpus retrieval node, and obtain productive IdP, workflow, accessibility, observability and managed-environment approvals/evidence before counting any authenticated journey.
+5. Preserve the completed Features 077–086 gates; obtain productive IdP, workflow, accessibility, observability and managed-environment approvals/evidence before counting any authenticated journey.
 6. Preserve published functional repair `82d75711f28a03de4e7df35d5ec6435cc7610319` and its three green exact-SHA workflows; keep PR #24 draft until all remaining human-gated product and environment prerequisites are satisfied.
-7. Preserve immutable Graph Harness merge pin `1bebce3db35303072049233786464bb01163c98b`; preserve the completed controlled corpus gate and complete the running real-corpus retrieval evaluation.
+7. Preserve immutable Graph Harness merge pin `1bebce3db35303072049233786464bb01163c98b`, the 82-event chain and the terminal `PARTIAL_WITH_DOCUMENTED_BLOCKERS` checkpoint; do not deploy the public pilot without a new bounded authorization.
 
 ## Critical blockers
 
 - `BLK-GCP-LIFECYCLE-074`: the restart authorization expired without a successful managed-run receipt; restart and destructive teardown require new explicit authorization;
 - `BLK-PAGES-DEPLOYMENT-076`: closed for this pilot; exact-SHA deployment and rollback to the authorized main SHA are both verified;
-- `PQG-OPEN-ENABLEMENT-001`: public gateway lacks authorized ingested evidence, edge
-  controls, deployed staging and approval;
-- `BLK-CORPUS-OPS-001`: one controlled public document is ingested, but durable production object storage, scanner operations, retention/legal-hold controls, OCR validation for the no-text DMP scan and broader corpus coverage remain unavailable;
+- `PQG-OPEN-ENABLEMENT-001`: the gateway code and one real evaluated corpus candidate exist, but public-pilot authorization, exact origin, Cloud Run deployment, Cloud SQL lifecycle approval, managed secrets, edge controls, telemetry and Pages `PAGES_API_URL` remain absent;
+- `BLK-CORPUS-OPS-001`: one controlled public document is ingested and retrieval-evaluated, but durable production object storage, scanner operations, retention/legal-hold controls, OCR validation for the no-text DMP scan, named reviewers, broader coverage and held-out judgments remain unavailable;
 - the provider-neutral BFF, generic OIDC adapter and task-first role-aware shell pass local gates, but no approved productive IdP registration/credentials, external interoperability, complete browser-to-domain workflows or real managed environment exists; twelve productive journeys remain blocked;
 - external consumer repositories have not executed their suites;
 - no managed Cloud SQL staging execution, observability/SLO, load/HA, coordinated

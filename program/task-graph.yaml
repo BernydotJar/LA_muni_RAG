@@ -951,10 +951,22 @@ tasks:
 - id: WS04-RET-001
   workstream: WS-04
   title: Audit and measure authority-aware retrieval, conflicts, gaps, and citation fidelity
+  status: completed_with_limitations
+  owner: /root
   depends_on:
   - WS02-CORP-001
   - WS03-ING-001
   - PRG-CTX7-001
+  result:
+    feature: WS05-REAL-CORPUS-RETRIEVAL-EVAL-001
+    functional_commit: 70ec287f1a8705637e04374ca2562fafa175e0da
+    gate: GATE-REAL-CORPUS-RETRIEVAL-001 PASS
+    benchmark: 8 positive and 4 no-answer cases against 444 PDM-OT chunks
+    safety: unsupported-answer rate 0; cross-document leakage rate 0
+    quality_targets: not_met_for_phrase_keyword_and_hybrid_ranking_top1_citation
+  limitations:
+  - One document and twelve judged cases do not establish broad retrieval quality or legal correctness.
+  - Held-out human judgments and broader Antigua/comparative coverage remain required.
 - id: WS05-WATER-001
   workstream: WS-05
   title: Compile and hard-evaluate the 47-category potable-water research workflow
@@ -1548,7 +1560,7 @@ tasks:
 - id: WS05-REAL-CORPUS-RETRIEVAL-EVAL-001
   workstream: WS-05
   title: Evaluate retrieval against the controlled real corpus
-  status: in_progress
+  status: completed_with_limitations
   owner: /root
   depends_on:
   - WS02-CORPUS-ACQUISITION-001
@@ -1560,8 +1572,24 @@ tasks:
   - Judged queries bind expected document and citation identities to the exact PDM-OT corpus.
   - Hit rate at 5, MRR, citation identity, unsupported-answer rate and cross-document leakage are measured.
   - Unavailable semantic capabilities fail closed and are not relabeled as hybrid or semantic.
+  result:
+    functional_commit: 70ec287f1a8705637e04374ca2562fafa175e0da
+    gate: GATE-REAL-CORPUS-RETRIEVAL-001 PASS
+    benchmark: 8 positive and 4 no-answer judged cases against 444 exact PDM-OT chunks
+    safety_gate: passed; unsupported-answer rate 0 and cross-document leakage 0 in every mode
+    quality_targets: not_met
+    phrase: hit_at_5 0.750; MRR 0.6458333333; top_1_citation 0.500
+    keyword: hit_at_5 0.750; MRR 0.5803571429; top_1_citation 0.375
+    vector_lexical: hit_at_5 0.750; MRR 0.6180555556; top_1_citation 0.500
+    hybrid: hit_at_5 0.875; MRR 0.6041666667; top_1_citation 0.375
+    named_eval: EVAL-REAL-CORPUS-RETRIEVAL-001 11/11 passed
+    final_program_revalidation: 1050 total / 1049 pass / 0 fail / 1 explicit environment skip
+    exact_sha_ci: backend_30477447935_success_public_browser_30477448607_success_terraform_30477447915_success
   limitations:
-  - Results will be bounded to one ingested document and the committed query set.
+  - Results are bounded to one ingested document and twelve committed judged cases.
+  - Phrase, keyword and hybrid ranking/top-1 citation targets remain below threshold.
+  - The local vector mode is lexical hashing, not a semantic model or productive embedding provider.
+  - Broader corpus coverage, held-out human judgments and legal-correctness review remain required.
 - id: WS08-CONSUMER-CONTRACT-KIT-001
   workstream: WS-08
   title: Publish portable provider-side consumer contract kits v1
@@ -1946,10 +1974,9 @@ blockers:
   affects:
   - WS02-CORPUS-ACQUISITION-001
   state: open
-  condition: Authorized source rights, durable object storage, current scanner operation and retention/legal-hold policy are
-    not available in this repository context.
-  next_safe_action: Human owners approve source rights and production storage/scanner/privacy controls before any real artifact
-    acquisition is credited.
+  condition: One exact clean PDM-OT document is ingested and evaluated, but durable object storage, managed scanner operation,
+    retention/legal-hold controls, DMP OCR review, broader coverage and named authority/vigencia reviewers remain absent.
+  next_safe_action: Human owners approve the public pilot corpus, OCR policy, production storage/scanner/privacy controls and held-out review plan before deployment or broader quality claims.
 - id: BLK-CTX7-001
   affects:
   - PRG-CTX7-001

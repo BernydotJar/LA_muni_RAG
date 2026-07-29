@@ -1,16 +1,16 @@
 # LA Muni RAG — Open Issues
 
-Updated: 2026-07-29T17:34:00Z
+Updated: 2026-07-29T20:16:31Z
 
 ## Critical
 
 ### PQG-OPEN-ENABLEMENT-001 — public gateway cannot be enabled yet
 
-`POST /api/public/v1/query` is implemented and its API/system path is included in disposable staging, but it remains disabled and undeployed.
+`POST /api/public/v1/query` is implemented and its API/system path is included in disposable staging. One exact PDM-OT document is ingested and retrieval-evaluated, but the public pilot remains disabled and undeployed.
 
 Required closure:
 
-- authorized, reviewed and ingested public tenant corpus;
+- explicit public-pilot authorization and named review of the PDM-OT tenant/corpus;
 - exact production origins and gateway configuration;
 - Cloud Armor/WAF and edge/global abuse controls;
 - deployed staging, load evidence, sanitized telemetry and alerting;
@@ -27,6 +27,18 @@ Feature 085 credits one exact, clean PDM-OT document as ingested with 224 sectio
 - broader Antigua-first and comparative source coverage;
 - named source, authority and vigencia reviewers;
 - managed ingestion operations and observation.
+
+### RETRIEVAL-QUALITY-HOLDOUT-086 — real-corpus safety passes; ranking quality remains bounded
+
+Feature 086 executed eight positive and four no-answer judged cases against the exact PDM-OT chunks. Unsupported-answer and cross-document leakage rates are zero in all modes, but phrase, keyword and hybrid MRR/top-1 citation targets remain below threshold. The local vector representation is lexical hashing, not semantic retrieval.
+
+Required closure:
+
+- broader Antigua-first and comparative corpus;
+- separate development, validation and frozen holdout query sets;
+- independent human relevance and citation-identity judgments;
+- ranking changes evaluated only against the held-out set;
+- legal-correctness and vigencia review outside automated retrieval metrics.
 
 ### E2E-OPEN-IDP-002 — productive human identity and authenticated UI absent
 

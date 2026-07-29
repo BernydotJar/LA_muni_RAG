@@ -1,14 +1,14 @@
 {
   "schema_version": "1.26.0",
-  "generated_at": "2026-07-29T17:34:00Z",
+  "generated_at": "2026-07-29T20:16:31Z",
   "branch": "feature/gcp-cloudsql-staging-v1",
-  "functional_head": "4aa7dc72679a029348650b9207f3866709f9d7df",
-  "status": "passed_features077_through083_and_graph_harness_exact_sha_ci_repair_with_productive_identity_workflow_data_environment_accessibility_merge_and_release_blockers",
+  "functional_head": "70ec287f1a8705637e04374ca2562fafa175e0da",
+  "status": "partial_with_documented_blockers_feature086_completed_public_backend_identity_managed_staging_merge_and_release_blocked",
   "deterministic": {
-    "tests": 1021,
-    "pass": 1019,
+    "tests": 1050,
+    "pass": 1049,
     "fail": 0,
-    "skipped": 2,
+    "skipped": 1,
     "typecheck": "pass",
     "build": "pass",
     "pages": "pass",
@@ -456,6 +456,12 @@
     "EVAL-CONTROLLED-REAL-CORPUS-INGESTION-001": {
       "passed": 11,
       "total": 11
+    },
+    "EVAL-REAL-CORPUS-RETRIEVAL-001": {
+      "passed": 11,
+      "total": 11,
+      "safety_gate_passed": true,
+      "quality_targets_passed": false
     }
   },
   "publication": {
@@ -498,7 +504,10 @@
     "Four decision packets contain zero selected options, zero authorized actions and zero receipts.",
     "Local telemetry/load evidence is not a productive SLO or operating model.",
     "The remote draft branch now includes the verified repair and exact-SHA CI is green; protected merge and production release remain absent.",
-    "One exact clean PDM-OT document is ingested locally; DMP v3 has no extractable text and broader productive corpus operations remain absent."
+    "One exact clean PDM-OT document is ingested locally; DMP v3 has no extractable text and broader productive corpus operations remain absent.",
+    "Real-corpus retrieval is measured against one document and twelve judged cases; ranking quality targets are not all met.",
+    "No public HTTPS backend staging URL is deployed or connected to Pages; PAGES_API_URL remains unset.",
+    "Productive IdP, MFA/recovery, access review, managed infrastructure, protected merge and release remain human-gated."
   ],
   "public_browser_gate": {
     "status": "passed_local_and_remote",
@@ -683,6 +692,83 @@
       "public_browser": 30474974657,
       "terraform": 30474973360,
       "conclusion": "success"
+    }
+  },
+  "real_corpus_retrieval": {
+    "status": "measured_with_quality_gaps",
+    "functional_sha": "70ec287f1a8705637e04374ca2562fafa175e0da",
+    "gate": "GATE-REAL-CORPUS-RETRIEVAL-001 PASS",
+    "document_key": "antigua-pdm-ot",
+    "document_sha256": "824f0ee47106f062269a7c65cb3433435470bbe609054972eb29c360f368cd0b",
+    "chunks": 444,
+    "positive_cases": 8,
+    "no_answer_cases": 4,
+    "safety_gate_passed": true,
+    "quality_targets_passed": false,
+    "metrics": {
+      "phrase": {
+        "hit_at_5": 0.75,
+        "mrr": 0.6458333333333333,
+        "top_1_citation_identity": 0.5,
+        "unsupported_answer_rate": 0,
+        "cross_document_leakage_rate": 0
+      },
+      "keyword": {
+        "hit_at_5": 0.75,
+        "mrr": 0.5803571428571428,
+        "top_1_citation_identity": 0.375,
+        "unsupported_answer_rate": 0,
+        "cross_document_leakage_rate": 0
+      },
+      "vector_lexical": {
+        "hit_at_5": 0.75,
+        "mrr": 0.6180555555555556,
+        "top_1_citation_identity": 0.5,
+        "unsupported_answer_rate": 0,
+        "cross_document_leakage_rate": 0
+      },
+      "hybrid": {
+        "hit_at_5": 0.875,
+        "mrr": 0.6041666666666667,
+        "top_1_citation_identity": 0.375,
+        "unsupported_answer_rate": 0,
+        "cross_document_leakage_rate": 0
+      }
+    },
+    "quality_gaps": [
+      "phrase_mrr_and_top1_citation",
+      "keyword_mrr_and_top1_citation",
+      "hybrid_mrr_and_top1_citation"
+    ],
+    "semantic_claim": false,
+    "general_quality_claim": false,
+    "legal_correctness_claim": false,
+    "production_claim": false,
+    "remote_ci": {
+      "backend": 30477447935,
+      "public_browser": 30477448607,
+      "terraform": 30477447915,
+      "conclusion": "success"
+    }
+  },
+  "graph_harness_terminal": {
+    "terminal_state": "PARTIAL_WITH_DOCUMENTED_BLOCKERS",
+    "event_count": 82,
+    "checkpoint_count": 2,
+    "repair_plan_count": 2,
+    "nodes_done": 8,
+    "required_gates_passed": 7,
+    "ready_nodes": 0,
+    "public_backend_deployed": false,
+    "productive_authenticated_journeys": "0/12",
+    "production_ready": false,
+    "final_program_revalidation": {
+      "tests_total": 1050,
+      "tests_passed": 1049,
+      "tests_failed": 0,
+      "tests_skipped_environment": 1,
+      "typecheck": "pass",
+      "build": "pass"
     }
   }
 }

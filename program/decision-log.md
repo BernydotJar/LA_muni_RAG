@@ -440,3 +440,11 @@ Decision: keep the original gate strength. The accessibility repair removes the 
 Decision: accept `82d75711f28a03de4e7df35d5ec6435cc7610319` as the functional repair checkpoint because Backend CI run `30428162887`, Public Browser Gate run `30428162850` and Terraform validation run `30428162725` all succeeded. The persisted Graph Harness chain has 43 events, two repair plans, four passing required gates and one checkpoint.
 
 Decision: do not infer merge, deployment, productive identity, real-corpus quality, authenticated readiness or production readiness from this checkpoint. Record a separate open limitation because the observed framework runtime at `0eb0d5fe09e3b1ecaf561b4a1cc9b32510480a26` is not yet published as an immutable commit.
+
+## 2026-07-29T20:16:31Z — Close real-corpus retrieval execution and stop at documented external blockers
+
+Decision: accept Feature 086 as complete with limitations because the frozen eight-positive/four-no-answer benchmark executed against the exact 444 PDM-OT chunks, unsupported-answer and cross-document leakage rates are zero in every mode, the named EVAL passes 11/11, the full regression has zero failures, and exact-SHA Backend, Public Browser and Terraform workflows all succeeded for `70ec287f1a8705637e04374ca2562fafa175e0da`.
+
+Decision: do not convert the measured result into a broad retrieval-quality claim. Phrase, keyword and hybrid MRR/top-1 citation targets remain below threshold; the vector mode is deterministic lexical hashing rather than semantic retrieval. Further ranking work requires a broader corpus and held-out human judgments instead of repeated tuning on the same twelve cases.
+
+Decision: record Graph Harness terminal state `PARTIAL_WITH_DOCUMENTED_BLOCKERS`. The executable projection contains 82 append-only events, two localized repair plans, seven passing gates, eight done nodes, two checkpoints and zero ready nodes. No public HTTPS backend is deployed or connected to Pages, productive authenticated journeys remain `0/12`, and Cloud SQL restart, Cloud Run/Secret Manager deployment, IdP registration, OCR review, protected merge and release remain externally human-gated.

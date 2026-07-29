@@ -1,7 +1,7 @@
 {
-  "checkpoint_count": 1,
-  "event_count": 73,
-  "last_event_id": "24583705-301b-432b-8c12-20b06ebddb50",
+  "checkpoint_count": 2,
+  "event_count": 82,
+  "last_event_id": "3dd6e3eb-c152-4426-a95e-5e3c933e02d6",
   "mode": "SHIP",
   "nodes": [
     {
@@ -68,8 +68,17 @@
       "title": "Acquire and ingest authorized Antigua-first corpus"
     },
     {
-      "active_evidence_ids": [],
-      "active_gates": {},
+      "active_evidence_ids": [
+        "03605224-0700-4d22-8d22-52d2925359aa",
+        "6348c5c3-5cf6-4a74-b6ea-6532ebd1c51c",
+        "92344d34-c2f5-425f-9220-bf126600ab75",
+        "9fdde1da-2830-4294-8f0b-3ad154ef8ad6",
+        "b86c3d12-4dfc-4abd-b86b-f13862098ef4",
+        "fe9248ad-ed90-4ede-903c-286392f55ce8"
+      ],
+      "active_gates": {
+        "GATE-REAL-CORPUS-RETRIEVAL-001": "PASS"
+      },
       "approval_count": 1,
       "capability": "judged_real_corpus_retrieval",
       "depends_on": [
@@ -78,7 +87,7 @@
       "id": "WS05-REAL-CORPUS-RETRIEVAL-EVAL-001",
       "kind": "evaluation",
       "revision": 0,
-      "status": "review",
+      "status": "done",
       "title": "Evaluate retrieval against controlled real corpus"
     },
     {
