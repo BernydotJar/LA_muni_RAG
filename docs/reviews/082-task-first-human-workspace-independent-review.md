@@ -68,3 +68,8 @@ The verifier accepts Feature 082 as a local provider-neutral product foundation.
 
 No productive IdP, real corpus, complete browser-to-domain BFF workflow, managed staging receipt, human accessibility acceptance or production operating model exists. Productive browser journeys remain 0/12.
 
+## Descendant regression re-verification — 2026-07-29
+
+Graph Harness localized the exact-SHA CI failures to Feature 079 reliability and Feature 081 accessibility, invalidating this workspace only as their shared descendant. No workspace route, permission, session or evidence behavior was rewritten.
+
+After the two source repairs, Feature 082 focused tests passed 6/6, `EVAL-HUMAN-WORKSPACE-001` passed 8/8, Chromium/Firefox/WebKit authenticated deterministic smoke passed, the public browser gate passed 10/10, and the integrated suite returned 997 total / 995 pass / 0 fail / 2 explicit environment skips. Productive authenticated journeys remain `0/12`.

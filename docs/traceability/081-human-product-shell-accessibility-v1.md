@@ -11,7 +11,7 @@
 | Hidden focus containment | runtime visibility/focus audit | all-engine smoke |
 | One visible current-page state | visible `aria-current` count | anonymous/authenticated browser assertions |
 | Keyboard skip navigation | first Tab focuses skip link | all-engine smoke |
-| Narrow viewport reflow | 320x900 document overflow check | all-engine smoke |
+| Narrow viewport reflow with classic scrollbar reservation | root has no fixed minimum width; 320x900 smoke forces vertical scrollbar and records root geometry | all-engine smoke |
 | Permission and security compatibility | existing role/hash/session/storage/cookie assertions | all-engine smoke |
 | CI browser diversity | Playwright Chromium/Firefox/WebKit install and cross-browser script | named EVAL and workflow validation |
 | No conformance/productive claim | spec/docs/output `0/12` and complement wording | named EVAL and program records |

@@ -155,7 +155,8 @@ describe("Feature 078 authenticated role-aware product shell", () => {
     assert.match(HUMAN_SHELL_CSS, /@media \(max-width: 820px\)/);
     assert.match(HUMAN_SHELL_CSS, /@media \(max-width: 560px\)/);
     assert.match(HUMAN_SHELL_CSS, /@media \(prefers-reduced-motion: reduce\)/);
-    assert.match(HUMAN_SHELL_CSS, /min-width: 320px/);
+    assert.doesNotMatch(HUMAN_SHELL_CSS, /html\s*\{[^}]*\bmin-width\s*:/);
+    assert.match(HUMAN_SHELL_CSS, /\.topbar, \.sidebar, \.sidebar nav, \.workspace, #authenticated-workspace \{ min-width: 0; max-width: 100%; \}/);
     assert.match(HUMAN_SHELL_CSS, /:focus-visible/);
   });
 

@@ -226,7 +226,7 @@ export const HUMAN_SHELL_CSS = String.raw`:root {
   font-family: Arial, Helvetica, sans-serif;
 }
 * { box-sizing: border-box; }
-html { min-width: 320px; background: var(--paper); }
+html { background: var(--paper); }
 body { margin: 0; min-height: 100vh; color: var(--ink); background: var(--paper); }
 button, a, summary { font: inherit; }
 button { color: inherit; }

@@ -30,6 +30,8 @@ describe("EVAL-HUMAN-PRODUCT-SHELL-ACCESSIBILITY-001", () => {
     assert.match(smoke, /page\.keyboard\.press\("Tab"\)/);
     assert.match(smoke, /element === document\.activeElement/);
     assert.match(smoke, /setViewportSize\(\{ width: 320, height: 900 \}\)/);
+    assert.match(smoke, /documentElement\.style\.overflowY = "scroll"/);
+    assert.match(smoke, /rootMinWidth: getComputedStyle\(document\.documentElement\)\.minWidth/);
     assert.match(smoke, /document\.documentElement\.scrollWidth - viewportWidth/);
     assert.match(smoke, /overflow <= 1/);
   });

@@ -16,6 +16,7 @@ const HUMAN_SUBJECT_ID = "33333333-3333-4333-8333-333333333333";
 const ISSUER = "https://issuer.reliability.test.invalid";
 const SUBJECT = "opaque-reliability-load-subject";
 const PUBLIC_ORIGIN = "http://localhost:3000";
+const SHELL_WARMUP_REQUESTS = 12;
 const SHELL_REQUESTS = 80;
 const ANONYMOUS_DENIALS = 40;
 const LIFECYCLE_CYCLES = 24;
@@ -150,6 +151,13 @@ const lifecycle = async (index) => {
 };
 
 try {
+  await runPool(SHELL_WARMUP_REQUESTS, async () => {
+    const response = await fetch(`${baseUrl}/app`, { cache: "no-store" });
+    if (response.status !== 200 || response.headers.get("cache-control") !== "no-store, max-age=0") {
+      unexpectedFailures += 1;
+    }
+    await response.arrayBuffer();
+  });
   const startedAt = performance.now();
   await runPool(SHELL_REQUESTS, async () => {
     const result = await timedFetch(`${baseUrl}/app`, { cache: "no-store" });
@@ -191,6 +199,7 @@ try {
     status: "human_session_reliability_harness_passed",
     classification: "local_non_productive_slo_evidence",
     workload: {
+      shellWarmupRequests: SHELL_WARMUP_REQUESTS,
       shellRequests: SHELL_REQUESTS,
       anonymousDenials: ANONYMOUS_DENIALS,
       lifecycleCycles: LIFECYCLE_CYCLES,

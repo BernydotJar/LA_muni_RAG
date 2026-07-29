@@ -45,3 +45,11 @@ The exact focused count, named EVAL, measured latency output, PostgreSQL/browser
 Current judgment: **local release gate passed; implementation candidate, not production ready**.
 
 The telemetry and harness are safe local regression tools. They do not establish productive SLOs, a telemetry platform, alerts, error budgets, representative capacity, managed failover, backup restore or disaster recovery.
+
+## Exact-SHA CI repair — 2026-07-29
+
+Backend CI run `30424332058` passed the complete unit/EVAL/PostgreSQL sequence and then failed the local reliability harness because the first concurrent shell wave included one-time process/client initialization, producing shell p95 `1048.381 ms` against the unchanged `500 ms` steady-state threshold.
+
+The repair did not raise or disable any threshold. It added 12 bounded shell warm-up requests that must return `200` with `Cache-Control: no-store, max-age=0`; only the following 80 requests contribute to the measured percentile. Three independent post-repair harness executions passed with shell p95 values `4.358 ms`, `3.616 ms` and `3.707 ms`, 160 expected BFF telemetry events per run and zero unexpected failures.
+
+Independent judgment: **localized reliability repair accepted for remote re-verification**. The evidence remains local, deterministic and non-productive. It does not establish cold-start performance, a production SLO, managed capacity, external IdP availability or operational readiness.

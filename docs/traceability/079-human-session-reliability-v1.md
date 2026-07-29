@@ -10,7 +10,7 @@
 | Generic repository outage and retry | injected repository failure | focused recovery test |
 | Generic provider outage and fresh login | injected provider exchange failure | focused recovery test |
 | One-winner concurrent rotation | existing atomic repository rotation | concurrent request test |
-| Bounded shell/BFF load | `scripts/human-session-reliability-harness.mjs` | local harness command/output |
+| Validated warm-up plus bounded measured shell/BFF load | `scripts/human-session-reliability-harness.mjs` | local harness command/output; three-repeat repair evidence |
 | Conservative local-only thresholds | harness constants and assertions | named EVAL; operations doc |
 | No productive SLO claim | harness JSON, spec, ADR, operations docs | named EVAL and program records |
 | Existing auth/UI compatibility | Feature 077/078 tests, PostgreSQL and browser gates | release regression |

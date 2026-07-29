@@ -43,7 +43,7 @@ describe("Feature 081 automated accessibility complement", () => {
   });
 
   it("supports narrow layouts and reduced motion without horizontal overflow assumptions", () => {
-    assert.match(HUMAN_SHELL_CSS, /html \{ min-width: 320px/);
+    assert.doesNotMatch(HUMAN_SHELL_CSS, /html\s*\{[^}]*\bmin-width\s*:/);
     assert.match(HUMAN_SHELL_CSS, /@media \(max-width: 820px\)/);
     assert.match(HUMAN_SHELL_CSS, /@media \(max-width: 560px\)/);
     assert.match(HUMAN_SHELL_CSS, /grid-template-areas: "top" "side" "main"/);
@@ -63,6 +63,8 @@ describe("Feature 081 automated accessibility complement", () => {
     assert.match(source, /hiddenFocusableVisible/);
     assert.match(source, /rect\.width < 24 \|\| rect\.height < 24/);
     assert.match(source, /setViewportSize\(\{ width: 320, height: 900 \}\)/);
+    assert.match(source, /documentElement\.style\.overflowY = "scroll"/);
+    assert.match(source, /rootMinWidth: getComputedStyle\(document\.documentElement\)\.minWidth/);
     assert.match(source, /document\.documentElement\.scrollWidth - viewportWidth/);
   });
 

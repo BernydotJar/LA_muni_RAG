@@ -165,7 +165,14 @@ const assertAccessibleShell = async (page, options) => {
 
   const originalViewport = page.viewportSize() || { width: 1280, height: 720 };
   await page.setViewportSize({ width: 320, height: 900 });
-  await page.waitForTimeout(25);
+  const previousRootOverflowY = await page.evaluate(() => {
+    const previous = document.documentElement.style.overflowY;
+    document.documentElement.style.overflowY = "scroll";
+    return previous;
+  });
+  await page.evaluate(() => new Promise((resolve) => {
+    requestAnimationFrame(() => requestAnimationFrame(resolve));
+  }));
   const reflow = await page.evaluate(() => {
     const viewportWidth = document.documentElement.clientWidth;
     const overflowElements = [...document.querySelectorAll("body *")]
@@ -184,6 +191,9 @@ const assertAccessibleShell = async (page, options) => {
       }));
     return {
       overflow: document.documentElement.scrollWidth - viewportWidth,
+      viewportWidth,
+      scrollWidth: document.documentElement.scrollWidth,
+      rootMinWidth: getComputedStyle(document.documentElement).minWidth,
       overflowElements,
     };
   });
@@ -191,6 +201,9 @@ const assertAccessibleShell = async (page, options) => {
     reflow.overflow <= 1,
     `document overflowed narrow viewport: ${JSON.stringify(reflow)}`
   );
+  await page.evaluate((previous) => {
+    document.documentElement.style.overflowY = previous;
+  }, previousRootOverflowY);
   await page.setViewportSize(originalViewport);
 
   if (expectedAuthenticated) {

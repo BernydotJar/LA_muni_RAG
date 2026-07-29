@@ -88,6 +88,7 @@ describe("EVAL-HUMAN-SESSION-RELIABILITY-001", () => {
 
   it("defines a bounded local workload and conservative thresholds", async () => {
     const harness = await read("scripts/human-session-reliability-harness.mjs");
+    assert.match(harness, /SHELL_WARMUP_REQUESTS = 12/);
     assert.match(harness, /SHELL_REQUESTS = 80/);
     assert.match(harness, /ANONYMOUS_DENIALS = 40/);
     assert.match(harness, /LIFECYCLE_CYCLES = 24/);
@@ -95,6 +96,8 @@ describe("EVAL-HUMAN-SESSION-RELIABILITY-001", () => {
     assert.match(harness, /SHELL_P95_LIMIT_MS = 500/);
     assert.match(harness, /BFF_P95_LIMIT_MS = 750/);
     assert.match(harness, /SINGLE_REQUEST_MAX_MS = 2_500/);
+    assert.match(harness, /await runPool\(SHELL_WARMUP_REQUESTS/);
+    assert.match(harness, /shellWarmupRequests: SHELL_WARMUP_REQUESTS/);
     assert.match(harness, /expectedTelemetryEvents = ANONYMOUS_DENIALS \+ LIFECYCLE_CYCLES \* 5/);
     assert.match(harness, /unexpectedFailures, 0/);
   });

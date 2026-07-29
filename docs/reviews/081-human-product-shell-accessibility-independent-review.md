@@ -43,3 +43,11 @@ The exact focused/EVAL counts, integrated regression, audits/scans and functiona
 Current judgment: **automated accessibility candidate, not human acceptance or production readiness**.
 
 The cross-browser gate improves regression detection but does not establish WCAG conformance, assistive-technology usability or productive authenticated journey evidence.
+
+## Exact-SHA CI repair — 2026-07-29
+
+Public Browser Gate run `30424332072` failed only in WebKit at the 320-pixel viewport with `overflow: 9` and no overflowing descendant element. The root cause was `html { min-width: 320px }`: the CI WebKit environment reserved 9 pixels for a classic vertical scrollbar, leaving a root `clientWidth` of 311 pixels while the root minimum remained 320 pixels.
+
+The repair removed the root minimum width, retained the 320x900 gate and strengthened the browser harness to force a vertical scrollbar, wait for two animation frames and report root `clientWidth`, `scrollWidth` and computed `min-width`. The gate still fails above one pixel of document overflow. Chromium, Firefox and WebKit then passed the same authenticated deterministic smoke; the public Chromium desktop/mobile gate remained 10/10.
+
+Independent judgment: **localized cross-browser reflow repair accepted for remote re-verification**. This is automated regression evidence only, not WCAG conformance, assistive-technology acceptance or a productive authenticated journey.

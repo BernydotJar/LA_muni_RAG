@@ -9,7 +9,7 @@
 | Closed path and panel mapping | src/humanShell/assets.ts | named EVAL and malformed route smoke |
 | Permission-bound task shortcuts | src/humanShell/assets.ts | viewer/admin browser smoke |
 | Honest zero-data states | src/humanShell/assets.ts | source assertions |
-| 320 px diagnostic reflow | shell CSS and browser smoke | Chromium, Firefox and WebKit |
+| 320 px diagnostic reflow | zero-minimum shell tracks, no fixed root minimum, forced-scrollbar browser diagnostics | Chromium, Firefox and WebKit |
 | Telemetry type contract repair | src/humanSession/types.ts | typecheck and Feature 079 EVAL |
 | Provider outage recovery repair | src/humanSession/handler.ts | failure-injection test |
 | Design decision and limitations | ADR, risk register, review and product doc | EVAL-HUMAN-WORKSPACE-001 |

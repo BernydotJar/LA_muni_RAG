@@ -13,7 +13,7 @@ Strengthen the Feature 078 role-aware shell with executable accessibility checks
 3. HTML IDs are unique and all `aria-labelledby` and fragment references resolve.
 4. The browser harness audits both anonymous and authenticated states for duplicate IDs, unnamed visible interactive controls, visible focusables inside hidden containers, heading-level jumps and a single visible current-page marker.
 5. Visible interactive targets are at least 24 by 24 CSS pixels, excluding the off-canvas skip link before focus.
-6. A 320 by 900 viewport has no document-level horizontal overflow.
+6. A 320 by 900 viewport has no document-level horizontal overflow, including when the browser reserves width for a classic vertical scrollbar. The root element must not impose a fixed minimum width.
 7. The keyboard can focus the skip link first.
 8. The permission-aware browser checks still prove denied and malformed hash fallback, role-specific navigation, session rotation, logout, empty Web Storage and unreadable HttpOnly cookies.
 9. The same deterministic shell smoke runs in Chromium, Firefox and WebKit.

@@ -36,18 +36,19 @@ These are bounded local semantics, not a complete incident-recovery plan.
 
 | Workload | Count |
 |---|---:|
-| Static `/app` reads | 80 |
+| Validated shell warm-up reads, excluded from percentiles | 12 |
+| Measured static `/app` reads | 80 |
 | Expected anonymous session denials | 40 |
 | Full login/callback/bootstrap/rotate/logout cycles | 24 |
 | Worker concurrency | 6 |
 
-The gate requires zero unexpected outcomes, exactly forty expected denials, no unavailable/server-error telemetry and the expected event count. Local thresholds are:
+The warm-up validates the same `200` and `Cache-Control: no-store, max-age=0` shell contract before measurement. It prevents one-time process/client initialization from contaminating the steady-state percentile without weakening the threshold or counting failed warm-up requests as success. The gate then requires zero unexpected outcomes, exactly forty expected denials, no unavailable/server-error telemetry and the expected event count. Local thresholds are:
 
 - shell p95 ≤ 500 ms;
 - BFF event p95 ≤ 750 ms;
 - individual BFF event max ≤ 2,500 ms.
 
-These thresholds catch gross local regressions. They are not a production SLO because loopback execution excludes TLS, ingress, network, external IdP, managed database, multiple instances and real user/device behavior.
+These thresholds catch gross local steady-state regressions. They are not a cold-start objective or a production SLO because loopback execution excludes TLS, ingress, network, external IdP, managed database, multiple instances and real user/device behavior.
 
 ## Productive operations still required
 
