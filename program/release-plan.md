@@ -1,15 +1,15 @@
 # LA Muni RAG — Release Plan
 
-Updated: 2026-07-28T19:42:05Z
+Updated: 2026-07-29T06:42:07Z
 
 ## Current release state
 
 ```text
 functional_branch: feature/gcp-cloudsql-staging-v1
-functional_candidate_sha: 7ec7037af4af5601c5c515be1bdf4aef35682a0a
-remote_parent_sha: f858cecab6b24b00ad625c3986fbc03d347ef59e
+functional_candidate_sha: 82d75711f28a03de4e7df35d5ec6435cc7610319
+remote_parent_sha: ba6acf3cc654e798f46b104d4eaac6d5c78712ab
 working_tree_at_handoff: clean
-push_status: local_features077_through083_verified_publication_pending_audited_push_host_runtime_blocked
+push_status: audited_non_forced_fast_forward_published_exact_sha_ci_passed
 pull_request: 24 draft, open, mergeable, CLEAN
 merged_to_main: false
 cloud_sql_instance_created: true
@@ -18,11 +18,16 @@ cloud_sql_activation_policy: NEVER
 terraform_apply_executed: true
 managed_cloud_staging_executed: false
 cloud_sql_teardown_executed: false
-public_browser_gate: 10/10 Chromium desktop/mobile
+public_browser_gate: 10/10 Chromium desktop/mobile; exact-SHA run 30428162850 success
 online_pages_exact_sha_pilot: completed_and_verified
 online_pages_rollback: completed_to_4950ba3c24dbe7d9891d5cec8d7ba5f57db3ef9c
 pages_api_bound: false
-human_session_bff: local_provider_neutral_foundation_and_generic_oidc_adapter_verified_disabled_by_default
+human_session_bff: provider_neutral_foundation_and_generic_oidc_adapter_published_verified_disabled_by_default
+graph_harness_project: la-muni-rag-pr24-repair-20260729
+graph_harness_state: 43 events; 2 repair plans; 4/4 required gates PASS; 1 checkpoint
+graph_harness_framework_pin: pending_immutable_framework_commit
+exact_sha_backend_ci: 30428162887 success
+exact_sha_terraform_validation: 30428162725 success
 authenticated_browser_journeys: 0/12 blocked
 real_documents_ingested: 0
 production_deployed: false
@@ -69,9 +74,9 @@ A budget or estimate is not a hard spending cap. The exact immutable plan is aut
 - Focused/named gates: shell 8/8 + 9/9; reliability 5/5 + 9/9; decision packets 9/9; accessibility 6/6 + 9/9; workspace 6/6 + 8/8.
 - Public browser: 10/10; authenticated local shell: Chromium, Firefox and WebKit pass.
 - PostgreSQL 15.18 / pgvector 0.8.5 non-owner forced-RLS gate and compiled BFF smoke pass.
-- Integrated regression: 978 total / 976 pass / 0 fail / 2 explicit environment skips.
+- Integrated regression at the Feature 082 checkpoint: 978 total / 976 pass / 0 fail / 2 explicit environment skips; the current integrated gate after Feature 083 and the Graph Harness repair is 997 total / 995 pass / 0 fail / 2 explicit environment skips.
 - Typecheck, build, contracts, consumer kits, staging plan, source inventory, decision packets, canonical workflow template, dependency audits, JSON/YAML/JSONL, secret/PII and diff gates pass.
-- Productive IdP, real corpus, complete workflows, human accessibility acceptance, managed staging receipt, publication, protected merge and production release remain absent. Productive journeys stay `0/12`.
+- Productive IdP, real corpus, complete workflows, human accessibility acceptance, managed staging receipt, protected merge and production release remain absent. The branch publication checkpoint is complete and exact-SHA CI is green. Productive journeys stay `0/12`.
 
 ## Feature 083 provider-neutral OIDC adapter checkpoint
 
@@ -83,6 +88,20 @@ A budget or estimate is not a hard spending cap. The exact immutable plan is aut
 - Public browser 10/10; Chromium, Firefox and WebKit deterministic authenticated smoke pass.
 - Typecheck, build, contracts, kits, inventory, packets, dependency audits, JSON/YAML/JSONL, secret/PII and diff gates pass.
 - No provider is selected, provisioned or approved; productive registration, credentials, external interoperability, MFA/recovery/access review, managed users/environment, merge and deployment remain absent. Productive journeys remain `0/12`.
+
+## Graph Harness exact-SHA CI repair checkpoint
+
+- Functional repair SHA: `82d75711f28a03de4e7df35d5ec6435cc7610319`; parent `ba6acf3cc654e798f46b104d4eaac6d5c78712ab`.
+- Graph Harness project: `la-muni-rag-pr24-repair-20260729`.
+- Persisted state: 43 events, two localized repair plans, four required gates `PASS`, one checkpoint.
+- Backend CI run `30428162887`: success.
+- Public Browser Gate run `30428162850`: success.
+- Terraform validation run `30428162725`: success.
+- Reliability threshold remained 500 ms measured shell p95; 12 validated warm-up requests are excluded from steady-state samples.
+- The 320-pixel reflow gate now forces classic scrollbar reservation and retains overflow ≤1 pixel.
+- Feature 083 OIDC was preserved as an independent done node.
+- Productive authenticated journeys remain `0/12`; real corpus ingestion remains `0`; merge and deployment remain absent.
+- Framework runtime pin remains open because observed Graph Harness executable files were uncommitted at `0eb0d5fe09e3b1ecaf561b4a1cc9b32510480a26`.
 
 ## Required sequence before public enablement
 

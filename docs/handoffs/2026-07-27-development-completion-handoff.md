@@ -2,6 +2,7 @@
 
 Generated: 2026-07-27T18:31:32Z
 Continued and reconciled: 2026-07-28T18:07:20Z
+Graph Harness reconciliation: 2026-07-29T06:42:07Z
 
 ## Copy/paste prompt
 
@@ -18,7 +19,7 @@ Repository: https://github.com/BernydotJar/LA_muni_RAG.git
 Workspace preferido: b909e055-62ae-4625-ac13-10947906a08f
 Root: /workspace
 Working branch: feature/gcp-cloudsql-staging-v1
-Expected handoff functional HEAD: 7ec7037af4af5601c5c515be1bdf4aef35682a0a
+Expected handoff functional HEAD: 82d75711f28a03de4e7df35d5ec6435cc7610319
 Draft PR: #24, base feature/ephemeral-staging-runner-v1
 
 Fuentes de verdad:
@@ -27,7 +28,8 @@ Fuentes de verdad:
 - program/task-graph.yaml y program/task-ledger.yaml;
 - program/decision-log.md y program/evidence-register.jsonl;
 - program/eval-results.json, program/open-issues.md y program/release-plan.md;
-- docs/handoffs/2026-07-27-development-completion-handoff.md.
+- docs/handoffs/2026-07-27-development-completion-handoff.md;
+- program/graph-harness/project.json, events.jsonl and state.json.
 
 Antes de modificar algo, ejecuta workspace_status y verifica container, root, branch, local HEAD, remote HEAD, upstream y worktree. Fetch non-destructive y reconstruye el baseline desde Git, código, tests, PR, workflows y registros. No asumas que el SHA esperado sigue vigente.
 
@@ -54,14 +56,14 @@ Feature 076 — exact-SHA Pages release verification:
 - El product owner reportó completar el smoke manual solicitado. Regístralo como evidencia declarada por usuario, no como auditoría WCAG, screen-reader, legal, real-corpus o authenticated E2E.
 
 Baseline de validación:
-- full regression: 978 total / 976 pass / 0 fail / 2 environment skips;
+- full regression: 997 total / 995 pass / 0 fail / 2 environment skips;
 - EVAL-GCP-CLOUDSQL-STAGING-001: 14/14;
 - EVAL-PUBLIC-BROWSER-GATE-001: 5/5;
 - EVAL-ONLINE-PAGES-RELEASE-001: 5/5;
 - Playwright público: 10/10;
 - typecheck/build: pass;
 - dependency audit: 0 vulnerabilities;
-- checks del PR: Backend CI, Public Browser Gate y Terraform validation success.
+- exact-SHA checks del PR: Backend CI 30428162887, Public Browser Gate 30428162850 y Terraform validation 30428162725 success.
 
 ## Product truth
 
@@ -81,7 +83,7 @@ No implementes capacidades pertenecientes a OS Electoral o Content Agency. Mant�
 
 ## Misión y prioridades
 
-Features 077–083 are implemented and locally verified. Do not repeat them. Preserve their
+Features 077–083 and their localized exact-SHA CI repair are published and verified. Do not repeat them. Preserve their
 focused and named EVAL gates and continue only where real prerequisites exist.
 
 ### Completed local foundations
@@ -94,12 +96,12 @@ focused and named EVAL gates and continue only where real prerequisites exist.
 - Feature 082: task-first municipal evidence workspace, canonical protected deep links, exact login return allowlist, history-safe navigation and honest zero-data states.
 - Feature 083: provider-neutral confidential OIDC adapter with bounded discovery/token/JWKS validation; no provider selected or approved.
 
-Functional head: `7ec7037af4af5601c5c515be1bdf4aef35682a0a`.
-Release gate: 978 total / 976 pass / 0 fail / 2 explicit environment skips; public browser 10/10; Chromium/Firefox/WebKit authenticated local smoke; PostgreSQL 15.18/pgvector 0.8.5 non-owner forced-RLS gate; typecheck/build/audits/scans pass.
+Functional head: `82d75711f28a03de4e7df35d5ec6435cc7610319`. Graph Harness exact-SHA repair: 43 events, two repair plans, four required gates PASS; Backend CI `30428162887`, Public Browser `30428162850` and Terraform `30428162725` success.
+Release gate: 997 total / 995 pass / 0 fail / 2 explicit environment skips; public browser 10/10; Chromium/Firefox/WebKit authenticated local smoke; PostgreSQL 15.18/pgvector 0.8.5 non-owner forced-RLS gate; typecheck/build/audits/scans pass.
 
 ### Next safe priorities
 
-1. Publish the fast-forward working branch only through the audited push capability, then observe exact-SHA Backend, Public Browser and Terraform checks and update draft PR #24.
+1. Preserve the published exact-SHA checkpoint and keep PR #24 draft; do not merge or deploy until productive identity, corpus, workflows, human accessibility acceptance and managed-environment evidence satisfy their gates.
 2. Keep productive journeys at `0/12` until an approved productive IdP, complete browser-to-domain workflows, real data, managed ephemeral environment and external-user evidence exist.
 3. Obtain conforming human decision receipts before any productive IdP, real-corpus, Cloud SQL lifecycle or production-control action.
 4. Define productive observability/SLO/error-budget/on-call and human accessibility acceptance only when representative workflows and environment exist.

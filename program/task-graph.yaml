@@ -1,5 +1,5 @@
 schema_version: 1
-generated_at: '2026-07-28T19:42:23Z'
+generated_at: '2026-07-29T06:43:03Z'
 program:
   id: LA-MUNI-RAG-PROD
   objective: Make LA Muni RAG production-ready within its evidence, procedure, workflow, case-tracking, and integration domain.
@@ -13,17 +13,17 @@ program:
 baseline:
   origin_main_commit: 4950ba3c24dbe7d9891d5cec8d7ba5f57db3ef9c
   observed_branch: feature/gcp-cloudsql-staging-v1
-  observed_commit: 7ec7037af4af5601c5c515be1bdf4aef35682a0a
-  feature_implementation_commit: 7ec7037af4af5601c5c515be1bdf4aef35682a0a
-  local_program_branch_commit: 7ec7037af4af5601c5c515be1bdf4aef35682a0a
+  observed_commit: 82d75711f28a03de4e7df35d5ec6435cc7610319
+  feature_implementation_commit: 82d75711f28a03de4e7df35d5ec6435cc7610319
+  local_program_branch_commit: 82d75711f28a03de4e7df35d5ec6435cc7610319
   upstream: origin/feature/gcp-cloudsql-staging-v1
-  upstream_commit: f858cecab6b24b00ad625c3986fbc03d347ef59e
-  upstream_state: features077_through083_local_release_gate_passed_publication_pending
+  upstream_commit: 82d75711f28a03de4e7df35d5ec6435cc7610319
+  upstream_state: features077_through083_and_graph_harness_repair_published_exact_sha_ci_passed
   divergence:
-    ahead: 10
+    ahead: 0
     behind: 0
   divergence_from_origin_main:
-    ahead: 89
+    ahead: 120
     behind: 0
   worktree: clean
   repository_instructions:
@@ -31,7 +31,7 @@ baseline:
   - RTK.md
   - README.md
   canonical_gate:
-    status: passed_local_release_gate_remote_publication_pending
+    status: passed_exact_sha_graph_harness_repair_checkpoint
     tests:
       passed: 995
       total: 997
@@ -84,23 +84,25 @@ baseline:
     dependency_audit: 0 vulnerabilities
     remote_ci:
       run_ids:
-      - 30150454584
-      - 30150453135
-      - 30150454585
-      - 30150453108
+      - 30428162887
+      - 30428162850
+      - 30428162725
       status: completed
       conclusion: success
-      head_sha: 0edf935c7c012d86b2becae4da563046de167903
-      run_id: 30164809354
+      head_sha: 82d75711f28a03de4e7df35d5ec6435cc7610319
 runtime:
-  preferred: farmtable
-  selected: yaml_fallback
-  reason: Farmtable CLI and MCP operations are unavailable.
-  availability_evidence:
-    command: ft --version
-    exit_code: 127
-    stderr: 'zsh:1: command not found: ft'
-  semantic_record_files:
+  selected: graph_harness_sdlc_projection
+  framework_repository: BernydotJar/Graph-harness-sdlc
+  framework_observed_commit: 0eb0d5fe09e3b1ecaf561b4a1cc9b32510480a26
+  immutable_framework_pin: false
+  executable_projection: program/graph-harness/project.json
+  event_store: program/graph-harness/events.jsonl
+  typed_state: program/graph-harness/state.json
+  event_count: 43
+  repair_plans: 2
+  required_gates: 4/4 passed
+  checkpoint_commit: 82d75711f28a03de4e7df35d5ec6435cc7610319
+  canonical_record_files:
   - program/task-graph.yaml
   - program/task-ledger.yaml
 documentation_runtime:
@@ -466,6 +468,12 @@ tasks:
   - specs/079-human-session-reliability-v1/
   result:
     functional_commit: 04dbb125c15e9c429e7319a6506bfd787f51d940
+    exact_sha_repair_commit: 82d75711f28a03de4e7df35d5ec6435cc7610319
+    graph_harness_gate: GATE-HUMAN-SESSION-RELIABILITY-REPAIR PASS
+    remote_ci: backend_30428162887_success
+    shell_warmup_requests: 12
+    measured_shell_requests: 80
+    steady_state_p95_limit_ms: 500
     focused_tests: 5/5 passed
     named_eval: EVAL-HUMAN-SESSION-RELIABILITY-001 9/9 passed
     unexpected_failures: 0
@@ -502,6 +510,11 @@ tasks:
   - docs/product/human-product-shell-accessibility.md
   result:
     functional_commit: 282b2441912828b193f82133543c4823f5f14659
+    exact_sha_repair_commit: 82d75711f28a03de4e7df35d5ec6435cc7610319
+    graph_harness_gate: GATE-HUMAN-SHELL-ACCESSIBILITY-REPAIR PASS
+    remote_ci: public_browser_30428162850_success
+    root_fixed_minimum_width: false
+    forced_classic_scrollbar_gate: true
     focused_tests: 6/6 passed
     named_eval: EVAL-HUMAN-PRODUCT-SHELL-ACCESSIBILITY-001 9/9 passed
     browsers: Chromium, Firefox and WebKit passed
@@ -527,9 +540,13 @@ tasks:
   - docs/reviews/082-task-first-human-workspace-independent-review.md
   result:
     functional_commit: ffa30433db9ba62812dd0dac680963759b4868cb
+    exact_sha_repair_commit: 82d75711f28a03de4e7df35d5ec6435cc7610319
+    graph_harness_revision: 2
+    graph_harness_gate: GATE-HUMAN-WORKSPACE-REGRESSION PASS
+    exact_sha_ci: backend_30428162887_success_public_browser_30428162850_success_terraform_30428162725_success
     focused_tests: 6/6 passed
     named_eval: EVAL-HUMAN-WORKSPACE-001 8/8 passed
-    integrated_regression: 976/978 passed; 0 failed; 2 explicit environment skips
+    integrated_regression: 995/997 passed; 0 failed; 2 explicit environment skips
     public_browser: 10/10 passed
     browsers: Chromium, Firefox and WebKit passed local authenticated smoke
     postgres: 15.18 with pgvector 0.8.5 non-owner forced-RLS gate and compiled smoke passed
@@ -564,8 +581,42 @@ tasks:
     secret_pii_scan: 1398 added lines; no findings
     productive_authenticated_journeys: 0/12
     production_ready: false
+    preserved_during_graph_harness_repair: true
+    exact_sha_ci: backend_30428162887_success
   limitations:
   - No productive provider selection, client registration, credentials, external interoperability, MFA/recovery, access review, managed secrets or deployment.
+- id: PRG-GRAPH-HARNESS-REPAIR-001
+  workstream: WS-11
+  title: Execute localized exact-SHA CI repair through Graph Harness SDLC
+  status: completed_with_limitations
+  owner: /root
+  depends_on:
+  - WS11-HUMAN-SESSION-RELIABILITY-001
+  - WS11-HUMAN-SHELL-ACCESSIBILITY-001
+  - WS09-HUMAN-WORKSPACE-001
+  - WS07-HUMAN-OIDC-PROVIDER-001
+  outputs:
+  - program/graph-harness/project.json
+  - program/graph-harness/events.jsonl
+  - program/graph-harness/state.json
+  - program/graph-harness/README.md
+  result:
+    functional_commit: 82d75711f28a03de4e7df35d5ec6435cc7610319
+    parent_commit: ba6acf3cc654e798f46b104d4eaac6d5c78712ab
+    framework_repository: BernydotJar/Graph-harness-sdlc
+    framework_observed_commit: 0eb0d5fe09e3b1ecaf561b4a1cc9b32510480a26
+    event_count: 43
+    repair_plans: 2
+    required_gates: 4/4 passed
+    checkpoint_count: 1
+    exact_sha_ci: backend_30428162887_success_public_browser_30428162850_success_terraform_30428162725_success
+    preserved_node: WS07-HUMAN-OIDC-PROVIDER-001
+    productive_authenticated_journeys: 0/12
+    real_documents_ingested: 0
+    production_ready: false
+  limitations:
+  - The framework executable runtime was observed in an uncommitted workspace; immutable framework pin remains open.
+  - This checkpoint is draft and pre-production; it authorizes no merge, deployment, IdP, corpus or Cloud SQL mutation.
 - id: WS03-ING-001
   workstream: WS-03
   title: Audit and harden authenticated ingestion, idempotency, corrupt-input handling, and retry
@@ -1793,9 +1844,17 @@ blockers:
   affects:
   - WS09-HUMAN-WORKSPACE-001
   - WS07-HUMAN-OIDC-PROVIDER-001
+  - PRG-GRAPH-HARNESS-REPAIR-001
+  state: resolved
+  condition: Features 077–083 and repair 82d75711f28a03de4e7df35d5ec6435cc7610319 are published on draft PR #24.
+  resolution: Audited non-forced fast-forward publication succeeded; Backend CI 30428162887, Public Browser 30428162850 and Terraform 30428162725 passed for the exact repair SHA.
+  next_safe_action: Preserve the green draft checkpoint; do not merge or deploy without explicit approval and remaining product gates.
+- id: BLK-GRAPH-HARNESS-PIN-001
+  affects:
+  - PRG-GRAPH-HARNESS-REPAIR-001
   state: open
-  condition: Local Features 077–083 are verified but remote branch and draft PR #24 remain at f858cecab6b24b00ad625c3986fbc03d347ef59e.
-  next_safe_action: Publish by audited non-forced fast-forward push and observe exact-SHA CI.
+  condition: Graph Harness executed from observed framework HEAD 0eb0d5fe09e3b1ecaf561b4a1cc9b32510480a26, but its executable runtime files were uncommitted in the framework workspace.
+  next_safe_action: Publish the framework runtime and schemas at an immutable commit before claiming a durable framework pin.
 - id: BLK-GCP-LIFECYCLE-074
   affects:
   - WS10-GCP-CLOUDSQL-STAGING-001

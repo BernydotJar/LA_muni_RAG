@@ -1,8 +1,8 @@
 # LA Muni RAG — Current Program State
 
-Updated: 2026-07-28T19:41:48Z
+Updated: 2026-07-29T06:42:07Z
 
-Program status: **PARTIAL WITH DOCUMENTED BLOCKERS — Features 077–083 provide a locally verified provider-neutral human BFF, generic OIDC adapter, task-first role-aware shell, reliability harness, human decision packets and cross-browser accessibility complement; productive identity, complete workflows, real corpus, managed staging evidence, publication and production release remain open**
+Program status: **PARTIAL WITH DOCUMENTED BLOCKERS — Features 077–083 and the localized Graph Harness exact-SHA CI repair are published and green on the draft branch; productive identity, complete workflows, real corpus, managed staging evidence, protected merge and production release remain open**
 
 ## Authoritative checkout
 
@@ -10,7 +10,11 @@ Program status: **PARTIAL WITH DOCUMENTED BLOCKERS — Features 077–083 provid
 workspace_id: b909e055-62ae-4625-ac13-10947906a08f
 root: /workspace
 branch: feature/gcp-cloudsql-staging-v1
-evidence_baseline_head: 7ec7037af4af5601c5c515be1bdf4aef35682a0a
+evidence_baseline_head: 82d75711f28a03de4e7df35d5ec6435cc7610319
+functional_repair_parent: ba6acf3cc654e798f46b104d4eaac6d5c78712ab
+graph_harness_framework_observed_head: 0eb0d5fe09e3b1ecaf561b4a1cc9b32510480a26
+graph_harness_events: 43
+graph_harness_required_gates: 4/4 PASS
 working_tree_at_baseline: clean
 pull_request: 24 draft
 merged: false
@@ -247,6 +251,22 @@ metadata receipt, external interoperability, MFA/recovery, access review, manage
 users and deployed browser environment remain absent. Productive journeys remain `0/12`; this is
 not production readiness.
 
+## Exact-SHA localized CI repair — Graph Harness SDLC
+
+Exact-SHA CI for `ba6acf3cc654e798f46b104d4eaac6d5c78712ab` exposed two localized failures: WebKit root overflow caused by a fixed 320-pixel root minimum and a local reliability percentile contaminated by process/client cold start. Graph Harness invalidated only Feature 079 reliability, Feature 081 accessibility, their shared Feature 082 workspace descendant and the draft PR checkpoint. Feature 083 OIDC remained preserved and `done`.
+
+Functional repair `82d75711f28a03de4e7df35d5ec6435cc7610319` removed the fixed root minimum, strengthened the 320-pixel forced-scrollbar diagnostic, and added 12 validated but unmeasured shell warm-up requests while preserving the 500 ms steady-state p95 threshold. The persisted Graph Harness chain contains 43 events, two repair plans, four passing required gates and one exact-SHA checkpoint. Typed state is stored in `program/graph-harness/state.json`.
+
+Exact-SHA GitHub Actions passed:
+
+- Backend CI run `30428162887`;
+- Public Browser Gate run `30428162850`;
+- GCP Cloud SQL Terraform validation run `30428162725`.
+
+The framework runtime was executed from the separate Graph Harness workspace at observed HEAD `0eb0d5fe09e3b1ecaf561b4a1cc9b32510480a26`. Its executable runtime files were uncommitted there, so this repository records the observed runtime and evidence chain but does not claim a durable immutable framework pin. That pin remains an explicit follow-up.
+
+This repair changes no productive capability: productive authenticated journeys remain `0/12`, real documents ingested remain `0`, and no merge, deployment, IdP provisioning, corpus acquisition or Cloud SQL lifecycle mutation was authorized.
+
 ## Verification
 
 ```text
@@ -261,6 +281,9 @@ EVAL-HUMAN-PRODUCT-SHELL-ACCESSIBILITY-001: 9/9 pass
 EVAL-HUMAN-WORKSPACE-001: 8/8 pass
 EVAL-HUMAN-OIDC-PROVIDER-001: 9/9 pass
 Feature 083 focused OIDC adapter: 10/10 pass
+Graph Harness repair: 43 events / 2 repair plans / 4 required gates PASS / 1 checkpoint
+Exact-SHA repair CI: Backend 30428162887 success; Public Browser 30428162850 success; Terraform 30428162725 success
+Reliability repair: 12 validated warm-up requests; 80 measured shell requests; unchanged shell p95 limit 500 ms
 Feature 082 focused workspace: 6/6 pass
 Public browser gate: 10/10 pass
 Authenticated local shell smoke: Chromium / Firefox / WebKit pass
@@ -311,7 +334,8 @@ truth.
 3. Preserve the completed Feature 076 deployment and rollback receipts; require a new exact-SHA, bounded authorization for any future Pages replacement.
 4. Review actual billing after export latency; obtain a new explicit authorization for any restart or teardown.
 5. Preserve the local Features 077–083 gates; obtain productive IdP, corpus, workflow, accessibility, observability and managed-environment approvals/evidence before counting any authenticated journey.
-6. Publish the fast-forward branch only through the audited push capability, then observe exact-SHA CI and update draft PR #24.
+6. Preserve published functional repair `82d75711f28a03de4e7df35d5ec6435cc7610319` and its three green exact-SHA workflows; keep PR #24 draft until all remaining human-gated product and environment prerequisites are satisfied.
+7. Publish the Graph Harness executable runtime and schemas at an immutable framework commit before claiming a durable framework pin.
 
 ## Critical blockers
 

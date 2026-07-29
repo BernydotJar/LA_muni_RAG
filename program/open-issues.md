@@ -1,6 +1,6 @@
 # LA Muni RAG — Open Issues
 
-Updated: 2026-07-28T19:41:48Z
+Updated: 2026-07-29T06:42:07Z
 
 ## Critical
 
@@ -65,12 +65,13 @@ The IdP, corpus, Cloud SQL lifecycle and production-control packets remain pendi
 selected options and zero authorized actions. No packet authenticates authority or permits
 execution by itself.
 
-### BRANCH-PUBLICATION-083 — local verified commits are not on PR #24
+### BRANCH-PUBLICATION-083 — resolved with exact-SHA CI
 
-The local branch contains Features 077–083 through `7ec7037`, while the remote branch and
-draft PR remain at `f858cec`. Audited non-forced publication and exact-SHA CI observation are
-required; shell `git push` is not an approved bypass.
+Features 077–083 and localized repair `82d75711f28a03de4e7df35d5ec6435cc7610319` are published on the draft PR branch through audited non-forced fast-forward pushes. Backend CI `30428162887`, Public Browser Gate `30428162850` and Terraform validation `30428162725` all succeeded for the exact repair SHA. This closes branch publication only; merge and release remain unauthorized.
 
+### GRAPH-HARNESS-PIN-001 — framework runtime lacks an immutable published pin
+
+The Graph Harness runtime executed successfully from framework workspace `520ffab2-149d-4559-bb08-d4e05ff92769` at observed HEAD `0eb0d5fe09e3b1ecaf561b4a1cc9b32510480a26`, but its executable runtime files are uncommitted in that workspace. The application persists the typed projection, 43-event hash chain and state snapshot, but durable framework adoption requires the framework owner to publish the runtime and schemas at an immutable commit. No application runtime code was copied.
 ## High
 
 ### PAGES-ONLINE-ROLLBACK-001 — closed with verified rollback

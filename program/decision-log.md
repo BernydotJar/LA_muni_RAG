@@ -430,3 +430,13 @@ Decision: require explicit `HUMAN_SESSION_ENABLED=true` and `HUMAN_SESSION_PROVI
 Evidence: functional commit `7ec7037af4af5601c5c515be1bdf4aef35682a0a`; focused 10/10; `EVAL-HUMAN-OIDC-PROVIDER-001` 9/9; regression 995/997 with zero failures and two explicit environment skips; public browser 10/10; Chromium/Firefox/WebKit deterministic authenticated smoke; typecheck/build/contracts/audits/structured/secret-PII/diff gates passed.
 
 Limit: no productive provider selection, client registration, credential, external interoperability, MFA/recovery/access review, productive user or managed environment exists. Productive journeys remain `0/12`; no merge, deployment or production-readiness claim is made.
+
+## 2026-07-29T06:42:07Z — Execute exact-SHA CI repair through Graph Harness SDLC
+
+Decision: treat the two failures on `ba6acf3cc654e798f46b104d4eaac6d5c78712ab` as localized gate failures rather than reopening the full implementation. Graph Harness invalidated Feature 079 reliability, Feature 081 accessibility, their shared Feature 082 workspace descendant and the draft PR checkpoint; Feature 083 OIDC remained preserved.
+
+Decision: keep the original gate strength. The accessibility repair removes the fixed root minimum and forces classic-scrollbar diagnostics at 320 pixels. The reliability repair adds 12 validated warm-up requests but leaves the measured shell p95 threshold at 500 ms and explicitly excludes any cold-start or productive SLO claim.
+
+Decision: accept `82d75711f28a03de4e7df35d5ec6435cc7610319` as the functional repair checkpoint because Backend CI run `30428162887`, Public Browser Gate run `30428162850` and Terraform validation run `30428162725` all succeeded. The persisted Graph Harness chain has 43 events, two repair plans, four passing required gates and one checkpoint.
+
+Decision: do not infer merge, deployment, productive identity, real-corpus quality, authenticated readiness or production readiness from this checkpoint. Record a separate open limitation because the observed framework runtime at `0eb0d5fe09e3b1ecaf561b4a1cc9b32510480a26` is not yet published as an immutable commit.

@@ -1,9 +1,9 @@
 {
-  "schema_version": "1.23.0",
-  "generated_at": "2026-07-28T19:43:10Z",
+  "schema_version": "1.24.0",
+  "generated_at": "2026-07-29T06:42:07Z",
   "branch": "feature/gcp-cloudsql-staging-v1",
-  "functional_head": "7ec7037af4af5601c5c515be1bdf4aef35682a0a",
-  "status": "passed_features077_through083_local_foundations_with_productive_identity_workflow_data_environment_accessibility_publication_and_release_blockers",
+  "functional_head": "82d75711f28a03de4e7df35d5ec6435cc7610319",
+  "status": "passed_features077_through083_and_graph_harness_exact_sha_ci_repair_with_productive_identity_workflow_data_environment_accessibility_merge_and_release_blockers",
   "deterministic": {
     "tests": 997,
     "pass": 995,
@@ -452,33 +452,21 @@
   },
   "publication": {
     "branch": "feature/gcp-cloudsql-staging-v1",
-    "functional_sha": "7ec7037af4af5601c5c515be1bdf4aef35682a0a",
-    "remote_base_sha_verified": "f858cecab6b24b00ad625c3986fbc03d347ef59e",
-    "prior_ci": {
-      "backend_run_id": 29980032034,
-      "terraform_run_id": 29980032069,
-      "conclusion": "success_on_prior_functional_base"
-    },
-    "current_ci_status": "pending_audited_publication_host_runtime_blocked",
+    "functional_sha": "82d75711f28a03de4e7df35d5ec6435cc7610319",
+    "parent_sha": "ba6acf3cc654e798f46b104d4eaac6d5c78712ab",
+    "push": "audited_non_forced_fast_forward_success",
+    "remote_head_sha": "82d75711f28a03de4e7df35d5ec6435cc7610319",
+    "current_ci_status": "exact_sha_all_required_workflows_success",
+    "backend_ci_run_id": 30428162887,
+    "backend_ci_conclusion": "success",
+    "public_browser_ci_run_id": 30428162850,
+    "public_browser_ci_conclusion": "success",
+    "terraform_ci_run_id": 30428162725,
+    "terraform_ci_conclusion": "success",
     "pr": 24,
     "pr_state": "draft",
     "merged": false,
-    "deployed": false,
-    "remote_head_sha": "f858cecab6b24b00ad625c3986fbc03d347ef59e",
-    "terraform_ci_conclusion": "success",
-    "backend_ci_conclusion": "success",
-    "backend_ci_run_ids": [
-      30224476425,
-      30224475379
-    ],
-    "terraform_ci_run_ids": [
-      30224476434
-    ],
-    "public_browser_ci_run_ids": [
-      30224476426,
-      30224475314
-    ],
-    "public_browser_ci_conclusion": "success"
+    "deployed": false
   },
   "missing_dedicated_evals": [
     "managed_gcp_staging_execution",
@@ -503,7 +491,7 @@
     "Cross-browser accessibility automation does not establish WCAG conformance or human assistive-technology acceptance.",
     "Four decision packets contain zero selected options, zero authorized actions and zero receipts.",
     "Local telemetry/load evidence is not a productive SLO or operating model.",
-    "Remote branch and draft PR #24 do not include the local commits until audited publication succeeds."
+    "The remote draft branch now includes the verified repair and exact-SHA CI is green; protected merge and production release remain absent."
   ],
   "public_browser_gate": {
     "status": "passed_local_and_remote",
@@ -568,7 +556,18 @@
     "events": 160,
     "unexpected_failures": 0,
     "productive_exporter": false,
-    "productive_slo_claim": false
+    "productive_slo_claim": false,
+    "repair_sha": "82d75711f28a03de4e7df35d5ec6435cc7610319",
+    "warmup_requests": 12,
+    "measured_shell_requests": 80,
+    "steady_state_p95_limit_ms": 500,
+    "repeat_shell_p95_ms": [
+      4.358,
+      3.616,
+      3.707
+    ],
+    "remote_ci_run_id": 30428162887,
+    "remote_ci_conclusion": "success"
   },
   "human_decision_packets": {
     "status": "pending_human_decisions",
@@ -587,7 +586,12 @@
       "webkit"
     ],
     "wcag_conformance_claim": false,
-    "human_assistive_technology_acceptance": false
+    "human_assistive_technology_acceptance": false,
+    "repair_sha": "82d75711f28a03de4e7df35d5ec6435cc7610319",
+    "root_fixed_minimum_width": false,
+    "forced_classic_scrollbar_gate": true,
+    "remote_ci_run_id": 30428162850,
+    "remote_ci_conclusion": "success"
   },
   "human_workspace": {
     "status": "local_task_first_workspace_verified",
@@ -600,7 +604,11 @@
     "provider_error_taxonomy": true,
     "independent_review": "PASS WITH LIMITATIONS",
     "productive_authenticated_journeys": "0/12",
-    "production_ready": false
+    "production_ready": false,
+    "repair_sha": "82d75711f28a03de4e7df35d5ec6435cc7610319",
+    "graph_harness_descendant_revision": 2,
+    "remote_backend_ci_run_id": 30428162887,
+    "remote_public_browser_run_id": 30428162850
   },
   "human_oidc_provider": {
     "status": "local_generic_adapter_verified_disabled_by_default",
@@ -617,6 +625,22 @@
     "productive_credentials": false,
     "external_interoperability": false,
     "productive_authenticated_journeys": "0/12",
+    "production_ready": false
+  },
+  "graph_harness_repair": {
+    "status": "validated_exact_sha_checkpoint",
+    "framework_repository": "BernydotJar/Graph-harness-sdlc",
+    "framework_observed_head": "0eb0d5fe09e3b1ecaf561b4a1cc9b32510480a26",
+    "framework_immutable_pin": false,
+    "project_id": "la-muni-rag-pr24-repair-20260729",
+    "functional_sha": "82d75711f28a03de4e7df35d5ec6435cc7610319",
+    "event_count": 43,
+    "repair_plan_count": 2,
+    "required_gates_passed": "4/4",
+    "checkpoint_count": 1,
+    "preserved_node": "WS07-HUMAN-OIDC-PROVIDER-001",
+    "events_sha256": "bd2e875076a9f916f1e88121f5a9e8b7dabaf2ab97127527240a7f931eda8d23",
+    "state_sha256": "bcb28538df8997f7c0ee02fb3ec4a09ca6720d59d095d02376d8571468da8ece",
     "production_ready": false
   }
 }

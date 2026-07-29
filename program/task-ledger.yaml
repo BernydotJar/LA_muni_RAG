@@ -1,9 +1,16 @@
 schema_version: 1
-updated_at: '2026-07-28T19:42:43Z'
+updated_at: '2026-07-29T06:43:03Z'
 runtime:
-  type: yaml_fallback
-  farmtable_available: false
+  type: graph_harness_sdlc_projection
+  framework_repository: BernydotJar/Graph-harness-sdlc
+  framework_observed_commit: 0eb0d5fe09e3b1ecaf561b4a1cc9b32510480a26
+  immutable_framework_pin: false
   canonical_graph: program/task-graph.yaml
+  executable_projection: program/graph-harness/project.json
+  event_store: program/graph-harness/events.jsonl
+  typed_state: program/graph-harness/state.json
+  event_count: 43
+  required_gates: 4/4 passed
 status_vocabulary:
 - pending
 - ready
@@ -333,7 +340,7 @@ tasks:
   - Authenticated browser journeys remain 0/12; production readiness is not claimed.
   branch: feature/gcp-cloudsql-staging-v1
   pr: 24
-  ci: local_release_gate_passed_remote_pending
+  ci: backend_30428162887_success_public_browser_30428162850_success_terraform_30428162725_success
 - id: WS07-HUMAN-PRODUCT-SHELL-001
   workstream: WS-07
   title: Implement authenticated role-aware product shell v1
@@ -355,7 +362,7 @@ tasks:
   - Productive identity, complete workflows, managed environment and external users absent; journeys remain 0/12.
   branch: feature/gcp-cloudsql-staging-v1
   pr: 24
-  ci: local_release_gate_passed_remote_publication_pending
+  ci: backend_30428162887_success_public_browser_30428162850_success_terraform_30428162725_success
 - id: WS11-HUMAN-SESSION-RELIABILITY-001
   workstream: WS-11
   title: Add local human-session telemetry, load, failure injection and recovery evidence
@@ -372,11 +379,13 @@ tasks:
   evidence:
   - Functional commit 04dbb125c15e9c429e7319a6506bfd787f51d940; focused 5/5; EVAL-HUMAN-SESSION-RELIABILITY-001 9/9.
   - Local harness completed 160 BFF events with zero unexpected failures and no productive SLO claim.
+  - Repair 82d75711f28a03de4e7df35d5ec6435cc7610319: 12 validated warm-up reads, 80 measured shell reads, unchanged 500 ms p95 limit; Backend CI 30428162887 success.
+  - Graph Harness gate GATE-HUMAN-SESSION-RELIABILITY-REPAIR passed at node revision 1.
   limitations:
   - Productive exporter, retention, dashboards, alerting, error budget, on-call and representative managed load absent.
   branch: feature/gcp-cloudsql-staging-v1
   pr: 24
-  ci: local_release_gate_passed_remote_publication_pending
+  ci: backend_30428162887_success_exact_sha
 - id: WS10-HUMAN-DECISION-PACKETS-001
   workstream: WS-10
   title: Add human-gated decision packets for productive prerequisites
@@ -395,7 +404,7 @@ tasks:
   - Packets do not authenticate decision authority or permit execution.
   branch: feature/gcp-cloudsql-staging-v1
   pr: 24
-  ci: local_release_gate_passed_remote_publication_pending
+  ci: backend_30428162887_success_public_browser_30428162850_success_terraform_30428162725_success
 - id: WS11-HUMAN-SHELL-ACCESSIBILITY-001
   workstream: WS-11
   title: Add cross-browser automated accessibility complement v1
@@ -412,11 +421,13 @@ tasks:
   evidence:
   - Functional commit 282b2441912828b193f82133543c4823f5f14659; focused 6/6; EVAL-HUMAN-PRODUCT-SHELL-ACCESSIBILITY-001 9/9.
   - Chromium, Firefox and WebKit passed names, IDs, targets, headings, focus, keyboard skip and 320-pixel reflow checks.
+  - Repair 82d75711f28a03de4e7df35d5ec6435cc7610319 removed the root fixed minimum and passed the forced-scrollbar gate; Public Browser 30428162850 success.
+  - Graph Harness gate GATE-HUMAN-SHELL-ACCESSIBILITY-REPAIR passed at node revision 1.
   limitations:
   - Automation does not establish WCAG conformance or human assistive-technology acceptance.
   branch: feature/gcp-cloudsql-staging-v1
   pr: 24
-  ci: local_release_gate_passed_remote_publication_pending
+  ci: public_browser_30428162850_success_exact_sha
 - id: WS09-HUMAN-WORKSPACE-001
   workstream: WS-09
   title: Deliver task-first municipal workspace v1
@@ -438,10 +449,10 @@ tasks:
   - BLK-PRODUCTIVE-HUMAN-IDP-077
   - BLK-HUMAN-WORKFLOWS-082
   - BLK-HUMAN-ACCESSIBILITY-081
-  - BLK-BRANCH-PUBLICATION-082
   evidence:
   - Functional commit ffa30433db9ba62812dd0dac680963759b4868cb; focused 6/6; EVAL-HUMAN-WORKSPACE-001 8/8.
-  - Regression 978 total / 976 pass / 0 fail / 2 explicit environment skips; public browser 10/10; Chromium/Firefox/WebKit authenticated local smoke.
+  - Regression 997 total / 995 pass / 0 fail / 2 explicit environment skips; public browser 10/10; Chromium/Firefox/WebKit authenticated local smoke.
+  - Repair 82d75711f28a03de4e7df35d5ec6435cc7610319 passed Graph Harness workspace gate at revision 2 and exact-SHA Backend/Public Browser/Terraform workflows.
   - PostgreSQL 15.18/pgvector 0.8.5 non-owner forced-RLS gate and compiled BFF smoke passed.
   - Contracts, kits, staging plan, inventory, packets, workflow template, typecheck/build, audits, structured and secret/PII scans passed.
   - Independent review disposition PASS WITH LIMITATIONS.
@@ -450,7 +461,7 @@ tasks:
   - Productive authenticated journeys remain 0/12; production readiness is not claimed.
   branch: feature/gcp-cloudsql-staging-v1
   pr: 24
-  ci: local_release_gate_passed_remote_publication_pending
+  ci: backend_30428162887_success_public_browser_30428162850_success_terraform_30428162725_success
 - id: WS07-HUMAN-OIDC-PROVIDER-001
   workstream: WS-07
   title: Implement provider-neutral confidential OIDC adapter v1
@@ -469,18 +480,46 @@ tasks:
   blockers:
   - BLK-PRODUCTIVE-HUMAN-IDP-077
   - BLK-HUMAN-WORKFLOWS-082
-  - BLK-BRANCH-PUBLICATION-082
   evidence:
   - Functional commit 7ec7037af4af5601c5c515be1bdf4aef35682a0a; focused 10/10; EVAL-HUMAN-OIDC-PROVIDER-001 9/9.
   - Regression 997 total / 995 pass / 0 fail / 2 explicit environment skips; public browser 10/10; Chromium/Firefox/WebKit deterministic authenticated smoke.
   - Typecheck/build, contracts, consumer kits, inventory, decision packets, audits, structured and secret/PII scans passed.
   - Independent review disposition PASS WITH LIMITATIONS.
+  - Graph Harness localized repair preserved this independent node as done; Backend CI 30428162887 success.
   limitations:
   - No productive provider selection, registration, credentials, external interoperability, productive user, managed environment, MFA/recovery/access review, merge or deployment.
   - Productive authenticated journeys remain 0/12; production readiness is not claimed.
   branch: feature/gcp-cloudsql-staging-v1
   pr: 24
-  ci: local_release_gate_passed_remote_publication_pending
+  ci: backend_30428162887_success_exact_sha_preserved
+- id: PRG-GRAPH-HARNESS-REPAIR-001
+  workstream: WS-11
+  title: Execute localized exact-SHA CI repair through Graph Harness SDLC
+  status: completed_with_limitations
+  owner: /root
+  files:
+  - program/graph-harness/project.json
+  - program/graph-harness/events.jsonl
+  - program/graph-harness/state.json
+  - program/graph-harness/README.md
+  depends_on:
+  - WS11-HUMAN-SESSION-RELIABILITY-001
+  - WS11-HUMAN-SHELL-ACCESSIBILITY-001
+  - WS09-HUMAN-WORKSPACE-001
+  - WS07-HUMAN-OIDC-PROVIDER-001
+  blockers:
+  - BLK-GRAPH-HARNESS-PIN-001
+  evidence:
+  - Functional repair 82d75711f28a03de4e7df35d5ec6435cc7610319; parent ba6acf3cc654e798f46b104d4eaac6d5c78712ab; audited fast-forward publication succeeded.
+  - Graph Harness persisted 43 events, two repair plans, four passing gates and one checkpoint; OIDC node preserved.
+  - Backend CI 30428162887, Public Browser 30428162850 and Terraform validation 30428162725 succeeded on the exact SHA.
+  - Productive journeys remain 0/12; real documents ingested remain 0; production readiness is not claimed.
+  limitations:
+  - Framework executable runtime at observed HEAD 0eb0d5fe09e3b1ecaf561b4a1cc9b32510480a26 was uncommitted; immutable pin remains open.
+  - Draft checkpoint authorizes no merge, deployment, productive identity, corpus or Cloud SQL mutation.
+  branch: feature/gcp-cloudsql-staging-v1
+  pr: 24
+  ci: backend_30428162887_success_public_browser_30428162850_success_terraform_30428162725_success
 - id: WS03-ING-001
   workstream: WS-03
   title: Harden authenticated ingestion, idempotency, corrupt input, and retry
@@ -2076,9 +2115,17 @@ blockers:
   affects:
   - WS09-HUMAN-WORKSPACE-001
   - WS07-HUMAN-OIDC-PROVIDER-001
+  - PRG-GRAPH-HARNESS-REPAIR-001
+  state: resolved
+  condition: Features 077–083 and repair 82d75711f28a03de4e7df35d5ec6435cc7610319 are published on draft PR #24.
+  resolution: Audited fast-forward publication and exact-SHA Backend/Public Browser/Terraform workflows succeeded.
+  next_safe_action: Preserve the draft checkpoint; no merge or deployment without explicit approval and remaining gates.
+- id: BLK-GRAPH-HARNESS-PIN-001
+  affects:
+  - PRG-GRAPH-HARNESS-REPAIR-001
   state: open
-  condition: Local Features 077–083 are verified but remote branch and draft PR #24 remain at f858cecab6b24b00ad625c3986fbc03d347ef59e.
-  next_safe_action: Publish by audited non-forced fast-forward push and observe exact-SHA CI.
+  condition: The observed Graph Harness executable runtime at 0eb0d5fe09e3b1ecaf561b4a1cc9b32510480a26 was uncommitted in the framework workspace.
+  next_safe_action: Publish runtime and schemas at an immutable framework commit before durable pin claims.
 - id: BLK-PRODUCTIVE-HUMAN-IDP-077
   affects:
   - WS07-ID-001
