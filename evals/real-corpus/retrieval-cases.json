@@ -1,0 +1,180 @@
+{
+  "schemaVersion": 1,
+  "corpus": {
+    "documentKey": "antigua-pdm-ot",
+    "documentVersion": "official-municipal-pdf-2026-06-22",
+    "contentSha256": "824f0ee47106f062269a7c65cb3433435470bbe609054972eb29c360f368cd0b",
+    "expectedChunks": 444
+  },
+  "evaluation": {
+    "limit": 10,
+    "hitAt": 5,
+    "vectorAnswerThreshold": 0.35,
+    "modes": [
+      "phrase",
+      "keyword",
+      "vector_lexical",
+      "hybrid"
+    ],
+    "thresholds": {
+      "phrase": {
+        "hitAt5": 0.75,
+        "mrr": 0.65,
+        "citationIdentityAccuracy": 0.75,
+        "unsupportedAnswerRate": 0,
+        "crossDocumentLeakageRate": 0
+      },
+      "keyword": {
+        "hitAt5": 0.75,
+        "mrr": 0.6,
+        "citationIdentityAccuracy": 0.75,
+        "unsupportedAnswerRate": 0,
+        "crossDocumentLeakageRate": 0
+      },
+      "vector_lexical": {
+        "hitAt5": 0.5,
+        "mrr": 0.35,
+        "citationIdentityAccuracy": 0.5,
+        "unsupportedAnswerRate": 0,
+        "crossDocumentLeakageRate": 0
+      },
+      "hybrid": {
+        "hitAt5": 0.875,
+        "mrr": 0.75,
+        "citationIdentityAccuracy": 0.875,
+        "unsupportedAnswerRate": 0,
+        "crossDocumentLeakageRate": 0
+      }
+    },
+    "calibration": {
+      "pilotReceiptExcludedFromEvidence": true,
+      "reason": "The initial 0.20 lexical-vector answer threshold admitted three of four frozen no-answer cases.",
+      "finalThresholdFrozenBeforeFinalMeasurement": true
+    }
+  },
+  "cases": [
+    {
+      "id": "PDM-POS-001",
+      "kind": "evidence",
+      "query": "Censo de Población y Vivienda del año 2018",
+      "expectedDocumentKey": "antigua-pdm-ot",
+      "expectedPageRanges": [
+        [
+          39,
+          41
+        ]
+      ]
+    },
+    {
+      "id": "PDM-POS-002",
+      "kind": "evidence",
+      "query": "Población Económicamente Activa por pueblo 2018",
+      "expectedDocumentKey": "antigua-pdm-ot",
+      "expectedPageRanges": [
+        [
+          59,
+          61
+        ]
+      ]
+    },
+    {
+      "id": "PDM-POS-003",
+      "kind": "evidence",
+      "query": "pendientes superiores al 16%",
+      "expectedDocumentKey": "antigua-pdm-ot",
+      "expectedPageRanges": [
+        [
+          79,
+          81
+        ]
+      ]
+    },
+    {
+      "id": "PDM-POS-004",
+      "kind": "evidence",
+      "query": "Modelo de Desarrollo Territorial Futuro",
+      "expectedDocumentKey": "antigua-pdm-ot",
+      "expectedPageRanges": [
+        [
+          139,
+          141
+        ]
+      ]
+    },
+    {
+      "id": "PDM-POS-005",
+      "kind": "evidence",
+      "query": "Mapa de Suelo Rural Núcleo Rural",
+      "expectedDocumentKey": "antigua-pdm-ot",
+      "expectedPageRanges": [
+        [
+          159,
+          161
+        ]
+      ]
+    },
+    {
+      "id": "PDM-POS-006",
+      "kind": "evidence",
+      "query": "Creación de nuevas rutas de transporte público",
+      "expectedDocumentKey": "antigua-pdm-ot",
+      "expectedPageRanges": [
+        [
+          179,
+          181
+        ]
+      ]
+    },
+    {
+      "id": "PDM-POS-007",
+      "kind": "evidence",
+      "query": "Poca protección al patrimonio histórico, cultural y natural",
+      "expectedDocumentKey": "antigua-pdm-ot",
+      "expectedPageRanges": [
+        [
+          199,
+          201
+        ]
+      ]
+    },
+    {
+      "id": "PDM-POS-008",
+      "kind": "evidence",
+      "query": "proyecciones a 2032",
+      "expectedDocumentKey": "antigua-pdm-ot",
+      "expectedPageRanges": [
+        [
+          39,
+          41
+        ]
+      ]
+    },
+    {
+      "id": "PDM-NEG-001",
+      "kind": "no_answer",
+      "query": "licencia para casino en línea"
+    },
+    {
+      "id": "PDM-NEG-002",
+      "kind": "no_answer",
+      "query": "inscripción de partidos políticos nacionales"
+    },
+    {
+      "id": "PDM-NEG-003",
+      "kind": "no_answer",
+      "query": "dosis pediátrica de amoxicilina"
+    },
+    {
+      "id": "PDM-NEG-004",
+      "kind": "no_answer",
+      "query": "calendario de contenido para redes sociales"
+    }
+  ],
+  "claims": {
+    "semanticModel": false,
+    "legalCorrectness": false,
+    "corpusCompleteness": false,
+    "generalizationBeyondCases": false,
+    "productionSlo": false
+  }
+}

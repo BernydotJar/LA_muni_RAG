@@ -298,7 +298,8 @@
         "program/**",
         "scripts/**",
         "specs/086-real-corpus-retrieval-eval-v1/**",
-        "src/**"
+        "src/**",
+        ".github/workflows/ci.yml"
       ],
       "metadata": {
         "quality_claim_scope": "bounded_corpus_and_query_set_only",

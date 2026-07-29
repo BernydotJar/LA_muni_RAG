@@ -68,6 +68,12 @@ jobs:
       - name: Run EVAL-CONTROLLED-REAL-CORPUS-INGESTION-001
         run: npm run eval:controlled-real-corpus-ingestion
 
+      - name: Verify real-corpus retrieval evidence
+        run: npm run retrieval:verify:real-corpus
+
+      - name: Run EVAL-REAL-CORPUS-RETRIEVAL-001
+        run: npm run eval:real-corpus-retrieval
+
       - name: Validate human decision packets
         run: npm run decision-packets:validate
 

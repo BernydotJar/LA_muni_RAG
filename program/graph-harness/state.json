@@ -1,7 +1,7 @@
 {
   "checkpoint_count": 1,
-  "event_count": 72,
-  "last_event_id": "8cfa4c4b-f7ac-4862-a20e-041d8f2e83cb",
+  "event_count": 73,
+  "last_event_id": "24583705-301b-432b-8c12-20b06ebddb50",
   "mode": "SHIP",
   "nodes": [
     {
@@ -78,7 +78,7 @@
       "id": "WS05-REAL-CORPUS-RETRIEVAL-EVAL-001",
       "kind": "evaluation",
       "revision": 0,
-      "status": "running",
+      "status": "review",
       "title": "Evaluate retrieval against controlled real corpus"
     },
     {

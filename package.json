@@ -101,7 +101,11 @@
     "corpus:ingest:controlled": "npm run build && node dist/cli/controlledCorpusIngestion.js --config evals/real-corpus/controlled-ingestion-config.json",
     "corpus:verify:controlled": "npm run build && node dist/cli/verifyControlledCorpusEvidence.js",
     "corpus:run:controlled": "bash scripts/run-controlled-real-corpus.sh",
-    "eval:controlled-real-corpus-ingestion": "node --import tsx --test --test-concurrency=1 src/__tests__/eval-controlled-real-corpus-ingestion-001.test.ts"
+    "eval:controlled-real-corpus-ingestion": "node --import tsx --test --test-concurrency=1 src/__tests__/eval-controlled-real-corpus-ingestion-001.test.ts",
+    "retrieval:run:real-corpus": "bash scripts/run-real-corpus-retrieval-eval.sh",
+    "retrieval:evaluate:real-corpus": "npm run build && node dist/cli/evaluateRealCorpusRetrieval.js evals/real-corpus/retrieval-cases.json",
+    "retrieval:verify:real-corpus": "npm run build && node dist/cli/verifyRealCorpusRetrievalEvidence.js",
+    "eval:real-corpus-retrieval": "node --import tsx --test --test-concurrency=1 src/__tests__/eval-real-corpus-retrieval-001.test.ts"
   },
   "keywords": [],
   "author": "",
