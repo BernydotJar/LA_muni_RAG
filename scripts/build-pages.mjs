@@ -18,6 +18,9 @@ const sanitizePagesApiUrl = (value) => {
 };
 const escapeHtmlAttribute = (value) => value.replaceAll("&", "&amp;").replaceAll('"', "&quot;").replaceAll("<", "&lt;").replaceAll(">", "&gt;");
 const pagesApiUrl = sanitizePagesApiUrl(process.env.PAGES_API_URL || "");
+const configuredEmbedApiAttribute = pagesApiUrl
+  ? `data-api-url="${escapeHtmlAttribute(pagesApiUrl)}"`
+  : 'data-api-url="https://api.tu-dominio.gt"';
 const bridgeTag = `<script src="./pages-api-bridge.js"${pagesApiUrl ? ` data-api-url="${escapeHtmlAttribute(pagesApiUrl)}"` : ""}></script>`;
 const guardTag = '<script src="./pages-security-guard.js"></script>';
 const procedureEntrypointTag = '<script src="./procedure-widget-entrypoint.js"></script>';
@@ -69,6 +72,7 @@ const patchHtmlForProjectPages = async (dir) => {
         .replaceAll('src="/procedure-feedback.js"', 'src="./procedure-feedback.js"')
         .replaceAll('src="/assets/', 'src="./assets/')
         .replaceAll('href="/assets/', 'href="./assets/')
+        .replaceAll('data-api-url="https://api.tu-dominio.gt"', configuredEmbedApiAttribute)
     );
     if (patched !== original) await writeFile(path, patched, "utf-8");
   }

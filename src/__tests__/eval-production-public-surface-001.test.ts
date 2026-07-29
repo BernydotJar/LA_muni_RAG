@@ -56,6 +56,8 @@ describe("EVAL-PRODUCTION-PUBLIC-SURFACE-001", () => {
     assert.match(build, /must use https outside localhost/);
     assert.match(build, /must not contain credentials, query parameters, or fragments/);
     assert.match(workflow, /PAGES_API_URL: \$\{\{ vars\.PAGES_API_URL \}\}/);
+    assert.match(workflow, /PAGES_API_URL_DEFAULT: https:\/\/la-muni-rag-public-gateway-[a-z0-9-]+\.a\.run\.app/);
+    assert.match(workflow, /PAGES_API_URL:-\$PAGES_API_URL_DEFAULT/);
   });
 
   it("keeps legacy browser routes disabled and requires a dedicated public gateway", async () => {

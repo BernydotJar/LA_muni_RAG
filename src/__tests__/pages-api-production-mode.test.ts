@@ -43,6 +43,8 @@ describe("Pages production API configuration", () => {
     assert.match(buildScript, /sanitizePagesApiUrl/);
     assert.match(buildScript, /pages-api-bridge\.js/);
     assert.match(buildScript, /PAGES_API_BRIDGE/);
+    assert.match(buildScript, /configuredEmbedApiAttribute/);
+    assert.match(buildScript, /api\.tu-dominio\.gt/);
     assert.match(verifyScript, /pages-api-bridge\.js/);
     assert.match(verifyScript, /fail-closed API bridge/);
     assert.match(verifyScript, /still contains demo responses/);
