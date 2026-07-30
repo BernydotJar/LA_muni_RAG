@@ -374,6 +374,7 @@ truth.
 - PDM-OT citations can support related planning context; unsupported procedure steps remain `insufficient` and appear as explicit gaps.
 - Public `hybrid` means bounded lexical keyword plus phrase retrieval, not semantic vector search.
 - DMP v3 remains excluded with `pdf_no_extractable_text`; no OCR result is credited.
+- Broader corpus operations remain incomplete: no production object store, scanner/definitions monitor or dispatcher is claimed.
 - Browser Authorization and Cookie headers remain rejected by the anonymous gateway.
 - EvidenceGap is intake-only; no research assignment, resolution lifecycle or notification workflow is automated or claimed.
 - Productive human identity, MFA/recovery and privileged administrative journeys remain separate work.
