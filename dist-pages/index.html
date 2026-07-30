@@ -5,7 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="Consulta documentos municipales de La Antigua Guatemala con evidencia, citas y trazabilidad.">
   <title>LA Muni RAG — Consulta documental municipal</title>
+  <link rel="icon" href="./favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="./product.css">
+  <meta name="la-muni-rag-build-sha" content="ddb21a0ded756a62ca49e50cbab64de0795c8ad7">
 </head>
 <body>
   <a class="skip-link" href="#contenido">Saltar al contenido</a>
@@ -29,7 +31,7 @@
       </div>
     </nav>
 
-    <main id="contenido">
+    <main id="contenido" tabindex="-1">
       <section class="hero" id="asistente" aria-labelledby="hero-title">
         <div class="hero-grid">
           <div class="hero-copy-stack">
@@ -68,7 +70,7 @@
             </div>
             <div class="code-block" id="embed-code" role="region" aria-label="Código de instalación del widget" tabindex="0">
               <button class="copy-btn" id="copy-btn" type="button">Copiar</button>
-              <code>&lt;script src="<span id="widget-url"></span>" data-api-url="https://api.tu-dominio.gt" data-api-path="/api/public/v1/query"&gt;&lt;/script&gt;</code>
+              <code>&lt;script src="<span id="widget-url"></span>" data-api-url="https://la-muni-rag-public-gateway-ccaqcuwgyq-uc.a.run.app/" data-api-path="/api/public/v1/query"&gt;&lt;/script&gt;</code>
             </div>
           </div>
         </div>
@@ -83,7 +85,7 @@
     </footer>
   </div>
 
-  <script src="./pages-api-bridge.js"></script><script src="./pages-security-guard.js"></script>
+  <script src="./pages-api-bridge.js" data-api-url="https://la-muni-rag-public-gateway-ccaqcuwgyq-uc.a.run.app/"></script><script src="./pages-security-guard.js"></script>
   <script src="./widget.js"></script><script src="./procedure-widget-entrypoint.js"></script>
   <script src="./product.js"></script>
 </body>
