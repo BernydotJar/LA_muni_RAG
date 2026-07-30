@@ -1,31 +1,34 @@
 # LA Muni RAG — Current Program State
 
-Updated: 2026-07-29T20:16:31Z
+Updated: 2026-07-30T18:49:39Z
 
-Program status: **PARTIAL WITH DOCUMENTED BLOCKERS — all 8 projected Graph Harness nodes are done and all 7 required gates pass; one exact PDM-OT document is ingested and retrieval-evaluated with explicit quality gaps; no public backend staging URL, productive identity, complete corpus, protected merge or production release is authorized or deployed**
+Program status: **PUBLIC PILOT OPERATIONAL — the anonymous PDM-OT assistant and premium procedure workflow are deployed on GitHub Pages, backed by an immutable Cloud Run revision and protected Cloud SQL database; Graph Harness revision 1 is done with all 8 release evidence kinds and the blocking gate PASS. Productive identity/MFA, DMP OCR, complete municipal coverage and legal-correctness claims remain explicitly deferred.**
 
 ## Authoritative checkout
 
 ```text
 workspace_id: b909e055-62ae-4625-ac13-10947906a08f
 root: /workspace
-branch: feature/gcp-cloudsql-staging-v1
-evidence_baseline_head: 70ec287f1a8705637e04374ca2562fafa175e0da
-functional_repair_parent: ba6acf3cc654e798f46b104d4eaac6d5c78712ab
+functional_feature_commit: a571645ac4249578e79b119479f7f5a7a4cacc08
+functional_merge_commit: bfdf3a67665294c605b21b50cd6ec990fb3ad6d9
+evidence_checkpoint_branch: docs/public-procedure-release-evidence-v1
 graph_harness_framework_merge_pin: 1bebce3db35303072049233786464bb01163c98b
 graph_harness_executable_runtime: fef364bc66849b98c08d3c1dcb91caf9701027cd
-graph_harness_events: 82
-graph_harness_required_gates: 7 PASS
-working_tree_at_checkpoint: user-generated dist-pages build modifications preserved outside the program commit
-pull_request: 24 draft
-merged: false
-cloud_sql_instance_created: true
-cloud_sql_instance_state: STOPPED
-activation_policy: NEVER
-terraform_apply_executed: true
-managed_staging_execution: false
-teardown_executed: false
-production_deployed: false
+graph_harness_events: 102
+graph_harness_release_node: REL-PUBLIC-CORPUS-PILOT-STAGING-001 revision 1 done
+graph_harness_release_gate: GATE-PUBLIC-CORPUS-PILOT-STAGING-001 PASS
+graph_harness_checkpoints: 3
+pull_request: 27 merged
+public_pages: https://bernydotjar.github.io/LA_muni_RAG/
+public_procedure: https://bernydotjar.github.io/LA_muni_RAG/procedure-workflow.html
+public_gateway: https://la-muni-rag-public-gateway-ccaqcuwgyq-uc.a.run.app
+cloud_run_revision: la-muni-rag-public-gateway-proc-a571b
+immutable_image_digest: sha256:e15a1108ebb4b67242b1fdf5e9f708aa30b502831acb4a05aa10bc488dd38aad
+cloud_sql_instance_state: RUNNABLE
+activation_policy: ALWAYS
+managed_public_pilot_execution: true
+public_pilot_deployed: true
+productive_authenticated_product_deployed: false
 ```
 
 `AGENTS.md` and `RTK.md` remain authoritative. Merge, production deployment, Cloud SQL
@@ -298,7 +301,7 @@ EVAL-HUMAN-PRODUCT-SHELL-ACCESSIBILITY-001: 9/9 pass
 EVAL-HUMAN-WORKSPACE-001: 8/8 pass
 EVAL-HUMAN-OIDC-PROVIDER-001: 9/9 pass
 Feature 083 focused OIDC adapter: 10/10 pass
-Graph Harness: 82 events / 2 repair plans / 7 gates PASS / 8 nodes done / 2 checkpoints / no ready nodes
+Graph Harness: 102 events / 3 repair plans / release revision 1 done / release gate PASS / 3 checkpoints / no ready nodes
 Exact-SHA repair CI: Backend 30428162887 success; Public Browser 30428162850 success; Terraform 30428162725 success
 Reliability repair: 12 validated warm-up requests; 80 measured shell requests; unchanged shell p95 limit 500 ms
 Feature 082 focused workspace: 6/6 pass
@@ -308,7 +311,7 @@ Feature 077 focused lifecycle/migration: 20/20 pass
 Feature 077 PostgreSQL non-owner gate and compiled smoke: pass
 Feature 076 final CI: Backend 30224836298 / 30224834914 success; Public Browser 30224836291 / 30224834919 success; Terraform 30224836307 success
 Playwright public browser gate: 10/10 pass (Chromium desktop + mobile); remote runs 30180490148 / 30180488768 success
-Final program revalidation: 1050 total / 1049 pass / 0 fail / 1 explicit environment skip
+Final program revalidation: 1064 total / 1063 pass / 0 fail / 1 explicit environment skip
 Bash syntax: pass
 Typecheck: pass
 Build: pass
@@ -324,10 +327,10 @@ authorized execution window: 2026-07-25T09:00:00-06:00..2026-07-25T13:00:00-06:0
 corrected plan evidence head: e7c4393b0655d3c660941778ff47b1f31e6be57d
 live plan generator: self-locating, fail-fast, state-locked, atomic verified-artifact publish
 cloud_sql_instance_created: true
-cloud_sql_instance_state: STOPPED
-activation_policy: NEVER
+cloud_sql_instance_state: RUNNABLE
+activation_policy: ALWAYS
 terraform_apply_executed: true
-managed_staging_execution: false
+managed_staging_execution: true
 teardown_executed: false
 ```
 
@@ -347,46 +350,43 @@ truth.
 
 ## Next execution sequence
 
-1. Keep Cloud SQL stopped; the managed-run authorization expired without a successful receipt.
-2. Preserve the green Public Browser Gate as a required public-only check; do not count it as authenticated E2E.
-3. Preserve the completed Feature 076 deployment and rollback receipts; require a new exact-SHA, bounded authorization for any future Pages replacement.
-4. Review actual billing after export latency; obtain a new explicit authorization for any restart or teardown.
-5. Preserve the completed Features 077–086 gates; obtain productive IdP, workflow, accessibility, observability and managed-environment approvals/evidence before counting any authenticated journey.
-6. Preserve published functional repair `82d75711f28a03de4e7df35d5ec6435cc7610319` and its three green exact-SHA workflows; keep PR #24 draft until all remaining human-gated product and environment prerequisites are satisfied.
-7. Preserve immutable Graph Harness merge pin `1bebce3db35303072049233786464bb01163c98b`, the 82-event chain and the terminal `PARTIAL_WITH_DOCUMENTED_BLOCKERS` checkpoint; do not deploy the public pilot without a new bounded authorization.
+1. Operate and observe the anonymous public pilot at the published Pages and Cloud Run URLs.
+2. Review Cloud Billing and Cloud Run/Cloud SQL utilization; preserve the 0–2 Cloud Run instance bound and deletion protection.
+3. Expand the official municipal corpus through separately reviewed source acquisitions, provenance, scan, extraction and held-out retrieval judgments.
+4. Decide whether to run a Spanish legal-document OCR evaluation for DMP; do not credit OCR without reproducible quality and human review.
+5. Select and provision productive Google or Microsoft OIDC for administrative/authenticated journeys; MFA remains deferred from the anonymous pilot but required before privileged production access.
+6. Complete retention, legal-hold, named authority/vigencia review, SLO/load and recovery operations before broader production claims.
+7. Preserve the immutable Graph Harness runtime pin, append-only 102-event chain, PASS release gate and `public-procedure-premium-operational` checkpoint.
 
-## Critical blockers
+## Critical blockers and deferred scope
 
-- `BLK-GCP-LIFECYCLE-074`: the restart authorization expired without a successful managed-run receipt; restart and destructive teardown require new explicit authorization;
-- `BLK-PAGES-DEPLOYMENT-076`: closed for this pilot; exact-SHA deployment and rollback to the authorized main SHA are both verified;
-- `PQG-OPEN-ENABLEMENT-001`: the gateway code and one real evaluated corpus candidate exist, but public-pilot authorization, exact origin, Cloud Run deployment, Cloud SQL lifecycle approval, managed secrets, edge controls, telemetry and Pages `PAGES_API_URL` remain absent;
-- `BLK-CORPUS-OPS-001`: one controlled public document is ingested and retrieval-evaluated, but durable production object storage, scanner operations, retention/legal-hold controls, OCR validation for the no-text DMP scan, named reviewers, broader coverage and held-out judgments remain unavailable;
-- the provider-neutral BFF, generic OIDC adapter and task-first role-aware shell pass local gates, but no approved productive IdP registration/credentials, external interoperability, complete browser-to-domain workflows or real managed environment exists; twelve productive journeys remain blocked;
-- external consumer repositories have not executed their suites;
-- no managed Cloud SQL staging execution, observability/SLO, load/HA, coordinated
-  recovery or privacy operation exists;
-- no protected merge, production deployment or observation window exists.
+- `PQG-OPEN-ENABLEMENT-001`: **closed for the anonymous PDM-OT pilot**; exact origin, Cloud Run, Cloud SQL, Secret Manager, rate limiting, audit, observability and Pages integration are operational.
+- `BLK-PAGES-DEPLOYMENT-076`: **closed for the current public release**; custom Actions and legacy Pages deployments both succeeded and the premium desktop/mobile workflow passed online.
+- `BLK-GCP-LIFECYCLE-074`: **closed for current pilot operation**; Cloud SQL is RUNNABLE with backups, PITR, deletion protection and connector enforcement. Destructive teardown still requires explicit authorization.
+- `BLK-CORPUS-OPS-001`: remains open for broader coverage, production object retention/legal hold, OCR validation, named reviewers and held-out judgments; it does not block use of the approved one-document pilot.
+- Productive IdP registration, external OIDC interoperability, recovery/MFA, access review and twelve authenticated journeys remain deferred and are not part of the anonymous public gateway.
+- No semantic-search, complete municipal-procedure, legal-correctness or current-vigencia claim is made.
 
 ## Persistent boundary assertions
 
-- Live budget alerts are not a hard spending cap.
-- A protected state bucket is not a Cloud SQL deployment.
-- There is no production object store, scanner/definitions monitor or dispatcher operating.
-- One real municipal document is credited as ingested; the minimum Antigua-first and comparative corpus remains incomplete, and DMP v3 is not credited because it has no extractable text.
-- A provider-neutral BFF/session foundation, generic OIDC adapter and role-aware UI/navigation task-first shell are implemented locally; productive IdP approval/registration/credentials, recovery/MFA, access review, complete workflows and human accessibility acceptance remain absent.
-- EvidenceGap is intake-only; no research assignment, resolution lifecycle or notification workflow is implemented.
-- An offline approved-shape plan is not a plan against live GCP state.
-- A live Terraform plan is not authorization to apply it.
-- Disposable API/system staging is not production.
-- The twelve browser journeys remain blocked and were not counted as passed.
-- Provider-side kits do not prove external interoperability.
-- A temporary exact-SHA Pages deployment is not a protected merge or production-release approval.
-- A green feature branch, draft PR or synthetic receipt is not production readiness.
+- The public pilot is operational, but one official PDM-OT document is not complete municipal coverage.
+- The minimum Antigua-first and comparative corpus remains incomplete; broader official sources and held-out judgments are still required.
+- PDM-OT citations can support related planning context; unsupported procedure steps remain `insufficient` and appear as explicit gaps.
+- Public `hybrid` means bounded lexical keyword plus phrase retrieval, not semantic vector search.
+- DMP v3 remains excluded with `pdf_no_extractable_text`; no OCR result is credited.
+- Broader corpus operations remain incomplete: no production object store, scanner/definitions monitor or dispatcher is claimed.
+- Browser Authorization and Cookie headers remain rejected by the anonymous gateway.
+- EvidenceGap is intake-only; no research assignment, resolution lifecycle or notification workflow is automated or claimed.
+- Productive human identity, MFA/recovery and privileged administrative journeys remain separate work.
+- Cloud Run is bounded to 2 maximum instances; Cloud SQL retains backups, PITR, deletion protection and connector enforcement.
+- The public release does not claim general legal correctness, complete procedures, current vigencia or production SLO compliance.
 
-## Feature 087 — public corpus pilot staging in progress
+## Feature 087/088 — public corpus pilot and premium procedure workflow completed
 
-The product owner approved the anonymous PDM-OT pilot and managed GCP staging lifecycle. Cloud SQL `la-muni-rag-staging` is RUNNABLE with deletion protection, backups, PITR and connector enforcement preserved. A dedicated `la_muni_rag_public` database and non-owner `la_muni_public_runtime` role are active; credentials and the public rate-limit key are stored in Secret Manager.
+The product owner approved the anonymous PDM-OT pilot, managed GCP lifecycle, bounded spend, Pages connection, merge and release. Cloud SQL `la-muni-rag-staging` is RUNNABLE with deletion protection, backups, PITR and connector enforcement. The dedicated `la_muni_rag_public` database and non-owner runtime role remain active; secrets are held in Secret Manager.
 
-The exact PDM-OT corpus is present as 444 accepted vectors and 444 reproducibly projected `document_sections`. A real production-mode backend smoke against Cloud SQL returns five HTTPS citations for keyword and phrase queries and `not_found` for an unrelated phrase. Multiline PDF excerpts are normalized safely; other control characters remain rejected. PDM-OT temporal status is still undetermined, so citations are exposed as `validation_required` without a false vigencia claim. DMP remains excluded with `pdf_no_extractable_text`.
+The exact PDM-OT corpus is present as 444 accepted chunks and 444 reproducibly projected public sections. DMP remains excluded with `pdf_no_extractable_text`. The immutable image `sha256:e15a1108ebb4b67242b1fdf5e9f708aa30b502831acb4a05aa10bc488dd38aad`, built from feature commit `a571645ac4249578e79b119479f7f5a7a4cacc08`, is promoted through Cloud Run revision `la-muni-rag-public-gateway-proc-a571b` at 100% traffic. Runtime limits are 1 CPU, 512 MiB, concurrency 40 and maximum 2 instances.
 
-Graph Harness Feature 087 is `running` at event 86. Local regression is 1053 total / 1052 pass / 0 fail / 1 environment skip; typecheck, build and dependency audit pass. The remaining executable sequence is exact-SHA commit and CI, immutable image build, Cloud Run deployment, Pages `PAGES_API_URL`, live browser smoke, observability evidence and release closure. MFA and the twelve authenticated journeys remain separate future work.
+GitHub Pages serves the premium responsive procedure workflow. Exact-origin domain-pack and procedure calls return 200. The approved water query returns 47 steps, 5 explicit gaps and 8 official HTTPS citations; the stadium query returns 6 steps, 4 explicit gaps and 8 citations. Desktop and mobile Chromium have no failed requests, console errors or horizontal overflow. Unsupported steps remain insufficient rather than being promoted by general PDM-OT evidence.
+
+Graph Harness release revision 1 is `done` at event 102. `GATE-PUBLIC-CORPUS-PILOT-STAGING-001` is `PASS` with fresh evidence for local regression, managed database, corpus projection, public gateway smoke, immutable image, online Pages, observability and remote CI. The release receipt is `program/reports/2026-07-30-public-procedure-premium-release.json` with SHA-256 `adf9905b71a48a50798e4e4c51444f0d6b409b6b9f921177552f6720b505cfa2`.
