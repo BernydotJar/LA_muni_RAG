@@ -13,6 +13,9 @@ import {
   loadPublicQueryValidators,
   type PublicQueryResponseV1,
 } from "../api/public/v1/publicQueryIndex.js";
+import { planPublicProcedureQueries } from "../api/public/v1/publicProcedureIndex.js";
+import { loadDomainPack } from "../domain/registry.js";
+import { classifyProcedureQuery } from "../procedure/index.js";
 
 const TENANT_A = "11111111-1111-4111-8111-111111111111";
 const TENANT_B = "22222222-2222-4222-8222-222222222222";
@@ -413,5 +416,161 @@ describe("public query gateway v1", () => {
       });
       assert.equal(text.status, 400);
     } finally { await stopHarness(harness); }
+  });
+});
+
+const PAGES_ORIGIN = "https://bernydotjar.github.io";
+
+const getPublic = (
+  harness: Harness,
+  path: string,
+  headers: Record<string, string> = {}
+): Promise<Response> => fetch(`${harness.baseUrl}${path}`, {
+  method: "GET",
+  headers: {
+    origin: PAGES_ORIGIN,
+    "user-agent": "public-procedure-test-agent",
+    ...headers,
+  },
+});
+
+describe("public procedure gateway v1", () => {
+  it("plans bounded short fallback queries from the active domain pack", () => {
+    const pack = loadDomainPack("municipal-antigua");
+    const query = "¿Qué hay que hacer para construir un estadio municipal?";
+    const classification = classifyProcedureQuery(query, pack);
+    const plan = planPublicProcedureQueries(query, classification, pack);
+    assert.equal(classification.procedureType, "public_works");
+    assert.ok(plan.precise.length >= 1 && plan.precise.length <= 4);
+    assert.ok(plan.fallback.length >= 1 && plan.fallback.length <= 10);
+    assert.ok(plan.fallback.some((item) => item.toLowerCase() === "obra"));
+    assert.ok(plan.fallback.some((item) => item.toLowerCase() === "presupuesto"));
+    assert.equal(new Set([...plan.precise, ...plan.fallback].map((item) => item.toLowerCase())).size, plan.precise.length + plan.fallback.length);
+  });
+
+  it("serves safe domain-pack metadata to the exact GitHub Pages origin", async () => {
+    const harness = await startHarness({ allowedOrigins: [PAGES_ORIGIN] });
+    try {
+      const response = await getPublic(harness, "/api/public/v1/domain-pack");
+      assert.equal(response.status, 200);
+      assert.equal(response.headers.get("access-control-allow-origin"), PAGES_ORIGIN);
+      assert.match(response.headers.get("cache-control") ?? "", /max-age=300/);
+      const body = await response.json() as Record<string, unknown>;
+      assert.equal(body.id, "municipal-antigua");
+      assert.equal(typeof body.defaultQuery, "string");
+      assert.ok(Array.isArray(body.workflowTypes));
+      assert.equal("tenant_id" in body, false);
+      assert.equal("credential_id" in body, false);
+    } finally { await stopHarness(harness); }
+  });
+
+  it("builds a tenant-scoped cited workflow for the exact GitHub Pages origin", async () => {
+    const harness = await startHarness({ allowedOrigins: [PAGES_ORIGIN] });
+    try {
+      const params = new URLSearchParams({
+        q: "¿Qué se necesita para ejecutar una obra municipal de agua potable?",
+        mode: "keyword",
+        limit: "8",
+        depth: "overview",
+      });
+      const response = await getPublic(harness, `/api/public/v1/procedure?${params}`);
+      assert.equal(response.status, 200);
+      assert.equal(response.headers.get("access-control-allow-origin"), PAGES_ORIGIN);
+      assert.equal(response.headers.get("cache-control"), "no-store");
+      const body = await response.json() as {
+        title: string;
+        steps: unknown[];
+        citations: Array<{ sourceUrl?: string }>;
+        metadata: { retrievalMode: string; evidenceCount: number; domainPackId: string };
+      } & Record<string, unknown>;
+      assert.ok(body.title.length > 0);
+      assert.ok(body.steps.length > 0);
+      assert.ok(body.citations.length > 0);
+      assert.ok(body.citations.every((item) => item.sourceUrl?.startsWith("https://")));
+      assert.equal(body.metadata.retrievalMode, "keyword");
+      assert.equal(body.metadata.domainPackId, "municipal-antigua");
+      assert.equal("tenant_id" in body, false);
+      assert.ok(harness.searchRepository.searchCalls.length >= 1);
+      assert.ok(harness.searchRepository.searchCalls.every((call) => call.input.tenantId === TENANT_A));
+      assert.equal(harness.publicRepository.audits.at(-1)?.operation, "public_procedure_v1");
+      assert.equal(harness.publicRepository.audits.at(-1)?.eventType, "public.procedure.succeeded");
+    } finally { await stopHarness(harness); }
+  });
+
+  it("implements hybrid as bounded lexical keyword plus phrase retrieval", async () => {
+    const harness = await startHarness({ allowedOrigins: [PAGES_ORIGIN] });
+    try {
+      const params = new URLSearchParams({
+        q: "procedimiento municipal de agua",
+        mode: "hybrid",
+        limit: "12",
+        depth: "deep_dive",
+      });
+      const response = await getPublic(harness, `/api/public/v1/procedure?${params}`);
+      assert.equal(response.status, 200);
+      const body = await response.json() as {
+        dependencies?: unknown[];
+        citations: unknown[];
+        metadata: { retrievalMode: string; depth: string };
+      };
+      assert.equal(body.metadata.retrievalMode, "hybrid");
+      assert.equal(body.metadata.depth, "deep_dive");
+      assert.ok(Array.isArray(body.dependencies));
+      assert.ok(body.citations.length <= 12);
+      const modes = new Set(harness.searchRepository.searchCalls.map((call) => call.mode));
+      assert.deepEqual([...modes].sort(), ["keyword", "phrase"]);
+      assert.equal(modes.has("semantic"), false);
+    } finally { await stopHarness(harness); }
+  });
+
+  it("returns exact GET preflight and rejects foreign origins and browser credentials", async () => {
+    const harness = await startHarness({ allowedOrigins: [PAGES_ORIGIN] });
+    try {
+      const preflight = await fetch(`${harness.baseUrl}/api/public/v1/procedure`, {
+        method: "OPTIONS",
+        headers: {
+          origin: PAGES_ORIGIN,
+          "access-control-request-method": "GET",
+          "access-control-request-headers": "x-request-id",
+        },
+      });
+      assert.equal(preflight.status, 204);
+      assert.equal(preflight.headers.get("access-control-allow-origin"), PAGES_ORIGIN);
+      assert.equal(preflight.headers.get("access-control-allow-methods"), "GET, OPTIONS");
+
+      const foreign = await fetch(`${harness.baseUrl}/api/public/v1/domain-pack`, {
+        headers: { origin: "https://evil.example" },
+      });
+      assert.equal(foreign.status, 403);
+      assert.equal(foreign.headers.get("access-control-allow-origin"), null);
+
+      const credentialed = await getPublic(
+        harness,
+        "/api/public/v1/procedure?q=agua&mode=keyword&limit=5",
+        { authorization: "Bearer forbidden" }
+      );
+      assert.equal(credentialed.status, 400);
+    } finally { await stopHarness(harness); }
+  });
+
+  it("fails closed for invalid modes, limits and disabled service", async () => {
+    const harness = await startHarness({ allowedOrigins: [PAGES_ORIGIN] });
+    try {
+      for (const query of [
+        "q=agua&mode=semantic&limit=5",
+        "q=agua&mode=keyword&limit=21",
+        "q=&mode=keyword&limit=5",
+      ]) {
+        const response = await getPublic(harness, `/api/public/v1/procedure?${query}`);
+        assert.equal(response.status, 400);
+      }
+    } finally { await stopHarness(harness); }
+
+    const disabled = await startHarness({ enabled: false, allowedOrigins: [PAGES_ORIGIN] });
+    try {
+      const response = await getPublic(disabled, "/api/public/v1/domain-pack");
+      assert.equal(response.status, 503);
+      assert.equal(response.headers.get("access-control-allow-origin"), PAGES_ORIGIN);
+    } finally { await stopHarness(disabled); }
   });
 });

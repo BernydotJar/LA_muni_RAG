@@ -117,7 +117,7 @@ export class PostgresPublicQueryRepository implements PublicQueryRepository {
       JSON.stringify({
         reason_code: input.reasonCode,
         request_id: input.requestId,
-        operation: "public_query_v1",
+        operation: input.operation,
         ...(input.requestedMode === undefined ? {} : { requested_mode: input.requestedMode }),
         ...(input.resultCount === undefined ? {} : { result_count: input.resultCount }),
       }),

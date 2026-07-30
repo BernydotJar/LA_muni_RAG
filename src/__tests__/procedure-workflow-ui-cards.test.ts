@@ -24,7 +24,8 @@ describe("procedure workflow UI cards", () => {
     assert.match(html, /\/api\/procedure\?\$\{params\.toString\(\)\}/);
     assert.match(html, /new URLSearchParams\(\{ q: query, mode, limit \}\)/);
     assert.match(html, /headers: \{ accept: "application\/json" \}/);
-    assert.match(html, /renderProcedureWorkflow\(await response\.json\(\)\)/);
+    assert.match(html, /const payload = await response\.json\(\)\.catch/);
+    assert.match(html, /renderProcedureWorkflow\(payload\)/);
   });
 
   it("loads active domain-pack UI labels without allowing public pack switching", async () => {
