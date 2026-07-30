@@ -54,6 +54,8 @@ describe("EVAL-ONLINE-PAGES-RELEASE-001", () => {
     const legacyMetadata = JSON.parse(await read("build-metadata.json"));
     assert.match(legacyRoot, /\.\/dist-pages\/index\.html/);
     assert.equal(legacyMetadata.apiConfigured, true);
+    const legacyWidgetEntrypoint = await read("dist-pages/procedure-widget-entrypoint.js");
+    assert.match(legacyWidgetEntrypoint, /procedure/i);
   });
 
   it("keeps public deployment and authenticated journeys outside this implementation", async () => {
