@@ -370,10 +370,12 @@ truth.
 ## Persistent boundary assertions
 
 - The public pilot is operational, but one official PDM-OT document is not complete municipal coverage.
+- The minimum Antigua-first and comparative corpus remains incomplete; broader official sources and held-out judgments are still required.
 - PDM-OT citations can support related planning context; unsupported procedure steps remain `insufficient` and appear as explicit gaps.
 - Public `hybrid` means bounded lexical keyword plus phrase retrieval, not semantic vector search.
 - DMP v3 remains excluded with `pdf_no_extractable_text`; no OCR result is credited.
 - Browser Authorization and Cookie headers remain rejected by the anonymous gateway.
+- EvidenceGap is intake-only; no research assignment, resolution lifecycle or notification workflow is automated or claimed.
 - Productive human identity, MFA/recovery and privileged administrative journeys remain separate work.
 - Cloud Run is bounded to 2 maximum instances; Cloud SQL retains backups, PITR, deletion protection and connector enforcement.
 - The public release does not claim general legal correctness, complete procedures, current vigencia or production SLO compliance.
