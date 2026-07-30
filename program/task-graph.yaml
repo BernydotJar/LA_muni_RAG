@@ -1593,31 +1593,50 @@ tasks:
 - id: REL-PUBLIC-CORPUS-PILOT-STAGING-001
   workstream: WS-10
   title: Deploy public PDM-OT corpus pilot to managed staging
-  status: in_progress
+  status: completed_with_limitations
   owner: /root
   depends_on:
   - WS05-REAL-CORPUS-RETRIEVAL-EVAL-001
   blockers: []
   outputs:
   - specs/087-public-corpus-pilot-staging-v1/
+  - specs/088-public-procedure-premium-v1/
   - src/ingestion/publicSectionProjection.ts
   - src/cli/projectPublicCorpusSections.ts
+  - src/api/public/v1/publicProcedureHandler.ts
+  - public/procedure-workflow-premium.css
+  - program/reports/2026-07-30-public-procedure-premium-release.json
   acceptance:
   - Cloud SQL uses a dedicated database and non-owner NOBYPASSRLS runtime role.
   - Accepted vector chunks are projected reproducibly into public keyword/phrase sections.
   - Multiline PDF excerpts produce bounded public citations without admitting unsafe control characters.
-  - An immutable Cloud Run backend is connected to GitHub Pages and passes online smoke checks.
+  - An immutable Cloud Run backend is connected to GitHub Pages and passes online desktop/mobile smoke checks.
+  - Procedure results preserve insufficient steps as explicit documentary gaps.
   result:
-    graph_node: REL-PUBLIC-CORPUS-PILOT-STAGING-001 running
-    authorization: anonymous PDM-OT pilot, managed GCP staging lifecycle, bounded spend, Pages, merge and release approved
+    graph_node: REL-PUBLIC-CORPUS-PILOT-STAGING-001 revision 1 done
+    graph_gate: GATE-PUBLIC-CORPUS-PILOT-STAGING-001 PASS
+    functional_commit: a571645ac4249578e79b119479f7f5a7a4cacc08
+    functional_merge: bfdf3a67665294c605b21b50cd6ec990fb3ad6d9
+    immutable_image: sha256:e15a1108ebb4b67242b1fdf5e9f708aa30b502831acb4a05aa10bc488dd38aad
+    cloud_run_revision: la-muni-rag-public-gateway-proc-a571b 100_percent_traffic
+    public_pages: https://bernydotjar.github.io/LA_muni_RAG/
+    public_procedure: https://bernydotjar.github.io/LA_muni_RAG/procedure-workflow.html
     managed_database: la-muni-rag-staging/la_muni_rag_public RUNNABLE
-    corpus_projection: 444 vectors / 444 sections
-    local_cloudsql_smoke: keyword and phrase return 5 citations; unrelated phrase returns not_found
-    regression: 1053 total / 1052 pass / 0 fail / 1 environment skip
+    corpus_projection: 444 accepted chunks / 444 public sections
+    water_smoke: 47 steps / 5 gaps / 8 citations
+    stadium_smoke: 6 steps / 4 gaps / 8 citations
+    regression: 1064 total / 1063 pass / 0 fail / 1 environment skip
+    remote_ci: feature and merge Backend CI / Public Browser Gate success
+    pages_deployments: custom and legacy success
+    observability: promoted revision 0 ERROR logs in release window
+    checkpoint: public-procedure-premium-operational at graph event 102
   limitations:
   - PDM-OT temporal status remains undetermined until publication/effective dates receive documentary review.
-  - DMP OCR, productive identity/MFA and authenticated journeys are out of this public-pilot scope.
-  - Cloud Run, Pages, observability and exact-SHA remote CI remain pending at this checkpoint.
+  - One approved document is not complete municipal coverage; broader official corpus and held-out judgments remain required.
+  - DMP OCR, productive identity/MFA and authenticated journeys are outside this public-pilot scope.
+  - Hybrid retrieval is lexical keyword plus phrase and does not establish semantic-search capability.
+  - No complete-procedure, legal-correctness, vigencia or production-SLO claim is made.
+
 - id: WS08-CONSUMER-CONTRACT-KIT-001
   workstream: WS-08
   title: Publish portable provider-side consumer contract kits v1

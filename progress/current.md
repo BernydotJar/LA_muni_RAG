@@ -2,101 +2,54 @@
 
 ## Active Feature
 
-054-document-library-ingestion-operations
+088-public-procedure-premium-v1
 
 ## State
 
-review
+completed_with_documented_deferred_scope
 
 ## Mode
 
 SHIP
 
-## Dependency Resolution
+## Public product
 
-- Feature 053 was approved and merged externally.
-- This session did not perform the merge.
-- Base branch: `stack-base/053-municipal-source-corpus-foundation-merged`.
-- Base merge commit: `aa979ddd3bfb1aa3f0a35f5a3a9b2c91482b52a7`.
-- Feature branch: `feature/054-document-library-ingestion-operations`.
-- Tracking issue: #20.
-- Draft PR: #21.
+- Pages: `https://bernydotjar.github.io/LA_muni_RAG/`
+- Procedure workflow: `https://bernydotjar.github.io/LA_muni_RAG/procedure-workflow.html`
+- Gateway: `https://la-muni-rag-public-gateway-ccaqcuwgyq-uc.a.run.app`
+- Cloud Run revision: `la-muni-rag-public-gateway-proc-a571b`
+- Immutable image: `sha256:e15a1108ebb4b67242b1fdf5e9f708aa30b502831acb4a05aa10bc488dd38aad`
 
-## Summary
+## Completed
 
-Feature 054 adds bounded operator-facing import and ingestion operations on top of the Feature 053 source inventory. It preserves the distinction between source discovery, acquisition, extraction, indexing and publication.
+- exact-origin public domain-pack and procedure routes;
+- tenant-scoped RLS evidence retrieval;
+- bounded lexical keyword, phrase and hybrid retrieval;
+- official HTTPS citations and explicit unsupported-step gaps;
+- premium responsive design system with idle/loading/success/error states;
+- desktop and mobile end-to-end generation with no failed requests, console errors or overflow;
+- Cloud SQL protected runtime and 0–2 instance Cloud Run bound;
+- custom and legacy GitHub Pages deployments;
+- Graph Harness revision 1 gate PASS and node done.
 
-## Implemented
+## Verification
 
-- `specs/054-document-library-ingestion-operations.md`
-- `src/sources/documentLibraryOperations.ts`
-- `src/cli/documentLibrary.ts`
-- `npm run document-library`
-- `src/__tests__/document-library-operations.test.ts`
-- `docs/document-library-operations.md`
-- `docs/decisions/054-document-library-operations.md`
-- `docs/risks/054-document-library-risk-register.md`
-- `docs/traceability/054-requirements-traceability.md`
-- `tasks/054-document-library-ingestion-operations.md`
-- raw-byte SHA-256 hashing for binary artifacts
-- deterministic paths constrained below the configured library root
-- copied-artifact hash verification
-- dry-run import and ingestion
-- idempotent repeated import and ingestion
-- version/hash conflict rejection
-- existing extractor and vector indexer reuse
-- inventory-to-operational-manifest reconciliation
-- sanitized machine-readable operation reports
+- full suite: 1064 total / 1063 pass / 0 fail / 1 explicit environment skip;
+- dependency audit: 0 vulnerabilities;
+- Backend CI and Public Browser Gate: success on feature head and merge;
+- water query: 47 steps / 5 gaps / 8 citations;
+- stadium query: 6 steps / 4 gaps / 8 citations;
+- promoted revision ERROR logs in release window: 0.
 
-## Behavioral Guarantees
+## Deferred scope
 
-- a verified URL does not imply acquisition
-- acquisition requires a copied local artifact and matching raw-byte SHA-256
-- ingestion requires positive extraction and indexing results
-- failed indexing does not mark inventory `ingested`
-- identical repeated operations return `noop`
-- same source/version with a different hash fails closed
-- dry-run does not copy, index or mutate either manifest
-- Mixco and other municipalities remain comparative for Antigua
-- national law does not prove Antigua internal procedure
+- productive Google or Microsoft OIDC;
+- MFA, recovery and access review for privileged users;
+- twelve authenticated journeys;
+- DMP OCR and human quality review;
+- broader official municipal corpus and held-out judgments;
+- semantic-search, complete-procedure, legal-correctness, vigencia and production-SLO claims.
 
-## Critic Findings and Corrections
+## Next safe work
 
-- Added an index signature to `DomainDocumentMetadata` so typed domain metadata can cross the generic vector-indexing boundary safely.
-- Updated CI cleanup so the temporary typecheck diagnostic does not create a false dirty-worktree failure.
-- Documented that inventory and operational-manifest writes are separate file operations rather than a distributed transaction.
-- Documented that cross-process locking is not yet implemented and operator runs must be serialized.
-
-## Independent Verification
-
-GitHub Actions run `29667121105` passed on head `e73b3828daa789060c898febfaa26737415f0375`:
-
-- source inventory validation
-- TypeScript typecheck
-- build
-- focused document-library tests
-- existing source inventory and authority tests
-- domain evaluation
-- complete test suite
-- Pages build and verification
-- diff integrity
-- generated artifact cleanup
-- clean generated state
-
-A final CI run is required for the documentation-complete head before PR #21 leaves draft.
-
-## Non-Goals Preserved
-
-- no network downloader
-- no background acquisition
-- no public upload UI
-- no publication or legal approval state
-- no migrations
-- no deployment
-- no auth/RBAC
-- no War Room changes
-- no political profiling or targeting
-
-## Next Gate
-
-Complete the final documentation-head CI run, record immutable evidence in PR #21 and issue #20, and leave the PR ready for human review without merging.
+Expand the official corpus under a separate graph node using provenance, malware scan, extraction, authority/vigencia review and held-out retrieval judgments. The 32-topic municipal taxonomy supplied from the separate research project may be used as a coverage map only; political/media profiling remains outside LA Muni RAG.

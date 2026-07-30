@@ -1,0 +1,166 @@
+{
+  "schema_version": "la_muni_rag.public_procedure_release.v1",
+  "generated_at": "2026-07-30T18:48:32Z",
+  "project": "LA Muni RAG",
+  "release": {
+    "feature_commit": "a571645ac4249578e79b119479f7f5a7a4cacc08",
+    "functional_merge_commit": "bfdf3a67665294c605b21b50cd6ec990fb3ad6d9",
+    "pre_merge_main_commit": "965d6bec4d9cd91076c5a3b17121892a9429f630",
+    "pull_request": 27,
+    "public_pages_url": "https://bernydotjar.github.io/LA_muni_RAG/",
+    "public_procedure_url": "https://bernydotjar.github.io/LA_muni_RAG/procedure-workflow.html",
+    "public_gateway_url": "https://la-muni-rag-public-gateway-ccaqcuwgyq-uc.a.run.app"
+  },
+  "local_regression": {
+    "dependency_vulnerabilities": 0,
+    "graph_harness": "PASS",
+    "graph_event_count_before_release_evidence": 90,
+    "graph_node_count": 9,
+    "tests_total": 1064,
+    "tests_passed": 1063,
+    "tests_failed": 0,
+    "tests_skipped": 1,
+    "skip_reason": "explicit environment-only test",
+    "typecheck": "PASS",
+    "build": "PASS",
+    "pages_artifact_verifier": "PASS",
+    "public_browser_tests": "10/10 PASS"
+  },
+  "managed_database": {
+    "project": "rag-municipalidades",
+    "instance": "la-muni-rag-staging",
+    "region": "us-central1",
+    "state": "RUNNABLE",
+    "database": "la_muni_rag_public",
+    "activation_policy": "ALWAYS",
+    "backups_enabled": true,
+    "point_in_time_recovery_enabled": true,
+    "deletion_protection_enabled": true,
+    "connector_enforcement": "REQUIRED",
+    "authorized_networks": 0,
+    "runtime_role_non_owner": true,
+    "runtime_role_superuser": false,
+    "runtime_role_bypass_rls": false
+  },
+  "corpus_projection": {
+    "approved_document": "antigua-pdm-ot",
+    "official_source": "https://muniantigua.gob.gt/assets/backend/info/MODULO_1_PDMOT.pdf",
+    "accepted_chunks": 444,
+    "public_document_sections": 444,
+    "eligible_public_sources": 1,
+    "malware_scan": "clean",
+    "dmp_status": "excluded_pdf_no_extractable_text",
+    "ocr_performed": false
+  },
+  "immutable_image": {
+    "cloud_build_id": "ab0669d9-32a3-4a74-9f30-c29cc7679c5c",
+    "cloud_build_status": "SUCCESS",
+    "source_tree": "a20138cdf8162279548a9113d61dfbb362c94253",
+    "archive_tree": "a20138cdf8162279548a9113d61dfbb362c94253",
+    "image": "us-central1-docker.pkg.dev/rag-municipalidades/la-muni-rag/public-gateway@sha256:e15a1108ebb4b67242b1fdf5e9f708aa30b502831acb4a05aa10bc488dd38aad"
+  },
+  "public_gateway": {
+    "revision": "la-muni-rag-public-gateway-proc-a571b",
+    "source_sha_label": "a571645",
+    "traffic_percent": 100,
+    "service_account": "la-muni-rag-public@rag-municipalidades.iam.gserviceaccount.com",
+    "cpu": "1",
+    "memory": "512Mi",
+    "container_concurrency": 40,
+    "maximum_instances": 2,
+    "minimum_instances": 0,
+    "timeout_seconds": 30,
+    "routes": [
+      "/api/public/v1/query",
+      "/api/public/v1/domain-pack",
+      "/api/public/v1/procedure"
+    ],
+    "hybrid_semantics": "lexical_keyword_plus_phrase",
+    "exact_pages_origin_cors": "PASS",
+    "foreign_origin_rejected": "PASS",
+    "authorization_header_rejected": "PASS",
+    "cookie_header_rejected": "PASS",
+    "unsupported_method_rejected": "PASS"
+  },
+  "procedure_smoke": {
+    "water": {
+      "query": "¿Qué pasos y documentos se necesitan para una obra municipal de agua potable?",
+      "mode": "keyword",
+      "depth": "overview",
+      "steps": 47,
+      "supported_steps": 2,
+      "insufficient_steps": 45,
+      "gaps": 5,
+      "citations": 8,
+      "confidence": "medium",
+      "local_evidence": true
+    },
+    "stadium": {
+      "query": "¿Qué hay que hacer para construir un estadio municipal?",
+      "mode": "hybrid",
+      "depth": "deep_dive",
+      "steps": 6,
+      "supported_steps": 2,
+      "insufficient_steps": 4,
+      "gaps": 4,
+      "citations": 8,
+      "confidence": "medium",
+      "local_evidence": true
+    }
+  },
+  "online_pages": {
+    "custom_pages_run": 30570987450,
+    "legacy_pages_run": 30570981828,
+    "custom_pages_conclusion": "success",
+    "legacy_pages_conclusion": "success",
+    "published_build_sha": "965d6bec4d9cd91076c5a3b17121892a9429f630",
+    "api_configured": true,
+    "premium_stylesheet_status": 200,
+    "desktop": {
+      "runtime_state": "success",
+      "metrics": 4,
+      "steps": 47,
+      "source_links": 5,
+      "gaps": 5,
+      "horizontal_overflow": false,
+      "failed_requests": 0,
+      "console_errors": 0
+    },
+    "mobile": {
+      "runtime_state": "success",
+      "metrics": 4,
+      "steps": 47,
+      "source_links": 5,
+      "gaps": 5,
+      "horizontal_overflow": false,
+      "failed_requests": 0,
+      "console_errors": 0
+    }
+  },
+  "observability": {
+    "cloud_run_revision_error_logs": 0,
+    "log_window": "release smoke window",
+    "raw_query_logging_claimed": false,
+    "secret_logging_detected": false
+  },
+  "remote_ci": {
+    "feature_backend_ci": 30569638634,
+    "feature_public_browser_gate": 30569638632,
+    "feature_backend_conclusion": "success",
+    "feature_public_browser_conclusion": "success",
+    "merge_backend_ci": 30570986793,
+    "merge_public_browser_gate": 30570987279,
+    "merge_backend_conclusion": "success",
+    "merge_public_browser_conclusion": "success"
+  },
+  "limitations": {
+    "productive_oidc": false,
+    "mfa": "deferred",
+    "authenticated_browser_journeys": "0/12",
+    "dmp_ocr": false,
+    "semantic_search_claim": false,
+    "complete_municipal_procedure_claim": false,
+    "legal_correctness_claim": false,
+    "external_media_runtime_dependency": false
+  }
+}
