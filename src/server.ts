@@ -65,6 +65,12 @@ import {
   type PublicQueryV1Options,
 } from "./api/public/v1/publicQueryIndex.js";
 import {
+  createPublicProcedureDependencies,
+  handlePublicProcedureV1,
+  PUBLIC_DOMAIN_PACK_ROUTE,
+  PUBLIC_PROCEDURE_ROUTE,
+} from "./api/public/v1/publicProcedureIndex.js";
+import {
   createHumanSessionBffDependencies,
   handleHumanSessionBff,
   loadHumanSessionBffOptionsFromEnv,
@@ -203,6 +209,10 @@ export const createRequestHandler = (options: ServerOptions = {}): RequestListen
     options.searchEvidenceV1
   );
   const publicQueryV1Dependencies = createPublicQueryDependencies(options.publicQueryV1);
+  const publicProcedureV1Dependencies = createPublicProcedureDependencies(
+    publicQueryV1Dependencies,
+    domainPack
+  );
   const humanSessionOptions = options.humanSession ?? loadHumanSessionBffOptionsFromEnv();
   const humanSessionDependencies = createHumanSessionBffDependencies({
     ...humanSessionOptions,
@@ -224,6 +234,11 @@ export const createRequestHandler = (options: ServerOptions = {}): RequestListen
 
       if (await handleHumanSessionBff(req, res, url, humanSessionDependencies)) return;
       if (handleHumanShell(req, res, url)) return;
+
+      if (url.pathname === PUBLIC_DOMAIN_PACK_ROUTE || url.pathname === PUBLIC_PROCEDURE_ROUTE) {
+        if (await handlePublicProcedureV1(req, res, url, publicProcedureV1Dependencies)) return;
+        throw new HttpError(404, "not_found", "Route not found");
+      }
 
       if (url.pathname === PUBLIC_QUERY_ROUTE) {
         if (await handlePublicQueryV1(req, res, url.pathname, publicQueryV1Dependencies)) return;
@@ -342,6 +357,14 @@ export const createRequestHandler = (options: ServerOptions = {}): RequestListen
           publicQueryApi: {
             enabled: publicQueryV1Dependencies.enabled,
             modes: ["keyword", "phrase"],
+            browserCredentialRequired: false,
+          },
+          publicProcedureApi: {
+            enabled: publicQueryV1Dependencies.enabled,
+            routes: [PUBLIC_DOMAIN_PACK_ROUTE, PUBLIC_PROCEDURE_ROUTE],
+            modes: ["keyword", "phrase", "hybrid"],
+            maximumSources: publicProcedureV1Dependencies.maxLimit,
+            hybridSemantics: "lexical_keyword_plus_phrase",
             browserCredentialRequired: false,
           },
           humanSessionBff: {

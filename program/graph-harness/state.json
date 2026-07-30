@@ -1,7 +1,7 @@
 {
   "checkpoint_count": 2,
-  "event_count": 86,
-  "last_event_id": "bba5364f-f01e-4f53-8160-45e596f81132",
+  "event_count": 90,
+  "last_event_id": "2f2a90a9-3863-4eef-ad29-22214bcbfa25",
   "mode": "SHIP",
   "nodes": [
     {
@@ -46,14 +46,14 @@
     {
       "active_evidence_ids": [],
       "active_gates": {},
-      "approval_count": 1,
+      "approval_count": 0,
       "capability": "public_corpus_pilot_staging",
       "depends_on": [
         "WS05-REAL-CORPUS-RETRIEVAL-EVAL-001"
       ],
       "id": "REL-PUBLIC-CORPUS-PILOT-STAGING-001",
       "kind": "release_checkpoint",
-      "revision": 0,
+      "revision": 1,
       "status": "running",
       "title": "Deploy public PDM-OT corpus pilot to managed staging"
     },
@@ -179,6 +179,6 @@
   ],
   "project_id": "la-muni-rag-pr24-repair-20260729",
   "ready_nodes": [],
-  "repair_plan_count": 2,
+  "repair_plan_count": 3,
   "schema_version": "graph-harness.state.v1"
 }

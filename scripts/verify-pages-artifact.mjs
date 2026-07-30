@@ -14,6 +14,7 @@ const requiredFiles = [
   "procedure-training.js",
   "data/water-training-map.json",
   "procedure-workflow.html",
+  "procedure-workflow-premium.css",
   "procedure-feedback-dashboard.html",
   "procedure-case-portfolio.html",
   "procedure-case-portfolio.css",
@@ -43,6 +44,7 @@ const procedureTrainingHtml = await readFile(join(outputDir, "procedure-training
 const procedureTrainingJs = await readFile(join(outputDir, "procedure-training.js"), "utf-8");
 const waterTrainingMap = await readFile(join(outputDir, "data/water-training-map.json"), "utf-8");
 const procedureWorkflowHtml = await readFile(join(outputDir, "procedure-workflow.html"), "utf-8");
+const procedureWorkflowPremiumCss = await readFile(join(outputDir, "procedure-workflow-premium.css"), "utf-8");
 const feedbackDashboardHtml = await readFile(join(outputDir, "procedure-feedback-dashboard.html"), "utf-8");
 const casePortfolioHtml = await readFile(join(outputDir, "procedure-case-portfolio.html"), "utf-8");
 const casePortfolioCss = await readFile(join(outputDir, "procedure-case-portfolio.css"), "utf-8");
@@ -101,6 +103,7 @@ if (!procedureTrainingHtml.includes('href="./index.html"') || !procedureTraining
 if (!procedureTrainingJs.includes("requester_supplied_unverified")) throw new Error("Procedure training runtime is missing requester assertion provenance.");
 if (!waterTrainingMap.includes('"research_not_facts": true') || !waterTrainingMap.includes('"sequence": 47')) throw new Error("Procedure training curriculum is missing bounded research semantics.");
 if (!procedureWorkflowHtml.includes('src="./pages-api-bridge.js"')) throw new Error("Procedure workflow page is missing the Pages fail-closed API bridge.");
+if (!procedureWorkflowHtml.includes('href="./procedure-workflow-premium.css"') || !procedureWorkflowPremiumCss.includes('--procedure-action: #67e8f9') || !procedureWorkflowPremiumCss.includes('.procedure-loading-shell') || !procedureWorkflowPremiumCss.includes('@media (max-width: 680px)')) throw new Error("Procedure workflow page is missing the premium design system, loading states, or responsive guardrails.");
 if (!procedureWorkflowHtml.includes('src="./procedure-feedback.js"')) throw new Error("Procedure workflow page is missing the feedback loop script.");
 if (!procedureFeedbackJs.includes('./procedure-deep-dive.js')) throw new Error("Procedure workflow feedback loader is missing the deep-dive UI enhancement.");
 if (!procedureFeedbackJs.includes('./procedure-source-attribution.js')) throw new Error("Procedure workflow feedback loader is missing official source attribution.");

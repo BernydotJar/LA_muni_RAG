@@ -12,6 +12,8 @@ import type {
 export const PUBLIC_QUERY_ROUTE = "/api/public/v1/query";
 
 export type PublicQueryMode = Extract<SearchMode, "keyword" | "phrase">;
+export type PublicGatewayRequestedMode = PublicQueryMode | "hybrid";
+export type PublicGatewayOperation = "public_query_v1" | "public_procedure_v1";
 export type PublicQueryResponseLabel = "evidence_found" | "insufficient_evidence" | "not_found";
 export type PublicQueryConfidence = "high" | "medium" | "low";
 export type PublicQueryRateOperation = "public_query_client_v1" | "public_query_global_v1";
@@ -100,10 +102,17 @@ export interface PublicQueryAuditInput {
   auditId: string;
   tenantId: string;
   requestId: string;
-  eventType: "public.query.succeeded" | "public.query.blocked" | "public.query.failed";
+  operation: PublicGatewayOperation;
+  eventType:
+    | "public.query.succeeded"
+    | "public.query.blocked"
+    | "public.query.failed"
+    | "public.procedure.succeeded"
+    | "public.procedure.blocked"
+    | "public.procedure.failed";
   outcome: "success" | "blocked" | "error";
   reasonCode: string;
-  requestedMode?: PublicQueryMode;
+  requestedMode?: PublicGatewayRequestedMode;
   resultCount?: number;
 }
 

@@ -223,6 +223,26 @@ describe("EVAL-PROCEDURE-001", () => {
     );
   });
 
+  it("surfaces unsupported steps as explicit gaps when evidence is only partial", () => {
+    const partialEvidence = evidence().slice(0, 1);
+    const classification = classifyProcedureQuery(
+      "¿Qué procedimiento y documentos se necesitan?",
+      municipalAntiguaDomainPack
+    );
+    const workflow = composeProcedureWorkflow(
+      "¿Qué procedimiento y documentos se necesitan?",
+      "keyword",
+      classification,
+      partialEvidence,
+      municipalAntiguaDomainPack,
+      "deep_dive"
+    );
+    assert.ok(workflow.steps.some((step) => step.evidenceStatus === "supported"));
+    assert.ok(workflow.steps.some((step) => step.evidenceStatus === "insufficient"));
+    assert.ok(workflow.gaps.some((gap) => gap.missingItem.startsWith("Evidencia oficial para el paso:")));
+    assert.ok(workflow.gaps.length <= 5);
+  });
+
   it("emits valid canonical workflow JSON both with and without citable evidence", async () => {
     const validators = await loadProcedureQueryContractValidators();
 

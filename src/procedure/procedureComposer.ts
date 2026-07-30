@@ -7,6 +7,7 @@ import type {
   ProcedureCitation,
   ProcedureConfidence,
   ProcedureDependency,
+  ProcedureGap,
   ProcedureQueryClassification,
   ProcedureSourceAttribution,
   ProcedureStep,
@@ -262,6 +263,24 @@ const summaryFor = (
   return template.defaultSummary;
 };
 
+const partialEvidenceGaps = (
+  steps: ProcedureStep[],
+  evidenceCount: number
+): ProcedureGap[] => {
+  if (evidenceCount === 0) return [];
+  return steps
+    .filter((step) => step.evidenceStatus === "insufficient")
+    .slice(0, 5)
+    .map((step) => ({
+      missingItem: `Evidencia oficial para el paso: ${step.title}`,
+      whyItMatters: "El flujo contiene evidencia relacionada, pero este paso específico no quedó respaldado por una cita coincidente.",
+      requiredToConfirm: step.requiredDocuments.length > 0
+        ? step.requiredDocuments.join("; ")
+        : "Documento oficial o expediente municipal que respalde el paso.",
+      severity: "important" as const,
+    }));
+};
+
 export const composeProcedureWorkflow = (
   query: string,
   mode: EvidenceMode,
@@ -275,7 +294,10 @@ export const composeProcedureWorkflow = (
   const hasLocalEvidence = citationsHaveLocalEvidence(citations, domainPack);
   const hasAntiguaEvidence = isMunicipalAntigua(domainPack) ? hasLocalEvidence : false;
   const steps = stepsForType(classification.procedureType, citations, domainPack, classification, depth);
-  const gaps = buildProcedureGaps(classification, evidence.length, hasLocalEvidence, hasExternalReference, domainPack);
+  const gaps = [
+    ...buildProcedureGaps(classification, evidence.length, hasLocalEvidence, hasExternalReference, domainPack),
+    ...partialEvidenceGaps(steps, evidence.length),
+  ];
   const template = templateForType(domainPack, classification.procedureType);
 
   return {

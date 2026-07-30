@@ -130,7 +130,9 @@ test("procedure workflow remains usable and explicit when Pages has no backend",
   await expect(page.locator("#procedure-empty")).toBeVisible();
   await page.getByRole("button", { name: "Generar flujo" }).click();
   await expect(page.locator("#procedure-error")).toHaveClass(/visible/);
-  await expect(page.locator("#procedure-error")).toHaveText("HTTP 503");
+  await expect(page.locator("#procedure-error")).toContainText("El servicio procedimental no está disponible temporalmente.");
+  await expect(page.locator("#procedure-error")).not.toContainText("HTTP 503");
+  await expect(page.locator("#procedure-runtime-status")).toHaveAttribute("data-state", "error");
   await expect(page.getByRole("button", { name: "Generar flujo" })).toBeEnabled();
   await expect(page.locator("#procedure-workflow")).not.toHaveClass(/visible/);
   expect(requests).toEqual([]);

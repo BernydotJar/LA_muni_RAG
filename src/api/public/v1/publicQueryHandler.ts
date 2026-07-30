@@ -161,6 +161,7 @@ const audit = (
   eventType: PublicQueryAuditInput["eventType"],
   outcome: PublicQueryAuditInput["outcome"],
   reasonCode: string,
+  operation: PublicQueryAuditInput["operation"],
   optional: Pick<PublicQueryAuditInput, "requestedMode" | "resultCount"> = {}
 ): PublicQueryAuditInput => ({
   auditId,
@@ -169,6 +170,7 @@ const audit = (
   eventType,
   outcome,
   reasonCode,
+  operation,
   ...optional,
 });
 
@@ -229,7 +231,8 @@ const runRateGate = async (
               requestId,
               "public.query.blocked",
               "blocked",
-              "rate_limit_exceeded"
+              "rate_limit_exceeded",
+              "public_query_v1"
             ));
           }
           return decision;
@@ -479,6 +482,7 @@ export const handlePublicQueryV1 = async (
           "public.query.succeeded",
           "success",
           "query_completed",
+          "public_query_v1",
           { requestedMode: request.mode, resultCount: response.citations.length }
         ));
         return JSON.stringify(response);
@@ -497,6 +501,7 @@ export const handlePublicQueryV1 = async (
         normalized.statusCode >= 500 ? "public.query.failed" : "public.query.blocked",
         normalized.statusCode >= 500 ? "error" : "blocked",
         normalized.code,
+        "public_query_v1",
         requestedMode ? { requestedMode } : {}
       ));
     }
