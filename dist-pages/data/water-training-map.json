@@ -1,0 +1,485 @@
+{
+  "schema_version": "v1",
+  "module_id": "water-community-antigua",
+  "title": "Agua potable para una comunidad",
+  "subtitle": "Cómo investigar, documentar y dar seguimiento sin inventar el procedimiento",
+  "jurisdiction": "Municipio de La Antigua Guatemala, Sacatepéquez, Guatemala",
+  "query": "¿Qué se necesita para llevar agua potable a una comunidad de La Antigua Guatemala y cómo se le da seguimiento?",
+  "research_not_facts": true,
+  "public_training_preview": true,
+  "institutional_certification": false,
+  "learning_outcomes": [
+    "Leer un procedimiento como una cadena de evidencia, decisiones y documentos.",
+    "Distinguir hechos respaldados, inferencias para revisión, referencias comparativas y evidencia faltante.",
+    "Reconocer cuándo un actor, plazo, formulario o aprobación todavía no puede afirmarse.",
+    "Preparar preguntas documentales para revisión humana y seguimiento."
+  ],
+  "groups": [
+    {
+      "id": "community-intake",
+      "title": "1. Necesidad y organización comunitaria",
+      "summary": "Comprender la necesidad, la solicitud y los espacios de participación antes de afirmar un trámite.",
+      "category_sequences": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "learning_objective": "Distinguir necesidad, solicitud, participación y planificación de una aprobación municipal.",
+      "action_prompt": "Identificar cómo se documenta la necesidad y cómo entra al proceso municipal.",
+      "decision_prompt": "Confirmar quién puede presentar, validar o priorizar la solicitud y con qué evidencia.",
+      "risk_prompt": "Confundir una petición comunitaria con una decisión, presupuesto o autorización ya otorgada."
+    },
+    {
+      "id": "technical-diagnosis",
+      "title": "2. Diagnóstico y viabilidad técnica",
+      "summary": "Investigar fuente, disponibilidad, calidad, predios, derechos y diseño técnico.",
+      "category_sequences": [
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17
+      ],
+      "learning_objective": "Reconocer las verificaciones técnicas que deben probarse antes de definir una solución.",
+      "action_prompt": "Reunir y validar la evidencia técnica mínima de la alternativa de agua.",
+      "decision_prompt": "Determinar qué estudios y derechos deben estar confirmados antes de avanzar.",
+      "risk_prompt": "Inventar disponibilidad, calidad, propiedad, servidumbres o capacidad hidráulica."
+    },
+    {
+      "id": "planning-finance",
+      "title": "3. Planificación, costo y financiamiento",
+      "summary": "Relacionar el proyecto con instrumentos de planificación y fuentes de inversión.",
+      "category_sequences": [
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24
+      ],
+      "learning_objective": "Diferenciar alineación de planificación, estimación de costo y financiamiento aprobado.",
+      "action_prompt": "Verificar PDM-OT, POM, POA, costo, financiamiento e inversión pública aplicables.",
+      "decision_prompt": "Confirmar inclusión, priorización y disponibilidad presupuestaria sin asumir aprobación.",
+      "risk_prompt": "Presentar una mención en planificación como presupuesto, financiamiento o ejecución asegurada."
+    },
+    {
+      "id": "reviews-approvals",
+      "title": "4. Revisiones, dictámenes y expediente",
+      "summary": "Ubicar requisitos ambientales, sanitarios, técnicos y de decisión municipal.",
+      "category_sequences": [
+        25,
+        26,
+        27,
+        28,
+        29
+      ],
+      "learning_objective": "Separar evidencia ambiental/sanitaria, dictámenes, decisión del Concejo y expediente completo.",
+      "action_prompt": "Identificar las revisiones, dictámenes y documentos que forman el expediente.",
+      "decision_prompt": "Determinar qué órgano o unidad decide, revisa o devuelve el expediente.",
+      "risk_prompt": "Inventar permisos, dictámenes, plazos o aprobación del Concejo."
+    },
+    {
+      "id": "procurement",
+      "title": "5. Contratación y formalización",
+      "summary": "Estudiar modalidad, ofertas, adjudicación y contrato sólo desde reglas citables.",
+      "category_sequences": [
+        30,
+        31,
+        32,
+        33
+      ],
+      "learning_objective": "Comprender que contratación, adjudicación y contrato son estados distintos y auditables.",
+      "action_prompt": "Localizar la regla aplicable a contratación, ofertas, adjudicación y formalización.",
+      "decision_prompt": "Confirmar modalidad, competencia, criterios y acto de adjudicación.",
+      "risk_prompt": "Inventar modalidad, proveedor, precio, adjudicación o contrato."
+    },
+    {
+      "id": "delivery-control",
+      "title": "6. Inicio, ejecución y control",
+      "summary": "Observar inicio, avance, supervisión, bitácora, estimaciones y cambios.",
+      "category_sequences": [
+        34,
+        35,
+        36,
+        37,
+        38,
+        39
+      ],
+      "learning_objective": "Distinguir ejecución física, evidencia de supervisión, estimaciones y cambios autorizados.",
+      "action_prompt": "Identificar controles documentales de inicio, ejecución, supervisión y modificación.",
+      "decision_prompt": "Confirmar quién autoriza inicio, estimaciones, cambios y medidas correctivas.",
+      "risk_prompt": "Confundir avance reportado con obra validada, pagada o aceptada."
+    },
+    {
+      "id": "acceptance-closeout",
+      "title": "7. Recepción, liquidación y pagos",
+      "summary": "Revisar evidencia de recepción, liquidación y pagos sin promover estados financieros.",
+      "category_sequences": [
+        40,
+        41,
+        42
+      ],
+      "learning_objective": "Reconocer los documentos que separan recepción, liquidación y pago.",
+      "action_prompt": "Localizar actas, verificaciones y registros de cierre contractual y financiero.",
+      "decision_prompt": "Confirmar aceptación, liquidación y autorización de pago con evidencia propia.",
+      "risk_prompt": "Afirmar recepción, liquidación o pago por la sola existencia de la obra o contrato."
+    },
+    {
+      "id": "operations-service",
+      "title": "8. Operación y calidad del servicio",
+      "summary": "Convertir la obra en servicio sostenible: operación, mantenimiento, cierre, continuidad y calidad.",
+      "category_sequences": [
+        43,
+        44,
+        45,
+        46,
+        47
+      ],
+      "learning_objective": "Evaluar sostenibilidad y seguimiento documental después de la construcción.",
+      "action_prompt": "Identificar responsables, recursos, controles y seguimiento de operación y mantenimiento.",
+      "decision_prompt": "Confirmar el modelo de operación, mantenimiento y control de calidad del servicio.",
+      "risk_prompt": "Tratar la recepción de obra como garantía de continuidad o calidad del agua."
+    }
+  ],
+  "research_categories": [
+    {
+      "sequence": 1,
+      "label": "Necesidad comunitaria",
+      "group_id": "community-intake",
+      "evidence_prompt": "Localizar una fuente verificable que pruebe la regla, actor, documento o estado aplicable a «Necesidad comunitaria».",
+      "missing_evidence_text": "Documento o regla pendiente de localizar y validar."
+    },
+    {
+      "sequence": 2,
+      "label": "Solicitud",
+      "group_id": "community-intake",
+      "evidence_prompt": "Localizar una fuente verificable que pruebe la regla, actor, documento o estado aplicable a «Solicitud».",
+      "missing_evidence_text": "Documento o regla pendiente de localizar y validar."
+    },
+    {
+      "sequence": 3,
+      "label": "COCODE",
+      "group_id": "community-intake",
+      "evidence_prompt": "Localizar una fuente verificable que pruebe la regla, actor, documento o estado aplicable a «COCODE».",
+      "missing_evidence_text": "Documento o regla pendiente de localizar y validar."
+    },
+    {
+      "sequence": 4,
+      "label": "COMUDE",
+      "group_id": "community-intake",
+      "evidence_prompt": "Localizar una fuente verificable que pruebe la regla, actor, documento o estado aplicable a «COMUDE».",
+      "missing_evidence_text": "Documento o regla pendiente de localizar y validar."
+    },
+    {
+      "sequence": 5,
+      "label": "Planificación municipal",
+      "group_id": "community-intake",
+      "evidence_prompt": "Localizar una fuente verificable que pruebe la regla, actor, documento o estado aplicable a «Planificación municipal».",
+      "missing_evidence_text": "Documento o regla pendiente de localizar y validar."
+    },
+    {
+      "sequence": 6,
+      "label": "Perfil",
+      "group_id": "community-intake",
+      "evidence_prompt": "Localizar una fuente verificable que pruebe la regla, actor, documento o estado aplicable a «Perfil».",
+      "missing_evidence_text": "Documento o regla pendiente de localizar y validar."
+    },
+    {
+      "sequence": 7,
+      "label": "Diagnóstico",
+      "group_id": "technical-diagnosis",
+      "evidence_prompt": "Localizar una fuente verificable que pruebe la regla, actor, documento o estado aplicable a «Diagnóstico».",
+      "missing_evidence_text": "Documento o regla pendiente de localizar y validar."
+    },
+    {
+      "sequence": 8,
+      "label": "Fuente de agua",
+      "group_id": "technical-diagnosis",
+      "evidence_prompt": "Localizar una fuente verificable que pruebe la regla, actor, documento o estado aplicable a «Fuente de agua».",
+      "missing_evidence_text": "Documento o regla pendiente de localizar y validar."
+    },
+    {
+      "sequence": 9,
+      "label": "Disponibilidad",
+      "group_id": "technical-diagnosis",
+      "evidence_prompt": "Localizar una fuente verificable que pruebe la regla, actor, documento o estado aplicable a «Disponibilidad».",
+      "missing_evidence_text": "Documento o regla pendiente de localizar y validar."
+    },
+    {
+      "sequence": 10,
+      "label": "Calidad",
+      "group_id": "technical-diagnosis",
+      "evidence_prompt": "Localizar una fuente verificable que pruebe la regla, actor, documento o estado aplicable a «Calidad».",
+      "missing_evidence_text": "Documento o regla pendiente de localizar y validar."
+    },
+    {
+      "sequence": 11,
+      "label": "Terreno",
+      "group_id": "technical-diagnosis",
+      "evidence_prompt": "Localizar una fuente verificable que pruebe la regla, actor, documento o estado aplicable a «Terreno».",
+      "missing_evidence_text": "Documento o regla pendiente de localizar y validar."
+    },
+    {
+      "sequence": 12,
+      "label": "Propiedad",
+      "group_id": "technical-diagnosis",
+      "evidence_prompt": "Localizar una fuente verificable que pruebe la regla, actor, documento o estado aplicable a «Propiedad».",
+      "missing_evidence_text": "Documento o regla pendiente de localizar y validar."
+    },
+    {
+      "sequence": 13,
+      "label": "Servidumbres",
+      "group_id": "technical-diagnosis",
+      "evidence_prompt": "Localizar una fuente verificable que pruebe la regla, actor, documento o estado aplicable a «Servidumbres».",
+      "missing_evidence_text": "Documento o regla pendiente de localizar y validar."
+    },
+    {
+      "sequence": 14,
+      "label": "Derechos de paso",
+      "group_id": "technical-diagnosis",
+      "evidence_prompt": "Localizar una fuente verificable que pruebe la regla, actor, documento o estado aplicable a «Derechos de paso».",
+      "missing_evidence_text": "Documento o regla pendiente de localizar y validar."
+    },
+    {
+      "sequence": 15,
+      "label": "Topografía",
+      "group_id": "technical-diagnosis",
+      "evidence_prompt": "Localizar una fuente verificable que pruebe la regla, actor, documento o estado aplicable a «Topografía».",
+      "missing_evidence_text": "Documento o regla pendiente de localizar y validar."
+    },
+    {
+      "sequence": 16,
+      "label": "Estudio hidráulico",
+      "group_id": "technical-diagnosis",
+      "evidence_prompt": "Localizar una fuente verificable que pruebe la regla, actor, documento o estado aplicable a «Estudio hidráulico».",
+      "missing_evidence_text": "Documento o regla pendiente de localizar y validar."
+    },
+    {
+      "sequence": 17,
+      "label": "Demanda",
+      "group_id": "technical-diagnosis",
+      "evidence_prompt": "Localizar una fuente verificable que pruebe la regla, actor, documento o estado aplicable a «Demanda».",
+      "missing_evidence_text": "Documento o regla pendiente de localizar y validar."
+    },
+    {
+      "sequence": 18,
+      "label": "PDM-OT",
+      "group_id": "planning-finance",
+      "evidence_prompt": "Localizar una fuente verificable que pruebe la regla, actor, documento o estado aplicable a «PDM-OT».",
+      "missing_evidence_text": "Documento o regla pendiente de localizar y validar."
+    },
+    {
+      "sequence": 19,
+      "label": "POM",
+      "group_id": "planning-finance",
+      "evidence_prompt": "Localizar una fuente verificable que pruebe la regla, actor, documento o estado aplicable a «POM».",
+      "missing_evidence_text": "Documento o regla pendiente de localizar y validar."
+    },
+    {
+      "sequence": 20,
+      "label": "POA",
+      "group_id": "planning-finance",
+      "evidence_prompt": "Localizar una fuente verificable que pruebe la regla, actor, documento o estado aplicable a «POA».",
+      "missing_evidence_text": "Documento o regla pendiente de localizar y validar."
+    },
+    {
+      "sequence": 21,
+      "label": "Costo",
+      "group_id": "planning-finance",
+      "evidence_prompt": "Localizar una fuente verificable que pruebe la regla, actor, documento o estado aplicable a «Costo».",
+      "missing_evidence_text": "Documento o regla pendiente de localizar y validar."
+    },
+    {
+      "sequence": 22,
+      "label": "Financiamiento",
+      "group_id": "planning-finance",
+      "evidence_prompt": "Localizar una fuente verificable que pruebe la regla, actor, documento o estado aplicable a «Financiamiento».",
+      "missing_evidence_text": "Documento o regla pendiente de localizar y validar."
+    },
+    {
+      "sequence": 23,
+      "label": "Inversión pública",
+      "group_id": "planning-finance",
+      "evidence_prompt": "Localizar una fuente verificable que pruebe la regla, actor, documento o estado aplicable a «Inversión pública».",
+      "missing_evidence_text": "Documento o regla pendiente de localizar y validar."
+    },
+    {
+      "sequence": 24,
+      "label": "Sistema nacional aplicable",
+      "group_id": "planning-finance",
+      "evidence_prompt": "Localizar una fuente verificable que pruebe la regla, actor, documento o estado aplicable a «Sistema nacional aplicable».",
+      "missing_evidence_text": "Documento o regla pendiente de localizar y validar."
+    },
+    {
+      "sequence": 25,
+      "label": "Ambiente",
+      "group_id": "reviews-approvals",
+      "evidence_prompt": "Localizar una fuente verificable que pruebe la regla, actor, documento o estado aplicable a «Ambiente».",
+      "missing_evidence_text": "Documento o regla pendiente de localizar y validar."
+    },
+    {
+      "sequence": 26,
+      "label": "Salud",
+      "group_id": "reviews-approvals",
+      "evidence_prompt": "Localizar una fuente verificable que pruebe la regla, actor, documento o estado aplicable a «Salud».",
+      "missing_evidence_text": "Documento o regla pendiente de localizar y validar."
+    },
+    {
+      "sequence": 27,
+      "label": "Dictámenes",
+      "group_id": "reviews-approvals",
+      "evidence_prompt": "Localizar una fuente verificable que pruebe la regla, actor, documento o estado aplicable a «Dictámenes».",
+      "missing_evidence_text": "Documento o regla pendiente de localizar y validar."
+    },
+    {
+      "sequence": 28,
+      "label": "Concejo",
+      "group_id": "reviews-approvals",
+      "evidence_prompt": "Localizar una fuente verificable que pruebe la regla, actor, documento o estado aplicable a «Concejo».",
+      "missing_evidence_text": "Documento o regla pendiente de localizar y validar."
+    },
+    {
+      "sequence": 29,
+      "label": "Expediente",
+      "group_id": "reviews-approvals",
+      "evidence_prompt": "Localizar una fuente verificable que pruebe la regla, actor, documento o estado aplicable a «Expediente».",
+      "missing_evidence_text": "Documento o regla pendiente de localizar y validar."
+    },
+    {
+      "sequence": 30,
+      "label": "Contratación",
+      "group_id": "procurement",
+      "evidence_prompt": "Localizar una fuente verificable que pruebe la regla, actor, documento o estado aplicable a «Contratación».",
+      "missing_evidence_text": "Documento o regla pendiente de localizar y validar."
+    },
+    {
+      "sequence": 31,
+      "label": "Ofertas",
+      "group_id": "procurement",
+      "evidence_prompt": "Localizar una fuente verificable que pruebe la regla, actor, documento o estado aplicable a «Ofertas».",
+      "missing_evidence_text": "Documento o regla pendiente de localizar y validar."
+    },
+    {
+      "sequence": 32,
+      "label": "Adjudicación",
+      "group_id": "procurement",
+      "evidence_prompt": "Localizar una fuente verificable que pruebe la regla, actor, documento o estado aplicable a «Adjudicación».",
+      "missing_evidence_text": "Documento o regla pendiente de localizar y validar."
+    },
+    {
+      "sequence": 33,
+      "label": "Contrato",
+      "group_id": "procurement",
+      "evidence_prompt": "Localizar una fuente verificable que pruebe la regla, actor, documento o estado aplicable a «Contrato».",
+      "missing_evidence_text": "Documento o regla pendiente de localizar y validar."
+    },
+    {
+      "sequence": 34,
+      "label": "Inicio",
+      "group_id": "delivery-control",
+      "evidence_prompt": "Localizar una fuente verificable que pruebe la regla, actor, documento o estado aplicable a «Inicio».",
+      "missing_evidence_text": "Documento o regla pendiente de localizar y validar."
+    },
+    {
+      "sequence": 35,
+      "label": "Ejecución",
+      "group_id": "delivery-control",
+      "evidence_prompt": "Localizar una fuente verificable que pruebe la regla, actor, documento o estado aplicable a «Ejecución».",
+      "missing_evidence_text": "Documento o regla pendiente de localizar y validar."
+    },
+    {
+      "sequence": 36,
+      "label": "Supervisión",
+      "group_id": "delivery-control",
+      "evidence_prompt": "Localizar una fuente verificable que pruebe la regla, actor, documento o estado aplicable a «Supervisión».",
+      "missing_evidence_text": "Documento o regla pendiente de localizar y validar."
+    },
+    {
+      "sequence": 37,
+      "label": "Bitácora",
+      "group_id": "delivery-control",
+      "evidence_prompt": "Localizar una fuente verificable que pruebe la regla, actor, documento o estado aplicable a «Bitácora».",
+      "missing_evidence_text": "Documento o regla pendiente de localizar y validar."
+    },
+    {
+      "sequence": 38,
+      "label": "Estimaciones",
+      "group_id": "delivery-control",
+      "evidence_prompt": "Localizar una fuente verificable que pruebe la regla, actor, documento o estado aplicable a «Estimaciones».",
+      "missing_evidence_text": "Documento o regla pendiente de localizar y validar."
+    },
+    {
+      "sequence": 39,
+      "label": "Cambios",
+      "group_id": "delivery-control",
+      "evidence_prompt": "Localizar una fuente verificable que pruebe la regla, actor, documento o estado aplicable a «Cambios».",
+      "missing_evidence_text": "Documento o regla pendiente de localizar y validar."
+    },
+    {
+      "sequence": 40,
+      "label": "Recepción",
+      "group_id": "acceptance-closeout",
+      "evidence_prompt": "Localizar una fuente verificable que pruebe la regla, actor, documento o estado aplicable a «Recepción».",
+      "missing_evidence_text": "Documento o regla pendiente de localizar y validar."
+    },
+    {
+      "sequence": 41,
+      "label": "Liquidación",
+      "group_id": "acceptance-closeout",
+      "evidence_prompt": "Localizar una fuente verificable que pruebe la regla, actor, documento o estado aplicable a «Liquidación».",
+      "missing_evidence_text": "Documento o regla pendiente de localizar y validar."
+    },
+    {
+      "sequence": 42,
+      "label": "Pagos",
+      "group_id": "acceptance-closeout",
+      "evidence_prompt": "Localizar una fuente verificable que pruebe la regla, actor, documento o estado aplicable a «Pagos».",
+      "missing_evidence_text": "Documento o regla pendiente de localizar y validar."
+    },
+    {
+      "sequence": 43,
+      "label": "Operación",
+      "group_id": "operations-service",
+      "evidence_prompt": "Localizar una fuente verificable que pruebe la regla, actor, documento o estado aplicable a «Operación».",
+      "missing_evidence_text": "Documento o regla pendiente de localizar y validar."
+    },
+    {
+      "sequence": 44,
+      "label": "Mantenimiento",
+      "group_id": "operations-service",
+      "evidence_prompt": "Localizar una fuente verificable que pruebe la regla, actor, documento o estado aplicable a «Mantenimiento».",
+      "missing_evidence_text": "Documento o regla pendiente de localizar y validar."
+    },
+    {
+      "sequence": 45,
+      "label": "Cierre",
+      "group_id": "operations-service",
+      "evidence_prompt": "Localizar una fuente verificable que pruebe la regla, actor, documento o estado aplicable a «Cierre».",
+      "missing_evidence_text": "Documento o regla pendiente de localizar y validar."
+    },
+    {
+      "sequence": 46,
+      "label": "Continuidad",
+      "group_id": "operations-service",
+      "evidence_prompt": "Localizar una fuente verificable que pruebe la regla, actor, documento o estado aplicable a «Continuidad».",
+      "missing_evidence_text": "Documento o regla pendiente de localizar y validar."
+    },
+    {
+      "sequence": 47,
+      "label": "Calidad del servicio",
+      "group_id": "operations-service",
+      "evidence_prompt": "Localizar una fuente verificable que pruebe la regla, actor, documento o estado aplicable a «Calidad del servicio».",
+      "missing_evidence_text": "Documento o regla pendiente de localizar y validar."
+    }
+  ]
+}
