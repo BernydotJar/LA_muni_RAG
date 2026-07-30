@@ -1,0 +1,29 @@
+# Tasks
+
+- [x] Write fail-closed Cloud SQL preflight and hard evals.
+- [x] Implement Terraform zero-resource default and independent human gates.
+- [x] Pin Terraform 1.15.8 and Google provider 7.40.0.
+- [x] Add private-first connectivity, connector enforcement and IAM auth.
+- [x] Add bounded storage, backups, PITR, Query Insights and deletion protection.
+- [x] Add validation-only workflow with zero-resource and exact-two-resource plans.
+- [x] Observe remote Backend CI and Terraform validation success for the functional branch.
+- [x] Record project ID/number, region and requested Auth Proxy pilot without enabling spend.
+- [x] Add USD 1/four-hour cost-review gate and project-specific disabled example.
+- [x] Record Eduardo Sacahui as the non-sensitive billing and emergency stop/teardown owner.
+- [x] Add root package scripts and Backend CI named eval.
+- [x] Add runbook, ADR, risks and traceability.
+- [x] Verify linked billing, Billing Account Administrator, COP 4,000 budget alerts, residency policy and conditional spend authorization.
+- [x] Create the protected regional GCS Terraform-state bucket.
+- [x] Complete and verify state-bucket IAM recovery with successful live `--apply` and `--check`.
+- [x] Declare the externalized GCS backend without committing backend parameters.
+- [x] Generate and inspect a live zero-resource plan against the verified backend.
+- [x] Record a temporary pilot-only single-owner governance exception because no second approved human principal exists.
+- [x] Re-review current pricing from the official Cloud SQL pricing table on 2026-07-24.
+- [x] Generate the first exact live resource plan and reject it because the required owner label was absent.
+- [x] Add a self-locating fail-fast live-plan generator that atomically publishes only verifier-approved non-empty artifacts.
+- [x] Regenerate the exact live resource plan with `owner=eduardo-sacahui`; reusable verifier returned valid and immutable hashes were recorded.
+- [x] Obtain explicit final execution authorization tied to the four corrected hashes and 2026-07-25 09:00-13:00 America/Guatemala window.
+- [x] Apply the exact authorized two-resource plan within the bounded window.
+- [x] Stop Cloud SQL compute before the window ended; final state is `STOPPED` with activation policy `NEVER`.
+- [ ] Execute an approved Cloud SQL staging run with synthetic fixtures under a new restart authorization.
+- [ ] Execute separately authorized destructive teardown and verify state/resource cleanup.

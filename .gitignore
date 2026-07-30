@@ -8,3 +8,16 @@ dist/
 coverage/
 artifacts/
 data/raw/
+.rag/library/
+.rag/quarantine/
+.rag/corpus-manifest.json
+
+# Local database recovery artifacts must never enter Git.
+.restore-artifacts/
+*.pgdump
+*.dump
+
+# Playwright browser diagnostics are CI/local artifacts.
+dist-pages/
+playwright-report/
+test-results/

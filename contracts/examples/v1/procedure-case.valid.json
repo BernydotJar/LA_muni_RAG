@@ -1,0 +1,59 @@
+{
+  "schema_version": "v1",
+  "response_type": "procedure_case",
+  "request_id": "12121212-1212-4212-8212-121212121212",
+  "tenant_id": "11111111-1111-4111-8111-111111111111",
+  "case": {
+    "case_id": "44444444-4444-4444-8444-444444444444",
+    "case_key": "water-community-el-hato-001",
+    "workflow_version_id": "22222222-2222-4222-8222-222222222222",
+    "workflow_version_number": 1,
+    "jurisdiction": "Municipio de La Antigua Guatemala, Sacatepequez, Guatemala",
+    "subject_reference": null,
+    "community_reference": "community:el-hato",
+    "status": "active",
+    "validation_state": "unreviewed",
+    "current_step_id": "need-intake",
+    "follow_up_at": "2026-08-01T15:00:00.000Z",
+    "operational_note": null,
+    "revision": 1,
+    "created_by_principal_id": "55555555-5555-4555-8555-555555555555",
+    "updated_by_principal_id": "55555555-5555-4555-8555-555555555555",
+    "created_at": "2026-07-21T21:10:00.000Z",
+    "updated_at": "2026-07-21T21:10:00.000Z",
+    "steps": [
+      {
+        "step_id": "need-intake",
+        "title": "Registrar necesidad comunitaria",
+        "ordinal": 1,
+        "state": "not_started",
+        "updated_by_principal_id": "55555555-5555-4555-8555-555555555555",
+        "updated_at": "2026-07-21T21:10:00.000Z"
+      }
+    ],
+    "documents": [],
+    "blockers": [],
+    "audit_trail": [
+      {
+        "event_id": "66666666-6666-4666-8666-666666666666",
+        "actor_principal_id": "55555555-5555-4555-8555-555555555555",
+        "event_type": "procedure_case.created",
+        "revision": 1,
+        "details": {
+          "workflow_version_id": "22222222-2222-4222-8222-222222222222",
+          "workflow_version_number": 1
+        },
+        "created_at": "2026-07-21T21:10:00.000Z"
+      }
+    ]
+  },
+  "limitations": [
+    "Operational case tracking does not prove legal compliance, municipal approval, reception, liquidation, payment, or institutional closure.",
+    "Document states describe references recorded in this system and require human validation against the authoritative source."
+  ],
+  "provenance": {
+    "credential_id": "33333333-3333-4333-8333-333333333333",
+    "audit_id": "77777777-7777-4777-8777-777777777777",
+    "created_at": "2026-07-21T21:10:00.000Z"
+  }
+}

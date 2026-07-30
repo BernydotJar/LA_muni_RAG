@@ -1,8 +1,9 @@
 # HTTP API
 
-Last updated: 2026-06-22
+Last updated: 2026-07-19
 Owner: Product Engineering
-Status: Draft
+Status: pre-production; authenticated v1 procedure and ingestion-job routes
+implemented, legacy routes development-only
 
 ## Objective
 
@@ -44,6 +45,26 @@ PORT=4010 npm run dev:api
 
 ## Endpoints
 
+### Authenticated v1 production surface
+
+```http
+POST /api/v1/procedure-queries
+POST /api/v1/ingestion-jobs
+GET  /api/v1/ingestion-jobs/{job_id}
+```
+
+These routes use closed JSON Schema/OpenAPI contracts, Bearer credential
+authentication, explicit permissions, credential-derived tenant scope,
+per-principal rate limits, safe versioned errors, sanitized audit, and exact
+origin CORS. The ingestion route accepts only an existing document-version UUID
+and matching digest; it is not an upload or scanner endpoint. See
+[Procedure query API v1](api/procedure-queries-v1.md) and
+[Ingestion jobs API v1](api/ingestion-jobs-v1.md).
+
+With `NODE_ENV=production`, every other pre-v1 `/api/*` route listed below is
+disabled before legacy wildcard CORS. Those endpoints remain local/development
+surfaces and must not receive confidential or multi-tenant data.
+
 ### Health
 
 ```http
@@ -55,9 +76,18 @@ Expected response:
 ```json
 {
   "status": "ok",
-  "service": "la-muni-rag-api"
+  "service": "la-muni-rag-api",
+  "ingestionJobApi": {
+    "enabled": false,
+    "workerConfigured": false
+  }
 }
 ```
+
+`ingestionJobApi.enabled` reports only whether a compatible server-owned
+pipeline can be constructed. `workerConfigured` remains `false` because this
+repository does not start a worker process. Health does not prove storage,
+scanner, database-role, provider, or deployment readiness.
 
 ### Search
 
@@ -209,7 +239,7 @@ Expected response:
 `/api/agent` is the semi-agent endpoint. A future LLM should call this to get
 evidence-grounded context before drafting an answer.
 
-### Chat
+### Development-only legacy chat
 
 ```http
 POST /api/chat
@@ -251,14 +281,19 @@ Parameters:
 - `mode`: `keyword` or `phrase`; defaults to `keyword`
 - `limit`: optional integer from 1 to 50; defaults to 5
 
-`/api/chat` is the endpoint the widget calls. It returns human-readable
-Spanish content with markdown formatting, plus structured citation cards.
+`/api/chat` is retained only for local/development compatibility and returns 404 in production. The product widget defaults to `/api/public/v1/query`; the gateway is implemented but disabled by default and must be bound to a reviewed public corpus before Pages is configured. Never expose an integration Bearer credential to make the browser call the tenant API directly.
 
 ## CORS
 
-All API responses include `Access-Control-Allow-Origin: *` to allow the widget
-to be embedded on any domain. Preflight `OPTIONS` requests are handled
-automatically.
+Authenticated `/api/v1/*` routes never emit wildcard CORS. They always vary on
+`Origin` and emit browser access only for an exact
+`V1_CORS_ALLOWED_ORIGINS` match. Server-to-server requests without `Origin`
+remain valid.
+
+Legacy development routes include `Access-Control-Allow-Origin: *` so the local
+widget can be embedded. Production disables those routes before applying the
+legacy headers. Do not expose legacy mode to an untrusted network or treat CORS
+as authentication.
 
 ## Chat Widget
 
@@ -267,34 +302,34 @@ automatically.
 Add one line before `</body>` on any webpage:
 
 ```html
-<script src="http://your-server:4010/widget.js"></script>
+<script src="https://static.example/widget.js" data-api-url="https://api.example" data-api-path="/api/public/v1/query"></script>
 ```
 
 The widget auto-detects the API URL from its own script `src`. To override:
 
 ```html
-<script src="http://cdn/widget.js" data-api-url="http://api:4010"></script>
+<script src="https://static.example/widget.js" data-api-url="https://api.example" data-api-path="/api/public/v1/query"></script>
 ```
 
 ### Configuration
 
 | Attribute | Default | Description |
 |-----------|---------|-------------|
-| `data-api-url` | auto-detect from `src` | API base URL |
+| `data-api-url` | auto-detect from `src` outside Pages | reviewed API/gateway base URL |
+| `data-api-path` | `/api/public/v1/query` | public browser gateway path |
 | `data-position` | `right` | `right` or `left` |
 | `data-theme` | `dark` | `dark` or `light` |
 | `data-title` | `Asistente Municipal` | Chat window title |
 
-### Demo Page
+### Product page
 
-Visit `http://localhost:4010/` for a live demo page showing the widget in
-action with embedding instructions.
+Visit `http://localhost:4010/` for the local product shell. It requires a local database/backend for queries; the static Pages build fails closed without `PAGES_API_URL`.
 
 ### Static Files
 
 The server serves files from the `public/` directory:
 
-- `GET /` → `public/index.html` (demo page)
+- `GET /` → `public/index.html` (product shell)
 - `GET /widget.js` → the embeddable chat widget
 
 ## Mentor Note

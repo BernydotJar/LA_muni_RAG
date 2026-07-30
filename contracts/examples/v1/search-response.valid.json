@@ -1,0 +1,68 @@
+{
+  "schema_version": "v1",
+  "response_type": "search_results",
+  "request_id": "55555555-5555-4555-8555-555555555555",
+  "tenant_id": "11111111-1111-4111-8111-111111111111",
+  "query": "solicitud documental de agua potable",
+  "jurisdiction": "Municipio de La Antigua Guatemala, Sacatepéquez, Guatemala",
+  "as_of_date": "2026-07-21",
+  "requested_mode": "hybrid",
+  "executed_modes": ["keyword", "phrase", "semantic"],
+  "result_count": 1,
+  "results": [
+    {
+      "result_id": "10101010-1010-4010-8010-101010101010",
+      "source_id": "77777777-7777-4777-8777-777777777777",
+      "source_key": "antigua-water-procedure",
+      "document_id": "88888888-8888-4888-8888-888888888888",
+      "document_version_id": "99999999-9999-4999-8999-999999999999",
+      "section_id": "aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa",
+      "chunk_id": "chunk-antigua-1",
+      "title": "Manual oficial de agua potable",
+      "document_type": "procedure",
+      "document_scope": "municipal",
+      "source_relation": "target",
+      "source_jurisdiction": "Municipio de La Antigua Guatemala, Sacatepéquez, Guatemala",
+      "target_jurisdiction": "Municipio de La Antigua Guatemala, Sacatepéquez, Guatemala",
+      "authority_status": "official_target_jurisdiction",
+      "temporal_status": "current_by_stored_dates",
+      "evidence_status": "supported",
+      "confidentiality": "public",
+      "official_source": true,
+      "official_for_target_jurisdiction": true,
+      "publication_date": "2025-01-10",
+      "effective_date": "2025-02-01",
+      "repeal_date": null,
+      "citation": {
+        "label": "Manual oficial de agua potable, página 12",
+        "excerpt": "La unidad municipal recibe la solicitud documental y verifica los requisitos publicados.",
+        "source_url": "https://muniantigua.gob.gt/documentos/manual-agua.pdf",
+        "page_start": 12,
+        "page_end": 12,
+        "article_number": null
+      },
+      "retrieval": {
+        "matched_modes": ["keyword", "phrase", "semantic"],
+        "score": 0.04918033,
+        "score_type": "reciprocal_rank_fusion"
+      },
+      "content_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "limitations": [
+        "La presencia de un resultado no demuestra completitud del corpus, calidad de recuperación, vigencia jurídica ni aplicabilidad al caso concreto.",
+        "La clasificación temporal usa únicamente fechas almacenadas y requiere revisión humana de vigencia, supersession y aplicabilidad."
+      ]
+    }
+  ],
+  "limitations": [
+    "La presencia de un resultado no demuestra completitud del corpus, calidad de recuperación, vigencia jurídica ni aplicabilidad al caso concreto.",
+    "La clasificación temporal usa únicamente fechas almacenadas y requiere revisión humana de vigencia, supersession y aplicabilidad."
+  ],
+  "provenance": {
+    "source_product": "la_muni_rag",
+    "generated_by": "system",
+    "created_at": "2026-07-21T23:45:00.000Z",
+    "source_refs": ["source:77777777-7777-4777-8777-777777777777"],
+    "credential_id": "44444444-4444-4444-8444-444444444444",
+    "audit_id": "20202020-2020-4020-8020-202020202020"
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "schema_version": "v1",
+  "operation": "search",
+  "request_id": "55555555-5555-4555-8555-555555555555",
+  "tenant_id": "11111111-1111-4111-8111-111111111111",
+  "query": "solicitud documental de agua potable",
+  "jurisdiction": "Municipio de La Antigua Guatemala, Sacatepéquez, Guatemala",
+  "as_of_date": "2026-07-21",
+  "mode": "hybrid",
+  "limit": 10,
+  "filters": {
+    "document_types": ["procedure", "manual"],
+    "source_relations": ["target", "national", "comparative"],
+    "authority_statuses": [],
+    "temporal_statuses": [],
+    "source_ids": []
+  },
+  "provenance": {
+    "credential_id": "44444444-4444-4444-8444-444444444444"
+  }
+}

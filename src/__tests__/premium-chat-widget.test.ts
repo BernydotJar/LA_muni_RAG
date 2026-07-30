@@ -9,10 +9,11 @@ describe("premium chat widget evidence panel", () => {
     const widget = await readWidget();
     assert.match(widget, /document\.currentScript/);
     assert.match(widget, /data-api-url/);
+    assert.match(widget, /data-api-path/);
+    assert.match(widget, /\/api\/public\/v1\/query/);
     assert.match(widget, /data-position/);
     assert.match(widget, /data-theme/);
     assert.match(widget, /data-title/);
-    assert.match(widget, /\/api\/chat/);
     assert.match(widget, /JSON\.stringify\(\{ message, mode: this\.searchMode, limit: 5 \}\)/);
     assert.match(widget, /this\.searchMode\s*=\s*"keyword"/);
     assert.match(widget, /this\.setSearchMode\("phrase"\)/);
@@ -60,12 +61,15 @@ describe("premium chat widget evidence panel", () => {
     assert.match(widget, /transition-duration: 0\.01ms !important/);
   });
 
-  it("keeps Spanish municipal copy and official evidence positioning", async () => {
+  it("keeps Spanish municipal copy and honest service positioning", async () => {
     const widget = await readWidget();
     assert.match(widget, /Asistente Municipal/);
-    assert.match(widget, /Documentos municipales verificados/);
+    assert.match(widget, /Servicio de consulta conectado/);
+    assert.match(widget, /Servicio no configurado/);
     assert.match(widget, /Consulta municipal con evidencia/);
-    assert.match(widget, /Evidencia de documentos municipales oficiales/);
+    assert.match(widget, /Consulta documental con trazabilidad/);
+    assert.match(widget, /Consulta deshabilitada hasta configurar la API/);
     assert.match(widget, /Escribe tu consulta municipal/);
+    assert.doesNotMatch(widget, /Modo demo municipal|Documentos municipales verificados/);
   });
 });

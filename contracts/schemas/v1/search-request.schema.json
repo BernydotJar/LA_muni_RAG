@@ -1,0 +1,111 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://contracts.la-muni-rag.invalid/v1/search-request.schema.json",
+  "title": "SearchRequest v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "operation",
+    "request_id",
+    "tenant_id",
+    "query",
+    "jurisdiction",
+    "as_of_date",
+    "mode",
+    "limit",
+    "filters",
+    "provenance"
+  ],
+  "properties": {
+    "schema_version": { "$ref": "common.schema.json#/$defs/SchemaVersion" },
+    "operation": { "const": "search" },
+    "request_id": { "$ref": "common.schema.json#/$defs/Uuid" },
+    "tenant_id": { "$ref": "common.schema.json#/$defs/Uuid" },
+    "query": { "type": "string", "minLength": 1, "maxLength": 4000 },
+    "jurisdiction": { "$ref": "common.schema.json#/$defs/Jurisdiction" },
+    "as_of_date": { "type": "string", "format": "date" },
+    "mode": { "type": "string", "enum": ["keyword", "phrase", "semantic", "hybrid"] },
+    "limit": { "type": "integer", "minimum": 1, "maximum": 50 },
+    "filters": { "$ref": "#/$defs/SearchFilters" },
+    "provenance": { "$ref": "#/$defs/RequestProvenance" }
+  },
+  "$defs": {
+    "DocumentType": {
+      "type": "string",
+      "enum": [
+        "constitution", "law", "decree", "regulation", "municipal_agreement",
+        "council_minutes", "plan", "manual", "procedure", "form", "guide",
+        "jurisprudence", "other"
+      ]
+    },
+    "SourceRelation": {
+      "type": "string",
+      "enum": ["target", "national", "comparative", "unknown"]
+    },
+    "SearchAuthorityStatus": {
+      "type": "string",
+      "enum": ["official_target_jurisdiction", "official_national", "comparative", "unknown"]
+    },
+    "TemporalStatus": {
+      "type": "string",
+      "enum": [
+        "current_by_stored_dates",
+        "future_by_stored_dates",
+        "expired_by_stored_dates",
+        "undetermined"
+      ]
+    },
+    "SearchFilters": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "document_types",
+        "source_relations",
+        "authority_statuses",
+        "temporal_statuses",
+        "source_ids"
+      ],
+      "properties": {
+        "document_types": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/DocumentType" },
+          "maxItems": 16,
+          "uniqueItems": true
+        },
+        "source_relations": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/SourceRelation" },
+          "maxItems": 4,
+          "uniqueItems": true
+        },
+        "authority_statuses": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/SearchAuthorityStatus" },
+          "maxItems": 4,
+          "uniqueItems": true
+        },
+        "temporal_statuses": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/TemporalStatus" },
+          "maxItems": 4,
+          "uniqueItems": true
+        },
+        "source_ids": {
+          "type": "array",
+          "items": { "$ref": "common.schema.json#/$defs/Uuid" },
+          "maxItems": 20,
+          "uniqueItems": true
+        }
+      }
+    },
+    "RequestProvenance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["credential_id"],
+      "properties": {
+        "credential_id": { "$ref": "common.schema.json#/$defs/Uuid" }
+      }
+    }
+  }
+}

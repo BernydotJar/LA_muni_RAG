@@ -1,0 +1,32 @@
+{
+  "schema_version": "v1",
+  "response_type": "evidence_gap_request",
+  "product_boundary": "evidence_gap_request_only",
+  "gap_request_id": "14141414-1414-4141-8141-141414141414",
+  "request_id": "22222222-2222-4222-8222-222222222222",
+  "tenant_id": "11111111-1111-4111-8111-111111111111",
+  "requester_product": "os_electoral",
+  "jurisdiction": "Municipio de La Antigua Guatemala, Sacatepéquez, Guatemala",
+  "subject": "Procedimiento municipal para un proyecto comunitario de agua",
+  "missing_document": "Manual oficial vigente de agua y saneamiento de Antigua Guatemala",
+  "reason": "Se requiere una fuente local para validar responsables y pasos.",
+  "priority": "high",
+  "campaign_reference": "campaign-antigua-2027",
+  "status": "open",
+  "request_assertion_status": "requester_supplied_unverified",
+  "submitted_at": "2026-07-21T19:00:00.000Z",
+  "limitations": [
+    "Solicitud aceptada para investigación documental; no declara una fuente oficial, vigente, aplicable, adquirida ni validada.",
+    "La prioridad y la referencia de campaña no determinan autoridad jurídica ni alteran el estado del corpus."
+  ],
+  "provenance": {
+    "source_product": "la_muni_rag",
+    "generated_by": "system",
+    "created_at": "2026-07-21T19:00:00.000Z",
+    "source_refs": [
+      "evidence-gap:14141414-1414-4141-8141-141414141414"
+    ],
+    "credential_id": "33333333-3333-4333-8333-333333333333",
+    "audit_id": "44444444-4444-4444-8444-444444444444"
+  }
+}

@@ -81,6 +81,29 @@ describe("HTTP query embedding provider", () => {
     });
   });
 
+  it("aborts and fails retryably when the provider exceeds its timeout", async () => {
+    let observedSignal: AbortSignal | undefined;
+    const provider = new HttpQueryEmbeddingProvider({
+      endpoint: "https://example.test/embeddings",
+      apiKey: "test-key",
+      model: "test-model",
+      dimensions: 3,
+      timeoutMs: 20,
+      transport: async (_url, init) => {
+        observedSignal = init.signal;
+        return new Promise(() => undefined);
+      },
+    });
+
+    await assert.rejects(() => provider.embedQuery("query"), (error) => {
+      assert.ok(error instanceof QueryEmbeddingError);
+      assert.equal(error.code, "query_embedding_request_timeout");
+      assert.equal(error.retryable, true);
+      return true;
+    });
+    assert.equal(observedSignal?.aborted, true);
+  });
+
   it("maps transport failures into retryable query embedding errors", async () => {
     const provider = new HttpQueryEmbeddingProvider({
       endpoint: "https://example.test/embeddings",

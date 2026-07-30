@@ -1,0 +1,177 @@
+{
+  "schema_version": "v1",
+  "kit_version": "1.0.0",
+  "consumer_product": "os_electoral",
+  "provider_product": "la_muni_rag",
+  "openapi_document": "contracts/openapi/v1/openapi.json",
+  "interactions": [
+    {
+      "name": "procedure_query_evidence_bundle",
+      "method": "POST",
+      "path": "/api/v1/procedure-queries",
+      "required_headers": [
+        "Authorization",
+        "Idempotency-Key",
+        "X-Request-Id"
+      ],
+      "success_statuses": [
+        200
+      ],
+      "error_statuses": [
+        400,
+        401,
+        403,
+        409,
+        429,
+        500
+      ],
+      "request": {
+        "schema_file": "procedure-query-request.schema.json",
+        "example_file": "procedure-query-evidence-bundle-request.valid.json"
+      },
+      "response": {
+        "schema_file": "evidence-bundle.schema.json",
+        "example_file": "evidence-bundle.valid.json"
+      },
+      "error_schema_file": "api-error.schema.json",
+      "error_example_files": [
+        "api-error.valid.json",
+        "api-error-unauthorized.valid.json"
+      ],
+      "required_response_headers": [
+        "X-Request-Id"
+      ]
+    },
+    {
+      "name": "procedure_query_workflow",
+      "method": "POST",
+      "path": "/api/v1/procedure-queries",
+      "required_headers": [
+        "Authorization",
+        "Idempotency-Key",
+        "X-Request-Id"
+      ],
+      "success_statuses": [
+        200
+      ],
+      "error_statuses": [
+        400,
+        401,
+        403,
+        409,
+        429,
+        500
+      ],
+      "request": {
+        "schema_file": "procedure-query-request.schema.json",
+        "example_file": "procedure-query-workflow-request.valid.json"
+      },
+      "response": {
+        "schema_file": "procedure-workflow.schema.json",
+        "example_file": "procedure-workflow.valid.json"
+      },
+      "error_schema_file": "api-error.schema.json",
+      "error_example_files": [
+        "api-error.valid.json",
+        "api-error-unauthorized.valid.json"
+      ],
+      "required_response_headers": [
+        "X-Request-Id"
+      ]
+    },
+    {
+      "name": "procedure_query_assessment",
+      "method": "POST",
+      "path": "/api/v1/procedure-queries",
+      "required_headers": [
+        "Authorization",
+        "Idempotency-Key",
+        "X-Request-Id"
+      ],
+      "success_statuses": [
+        200
+      ],
+      "error_statuses": [
+        400,
+        401,
+        403,
+        409,
+        429,
+        500
+      ],
+      "request": {
+        "schema_file": "procedure-query-request.schema.json",
+        "example_file": "procedure-query-assessment-request.valid.json"
+      },
+      "response": {
+        "schema_file": "procedure-assessment.schema.json",
+        "example_file": "procedure-assessment.valid.json"
+      },
+      "error_schema_file": "api-error.schema.json",
+      "error_example_files": [
+        "api-error.valid.json",
+        "api-error-unauthorized.valid.json"
+      ],
+      "required_response_headers": [
+        "X-Request-Id"
+      ]
+    },
+    {
+      "name": "evidence_gap_intake",
+      "method": "POST",
+      "path": "/api/v1/evidence-gap-requests",
+      "required_headers": [
+        "Authorization",
+        "Idempotency-Key",
+        "X-Request-Id"
+      ],
+      "success_statuses": [
+        200
+      ],
+      "error_statuses": [
+        400,
+        401,
+        403,
+        409,
+        429,
+        500
+      ],
+      "request": {
+        "schema_file": "evidence-gap-request.schema.json",
+        "example_file": "evidence-gap-request.valid.json"
+      },
+      "response": {
+        "schema_file": "evidence-gap-response.schema.json",
+        "example_file": "evidence-gap-response.valid.json"
+      },
+      "error_schema_file": "api-error.schema.json",
+      "error_example_files": [
+        "api-error.valid.json",
+        "api-error-unauthorized.valid.json"
+      ],
+      "required_response_headers": [
+        "X-Request-Id"
+      ]
+    }
+  ],
+  "forbidden_response_fields": [
+    "campaign_strategy",
+    "electoral_segments",
+    "territories",
+    "message_house",
+    "approved_message",
+    "content_calendar",
+    "publication_tasks",
+    "media_spend"
+  ],
+  "preservation_rules": [
+    "Preserve tenant_id, request_id, schema_version and provenance identities.",
+    "Preserve citation, document-version and section identities without substituting unversioned URLs.",
+    "Preserve authority, evidence status, gaps, contradictions and limitations.",
+    "Retry network failures with the same Idempotency-Key and do not manufacture a local answer."
+  ],
+  "limitations": [
+    "This provider-side kit does not prove that the OS Electoral repository consumes the contracts correctly.",
+    "Synthetic examples do not establish real-corpus authority, applicability, legal correctness or production readiness."
+  ]
+}

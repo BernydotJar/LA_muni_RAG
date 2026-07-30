@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://contracts.la-muni-rag.invalid/v1/source-list-response.schema.json",
+  "title": "SourceListResponse v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "response_type", "request_id", "tenant_id", "items", "next_cursor", "provenance"],
+  "properties": {
+    "schema_version": { "$ref": "common.schema.json#/$defs/SchemaVersion" },
+    "response_type": { "const": "source_catalog_page" },
+    "request_id": { "$ref": "common.schema.json#/$defs/Uuid" },
+    "tenant_id": { "$ref": "common.schema.json#/$defs/Uuid" },
+    "items": { "type": "array", "maxItems": 100, "items": { "$ref": "source-response.schema.json#/$defs/SourceItem" } },
+    "next_cursor": { "type": ["string", "null"], "minLength": 1, "maxLength": 512, "pattern": "^[A-Za-z0-9_-]+$" },
+    "provenance": { "$ref": "common.schema.json#/$defs/Provenance" }
+  }
+}

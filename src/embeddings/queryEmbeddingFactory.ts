@@ -7,6 +7,7 @@ export interface QueryEmbeddingProviderConfig {
   apiKey?: string;
   model?: string;
   dimensions?: number;
+  timeoutMs?: number;
 }
 
 export interface QueryEmbeddingProviderFactoryOptions {
@@ -21,19 +22,33 @@ const parseDimension = (value: string | undefined): number | undefined => {
   return Number.isInteger(parsed) && parsed > 0 ? parsed : undefined;
 };
 
+const parseTimeout = (value: string | undefined): number | undefined => {
+  if (!value) return undefined;
+  const parsed = Number.parseInt(value, 10);
+  return Number.isSafeInteger(parsed) && parsed >= 10 && parsed <= 120_000
+    ? parsed
+    : undefined;
+};
+
 export const loadQueryEmbeddingProviderConfig = (
   env: NodeJS.ProcessEnv = process.env
-): QueryEmbeddingProviderConfig => ({
-  provider: env.QUERY_EMBEDDING_PROVIDER,
-  endpoint: env.QUERY_EMBEDDING_ENDPOINT,
-  apiKey: env.QUERY_EMBEDDING_API_KEY,
-  model: env.QUERY_EMBEDDING_MODEL,
-  dimensions: parseDimension(env.QUERY_EMBEDDING_DIMENSIONS),
-});
+): QueryEmbeddingProviderConfig => {
+  const timeoutMs = parseTimeout(env.QUERY_EMBEDDING_TIMEOUT_MS);
+  return {
+    provider: env.QUERY_EMBEDDING_PROVIDER,
+    endpoint: env.QUERY_EMBEDDING_ENDPOINT,
+    apiKey: env.QUERY_EMBEDDING_API_KEY,
+    model: env.QUERY_EMBEDDING_MODEL,
+    dimensions: parseDimension(env.QUERY_EMBEDDING_DIMENSIONS),
+    ...(timeoutMs === undefined ? {} : { timeoutMs }),
+  };
+};
 
 const isCompleteConfig = (
   config: QueryEmbeddingProviderConfig
-): config is Required<QueryEmbeddingProviderConfig> =>
+): config is QueryEmbeddingProviderConfig & Required<Pick<QueryEmbeddingProviderConfig,
+  "provider" | "endpoint" | "apiKey" | "model" | "dimensions"
+>> =>
   config.provider === "http" &&
   typeof config.endpoint === "string" &&
   config.endpoint.length > 0 &&
@@ -56,6 +71,7 @@ export const createQueryEmbeddingProvider = (
     model: config.model,
     dimensions: config.dimensions,
     providerName: config.provider,
+    timeoutMs: config.timeoutMs,
     transport: options.transport,
   });
 };

@@ -6,12 +6,23 @@
 
 BEGIN;
 
+-- Migration 003 enables FORCE RLS. Seed work must therefore establish the
+-- explicit legacy/bootstrap tenant in this transaction; there is no runtime
+-- tenant default.
+SELECT set_config(
+  'app.tenant_id',
+  '00000000-0000-4000-8000-000000000001',
+  true
+);
+
 WITH muni AS (
-  SELECT id
+  SELECT id, tenant_id
   FROM rag.municipalities
   WHERE slug = 'la-antigua-guatemala-sacatepequez'
+    AND tenant_id = '00000000-0000-4000-8000-000000000001'::uuid
 )
 INSERT INTO rag.documents (
+  tenant_id,
   municipality_id,
   title,
   document_type,
@@ -26,6 +37,7 @@ INSERT INTO rag.documents (
   metadata
 )
 SELECT
+  '00000000-0000-4000-8000-000000000001'::uuid,
   seed.municipality_id,
   seed.title,
   seed.document_type::rag.document_type,
@@ -113,7 +125,8 @@ VALUES
 WHERE NOT EXISTS (
   SELECT 1
   FROM rag.documents existing
-  WHERE existing.title = seed.title
+  WHERE existing.tenant_id = '00000000-0000-4000-8000-000000000001'::uuid
+    AND existing.title = seed.title
     AND existing.document_scope = seed.document_scope::rag.document_scope
     AND coalesce(existing.source_url, '') = coalesce(seed.source_url, '')
 );

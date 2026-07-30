@@ -1,0 +1,104 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://contracts.la-muni-rag.invalid/v1/workflow-review-request.schema.json",
+  "title": "WorkflowReviewRequestV1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "request_id",
+    "tenant_id",
+    "workflow_version_id",
+    "action",
+    "provenance"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "v1"
+    },
+    "request_id": {
+      "$ref": "common.schema.json#/$defs/Uuid"
+    },
+    "tenant_id": {
+      "$ref": "common.schema.json#/$defs/Uuid"
+    },
+    "workflow_version_id": {
+      "$ref": "common.schema.json#/$defs/Uuid"
+    },
+    "action": {
+      "type": "string",
+      "enum": [
+        "submit_for_review",
+        "record_review"
+      ]
+    },
+    "decision": {
+      "type": "string",
+      "enum": [
+        "changes_requested",
+        "recommended_for_approval"
+      ]
+    },
+    "notes": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 4000,
+      "pattern": "^[^\\u0000-\\u0008\\u000B\\u000C\\u000E-\\u001F\\u007F]+$"
+    },
+    "provenance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "credential_id"
+      ],
+      "properties": {
+        "credential_id": {
+          "$ref": "common.schema.json#/$defs/Uuid"
+        }
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "action": {
+            "const": "record_review"
+          }
+        },
+        "required": [
+          "action"
+        ]
+      },
+      "then": {
+        "type": "object",
+        "properties": {
+          "decision": {
+            "type": "string",
+            "enum": [
+              "changes_requested",
+              "recommended_for_approval"
+            ]
+          },
+          "notes": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 4000,
+            "pattern": "^[^\\u0000-\\u0008\\u000B\\u000C\\u000E-\\u001F\\u007F]+$"
+          }
+        },
+        "required": [
+          "decision",
+          "notes"
+        ]
+      },
+      "else": {
+        "type": "object",
+        "properties": {
+          "decision": false,
+          "notes": false
+        }
+      }
+    }
+  ]
+}

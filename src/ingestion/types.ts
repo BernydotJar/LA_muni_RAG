@@ -51,13 +51,16 @@ export class UnsupportedFormatError extends Error {
 }
 
 export class IngestionError extends Error {
+  public readonly retryable: boolean;
+
   constructor(
     public readonly code: string,
     public readonly sourceFormat: SourceFormat,
     message: string,
-    options?: { cause?: unknown }
+    options?: { cause?: unknown; retryable?: boolean }
   ) {
     super(message, options);
     this.name = "IngestionError";
+    this.retryable = options?.retryable ?? false;
   }
 }

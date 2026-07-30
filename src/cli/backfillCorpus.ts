@@ -2,6 +2,7 @@ import "dotenv/config";
 import { readFile } from "node:fs/promises";
 import { detectFormat } from "../ingestion/detectFormat.js";
 import type { SourceFormat } from "../ingestion/types.js";
+import { IngestionError } from "../ingestion/types.js";
 import { buildDomainDocumentMetadata } from "../domain/documentMetadata.js";
 import type { DomainDocumentMetadata } from "../domain/types.js";
 import {
@@ -76,6 +77,7 @@ Options:
   --document-version   Document version.
   --title              Optional document title override.
   --source-format      Optional source format: markdown, txt, docx, pdf.
+                       Raw PDFs are not accepted here; use document-library inspect and ingest.
   --domain-pack        Optional domain pack id. Defaults to municipal-antigua.
   --source-authority-class
                        Optional source authority class from the selected domain pack.
@@ -198,7 +200,22 @@ const buildDocumentInput = async (
   args: ValidBackfillCorpusArgs,
   runtimeMetadata: BackfillCorpusRuntimeMetadata
 ): Promise<CorpusBackfillDocumentInput> => {
-  const sourceFormat = args.sourceFormat ?? detectFormat(args.inputPath);
+  const detectedFormat = detectFormat(args.inputPath);
+  const sourceFormat = args.sourceFormat ?? detectedFormat;
+  if (sourceFormat !== detectedFormat) {
+    throw new IngestionError(
+      "document_source_format_mismatch",
+      detectedFormat,
+      "Declared source format does not match the input path."
+    );
+  }
+  if (detectedFormat === "pdf") {
+    throw new IngestionError(
+      "pdf_requires_document_library",
+      "pdf",
+      "Raw PDF backfill requires accepted document-library safety evidence and normalized extraction."
+    );
+  }
   const metadata = buildDomainDocumentMetadata(
     {
       domainPackId: args.domainPackId,
@@ -211,7 +228,7 @@ const buildDocumentInput = async (
     },
     sourceFormat
   );
-  const content = await readFile(args.inputPath, "utf-8");
+  const content = await readFile(args.inputPath);
   const document: CorpusBackfillDocumentInput = {
     inputPath: args.inputPath,
     documentKey: args.documentKey,
@@ -279,9 +296,9 @@ export const formatBackfillCorpusError = (error: unknown): string => {
       status: "failed",
       failures: [
         {
-          code: "corpus_backfill_cli_failed",
+          code: error instanceof IngestionError ? error.code : "corpus_backfill_cli_failed",
           message: redactBackfillCliMessage(message),
-          retryable: false,
+          retryable: error instanceof IngestionError ? error.retryable : false,
         },
       ],
     },

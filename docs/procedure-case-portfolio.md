@@ -74,7 +74,7 @@ Sorting uses deterministic tie breakers.
 procedure-workflow.html?caseKey=la-muni-rag:procedure-case:<hash>
 ```
 
-`procedure-case-open.js` validates the key against the namespace and expected hash shape, reads only that local record, restores its bounded query, and submits the existing Procedure Workflow form. The workflow is regenerated from the API or static demo bridge, after which Feature 051 restores the matching local workspace.
+`procedure-case-open.js` validates the key against the namespace and expected hash shape, reads only that local record, restores its bounded query, and submits the existing Procedure Workflow form. The workflow is regenerated only from a configured API response, after which Feature 051 restores the matching local workspace. Pages does not generate a static workflow.
 
 The key is not treated as a file path, URL, API identifier, or server-side record.
 

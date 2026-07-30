@@ -63,17 +63,14 @@ describe("procedure workflow UI cards", () => {
     assert.match(html, /esc\(gap\.missingItem/);
   });
 
-  it("extends the GitHub Pages demo bridge for procedure workflows", async () => {
-    const bridge = await readSource("public/pages-demo-api.js");
+  it("routes procedure workflows through the fail-closed Pages API bridge", async () => {
+    const bridge = await readSource("public/pages-api-bridge.js");
 
-    assert.match(bridge, /isProcedureRequest/);
-    assert.match(bridge, /isDomainPackRequest/);
-    assert.match(bridge, /\/api\/procedure/);
-    assert.match(bridge, /\/api\/domain-pack/);
-    assert.match(bridge, /demoDomainPackResponse/);
-    assert.match(bridge, /demoProcedureResponse/);
-    assert.match(bridge, /procedureStep/);
-    assert.match(bridge, /Procedure Workflow|Flujo procedimental|procedure_workflow_advisor_mvp/);
-    assert.match(bridge, /sourceUrl: null/);
+    assert.match(bridge, /"\/api\/procedure"/);
+    assert.match(bridge, /"\/api\/domain-pack"/);
+    assert.match(bridge, /approvedRoutes/);
+    assert.match(bridge, /service_unavailable/);
+    assert.match(bridge, /status: 503/);
+    assert.doesNotMatch(bridge, /demoDomainPackResponse|demoProcedureResponse|procedureStep/);
   });
 });

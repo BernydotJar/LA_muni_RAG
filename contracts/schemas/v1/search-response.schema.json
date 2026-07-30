@@ -1,0 +1,182 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://contracts.la-muni-rag.invalid/v1/search-response.schema.json",
+  "title": "SearchResponse v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "response_type",
+    "request_id",
+    "tenant_id",
+    "query",
+    "jurisdiction",
+    "as_of_date",
+    "requested_mode",
+    "executed_modes",
+    "result_count",
+    "results",
+    "limitations",
+    "provenance"
+  ],
+  "properties": {
+    "schema_version": { "$ref": "common.schema.json#/$defs/SchemaVersion" },
+    "response_type": { "const": "search_results" },
+    "request_id": { "$ref": "common.schema.json#/$defs/Uuid" },
+    "tenant_id": { "$ref": "common.schema.json#/$defs/Uuid" },
+    "query": { "type": "string", "minLength": 1, "maxLength": 4000 },
+    "jurisdiction": { "$ref": "common.schema.json#/$defs/Jurisdiction" },
+    "as_of_date": { "type": "string", "format": "date" },
+    "requested_mode": { "type": "string", "enum": ["keyword", "phrase", "semantic", "hybrid"] },
+    "executed_modes": {
+      "type": "array",
+      "items": { "type": "string", "enum": ["keyword", "phrase", "semantic"] },
+      "minItems": 1,
+      "maxItems": 3,
+      "uniqueItems": true
+    },
+    "result_count": { "type": "integer", "minimum": 0, "maximum": 50 },
+    "results": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/SearchResult" },
+      "maxItems": 50,
+      "uniqueItems": true
+    },
+    "limitations": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1, "maxLength": 1000 },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "provenance": {
+      "allOf": [
+        { "$ref": "common.schema.json#/$defs/Provenance" },
+        {
+          "type": "object",
+          "properties": {
+            "source_product": { "const": "la_muni_rag" },
+            "generated_by": { "const": "system" }
+          }
+        }
+      ]
+    }
+  },
+  "$defs": {
+    "NullableDate": {
+      "oneOf": [
+        { "type": "string", "format": "date" },
+        { "type": "null" }
+      ]
+    },
+    "SearchResult": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "result_id",
+        "source_id",
+        "source_key",
+        "document_id",
+        "document_version_id",
+        "section_id",
+        "chunk_id",
+        "title",
+        "document_type",
+        "document_scope",
+        "source_relation",
+        "source_jurisdiction",
+        "target_jurisdiction",
+        "authority_status",
+        "temporal_status",
+        "evidence_status",
+        "confidentiality",
+        "official_source",
+        "official_for_target_jurisdiction",
+        "publication_date",
+        "effective_date",
+        "repeal_date",
+        "citation",
+        "retrieval",
+        "content_sha256",
+        "limitations"
+      ],
+      "properties": {
+        "result_id": { "$ref": "common.schema.json#/$defs/Uuid" },
+        "source_id": { "$ref": "common.schema.json#/$defs/Uuid" },
+        "source_key": {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 128,
+          "pattern": "^[a-z0-9][a-z0-9._:-]{2,127}$"
+        },
+        "document_id": { "$ref": "common.schema.json#/$defs/Uuid" },
+        "document_version_id": { "$ref": "common.schema.json#/$defs/Uuid" },
+        "section_id": { "$ref": "common.schema.json#/$defs/Uuid" },
+        "chunk_id": {
+          "type": ["string", "null"],
+          "minLength": 1,
+          "maxLength": 512
+        },
+        "title": { "type": "string", "minLength": 1, "maxLength": 500 },
+        "document_type": { "$ref": "search-request.schema.json#/$defs/DocumentType" },
+        "document_scope": {
+          "type": "string",
+          "enum": ["national", "departmental", "municipal", "heritage", "administrative", "internal"]
+        },
+        "source_relation": { "$ref": "search-request.schema.json#/$defs/SourceRelation" },
+        "source_jurisdiction": { "$ref": "common.schema.json#/$defs/Jurisdiction" },
+        "target_jurisdiction": { "$ref": "common.schema.json#/$defs/Jurisdiction" },
+        "authority_status": { "$ref": "search-request.schema.json#/$defs/SearchAuthorityStatus" },
+        "temporal_status": { "$ref": "search-request.schema.json#/$defs/TemporalStatus" },
+        "evidence_status": {
+          "type": "string",
+          "enum": ["supported", "comparative_reference", "validation_required"]
+        },
+        "confidentiality": { "const": "public" },
+        "official_source": { "type": "boolean" },
+        "official_for_target_jurisdiction": { "type": "boolean" },
+        "publication_date": { "$ref": "#/$defs/NullableDate" },
+        "effective_date": { "$ref": "#/$defs/NullableDate" },
+        "repeal_date": { "$ref": "#/$defs/NullableDate" },
+        "citation": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["label", "excerpt", "source_url", "page_start", "page_end", "article_number"],
+          "properties": {
+            "label": { "type": "string", "minLength": 1, "maxLength": 500 },
+            "excerpt": { "type": "string", "minLength": 1, "maxLength": 4000 },
+            "source_url": { "type": "string", "format": "uri" },
+            "page_start": { "type": ["integer", "null"], "minimum": 1 },
+            "page_end": { "type": ["integer", "null"], "minimum": 1 },
+            "article_number": { "type": ["string", "null"], "minLength": 1, "maxLength": 256 }
+          }
+        },
+        "retrieval": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["matched_modes", "score", "score_type"],
+          "properties": {
+            "matched_modes": {
+              "type": "array",
+              "items": { "type": "string", "enum": ["keyword", "phrase", "semantic"] },
+              "minItems": 1,
+              "maxItems": 3,
+              "uniqueItems": true
+            },
+            "score": { "type": "number", "minimum": 0 },
+            "score_type": {
+              "type": "string",
+              "enum": ["ts_rank_cd", "phrase_match", "cosine_similarity", "reciprocal_rank_fusion"]
+            }
+          }
+        },
+        "content_sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+        "limitations": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1, "maxLength": 1000 },
+          "minItems": 1,
+          "uniqueItems": true
+        }
+      }
+    }
+  }
+}

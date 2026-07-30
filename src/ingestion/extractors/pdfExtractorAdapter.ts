@@ -85,7 +85,7 @@ const parseExistingPdfJsonl = (input: ExtractorInput): ExistingPdfSection[] => {
   }
 };
 
-export const pdfExtractorAdapter: DocumentExtractor = {
+export const legacyPdfJsonlAdapter: DocumentExtractor = {
   sourceFormat: "pdf",
 
   extract(input: ExtractorInput): NormalizedDocument {

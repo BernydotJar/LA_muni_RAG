@@ -1,0 +1,184 @@
+{
+  "checkpoint_count": 2,
+  "event_count": 86,
+  "last_event_id": "bba5364f-f01e-4f53-8160-45e596f81132",
+  "mode": "SHIP",
+  "nodes": [
+    {
+      "active_evidence_ids": [
+        "43282723-ccaf-4749-87c1-945b6475e29b",
+        "73352777-21d1-4d59-a549-53e94fa51480",
+        "98be17ad-b522-4dbb-bb8f-c701ffb77888",
+        "dd5097d3-3ac4-4955-a40b-cc24ad32074b"
+      ],
+      "active_gates": {
+        "GATE-GRAPH-HARNESS-PIN-002": "PASS"
+      },
+      "approval_count": 1,
+      "capability": "immutable_graph_runtime_pin",
+      "depends_on": [],
+      "id": "PRG-GRAPH-HARNESS-PIN-002",
+      "kind": "program_control",
+      "revision": 0,
+      "status": "done",
+      "title": "Pin published Graph Harness runtime and replay state"
+    },
+    {
+      "active_evidence_ids": [
+        "5c8c5501-90bb-44e7-8950-be04dde88364",
+        "af434da3-9ca2-4c9c-8714-1da8739d8db4"
+      ],
+      "active_gates": {
+        "GATE-PR24-CHECKPOINT": "PASS"
+      },
+      "approval_count": 0,
+      "capability": "draft_pr_checkpoint",
+      "depends_on": [
+        "WS09-HUMAN-WORKSPACE-001",
+        "WS07-HUMAN-OIDC-PROVIDER-001"
+      ],
+      "id": "REL-PR24-EXACT-SHA-CHECKPOINT",
+      "kind": "release_checkpoint",
+      "revision": 2,
+      "status": "done",
+      "title": "Draft PR 24 exact-SHA release checkpoint"
+    },
+    {
+      "active_evidence_ids": [],
+      "active_gates": {},
+      "approval_count": 1,
+      "capability": "public_corpus_pilot_staging",
+      "depends_on": [
+        "WS05-REAL-CORPUS-RETRIEVAL-EVAL-001"
+      ],
+      "id": "REL-PUBLIC-CORPUS-PILOT-STAGING-001",
+      "kind": "release_checkpoint",
+      "revision": 0,
+      "status": "running",
+      "title": "Deploy public PDM-OT corpus pilot to managed staging"
+    },
+    {
+      "active_evidence_ids": [
+        "0f0b99ef-ef9c-4b3f-bd0f-101cd856ca6a",
+        "27c79adc-627d-4365-a4ad-f4171bb5c33a",
+        "3e67a637-0d1d-4202-97b0-102f7196b884",
+        "5a0007b2-30da-400b-98dd-40e99c96bfe8",
+        "9b37ddf0-6b79-401e-a3aa-fd5676ad26a0",
+        "cdd3720a-6752-4445-a736-f1b2cec4e09f",
+        "f5839e09-0d3b-4a00-b70f-ccebd805072a"
+      ],
+      "active_gates": {
+        "GATE-CONTROLLED-REAL-CORPUS-001": "PASS"
+      },
+      "approval_count": 1,
+      "capability": "controlled_real_corpus_ingestion",
+      "depends_on": [
+        "PRG-GRAPH-HARNESS-PIN-002"
+      ],
+      "id": "WS02-CORPUS-ACQUISITION-001",
+      "kind": "feature",
+      "revision": 0,
+      "status": "done",
+      "title": "Acquire and ingest authorized Antigua-first corpus"
+    },
+    {
+      "active_evidence_ids": [
+        "03605224-0700-4d22-8d22-52d2925359aa",
+        "6348c5c3-5cf6-4a74-b6ea-6532ebd1c51c",
+        "92344d34-c2f5-425f-9220-bf126600ab75",
+        "9fdde1da-2830-4294-8f0b-3ad154ef8ad6",
+        "b86c3d12-4dfc-4abd-b86b-f13862098ef4",
+        "fe9248ad-ed90-4ede-903c-286392f55ce8"
+      ],
+      "active_gates": {
+        "GATE-REAL-CORPUS-RETRIEVAL-001": "PASS"
+      },
+      "approval_count": 1,
+      "capability": "judged_real_corpus_retrieval",
+      "depends_on": [
+        "WS02-CORPUS-ACQUISITION-001"
+      ],
+      "id": "WS05-REAL-CORPUS-RETRIEVAL-EVAL-001",
+      "kind": "evaluation",
+      "revision": 0,
+      "status": "done",
+      "title": "Evaluate retrieval against controlled real corpus"
+    },
+    {
+      "active_evidence_ids": [],
+      "active_gates": {},
+      "approval_count": 0,
+      "capability": "provider_neutral_oidc_adapter",
+      "depends_on": [],
+      "id": "WS07-HUMAN-OIDC-PROVIDER-001",
+      "kind": "feature",
+      "revision": 0,
+      "status": "done",
+      "title": "Provider-neutral confidential OIDC adapter"
+    },
+    {
+      "active_evidence_ids": [
+        "188d62b3-87be-4436-8c4e-3c21d569a681",
+        "1dc93908-6bbf-4468-b29f-50a96022c228",
+        "2c71e09c-d487-4f64-9e72-8200df14ea15",
+        "dfc6b088-4c14-4871-8fad-cababaecdf19"
+      ],
+      "active_gates": {
+        "GATE-HUMAN-WORKSPACE-REGRESSION": "PASS"
+      },
+      "approval_count": 0,
+      "capability": "authenticated_local_workspace",
+      "depends_on": [
+        "WS11-HUMAN-SESSION-RELIABILITY-001",
+        "WS11-HUMAN-SHELL-ACCESSIBILITY-001"
+      ],
+      "id": "WS09-HUMAN-WORKSPACE-001",
+      "kind": "feature",
+      "revision": 2,
+      "status": "done",
+      "title": "Task-first municipal workspace"
+    },
+    {
+      "active_evidence_ids": [
+        "15fe5dbd-93f2-4954-8055-3b14bcecbea8",
+        "536dda72-0206-4f61-b7d9-fb3ca5573892",
+        "6c55b5dc-5400-4b0c-bc14-5626ec3ca5a5",
+        "c74b8cab-edb2-41a9-965d-63b030cfb9b5"
+      ],
+      "active_gates": {
+        "GATE-HUMAN-SESSION-RELIABILITY-REPAIR": "PASS"
+      },
+      "approval_count": 0,
+      "capability": "local_reliability_evidence",
+      "depends_on": [],
+      "id": "WS11-HUMAN-SESSION-RELIABILITY-001",
+      "kind": "feature",
+      "revision": 1,
+      "status": "done",
+      "title": "Human session local reliability evidence"
+    },
+    {
+      "active_evidence_ids": [
+        "5e166b7a-618e-490b-8b68-9ddf16489780",
+        "652a78f8-bb17-4cb6-9094-2636e02476fb",
+        "665d115a-9c9d-43e6-a6e8-37c74b2c0e9a",
+        "df3fd472-d193-4085-bf90-5e9379770640"
+      ],
+      "active_gates": {
+        "GATE-HUMAN-SHELL-ACCESSIBILITY-REPAIR": "PASS"
+      },
+      "approval_count": 0,
+      "capability": "cross_browser_accessibility_regression",
+      "depends_on": [],
+      "id": "WS11-HUMAN-SHELL-ACCESSIBILITY-001",
+      "kind": "feature",
+      "revision": 1,
+      "status": "done",
+      "title": "Cross-browser automated accessibility complement"
+    }
+  ],
+  "project_id": "la-muni-rag-pr24-repair-20260729",
+  "ready_nodes": [],
+  "repair_plan_count": 2,
+  "schema_version": "graph-harness.state.v1"
+}

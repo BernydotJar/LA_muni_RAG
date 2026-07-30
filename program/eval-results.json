@@ -1,0 +1,774 @@
+{
+  "schema_version": "1.26.0",
+  "generated_at": "2026-07-29T20:16:31Z",
+  "branch": "feature/gcp-cloudsql-staging-v1",
+  "functional_head": "70ec287f1a8705637e04374ca2562fafa175e0da",
+  "status": "partial_with_documented_blockers_feature086_completed_public_backend_identity_managed_staging_merge_and_release_blocked",
+  "deterministic": {
+    "tests": 1050,
+    "pass": 1049,
+    "fail": 0,
+    "skipped": 1,
+    "typecheck": "pass",
+    "build": "pass",
+    "pages": "pass",
+    "audits": "0 vulnerabilities",
+    "public_browser_gate": "10/10 Chromium desktop/mobile pass",
+    "secret_pii_scan": "pass_1398_added_lines",
+    "structured_validation": "pass",
+    "authenticated_shell_cross_browser": "chromium_firefox_webkit_pass"
+  },
+  "contracts": {
+    "canonical_schemas": 33,
+    "canonical_examples": 33,
+    "openapi": "3.1.1",
+    "consumer_kits": 2,
+    "consumer_interactions": 5,
+    "staging_plan_issues": 0
+  },
+  "staging_architecture": {
+    "plan_version": "1.0.0",
+    "tenants": 2,
+    "principals": 11,
+    "roles": 10,
+    "fixtures": 13,
+    "api_system_journeys": 20,
+    "browser_journeys": 12,
+    "blocked_browser_journeys": 12,
+    "mocks": 6,
+    "reset_steps": 10,
+    "issues": 0,
+    "environment_executed": true,
+    "browser_e2e_runnable": false,
+    "external_consumers_verified": false,
+    "api_system_journeys_executed": 20,
+    "api_system_journeys_passed": 20,
+    "databases_created": 4,
+    "databases_destroyed": 4,
+    "runtime_roles_created": 3,
+    "runtime_roles_destroyed": 3,
+    "cleanup_complete": true,
+    "gcp_cloudsql_plan": {
+      "project_id": "rag-municipalidades",
+      "project_number": "1059368783280",
+      "region": "us-central1",
+      "connectivity": "AUTH_PROXY_PUBLIC time-bounded pilot",
+      "default_resource_changes": 0,
+      "approved_offline_resource_addresses": [
+        "google_project_service.sqladmin[0]",
+        "google_sql_database_instance.staging[0]"
+      ],
+      "declared_pilot_budget_usd": 1,
+      "reviewed_hourly_compute_usd": 0.08775,
+      "max_pilot_runtime_hours": 4,
+      "estimated_compute_and_memory_usd": 0.351,
+      "apply_executed": false,
+      "cloud_resources_created": 0,
+      "estimated_compute_memory_and_20gb_ssd_usd": 0.38826024,
+      "pricing_reviewed_at": "2026-07-24",
+      "live_zero_resource_plan_verified": true,
+      "live_resource_plan_generated": true,
+      "live_resource_plan_approved": true,
+      "live_resource_plan_rejection": "first_plan_missing_required_owner_label_superseded_by_verified_v2",
+      "required_owner_label": "eduardo-sacahui",
+      "plan_verifier_required": true,
+      "terraform_apply_executed": true,
+      "cloud_sql_created": true,
+      "corrected_live_resource_plan_verified": true,
+      "corrected_live_resource_plan_verifier_status": "valid",
+      "corrected_live_resource_plan_final_authorized": true,
+      "corrected_live_resource_plan_artifact": "approved-live-v2-e7c4393b0655-20260725T152522Z",
+      "corrected_live_resource_plan_hashes": {
+        "plan": "a9c16848cc89d68ad56de2d1344f3e6e20da0a4faca753a060d9a726aa09fe1e",
+        "json": "8e7a01cbc29bbce63c9d05b4a0935765cb6779afd05c7514cb8b7c0d8c0e106a",
+        "text": "efd8f22358385c94f49f2edca40d141e38a274cbc10c47c0a7df1694577cc3e2",
+        "verification": "d6b6a840b05b8ade30e1fca5408ec06d7f4f6ae923607c02b9f819a7baa1adce"
+      },
+      "single_owner_governance_exception": true,
+      "governance_exception_id": "GCP-OWNER-EXCEPTION-20260725-PILOT",
+      "authorization_id": "GCP-CLOUDSQL-PILOT-20260725-0900-1300-GT",
+      "authorization_start": "2026-07-25T09:00:00-06:00",
+      "authorization_end": "2026-07-25T13:00:00-06:00",
+      "apply_script": "infra/gcp/apply-approved-cloudsql-live-plan.sh",
+      "cloud_sql_instance_state": "STOPPED",
+      "activation_policy": "NEVER",
+      "deletion_protection_enabled": true,
+      "managed_staging_execution": false,
+      "synthetic_journeys_executed": 0,
+      "teardown_executed": false,
+      "governance_exception_status": "expired_on_stop",
+      "authorization_consumed": true,
+      "create_operation_status": "DONE",
+      "stop_operation_status": "DONE",
+      "managed_run_authorization_status": "expired_without_successful_managed_run_receipt"
+    }
+  },
+  "hard_evals": {
+    "EVAL-PROCEDURE-001": {
+      "passed": 4,
+      "total": 4
+    },
+    "EVAL-WATER-001": {
+      "passed": 4,
+      "total": 4
+    },
+    "EVAL-MIXCO-001": {
+      "passed": 4,
+      "total": 4
+    },
+    "EVAL-OS-INTEGRATION-001": {
+      "passed": 5,
+      "total": 5
+    },
+    "EVAL-PROCEDURE-ASSESSMENT-001": {
+      "passed": 4,
+      "total": 4
+    },
+    "EVAL-EVIDENCE-GAP-001": {
+      "passed": 14,
+      "total": 14
+    },
+    "EVAL-CONTENT-INTEGRATION-001": {
+      "passed": 7,
+      "total": 7
+    },
+    "EVAL-CONFLICT-001": {
+      "passed": 8,
+      "total": 8
+    },
+    "EVAL-BOUNDARY-001": {
+      "passed": 4,
+      "total": 4
+    },
+    "EVAL-TENANT-001": {
+      "passed": 4,
+      "total": 4
+    },
+    "EVAL-CORRUPT-001": {
+      "passed": 20,
+      "total": 20
+    },
+    "EVAL-ARTIFACT-001": {
+      "passed": 5,
+      "total": 5
+    },
+    "EVAL-VECTOR-001": {
+      "passed": 9,
+      "total": 9
+    },
+    "EVAL-JOB-LEASE-001": {
+      "passed": 13,
+      "total": 13
+    },
+    "EVAL-SOURCE-API-001": {
+      "passed": 18,
+      "total": 18,
+      "status": "passed_for_unreviewed_tenant_source_catalog_with_validation_acquisition_retrieval_and_deployment_limitations"
+    },
+    "EVAL-DOCUMENT-API-001": {
+      "passed": 18,
+      "total": 18,
+      "status": "passed_for_safe_tenant_document_registration_and_catalog_monitoring_with_artifact_ingestion_retrieval_ui_and_deployment_limitations"
+    },
+    "EVAL-SEARCH-API-001": {
+      "command": "npm run eval:search-api",
+      "passed": 24,
+      "total": 24,
+      "result": "passed_for_explicit_tenant_search_with_real_corpus_human_review_provider_performance_and_deployment_limitations",
+      "evidence": [
+        "42d2fda70b27ccc9178c6a8d69bba957ef953105",
+        "db/tests/search_evidence_api_runtime_gate.sql",
+        "scripts/search-evidence-postgres-smoke.mjs",
+        "docs/api/search-evidence-v1.md"
+      ],
+      "limitations": [
+        "No authorized real corpus is ingested.",
+        "No judged relevance, latency, load, provider SLO or human authority/vigencia review.",
+        "No PR, merge or deployment."
+      ]
+    },
+    "EVAL-EVIDENCE-BUNDLE-API-001": {
+      "command": "npm run eval:evidence-bundle-api",
+      "passed": 24,
+      "total": 24,
+      "result": "passed_for_conservative_dedicated_bundle_with_real_corpus_human_resolution_consumer_operations_and_deployment_limitations",
+      "evidence": [
+        "42d2fda70b27ccc9178c6a8d69bba957ef953105",
+        "src/searchEvidence/evidenceBundle.ts",
+        "src/api/v1/searchEvidenceHandler.ts",
+        "scripts/search-evidence-postgres-smoke.mjs"
+      ],
+      "limitations": [
+        "No real-corpus conflict-resolution study or human approval workflow.",
+        "No external consumer suite, PR, merge or deployment."
+      ]
+    },
+    "EVAL-CONSUMER-CONTRACT-KIT-001": {
+      "command": "npm run eval:consumer-contract-kit",
+      "passed": 16,
+      "total": 16,
+      "result": "passed_for_portable_provider_contract_manifests_with_external_consumer_and_e2e_limitations",
+      "evidence": [
+        "5e5481e26b1a27a0aa2bd9c965e1c160f18b3198",
+        "contracts/consumer-kits/v1/",
+        "src/integration/consumerContractKit.ts",
+        "docs/integrations/consumer-contract-kits.md"
+      ],
+      "limitations": [
+        "No external consumer repository has run the kit.",
+        "No cross-product staging, browser E2E, merge or deployment."
+      ]
+    },
+    "EVAL-EPHEMERAL-STAGING-E2E-001": {
+      "command": "npm run eval:staging-e2e-architecture",
+      "passed": 13,
+      "total": 13,
+      "result": "passed_for_executable_ephemeral_staging_and_e2e_architecture_with_identity_infrastructure_external_consumer_browser_and_production_limitations",
+      "evidence": [
+        "f4d018f0909d15408092167cb935bf4ac71cd6d9",
+        "contracts/staging/v1/",
+        "src/staging/ephemeralStagingPlan.ts",
+        "docs/testing/ephemeral-staging-e2e-architecture.md"
+      ],
+      "limitations": [
+        "No environment runner or deployed staging.",
+        "No human browser identity/UI or browser execution.",
+        "No external consumer repository execution."
+      ]
+    },
+    "EVAL-PRODUCTION-PUBLIC-SURFACE-001": {
+      "command": "npm run eval:production-public-surface",
+      "passed": 33,
+      "total": 33,
+      "result": "passed_for_honest_fail_closed_public_product_surface_with_gateway_corpus_identity_infrastructure_and_deployment_limitations",
+      "evidence": [
+        "bf29e6fdc48fa155b004b5f0b2ff410050b59c84",
+        "public/pages-api-bridge.js",
+        "public/product.css",
+        "DESIGN.md",
+        "docs/operations/gcp-production-blueprint.md"
+      ],
+      "limitations": [
+        "No public query gateway or authorized real corpus.",
+        "No GCP resources, human identity, browser E2E, PR, merge or deployment."
+      ]
+    },
+    "EVAL-PUBLIC-QUERY-GATEWAY-001": {
+      "passed": 23,
+      "total": 23,
+      "status": "passed_for_disabled_by_default_server_bound_public_gateway_with_real_corpus_edge_and_deployment_limitations"
+    },
+    "EVAL-EPHEMERAL-STAGING-RUNNER-001": {
+      "command": "npm run eval:staging-runner",
+      "passed": 14,
+      "total": 14,
+      "result": "passed_for_disposable_api_system_staging_runner_with_browser_external_consumer_real_corpus_cloud_and_production_limitations",
+      "evidence": [
+        "4f6ab306d383f6d74808b393a88ff8172d666b5b",
+        "src/staging/ephemeralStagingRunner.ts",
+        "src/staging/ephemeralStagingPostgresExecutor.ts",
+        "contracts/staging/v1/ephemeral-staging-receipt.schema.json",
+        "scripts/staging-reset-postgres-smoke.mjs"
+      ],
+      "execution": {
+        "api_system_journeys": "20/20",
+        "browser_journeys": "12/12 blocked",
+        "databases_destroyed": "4/4",
+        "runtime_roles_destroyed": "3/3",
+        "postcondition": "0 databases / 0 roles"
+      },
+      "limitations": [
+        "Synthetic fixtures only.",
+        "Browser E2E remains blocked.",
+        "External consumers, cloud staging, load/HA, real corpus, merge and deployment are unproved."
+      ]
+    },
+    "EVAL-GCP-CLOUDSQL-STAGING-001": {
+      "command": "npm run eval:gcp-cloudsql-staging",
+      "passed": 14,
+      "total": 14,
+      "result": "passed_for_zero_resource_default_verifier_valid_immutable_two_resource_live_plan_with_final_authorization_and_managed_staging_limitations",
+      "evidence": [
+        "infra/gcp/generate-cloudsql-live-plan.sh",
+        "src/gcp/cloudSqlTerraformPlan.ts",
+        "docs/operations/gcp-cloudsql-staging-runbook.md",
+        "program/evidence-register.jsonl"
+      ],
+      "limitations": [
+        "Corrected immutable live plan is verifier-valid but has no final hash-bound execution authorization.",
+        "No Terraform apply, Cloud SQL instance or managed staging execution.",
+        "Budget and estimate are planning controls rather than a hard spending cap.",
+        "Owner redundancy remains unresolved."
+      ]
+    },
+    "EVAL-PUBLIC-BROWSER-GATE-001": {
+      "command": "npm run eval:public-browser-gate",
+      "passed": 5,
+      "total": 5,
+      "result": "passed_for_public_pages_chromium_desktop_mobile_with_authenticated_identity_cross_browser_human_accessibility_and_deployment_limitations",
+      "evidence": [
+        "playwright.config.ts",
+        "tests/browser/public-pages.spec.ts",
+        "scripts/serve-pages-test.mjs",
+        "docs/testing/public-browser-gate.md"
+      ],
+      "execution": {
+        "projects": 2,
+        "executions": 10,
+        "passed": 10,
+        "failed": 0,
+        "browser": "Chromium",
+        "desktop": 5,
+        "mobile": 5
+      },
+      "limitations": [
+        "Twelve authenticated browser journeys remain blocked.",
+        "Firefox/WebKit, screen-reader and human WCAG review are absent.",
+        "No deployed production browser observation."
+      ]
+    },
+    "EVAL-ONLINE-PAGES-RELEASE-001": {
+      "command": "npm run eval:online-pages-release",
+      "passed": 5,
+      "total": 5,
+      "result": "passed_for_exact_sha_temporary_public_pages_deployment_with_verified_desktop_mobile_online_artifact_and_verified_rollback",
+      "evidence": [
+        "scripts/pages-build-metadata.mjs",
+        "scripts/verify-pages-online.mjs",
+        ".github/workflows/deploy-pages.yml",
+        "docs/testing/online-pages-release-verification.md"
+      ],
+      "execution": {
+        "temporary_deployment_sha": "b646aa6ce5d7231587ae311f5acb59f84fc35a0e",
+        "deployment_run_id": 30226975010,
+        "online_scenarios": "2/2",
+        "rollback_sha": "4950ba3c24dbe7d9891d5cec8d7ba5f57db3ef9c",
+        "rollback_run_id": 30229913868,
+        "rollback_status": "verified",
+        "manual_smoke_review": "user_attested_completed"
+      },
+      "limitations": [
+        "Manual smoke review is user-attested and is not a structured WCAG, screen-reader, authenticated-session, legal, or real-corpus audit.",
+        "PAGES_API_URL remains absent and the current public main publication is fail-closed/legacy.",
+        "No merge, backend deployment, production release, or authenticated browser journey is claimed."
+      ]
+    },
+    "EVAL-HUMAN-SESSION-BFF-001": {
+      "command": "npm run eval:human-session-bff",
+      "passed": 9,
+      "total": 9,
+      "result": "passed_for_provider_neutral_local_bff_with_productive_idp_authenticated_ui_and_deployment_limitations",
+      "evidence": [
+        "1af3f0ecdca4fe49b47e5e1209f563c30a314adf",
+        "src/humanSession/",
+        "db/migrations/017_human_session_bff.sql",
+        "db/tests/human_session_bff_runtime_gate.sql",
+        "docs/security/human-session-bff.md"
+      ],
+      "execution": {
+        "focused_lifecycle_migration": "20/20",
+        "postgres_non_owner_gate": "pass",
+        "compiled_postgres_smoke": "pass",
+        "authenticated_browser_journeys": "0/12"
+      },
+      "limitations": [
+        "No approved productive IdP adapter/configuration or external OIDC interoperability evidence.",
+        "No authenticated role-aware UI or browser journey.",
+        "No merge or deployment."
+      ]
+    },
+    "EVAL-HUMAN-PRODUCT-SHELL-001": {
+      "command": "npm run eval:human-product-shell",
+      "passed": 9,
+      "total": 9,
+      "result": "passed_for_local_role_aware_shell_with_productive_identity_workflow_and_environment_limitations",
+      "functional_sha": "442623e05308011d7384f2b2fcbe779775898b67",
+      "productive_authenticated_journeys": "0/12"
+    },
+    "EVAL-HUMAN-SESSION-RELIABILITY-001": {
+      "command": "npm run eval:human-session-reliability",
+      "passed": 9,
+      "total": 9,
+      "result": "passed_for_local_non_productive_telemetry_load_failure_injection_and_recovery_evidence",
+      "functional_sha": "04dbb125c15e9c429e7319a6506bfd787f51d940",
+      "unexpected_harness_failures": 0,
+      "productive_slo_claim": false
+    },
+    "EVAL-HUMAN-DECISION-PACKETS-001": {
+      "command": "npm run eval:human-decision-packets",
+      "passed": 9,
+      "total": 9,
+      "result": "passed_for_four_pending_human_gates_with_zero_selected_options_actions_and_receipts",
+      "functional_sha": "706109c3820dba326573ddc796d9a0095e5446eb",
+      "packets": 4,
+      "selected_options": 0,
+      "authorized_actions": 0,
+      "receipts": 0
+    },
+    "EVAL-HUMAN-PRODUCT-SHELL-ACCESSIBILITY-001": {
+      "command": "npm run eval:human-product-shell-accessibility",
+      "passed": 9,
+      "total": 9,
+      "result": "passed_for_cross_browser_automated_accessibility_complement_without_conformance_or_human_acceptance_claim",
+      "functional_sha": "282b2441912828b193f82133543c4823f5f14659",
+      "focused_tests": "6/6",
+      "browsers": {
+        "chromium": "pass",
+        "firefox": "pass",
+        "webkit": "pass"
+      },
+      "wcag_conformance_claim": false,
+      "human_acceptance": false
+    },
+    "EVAL-HUMAN-WORKSPACE-001": {
+      "command": "npm run eval:human-workspace",
+      "passed": 8,
+      "total": 8,
+      "result": "passed_for_task_first_local_municipal_workspace_with_productive_identity_data_workflow_environment_and_user_limitations",
+      "functional_sha": "ffa30433db9ba62812dd0dac680963759b4868cb",
+      "focused_tests": "6/6",
+      "public_browser": "10/10",
+      "authenticated_shell_browsers": {
+        "chromium": "pass",
+        "firefox": "pass",
+        "webkit": "pass"
+      },
+      "postgres": "15.18",
+      "pgvector": "0.8.5",
+      "non_owner_forced_rls_gate": "pass",
+      "independent_review": "PASS WITH LIMITATIONS",
+      "productive_authenticated_journeys": "0/12"
+    },
+    "EVAL-HUMAN-OIDC-PROVIDER-001": {
+      "command": "npm run eval:human-oidc-provider",
+      "passed": 9,
+      "total": 9,
+      "result": "passed_for_generic_confidential_oidc_adapter_with_productive_provider_registration_interoperability_and_operations_limitations",
+      "functional_sha": "7ec7037af4af5601c5c515be1bdf4aef35682a0a",
+      "focused_tests": "10/10",
+      "independent_review": "PASS WITH LIMITATIONS",
+      "productive_authenticated_journeys": "0/12"
+    },
+    "EVAL-GRAPH-HARNESS-RUNTIME-PIN-001": {
+      "passed": 4,
+      "total": 4
+    },
+    "EVAL-CONTROLLED-REAL-CORPUS-INGESTION-001": {
+      "passed": 11,
+      "total": 11
+    },
+    "EVAL-REAL-CORPUS-RETRIEVAL-001": {
+      "passed": 11,
+      "total": 11,
+      "safety_gate_passed": true,
+      "quality_targets_passed": false
+    }
+  },
+  "publication": {
+    "branch": "feature/gcp-cloudsql-staging-v1",
+    "functional_sha": "82d75711f28a03de4e7df35d5ec6435cc7610319",
+    "parent_sha": "ba6acf3cc654e798f46b104d4eaac6d5c78712ab",
+    "push": "audited_non_forced_fast_forward_success",
+    "remote_head_sha": "82d75711f28a03de4e7df35d5ec6435cc7610319",
+    "current_ci_status": "exact_sha_all_required_workflows_success",
+    "backend_ci_run_id": 30428162887,
+    "backend_ci_conclusion": "success",
+    "public_browser_ci_run_id": 30428162850,
+    "public_browser_ci_conclusion": "success",
+    "terraform_ci_run_id": 30428162725,
+    "terraform_ci_conclusion": "success",
+    "pr": 24,
+    "pr_state": "draft",
+    "merged": false,
+    "deployed": false
+  },
+  "missing_dedicated_evals": [
+    "managed_gcp_staging_execution",
+    "external_os_electoral_consumer",
+    "external_content_agency_consumer",
+    "browser_e2e",
+    "production_load_ha_recovery_privacy",
+    "productive_human_idp_and_complete_authenticated_workflows",
+    "human_assistive_technology_acceptance",
+    "productive_observability_slo_and_on_call",
+    "human_decision_receipts",
+    "exact_sha_ci_for_features077_through083",
+    "judged_real_corpus_retrieval_quality_feature086_running"
+  ],
+  "limitations": [
+    "The exact authorized Cloud SQL plan was applied and the instance is stopped; managed synthetic execution and destructive teardown remain absent.",
+    "The prior single-owner exception expired on stop; restart or teardown requires new explicit authorization.",
+    "Actual provider billing remains pending and stopped resources may retain storage or backup charges.",
+    "No exact-SHA public Pages deployment or rollback receipt; the current public URL serves legacy main content.",
+    "Cross-browser accessibility automation does not establish WCAG conformance or human assistive-technology acceptance.",
+    "Four decision packets contain zero selected options, zero authorized actions and zero receipts.",
+    "Local telemetry/load evidence is not a productive SLO or operating model.",
+    "The remote draft branch now includes the verified repair and exact-SHA CI is green; protected merge and production release remain absent.",
+    "One exact clean PDM-OT document is ingested locally; DMP v3 has no extractable text and broader productive corpus operations remain absent.",
+    "Real-corpus retrieval is measured against one document and twelve judged cases; ranking quality targets are not all met.",
+    "No public HTTPS backend staging URL is deployed or connected to Pages; PAGES_API_URL remains unset.",
+    "Productive IdP, MFA/recovery, access review, managed infrastructure, protected merge and release remain human-gated."
+  ],
+  "public_browser_gate": {
+    "status": "passed_local_and_remote",
+    "playwright_version": "1.62.0",
+    "browser": "Chromium",
+    "projects": [
+      "chromium-desktop",
+      "chromium-mobile"
+    ],
+    "executions": 10,
+    "passed": 10,
+    "failed": 0,
+    "authenticated_browser_journeys_passed": 0,
+    "authenticated_browser_journeys_blocked": 12,
+    "remote_ci": "success",
+    "remote_run_ids": [
+      30180490148,
+      30180488768
+    ],
+    "functional_sha": "2232147de0c6869e3f3452cf2d9bf1abe3e14120"
+  },
+  "human_session_bff": {
+    "status": "local_foundation_verified_disabled_by_default",
+    "functional_sha": "1af3f0ecdca4fe49b47e5e1209f563c30a314adf",
+    "provider_neutral": true,
+    "service_bearer_in_browser": false,
+    "focused_tests": "20/20",
+    "named_eval": "9/9",
+    "postgres": "15.18",
+    "pgvector": "0.8.5",
+    "non_owner_forced_rls_gate": "pass",
+    "compiled_smoke": "pass",
+    "productive_idp_configured": false,
+    "authenticated_role_aware_ui": true,
+    "authenticated_browser_journeys_passed": 0,
+    "authenticated_browser_journeys_blocked": 12,
+    "local_task_first_workspace": true,
+    "generic_oidc_adapter": true,
+    "generic_oidc_adapter_sha": "7ec7037af4af5601c5c515be1bdf4aef35682a0a"
+  },
+  "human_product_shell": {
+    "status": "local_role_aware_task_first_foundation_verified",
+    "functional_sha": "442623e05308011d7384f2b2fcbe779775898b67",
+    "task_first_sha": "ffa30433db9ba62812dd0dac680963759b4868cb",
+    "browser_bearer": false,
+    "web_storage_credentials": false,
+    "browsers": [
+      "chromium",
+      "firefox",
+      "webkit"
+    ],
+    "productive_idp": false,
+    "complete_productive_workflows": false,
+    "authenticated_browser_journeys_passed": 0,
+    "authenticated_browser_journeys_blocked": 12
+  },
+  "human_session_reliability": {
+    "status": "local_non_productive_evidence_verified",
+    "functional_sha": "04dbb125c15e9c429e7319a6506bfd787f51d940",
+    "focused_tests": "5/5",
+    "named_eval": "9/9",
+    "events": 160,
+    "unexpected_failures": 0,
+    "productive_exporter": false,
+    "productive_slo_claim": false,
+    "repair_sha": "82d75711f28a03de4e7df35d5ec6435cc7610319",
+    "warmup_requests": 12,
+    "measured_shell_requests": 80,
+    "steady_state_p95_limit_ms": 500,
+    "repeat_shell_p95_ms": [
+      4.358,
+      3.616,
+      3.707
+    ],
+    "remote_ci_run_id": 30428162887,
+    "remote_ci_conclusion": "success"
+  },
+  "human_decision_packets": {
+    "status": "pending_human_decisions",
+    "functional_sha": "706109c3820dba326573ddc796d9a0095e5446eb",
+    "packets": 4,
+    "selected_options": 0,
+    "authorized_actions": 0,
+    "receipts": 0
+  },
+  "human_shell_accessibility": {
+    "status": "local_cross_browser_automated_complement_verified",
+    "functional_sha": "282b2441912828b193f82133543c4823f5f14659",
+    "browsers": [
+      "chromium",
+      "firefox",
+      "webkit"
+    ],
+    "wcag_conformance_claim": false,
+    "human_assistive_technology_acceptance": false,
+    "repair_sha": "82d75711f28a03de4e7df35d5ec6435cc7610319",
+    "root_fixed_minimum_width": false,
+    "forced_classic_scrollbar_gate": true,
+    "remote_ci_run_id": 30428162850,
+    "remote_ci_conclusion": "success"
+  },
+  "human_workspace": {
+    "status": "local_task_first_workspace_verified",
+    "functional_sha": "ffa30433db9ba62812dd0dac680963759b4868cb",
+    "focused_tests": "6/6",
+    "named_eval": "8/8",
+    "canonical_deep_links": true,
+    "login_return_allowlist": true,
+    "browser_history": true,
+    "provider_error_taxonomy": true,
+    "independent_review": "PASS WITH LIMITATIONS",
+    "productive_authenticated_journeys": "0/12",
+    "production_ready": false,
+    "repair_sha": "82d75711f28a03de4e7df35d5ec6435cc7610319",
+    "graph_harness_descendant_revision": 2,
+    "remote_backend_ci_run_id": 30428162887,
+    "remote_public_browser_run_id": 30428162850
+  },
+  "human_oidc_provider": {
+    "status": "local_generic_adapter_verified_disabled_by_default",
+    "functional_sha": "7ec7037af4af5601c5c515be1bdf4aef35682a0a",
+    "focused_tests": "10/10",
+    "named_eval": "9/9",
+    "allowed_algorithms": [
+      "RS256",
+      "PS256",
+      "ES256"
+    ],
+    "provider_selected": false,
+    "client_registered": false,
+    "productive_credentials": false,
+    "external_interoperability": false,
+    "productive_authenticated_journeys": "0/12",
+    "production_ready": false
+  },
+  "graph_harness_repair": {
+    "status": "validated_exact_sha_checkpoint",
+    "framework_repository": "BernydotJar/Graph-harness-sdlc",
+    "framework_observed_head": "0eb0d5fe09e3b1ecaf561b4a1cc9b32510480a26",
+    "framework_immutable_pin": false,
+    "project_id": "la-muni-rag-pr24-repair-20260729",
+    "functional_sha": "82d75711f28a03de4e7df35d5ec6435cc7610319",
+    "event_count": 43,
+    "repair_plan_count": 2,
+    "required_gates_passed": "4/4",
+    "checkpoint_count": 1,
+    "preserved_node": "WS07-HUMAN-OIDC-PROVIDER-001",
+    "events_sha256": "bd2e875076a9f916f1e88121f5a9e8b7dabaf2ab97127527240a7f931eda8d23",
+    "state_sha256": "bcb28538df8997f7c0ee02fb3ec4a09ca6720d59d095d02376d8571468da8ece",
+    "production_ready": false
+  },
+  "graph_harness_pin": {
+    "functional_sha": "6995dd81025d593752a9e87b32aa9e2844e17510",
+    "framework_merge_commit": "1bebce3db35303072049233786464bb01163c98b",
+    "runtime_commit": "fef364bc66849b98c08d3c1dcb91caf9701027cd",
+    "event_count_after_corpus_unlock": 60,
+    "gate": "GATE-GRAPH-HARNESS-PIN-002 PASS",
+    "runtime_copied": false,
+    "remote_ci": {
+      "backend": 30470555533,
+      "public_browser": 30470546856,
+      "terraform": 30470549087,
+      "conclusion": "success"
+    }
+  },
+  "controlled_real_corpus_ingestion": {
+    "status": "passed_with_one_ingested_and_one_no_text_blocker",
+    "functional_sha": "4aa7dc72679a029348650b9207f3866709f9d7df",
+    "gate": "GATE-CONTROLLED-REAL-CORPUS-001 PASS",
+    "exact_sources": 2,
+    "clean_sources": 2,
+    "ingested_sources": 1,
+    "blocked_no_text_sources": 1,
+    "pdm_sections": 224,
+    "pdm_chunks": 444,
+    "postgres": "15.18",
+    "pgvector": "0.8.5",
+    "embedding_provider": "local-eval-hashing",
+    "semantic_claim": false,
+    "remote_ci": {
+      "backend": 30474973082,
+      "public_browser": 30474974657,
+      "terraform": 30474973360,
+      "conclusion": "success"
+    }
+  },
+  "real_corpus_retrieval": {
+    "status": "measured_with_quality_gaps",
+    "functional_sha": "70ec287f1a8705637e04374ca2562fafa175e0da",
+    "gate": "GATE-REAL-CORPUS-RETRIEVAL-001 PASS",
+    "document_key": "antigua-pdm-ot",
+    "document_sha256": "824f0ee47106f062269a7c65cb3433435470bbe609054972eb29c360f368cd0b",
+    "chunks": 444,
+    "positive_cases": 8,
+    "no_answer_cases": 4,
+    "safety_gate_passed": true,
+    "quality_targets_passed": false,
+    "metrics": {
+      "phrase": {
+        "hit_at_5": 0.75,
+        "mrr": 0.6458333333333333,
+        "top_1_citation_identity": 0.5,
+        "unsupported_answer_rate": 0,
+        "cross_document_leakage_rate": 0
+      },
+      "keyword": {
+        "hit_at_5": 0.75,
+        "mrr": 0.5803571428571428,
+        "top_1_citation_identity": 0.375,
+        "unsupported_answer_rate": 0,
+        "cross_document_leakage_rate": 0
+      },
+      "vector_lexical": {
+        "hit_at_5": 0.75,
+        "mrr": 0.6180555555555556,
+        "top_1_citation_identity": 0.5,
+        "unsupported_answer_rate": 0,
+        "cross_document_leakage_rate": 0
+      },
+      "hybrid": {
+        "hit_at_5": 0.875,
+        "mrr": 0.6041666666666667,
+        "top_1_citation_identity": 0.375,
+        "unsupported_answer_rate": 0,
+        "cross_document_leakage_rate": 0
+      }
+    },
+    "quality_gaps": [
+      "phrase_mrr_and_top1_citation",
+      "keyword_mrr_and_top1_citation",
+      "hybrid_mrr_and_top1_citation"
+    ],
+    "semantic_claim": false,
+    "general_quality_claim": false,
+    "legal_correctness_claim": false,
+    "production_claim": false,
+    "remote_ci": {
+      "backend": 30477447935,
+      "public_browser": 30477448607,
+      "terraform": 30477447915,
+      "conclusion": "success"
+    }
+  },
+  "graph_harness_terminal": {
+    "terminal_state": "PARTIAL_WITH_DOCUMENTED_BLOCKERS",
+    "event_count": 82,
+    "checkpoint_count": 2,
+    "repair_plan_count": 2,
+    "nodes_done": 8,
+    "required_gates_passed": 7,
+    "ready_nodes": 0,
+    "public_backend_deployed": false,
+    "productive_authenticated_journeys": "0/12",
+    "production_ready": false,
+    "final_program_revalidation": {
+      "tests_total": 1050,
+      "tests_passed": 1049,
+      "tests_failed": 0,
+      "tests_skipped_environment": 1,
+      "typecheck": "pass",
+      "build": "pass"
+    }
+  }
+}

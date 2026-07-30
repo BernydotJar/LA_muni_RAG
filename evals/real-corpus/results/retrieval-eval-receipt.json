@@ -1,0 +1,3882 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-07-29T17:52:50.219Z",
+  "evaluationStatus": "measured_with_quality_gaps",
+  "safetyGatePassed": true,
+  "qualityTargetsPassed": false,
+  "corpus": {
+    "documentKey": "antigua-pdm-ot",
+    "documentVersion": "official-municipal-pdf-2026-06-22",
+    "contentSha256": "824f0ee47106f062269a7c65cb3433435470bbe609054972eb29c360f368cd0b",
+    "expectedChunks": 444
+  },
+  "environment": {
+    "postgresVersion": "15.18 (Debian 15.18-0+deb12u1)",
+    "pgvectorVersion": "0.8.5",
+    "tenantScoped": true,
+    "persistedChunks": 444,
+    "persistedDocuments": 1
+  },
+  "provider": {
+    "name": "local-eval-hashing",
+    "model": "token-bigram-hash-1536-v1",
+    "dimensions": 1536,
+    "classification": "deterministic_lexical_hashing",
+    "semanticModel": false,
+    "productiveProvider": false
+  },
+  "querySet": {
+    "positiveCases": 8,
+    "noAnswerCases": 4,
+    "frozenBeforeMeasurement": true,
+    "configPath": "evals/real-corpus/retrieval-cases.json"
+  },
+  "metrics": {
+    "phrase": {
+      "values": {
+        "hitAt5": 0.75,
+        "mrr": 0.6458333333333333,
+        "citationIdentityAccuracy": 0.5,
+        "unsupportedAnswerRate": 0,
+        "crossDocumentLeakageRate": 0
+      },
+      "thresholds": {
+        "hitAt5": 0.75,
+        "mrr": 0.65,
+        "citationIdentityAccuracy": 0.75,
+        "unsupportedAnswerRate": 0,
+        "crossDocumentLeakageRate": 0
+      },
+      "checks": {
+        "hitAt5": true,
+        "mrr": false,
+        "citationIdentityAccuracy": false,
+        "unsupportedAnswerRate": true,
+        "crossDocumentLeakageRate": true
+      },
+      "passed": false
+    },
+    "keyword": {
+      "values": {
+        "hitAt5": 0.75,
+        "mrr": 0.5803571428571428,
+        "citationIdentityAccuracy": 0.375,
+        "unsupportedAnswerRate": 0,
+        "crossDocumentLeakageRate": 0
+      },
+      "thresholds": {
+        "hitAt5": 0.75,
+        "mrr": 0.6,
+        "citationIdentityAccuracy": 0.75,
+        "unsupportedAnswerRate": 0,
+        "crossDocumentLeakageRate": 0
+      },
+      "checks": {
+        "hitAt5": true,
+        "mrr": false,
+        "citationIdentityAccuracy": false,
+        "unsupportedAnswerRate": true,
+        "crossDocumentLeakageRate": true
+      },
+      "passed": false
+    },
+    "vector_lexical": {
+      "values": {
+        "hitAt5": 0.75,
+        "mrr": 0.6180555555555556,
+        "citationIdentityAccuracy": 0.5,
+        "unsupportedAnswerRate": 0,
+        "crossDocumentLeakageRate": 0
+      },
+      "thresholds": {
+        "hitAt5": 0.5,
+        "mrr": 0.35,
+        "citationIdentityAccuracy": 0.5,
+        "unsupportedAnswerRate": 0,
+        "crossDocumentLeakageRate": 0
+      },
+      "checks": {
+        "hitAt5": true,
+        "mrr": true,
+        "citationIdentityAccuracy": true,
+        "unsupportedAnswerRate": true,
+        "crossDocumentLeakageRate": true
+      },
+      "passed": true
+    },
+    "hybrid": {
+      "values": {
+        "hitAt5": 0.875,
+        "mrr": 0.6041666666666667,
+        "citationIdentityAccuracy": 0.375,
+        "unsupportedAnswerRate": 0,
+        "crossDocumentLeakageRate": 0
+      },
+      "thresholds": {
+        "hitAt5": 0.875,
+        "mrr": 0.75,
+        "citationIdentityAccuracy": 0.875,
+        "unsupportedAnswerRate": 0,
+        "crossDocumentLeakageRate": 0
+      },
+      "checks": {
+        "hitAt5": true,
+        "mrr": false,
+        "citationIdentityAccuracy": false,
+        "unsupportedAnswerRate": true,
+        "crossDocumentLeakageRate": true
+      },
+      "passed": false
+    }
+  },
+  "cases": [
+    {
+      "id": "PDM-POS-001",
+      "kind": "evidence",
+      "query": "Censo de Población y Vivienda del año 2018",
+      "expectedPageRanges": [
+        [
+          39,
+          41
+        ]
+      ],
+      "modes": {
+        "phrase": {
+          "mode": "phrase",
+          "answerEligible": true,
+          "firstRelevantRank": 1,
+          "hitAt5": true,
+          "citationIdentityValid": true,
+          "leakedCandidateCount": 0,
+          "candidates": [
+            {
+              "rank": 1,
+              "chunkId": "5f6859a383c80919a32b016f9851a239b19a83cef1b259526ac7e5279764f00d",
+              "documentKey": "antigua-pdm-ot",
+              "documentVersion": "official-municipal-pdf-2026-06-22",
+              "citationLabel": "Plan de Desarrollo Municipal y Ordenamiento Territorial de Antigua Guatemala - Modulo 1, pagina 40",
+              "pageStart": 40,
+              "pageEnd": 40,
+              "matchedModes": [
+                "phrase"
+              ],
+              "scores": {
+                "phrase": 1
+              },
+              "hybridScore": 0,
+              "relevant": true
+            }
+          ]
+        },
+        "keyword": {
+          "mode": "keyword",
+          "answerEligible": true,
+          "firstRelevantRank": 2,
+          "hitAt5": true,
+          "citationIdentityValid": false,
+          "leakedCandidateCount": 0,
+          "candidates": [
+            {
+              "rank": 1,
+              "chunkId": "6ae22ff98614b3f6e93ba2e690b0d2880cb3cf5122167528de4b5da5740fac1a",
+              "documentKey": "antigua-pdm-ot",
+              "documentVersion": "official-municipal-pdf-2026-06-22",
+              "citationLabel": "Plan de Desarrollo Municipal y Ordenamiento Territorial de Antigua Guatemala - Modulo 1, pagina 38",
+              "pageStart": 38,
+              "pageEnd": 38,
+              "matchedModes": [
+                "keyword"
+              ],
+              "scores": {
+                "keyword": 0.059416283
+              },
+              "hybridScore": 0,
+              "relevant": false
+            },
+            {
+              "rank": 2,
+              "chunkId": "37dad19e316b35739a20bf2e8edcce27d80c96f22af5e8a8436dc9755c694f41",
+              "documentKey": "antigua-pdm-ot",
+              "documentVersion": "official-municipal-pdf-2026-06-22",
+              "citationLabel": "Plan de Desarrollo Municipal y Ordenamiento Territorial de Antigua Guatemala - Modulo 1, pagina 41",
+              "pageStart": 41,
+              "pageEnd": 41,
+              "matchedModes": [
+                "keyword"
+              ],
+              "scores": {
+                "keyword": 0.04662338
+              },
+              "hybridScore": 0,
+              "relevant": true
+            },
+            {
+              "rank": 3,
+              "chunkId": "6143dbce5a95b4d5b272bfee4e4863e430f18675ce1b511d4011341c902b1526",
+              "documentKey": "antigua-pdm-ot",
+              "documentVersion": "official-municipal-pdf-2026-06-22",
+              "citationLabel": "Plan de Desarrollo Municipal y Ordenamiento Territorial de Antigua Guatemala - Modulo 1, pagina 60",
+              "pageStart": 60,
+              "pageEnd": 60,
+              "matchedModes": [
+                "keyword"
+              ],
+              "scores": {
+                "keyword": 0.045
+              },
+              "hybridScore": 0,
+              "relevant": false
+            },
+            {
+              "rank": 4,
+              "chunkId": "2965f0586415a1f164a7b3a04042056a5bec769dccc2050ba87356fb88c780b9",
+              "documentKey": "antigua-pdm-ot",
+              "documentVersion": "official-municipal-pdf-2026-06-22",
+              "citationLabel": "Plan de Desarrollo Municipal y Ordenamiento Territorial de Antigua Guatemala - Modulo 1, pagina 39",
+              "pageStart": 39,
+              "pageEnd": 39,
+              "matchedModes": [
+                "keyword"
+              ],
+              "scores": {
+                "keyword": 0.033333335
+              },
+              "hybridScore": 0,
+              "relevant": true
+            },
+            {
+              "rank": 5,
+              "chunkId": "d7bbcabcec4737c87b58a95684e6186b7499c384ec0c17280968a3853dfa4651",
+              "documentKey": "antigua-pdm-ot",
+              "documentVersion": "official-municipal-pdf-2026-06-22",
+              "citationLabel": "Plan de Desarrollo Municipal y Ordenamiento Territorial de Antigua Guatemala - Modulo 1, pagina 39",
+              "pageStart": 39,
+              "pageEnd": 39,
+              "matchedModes": [
+                "keyword"
+              ],
+              "scores": {
+                "keyword": 0.033333335
+              },
+              "hybridScore": 0,
+              "relevant": true
+            }
+          ]
+        },
+        "vector_lexical": {
+          "mode": "vector_lexical",
+          "answerEligible": true,
+          "firstRelevantRank": 1,
+          "hitAt5": true,
+          "citationIdentityValid": true,
+          "leakedCandidateCount": 0,
+          "candidates": [
+            {
+              "rank": 1,
+              "chunkId": "5f6859a383c80919a32b016f9851a239b19a83cef1b259526ac7e5279764f00d",
+              "documentKey": "antigua-pdm-ot",
+              "documentVersion": "official-municipal-pdf-2026-06-22",
+              "citationLabel": "Plan de Desarrollo Municipal y Ordenamiento Territorial de Antigua Guatemala - Modulo 1, pagina 40",
+              "pageStart": 40,
+              "pageEnd": 40,
+              "matchedModes": [
+                "vector"
+              ],
+              "scores": {
+                "vector": 0.3961830735206604
+              },
+              "hybridScore": 0,
+              "relevant": true
+            },
+            {
+              "rank": 2,
+              "chunkId": "509336540bfe99400ee530439dfde9dcec8fe9721ee9d614683ab259eb7b7670",
+              "documentKey": "antigua-pdm-ot",
+              "documentVersion": "official-municipal-pdf-2026-06-22",
+              "citationLabel": "Plan de Desarrollo Municipal y Ordenamiento Territorial de Antigua Guatemala - Modulo 1, pagina 26",
+              "pageStart": 26,
+              "pageEnd": 26,
+              "matchedModes": [
+                "vector"
+              ],
+              "scores": {
+                "vector": 0.3915814096678151
+              },
+              "hybridScore": 0,
+              "relevant": false
+            },
+            {
+              "rank": 3,
+              "chunkId": "6ae22ff98614b3f6e93ba2e690b0d2880cb3cf5122167528de4b5da5740fac1a",
+              "documentKey": "antigua-pdm-ot",
+              "documentVersion": "official-municipal-pdf-2026-06-22",
+              "citationLabel": "Plan de Desarrollo Municipal y Ordenamiento Territorial de Antigua Guatemala - Modulo 1, pagina 38",
+              "pageStart": 38,
+              "pageEnd": 38,
+              "matchedModes": [
+                "vector"
+              ],
+              "scores": {
+                "vector": 0.3120890259742737
+              },
+              "hybridScore": 0,
+              "relevant": false
+            },
+            {
+              "rank": 4,
+              "chunkId": "d35c28c40a5cbcc813976fef38db025c8828ad5d19db6a466b534c7e6ee306b1",
+              "documentKey": "antigua-pdm-ot",
+              "documentVersion": "official-municipal-pdf-2026-06-22",
+              "citationLabel": "Plan de Desarrollo Municipal y Ordenamiento Territorial de Antigua Guatemala - Modulo 1, pagina 44",
+              "pageStart": 44,
+              "pageEnd": 44,
+              "matchedModes": [
+                "vector"
+              ],
+              "scores": {
+                "vector": 0.308645635843277
+              },
+              "hybridScore": 0,
+              "relevant": false
+            },
+            {
+              "rank": 5,
+              "chunkId": "ce6c615c3abd817348bda68003df1148af26e1b738d772ae1ce40af44796b9bf",
+              "documentKey": "antigua-pdm-ot",
+              "documentVersion": "official-municipal-pdf-2026-06-22",
+              "citationLabel": "Plan de Desarrollo Municipal y Ordenamiento Territorial de Antigua Guatemala - Modulo 1, pagina 110",
+              "pageStart": 110,
+              "pageEnd": 110,
+              "matchedModes": [
+                "vector"
+              ],
+              "scores": {
+                "vector": 0.30772847854281915
+              },
+              "hybridScore": 0,
+              "relevant": false
+            }
+          ]
+        },
+        "hybrid": {
+          "mode": "hybrid",
+          "answerEligible": true,
+          "firstRelevantRank": 1,
+          "hitAt5": true,
+          "citationIdentityValid": true,
+          "leakedCandidateCount": 0,
+          "candidates": [
+            {
+              "rank": 1,
+              "chunkId": "5f6859a383c80919a32b016f9851a239b19a83cef1b259526ac7e5279764f00d",
+              "documentKey": "antigua-pdm-ot",
+              "documentVersion": "official-municipal-pdf-2026-06-22",
+              "citationLabel": "Plan de Desarrollo Municipal y Ordenamiento Territorial de Antigua Guatemala - Modulo 1, pagina 40",
+              "pageStart": 40,
+              "pageEnd": 40,
+              "matchedModes": [
+                "phrase",
+                "keyword",
+                "vector"
+              ],
+              "scores": {
+                "phrase": 1,
+                "keyword": 0.033274855,
+                "vector": 0.3961830735206604,
+                "provenance": 0
+              },
+              "hybridScore": 4.660824320280991,
+              "relevant": true
+            },
+            {
+              "rank": 2,
+              "chunkId": "d35c28c40a5cbcc813976fef38db025c8828ad5d19db6a466b534c7e6ee306b1",
+              "documentKey": "antigua-pdm-ot",
+              "documentVersion": "official-municipal-pdf-2026-06-22",
+              "citationLabel": "Plan de Desarrollo Municipal y Ordenamiento Territorial de Antigua Guatemala - Modulo 1, pagina 44",
+              "pageStart": 44,
+              "pageEnd": 44,
+              "matchedModes": [
+                "vector"
+              ],
+              "scores": {
+                "vector": 0.308645635843277,
+                "phrase": 0,
+                "keyword": 0,
+                "provenance": 0.8500000000000001
+              },
+              "hybridScore": 0.8879684537649155,
+              "relevant": false
+            },
+            {
+              "rank": 3,
+              "chunkId": "ce6c615c3abd817348bda68003df1148af26e1b738d772ae1ce40af44796b9bf",
+              "documentKey": "antigua-pdm-ot",
+              "documentVersion": "official-municipal-pdf-2026-06-22",
+              "citationLabel": "Plan de Desarrollo Municipal y Ordenamiento Territorial de Antigua Guatemala - Modulo 1, pagina 110",
+              "pageStart": 110,
+              "pageEnd": 110,
+              "matchedModes": [
+                "vector"
+              ],
+              "scores": {
+                "vector": 0.30772847854281915,
+                "phrase": 0,
+                "keyword": 0,
+                "provenance": 0.8500000000000001
+              },
+              "hybridScore": 0.8865927178142288,
+              "relevant": false
+            },
+            {
+              "rank": 4,
+              "chunkId": "ddc02c6237eae8ab0e629a4b9a989647433f5083c680050170f02834f6844511",
+              "documentKey": "antigua-pdm-ot",
+              "documentVersion": "official-municipal-pdf-2026-06-22",
+              "citationLabel": "Plan de Desarrollo Municipal y Ordenamiento Territorial de Antigua Guatemala - Modulo 1, pagina 116",
+              "pageStart": 116,
+              "pageEnd": 116,
+              "matchedModes": [
+                "vector"
+              ],
+              "scores": {
+                "vector": 0.3010321945259631,
+                "phrase": 0,
+                "keyword": 0,
+                "provenance": 0.8500000000000001
+              },
+              "hybridScore": 0.8765482917889447,
+              "relevant": false
+            },
+            {
+              "rank": 5,
+              "chunkId": "5d1bfe05ae9d1145db263d53d373295a3ecea46ff7b8281dae47157cd5fbb9af",
+              "documentKey": "antigua-pdm-ot",
+              "documentVersion": "official-municipal-pdf-2026-06-22",
+              "citationLabel": "Plan de Desarrollo Municipal y Ordenamiento Territorial de Antigua Guatemala - Modulo 1, pagina 28",
+              "pageStart": 28,
+              "pageEnd": 28,
+              "matchedModes": [
+                "vector"
+              ],
+              "scores": {
+                "vector": 0.2969474196434021,
+                "phrase": 0,
+                "keyword": 0,
+                "provenance": 0.8500000000000001
+              },
+              "hybridScore": 0.8704211294651032,
+              "relevant": false
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "PDM-POS-002",
+      "kind": "evidence",
+      "query": "Población Económicamente Activa por pueblo 2018",
+      "expectedPageRanges": [
+        [
+          59,
+          61
+        ]
+      ],
+      "modes": {
+        "phrase": {
+          "mode": "phrase",
+          "answerEligible": true,
+          "firstRelevantRank": 2,
+          "hitAt5": true,
+          "citationIdentityValid": false,
+          "leakedCandidateCount": 0,
+          "candidates": [
+            {
+              "rank": 1,
+              "chunkId": "be140a4b20cd8d32d6d0ddeef4ad683016fd11e051d2be4972693d0e59ae57c1",
+              "documentKey": "antigua-pdm-ot",
+              "documentVersion": "official-municipal-pdf-2026-06-22",
+              "citationLabel": "Plan de Desarrollo Municipal y Ordenamiento Territorial de Antigua Guatemala - Modulo 1, pagina 11",
+              "pageStart": 11,
+              "pageEnd": 11,
+              "matchedModes": [
+                "phrase"
+              ],
+              "scores": {
+                "phrase": 1
+              },
+              "hybridScore": 0,
+              "relevant": false
+            },
+            {
+              "rank": 2,
+              "chunkId": "6143dbce5a95b4d5b272bfee4e4863e430f18675ce1b511d4011341c902b1526",
+              "documentKey": "antigua-pdm-ot",
+              "documentVersion": "official-municipal-pdf-2026-06-22",
+              "citationLabel": "Plan de Desarrollo Municipal y Ordenamiento Territorial de Antigua Guatemala - Modulo 1, pagina 60",
+              "pageStart": 60,
+              "pageEnd": 60,
+              "matchedModes": [
+                "phrase"
+              ],
+              "scores": {
+                "phrase": 1
+              },
+              "hybridScore": 0,
+              "relevant": true
+            }
+          ]
+        },
+        "keyword": {
+          "mode": "keyword",
+          "answerEligible": true,
+          "firstRelevantRank": 2,
+          "hitAt5": true,
+          "citationIdentityValid": false,
+          "leakedCandidateCount": 0,
+          "candidates": [
+            {
+              "rank": 1,
+              "chunkId": "be140a4b20cd8d32d6d0ddeef4ad683016fd11e051d2be4972693d0e59ae57c1",
+              "documentKey": "antigua-pdm-ot",
+              "documentVersion": "official-municipal-pdf-2026-06-22",
+              "citationLabel": "Plan de Desarrollo Municipal y Ordenamiento Territorial de Antigua Guatemala - Modulo 1, pagina 11",
+              "pageStart": 11,
+              "pageEnd": 11,
+              "matchedModes": [
+                "keyword"
+              ],
+              "scores": {
+                "keyword": 0.09096154
+              },
+              "hybridScore": 0,
+              "relevant": false
+            },
+            {
+              "rank": 2,
+              "chunkId": "6143dbce5a95b4d5b272bfee4e4863e430f18675ce1b511d4011341c902b1526",
+              "documentKey": "antigua-pdm-ot",
+              "documentVersion": "official-municipal-pdf-2026-06-22",
+              "citationLabel": "Plan de Desarrollo Municipal y Ordenamiento Territorial de Antigua Guatemala - Modulo 1, pagina 60",
+              "pageStart": 60,
+              "pageEnd": 60,
+              "matchedModes": [
+                "keyword"
+              ],
+              "scores": {
+                "keyword": 0.06746032
+              },
+              "hybridScore": 0,
+              "relevant": true
+            }
+          ]
+        },
+        "vector_lexical": {
+          "mode": "vector_lexical",
+          "answerEligible": false,
+          "firstRelevantRank": 2,
+          "hitAt5": true,
+          "citationIdentityValid": false,
+          "leakedCandidateCount": 0,
+          "candidates": [
+            {
+              "rank": 1,
+              "chunkId": "be140a4b20cd8d32d6d0ddeef4ad683016fd11e051d2be4972693d0e59ae57c1",
+              "documentKey": "antigua-pdm-ot",
+              "documentVersion": "official-municipal-pdf-2026-06-22",
+              "citationLabel": "Plan de Desarrollo Municipal y Ordenamiento Territorial de Antigua Guatemala - Modulo 1, pagina 11",
+              "pageStart": 11,
+              "pageEnd": 11,
+              "matchedModes": [
+                "vector"
+              ],
+              "scores": {
+                "vector": 0.27189089488332885
+              },
+              "hybridScore": 0,
+              "relevant": false
+            },
+            {
+              "rank": 2,
+              "chunkId": "6143dbce5a95b4d5b272bfee4e4863e430f18675ce1b511d4011341c902b1526",
+              "documentKey": "antigua-pdm-ot",
+              "documentVersion": "official-municipal-pdf-2026-06-22",
+              "citationLabel": "Plan de Desarrollo Municipal y Ordenamiento Territorial de Antigua Guatemala - Modulo 1, pagina 60",
+              "pageStart": 60,
+              "pageEnd": 60,
+              "matchedModes": [
+                "vector"
+              ],
+              "scores": {
+                "vector": 0.1582582389270213
+              },
+              "hybridScore": 0,
+              "relevant": true
+            },
+            {
+              "rank": 3,
+              "chunkId": "7d4b2cdb8b686a3a206c1422b132b4e81f5306f5e0cca2fc4d071473243c2eaf",
+              "documentKey": "antigua-pdm-ot",
+              "documentVersion": "official-municipal-pdf-2026-06-22",
+              "citationLabel": "Plan de Desarrollo Municipal y Ordenamiento Territorial de Antigua Guatemala - Modulo 1, pagina 60",
+              "pageStart": 60,
+              "pageEnd": 60,
+              "matchedModes": [
+                "vector"
+              ],
+              "scores": {
+                "vector": 0.15495800971984863
+              },
+              "hybridScore": 0,
+              "relevant": true
+            },
+            {
+              "rank": 4,
+              "chunkId": "4b9b97393a9b19a913e368f6faf87d34fe36fe58b7e4975e8d3f6b2b71ad241f",
+              "documentKey": "antigua-pdm-ot",
+              "documentVersion": "official-municipal-pdf-2026-06-22",
+              "citationLabel": "Plan de Desarrollo Municipal y Ordenamiento Territorial de Antigua Guatemala - Modulo 1, pagina 57",
+              "pageStart": 57,
+              "pageEnd": 57,
+              "matchedModes": [
+                "vector"
+              ],
+              "scores": {
+                "vector": 0.13505857377895292
+              },
+              "hybridScore": 0,
+              "relevant": false
+            },
+            {
+              "rank": 5,
+              "chunkId": "7ee43311a73e0c1382aea6be0efe3c29329841d0da69fe9e0ec652db67cb5890",
+              "documentKey": "antigua-pdm-ot",
+              "documentVersion": "official-municipal-pdf-2026-06-22",
+              "citationLabel": "Plan de Desarrollo Municipal y Ordenamiento Territorial de Antigua Guatemala - Modulo 1, pagina 58",
+              "pageStart": 58,
+              "pageEnd": 58,
+              "matchedModes": [
+                "vector"
+              ],
+              "scores": {
+                "vector": 0.13436584863866297
+              },
+              "hybridScore": 0,
+              "relevant": false
+            }
+          ]
+        },
+        "hybrid": {
+          "mode": "hybrid",
+          "answerEligible": true,
+          "firstRelevantRank": 2,
+          "hitAt5": true,
+          "citationIdentityValid": false,
+          "leakedCandidateCount": 0,
+          "candidates": [
+            {
+              "rank": 1,
+              "chunkId": "be140a4b20cd8d32d6d0ddeef4ad683016fd11e051d2be4972693d0e59ae57c1",
+              "documentKey": "antigua-pdm-ot",
+              "documentVersion": "official-municipal-pdf-2026-06-22",
+              "citationLabel": "Plan de Desarrollo Municipal y Ordenamiento Territorial de Antigua Guatemala - Modulo 1, pagina 11",
+              "pageStart": 11,
+              "pageEnd": 11,
+              "matchedModes": [
+                "phrase",
+                "keyword",
+                "vector"
+              ],
+              "scores": {
+                "phrase": 1,
+                "keyword": 0.09096154,
+                "vector": 0.27189089488332885,
+                "provenance": 0
+              },
+              "hybridScore": 4.589759422324993,
+              "relevant": false
+            },
+            {
+              "rank": 2,
+              "chunkId": "6143dbce5a95b4d5b272bfee4e4863e430f18675ce1b511d4011341c902b1526",
+              "documentKey": "antigua-pdm-ot",
+              "documentVersion": "official-municipal-pdf-2026-06-22",
+              "citationLabel": "Plan de Desarrollo Municipal y Ordenamiento Territorial de Antigua Guatemala - Modulo 1, pagina 60",
+              "pageStart": 60,
+              "pageEnd": 60,
+              "matchedModes": [
+                "phrase",
+                "keyword",
+                "vector"
+              ],
+              "scores": {
+                "phrase": 1,
+                "keyword": 0.06746032,
+                "vector": 0.1582582389270213,
+                "provenance": 0
+              },
+              "hybridScore": 4.372307998390532,
+              "relevant": true
+            },
+            {
+              "rank": 3,
+              "chunkId": "7d4b2cdb8b686a3a206c1422b132b4e81f5306f5e0cca2fc4d071473243c2eaf",
+              "documentKey": "antigua-pdm-ot",
+              "documentVersion": "official-municipal-pdf-2026-06-22",
+              "citationLabel": "Plan de Desarrollo Municipal y Ordenamiento Territorial de Antigua Guatemala - Modulo 1, pagina 60",
+              "pageStart": 60,
+              "pageEnd": 60,
+              "matchedModes": [
+                "vector"
+              ],
+              "scores": {
+                "vector": 0.15495800971984863,
+                "phrase": 0,
+                "keyword": 0,
+                "provenance": 0.8500000000000001
+              },
+              "hybridScore": 0.657437014579773,
+              "relevant": true
+            },
+            {
+              "rank": 4,
+              "chunkId": "4b9b97393a9b19a913e368f6faf87d34fe36fe58b7e4975e8d3f6b2b71ad241f",
+              "documentKey": "antigua-pdm-ot",
+              "documentVersion": "official-municipal-pdf-2026-06-22",
+              "citationLabel": "Plan de Desarrollo Municipal y Ordenamiento Territorial de Antigua Guatemala - Modulo 1, pagina 57",
+              "pageStart": 57,
+              "pageEnd": 57,
+              "matchedModes": [
+                "vector"
+              ],
+              "scores": {
+                "vector": 0.13505857377895292,
+                "phrase": 0,
+                "keyword": 0,
+                "provenance": 0.8500000000000001
+              },
+              "hybridScore": 0.6275878606684294,
+              "relevant": false
+            },
+            {
+              "rank": 5,
+              "chunkId": "7ee43311a73e0c1382aea6be0efe3c29329841d0da69fe9e0ec652db67cb5890",
+              "documentKey": "antigua-pdm-ot",
+              "documentVersion": "official-municipal-pdf-2026-06-22",
+              "citationLabel": "Plan de Desarrollo Municipal y Ordenamiento Territorial de Antigua Guatemala - Modulo 1, pagina 58",
+              "pageStart": 58,
+              "pageEnd": 58,
+              "matchedModes": [
+                "vector"
+              ],
+              "scores": {
+                "vector": 0.13436584863866297,
+                "phrase": 0,
+                "keyword": 0,
+                "provenance": 0.8500000000000001
+              },
+              "hybridScore": 0.6265487729579945,
+              "relevant": false
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "PDM-POS-003",
+      "kind": "evidence",
+      "query": "pendientes superiores al 16%",
+      "expectedPageRanges": [
+        [
+          79,
+          81
+        ]
+      ],
+      "modes": {
+        "phrase": {
+          "mode": "phrase",
+          "answerEligible": true,
+          "firstRelevantRank": 1,
+          "hitAt5": true,
+          "citationIdentityValid": true,
+          "leakedCandidateCount": 0,
+          "candidates": [
+            {
+              "rank": 1,
+              "chunkId": "407b43f73d6923780b5df1ef8c614893f0a788786ae9b5b0c28318e85f4579d7",
+              "documentKey": "antigua-pdm-ot",
+              "documentVersion": "official-municipal-pdf-2026-06-22",
+              "citationLabel": "Plan de Desarrollo Municipal y Ordenamiento Territorial de Antigua Guatemala - Modulo 1, pagina 80",
+              "pageStart": 80,
+              "pageEnd": 80,
+              "matchedModes": [
+                "phrase"
+              ],
+              "scores": {
+                "phrase": 1
+              },
+              "hybridScore": 0,
+              "relevant": true
+            },
+            {
+              "rank": 2,
+              "chunkId": "14da55a88f341ab2b35a904912e9fffee8e961e37fe4d75bc44fac0374415354",
+              "documentKey": "antigua-pdm-ot",
+              "documentVersion": "official-municipal-pdf-2026-06-22",
+              "citationLabel": "Plan de Desarrollo Municipal y Ordenamiento Territorial de Antigua Guatemala - Modulo 1, pagina 112",
+              "pageStart": 112,
+              "pageEnd": 112,
+              "matchedModes": [
+                "phrase"
+              ],
+              "scores": {
+                "phrase": 1
+              },
+              "hybridScore": 0,
+              "relevant": false
+            },
+            {
+              "rank": 3,
+              "chunkId": "6cd3b0a266c986363bf8be0688305e9596450ee271950c2158eddc9688144e5a",
+              "documentKey": "antigua-pdm-ot",
+              "documentVersion": "official-municipal-pdf-2026-06-22",
+              "citationLabel": "Plan de Desarrollo Municipal y Ordenamiento Territorial de Antigua Guatemala - Modulo 1, pagina 115",
+              "pageStart": 115,
+              "pageEnd": 115,
+              "matchedModes": [
+                "phrase"
+              ],
+              "scores": {
+                "phrase": 1
+              },
+              "hybridScore": 0,
+              "relevant": false
+            },
+            {
+              "rank": 4,
+              "chunkId": "bfad2892217f4df70d46a6c92a2044130a43cad0579219ceb4d4256e7b13f356",
+              "documentKey": "antigua-pdm-ot",
+              "documentVersion": "official-municipal-pdf-2026-06-22",
+              "citationLabel": "Plan de Desarrollo Municipal y Ordenamiento Territorial de Antigua Guatemala - Modulo 1, pagina 115",
+              "pageStart": 115,
+              "pageEnd": 115,
+              "matchedModes": [
+                "phrase"
+              ],
+              "scores": {
+                "phrase": 1
+              },
+              "hybridScore": 0,
+              "relevant": false
+            },
+            {
+              "rank": 5,
+              "chunkId": "f0e59f0c7fe7be1dc7a92b62bcdcc05b259e35d3e7383b29b4fcd155ef6a245f",
+              "documentKey": "antigua-pdm-ot",
+              "documentVersion": "official-municipal-pdf-2026-06-22",
+              "citationLabel": "Plan de Desarrollo Municipal y Ordenamiento Territorial de Antigua Guatemala - Modulo 1, pagina 123",
+              "pageStart": 123,
+              "pageEnd": 123,
+              "matchedModes": [
+                "phrase"
+              ],
+              "scores": {
+                "phrase": 1
+              },
+              "hybridScore": 0,
+              "relevant": false
+            }
+          ]
+        },
+        "keyword": {
+          "mode": "keyword",
+          "answerEligible": true,
+          "firstRelevantRank": 1,
+          "hitAt5": true,
+          "citationIdentityValid": true,
+          "leakedCandidateCount": 0,
+          "candidates": [
+            {
+              "rank": 1,
+              "chunkId": "407b43f73d6923780b5df1ef8c614893f0a788786ae9b5b0c28318e85f4579d7",
+              "documentKey": "antigua-pdm-ot",
+              "documentVersion": "official-municipal-pdf-2026-06-22",
+              "citationLabel": "Plan de Desarrollo Municipal y Ordenamiento Territorial de Antigua Guatemala - Modulo 1, pagina 80",
+              "pageStart": 80,
+              "pageEnd": 80,
+              "matchedModes": [
+                "keyword"
+              ],
+              "scores": {
+                "keyword": 0.06848485
+              },
+              "hybridScore": 0,
+              "relevant": true
+            },
+            {
+              "rank": 2,
+              "chunkId": "14da55a88f341ab2b35a904912e9fffee8e961e37fe4d75bc44fac0374415354",
+              "documentKey": "antigua-pdm-ot",
+              "documentVersion": "official-municipal-pdf-2026-06-22",
+              "citationLabel": "Plan de Desarrollo Municipal y Ordenamiento Territorial de Antigua Guatemala - Modulo 1, pagina 112",
+              "pageStart": 112,
+              "pageEnd": 112,
+              "matchedModes": [
+                "keyword"
+              ],
+              "scores": {
+                "keyword": 0.052040815
+              },
+              "hybridScore": 0,
+              "relevant": false
+            },
+            {
+              "rank": 3,
+              "chunkId": "6cd3b0a266c986363bf8be0688305e9596450ee271950c2158eddc9688144e5a",
+              "documentKey": "antigua-pdm-ot",
+              "documentVersion": "official-municipal-pdf-2026-06-22",
+              "citationLabel": "Plan de Desarrollo Municipal y Ordenamiento Territorial de Antigua Guatemala - Modulo 1, pagina 115",
+              "pageStart": 115,
+              "pageEnd": 115,
+              "matchedModes": [
+                "keyword"
+              ],
+              "scores": {
+                "keyword": 0.05
+              },
+              "hybridScore": 0,
+              "relevant": false
+            },
+            {
+              "rank": 4,
+              "chunkId": "bfad2892217f4df70d46a6c92a2044130a43cad0579219ceb4d4256e7b13f356",
+              "documentKey": "antigua-pdm-ot",
+              "documentVersion": "official-municipal-pdf-2026-06-22",
+              "citationLabel": "Plan de Desarrollo Municipal y Ordenamiento Territorial de Antigua Guatemala - Modulo 1, pagina 115",
+              "pageStart": 115,
+              "pageEnd": 115,
+              "matchedModes": [
+                "keyword"
+              ],
+              "scores": {
+                "keyword": 0.05
+              },
+              "hybridScore": 0,
+              "relevant": false
+            },
+            {
+              "rank": 5,
+              "chunkId": "f0e59f0c7fe7be1dc7a92b62bcdcc05b259e35d3e7383b29b4fcd155ef6a245f",
+              "documentKey": "antigua-pdm-ot",
+              "documentVersion": "official-municipal-pdf-2026-06-22",
+              "citationLabel": "Plan de Desarrollo Municipal y Ordenamiento Territorial de Antigua Guatemala - Modulo 1, pagina 123",
+              "pageStart": 123,
+              "pageEnd": 123,
+              "matchedModes": [
+                "keyword"
+              ],
+              "scores": {
+                "keyword": 0.05
+              },
+              "hybridScore": 0,
+              "relevant": false
+            }
+          ]
+        },
+        "vector_lexical": {
+          "mode": "vector_lexical",
+          "answerEligible": false,
+          "firstRelevantRank": 1,
+          "hitAt5": true,
+          "citationIdentityValid": true,
+          "leakedCandidateCount": 0,
+          "candidates": [
+            {
+              "rank": 1,
+              "chunkId": "407b43f73d6923780b5df1ef8c614893f0a788786ae9b5b0c28318e85f4579d7",
+              "documentKey": "antigua-pdm-ot",
+              "documentVersion": "official-municipal-pdf-2026-06-22",
+              "citationLabel": "Plan de Desarrollo Municipal y Ordenamiento Territorial de Antigua Guatemala - Modulo 1, pagina 80",
+              "pageStart": 80,
+              "pageEnd": 80,
+              "matchedModes": [
+                "vector"
+              ],
+              "scores": {
+                "vector": 0.2781996859193041
+              },
+              "hybridScore": 0,
+              "relevant": true
+            },
+            {
+              "rank": 2,
+              "chunkId": "6fe925438a4281551698f5a16782eb1732f7150658cc5e12f2a6fd099444c48f",
+              "documentKey": "antigua-pdm-ot",
+              "documentVersion": "official-municipal-pdf-2026-06-22",
+              "citationLabel": "Plan de Desarrollo Municipal y Ordenamiento Territorial de Antigua Guatemala - Modulo 1, pagina 123",
+              "pageStart": 123,
+              "pageEnd": 123,
+              "matchedModes": [
+                "vector"
+              ],
+              "scores": {
+                "vector": 0.20879070460796356
+              },
+              "hybridScore": 0,
+              "relevant": false
+            },
+            {
+              "rank": 3,
+              "chunkId": "f0e59f0c7fe7be1dc7a92b62bcdcc05b259e35d3e7383b29b4fcd155ef6a245f",
+              "documentKey": "antigua-pdm-ot",
+              "documentVersion": "official-municipal-pdf-2026-06-22",
+              "citationLabel": "Plan de Desarrollo Municipal y Ordenamiento Territorial de Antigua Guatemala - Modulo 1, pagina 123",
+              "pageStart": 123,
+              "pageEnd": 123,
+              "matchedModes": [
+                "vector"
+              ],
+              "scores": {
+                "vector": 0.17703299224376678
+              },
+              "hybridScore": 0,
+              "relevant": false
+            },
+            {
+              "rank": 4,
+              "chunkId": "639c6a9712b498b2cf3adf3cd58f611b2cbac187187f4e475dac6c5f94c61511",
+              "documentKey": "antigua-pdm-ot",
+              "documentVersion": "official-municipal-pdf-2026-06-22",
+              "citationLabel": "Plan de Desarrollo Municipal y Ordenamiento Territorial de Antigua Guatemala - Modulo 1, pagina 195",
+              "pageStart": 195,
+              "pageEnd": 195,
+              "matchedModes": [
+                "vector"
+              ],
+              "scores": {
+                "vector": 0.14769819378852844
+              },
+              "hybridScore": 0,
+              "relevant": false
+            },
+            {
+              "rank": 5,
+              "chunkId": "14da55a88f341ab2b35a904912e9fffee8e961e37fe4d75bc44fac0374415354",
+              "documentKey": "antigua-pdm-ot",
+              "documentVersion": "official-municipal-pdf-2026-06-22",
+              "citationLabel": "Plan de Desarrollo Municipal y Ordenamiento Territorial de Antigua Guatemala - Modulo 1, pagina 112",
+              "pageStart": 112,
+              "pageEnd": 112,
+              "matchedModes": [
+                "vector"
+              ],
+              "scores": {
+                "vector": 0.1293214415695011
+              },
+              "hybridScore": 0,
+              "relevant": false
+            }
+          ]
+        },
+        "hybrid": {
+          "mode": "hybrid",
+          "answerEligible": true,
+          "firstRelevantRank": 1,
+          "hitAt5": true,
+          "citationIdentityValid": true,
+          "leakedCandidateCount": 0,
+          "candidates": [
+            {
+              "rank": 1,
+              "chunkId": "407b43f73d6923780b5df1ef8c614893f0a788786ae9b5b0c28318e85f4579d7",
+              "documentKey": "antigua-pdm-ot",
+              "documentVersion": "official-municipal-pdf-2026-06-22",
+              "citationLabel": "Plan de Desarrollo Municipal y Ordenamiento Territorial de Antigua Guatemala - Modulo 1, pagina 80",
+              "pageStart": 80,
+              "pageEnd": 80,
+              "matchedModes": [
+                "phrase",
+                "keyword",
+                "vector"
+              ],
+              "scores": {
+                "phrase": 1,
+                "keyword": 0.06848485,
+                "vector": 0.2781996859193041,
+                "provenance": 0
+              },
+              "hybridScore": 4.554269228878956,
+              "relevant": true
+            },
+            {
+              "rank": 2,
+              "chunkId": "6fe925438a4281551698f5a16782eb1732f7150658cc5e12f2a6fd099444c48f",
+              "documentKey": "antigua-pdm-ot",
+              "documentVersion": "official-municipal-pdf-2026-06-22",
+              "citationLabel": "Plan de Desarrollo Municipal y Ordenamiento Territorial de Antigua Guatemala - Modulo 1, pagina 123",
+              "pageStart": 123,
+              "pageEnd": 123,
+              "matchedModes": [
+                "phrase",
+                "keyword",
+                "vector"
+              ],
+              "scores": {
+                "phrase": 1,
+                "keyword": 0.05,
+                "vector": 0.20879070460796356,
+                "provenance": 0
+              },
+              "hybridScore": 4.413186056911945,
+              "relevant": false
+            },
+            {
+              "rank": 3,
+              "chunkId": "f0e59f0c7fe7be1dc7a92b62bcdcc05b259e35d3e7383b29b4fcd155ef6a245f",
+              "documentKey": "antigua-pdm-ot",
+              "documentVersion": "official-municipal-pdf-2026-06-22",
+              "citationLabel": "Plan de Desarrollo Municipal y Ordenamiento Territorial de Antigua Guatemala - Modulo 1, pagina 123",
+              "pageStart": 123,
+              "pageEnd": 123,
+              "matchedModes": [
+                "phrase",
+                "keyword",
+                "vector"
+              ],
+              "scores": {
+                "phrase": 1,
+                "keyword": 0.05,
+                "vector": 0.17703299224376678,
+                "provenance": 0
+              },
+              "hybridScore": 4.36554948836565,
+              "relevant": false
+            },
+            {
+              "rank": 4,
+              "chunkId": "14da55a88f341ab2b35a904912e9fffee8e961e37fe4d75bc44fac0374415354",
+              "documentKey": "antigua-pdm-ot",
+              "documentVersion": "official-municipal-pdf-2026-06-22",
+              "citationLabel": "Plan de Desarrollo Municipal y Ordenamiento Territorial de Antigua Guatemala - Modulo 1, pagina 112",
+              "pageStart": 112,
+              "pageEnd": 112,
+              "matchedModes": [
+                "phrase",
+                "keyword",
+                "vector"
+              ],
+              "scores": {
+                "phrase": 1,
+                "keyword": 0.052040815,
+                "vector": 0.1293214415695011,
+                "provenance": 0
+              },
+              "hybridScore": 4.2980637923542515,
+              "relevant": false
+            },
+            {
+              "rank": 5,
+              "chunkId": "6cd3b0a266c986363bf8be0688305e9596450ee271950c2158eddc9688144e5a",
+              "documentKey": "antigua-pdm-ot",
+              "documentVersion": "official-municipal-pdf-2026-06-22",
+              "citationLabel": "Plan de Desarrollo Municipal y Ordenamiento Territorial de Antigua Guatemala - Modulo 1, pagina 115",
+              "pageStart": 115,
+              "pageEnd": 115,
+              "matchedModes": [
+                "phrase",
+                "keyword",
+                "vector"
+              ],
+              "scores": {
+                "phrase": 1,
+                "keyword": 0.05,
+                "vector": 0.1269140132341986,
+                "provenance": 0
+              },
+              "hybridScore": 4.290371019851298,
+              "relevant": false
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "PDM-POS-004",
+      "kind": "evidence",
+      "query": "Modelo de Desarrollo Territorial Futuro",
+      "expectedPageRanges": [
+        [
+          139,
+          141
+        ]
+      ],
+      "modes": {
+        "phrase": {
+          "mode": "phrase",
+          "answerEligible": true,
+          "firstRelevantRank": 6,
+          "hitAt5": false,
+          "citationIdentityValid": false,
+          "leakedCandidateCount": 0,
+          "candidates": [
+            {
+              "rank": 1,
+              "chunkId": "94f57e5c13bb54f78a21d5db2f5e6827b6974619f6d4b7567c2ec25f14cb3ae9",
+              "documentKey": "antigua-pdm-ot",
+              "documentVersion": "official-municipal-pdf-2026-06-22",
+              "citationLabel": "Plan de Desarrollo Municipal y Ordenamiento Territorial de Antigua Guatemala - Modulo 1, pagina 7",
+              "pageStart": 7,
+              "pageEnd": 7,
+              "matchedModes": [
+                "phrase"
+              ],
+              "scores": {
+                "phrase": 1
+              },
+              "hybridScore": 0,
+              "relevant": false
+            },
+            {
+              "rank": 2,
+              "chunkId": "fd029efaa77f580296a9bcc224b82eeeb1680f8c259952944d1620fad70bece5",
+              "documentKey": "antigua-pdm-ot",
+              "documentVersion": "official-municipal-pdf-2026-06-22",
+              "citationLabel": "Plan de Desarrollo Municipal y Ordenamiento Territorial de Antigua Guatemala - Modulo 1, pagina 10",
+              "pageStart": 10,
+              "pageEnd": 10,
+              "matchedModes": [
+                "phrase"
+              ],
+              "scores": {
+                "phrase": 1
+              },
+              "hybridScore": 0,
+              "relevant": false
+            },
+            {
+              "rank": 3,
+              "chunkId": "ca3e3f86a7fffc8e0031ae2ac521fb17ba25888c160d16f7747426b2d1fd954d",
+              "documentKey": "antigua-pdm-ot",
+              "documentVersion": "official-municipal-pdf-2026-06-22",
+              "citationLabel": "Plan de Desarrollo Municipal y Ordenamiento Territorial de Antigua Guatemala - Modulo 1, pagina 13",
+              "pageStart": 13,
+              "pageEnd": 13,
+              "matchedModes": [
+                "phrase"
+              ],
+              "scores": {
+                "phrase": 1
+              },
+              "hybridScore": 0,
+              "relevant": false
+            },
+            {
+              "rank": 4,
+              "chunkId": "700ea0f42c000a112f26e3641f9aab1b27e47b5f465e97b5dd7941b2a3a55527",
+              "documentKey": "antigua-pdm-ot",
+              "documentVersion": "official-municipal-pdf-2026-06-22",
+              "citationLabel": "Plan de Desarrollo Municipal y Ordenamiento Territorial de Antigua Guatemala - Modulo 1, pagina 23",
+              "pageStart": 23,
+              "pageEnd": 23,
+              "matchedModes": [
+                "phrase"
+              ],
+              "scores": {
+                "phrase": 1
+              },
+              "hybridScore": 0,
+              "relevant": false
+            },
+            {
+              "rank": 5,
+              "chunkId": "50bfb36af798cd1e507f7886a502d88e35d6dcfc63e08b97632001df3cf1feda",
+              "documentKey": "antigua-pdm-ot",
+              "documentVersion": "official-municipal-pdf-2026-06-22",
+              "citationLabel": "Plan de Desarrollo Municipal y Ordenamiento Territorial de Antigua Guatemala - Modulo 1, pagina 114",
+              "pageStart": 114,
+              "pageEnd": 114,
+              "matchedModes": [
+                "phrase"
+              ],
+              "scores": {
+                "phrase": 1
+              },
+              "hybridScore": 0,
+              "relevant": false
+            }
+          ]
+        },
+        "keyword": {
+          "mode": "keyword",
+          "answerEligible": true,
+          "firstRelevantRank": 7,
+          "hitAt5": false,
+          "citationIdentityValid": false,
+          "leakedCandidateCount": 0,
+          "candidates": [
+            {
+              "rank": 1,
+              "chunkId": "ca3e3f86a7fffc8e0031ae2ac521fb17ba25888c160d16f7747426b2d1fd954d",
+              "documentKey": "antigua-pdm-ot",
+              "documentVersion": "official-municipal-pdf-2026-06-22",
+              "citationLabel": "Plan de Desarrollo Municipal y Ordenamiento Territorial de Antigua Guatemala - Modulo 1, pagina 13",
+              "pageStart": 13,
+              "pageEnd": 13,
+              "matchedModes": [
+                "keyword"
+              ],
+              "scores": {
+                "keyword": 0.16666667
+              },
+              "hybridScore": 0,
+              "relevant": false
+            },
+            {
+              "rank": 2,
+              "chunkId": "7578a9f0a8ebe395e104dc9c1bc93416c1c98116bc60d49f640b87a8ee1ba005",
+              "documentKey": "antigua-pdm-ot",
+              "documentVersion": "official-municipal-pdf-2026-06-22",
+              "citationLabel": "Plan de Desarrollo Municipal y Ordenamiento Territorial de Antigua Guatemala - Modulo 1, pagina 142",
+              "pageStart": 142,
+              "pageEnd": 142,
+              "matchedModes": [
+                "keyword"
+              ],
+              "scores": {
+                "keyword": 0.054972827
+              },
+              "hybridScore": 0,
+              "relevant": false
+            },
+            {
+              "rank": 3,
+              "chunkId": "94f57e5c13bb54f78a21d5db2f5e6827b6974619f6d4b7567c2ec25f14cb3ae9",
+              "documentKey": "antigua-pdm-ot",
+              "documentVersion": "official-municipal-pdf-2026-06-22",
+              "citationLabel": "Plan de Desarrollo Municipal y Ordenamiento Territorial de Antigua Guatemala - Modulo 1, pagina 7",
+              "pageStart": 7,
+              "pageEnd": 7,
+              "matchedModes": [
+                "keyword"
+              ],
+              "scores": {
+                "keyword": 0.05
+              },
+              "hybridScore": 0,
+              "relevant": false
+            },
+            {
+              "rank": 4,
+              "chunkId": "fd029efaa77f580296a9bcc224b82eeeb1680f8c259952944d1620fad70bece5",
+              "documentKey": "antigua-pdm-ot",
+              "documentVersion": "official-municipal-pdf-2026-06-22",
+              "citationLabel": "Plan de Desarrollo Municipal y Ordenamiento Territorial de Antigua Guatemala - Modulo 1, pagina 10",
+              "pageStart": 10,
+              "pageEnd": 10,
+              "matchedModes": [
+                "keyword"
+              ],
+              "scores": {
+                "keyword": 0.05
+              },
+              "hybridScore": 0,
+              "relevant": false
+            },
+            {
+              "rank": 5,
+              "chunkId": "700ea0f42c000a112f26e3641f9aab1b27e47b5f465e97b5dd7941b2a3a55527",
+              "documentKey": "antigua-pdm-ot",
+              "documentVersion": "official-municipal-pdf-2026-06-22",
+              "citationLabel": "Plan de Desarrollo Municipal y Ordenamiento Territorial de Antigua Guatemala - Modulo 1, pagina 23",
+              "pageStart": 23,
+              "pageEnd": 23,
+              "matchedModes": [
+                "keyword"
+              ],
+              "scores": {
+                "keyword": 0.05
+              },
+              "hybridScore": 0,
+              "relevant": false
+            }
+          ]
+        },
+        "vector_lexical": {
+          "mode": "vector_lexical",
+          "answerEligible": true,
+          "firstRelevantRank": 1,
+          "hitAt5": true,
+          "citationIdentityValid": true,
+          "leakedCandidateCount": 0,
+          "candidates": [
+            {
+              "rank": 1,
+              "chunkId": "56a55de8c950da50ddd3ba38d55dbf0430ab6488b4e79e5e95983b93b860266f",
+              "documentKey": "antigua-pdm-ot",
+              "documentVersion": "official-municipal-pdf-2026-06-22",
+              "citationLabel": "Plan de Desarrollo Municipal y Ordenamiento Territorial de Antigua Guatemala - Modulo 1, pagina 141",
+              "pageStart": 141,
+              "pageEnd": 141,
+              "matchedModes": [
+                "vector"
+              ],
+              "scores": {
+                "vector": 0.7263091206550598
+              },
+              "hybridScore": 0,
+              "relevant": true
+            },
+            {
+              "rank": 2,
+              "chunkId": "4c4d4c20bf62015483fde92da5f7e9f80fc9404c60c9267fe620e668428847c6",
+              "documentKey": "antigua-pdm-ot",
+              "documentVersion": "official-municipal-pdf-2026-06-22",
+              "citationLabel": "Plan de Desarrollo Municipal y Ordenamiento Territorial de Antigua Guatemala - Modulo 1, pagina 140",
+              "pageStart": 140,
+              "pageEnd": 140,
+              "matchedModes": [
+                "vector"
+              ],
+              "scores": {
+                "vector": 0.6576188206672668
+              },
+              "hybridScore": 0,
+              "relevant": true
+            },
+            {
+              "rank": 3,
+              "chunkId": "ca3e3f86a7fffc8e0031ae2ac521fb17ba25888c160d16f7747426b2d1fd954d",
+              "documentKey": "antigua-pdm-ot",
+              "documentVersion": "official-municipal-pdf-2026-06-22",
+              "citationLabel": "Plan de Desarrollo Municipal y Ordenamiento Territorial de Antigua Guatemala - Modulo 1, pagina 13",
+              "pageStart": 13,
+              "pageEnd": 13,
+              "matchedModes": [
+                "vector"
+              ],
+              "scores": {
+                "vector": 0.5737657205006061
+              },
+              "hybridScore": 0,
+              "relevant": false
+            },
+            {
+              "rank": 4,
+              "chunkId": "700ea0f42c000a112f26e3641f9aab1b27e47b5f465e97b5dd7941b2a3a55527",
+              "documentKey": "antigua-pdm-ot",
+              "documentVersion": "official-municipal-pdf-2026-06-22",
+              "citationLabel": "Plan de Desarrollo Municipal y Ordenamiento Territorial de Antigua Guatemala - Modulo 1, pagina 23",
+              "pageStart": 23,
+              "pageEnd": 23,
+              "matchedModes": [
+                "vector"
+              ],
+              "scores": {
+                "vector": 0.44197732901843756
+              },
+              "hybridScore": 0,
+              "relevant": false
+            },
+            {
+              "rank": 5,
+              "chunkId": "14d43f75a701c657ea9bee12c6d6b1633618b0cd29010164ee4f144ae2d4b7e5",
+              "documentKey": "antigua-pdm-ot",
+              "documentVersion": "official-municipal-pdf-2026-06-22",
+              "citationLabel": "Plan de Desarrollo Municipal y Ordenamiento Territorial de Antigua Guatemala - Modulo 1, pagina 109",
+              "pageStart": 109,
+              "pageEnd": 109,
+              "matchedModes": [
+                "vector"
+              ],
+              "scores": {
+                "vector": 0.4364253282546997
+              },
+              "hybridScore": 0,
+              "relevant": false
+            }
+          ]
+        },
+        "hybrid": {
+          "mode": "hybrid",
+          "answerEligible": true,
+          "firstRelevantRank": 2,
+          "hitAt5": true,
+          "citationIdentityValid": false,
+          "leakedCandidateCount": 0,
+          "candidates": [
+            {
+              "rank": 1,
+              "chunkId": "ca3e3f86a7fffc8e0031ae2ac521fb17ba25888c160d16f7747426b2d1fd954d",
+              "documentKey": "antigua-pdm-ot",
+              "documentVersion": "official-municipal-pdf-2026-06-22",
+              "citationLabel": "Plan de Desarrollo Municipal y Ordenamiento Territorial de Antigua Guatemala - Modulo 1, pagina 13",
+              "pageStart": 13,
+              "pageEnd": 13,
+              "matchedModes": [
+                "phrase",
+                "keyword",
+                "vector"
+              ],
+              "scores": {
+                "phrase": 1,
+                "keyword": 0.16666667,
+                "vector": 0.5737657205006061,
+                "provenance": 0
+              },
+              "hybridScore": 5.193981920750909,
+              "relevant": false
+            },
+            {
+              "rank": 2,
+              "chunkId": "4c4d4c20bf62015483fde92da5f7e9f80fc9404c60c9267fe620e668428847c6",
+              "documentKey": "antigua-pdm-ot",
+              "documentVersion": "official-municipal-pdf-2026-06-22",
+              "citationLabel": "Plan de Desarrollo Municipal y Ordenamiento Territorial de Antigua Guatemala - Modulo 1, pagina 140",
+              "pageStart": 140,
+              "pageEnd": 140,
+              "matchedModes": [
+                "phrase",
+                "keyword",
+                "vector"
+              ],
+              "scores": {
+                "phrase": 1,
+                "keyword": 0.05,
+                "vector": 0.6576188206672668,
+                "provenance": 0
+              },
+              "hybridScore": 5.0864282310009,
+              "relevant": true
+            },
+            {
+              "rank": 3,
+              "chunkId": "700ea0f42c000a112f26e3641f9aab1b27e47b5f465e97b5dd7941b2a3a55527",
+              "documentKey": "antigua-pdm-ot",
+              "documentVersion": "official-municipal-pdf-2026-06-22",
+              "citationLabel": "Plan de Desarrollo Municipal y Ordenamiento Territorial de Antigua Guatemala - Modulo 1, pagina 23",
+              "pageStart": 23,
+              "pageEnd": 23,
+              "matchedModes": [
+                "phrase",
+                "keyword",
+                "vector"
+              ],
+              "scores": {
+                "phrase": 1,
+                "keyword": 0.05,
+                "vector": 0.44197732901843756,
+                "provenance": 0
+              },
+              "hybridScore": 4.762965993527656,
+              "relevant": false
+            },
+            {
+              "rank": 4,
+              "chunkId": "fd029efaa77f580296a9bcc224b82eeeb1680f8c259952944d1620fad70bece5",
+              "documentKey": "antigua-pdm-ot",
+              "documentVersion": "official-municipal-pdf-2026-06-22",
+              "citationLabel": "Plan de Desarrollo Municipal y Ordenamiento Territorial de Antigua Guatemala - Modulo 1, pagina 10",
+              "pageStart": 10,
+              "pageEnd": 10,
+              "matchedModes": [
+                "phrase",
+                "keyword",
+                "vector"
+              ],
+              "scores": {
+                "phrase": 1,
+                "keyword": 0.05,
+                "vector": 0.39678955645468006,
+                "provenance": 0
+              },
+              "hybridScore": 4.69518433468202,
+              "relevant": false
+            },
+            {
+              "rank": 5,
+              "chunkId": "7578a9f0a8ebe395e104dc9c1bc93416c1c98116bc60d49f640b87a8ee1ba005",
+              "documentKey": "antigua-pdm-ot",
+              "documentVersion": "official-municipal-pdf-2026-06-22",
+              "citationLabel": "Plan de Desarrollo Municipal y Ordenamiento Territorial de Antigua Guatemala - Modulo 1, pagina 142",
+              "pageStart": 142,
+              "pageEnd": 142,
+              "matchedModes": [
+                "phrase",
+                "keyword"
+              ],
+              "scores": {
+                "phrase": 1,
+                "keyword": 0.054972827,
+                "vector": 0,
+                "provenance": 0
+              },
+              "hybridScore": 4.109945654,
+              "relevant": false
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "PDM-POS-005",
+      "kind": "evidence",
+      "query": "Mapa de Suelo Rural Núcleo Rural",
+      "expectedPageRanges": [
+        [
+          159,
+          161
+        ]
+      ],
+      "modes": {
+        "phrase": {
+          "mode": "phrase",
+          "answerEligible": true,
+          "firstRelevantRank": 2,
+          "hitAt5": true,
+          "citationIdentityValid": false,
+          "leakedCandidateCount": 0,
+          "candidates": [
+            {
+              "rank": 1,
+              "chunkId": "41710a225be561be447ac37474018ada3d337806e26c74cc762f7850153cb21f",
+              "documentKey": "antigua-pdm-ot",
+              "documentVersion": "official-municipal-pdf-2026-06-22",
+              "citationLabel": "Plan de Desarrollo Municipal y Ordenamiento Territorial de Antigua Guatemala - Modulo 1, pagina 10",
+              "pageStart": 10,
+              "pageEnd": 10,
+              "matchedModes": [
+                "phrase"
+              ],
+              "scores": {
+                "phrase": 1
+              },
+              "hybridScore": 0,
+              "relevant": false
+            },
+            {
+              "rank": 2,
+              "chunkId": "4140091ec2945940a5416e0d0969d775016cb5c686b1e370c4a2112f39bcdcfc",
+              "documentKey": "antigua-pdm-ot",
+              "documentVersion": "official-municipal-pdf-2026-06-22",
+              "citationLabel": "Plan de Desarrollo Municipal y Ordenamiento Territorial de Antigua Guatemala - Modulo 1, pagina 160",
+              "pageStart": 160,
+              "pageEnd": 160,
+              "matchedModes": [
+                "phrase"
+              ],
+              "scores": {
+                "phrase": 1
+              },
+              "hybridScore": 0,
+              "relevant": true
+            }
+          ]
+        },
+        "keyword": {
+          "mode": "keyword",
+          "answerEligible": true,
+          "firstRelevantRank": 2,
+          "hitAt5": true,
+          "citationIdentityValid": false,
+          "leakedCandidateCount": 0,
+          "candidates": [
+            {
+              "rank": 1,
+              "chunkId": "41710a225be561be447ac37474018ada3d337806e26c74cc762f7850153cb21f",
+              "documentKey": "antigua-pdm-ot",
+              "documentVersion": "official-municipal-pdf-2026-06-22",
+              "citationLabel": "Plan de Desarrollo Municipal y Ordenamiento Territorial de Antigua Guatemala - Modulo 1, pagina 10",
+              "pageStart": 10,
+              "pageEnd": 10,
+              "matchedModes": [
+                "keyword"
+              ],
+              "scores": {
+                "keyword": 0.07678571
+              },
+              "hybridScore": 0,
+              "relevant": false
+            },
+            {
+              "rank": 2,
+              "chunkId": "4140091ec2945940a5416e0d0969d775016cb5c686b1e370c4a2112f39bcdcfc",
+              "documentKey": "antigua-pdm-ot",
+              "documentVersion": "official-municipal-pdf-2026-06-22",
+              "citationLabel": "Plan de Desarrollo Municipal y Ordenamiento Territorial de Antigua Guatemala - Modulo 1, pagina 160",
+              "pageStart": 160,
+              "pageEnd": 160,
+              "matchedModes": [
+                "keyword"
+              ],
+              "scores": {
+                "keyword": 0.057692308
+              },
+              "hybridScore": 0,
+              "relevant": true
+            }
+          ]
+        },
+        "vector_lexical": {
+          "mode": "vector_lexical",
+          "answerEligible": true,
+          "firstRelevantRank": 9,
+          "hitAt5": false,
+          "citationIdentityValid": false,
+          "leakedCandidateCount": 0,
+          "candidates": [
+            {
+              "rank": 1,
+              "chunkId": "41710a225be561be447ac37474018ada3d337806e26c74cc762f7850153cb21f",
+              "documentKey": "antigua-pdm-ot",
+              "documentVersion": "official-municipal-pdf-2026-06-22",
+              "citationLabel": "Plan de Desarrollo Municipal y Ordenamiento Territorial de Antigua Guatemala - Modulo 1, pagina 10",
+              "pageStart": 10,
+              "pageEnd": 10,
+              "matchedModes": [
+                "vector"
+              ],
+              "scores": {
+                "vector": 0.6053524848608692
+              },
+              "hybridScore": 0,
+              "relevant": false
+            },
+            {
+              "rank": 2,
+              "chunkId": "c8f8ae7f88fa8bd7cfcb6140b2c8e1c1d0fe494eadb6c743bb2a2bc9b7a9556a",
+              "documentKey": "antigua-pdm-ot",
+              "documentVersion": "official-municipal-pdf-2026-06-22",
+              "citationLabel": "Plan de Desarrollo Municipal y Ordenamiento Territorial de Antigua Guatemala - Modulo 1, pagina 9",
+              "pageStart": 9,
+              "pageEnd": 9,
+              "matchedModes": [
+                "vector"
+              ],
+              "scores": {
+                "vector": 0.43415429795708127
+              },
+              "hybridScore": 0,
+              "relevant": false
+            },
+            {
+              "rank": 3,
+              "chunkId": "3cf9beaf9260ed1b7a73f35baa6ce581146b7768ddfa542c8bdca139e751a816",
+              "documentKey": "antigua-pdm-ot",
+              "documentVersion": "official-municipal-pdf-2026-06-22",
+              "citationLabel": "Plan de Desarrollo Municipal y Ordenamiento Territorial de Antigua Guatemala - Modulo 1, pagina 9",
+              "pageStart": 9,
+              "pageEnd": 9,
+              "matchedModes": [
+                "vector"
+              ],
+              "scores": {
+                "vector": 0.36572152376174927
+              },
+              "hybridScore": 0,
+              "relevant": false
+            },
+            {
+              "rank": 4,
+              "chunkId": "c096396aa180f2b5308a04e3ee83e67b8cc7e8021166b4b61ac5563f0f0eb362",
+              "documentKey": "antigua-pdm-ot",
+              "documentVersion": "official-municipal-pdf-2026-06-22",
+              "citationLabel": "Plan de Desarrollo Municipal y Ordenamiento Territorial de Antigua Guatemala - Modulo 1, pagina 9",
+              "pageStart": 9,
+              "pageEnd": 9,
+              "matchedModes": [
+                "vector"
+              ],
+              "scores": {
+                "vector": 0.34737173632551865
+              },
+              "hybridScore": 0,
+              "relevant": false
+            },
+            {
+              "rank": 5,
+              "chunkId": "0e0342c829045a87d782c1885d6d4c3a0c5eb4eff102018e8757db93a9d96809",
+              "documentKey": "antigua-pdm-ot",
+              "documentVersion": "official-municipal-pdf-2026-06-22",
+              "citationLabel": "Plan de Desarrollo Municipal y Ordenamiento Territorial de Antigua Guatemala - Modulo 1, pagina 147",
+              "pageStart": 147,
+              "pageEnd": 147,
+              "matchedModes": [
+                "vector"
+              ],
+              "scores": {
+                "vector": 0.33065444231033325
+              },
+              "hybridScore": 0,
+              "relevant": false
+            }
+          ]
+        },
+        "hybrid": {
+          "mode": "hybrid",
+          "answerEligible": true,
+          "firstRelevantRank": 2,
+          "hitAt5": true,
+          "citationIdentityValid": false,
+          "leakedCandidateCount": 0,
+          "candidates": [
+            {
+              "rank": 1,
+              "chunkId": "41710a225be561be447ac37474018ada3d337806e26c74cc762f7850153cb21f",
+              "documentKey": "antigua-pdm-ot",
+              "documentVersion": "official-municipal-pdf-2026-06-22",
+              "citationLabel": "Plan de Desarrollo Municipal y Ordenamiento Territorial de Antigua Guatemala - Modulo 1, pagina 10",
+              "pageStart": 10,
+              "pageEnd": 10,
+              "matchedModes": [
+                "phrase",
+                "keyword",
+                "vector"
+              ],
+              "scores": {
+                "phrase": 1,
+                "keyword": 0.07678571,
+                "vector": 0.6053524848608692,
+                "provenance": 0
+              },
+              "hybridScore": 5.061600147291303,
+              "relevant": false
+            },
+            {
+              "rank": 2,
+              "chunkId": "4140091ec2945940a5416e0d0969d775016cb5c686b1e370c4a2112f39bcdcfc",
+              "documentKey": "antigua-pdm-ot",
+              "documentVersion": "official-municipal-pdf-2026-06-22",
+              "citationLabel": "Plan de Desarrollo Municipal y Ordenamiento Territorial de Antigua Guatemala - Modulo 1, pagina 160",
+              "pageStart": 160,
+              "pageEnd": 160,
+              "matchedModes": [
+                "phrase",
+                "keyword",
+                "vector"
+              ],
+              "scores": {
+                "phrase": 1,
+                "keyword": 0.057692308,
+                "vector": 0.28500962257385254,
+                "provenance": 0
+              },
+              "hybridScore": 4.542899049860779,
+              "relevant": true
+            },
+            {
+              "rank": 3,
+              "chunkId": "c8f8ae7f88fa8bd7cfcb6140b2c8e1c1d0fe494eadb6c743bb2a2bc9b7a9556a",
+              "documentKey": "antigua-pdm-ot",
+              "documentVersion": "official-municipal-pdf-2026-06-22",
+              "citationLabel": "Plan de Desarrollo Municipal y Ordenamiento Territorial de Antigua Guatemala - Modulo 1, pagina 9",
+              "pageStart": 9,
+              "pageEnd": 9,
+              "matchedModes": [
+                "vector"
+              ],
+              "scores": {
+                "vector": 0.43415429795708127,
+                "phrase": 0,
+                "keyword": 0,
+                "provenance": 0.8500000000000001
+              },
+              "hybridScore": 1.076231446935622,
+              "relevant": false
+            },
+            {
+              "rank": 4,
+              "chunkId": "3cf9beaf9260ed1b7a73f35baa6ce581146b7768ddfa542c8bdca139e751a816",
+              "documentKey": "antigua-pdm-ot",
+              "documentVersion": "official-municipal-pdf-2026-06-22",
+              "citationLabel": "Plan de Desarrollo Municipal y Ordenamiento Territorial de Antigua Guatemala - Modulo 1, pagina 9",
+              "pageStart": 9,
+              "pageEnd": 9,
+              "matchedModes": [
+                "vector"
+              ],
+              "scores": {
+                "vector": 0.36572152376174927,
+                "phrase": 0,
+                "keyword": 0,
+                "provenance": 0.8500000000000001
+              },
+              "hybridScore": 0.973582285642624,
+              "relevant": false
+            },
+            {
+              "rank": 5,
+              "chunkId": "c096396aa180f2b5308a04e3ee83e67b8cc7e8021166b4b61ac5563f0f0eb362",
+              "documentKey": "antigua-pdm-ot",
+              "documentVersion": "official-municipal-pdf-2026-06-22",
+              "citationLabel": "Plan de Desarrollo Municipal y Ordenamiento Territorial de Antigua Guatemala - Modulo 1, pagina 9",
+              "pageStart": 9,
+              "pageEnd": 9,
+              "matchedModes": [
+                "vector"
+              ],
+              "scores": {
+                "vector": 0.34737173632551865,
+                "phrase": 0,
+                "keyword": 0,
+                "provenance": 0.8500000000000001
+              },
+              "hybridScore": 0.946057604488278,
+              "relevant": false
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "PDM-POS-006",
+      "kind": "evidence",
+      "query": "Creación de nuevas rutas de transporte público",
+      "expectedPageRanges": [
+        [
+          179,
+          181
+        ]
+      ],
+      "modes": {
+        "phrase": {
+          "mode": "phrase",
+          "answerEligible": true,
+          "firstRelevantRank": 1,
+          "hitAt5": true,
+          "citationIdentityValid": true,
+          "leakedCandidateCount": 0,
+          "candidates": [
+            {
+              "rank": 1,
+              "chunkId": "3733ee3eead0d1ef7255c96be52d644c74b525a74d5461e342a4ae2324fb9d44",
+              "documentKey": "antigua-pdm-ot",
+              "documentVersion": "official-municipal-pdf-2026-06-22",
+              "citationLabel": "Plan de Desarrollo Municipal y Ordenamiento Territorial de Antigua Guatemala - Modulo 1, pagina 179",
+              "pageStart": 179,
+              "pageEnd": 179,
+              "matchedModes": [
+                "phrase"
+              ],
+              "scores": {
+                "phrase": 0.033333335
+              },
+              "hybridScore": 0,
+              "relevant": true
+            },
+            {
+              "rank": 2,
+              "chunkId": "e6ccba097b5b6c95ee3ed586939cf2ffd32328003b6ac6da5397cd14ab80035b",
+              "documentKey": "antigua-pdm-ot",
+              "documentVersion": "official-municipal-pdf-2026-06-22",
+              "citationLabel": "Plan de Desarrollo Municipal y Ordenamiento Territorial de Antigua Guatemala - Modulo 1, pagina 180",
+              "pageStart": 180,
+              "pageEnd": 180,
+              "matchedModes": [
+                "phrase"
+              ],
+              "scores": {
+                "phrase": 0.033333335
+              },
+              "hybridScore": 0,
+              "relevant": true
+            },
+            {
+              "rank": 3,
+              "chunkId": "662b726b0282ac77aa9b6e47afd881dc95251941fa0fe652ffc585c0163f75d7",
+              "documentKey": "antigua-pdm-ot",
+              "documentVersion": "official-municipal-pdf-2026-06-22",
+              "citationLabel": "Plan de Desarrollo Municipal y Ordenamiento Territorial de Antigua Guatemala - Modulo 1, pagina 182",
+              "pageStart": 182,
+              "pageEnd": 182,
+              "matchedModes": [
+                "phrase"
+              ],
+              "scores": {
+                "phrase": 0.033333335
+              },
+              "hybridScore": 0,
+              "relevant": false
+            }
+          ]
+        },
+        "keyword": {
+          "mode": "keyword",
+          "answerEligible": true,
+          "firstRelevantRank": 1,
+          "hitAt5": true,
+          "citationIdentityValid": true,
+          "leakedCandidateCount": 0,
+          "candidates": [
+            {
+              "rank": 1,
+              "chunkId": "3733ee3eead0d1ef7255c96be52d644c74b525a74d5461e342a4ae2324fb9d44",
+              "documentKey": "antigua-pdm-ot",
+              "documentVersion": "official-municipal-pdf-2026-06-22",
+              "citationLabel": "Plan de Desarrollo Municipal y Ordenamiento Territorial de Antigua Guatemala - Modulo 1, pagina 179",
+              "pageStart": 179,
+              "pageEnd": 179,
+              "matchedModes": [
+                "keyword"
+              ],
+              "scores": {
+                "keyword": 0.033333335
+              },
+              "hybridScore": 0,
+              "relevant": true
+            },
+            {
+              "rank": 2,
+              "chunkId": "e6ccba097b5b6c95ee3ed586939cf2ffd32328003b6ac6da5397cd14ab80035b",
+              "documentKey": "antigua-pdm-ot",
+              "documentVersion": "official-municipal-pdf-2026-06-22",
+              "citationLabel": "Plan de Desarrollo Municipal y Ordenamiento Territorial de Antigua Guatemala - Modulo 1, pagina 180",
+              "pageStart": 180,
+              "pageEnd": 180,
+              "matchedModes": [
+                "keyword"
+              ],
+              "scores": {
+                "keyword": 0.033333335
+              },
+              "hybridScore": 0,
+              "relevant": true
+            },
+            {
+              "rank": 3,
+              "chunkId": "662b726b0282ac77aa9b6e47afd881dc95251941fa0fe652ffc585c0163f75d7",
+              "documentKey": "antigua-pdm-ot",
+              "documentVersion": "official-municipal-pdf-2026-06-22",
+              "citationLabel": "Plan de Desarrollo Municipal y Ordenamiento Territorial de Antigua Guatemala - Modulo 1, pagina 182",
+              "pageStart": 182,
+              "pageEnd": 182,
+              "matchedModes": [
+                "keyword"
+              ],
+              "scores": {
+                "keyword": 0.033333335
+              },
+              "hybridScore": 0,
+              "relevant": false
+            }
+          ]
+        },
+        "vector_lexical": {
+          "mode": "vector_lexical",
+          "answerEligible": true,
+          "firstRelevantRank": 3,
+          "hitAt5": true,
+          "citationIdentityValid": false,
+          "leakedCandidateCount": 0,
+          "candidates": [
+            {
+              "rank": 1,
+              "chunkId": "5c07c0aa4204d1c5fcb95c5eb8928c93ecdb4844c5744552401040b5919e1f54",
+              "documentKey": "antigua-pdm-ot",
+              "documentVersion": "official-municipal-pdf-2026-06-22",
+              "citationLabel": "Plan de Desarrollo Municipal y Ordenamiento Territorial de Antigua Guatemala - Modulo 1, pagina 194",
+              "pageStart": 194,
+              "pageEnd": 194,
+              "matchedModes": [
+                "vector"
+              ],
+              "scores": {
+                "vector": 0.4611210250186317
+              },
+              "hybridScore": 0,
+              "relevant": false
+            },
+            {
+              "rank": 2,
+              "chunkId": "83dca8f3cae8507969e007f75298c0e6dcdf791dbf95541093183d6b78e40764",
+              "documentKey": "antigua-pdm-ot",
+              "documentVersion": "official-municipal-pdf-2026-06-22",
+              "citationLabel": "Plan de Desarrollo Municipal y Ordenamiento Territorial de Antigua Guatemala - Modulo 1, pagina 217",
+              "pageStart": 217,
+              "pageEnd": 217,
+              "matchedModes": [
+                "vector"
+              ],
+              "scores": {
+                "vector": 0.450770503190699
+              },
+              "hybridScore": 0,
+              "relevant": false
+            },
+            {
+              "rank": 3,
+              "chunkId": "83157b16feb3d56e1934fe86448f29c173ebaba4cf37dfc4720caa648cfdcb91",
+              "documentKey": "antigua-pdm-ot",
+              "documentVersion": "official-municipal-pdf-2026-06-22",
+              "citationLabel": "Plan de Desarrollo Municipal y Ordenamiento Territorial de Antigua Guatemala - Modulo 1, pagina 179",
+              "pageStart": 179,
+              "pageEnd": 179,
+              "matchedModes": [
+                "vector"
+              ],
+              "scores": {
+                "vector": 0.4394632577896118
+              },
+              "hybridScore": 0,
+              "relevant": true
+            },
+            {
+              "rank": 4,
+              "chunkId": "e6ccba097b5b6c95ee3ed586939cf2ffd32328003b6ac6da5397cd14ab80035b",
+              "documentKey": "antigua-pdm-ot",
+              "documentVersion": "official-municipal-pdf-2026-06-22",
+              "citationLabel": "Plan de Desarrollo Municipal y Ordenamiento Territorial de Antigua Guatemala - Modulo 1, pagina 180",
+              "pageStart": 180,
+              "pageEnd": 180,
+              "matchedModes": [
+                "vector"
+              ],
+              "scores": {
+                "vector": 0.42834944387085216
+              },
+              "hybridScore": 0,
+              "relevant": true
+            },
+            {
+              "rank": 5,
+              "chunkId": "481badc154247ac820984724e22ab824117ab4d87e7b1236246262e35376b56a",
+              "documentKey": "antigua-pdm-ot",
+              "documentVersion": "official-municipal-pdf-2026-06-22",
+              "citationLabel": "Plan de Desarrollo Municipal y Ordenamiento Territorial de Antigua Guatemala - Modulo 1, pagina 184",
+              "pageStart": 184,
+              "pageEnd": 184,
+              "matchedModes": [
+                "vector"
+              ],
+              "scores": {
+                "vector": 0.4179545765505607
+              },
+              "hybridScore": 0,
+              "relevant": false
+            }
+          ]
+        },
+        "hybrid": {
+          "mode": "hybrid",
+          "answerEligible": true,
+          "firstRelevantRank": 3,
+          "hitAt5": true,
+          "citationIdentityValid": false,
+          "leakedCandidateCount": 0,
+          "candidates": [
+            {
+              "rank": 1,
+              "chunkId": "5c07c0aa4204d1c5fcb95c5eb8928c93ecdb4844c5744552401040b5919e1f54",
+              "documentKey": "antigua-pdm-ot",
+              "documentVersion": "official-municipal-pdf-2026-06-22",
+              "citationLabel": "Plan de Desarrollo Municipal y Ordenamiento Territorial de Antigua Guatemala - Modulo 1, pagina 194",
+              "pageStart": 194,
+              "pageEnd": 194,
+              "matchedModes": [
+                "vector"
+              ],
+              "scores": {
+                "vector": 0.4611210250186317,
+                "phrase": 0,
+                "keyword": 0,
+                "provenance": 0.8500000000000001
+              },
+              "hybridScore": 1.1166815375279477,
+              "relevant": false
+            },
+            {
+              "rank": 2,
+              "chunkId": "83dca8f3cae8507969e007f75298c0e6dcdf791dbf95541093183d6b78e40764",
+              "documentKey": "antigua-pdm-ot",
+              "documentVersion": "official-municipal-pdf-2026-06-22",
+              "citationLabel": "Plan de Desarrollo Municipal y Ordenamiento Territorial de Antigua Guatemala - Modulo 1, pagina 217",
+              "pageStart": 217,
+              "pageEnd": 217,
+              "matchedModes": [
+                "vector"
+              ],
+              "scores": {
+                "vector": 0.450770503190699,
+                "phrase": 0,
+                "keyword": 0,
+                "provenance": 0.8500000000000001
+              },
+              "hybridScore": 1.1011557547860487,
+              "relevant": false
+            },
+            {
+              "rank": 3,
+              "chunkId": "83157b16feb3d56e1934fe86448f29c173ebaba4cf37dfc4720caa648cfdcb91",
+              "documentKey": "antigua-pdm-ot",
+              "documentVersion": "official-municipal-pdf-2026-06-22",
+              "citationLabel": "Plan de Desarrollo Municipal y Ordenamiento Territorial de Antigua Guatemala - Modulo 1, pagina 179",
+              "pageStart": 179,
+              "pageEnd": 179,
+              "matchedModes": [
+                "vector"
+              ],
+              "scores": {
+                "vector": 0.4394632577896118,
+                "phrase": 0,
+                "keyword": 0,
+                "provenance": 0.8500000000000001
+              },
+              "hybridScore": 1.0841948866844178,
+              "relevant": true
+            },
+            {
+              "rank": 4,
+              "chunkId": "481badc154247ac820984724e22ab824117ab4d87e7b1236246262e35376b56a",
+              "documentKey": "antigua-pdm-ot",
+              "documentVersion": "official-municipal-pdf-2026-06-22",
+              "citationLabel": "Plan de Desarrollo Municipal y Ordenamiento Territorial de Antigua Guatemala - Modulo 1, pagina 184",
+              "pageStart": 184,
+              "pageEnd": 184,
+              "matchedModes": [
+                "vector"
+              ],
+              "scores": {
+                "vector": 0.4179545765505607,
+                "phrase": 0,
+                "keyword": 0,
+                "provenance": 0.8500000000000001
+              },
+              "hybridScore": 1.0519318648258411,
+              "relevant": false
+            },
+            {
+              "rank": 5,
+              "chunkId": "903d7c3eea35694831bb8aaacfb739c70e59719ad1a607033d70aa775f8ded1f",
+              "documentKey": "antigua-pdm-ot",
+              "documentVersion": "official-municipal-pdf-2026-06-22",
+              "citationLabel": "Plan de Desarrollo Municipal y Ordenamiento Territorial de Antigua Guatemala - Modulo 1, pagina 189",
+              "pageStart": 189,
+              "pageEnd": 189,
+              "matchedModes": [
+                "vector"
+              ],
+              "scores": {
+                "vector": 0.4160582721233368,
+                "phrase": 0,
+                "keyword": 0,
+                "provenance": 0.8500000000000001
+              },
+              "hybridScore": 1.0490874081850052,
+              "relevant": false
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "PDM-POS-007",
+      "kind": "evidence",
+      "query": "Poca protección al patrimonio histórico, cultural y natural",
+      "expectedPageRanges": [
+        [
+          199,
+          201
+        ]
+      ],
+      "modes": {
+        "phrase": {
+          "mode": "phrase",
+          "answerEligible": true,
+          "firstRelevantRank": null,
+          "hitAt5": false,
+          "citationIdentityValid": false,
+          "leakedCandidateCount": 0,
+          "candidates": [
+            {
+              "rank": 1,
+              "chunkId": "c5f895d0ae5476931782bc70c058f44b4aa58f0cf403119d2d65c4fe1845e831",
+              "documentKey": "antigua-pdm-ot",
+              "documentVersion": "official-municipal-pdf-2026-06-22",
+              "citationLabel": "Plan de Desarrollo Municipal y Ordenamiento Territorial de Antigua Guatemala - Modulo 1, pagina 176",
+              "pageStart": 176,
+              "pageEnd": 176,
+              "matchedModes": [
+                "phrase"
+              ],
+              "scores": {
+                "phrase": 0.033333335
+              },
+              "hybridScore": 0,
+              "relevant": false
+            },
+            {
+              "rank": 2,
+              "chunkId": "3733ee3eead0d1ef7255c96be52d644c74b525a74d5461e342a4ae2324fb9d44",
+              "documentKey": "antigua-pdm-ot",
+              "documentVersion": "official-municipal-pdf-2026-06-22",
+              "citationLabel": "Plan de Desarrollo Municipal y Ordenamiento Territorial de Antigua Guatemala - Modulo 1, pagina 179",
+              "pageStart": 179,
+              "pageEnd": 179,
+              "matchedModes": [
+                "phrase"
+              ],
+              "scores": {
+                "phrase": 0.033333335
+              },
+              "hybridScore": 0,
+              "relevant": false
+            },
+            {
+              "rank": 3,
+              "chunkId": "f15b1d6e3202fd848fd3644e98ec2dcceaf8cee5a66c440f622b8171f373cc7d",
+              "documentKey": "antigua-pdm-ot",
+              "documentVersion": "official-municipal-pdf-2026-06-22",
+              "citationLabel": "Plan de Desarrollo Municipal y Ordenamiento Territorial de Antigua Guatemala - Modulo 1, pagina 181",
+              "pageStart": 181,
+              "pageEnd": 181,
+              "matchedModes": [
+                "phrase"
+              ],
+              "scores": {
+                "phrase": 0.033333335
+              },
+              "hybridScore": 0,
+              "relevant": false
+            },
+            {
+              "rank": 4,
+              "chunkId": "7ee09c654418ae7385b69176c45cd3aeec03e8d14c1ec8a11b2cfb8b9e440f27",
+              "documentKey": "antigua-pdm-ot",
+              "documentVersion": "official-municipal-pdf-2026-06-22",
+              "citationLabel": "Plan de Desarrollo Municipal y Ordenamiento Territorial de Antigua Guatemala - Modulo 1, pagina 183",
+              "pageStart": 183,
+              "pageEnd": 183,
+              "matchedModes": [
+                "phrase"
+              ],
+              "scores": {
+                "phrase": 0.033333335
+              },
+              "hybridScore": 0,
+              "relevant": false
+            },
+            {
+              "rank": 5,
+              "chunkId": "3877ab8c43b893130dbc42471ee92b11daaf554d7ae08381c0fb2304a64d6252",
+              "documentKey": "antigua-pdm-ot",
+              "documentVersion": "official-municipal-pdf-2026-06-22",
+              "citationLabel": "Plan de Desarrollo Municipal y Ordenamiento Territorial de Antigua Guatemala - Modulo 1, pagina 185",
+              "pageStart": 185,
+              "pageEnd": 185,
+              "matchedModes": [
+                "phrase"
+              ],
+              "scores": {
+                "phrase": 0.033333335
+              },
+              "hybridScore": 0,
+              "relevant": false
+            }
+          ]
+        },
+        "keyword": {
+          "mode": "keyword",
+          "answerEligible": true,
+          "firstRelevantRank": null,
+          "hitAt5": false,
+          "citationIdentityValid": false,
+          "leakedCandidateCount": 0,
+          "candidates": [
+            {
+              "rank": 1,
+              "chunkId": "665b9147b9f8729994a0043904c230f5ba14ed2c4cc77b68e9521749dee829b7",
+              "documentKey": "antigua-pdm-ot",
+              "documentVersion": "official-municipal-pdf-2026-06-22",
+              "citationLabel": "Plan de Desarrollo Municipal y Ordenamiento Territorial de Antigua Guatemala - Modulo 1, pagina 190",
+              "pageStart": 190,
+              "pageEnd": 190,
+              "matchedModes": [
+                "keyword"
+              ],
+              "scores": {
+                "keyword": 0.034632035
+              },
+              "hybridScore": 0,
+              "relevant": false
+            },
+            {
+              "rank": 2,
+              "chunkId": "ace11252591cd5f427eb5dbe3c8b6322368d20ddc001315539cefe96016b84ad",
+              "documentKey": "antigua-pdm-ot",
+              "documentVersion": "official-municipal-pdf-2026-06-22",
+              "citationLabel": "Plan de Desarrollo Municipal y Ordenamiento Territorial de Antigua Guatemala - Modulo 1, pagina 209",
+              "pageStart": 209,
+              "pageEnd": 209,
+              "matchedModes": [
+                "keyword"
+              ],
+              "scores": {
+                "keyword": 0.033783786
+              },
+              "hybridScore": 0,
+              "relevant": false
+            },
+            {
+              "rank": 3,
+              "chunkId": "371e2e2211aa460cec2c1096f35fe00c26f6d72733d320676bfaa275b5adb2ca",
+              "documentKey": "antigua-pdm-ot",
+              "documentVersion": "official-municipal-pdf-2026-06-22",
+              "citationLabel": "Plan de Desarrollo Municipal y Ordenamiento Territorial de Antigua Guatemala - Modulo 1, pagina 216",
+              "pageStart": 216,
+              "pageEnd": 216,
+              "matchedModes": [
+                "keyword"
+              ],
+              "scores": {
+                "keyword": 0.033748273
+              },
+              "hybridScore": 0,
+              "relevant": false
+            },
+            {
+              "rank": 4,
+              "chunkId": "c5f895d0ae5476931782bc70c058f44b4aa58f0cf403119d2d65c4fe1845e831",
+              "documentKey": "antigua-pdm-ot",
+              "documentVersion": "official-municipal-pdf-2026-06-22",
+              "citationLabel": "Plan de Desarrollo Municipal y Ordenamiento Territorial de Antigua Guatemala - Modulo 1, pagina 176",
+              "pageStart": 176,
+              "pageEnd": 176,
+              "matchedModes": [
+                "keyword"
+              ],
+              "scores": {
+                "keyword": 0.033333335
+              },
+              "hybridScore": 0,
+              "relevant": false
+            },
+            {
+              "rank": 5,
+              "chunkId": "3733ee3eead0d1ef7255c96be52d644c74b525a74d5461e342a4ae2324fb9d44",
+              "documentKey": "antigua-pdm-ot",
+              "documentVersion": "official-municipal-pdf-2026-06-22",
+              "citationLabel": "Plan de Desarrollo Municipal y Ordenamiento Territorial de Antigua Guatemala - Modulo 1, pagina 179",
+              "pageStart": 179,
+              "pageEnd": 179,
+              "matchedModes": [
+                "keyword"
+              ],
+              "scores": {
+                "keyword": 0.033333335
+              },
+              "hybridScore": 0,
+              "relevant": false
+            }
+          ]
+        },
+        "vector_lexical": {
+          "mode": "vector_lexical",
+          "answerEligible": false,
+          "firstRelevantRank": null,
+          "hitAt5": false,
+          "citationIdentityValid": false,
+          "leakedCandidateCount": 0,
+          "candidates": [
+            {
+              "rank": 1,
+              "chunkId": "1f72d266a4bd10715ff003e5aa924d0e57141240c837dd4c4fa7bfcc819757a7",
+              "documentKey": "antigua-pdm-ot",
+              "documentVersion": "official-municipal-pdf-2026-06-22",
+              "citationLabel": "Plan de Desarrollo Municipal y Ordenamiento Territorial de Antigua Guatemala - Modulo 1, pagina 210",
+              "pageStart": 210,
+              "pageEnd": 210,
+              "matchedModes": [
+                "vector"
+              ],
+              "scores": {
+                "vector": 0.24470831422259343
+              },
+              "hybridScore": 0,
+              "relevant": false
+            },
+            {
+              "rank": 2,
+              "chunkId": "be2f9ad739c892351ac3283a8ec057e843ac523bcedeb64127021f975b2b498b",
+              "documentKey": "antigua-pdm-ot",
+              "documentVersion": "official-municipal-pdf-2026-06-22",
+              "citationLabel": "Plan de Desarrollo Municipal y Ordenamiento Territorial de Antigua Guatemala - Modulo 1, pagina 216",
+              "pageStart": 216,
+              "pageEnd": 216,
+              "matchedModes": [
+                "vector"
+              ],
+              "scores": {
+                "vector": 0.22657593130254217
+              },
+              "hybridScore": 0,
+              "relevant": false
+            },
+            {
+              "rank": 3,
+              "chunkId": "be330b4a00439d2af918461bbeb2f4ff02888c601ddb8d8bd645fdd53a0c5838",
+              "documentKey": "antigua-pdm-ot",
+              "documentVersion": "official-municipal-pdf-2026-06-22",
+              "citationLabel": "Plan de Desarrollo Municipal y Ordenamiento Territorial de Antigua Guatemala - Modulo 1, pagina 192",
+              "pageStart": 192,
+              "pageEnd": 192,
+              "matchedModes": [
+                "vector"
+              ],
+              "scores": {
+                "vector": 0.2200225013481083
+              },
+              "hybridScore": 0,
+              "relevant": false
+            },
+            {
+              "rank": 4,
+              "chunkId": "3c34b6a5411283dbb35900f40cb15362861b9a04b94b793ce9b80a80f7a67550",
+              "documentKey": "antigua-pdm-ot",
+              "documentVersion": "official-municipal-pdf-2026-06-22",
+              "citationLabel": "Plan de Desarrollo Municipal y Ordenamiento Territorial de Antigua Guatemala - Modulo 1, pagina 208",
+              "pageStart": 208,
+              "pageEnd": 208,
+              "matchedModes": [
+                "vector"
+              ],
+              "scores": {
+                "vector": 0.2197869885094772
+              },
+              "hybridScore": 0,
+              "relevant": false
+            },
+            {
+              "rank": 5,
+              "chunkId": "ace11252591cd5f427eb5dbe3c8b6322368d20ddc001315539cefe96016b84ad",
+              "documentKey": "antigua-pdm-ot",
+              "documentVersion": "official-municipal-pdf-2026-06-22",
+              "citationLabel": "Plan de Desarrollo Municipal y Ordenamiento Territorial de Antigua Guatemala - Modulo 1, pagina 209",
+              "pageStart": 209,
+              "pageEnd": 209,
+              "matchedModes": [
+                "vector"
+              ],
+              "scores": {
+                "vector": 0.21278846263885498
+              },
+              "hybridScore": 0,
+              "relevant": false
+            }
+          ]
+        },
+        "hybrid": {
+          "mode": "hybrid",
+          "answerEligible": false,
+          "firstRelevantRank": null,
+          "hitAt5": false,
+          "citationIdentityValid": false,
+          "leakedCandidateCount": 0,
+          "candidates": [
+            {
+              "rank": 1,
+              "chunkId": "1f72d266a4bd10715ff003e5aa924d0e57141240c837dd4c4fa7bfcc819757a7",
+              "documentKey": "antigua-pdm-ot",
+              "documentVersion": "official-municipal-pdf-2026-06-22",
+              "citationLabel": "Plan de Desarrollo Municipal y Ordenamiento Territorial de Antigua Guatemala - Modulo 1, pagina 210",
+              "pageStart": 210,
+              "pageEnd": 210,
+              "matchedModes": [
+                "vector"
+              ],
+              "scores": {
+                "vector": 0.24470831422259343,
+                "phrase": 0,
+                "keyword": 0,
+                "provenance": 0.8500000000000001
+              },
+              "hybridScore": 0.7920624713338902,
+              "relevant": false
+            },
+            {
+              "rank": 2,
+              "chunkId": "be2f9ad739c892351ac3283a8ec057e843ac523bcedeb64127021f975b2b498b",
+              "documentKey": "antigua-pdm-ot",
+              "documentVersion": "official-municipal-pdf-2026-06-22",
+              "citationLabel": "Plan de Desarrollo Municipal y Ordenamiento Territorial de Antigua Guatemala - Modulo 1, pagina 216",
+              "pageStart": 216,
+              "pageEnd": 216,
+              "matchedModes": [
+                "vector"
+              ],
+              "scores": {
+                "vector": 0.22657593130254217,
+                "phrase": 0,
+                "keyword": 0,
+                "provenance": 0.8500000000000001
+              },
+              "hybridScore": 0.7648638969538133,
+              "relevant": false
+            },
+            {
+              "rank": 3,
+              "chunkId": "3c34b6a5411283dbb35900f40cb15362861b9a04b94b793ce9b80a80f7a67550",
+              "documentKey": "antigua-pdm-ot",
+              "documentVersion": "official-municipal-pdf-2026-06-22",
+              "citationLabel": "Plan de Desarrollo Municipal y Ordenamiento Territorial de Antigua Guatemala - Modulo 1, pagina 208",
+              "pageStart": 208,
+              "pageEnd": 208,
+              "matchedModes": [
+                "vector"
+              ],
+              "scores": {
+                "vector": 0.2197869885094772,
+                "phrase": 0,
+                "keyword": 0,
+                "provenance": 0.8500000000000001
+              },
+              "hybridScore": 0.7546804827642158,
+              "relevant": false
+            },
+            {
+              "rank": 4,
+              "chunkId": "85df5d5b1af60513940a406ecb038db29a402e52271f722bc055bd8599c7640a",
+              "documentKey": "antigua-pdm-ot",
+              "documentVersion": "official-municipal-pdf-2026-06-22",
+              "citationLabel": "Plan de Desarrollo Municipal y Ordenamiento Territorial de Antigua Guatemala - Modulo 1, pagina 103",
+              "pageStart": 103,
+              "pageEnd": 103,
+              "matchedModes": [
+                "vector"
+              ],
+              "scores": {
+                "vector": 0.21048355102539062,
+                "phrase": 0,
+                "keyword": 0,
+                "provenance": 0.8500000000000001
+              },
+              "hybridScore": 0.740725326538086,
+              "relevant": false
+            },
+            {
+              "rank": 5,
+              "chunkId": "09b3bdb3e2a38618d292f2f3fe31d497a99216e26c011632c311e239f183fdfd",
+              "documentKey": "antigua-pdm-ot",
+              "documentVersion": "official-municipal-pdf-2026-06-22",
+              "citationLabel": "Plan de Desarrollo Municipal y Ordenamiento Territorial de Antigua Guatemala - Modulo 1, pagina 131",
+              "pageStart": 131,
+              "pageEnd": 131,
+              "matchedModes": [
+                "vector"
+              ],
+              "scores": {
+                "vector": 0.20974868535995483,
+                "phrase": 0,
+                "keyword": 0,
+                "provenance": 0.8500000000000001
+              },
+              "hybridScore": 0.7396230280399323,
+              "relevant": false
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "PDM-POS-008",
+      "kind": "evidence",
+      "query": "proyecciones a 2032",
+      "expectedPageRanges": [
+        [
+          39,
+          41
+        ]
+      ],
+      "modes": {
+        "phrase": {
+          "mode": "phrase",
+          "answerEligible": true,
+          "firstRelevantRank": 1,
+          "hitAt5": true,
+          "citationIdentityValid": true,
+          "leakedCandidateCount": 0,
+          "candidates": [
+            {
+              "rank": 1,
+              "chunkId": "5f6859a383c80919a32b016f9851a239b19a83cef1b259526ac7e5279764f00d",
+              "documentKey": "antigua-pdm-ot",
+              "documentVersion": "official-municipal-pdf-2026-06-22",
+              "citationLabel": "Plan de Desarrollo Municipal y Ordenamiento Territorial de Antigua Guatemala - Modulo 1, pagina 40",
+              "pageStart": 40,
+              "pageEnd": 40,
+              "matchedModes": [
+                "phrase"
+              ],
+              "scores": {
+                "phrase": 1
+              },
+              "hybridScore": 0,
+              "relevant": true
+            }
+          ]
+        },
+        "keyword": {
+          "mode": "keyword",
+          "answerEligible": true,
+          "firstRelevantRank": 1,
+          "hitAt5": true,
+          "citationIdentityValid": true,
+          "leakedCandidateCount": 0,
+          "candidates": [
+            {
+              "rank": 1,
+              "chunkId": "5f6859a383c80919a32b016f9851a239b19a83cef1b259526ac7e5279764f00d",
+              "documentKey": "antigua-pdm-ot",
+              "documentVersion": "official-municipal-pdf-2026-06-22",
+              "citationLabel": "Plan de Desarrollo Municipal y Ordenamiento Territorial de Antigua Guatemala - Modulo 1, pagina 40",
+              "pageStart": 40,
+              "pageEnd": 40,
+              "matchedModes": [
+                "keyword"
+              ],
+              "scores": {
+                "keyword": 0.05
+              },
+              "hybridScore": 0,
+              "relevant": true
+            }
+          ]
+        },
+        "vector_lexical": {
+          "mode": "vector_lexical",
+          "answerEligible": false,
+          "firstRelevantRank": 1,
+          "hitAt5": true,
+          "citationIdentityValid": true,
+          "leakedCandidateCount": 0,
+          "candidates": [
+            {
+              "rank": 1,
+              "chunkId": "d7bbcabcec4737c87b58a95684e6186b7499c384ec0c17280968a3853dfa4651",
+              "documentKey": "antigua-pdm-ot",
+              "documentVersion": "official-municipal-pdf-2026-06-22",
+              "citationLabel": "Plan de Desarrollo Municipal y Ordenamiento Territorial de Antigua Guatemala - Modulo 1, pagina 39",
+              "pageStart": 39,
+              "pageEnd": 39,
+              "matchedModes": [
+                "vector"
+              ],
+              "scores": {
+                "vector": 0.27482661604881287
+              },
+              "hybridScore": 0,
+              "relevant": true
+            },
+            {
+              "rank": 2,
+              "chunkId": "b1b4671c87f276a32c3d9a0db74f33bfa5b8766998cbc22a514f42a17aec2c93",
+              "documentKey": "antigua-pdm-ot",
+              "documentVersion": "official-municipal-pdf-2026-06-22",
+              "citationLabel": "Plan de Desarrollo Municipal y Ordenamiento Territorial de Antigua Guatemala - Modulo 1, pagina 192",
+              "pageStart": 192,
+              "pageEnd": 192,
+              "matchedModes": [
+                "vector"
+              ],
+              "scores": {
+                "vector": 0.12346408516168594
+              },
+              "hybridScore": 0,
+              "relevant": false
+            },
+            {
+              "rank": 3,
+              "chunkId": "5d1bfe05ae9d1145db263d53d373295a3ecea46ff7b8281dae47157cd5fbb9af",
+              "documentKey": "antigua-pdm-ot",
+              "documentVersion": "official-municipal-pdf-2026-06-22",
+              "citationLabel": "Plan de Desarrollo Municipal y Ordenamiento Territorial de Antigua Guatemala - Modulo 1, pagina 28",
+              "pageStart": 28,
+              "pageEnd": 28,
+              "matchedModes": [
+                "vector"
+              ],
+              "scores": {
+                "vector": 0.12302140146493912
+              },
+              "hybridScore": 0,
+              "relevant": false
+            },
+            {
+              "rank": 4,
+              "chunkId": "5f6859a383c80919a32b016f9851a239b19a83cef1b259526ac7e5279764f00d",
+              "documentKey": "antigua-pdm-ot",
+              "documentVersion": "official-municipal-pdf-2026-06-22",
+              "citationLabel": "Plan de Desarrollo Municipal y Ordenamiento Territorial de Antigua Guatemala - Modulo 1, pagina 40",
+              "pageStart": 40,
+              "pageEnd": 40,
+              "matchedModes": [
+                "vector"
+              ],
+              "scores": {
+                "vector": 0.12246893346309662
+              },
+              "hybridScore": 0,
+              "relevant": true
+            },
+            {
+              "rank": 5,
+              "chunkId": "ddc02c6237eae8ab0e629a4b9a989647433f5083c680050170f02834f6844511",
+              "documentKey": "antigua-pdm-ot",
+              "documentVersion": "official-municipal-pdf-2026-06-22",
+              "citationLabel": "Plan de Desarrollo Municipal y Ordenamiento Territorial de Antigua Guatemala - Modulo 1, pagina 116",
+              "pageStart": 116,
+              "pageEnd": 116,
+              "matchedModes": [
+                "vector"
+              ],
+              "scores": {
+                "vector": 0.11778109126630698
+              },
+              "hybridScore": 0,
+              "relevant": false
+            }
+          ]
+        },
+        "hybrid": {
+          "mode": "hybrid",
+          "answerEligible": true,
+          "firstRelevantRank": 1,
+          "hitAt5": true,
+          "citationIdentityValid": true,
+          "leakedCandidateCount": 0,
+          "candidates": [
+            {
+              "rank": 1,
+              "chunkId": "5f6859a383c80919a32b016f9851a239b19a83cef1b259526ac7e5279764f00d",
+              "documentKey": "antigua-pdm-ot",
+              "documentVersion": "official-municipal-pdf-2026-06-22",
+              "citationLabel": "Plan de Desarrollo Municipal y Ordenamiento Territorial de Antigua Guatemala - Modulo 1, pagina 40",
+              "pageStart": 40,
+              "pageEnd": 40,
+              "matchedModes": [
+                "phrase",
+                "keyword",
+                "vector"
+              ],
+              "scores": {
+                "phrase": 1,
+                "keyword": 0.05,
+                "vector": 0.12246893346309662,
+                "provenance": 0
+              },
+              "hybridScore": 4.283703400194645,
+              "relevant": true
+            },
+            {
+              "rank": 2,
+              "chunkId": "d7bbcabcec4737c87b58a95684e6186b7499c384ec0c17280968a3853dfa4651",
+              "documentKey": "antigua-pdm-ot",
+              "documentVersion": "official-municipal-pdf-2026-06-22",
+              "citationLabel": "Plan de Desarrollo Municipal y Ordenamiento Territorial de Antigua Guatemala - Modulo 1, pagina 39",
+              "pageStart": 39,
+              "pageEnd": 39,
+              "matchedModes": [
+                "vector"
+              ],
+              "scores": {
+                "vector": 0.27482661604881287,
+                "phrase": 0,
+                "keyword": 0,
+                "provenance": 0.8500000000000001
+              },
+              "hybridScore": 0.8372399240732193,
+              "relevant": true
+            },
+            {
+              "rank": 3,
+              "chunkId": "b1b4671c87f276a32c3d9a0db74f33bfa5b8766998cbc22a514f42a17aec2c93",
+              "documentKey": "antigua-pdm-ot",
+              "documentVersion": "official-municipal-pdf-2026-06-22",
+              "citationLabel": "Plan de Desarrollo Municipal y Ordenamiento Territorial de Antigua Guatemala - Modulo 1, pagina 192",
+              "pageStart": 192,
+              "pageEnd": 192,
+              "matchedModes": [
+                "vector"
+              ],
+              "scores": {
+                "vector": 0.12346408516168594,
+                "phrase": 0,
+                "keyword": 0,
+                "provenance": 0.8500000000000001
+              },
+              "hybridScore": 0.610196127742529,
+              "relevant": false
+            },
+            {
+              "rank": 4,
+              "chunkId": "5d1bfe05ae9d1145db263d53d373295a3ecea46ff7b8281dae47157cd5fbb9af",
+              "documentKey": "antigua-pdm-ot",
+              "documentVersion": "official-municipal-pdf-2026-06-22",
+              "citationLabel": "Plan de Desarrollo Municipal y Ordenamiento Territorial de Antigua Guatemala - Modulo 1, pagina 28",
+              "pageStart": 28,
+              "pageEnd": 28,
+              "matchedModes": [
+                "vector"
+              ],
+              "scores": {
+                "vector": 0.12302140146493912,
+                "phrase": 0,
+                "keyword": 0,
+                "provenance": 0.8500000000000001
+              },
+              "hybridScore": 0.6095321021974087,
+              "relevant": false
+            },
+            {
+              "rank": 5,
+              "chunkId": "ddc02c6237eae8ab0e629a4b9a989647433f5083c680050170f02834f6844511",
+              "documentKey": "antigua-pdm-ot",
+              "documentVersion": "official-municipal-pdf-2026-06-22",
+              "citationLabel": "Plan de Desarrollo Municipal y Ordenamiento Territorial de Antigua Guatemala - Modulo 1, pagina 116",
+              "pageStart": 116,
+              "pageEnd": 116,
+              "matchedModes": [
+                "vector"
+              ],
+              "scores": {
+                "vector": 0.11778109126630698,
+                "phrase": 0,
+                "keyword": 0,
+                "provenance": 0.8500000000000001
+              },
+              "hybridScore": 0.6016716368994606,
+              "relevant": false
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "PDM-NEG-001",
+      "kind": "no_answer",
+      "query": "licencia para casino en línea",
+      "modes": {
+        "phrase": {
+          "mode": "phrase",
+          "answerEligible": false,
+          "firstRelevantRank": null,
+          "hitAt5": false,
+          "citationIdentityValid": false,
+          "leakedCandidateCount": 0,
+          "candidates": []
+        },
+        "keyword": {
+          "mode": "keyword",
+          "answerEligible": false,
+          "firstRelevantRank": null,
+          "hitAt5": false,
+          "citationIdentityValid": false,
+          "leakedCandidateCount": 0,
+          "candidates": []
+        },
+        "vector_lexical": {
+          "mode": "vector_lexical",
+          "answerEligible": false,
+          "firstRelevantRank": null,
+          "hitAt5": false,
+          "citationIdentityValid": false,
+          "leakedCandidateCount": 0,
+          "candidates": [
+            {
+              "rank": 1,
+              "chunkId": "d4e71d8d47d303392f605b7dddd0313dc7f82b5b647d9b931c30b56a31b1b597",
+              "documentKey": "antigua-pdm-ot",
+              "documentVersion": "official-municipal-pdf-2026-06-22",
+              "citationLabel": "Plan de Desarrollo Municipal y Ordenamiento Territorial de Antigua Guatemala - Modulo 1, pagina 139",
+              "pageStart": 139,
+              "pageEnd": 139,
+              "matchedModes": [
+                "vector"
+              ],
+              "scores": {
+                "vector": 0.12979770480380703
+              },
+              "hybridScore": 0,
+              "relevant": false
+            },
+            {
+              "rank": 2,
+              "chunkId": "a1ab57803eb4a8322d5ec34b98769d89b8660af0c087d74b0fafdbde501386c9",
+              "documentKey": "antigua-pdm-ot",
+              "documentVersion": "official-municipal-pdf-2026-06-22",
+              "citationLabel": "Plan de Desarrollo Municipal y Ordenamiento Territorial de Antigua Guatemala - Modulo 1, pagina 18",
+              "pageStart": 18,
+              "pageEnd": 18,
+              "matchedModes": [
+                "vector"
+              ],
+              "scores": {
+                "vector": 0.12871451675891876
+              },
+              "hybridScore": 0,
+              "relevant": false
+            },
+            {
+              "rank": 3,
+              "chunkId": "15d6b206c5589c555eb1e0d2e641147bebcbd1588ae08a0d314aa6cd031ce590",
+              "documentKey": "antigua-pdm-ot",
+              "documentVersion": "official-municipal-pdf-2026-06-22",
+              "citationLabel": "Plan de Desarrollo Municipal y Ordenamiento Territorial de Antigua Guatemala - Modulo 1, pagina 65",
+              "pageStart": 65,
+              "pageEnd": 65,
+              "matchedModes": [
+                "vector"
+              ],
+              "scores": {
+                "vector": 0.11974204300296587
+              },
+              "hybridScore": 0,
+              "relevant": false
+            },
+            {
+              "rank": 4,
+              "chunkId": "59aeb33cdf69d2404e0ea37e7406b791ba40c986f4aaf74d026254348bce99d2",
+              "documentKey": "antigua-pdm-ot",
+              "documentVersion": "official-municipal-pdf-2026-06-22",
+              "citationLabel": "Plan de Desarrollo Municipal y Ordenamiento Territorial de Antigua Guatemala - Modulo 1, pagina 100",
+              "pageStart": 100,
+              "pageEnd": 100,
+              "matchedModes": [
+                "vector"
+              ],
+              "scores": {
+                "vector": 0.11945748329162598
+              },
+              "hybridScore": 0,
+              "relevant": false
+            },
+            {
+              "rank": 5,
+              "chunkId": "876a1deaf91acae567deb13b39adc04dbf015b527a3269b6e95fc53dea170516",
+              "documentKey": "antigua-pdm-ot",
+              "documentVersion": "official-municipal-pdf-2026-06-22",
+              "citationLabel": "Plan de Desarrollo Municipal y Ordenamiento Territorial de Antigua Guatemala - Modulo 1, pagina 100",
+              "pageStart": 100,
+              "pageEnd": 100,
+              "matchedModes": [
+                "vector"
+              ],
+              "scores": {
+                "vector": 0.1192021671413086
+              },
+              "hybridScore": 0,
+              "relevant": false
+            }
+          ]
+        },
+        "hybrid": {
+          "mode": "hybrid",
+          "answerEligible": false,
+          "firstRelevantRank": null,
+          "hitAt5": false,
+          "citationIdentityValid": false,
+          "leakedCandidateCount": 0,
+          "candidates": [
+            {
+              "rank": 1,
+              "chunkId": "d4e71d8d47d303392f605b7dddd0313dc7f82b5b647d9b931c30b56a31b1b597",
+              "documentKey": "antigua-pdm-ot",
+              "documentVersion": "official-municipal-pdf-2026-06-22",
+              "citationLabel": "Plan de Desarrollo Municipal y Ordenamiento Territorial de Antigua Guatemala - Modulo 1, pagina 139",
+              "pageStart": 139,
+              "pageEnd": 139,
+              "matchedModes": [
+                "vector"
+              ],
+              "scores": {
+                "vector": 0.12979770480380703,
+                "phrase": 0,
+                "keyword": 0,
+                "provenance": 0.8500000000000001
+              },
+              "hybridScore": 0.6196965572057106,
+              "relevant": false
+            },
+            {
+              "rank": 2,
+              "chunkId": "a1ab57803eb4a8322d5ec34b98769d89b8660af0c087d74b0fafdbde501386c9",
+              "documentKey": "antigua-pdm-ot",
+              "documentVersion": "official-municipal-pdf-2026-06-22",
+              "citationLabel": "Plan de Desarrollo Municipal y Ordenamiento Territorial de Antigua Guatemala - Modulo 1, pagina 18",
+              "pageStart": 18,
+              "pageEnd": 18,
+              "matchedModes": [
+                "vector"
+              ],
+              "scores": {
+                "vector": 0.12871451675891876,
+                "phrase": 0,
+                "keyword": 0,
+                "provenance": 0.8500000000000001
+              },
+              "hybridScore": 0.6180717751383782,
+              "relevant": false
+            },
+            {
+              "rank": 3,
+              "chunkId": "15d6b206c5589c555eb1e0d2e641147bebcbd1588ae08a0d314aa6cd031ce590",
+              "documentKey": "antigua-pdm-ot",
+              "documentVersion": "official-municipal-pdf-2026-06-22",
+              "citationLabel": "Plan de Desarrollo Municipal y Ordenamiento Territorial de Antigua Guatemala - Modulo 1, pagina 65",
+              "pageStart": 65,
+              "pageEnd": 65,
+              "matchedModes": [
+                "vector"
+              ],
+              "scores": {
+                "vector": 0.11974204300296587,
+                "phrase": 0,
+                "keyword": 0,
+                "provenance": 0.8500000000000001
+              },
+              "hybridScore": 0.6046130645044488,
+              "relevant": false
+            },
+            {
+              "rank": 4,
+              "chunkId": "59aeb33cdf69d2404e0ea37e7406b791ba40c986f4aaf74d026254348bce99d2",
+              "documentKey": "antigua-pdm-ot",
+              "documentVersion": "official-municipal-pdf-2026-06-22",
+              "citationLabel": "Plan de Desarrollo Municipal y Ordenamiento Territorial de Antigua Guatemala - Modulo 1, pagina 100",
+              "pageStart": 100,
+              "pageEnd": 100,
+              "matchedModes": [
+                "vector"
+              ],
+              "scores": {
+                "vector": 0.11945748329162598,
+                "phrase": 0,
+                "keyword": 0,
+                "provenance": 0.8500000000000001
+              },
+              "hybridScore": 0.604186224937439,
+              "relevant": false
+            },
+            {
+              "rank": 5,
+              "chunkId": "876a1deaf91acae567deb13b39adc04dbf015b527a3269b6e95fc53dea170516",
+              "documentKey": "antigua-pdm-ot",
+              "documentVersion": "official-municipal-pdf-2026-06-22",
+              "citationLabel": "Plan de Desarrollo Municipal y Ordenamiento Territorial de Antigua Guatemala - Modulo 1, pagina 100",
+              "pageStart": 100,
+              "pageEnd": 100,
+              "matchedModes": [
+                "vector"
+              ],
+              "scores": {
+                "vector": 0.1192021671413086,
+                "phrase": 0,
+                "keyword": 0,
+                "provenance": 0.8500000000000001
+              },
+              "hybridScore": 0.603803250711963,
+              "relevant": false
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "PDM-NEG-002",
+      "kind": "no_answer",
+      "query": "inscripción de partidos políticos nacionales",
+      "modes": {
+        "phrase": {
+          "mode": "phrase",
+          "answerEligible": false,
+          "firstRelevantRank": null,
+          "hitAt5": false,
+          "citationIdentityValid": false,
+          "leakedCandidateCount": 0,
+          "candidates": []
+        },
+        "keyword": {
+          "mode": "keyword",
+          "answerEligible": false,
+          "firstRelevantRank": null,
+          "hitAt5": false,
+          "citationIdentityValid": false,
+          "leakedCandidateCount": 0,
+          "candidates": []
+        },
+        "vector_lexical": {
+          "mode": "vector_lexical",
+          "answerEligible": false,
+          "firstRelevantRank": null,
+          "hitAt5": false,
+          "citationIdentityValid": false,
+          "leakedCandidateCount": 0,
+          "candidates": [
+            {
+              "rank": 1,
+              "chunkId": "5c07c0aa4204d1c5fcb95c5eb8928c93ecdb4844c5744552401040b5919e1f54",
+              "documentKey": "antigua-pdm-ot",
+              "documentVersion": "official-municipal-pdf-2026-06-22",
+              "citationLabel": "Plan de Desarrollo Municipal y Ordenamiento Territorial de Antigua Guatemala - Modulo 1, pagina 194",
+              "pageStart": 194,
+              "pageEnd": 194,
+              "matchedModes": [
+                "vector"
+              ],
+              "scores": {
+                "vector": 0.30015372335452783
+              },
+              "hybridScore": 0,
+              "relevant": false
+            },
+            {
+              "rank": 2,
+              "chunkId": "0f62bad73eb78aed94d1d00251882b864b4f580b634562db333d9e663d867f3f",
+              "documentKey": "antigua-pdm-ot",
+              "documentVersion": "official-municipal-pdf-2026-06-22",
+              "citationLabel": "Plan de Desarrollo Municipal y Ordenamiento Territorial de Antigua Guatemala - Modulo 1, pagina 197",
+              "pageStart": 197,
+              "pageEnd": 197,
+              "matchedModes": [
+                "vector"
+              ],
+              "scores": {
+                "vector": 0.2960162549023706
+              },
+              "hybridScore": 0,
+              "relevant": false
+            },
+            {
+              "rank": 3,
+              "chunkId": "ca3e3f86a7fffc8e0031ae2ac521fb17ba25888c160d16f7747426b2d1fd954d",
+              "documentKey": "antigua-pdm-ot",
+              "documentVersion": "official-municipal-pdf-2026-06-22",
+              "citationLabel": "Plan de Desarrollo Municipal y Ordenamiento Territorial de Antigua Guatemala - Modulo 1, pagina 13",
+              "pageStart": 13,
+              "pageEnd": 13,
+              "matchedModes": [
+                "vector"
+              ],
+              "scores": {
+                "vector": 0.29120888438198433
+              },
+              "hybridScore": 0,
+              "relevant": false
+            },
+            {
+              "rank": 4,
+              "chunkId": "903d7c3eea35694831bb8aaacfb739c70e59719ad1a607033d70aa775f8ded1f",
+              "documentKey": "antigua-pdm-ot",
+              "documentVersion": "official-municipal-pdf-2026-06-22",
+              "citationLabel": "Plan de Desarrollo Municipal y Ordenamiento Territorial de Antigua Guatemala - Modulo 1, pagina 189",
+              "pageStart": 189,
+              "pageEnd": 189,
+              "matchedModes": [
+                "vector"
+              ],
+              "scores": {
+                "vector": 0.28542331711719404
+              },
+              "hybridScore": 0,
+              "relevant": false
+            },
+            {
+              "rank": 5,
+              "chunkId": "e6f1161372322322e3f42d689cfd86924cdd9d49e216d218bcdf10a7976d5dca",
+              "documentKey": "antigua-pdm-ot",
+              "documentVersion": "official-municipal-pdf-2026-06-22",
+              "citationLabel": "Plan de Desarrollo Municipal y Ordenamiento Territorial de Antigua Guatemala - Modulo 1, pagina 199",
+              "pageStart": 199,
+              "pageEnd": 199,
+              "matchedModes": [
+                "vector"
+              ],
+              "scores": {
+                "vector": 0.28506146580347214
+              },
+              "hybridScore": 0,
+              "relevant": false
+            }
+          ]
+        },
+        "hybrid": {
+          "mode": "hybrid",
+          "answerEligible": false,
+          "firstRelevantRank": null,
+          "hitAt5": false,
+          "citationIdentityValid": false,
+          "leakedCandidateCount": 0,
+          "candidates": [
+            {
+              "rank": 1,
+              "chunkId": "5c07c0aa4204d1c5fcb95c5eb8928c93ecdb4844c5744552401040b5919e1f54",
+              "documentKey": "antigua-pdm-ot",
+              "documentVersion": "official-municipal-pdf-2026-06-22",
+              "citationLabel": "Plan de Desarrollo Municipal y Ordenamiento Territorial de Antigua Guatemala - Modulo 1, pagina 194",
+              "pageStart": 194,
+              "pageEnd": 194,
+              "matchedModes": [
+                "vector"
+              ],
+              "scores": {
+                "vector": 0.30015372335452783,
+                "phrase": 0,
+                "keyword": 0,
+                "provenance": 0.8500000000000001
+              },
+              "hybridScore": 0.8752305850317919,
+              "relevant": false
+            },
+            {
+              "rank": 2,
+              "chunkId": "0f62bad73eb78aed94d1d00251882b864b4f580b634562db333d9e663d867f3f",
+              "documentKey": "antigua-pdm-ot",
+              "documentVersion": "official-municipal-pdf-2026-06-22",
+              "citationLabel": "Plan de Desarrollo Municipal y Ordenamiento Territorial de Antigua Guatemala - Modulo 1, pagina 197",
+              "pageStart": 197,
+              "pageEnd": 197,
+              "matchedModes": [
+                "vector"
+              ],
+              "scores": {
+                "vector": 0.2960162549023706,
+                "phrase": 0,
+                "keyword": 0,
+                "provenance": 0.8500000000000001
+              },
+              "hybridScore": 0.869024382353556,
+              "relevant": false
+            },
+            {
+              "rank": 3,
+              "chunkId": "ca3e3f86a7fffc8e0031ae2ac521fb17ba25888c160d16f7747426b2d1fd954d",
+              "documentKey": "antigua-pdm-ot",
+              "documentVersion": "official-municipal-pdf-2026-06-22",
+              "citationLabel": "Plan de Desarrollo Municipal y Ordenamiento Territorial de Antigua Guatemala - Modulo 1, pagina 13",
+              "pageStart": 13,
+              "pageEnd": 13,
+              "matchedModes": [
+                "vector"
+              ],
+              "scores": {
+                "vector": 0.29120888438198433,
+                "phrase": 0,
+                "keyword": 0,
+                "provenance": 0.8500000000000001
+              },
+              "hybridScore": 0.8618133265729766,
+              "relevant": false
+            },
+            {
+              "rank": 4,
+              "chunkId": "903d7c3eea35694831bb8aaacfb739c70e59719ad1a607033d70aa775f8ded1f",
+              "documentKey": "antigua-pdm-ot",
+              "documentVersion": "official-municipal-pdf-2026-06-22",
+              "citationLabel": "Plan de Desarrollo Municipal y Ordenamiento Territorial de Antigua Guatemala - Modulo 1, pagina 189",
+              "pageStart": 189,
+              "pageEnd": 189,
+              "matchedModes": [
+                "vector"
+              ],
+              "scores": {
+                "vector": 0.28542331711719404,
+                "phrase": 0,
+                "keyword": 0,
+                "provenance": 0.8500000000000001
+              },
+              "hybridScore": 0.8531349756757911,
+              "relevant": false
+            },
+            {
+              "rank": 5,
+              "chunkId": "e6f1161372322322e3f42d689cfd86924cdd9d49e216d218bcdf10a7976d5dca",
+              "documentKey": "antigua-pdm-ot",
+              "documentVersion": "official-municipal-pdf-2026-06-22",
+              "citationLabel": "Plan de Desarrollo Municipal y Ordenamiento Territorial de Antigua Guatemala - Modulo 1, pagina 199",
+              "pageStart": 199,
+              "pageEnd": 199,
+              "matchedModes": [
+                "vector"
+              ],
+              "scores": {
+                "vector": 0.28506146580347214,
+                "phrase": 0,
+                "keyword": 0,
+                "provenance": 0.8500000000000001
+              },
+              "hybridScore": 0.8525921987052083,
+              "relevant": false
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "PDM-NEG-003",
+      "kind": "no_answer",
+      "query": "dosis pediátrica de amoxicilina",
+      "modes": {
+        "phrase": {
+          "mode": "phrase",
+          "answerEligible": false,
+          "firstRelevantRank": null,
+          "hitAt5": false,
+          "citationIdentityValid": false,
+          "leakedCandidateCount": 0,
+          "candidates": []
+        },
+        "keyword": {
+          "mode": "keyword",
+          "answerEligible": false,
+          "firstRelevantRank": null,
+          "hitAt5": false,
+          "citationIdentityValid": false,
+          "leakedCandidateCount": 0,
+          "candidates": []
+        },
+        "vector_lexical": {
+          "mode": "vector_lexical",
+          "answerEligible": false,
+          "firstRelevantRank": null,
+          "hitAt5": false,
+          "citationIdentityValid": false,
+          "leakedCandidateCount": 0,
+          "candidates": [
+            {
+              "rank": 1,
+              "chunkId": "4fada8e223d7c054949544a40ec49f68ae5c481f134da9129554a263e423953f",
+              "documentKey": "antigua-pdm-ot",
+              "documentVersion": "official-municipal-pdf-2026-06-22",
+              "citationLabel": "Plan de Desarrollo Municipal y Ordenamiento Territorial de Antigua Guatemala - Modulo 1, pagina 180",
+              "pageStart": 180,
+              "pageEnd": 180,
+              "matchedModes": [
+                "vector"
+              ],
+              "scores": {
+                "vector": 0.3377411365509033
+              },
+              "hybridScore": 0,
+              "relevant": false
+            },
+            {
+              "rank": 2,
+              "chunkId": "d36ef5db2746618554782f60f98b0b3e01552c7ea1d4ab6b92949c63ab22083d",
+              "documentKey": "antigua-pdm-ot",
+              "documentVersion": "official-municipal-pdf-2026-06-22",
+              "citationLabel": "Plan de Desarrollo Municipal y Ordenamiento Territorial de Antigua Guatemala - Modulo 1, pagina 174",
+              "pageStart": 174,
+              "pageEnd": 174,
+              "matchedModes": [
+                "vector"
+              ],
+              "scores": {
+                "vector": 0.3359800376903994
+              },
+              "hybridScore": 0,
+              "relevant": false
+            },
+            {
+              "rank": 3,
+              "chunkId": "ca3e3f86a7fffc8e0031ae2ac521fb17ba25888c160d16f7747426b2d1fd954d",
+              "documentKey": "antigua-pdm-ot",
+              "documentVersion": "official-municipal-pdf-2026-06-22",
+              "citationLabel": "Plan de Desarrollo Municipal y Ordenamiento Territorial de Antigua Guatemala - Modulo 1, pagina 13",
+              "pageStart": 13,
+              "pageEnd": 13,
+              "matchedModes": [
+                "vector"
+              ],
+              "scores": {
+                "vector": 0.3344763019993131
+              },
+              "hybridScore": 0,
+              "relevant": false
+            },
+            {
+              "rank": 4,
+              "chunkId": "5c07c0aa4204d1c5fcb95c5eb8928c93ecdb4844c5744552401040b5919e1f54",
+              "documentKey": "antigua-pdm-ot",
+              "documentVersion": "official-municipal-pdf-2026-06-22",
+              "citationLabel": "Plan de Desarrollo Municipal y Ordenamiento Territorial de Antigua Guatemala - Modulo 1, pagina 194",
+              "pageStart": 194,
+              "pageEnd": 194,
+              "matchedModes": [
+                "vector"
+              ],
+              "scores": {
+                "vector": 0.33388818300436895
+              },
+              "hybridScore": 0,
+              "relevant": false
+            },
+            {
+              "rank": 5,
+              "chunkId": "4de5cb5f60442b8675a7f783561463ee06f40d71ab50653950bfde4039fb159a",
+              "documentKey": "antigua-pdm-ot",
+              "documentVersion": "official-municipal-pdf-2026-06-22",
+              "citationLabel": "Plan de Desarrollo Municipal y Ordenamiento Territorial de Antigua Guatemala - Modulo 1, pagina 205",
+              "pageStart": 205,
+              "pageEnd": 205,
+              "matchedModes": [
+                "vector"
+              ],
+              "scores": {
+                "vector": 0.32885250449180603
+              },
+              "hybridScore": 0,
+              "relevant": false
+            }
+          ]
+        },
+        "hybrid": {
+          "mode": "hybrid",
+          "answerEligible": false,
+          "firstRelevantRank": null,
+          "hitAt5": false,
+          "citationIdentityValid": false,
+          "leakedCandidateCount": 0,
+          "candidates": [
+            {
+              "rank": 1,
+              "chunkId": "4fada8e223d7c054949544a40ec49f68ae5c481f134da9129554a263e423953f",
+              "documentKey": "antigua-pdm-ot",
+              "documentVersion": "official-municipal-pdf-2026-06-22",
+              "citationLabel": "Plan de Desarrollo Municipal y Ordenamiento Territorial de Antigua Guatemala - Modulo 1, pagina 180",
+              "pageStart": 180,
+              "pageEnd": 180,
+              "matchedModes": [
+                "vector"
+              ],
+              "scores": {
+                "vector": 0.3377411365509033,
+                "phrase": 0,
+                "keyword": 0,
+                "provenance": 0.8500000000000001
+              },
+              "hybridScore": 0.931611704826355,
+              "relevant": false
+            },
+            {
+              "rank": 2,
+              "chunkId": "d36ef5db2746618554782f60f98b0b3e01552c7ea1d4ab6b92949c63ab22083d",
+              "documentKey": "antigua-pdm-ot",
+              "documentVersion": "official-municipal-pdf-2026-06-22",
+              "citationLabel": "Plan de Desarrollo Municipal y Ordenamiento Territorial de Antigua Guatemala - Modulo 1, pagina 174",
+              "pageStart": 174,
+              "pageEnd": 174,
+              "matchedModes": [
+                "vector"
+              ],
+              "scores": {
+                "vector": 0.3359800376903994,
+                "phrase": 0,
+                "keyword": 0,
+                "provenance": 0.8500000000000001
+              },
+              "hybridScore": 0.9289700565355992,
+              "relevant": false
+            },
+            {
+              "rank": 3,
+              "chunkId": "ca3e3f86a7fffc8e0031ae2ac521fb17ba25888c160d16f7747426b2d1fd954d",
+              "documentKey": "antigua-pdm-ot",
+              "documentVersion": "official-municipal-pdf-2026-06-22",
+              "citationLabel": "Plan de Desarrollo Municipal y Ordenamiento Territorial de Antigua Guatemala - Modulo 1, pagina 13",
+              "pageStart": 13,
+              "pageEnd": 13,
+              "matchedModes": [
+                "vector"
+              ],
+              "scores": {
+                "vector": 0.3344763019993131,
+                "phrase": 0,
+                "keyword": 0,
+                "provenance": 0.8500000000000001
+              },
+              "hybridScore": 0.9267144529989697,
+              "relevant": false
+            },
+            {
+              "rank": 4,
+              "chunkId": "5c07c0aa4204d1c5fcb95c5eb8928c93ecdb4844c5744552401040b5919e1f54",
+              "documentKey": "antigua-pdm-ot",
+              "documentVersion": "official-municipal-pdf-2026-06-22",
+              "citationLabel": "Plan de Desarrollo Municipal y Ordenamiento Territorial de Antigua Guatemala - Modulo 1, pagina 194",
+              "pageStart": 194,
+              "pageEnd": 194,
+              "matchedModes": [
+                "vector"
+              ],
+              "scores": {
+                "vector": 0.33388818300436895,
+                "phrase": 0,
+                "keyword": 0,
+                "provenance": 0.8500000000000001
+              },
+              "hybridScore": 0.9258322745065535,
+              "relevant": false
+            },
+            {
+              "rank": 5,
+              "chunkId": "4de5cb5f60442b8675a7f783561463ee06f40d71ab50653950bfde4039fb159a",
+              "documentKey": "antigua-pdm-ot",
+              "documentVersion": "official-municipal-pdf-2026-06-22",
+              "citationLabel": "Plan de Desarrollo Municipal y Ordenamiento Territorial de Antigua Guatemala - Modulo 1, pagina 205",
+              "pageStart": 205,
+              "pageEnd": 205,
+              "matchedModes": [
+                "vector"
+              ],
+              "scores": {
+                "vector": 0.32885250449180603,
+                "phrase": 0,
+                "keyword": 0,
+                "provenance": 0.8500000000000001
+              },
+              "hybridScore": 0.9182787567377091,
+              "relevant": false
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "PDM-NEG-004",
+      "kind": "no_answer",
+      "query": "calendario de contenido para redes sociales",
+      "modes": {
+        "phrase": {
+          "mode": "phrase",
+          "answerEligible": false,
+          "firstRelevantRank": null,
+          "hitAt5": false,
+          "citationIdentityValid": false,
+          "leakedCandidateCount": 0,
+          "candidates": []
+        },
+        "keyword": {
+          "mode": "keyword",
+          "answerEligible": false,
+          "firstRelevantRank": null,
+          "hitAt5": false,
+          "citationIdentityValid": false,
+          "leakedCandidateCount": 0,
+          "candidates": []
+        },
+        "vector_lexical": {
+          "mode": "vector_lexical",
+          "answerEligible": false,
+          "firstRelevantRank": null,
+          "hitAt5": false,
+          "citationIdentityValid": false,
+          "leakedCandidateCount": 0,
+          "candidates": [
+            {
+              "rank": 1,
+              "chunkId": "f2827cd77fbb6b19b0271067de6c093fe091083c68fabfd431ef5bac29ede3ab",
+              "documentKey": "antigua-pdm-ot",
+              "documentVersion": "official-municipal-pdf-2026-06-22",
+              "citationLabel": "Plan de Desarrollo Municipal y Ordenamiento Territorial de Antigua Guatemala - Modulo 1, pagina 178",
+              "pageStart": 178,
+              "pageEnd": 178,
+              "matchedModes": [
+                "vector"
+              ],
+              "scores": {
+                "vector": 0.3136814534664154
+              },
+              "hybridScore": 0,
+              "relevant": false
+            },
+            {
+              "rank": 2,
+              "chunkId": "2c583c4f010d2524bafe489f346918d5d8eb94f73da5f9629228672375a1b2b9",
+              "documentKey": "antigua-pdm-ot",
+              "documentVersion": "official-municipal-pdf-2026-06-22",
+              "citationLabel": "Plan de Desarrollo Municipal y Ordenamiento Territorial de Antigua Guatemala - Modulo 1, pagina 200",
+              "pageStart": 200,
+              "pageEnd": 200,
+              "matchedModes": [
+                "vector"
+              ],
+              "scores": {
+                "vector": 0.30169214000152755
+              },
+              "hybridScore": 0,
+              "relevant": false
+            },
+            {
+              "rank": 3,
+              "chunkId": "3733ee3eead0d1ef7255c96be52d644c74b525a74d5461e342a4ae2324fb9d44",
+              "documentKey": "antigua-pdm-ot",
+              "documentVersion": "official-municipal-pdf-2026-06-22",
+              "citationLabel": "Plan de Desarrollo Municipal y Ordenamiento Territorial de Antigua Guatemala - Modulo 1, pagina 179",
+              "pageStart": 179,
+              "pageEnd": 179,
+              "matchedModes": [
+                "vector"
+              ],
+              "scores": {
+                "vector": 0.30131943217996215
+              },
+              "hybridScore": 0,
+              "relevant": false
+            },
+            {
+              "rank": 4,
+              "chunkId": "ea819688db522c11691a4620e675589fc8fc41b431a42fbca9b9aa90944d1bd2",
+              "documentKey": "antigua-pdm-ot",
+              "documentVersion": "official-municipal-pdf-2026-06-22",
+              "citationLabel": "Plan de Desarrollo Municipal y Ordenamiento Territorial de Antigua Guatemala - Modulo 1, pagina 204",
+              "pageStart": 204,
+              "pageEnd": 204,
+              "matchedModes": [
+                "vector"
+              ],
+              "scores": {
+                "vector": 0.29985789358192383
+              },
+              "hybridScore": 0,
+              "relevant": false
+            },
+            {
+              "rank": 5,
+              "chunkId": "0cc2687ba2278f30aad480f2a851c21df8b60173ef2905e3fff3cc2f3d4b862b",
+              "documentKey": "antigua-pdm-ot",
+              "documentVersion": "official-municipal-pdf-2026-06-22",
+              "citationLabel": "Plan de Desarrollo Municipal y Ordenamiento Territorial de Antigua Guatemala - Modulo 1, pagina 192",
+              "pageStart": 192,
+              "pageEnd": 192,
+              "matchedModes": [
+                "vector"
+              ],
+              "scores": {
+                "vector": 0.29974288941962235
+              },
+              "hybridScore": 0,
+              "relevant": false
+            }
+          ]
+        },
+        "hybrid": {
+          "mode": "hybrid",
+          "answerEligible": false,
+          "firstRelevantRank": null,
+          "hitAt5": false,
+          "citationIdentityValid": false,
+          "leakedCandidateCount": 0,
+          "candidates": [
+            {
+              "rank": 1,
+              "chunkId": "f2827cd77fbb6b19b0271067de6c093fe091083c68fabfd431ef5bac29ede3ab",
+              "documentKey": "antigua-pdm-ot",
+              "documentVersion": "official-municipal-pdf-2026-06-22",
+              "citationLabel": "Plan de Desarrollo Municipal y Ordenamiento Territorial de Antigua Guatemala - Modulo 1, pagina 178",
+              "pageStart": 178,
+              "pageEnd": 178,
+              "matchedModes": [
+                "vector"
+              ],
+              "scores": {
+                "vector": 0.3136814534664154,
+                "phrase": 0,
+                "keyword": 0,
+                "provenance": 0.8500000000000001
+              },
+              "hybridScore": 0.8955221801996232,
+              "relevant": false
+            },
+            {
+              "rank": 2,
+              "chunkId": "2c583c4f010d2524bafe489f346918d5d8eb94f73da5f9629228672375a1b2b9",
+              "documentKey": "antigua-pdm-ot",
+              "documentVersion": "official-municipal-pdf-2026-06-22",
+              "citationLabel": "Plan de Desarrollo Municipal y Ordenamiento Territorial de Antigua Guatemala - Modulo 1, pagina 200",
+              "pageStart": 200,
+              "pageEnd": 200,
+              "matchedModes": [
+                "vector"
+              ],
+              "scores": {
+                "vector": 0.30169214000152755,
+                "phrase": 0,
+                "keyword": 0,
+                "provenance": 0.8500000000000001
+              },
+              "hybridScore": 0.8775382100022914,
+              "relevant": false
+            },
+            {
+              "rank": 3,
+              "chunkId": "3733ee3eead0d1ef7255c96be52d644c74b525a74d5461e342a4ae2324fb9d44",
+              "documentKey": "antigua-pdm-ot",
+              "documentVersion": "official-municipal-pdf-2026-06-22",
+              "citationLabel": "Plan de Desarrollo Municipal y Ordenamiento Territorial de Antigua Guatemala - Modulo 1, pagina 179",
+              "pageStart": 179,
+              "pageEnd": 179,
+              "matchedModes": [
+                "vector"
+              ],
+              "scores": {
+                "vector": 0.30131943217996215,
+                "phrase": 0,
+                "keyword": 0,
+                "provenance": 0.8500000000000001
+              },
+              "hybridScore": 0.8769791482699433,
+              "relevant": false
+            },
+            {
+              "rank": 4,
+              "chunkId": "ea819688db522c11691a4620e675589fc8fc41b431a42fbca9b9aa90944d1bd2",
+              "documentKey": "antigua-pdm-ot",
+              "documentVersion": "official-municipal-pdf-2026-06-22",
+              "citationLabel": "Plan de Desarrollo Municipal y Ordenamiento Territorial de Antigua Guatemala - Modulo 1, pagina 204",
+              "pageStart": 204,
+              "pageEnd": 204,
+              "matchedModes": [
+                "vector"
+              ],
+              "scores": {
+                "vector": 0.29985789358192383,
+                "phrase": 0,
+                "keyword": 0,
+                "provenance": 0.8500000000000001
+              },
+              "hybridScore": 0.8747868403728858,
+              "relevant": false
+            },
+            {
+              "rank": 5,
+              "chunkId": "0cc2687ba2278f30aad480f2a851c21df8b60173ef2905e3fff3cc2f3d4b862b",
+              "documentKey": "antigua-pdm-ot",
+              "documentVersion": "official-municipal-pdf-2026-06-22",
+              "citationLabel": "Plan de Desarrollo Municipal y Ordenamiento Territorial de Antigua Guatemala - Modulo 1, pagina 192",
+              "pageStart": 192,
+              "pageEnd": 192,
+              "matchedModes": [
+                "vector"
+              ],
+              "scores": {
+                "vector": 0.29974288941962235,
+                "phrase": 0,
+                "keyword": 0,
+                "provenance": 0.8500000000000001
+              },
+              "hybridScore": 0.8746143341294336,
+              "relevant": false
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "limitations": {
+    "corpusDocuments": 1,
+    "corpusCompletenessClaim": false,
+    "legalCorrectnessClaim": false,
+    "semanticRetrievalClaim": false,
+    "productionSloClaim": false,
+    "generalizationBeyondCases": false,
+    "dmpNoTextExcluded": true
+  }
+}

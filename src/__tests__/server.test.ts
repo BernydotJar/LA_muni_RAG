@@ -155,6 +155,15 @@ if (!process.env.DATABASE_URL) {
       assert.ok(!serialized.includes("endpoint"));
     });
 
+    it("GET /health reports ingestion API capability without claiming a worker", async () => {
+      const { status, body } = await get("/health");
+      assert.equal(status, 200);
+      const ingestion = body.ingestionJobApi as Record<string, unknown>;
+      assert.equal(typeof ingestion.enabled, "boolean");
+      assert.equal(ingestion.workerConfigured, false);
+      assert.doesNotMatch(JSON.stringify(ingestion), /provider|model|credential|database/i);
+    });
+
     // -----------------------------------------------------------------------
     // Search
     // -----------------------------------------------------------------------

@@ -1,0 +1,82 @@
+# Decision 074 — Gate Cloud SQL staging behind a zero-resource Terraform default
+
+## Decision
+
+Adopt a dedicated Cloud SQL for PostgreSQL 16 Enterprise instance as the first managed
+GCP staging target. The committed Terraform default creates zero resources. A
+resource-bearing plan requires an explicit enablement flag, exact confirmation, billing
+approval, budget approval, data-residency approval and a bounded pilot-cost review.
+
+The project owner supplied project ID `rag-municipalidades`, project number
+`1059368783280`, region `us-central1`, a USD 1 planning envelope and
+`AUTH_PROXY_PUBLIC` connectivity. Eduardo Sacahui is the named billing owner and
+emergency stop/teardown owner. His contact address is maintained outside the repository.
+Spend authorization is confirmed for a future controlled pilot.
+
+Authenticated Cloud Shell evidence later verified the linked COP billing account, Billing
+Account Administrator assignment, a project-scoped COP 4,000 monthly budget with 50%,
+90% and 100% current-spend alerts, an effective resource-location policy that permits
+`us-central1`, and a protected regional GCS state bucket. The first legacy-IAM cleanup
+removed bucket-policy administration too early. The idempotent recovery was hardened
+to tolerate IAM propagation, and authenticated `--apply` plus `--check` executions later
+established bucket-scoped `roles/storage.admin`, removed all legacy bindings and cleaned
+up the temporary project-level grant. A later authenticated Terraform 1.15.8 run
+initialized the externalized GCS backend and verified a live plan with zero resource
+changes and `resources_enabled=false`; its local plan artifacts were removed.
+The first exact resource-bearing plan was generated from authenticated Cloud Shell and
+correctly proposed only two create actions, but it was rejected because the required
+`owner=eduardo-sacahui` label was absent. Address-only validation is therefore replaced
+with a reusable JSON plan verifier. A corrected immutable plan subsequently passed that
+verifier. On 2026-07-25 the project owner accepted a temporary single-owner governance
+exception and granted final execution authorization tied to the exact four plan-artifact
+hashes and the 09:00-13:00 America/Guatemala window. The assistant is not an IAM principal
+and does not count as owner redundancy. Remote state and Cloud SQL operations later established that the exact authorized apply occurred; compute was then stopped and the exception expired on stop.
+
+Private IP remains the target posture. The supplied pilot mode configures no authorized
+networks, enforces connectors and must use Cloud SQL Auth Proxy or a supported language
+connector. IAM database authentication, backups, PITR, bounded storage growth, Query
+Insights and both Terraform and Cloud SQL deletion protection remain mandatory.
+
+The selected `db-custom-1-3840` tier was re-reviewed against official pricing on
+2026-07-24. In `us-central1`, 1 vCPU at USD 0.054/hour plus 3.75 GiB memory at
+USD 0.009/GiB-hour produces USD 0.08775/hour and USD 0.351 for four hours. The
+configured 20 GiB SSD adds approximately USD 0.03726024 for that window, producing
+USD 0.38826024 before backups, network, taxes or other charges. Pricing must be
+re-reviewed again before any later resource-bearing plan. The COP 4,000 live budget and USD 1 Terraform planning envelope are both
+incompatible with an always-on instance at this tier and therefore constrain only a
+time-bounded pilot.
+
+Repository automation is validation-only. Provisioning, destruction, project creation,
+billing enablement, IAM assignment and paid operation remain human-gated. GCP budget
+alerts are operational notifications, not a hard spending cap; the repository cost gate
+is likewise a planning control rather than an enforcement guarantee.
+
+## Rationale
+
+The existing Feature 073 runner already proves twenty API/system journeys. Reusing that
+runner against a dedicated managed PostgreSQL service gives higher-fidelity database,
+network and operational evidence without creating a second test matrix. Independent
+approvals and an explicit runtime/cost envelope prevent a copied confirmation string or
+project ID from authorizing spend by itself.
+
+BigQuery Vector Search is not adopted as the persistence replacement in this slice. The
+current product depends on PostgreSQL transactions, forced RLS, migrations, relational
+constraints, pgvector repositories and non-owner runtime roles. Replacing those controls
+would be a separate architecture program, not a cheaper deployment toggle.
+
+## Consequences
+
+This feature proves a validated production-shaped plan, not a deployed environment. The
+first approved run uses synthetic fixtures only and does not prove real-corpus quality,
+human identity, browser E2E, load/HA, production readiness, merge or deployment.
+
+
+## Operational outcome — exact plan applied and compute stopped
+
+Remote Terraform state and Cloud SQL operations prove that the exact authorized two-resource
+plan was applied. Creation and initial backup completed successfully. Before the bounded
+window ended, activation policy was changed to `NEVER` and the instance reached `STOPPED`
+with deletion protection and approved labels intact. The exception expired on stop. This
+outcome proves managed resource creation and bounded stop control, but not the twenty-journey
+managed staging run or destructive teardown. Any restart or deletion requires a new explicit
+authorization.

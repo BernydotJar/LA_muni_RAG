@@ -11,6 +11,7 @@ import {
   parseBackfillCorpusArgs,
   resolveBackfillRuntimeMetadata,
   runBackfillCorpus,
+  usage,
   validateBackfillCorpusArgs,
   type BackfillCorpusRuntimeMetadata,
 } from "../cli/backfillCorpus.js";
@@ -89,6 +90,32 @@ describe("corpus backfill CLI helpers", () => {
 
   it("rejects unknown arguments", () => {
     assert.throws(() => parseBackfillCorpusArgs(["--bogus"]), /Unknown argument/);
+  });
+
+  it("documents and enforces the document-library boundary for raw PDFs before file reads", async () => {
+    const directory = await createTempDir();
+    const inputPath = join(directory, "missing.pdf");
+    const manifestPath = join(directory, "manifest.json");
+    let captured: unknown;
+
+    try {
+      await runBackfillCorpus({
+        manifestPath,
+        inputPath,
+        documentKey: "raw-pdf",
+        documentVersion: "v1",
+        sourceFormat: "pdf",
+        dryRun: true,
+        help: false,
+      }, runtimeMetadata);
+    } catch (error) {
+      captured = error;
+    }
+
+    assert.match(usage, /Raw PDFs are not accepted here/);
+    assert.equal((captured as { code?: string }).code, "pdf_requires_document_library");
+    assert.match(formatBackfillCorpusError(captured), /pdf_requires_document_library/);
+    await assert.rejects(() => readFile(manifestPath, "utf-8"), /ENOENT/);
   });
 
   it("rejects missing flag values", () => {

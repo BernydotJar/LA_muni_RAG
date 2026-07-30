@@ -1,0 +1,37 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://contracts.la-muni-rag.invalid/v1/source-create-request.schema.json",
+  "title": "SourceCreateRequest v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "operation", "request_id", "tenant_id", "source_key", "title", "category", "target_jurisdiction", "source_jurisdiction", "source_relation", "discovery_status", "discovery_url", "artifact_url", "observed_version", "publication_date", "effective_date", "limitations", "provenance"],
+  "properties": {
+    "schema_version": { "$ref": "common.schema.json#/$defs/SchemaVersion" },
+    "operation": { "const": "source_create" },
+    "request_id": { "$ref": "common.schema.json#/$defs/Uuid" },
+    "tenant_id": { "$ref": "common.schema.json#/$defs/Uuid" },
+    "source_key": { "type": "string", "minLength": 3, "maxLength": 128, "pattern": "^[a-z0-9][a-z0-9._:-]*$" },
+    "title": { "type": "string", "minLength": 1, "maxLength": 500 },
+    "category": { "type": "string", "enum": ["constitution", "national_law", "national_regulation", "planning", "budget", "organization", "procedure_manual", "function_manual", "council_record", "form", "community_record", "public_portal", "other"] },
+    "target_jurisdiction": { "type": "string", "minLength": 2, "maxLength": 500 },
+    "source_jurisdiction": { "type": "string", "minLength": 2, "maxLength": 500 },
+    "source_relation": { "type": "string", "enum": ["target", "national", "comparative", "unknown"] },
+    "discovery_status": { "type": "string", "enum": ["identified", "access_blocked", "unverified", "missing_source"] },
+    "discovery_url": { "oneOf": [{ "type": "string", "format": "uri", "pattern": "^https?://", "maxLength": 2048 }, { "type": "null" }] },
+    "artifact_url": { "oneOf": [{ "type": "string", "format": "uri", "pattern": "^https?://", "maxLength": 2048 }, { "type": "null" }] },
+    "observed_version": { "type": ["string", "null"], "minLength": 1, "maxLength": 200 },
+    "publication_date": { "oneOf": [{ "type": "string", "format": "date" }, { "type": "null" }] },
+    "effective_date": { "oneOf": [{ "type": "string", "format": "date" }, { "type": "null" }] },
+    "limitations": { "type": "array", "maxItems": 15, "uniqueItems": true, "items": { "type": "string", "minLength": 1, "maxLength": 1000 } },
+    "provenance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["credential_id"],
+      "properties": { "credential_id": { "$ref": "common.schema.json#/$defs/Uuid" } }
+    }
+  },
+  "allOf": [{
+    "if": { "properties": { "discovery_status": { "const": "missing_source" } }, "required": ["discovery_status"] },
+    "then": { "properties": { "discovery_url": { "const": null }, "artifact_url": { "const": null } } }
+  }]
+}

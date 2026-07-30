@@ -1,0 +1,117 @@
+{
+  "schema_version": "1.12.0",
+  "generated_at": "2026-07-22T21:54:35Z",
+  "current_slice": "Feature 073 ephemeral staging runner v1",
+  "functional_head": "4f6ab306d383f6d74808b393a88ff8172d666b5b",
+  "summary": {
+    "resolved_feature_findings": 8,
+    "critical_or_high_open_in_feature": 0,
+    "global_blockers_remain": true
+  },
+  "feature_findings": [
+    {
+      "id": "ESR-CRIT-001",
+      "severity": "critical",
+      "status": "resolved",
+      "finding": "The staging plan was not executable.",
+      "resolution": "Implemented plan-driven orchestration over four disposable PostgreSQL databases and existing compiled smokes."
+    },
+    {
+      "id": "ESR-CRIT-002",
+      "severity": "critical",
+      "status": "resolved",
+      "finding": "A runner could target a non-test database service.",
+      "resolution": "Requires loopback /postgres, explicit ephemeral confirmation, admin capability and a dedicated cluster with no unrelated databases."
+    },
+    {
+      "id": "ESR-CRIT-003",
+      "severity": "critical",
+      "status": "resolved",
+      "finding": "Failure could leave test databases or roles.",
+      "resolution": "Run-owned resources are cleaned in finally, absence is re-queried, and detached/CI receipts prove 4/4 databases and 3/3 roles destroyed."
+    },
+    {
+      "id": "ESR-HIGH-004",
+      "severity": "high",
+      "status": "resolved",
+      "finding": "Journey coverage could be partial or duplicated.",
+      "resolution": "Canonical plan mapping proves all 20 runnable API journeys exactly once and maps no browser journey."
+    },
+    {
+      "id": "ESR-HIGH-005",
+      "severity": "high",
+      "status": "resolved",
+      "finding": "Permission-equivalent principals could overstate persona coverage.",
+      "resolution": "Viewer, platform admin, tenant admin and case operator use exact dedicated principals and credentials."
+    },
+    {
+      "id": "ESR-HIGH-006",
+      "severity": "high",
+      "status": "resolved",
+      "finding": "Local dotenv or process environment could leak into smokes.",
+      "resolution": "No shell, minimal child environment, dotenv disabled and raw output excluded from receipt."
+    },
+    {
+      "id": "ESR-HIGH-007",
+      "severity": "high",
+      "status": "resolved",
+      "finding": "Receipts could leak connection material or cite a dirty worktree SHA.",
+      "resolution": "Runner requires a clean worktree, validates a closed receipt and writes mode 0600 under ignored artifacts."
+    },
+    {
+      "id": "ESR-HIGH-008",
+      "severity": "high",
+      "status": "resolved",
+      "finding": "Synthetic API staging could be mistaken for browser/cloud/production evidence.",
+      "resolution": "Twelve browser journeys remain blocked and docs deny real corpus, external consumer, cloud staging, merge and deployment claims."
+    }
+  ],
+  "open_findings": [
+    {
+      "id": "PQG-OPEN-ENABLEMENT-001",
+      "severity": "critical",
+      "status": "open",
+      "area": "public_gateway_enablement",
+      "finding": "Gateway is implemented but cannot be enabled until an authorized ingested public corpus, edge controls, staging and deployment approval exist."
+    },
+    {
+      "id": "PROG-CORPUS-001",
+      "severity": "critical",
+      "status": "open",
+      "area": "corpus",
+      "finding": "No authorized durable corpus bytes or real ingestion exist."
+    },
+    {
+      "id": "E2E-OPEN-IDP-002",
+      "severity": "critical",
+      "status": "open",
+      "area": "human_identity",
+      "finding": "No approved IdP/BFF/session or authenticated role-aware UI exists."
+    },
+    {
+      "id": "E2E-OPEN-CONSUMERS-003",
+      "severity": "high",
+      "status": "open",
+      "area": "external_integrations",
+      "finding": "OS Electoral and Content Agency have not executed consumer suites."
+    },
+    {
+      "id": "PROG-OPS-001",
+      "severity": "critical",
+      "status": "open",
+      "area": "operations",
+      "finding": "GCP is architecture only; infrastructure, observability, load/HA, recovery, privacy, merge and deployment are absent."
+    }
+  ],
+  "publication": {
+    "branch": "feature/ephemeral-staging-runner-v1",
+    "functional_sha": "4f6ab306d383f6d74808b393a88ff8172d666b5b",
+    "remote_sha_verified": true,
+    "ci_run_id": 29959965725,
+    "ci_status": "success",
+    "ci_conclusion": "success",
+    "pr": null,
+    "merged": false,
+    "deployed": false
+  }
+}

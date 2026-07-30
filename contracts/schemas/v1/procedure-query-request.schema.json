@@ -1,0 +1,86 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://contracts.la-muni-rag.invalid/v1/procedure-query-request.schema.json",
+  "title": "ProcedureQueryRequest v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "direction",
+    "product_boundary",
+    "request_id",
+    "tenant_id",
+    "campaign_id",
+    "community_id",
+    "question",
+    "jurisdiction",
+    "case_context",
+    "requested_depth",
+    "requested_output",
+    "provenance"
+  ],
+  "properties": {
+    "schema_version": {
+      "$ref": "common.schema.json#/$defs/SchemaVersion"
+    },
+    "direction": {
+      "const": "inbound"
+    },
+    "product_boundary": {
+      "const": "evidence_and_procedure_request_only"
+    },
+    "request_id": {
+      "$ref": "common.schema.json#/$defs/Uuid"
+    },
+    "tenant_id": {
+      "$ref": "common.schema.json#/$defs/Uuid"
+    },
+    "campaign_id": {
+      "$ref": "common.schema.json#/$defs/SafeOpaqueId"
+    },
+    "community_id": {
+      "$ref": "common.schema.json#/$defs/SafeOpaqueId"
+    },
+    "question": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 4000
+    },
+    "jurisdiction": {
+      "$ref": "common.schema.json#/$defs/Jurisdiction"
+    },
+    "case_context": {
+      "$ref": "common.schema.json#/$defs/CaseContext"
+    },
+    "requested_depth": {
+      "type": "string",
+      "enum": [
+        "overview",
+        "deep_dive"
+      ]
+    },
+    "requested_output": {
+      "type": "string",
+      "enum": [
+        "evidence_bundle",
+        "procedure_workflow",
+        "procedure_assessment"
+      ]
+    },
+    "provenance": {
+      "allOf": [
+        {
+          "$ref": "common.schema.json#/$defs/Provenance"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "source_product": {
+              "const": "os_electoral"
+            }
+          }
+        }
+      ]
+    }
+  }
+}

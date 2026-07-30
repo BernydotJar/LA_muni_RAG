@@ -1,18 +1,19 @@
 import type { Pool } from "pg";
 import type { EvidenceDependencies } from "../evidence.js";
-import { PgVectorEmbeddingRepository } from "../embeddings/pgVectorRepository.js";
 import {
   createQueryEmbeddingProvider,
   loadQueryEmbeddingProviderConfig,
   type QueryEmbeddingProviderConfig,
 } from "../embeddings/queryEmbeddingFactory.js";
 import type { QueryEmbeddingTransport } from "../embeddings/httpQueryEmbeddingProvider.js";
+import type { VectorRetrievalRepository } from "../retrieval/vectorRetriever.js";
 
 export type RuntimeVectorState = "enabled" | "disabled" | "degraded";
 
 export type RuntimeVectorReason =
   | "missing_query_embedding_config"
   | "missing_database_config"
+  | "tenant_vector_context_required"
   | "runtime_dependencies_ready"
   | "partial_runtime_dependencies";
 
@@ -36,6 +37,8 @@ export interface RuntimeEvidenceDependencyOptions {
   pool?: Pool;
   queryEmbeddingConfig?: QueryEmbeddingProviderConfig;
   queryEmbeddingTransport?: QueryEmbeddingTransport;
+  /** Must already be closed over an authenticated tenant transaction. */
+  vectorRepository?: VectorRetrievalRepository;
 }
 
 const hasDatabaseConfig = (env: NodeJS.ProcessEnv): boolean =>
@@ -44,6 +47,7 @@ const hasDatabaseConfig = (env: NodeJS.ProcessEnv): boolean =>
 const vectorStatusFor = (
   queryEmbeddingProviderConfigured: boolean,
   vectorRepositoryConfigured: boolean,
+  databaseConfigured: boolean,
   metadata: Pick<RuntimeVectorStatus, "providerName" | "model" | "expectedDimensions"> = {}
 ): RuntimeVectorStatus => {
   if (queryEmbeddingProviderConfigured && vectorRepositoryConfigured) {
@@ -58,7 +62,9 @@ const vectorStatusFor = (
 
   const reasons: RuntimeVectorReason[] = [];
   if (!queryEmbeddingProviderConfigured) reasons.push("missing_query_embedding_config");
-  if (!vectorRepositoryConfigured) reasons.push("missing_database_config");
+  if (!vectorRepositoryConfigured) {
+    reasons.push(databaseConfigured ? "tenant_vector_context_required" : "missing_database_config");
+  }
   if (queryEmbeddingProviderConfigured !== vectorRepositoryConfigured) reasons.push("partial_runtime_dependencies");
 
   return {
@@ -92,16 +98,28 @@ export const createRuntimeEvidenceDependencyContext = (
   if (!queryEmbeddingProvider || !databaseConfigured) {
     return {
       dependencies: {},
-      vectorStatus: vectorStatusFor(Boolean(queryEmbeddingProvider), databaseConfigured, safeProviderMetadata),
+      vectorStatus: vectorStatusFor(
+        Boolean(queryEmbeddingProvider),
+        Boolean(options.vectorRepository),
+        databaseConfigured,
+        safeProviderMetadata
+      ),
+    };
+  }
+
+  if (!options.vectorRepository) {
+    return {
+      dependencies: {},
+      vectorStatus: vectorStatusFor(true, false, true, safeProviderMetadata),
     };
   }
 
   return {
     dependencies: {
       queryEmbeddingProvider,
-      vectorRepository: new PgVectorEmbeddingRepository(options.pool, queryEmbeddingProvider.dimensions),
+      vectorRepository: options.vectorRepository,
     },
-    vectorStatus: vectorStatusFor(true, true, safeProviderMetadata),
+    vectorStatus: vectorStatusFor(true, true, databaseConfigured, safeProviderMetadata),
   };
 };
 

@@ -1,0 +1,136 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://contracts.la-muni-rag.invalid/v1/procedure-assessment.schema.json",
+  "title": "ProcedureAssessment v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "response_type",
+    "product_boundary",
+    "assessment_id",
+    "procedure_id",
+    "workflow_version",
+    "tenant_id",
+    "request_id",
+    "jurisdiction",
+    "case_context",
+    "completed_requirements",
+    "missing_requirements",
+    "blocked_steps",
+    "unknowns",
+    "evidence_refs",
+    "next_documental_action",
+    "limitations",
+    "provenance"
+  ],
+  "properties": {
+    "schema_version": {
+      "$ref": "common.schema.json#/$defs/SchemaVersion"
+    },
+    "response_type": {
+      "const": "procedure_assessment"
+    },
+    "product_boundary": {
+      "const": "evidence_and_procedure_only"
+    },
+    "assessment_id": {
+      "$ref": "common.schema.json#/$defs/Uuid"
+    },
+    "procedure_id": {
+      "$ref": "common.schema.json#/$defs/Uuid"
+    },
+    "workflow_version": {
+      "$ref": "common.schema.json#/$defs/SemVer"
+    },
+    "tenant_id": {
+      "$ref": "common.schema.json#/$defs/Uuid"
+    },
+    "request_id": {
+      "$ref": "common.schema.json#/$defs/Uuid"
+    },
+    "jurisdiction": {
+      "$ref": "common.schema.json#/$defs/Jurisdiction"
+    },
+    "case_context": {
+      "allOf": [
+        {
+          "$ref": "common.schema.json#/$defs/CaseContext"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "facts": {
+              "type": "array",
+              "maxItems": 0
+            },
+            "constraints": {
+              "type": "array",
+              "maxItems": 0
+            }
+          }
+        }
+      ]
+    },
+    "completed_requirements": {
+      "type": "array",
+      "items": {
+        "$ref": "common.schema.json#/$defs/Uuid"
+      },
+      "uniqueItems": true
+    },
+    "missing_requirements": {
+      "type": "array",
+      "items": {
+        "$ref": "common.schema.json#/$defs/DocumentReference"
+      },
+      "uniqueItems": true
+    },
+    "blocked_steps": {
+      "type": "array",
+      "items": {
+        "$ref": "common.schema.json#/$defs/Uuid"
+      },
+      "uniqueItems": true
+    },
+    "unknowns": {
+      "type": "array",
+      "items": {
+        "$ref": "common.schema.json#/$defs/NonEmptyString"
+      },
+      "uniqueItems": true
+    },
+    "evidence_refs": {
+      "type": "array",
+      "items": {
+        "$ref": "common.schema.json#/$defs/Uuid"
+      },
+      "uniqueItems": true
+    },
+    "next_documental_action": {
+      "$ref": "common.schema.json#/$defs/NonEmptyString"
+    },
+    "limitations": {
+      "type": "array",
+      "items": {
+        "$ref": "common.schema.json#/$defs/NonEmptyString"
+      },
+      "uniqueItems": true
+    },
+    "provenance": {
+      "allOf": [
+        {
+          "$ref": "common.schema.json#/$defs/Provenance"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "source_product": {
+              "const": "la_muni_rag"
+            }
+          }
+        }
+      ]
+    }
+  }
+}

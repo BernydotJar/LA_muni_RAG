@@ -1,0 +1,10 @@
+{
+  "schema_version": "v1",
+  "response_type": "public_error",
+  "request_id": "55555555-5555-4555-8555-555555555555",
+  "error": {
+    "code": "service_unavailable",
+    "message": "Public query service is unavailable",
+    "retryable": true
+  }
+}

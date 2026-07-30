@@ -34,7 +34,7 @@ This preserves the current overview behavior and limits the change surface.
 
 ## GitHub Pages
 
-GitHub Pages cannot execute the API. The existing demo bridge returns the static overview workflow. When deep dive is requested, the UI layer promotes that demo payload into a conservative demonstrative structure with dependencies and evidence labels. It does not invent roles, deadlines, approvals, legal requirements, or production case status.
+GitHub Pages cannot execute the API. The current bridge returns HTTP 503 unless a reviewed public gateway is configured. No static overview or deep-dive workflow is generated; the renderer operates only on an actual API response and does not invent roles, deadlines, approvals, legal requirements, or production case status.
 
 ## Verification
 

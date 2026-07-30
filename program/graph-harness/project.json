@@ -1,0 +1,361 @@
+{
+  "schema_version": "graph-harness.project.v1",
+  "project_id": "la-muni-rag-pr24-repair-20260729",
+  "mode": "SHIP",
+  "gate_definitions": [
+    {
+      "id": "GATE-HUMAN-SESSION-RELIABILITY-REPAIR",
+      "required_evidence_kinds": [
+        "focused_test",
+        "load_harness",
+        "review",
+        "remote_ci"
+      ],
+      "blocking": true
+    },
+    {
+      "id": "GATE-HUMAN-SHELL-ACCESSIBILITY-REPAIR",
+      "required_evidence_kinds": [
+        "focused_test",
+        "browser_smoke",
+        "review",
+        "remote_ci"
+      ],
+      "blocking": true
+    },
+    {
+      "id": "GATE-HUMAN-WORKSPACE-REGRESSION",
+      "required_evidence_kinds": [
+        "regression",
+        "browser_smoke",
+        "review",
+        "remote_ci"
+      ],
+      "blocking": true
+    },
+    {
+      "id": "GATE-PR24-CHECKPOINT",
+      "required_evidence_kinds": [
+        "graph_validation",
+        "remote_ci"
+      ],
+      "blocking": true
+    },
+    {
+      "id": "GATE-GRAPH-HARNESS-PIN-002",
+      "required_evidence_kinds": [
+        "framework_validation",
+        "independent_review",
+        "regression",
+        "remote_ci"
+      ],
+      "blocking": true
+    },
+    {
+      "id": "GATE-CONTROLLED-REAL-CORPUS-001",
+      "required_evidence_kinds": [
+        "source_verification",
+        "malware_scan",
+        "ingestion_runtime",
+        "inventory_reconciliation",
+        "independent_review",
+        "regression",
+        "remote_ci"
+      ],
+      "blocking": true
+    },
+    {
+      "id": "GATE-REAL-CORPUS-RETRIEVAL-001",
+      "required_evidence_kinds": [
+        "retrieval_eval",
+        "adversarial_review",
+        "regression",
+        "remote_ci"
+      ],
+      "blocking": true
+    },
+    {
+      "id": "GATE-PUBLIC-CORPUS-PILOT-STAGING-001",
+      "required_evidence_kinds": [
+        "local_regression",
+        "managed_database",
+        "corpus_projection",
+        "public_gateway_smoke",
+        "immutable_image",
+        "online_pages",
+        "observability",
+        "remote_ci"
+      ],
+      "blocking": true
+    }
+  ],
+  "nodes": [
+    {
+      "id": "WS11-HUMAN-SESSION-RELIABILITY-001",
+      "kind": "feature",
+      "title": "Human session local reliability evidence",
+      "status": "done",
+      "depends_on": [],
+      "capability": "local_reliability_evidence",
+      "gates": {
+        "done": [
+          "GATE-HUMAN-SESSION-RELIABILITY-REPAIR"
+        ]
+      },
+      "allowed_paths": [
+        "docs/operations/human-session-reliability.md",
+        "docs/reviews/079-human-session-reliability-independent-review.md",
+        "docs/traceability/079-human-session-reliability-v1.md",
+        "program/**",
+        "scripts/human-session-reliability-harness.mjs",
+        "specs/079-human-session-reliability-v1/**",
+        "src/__tests__/eval-human-session-reliability-001.test.ts",
+        "src/__tests__/human-session-reliability-v1.test.ts"
+      ],
+      "metadata": {
+        "projection_source": "program/task-graph.yaml",
+        "failure_run": "30424332058",
+        "productive_slo_claim": false
+      }
+    },
+    {
+      "id": "WS11-HUMAN-SHELL-ACCESSIBILITY-001",
+      "kind": "feature",
+      "title": "Cross-browser automated accessibility complement",
+      "status": "done",
+      "depends_on": [],
+      "capability": "cross_browser_accessibility_regression",
+      "gates": {
+        "done": [
+          "GATE-HUMAN-SHELL-ACCESSIBILITY-REPAIR"
+        ]
+      },
+      "allowed_paths": [
+        "docs/reviews/081-human-product-shell-accessibility-independent-review.md",
+        "docs/traceability/081-human-product-shell-accessibility-v1.md",
+        "program/**",
+        "scripts/human-product-shell-browser-smoke.mjs",
+        "specs/081-human-product-shell-accessibility-v1/**",
+        "src/__tests__/eval-human-product-shell-accessibility-001.test.ts",
+        "src/__tests__/human-product-shell-accessibility-v1.test.ts",
+        "src/__tests__/human-product-shell-v1.test.ts",
+        "src/humanShell/assets.ts"
+      ],
+      "metadata": {
+        "projection_source": "program/task-graph.yaml",
+        "failure_run": "30424332072",
+        "wcag_conformance_claim": false
+      }
+    },
+    {
+      "id": "WS09-HUMAN-WORKSPACE-001",
+      "kind": "feature",
+      "title": "Task-first municipal workspace",
+      "status": "done",
+      "depends_on": [
+        "WS11-HUMAN-SESSION-RELIABILITY-001",
+        "WS11-HUMAN-SHELL-ACCESSIBILITY-001"
+      ],
+      "capability": "authenticated_local_workspace",
+      "gates": {
+        "done": [
+          "GATE-HUMAN-WORKSPACE-REGRESSION"
+        ]
+      },
+      "allowed_paths": [
+        "docs/reviews/082-task-first-human-workspace-independent-review.md",
+        "docs/traceability/082-task-first-human-workspace-v1.md",
+        "program/**",
+        "specs/082-task-first-human-workspace-v1/**",
+        "src/__tests__/eval-human-workspace-001.test.ts",
+        "src/__tests__/human-product-workspace-v1.test.ts",
+        "src/humanShell/**"
+      ],
+      "metadata": {
+        "projection_source": "program/task-graph.yaml",
+        "productive_authenticated_journeys": "0/12"
+      }
+    },
+    {
+      "id": "WS07-HUMAN-OIDC-PROVIDER-001",
+      "kind": "feature",
+      "title": "Provider-neutral confidential OIDC adapter",
+      "status": "done",
+      "depends_on": [],
+      "capability": "provider_neutral_oidc_adapter",
+      "gates": {},
+      "allowed_paths": [
+        "specs/083-provider-neutral-oidc-adapter-v1/**",
+        "src/humanSession/config.ts",
+        "src/humanSession/oidcAdapter.ts"
+      ],
+      "metadata": {
+        "projection_source": "program/task-graph.yaml",
+        "preserve_during_repair": true,
+        "productive_provider_selected": false
+      }
+    },
+    {
+      "id": "REL-PR24-EXACT-SHA-CHECKPOINT",
+      "kind": "release_checkpoint",
+      "title": "Draft PR 24 exact-SHA release checkpoint",
+      "status": "done",
+      "depends_on": [
+        "WS09-HUMAN-WORKSPACE-001",
+        "WS07-HUMAN-OIDC-PROVIDER-001"
+      ],
+      "capability": "draft_pr_checkpoint",
+      "gates": {
+        "done": [
+          "GATE-PR24-CHECKPOINT"
+        ]
+      },
+      "allowed_paths": [
+        "docs/handoffs/**",
+        "program/**"
+      ],
+      "metadata": {
+        "pull_request": 24,
+        "failed_head": "ba6acf3cc654e798f46b104d4eaac6d5c78712ab",
+        "merge_authorized": false,
+        "production_release_authorized": false
+      }
+    },
+    {
+      "id": "PRG-GRAPH-HARNESS-PIN-002",
+      "kind": "program_control",
+      "title": "Pin published Graph Harness runtime and replay state",
+      "status": "spec_ready",
+      "depends_on": [],
+      "capability": "immutable_graph_runtime_pin",
+      "gates": {
+        "done": [
+          "GATE-GRAPH-HARNESS-PIN-002"
+        ]
+      },
+      "allowed_paths": [
+        "program/**",
+        "docs/handoffs/**",
+        "specs/084-graph-harness-immutable-pin-v1/**",
+        ".github/workflows/ci.yml",
+        "package.json",
+        "scripts/verify-graph-harness-runtime.sh",
+        "src/__tests__/eval-graph-harness-runtime-pin-001.test.ts",
+        "docs/reviews/084-graph-harness-runtime-pin-independent-review.md",
+        "docs/traceability/084-graph-harness-immutable-pin-v1.md",
+        "specs/085-controlled-real-corpus-ingestion-v1/**",
+        "specs/086-real-corpus-retrieval-eval-v1/**"
+      ],
+      "metadata": {
+        "framework_repository": "BernydotJar/Graph-harness-sdlc",
+        "framework_commit": "1bebce3db35303072049233786464bb01163c98b",
+        "runtime_commit": "fef364bc66849b98c08d3c1dcb91caf9701027cd"
+      }
+    },
+    {
+      "id": "WS02-CORPUS-ACQUISITION-001",
+      "kind": "feature",
+      "title": "Acquire and ingest authorized Antigua-first corpus",
+      "status": "spec_ready",
+      "depends_on": [
+        "PRG-GRAPH-HARNESS-PIN-002"
+      ],
+      "capability": "controlled_real_corpus_ingestion",
+      "gates": {
+        "done": [
+          "GATE-CONTROLLED-REAL-CORPUS-001"
+        ]
+      },
+      "allowed_paths": [
+        ".rag/source-inventory.json",
+        "contracts/**",
+        "db/**",
+        "docs/**",
+        "package.json",
+        "package-lock.json",
+        "program/**",
+        "scripts/**",
+        "specs/085-controlled-real-corpus-ingestion-v1/**",
+        "src/**",
+        ".gitignore",
+        ".github/workflows/ci.yml",
+        "evals/**"
+      ],
+      "metadata": {
+        "authorized_sources": [
+          "antigua-pdm-ot",
+          "antigua-mnp-dmp-v3-2026"
+        ],
+        "raw_bytes_in_git": false,
+        "production_infrastructure_authorized": false
+      }
+    },
+    {
+      "id": "WS05-REAL-CORPUS-RETRIEVAL-EVAL-001",
+      "kind": "evaluation",
+      "title": "Evaluate retrieval against controlled real corpus",
+      "status": "spec_ready",
+      "depends_on": [
+        "WS02-CORPUS-ACQUISITION-001"
+      ],
+      "capability": "judged_real_corpus_retrieval",
+      "gates": {
+        "done": [
+          "GATE-REAL-CORPUS-RETRIEVAL-001"
+        ]
+      },
+      "allowed_paths": [
+        "docs/**",
+        "evals/**",
+        "package.json",
+        "package-lock.json",
+        "program/**",
+        "scripts/**",
+        "specs/086-real-corpus-retrieval-eval-v1/**",
+        "src/**",
+        ".github/workflows/ci.yml"
+      ],
+      "metadata": {
+        "quality_claim_scope": "bounded_corpus_and_query_set_only",
+        "legal_correctness_claim": false
+      }
+    },
+    {
+      "id": "REL-PUBLIC-CORPUS-PILOT-STAGING-001",
+      "kind": "release_checkpoint",
+      "title": "Deploy public PDM-OT corpus pilot to managed staging",
+      "status": "spec_ready",
+      "depends_on": [
+        "WS05-REAL-CORPUS-RETRIEVAL-EVAL-001"
+      ],
+      "capability": "public_corpus_pilot_staging",
+      "gates": {
+        "done": [
+          "GATE-PUBLIC-CORPUS-PILOT-STAGING-001"
+        ]
+      },
+      "allowed_paths": [
+        ".github/workflows/**",
+        "docs/**",
+        "infra/**",
+        "package.json",
+        "package-lock.json",
+        "program/**",
+        "scripts/**",
+        "specs/087-public-corpus-pilot-staging-v1/**",
+        "src/**"
+      ],
+      "metadata": {
+        "gcp_project": "rag-municipalidades",
+        "cloud_sql_instance": "la-muni-rag-staging",
+        "public_tenant_id": "a7100000-0000-4000-8000-000000000001",
+        "approved_corpus": [
+          "antigua-pdm-ot"
+        ],
+        "mfa_deferred": true,
+        "dmp_ocr_in_scope": false,
+        "productive_authenticated_journeys": "0/12"
+      }
+    }
+  ]
+}

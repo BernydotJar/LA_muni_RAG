@@ -37,6 +37,14 @@ const docsForType = (type: ProcedureType): string[] => {
   switch (type) {
     case "project_closure":
       return closureDocs;
+    case "potable_water_project":
+      return [
+        "Fuente oficial de Antigua Guatemala que defina la ruta del proyecto de agua potable",
+        "Evidencia técnica de fuente, disponibilidad, calidad, demanda, terreno y derechos de paso",
+        "Evidencia de planificación, inversión pública, costo y financiamiento",
+        "Evidencia ambiental, sanitaria, de dictámenes y aprobaciones aplicables",
+        "Expediente de contratación, ejecución, recepción, operación y mantenimiento",
+      ];
     case "public_works":
     case "project_execution":
       return publicWorksDocs;

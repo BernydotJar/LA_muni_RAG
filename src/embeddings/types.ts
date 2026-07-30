@@ -75,6 +75,14 @@ export interface IndexDocumentResult {
   failures: EmbeddingFailure[];
 }
 
+/** Fully embedded, bounded records prepared before any database transaction. */
+export interface PreparedEmbeddingRecords {
+  plannedCount: number;
+  records: EmbeddingVectorRecord[];
+  failedCount: number;
+  failures: EmbeddingFailure[];
+}
+
 export class EmbeddingPipelineError extends Error {
   constructor(
     public readonly code: string,

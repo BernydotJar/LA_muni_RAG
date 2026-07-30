@@ -1,0 +1,205 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://contracts.la-muni-rag.invalid/consumer-kits/v1/consumer-contract-kit.schema.json",
+  "title": "LA Muni RAG portable consumer contract kit v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "kit_version",
+    "consumer_product",
+    "provider_product",
+    "openapi_document",
+    "interactions",
+    "forbidden_response_fields",
+    "preservation_rules",
+    "limitations"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "v1"
+    },
+    "kit_version": {
+      "type": "string",
+      "pattern": "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)$"
+    },
+    "consumer_product": {
+      "type": "string",
+      "enum": [
+        "os_electoral",
+        "content_agency"
+      ]
+    },
+    "provider_product": {
+      "const": "la_muni_rag"
+    },
+    "openapi_document": {
+      "const": "contracts/openapi/v1/openapi.json"
+    },
+    "interactions": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 16,
+      "items": {
+        "$ref": "#/$defs/Interaction"
+      }
+    },
+    "forbidden_response_fields": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 64,
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/$defs/SafeName"
+      }
+    },
+    "preservation_rules": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 32,
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/$defs/NonEmptyString"
+      }
+    },
+    "limitations": {
+      "type": "array",
+      "minItems": 2,
+      "maxItems": 32,
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/$defs/NonEmptyString"
+      }
+    }
+  },
+  "$defs": {
+    "SafeName": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128,
+      "pattern": "^[A-Za-z][A-Za-z0-9_.:-]*$"
+    },
+    "NonEmptyString": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 1000
+    },
+    "ArtifactBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_file",
+        "example_file"
+      ],
+      "properties": {
+        "schema_file": {
+          "type": "string",
+          "pattern": "^[a-z0-9-]+\\.schema\\.json$"
+        },
+        "example_file": {
+          "type": "string",
+          "pattern": "^[a-z0-9-]+\\.valid\\.json$"
+        }
+      }
+    },
+    "Interaction": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "name",
+        "method",
+        "path",
+        "required_headers",
+        "required_response_headers",
+        "success_statuses",
+        "error_statuses",
+        "request",
+        "response",
+        "error_schema_file",
+        "error_example_files"
+      ],
+      "properties": {
+        "name": {
+          "$ref": "#/$defs/SafeName"
+        },
+        "method": {
+          "const": "POST"
+        },
+        "path": {
+          "type": "string",
+          "pattern": "^/api/v1/[a-z0-9-/]+$"
+        },
+        "required_headers": {
+          "type": "array",
+          "minItems": 2,
+          "maxItems": 8,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "enum": [
+              "Authorization",
+              "Idempotency-Key",
+              "X-Request-Id"
+            ]
+          }
+        },
+        "success_statuses": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 4,
+          "uniqueItems": true,
+          "items": {
+            "type": "integer",
+            "minimum": 200,
+            "maximum": 299
+          }
+        },
+        "error_statuses": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 16,
+          "uniqueItems": true,
+          "items": {
+            "type": "integer",
+            "minimum": 400,
+            "maximum": 599
+          }
+        },
+        "request": {
+          "$ref": "#/$defs/ArtifactBinding"
+        },
+        "response": {
+          "$ref": "#/$defs/ArtifactBinding"
+        },
+        "error_schema_file": {
+          "const": "api-error.schema.json"
+        },
+        "error_example_files": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 8,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "enum": [
+              "api-error.valid.json",
+              "api-error-unauthorized.valid.json"
+            ]
+          }
+        },
+        "required_response_headers": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 8,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "enum": [
+              "X-Request-Id"
+            ]
+          }
+        }
+      }
+    }
+  }
+}

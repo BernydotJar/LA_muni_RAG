@@ -1,0 +1,90 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://contracts.la-muni-rag.invalid/v1/workflow-approval-request.schema.json",
+  "title": "WorkflowApprovalRequestV1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "request_id",
+    "tenant_id",
+    "workflow_version_id",
+    "action",
+    "notes",
+    "provenance"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "v1"
+    },
+    "request_id": {
+      "$ref": "common.schema.json#/$defs/Uuid"
+    },
+    "tenant_id": {
+      "$ref": "common.schema.json#/$defs/Uuid"
+    },
+    "workflow_version_id": {
+      "$ref": "common.schema.json#/$defs/Uuid"
+    },
+    "action": {
+      "type": "string",
+      "enum": [
+        "approve",
+        "supersede",
+        "archive"
+      ]
+    },
+    "replacement_workflow_version_id": {
+      "$ref": "common.schema.json#/$defs/Uuid"
+    },
+    "notes": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 4000,
+      "pattern": "^[^\\u0000-\\u0008\\u000B\\u000C\\u000E-\\u001F\\u007F]+$"
+    },
+    "provenance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "credential_id"
+      ],
+      "properties": {
+        "credential_id": {
+          "$ref": "common.schema.json#/$defs/Uuid"
+        }
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "action": {
+            "const": "supersede"
+          }
+        },
+        "required": [
+          "action"
+        ]
+      },
+      "then": {
+        "type": "object",
+        "properties": {
+          "replacement_workflow_version_id": {
+            "$ref": "common.schema.json#/$defs/Uuid"
+          }
+        },
+        "required": [
+          "replacement_workflow_version_id"
+        ]
+      },
+      "else": {
+        "type": "object",
+        "properties": {
+          "replacement_workflow_version_id": false
+        }
+      }
+    }
+  ]
+}

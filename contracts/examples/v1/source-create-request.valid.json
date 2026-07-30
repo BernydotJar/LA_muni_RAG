@@ -1,0 +1,24 @@
+{
+  "schema_version": "v1",
+  "operation": "source_create",
+  "request_id": "99999999-9999-4999-8999-999999999999",
+  "tenant_id": "11111111-1111-4111-8111-111111111111",
+  "source_key": "mixco-procedure-manual-discovery",
+  "title": "Manual de procedimientos de referencia",
+  "category": "procedure_manual",
+  "target_jurisdiction": "Municipio de La Antigua Guatemala, Sacatepequez, Guatemala",
+  "source_jurisdiction": "Municipio de Mixco, Guatemala",
+  "source_relation": "comparative",
+  "discovery_status": "identified",
+  "discovery_url": "https://www2.munimixco.gob.gt/documentos/manual.pdf",
+  "artifact_url": null,
+  "observed_version": "discovery-2026-07",
+  "publication_date": null,
+  "effective_date": null,
+  "limitations": [
+    "Vigencia y aplicabilidad pendientes de revision."
+  ],
+  "provenance": {
+    "credential_id": "66666666-6666-4666-8666-666666666666"
+  }
+}

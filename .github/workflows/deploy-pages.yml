@@ -29,9 +29,17 @@ jobs:
           node-version: 24
 
       - name: Build GitHub Pages artifact
-        run: node scripts/build-pages.mjs
+        env:
+          PAGES_API_URL: ${{ vars.PAGES_API_URL }}
+          PAGES_API_URL_DEFAULT: https://la-muni-rag-public-gateway-ccaqcuwgyq-uc.a.run.app
+          PAGES_BUILD_SHA: ${{ github.sha }}
+        run: |
+          export PAGES_API_URL="${PAGES_API_URL:-$PAGES_API_URL_DEFAULT}"
+          node scripts/build-pages.mjs
 
       - name: Verify GitHub Pages artifact
+        env:
+          PAGES_BUILD_SHA: ${{ github.sha }}
         run: node scripts/verify-pages-artifact.mjs
 
       - name: Configure Pages
@@ -51,7 +59,37 @@ jobs:
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
+    outputs:
+      page_url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+
+  verify-online:
+    name: Verify deployed Pages SHA
+    needs: deploy
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Setup Node
+        uses: actions/setup-node@v5
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install locked dependencies
+        run: npm ci
+
+      - name: Install pinned Chromium runtime
+        run: npx playwright install --with-deps chromium
+
+      - name: Verify exact online artifact
+        env:
+          PAGES_ONLINE_URL: ${{ needs.deploy.outputs.page_url }}
+          EXPECTED_BUILD_SHA: ${{ github.sha }}
+          PAGES_ONLINE_WAIT_SECONDS: 180
+        run: npm run verify:pages:online

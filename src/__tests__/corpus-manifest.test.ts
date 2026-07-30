@@ -1,5 +1,6 @@
 import { describe, it } from "node:test";
 import assert from "node:assert/strict";
+import { createHash } from "node:crypto";
 import {
   backfillCorpusManifest,
   computeCorpusContentSha256,
@@ -193,6 +194,35 @@ describe("corpus manifest backfill orchestration", () => {
     );
 
     assert.deepEqual(receivedMetadata, doc.metadata);
+  });
+
+  it("hashes exact binary bytes and passes the same content to the indexer", async () => {
+    const store = new InMemoryCorpusManifestStore();
+    const content = Buffer.from([0x50, 0x4b, 0x03, 0x04, 0xff, 0x00, 0x7f]);
+    const doc = documentInput({
+      inputPath: "corpus/manual.docx",
+      sourceFormat: "docx",
+      content,
+    });
+    let receivedContent: string | Buffer | undefined;
+
+    await backfillCorpusManifest(
+      { documents: [doc] },
+      {
+        manifestStore: store,
+        now: fixedNow,
+        indexVectorSource: async (input) => {
+          receivedContent = input.content;
+          return indexingResult({ sourceFormat: "docx", inputPath: doc.inputPath });
+        },
+      }
+    );
+
+    assert.strictEqual(receivedContent, content);
+    assert.equal(
+      (await store.get(doc.documentKey))?.contentSha256,
+      createHash("sha256").update(content).digest("hex")
+    );
   });
 
   it("skips unchanged documents without calling the indexer", async () => {

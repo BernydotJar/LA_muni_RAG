@@ -1,0 +1,188 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://contracts.la-muni-rag.invalid/v1/procedure-workflow.schema.json",
+  "title": "ProcedureWorkflow v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "response_type",
+    "product_boundary",
+    "procedure_id",
+    "workflow_id",
+    "workflow_version",
+    "tenant_id",
+    "request_id",
+    "title",
+    "jurisdiction",
+    "authority_status",
+    "approval_status",
+    "steps",
+    "dependencies",
+    "decision_gates",
+    "required_documents",
+    "outputs",
+    "sources",
+    "citations",
+    "gaps",
+    "limitations",
+    "provenance"
+  ],
+  "properties": {
+    "schema_version": {
+      "$ref": "common.schema.json#/$defs/SchemaVersion"
+    },
+    "response_type": {
+      "const": "procedure_workflow"
+    },
+    "product_boundary": {
+      "const": "evidence_and_procedure_only"
+    },
+    "procedure_id": {
+      "$ref": "common.schema.json#/$defs/Uuid"
+    },
+    "workflow_id": {
+      "$ref": "common.schema.json#/$defs/Uuid"
+    },
+    "workflow_version": {
+      "$ref": "common.schema.json#/$defs/SemVer"
+    },
+    "tenant_id": {
+      "$ref": "common.schema.json#/$defs/Uuid"
+    },
+    "request_id": {
+      "$ref": "common.schema.json#/$defs/Uuid"
+    },
+    "title": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 500
+    },
+    "jurisdiction": {
+      "$ref": "common.schema.json#/$defs/Jurisdiction"
+    },
+    "authority_status": {
+      "$ref": "common.schema.json#/$defs/AuthorityStatus"
+    },
+    "approval_status": {
+      "type": "string",
+      "enum": [
+        "draft",
+        "in_review",
+        "approved",
+        "superseded",
+        "archived"
+      ]
+    },
+    "steps": {
+      "type": "array",
+      "items": {
+        "$ref": "common.schema.json#/$defs/ProcedureStep"
+      },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "dependencies": {
+      "type": "array",
+      "items": {
+        "$ref": "common.schema.json#/$defs/ProcedureDependency"
+      },
+      "uniqueItems": true
+    },
+    "decision_gates": {
+      "type": "array",
+      "items": {
+        "$ref": "common.schema.json#/$defs/DecisionGate"
+      },
+      "uniqueItems": true
+    },
+    "required_documents": {
+      "type": "array",
+      "items": {
+        "$ref": "common.schema.json#/$defs/DocumentReference"
+      },
+      "uniqueItems": true
+    },
+    "outputs": {
+      "type": "array",
+      "items": {
+        "$ref": "common.schema.json#/$defs/NonEmptyString"
+      },
+      "uniqueItems": true
+    },
+    "sources": {
+      "type": "array",
+      "items": {
+        "$ref": "common.schema.json#/$defs/Source"
+      },
+      "uniqueItems": true
+    },
+    "citations": {
+      "type": "array",
+      "items": {
+        "$ref": "common.schema.json#/$defs/Citation"
+      },
+      "uniqueItems": true
+    },
+    "gaps": {
+      "type": "array",
+      "items": {
+        "$ref": "common.schema.json#/$defs/Gap"
+      },
+      "uniqueItems": true
+    },
+    "limitations": {
+      "type": "array",
+      "items": {
+        "$ref": "common.schema.json#/$defs/NonEmptyString"
+      },
+      "uniqueItems": true
+    },
+    "provenance": {
+      "allOf": [
+        {
+          "$ref": "common.schema.json#/$defs/Provenance"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "source_product": {
+              "const": "la_muni_rag"
+            }
+          }
+        }
+      ]
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "type": "object",
+        "required": [
+          "provenance"
+        ],
+        "properties": {
+          "provenance": {
+            "type": "object",
+            "required": [
+              "generated_by"
+            ],
+            "properties": {
+              "generated_by": {
+                "const": "ai"
+              }
+            }
+          }
+        }
+      },
+      "then": {
+        "type": "object",
+        "properties": {
+          "approval_status": {
+            "const": "draft"
+          }
+        }
+      }
+    }
+  ]
+}

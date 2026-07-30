@@ -1,0 +1,167 @@
+{
+  "schema_version": "1.13.0",
+  "generated_at": "2026-07-27T00:17:05Z",
+  "branch": "feature/gcp-cloudsql-staging-v1",
+  "functional_head": "9a823b2311633f8b682d13d495ccacfb7ac3615f",
+  "source": "observed command outputs only",
+  "status": "PARTIAL_WITH_DOCUMENTED_BLOCKERS",
+  "tests": {
+    "total": 880,
+    "passed": 878,
+    "failed": 0,
+    "skipped": 2
+  },
+  "contracts": {
+    "schemas": 33,
+    "examples": 33,
+    "openapi": "3.1.1",
+    "consumer_kits": 2,
+    "consumer_interactions": 5
+  },
+  "staging_architecture": {
+    "plan_version": "1.0.0",
+    "tenants": 2,
+    "principals": 11,
+    "roles": 10,
+    "fixtures": 13,
+    "api_system_journeys": 20,
+    "browser_journeys": 12,
+    "blocked_browser_journeys": 12,
+    "mocks": 6,
+    "reset_steps": 10,
+    "issues": 0,
+    "environment_executed": true,
+    "browser_e2e_runnable": false,
+    "external_consumers_verified": false,
+    "api_system_journeys_executed": 20,
+    "api_system_journeys_passed": 20,
+    "databases_destroyed": 4,
+    "runtime_roles_destroyed": 3,
+    "cleanup_complete": true,
+    "gcp_cloudsql_plan": {
+      "project_id": "rag-municipalidades",
+      "project_number": "1059368783280",
+      "region": "us-central1",
+      "default_resource_changes": 0,
+      "approved_offline_resource_count": 2,
+      "declared_pilot_budget_usd": 1,
+      "estimated_compute_and_memory_usd": 0.351,
+      "max_pilot_runtime_hours": 4,
+      "managed_environment_executed": false,
+      "reviewed_hourly_compute_usd": 0.08775,
+      "estimated_compute_memory_and_20gb_ssd_usd": 0.38826024,
+      "live_zero_resource_plan_verified": true,
+      "corrected_live_resource_plan_verifier_status": "valid",
+      "corrected_live_resource_plan_final_authorized": true,
+      "single_owner_governance_exception": true,
+      "governance_exception_id": "GCP-OWNER-EXCEPTION-20260725-PILOT",
+      "authorization_start": "2026-07-25T09:00:00-06:00",
+      "authorization_end": "2026-07-25T13:00:00-06:00",
+      "terraform_apply_executed": true,
+      "cloud_sql_created": true,
+      "instance_state": "STOPPED",
+      "activation_policy": "NEVER",
+      "teardown_executed": false,
+      "governance_exception_status": "expired_on_stop",
+      "authorization_consumed": true,
+      "managed_run_authorization_status": "expired_without_successful_managed_run_receipt",
+      "managed_staging_execution": false
+    }
+  },
+  "hard_evals": {
+    "ephemeral_staging_e2e": "13/13",
+    "consumer_contract_kit": "16/16",
+    "search_api": "24/24",
+    "evidence_bundle_api": "24/24",
+    "production_public_surface": "33/33",
+    "public_query_gateway": "23/23",
+    "ephemeral_staging_runner": "14/14",
+    "gcp_cloudsql_staging": "14/14",
+    "public_browser_gate": "5/5",
+    "online_pages_release": "5/5"
+  },
+  "source_inventory": {
+    "total": 17,
+    "verified": 4,
+    "acquisition_metadata": 1,
+    "ingested": 0
+  },
+  "publication": {
+    "branch": "feature/gcp-cloudsql-staging-v1",
+    "functional_sha": "9a823b2311633f8b682d13d495ccacfb7ac3615f",
+    "current_ci_status": "backend_success_public_browser_success_terraform_success_temporary_pages_deployment_active",
+    "pr": 24,
+    "pr_state": "draft",
+    "merged": false,
+    "deployed": false,
+    "remote_head_sha": "b646aa6ce5d7231587ae311f5acb59f84fc35a0e",
+    "terraform_ci_conclusion": "success",
+    "backend_ci_run_ids": [
+      30224476425,
+      30224475379
+    ],
+    "terraform_ci_run_ids": [
+      30224476434
+    ],
+    "backend_ci_conclusion": "success",
+    "public_browser_ci_run_ids": [
+      30224476426,
+      30224475314
+    ],
+    "public_browser_ci_conclusion": "success",
+    "pages_temporary_deployment": {
+      "sha": "b646aa6ce5d7231587ae311f5acb59f84fc35a0e",
+      "run_id": 30226975010,
+      "url": "https://bernydotjar.github.io/LA_muni_RAG/",
+      "online_scenarios": "2/2",
+      "api_configured": false,
+      "rollback_sha": "4950ba3c24dbe7d9891d5cec8d7ba5f57db3ef9c",
+      "rollback_due_at": "2026-07-27T01:14:34Z",
+      "rollback_status": "scheduled"
+    }
+  },
+  "dependency_audit": {
+    "all_vulnerabilities": 0,
+    "production_vulnerabilities": 0
+  },
+  "cost": {
+    "cloud_resources_created": 2,
+    "billable_actions": "apply_observed; actual_cost_pending",
+    "amount": 0,
+    "currency": "USD",
+    "proposed_pilot_budget_usd": 1,
+    "estimated_compute_and_memory_usd": 0.351,
+    "estimate_is_hard_cap": false
+  },
+  "duration_seconds": null,
+  "token_usage": null,
+  "remaining_blockers": [
+    "Stopped Cloud SQL instance requires a new explicit authorization for restart or destructive teardown.",
+    "No managed synthetic GCP staging execution or teardown receipt; the second restart window expired.",
+    "Actual provider billing remains pending; storage and backup charges may continue.",
+    "No authorized real corpus or real ingestion.",
+    "Public Chromium browser gate passes 10/10, but no human IdP/BFF/session or authenticated role-aware UI exists; twelve authenticated journeys remain blocked.",
+    "No external consumer repository suite, protected merge or production deployment.",
+    "Temporary exact-SHA Pages deployment is active; rollback to the authorized main SHA is scheduled and must be verified."
+  ],
+  "public_browser_gate": {
+    "status": "passed_local_and_remote",
+    "playwright_version": "1.62.0",
+    "browser": "Chromium",
+    "projects": [
+      "chromium-desktop",
+      "chromium-mobile"
+    ],
+    "executions": 10,
+    "passed": 10,
+    "failed": 0,
+    "authenticated_browser_journeys_passed": 0,
+    "authenticated_browser_journeys_blocked": 12,
+    "remote_ci": "success",
+    "remote_run_ids": [
+      30180490148,
+      30180488768
+    ],
+    "functional_sha": "2232147de0c6869e3f3452cf2d9bf1abe3e14120"
+  }
+}

@@ -1,0 +1,416 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://contracts.la-muni-rag.invalid/v1/procedure-case.schema.json",
+  "title": "ProcedureCase v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "response_type",
+    "request_id",
+    "tenant_id",
+    "case",
+    "limitations",
+    "provenance"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "v1"
+    },
+    "response_type": {
+      "const": "procedure_case"
+    },
+    "request_id": {
+      "$ref": "common.schema.json#/$defs/Uuid"
+    },
+    "tenant_id": {
+      "$ref": "common.schema.json#/$defs/Uuid"
+    },
+    "case": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "case_id",
+        "case_key",
+        "workflow_version_id",
+        "workflow_version_number",
+        "jurisdiction",
+        "subject_reference",
+        "community_reference",
+        "status",
+        "validation_state",
+        "current_step_id",
+        "follow_up_at",
+        "operational_note",
+        "revision",
+        "created_by_principal_id",
+        "updated_by_principal_id",
+        "created_at",
+        "updated_at",
+        "steps",
+        "documents",
+        "blockers",
+        "audit_trail"
+      ],
+      "properties": {
+        "case_id": {
+          "$ref": "common.schema.json#/$defs/Uuid"
+        },
+        "case_key": {
+          "type": "string",
+          "pattern": "^[a-z0-9][a-z0-9._:-]{2,127}$"
+        },
+        "workflow_version_id": {
+          "$ref": "common.schema.json#/$defs/Uuid"
+        },
+        "workflow_version_number": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "jurisdiction": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 500
+        },
+        "subject_reference": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 200
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "community_reference": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 200
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "status": {
+          "enum": [
+            "active",
+            "blocked",
+            "ready_for_review",
+            "closed"
+          ]
+        },
+        "validation_state": {
+          "enum": [
+            "unreviewed",
+            "in_review",
+            "validated",
+            "changes_required"
+          ]
+        },
+        "current_step_id": {
+          "anyOf": [
+            {
+              "$ref": "common.schema.json#/$defs/SafeOpaqueId"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "follow_up_at": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "date-time"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "operational_note": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4000
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "revision": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "created_by_principal_id": {
+          "$ref": "common.schema.json#/$defs/Uuid"
+        },
+        "updated_by_principal_id": {
+          "$ref": "common.schema.json#/$defs/Uuid"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "steps": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 100,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "step_id",
+              "title",
+              "ordinal",
+              "state",
+              "updated_by_principal_id",
+              "updated_at"
+            ],
+            "properties": {
+              "step_id": {
+                "$ref": "common.schema.json#/$defs/SafeOpaqueId"
+              },
+              "title": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 300
+              },
+              "ordinal": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 100
+              },
+              "state": {
+                "enum": [
+                  "not_started",
+                  "in_progress",
+                  "blocked",
+                  "ready_for_review",
+                  "completed"
+                ]
+              },
+              "updated_by_principal_id": {
+                "$ref": "common.schema.json#/$defs/Uuid"
+              },
+              "updated_at": {
+                "type": "string",
+                "format": "date-time"
+              }
+            }
+          }
+        },
+        "documents": {
+          "type": "array",
+          "maxItems": 200,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "document_reference_id",
+              "requirement_id",
+              "document_version_id",
+              "state",
+              "note",
+              "updated_by_principal_id",
+              "created_at",
+              "updated_at"
+            ],
+            "properties": {
+              "document_reference_id": {
+                "$ref": "common.schema.json#/$defs/Uuid"
+              },
+              "requirement_id": {
+                "$ref": "common.schema.json#/$defs/SafeOpaqueId"
+              },
+              "document_version_id": {
+                "anyOf": [
+                  {
+                    "$ref": "common.schema.json#/$defs/Uuid"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "state": {
+                "enum": [
+                  "missing",
+                  "requested",
+                  "received",
+                  "reviewed"
+                ]
+              },
+              "note": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 1000
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "updated_by_principal_id": {
+                "$ref": "common.schema.json#/$defs/Uuid"
+              },
+              "created_at": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "updated_at": {
+                "type": "string",
+                "format": "date-time"
+              }
+            }
+          }
+        },
+        "blockers": {
+          "type": "array",
+          "maxItems": 200,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "blocker_id",
+              "blocker_code",
+              "description",
+              "resolved_at",
+              "resolved_by_principal_id",
+              "created_by_principal_id",
+              "created_at"
+            ],
+            "properties": {
+              "blocker_id": {
+                "$ref": "common.schema.json#/$defs/Uuid"
+              },
+              "blocker_code": {
+                "type": "string",
+                "pattern": "^[a-z][a-z0-9_]{0,63}$"
+              },
+              "description": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 1000
+              },
+              "resolved_at": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "format": "date-time"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "resolved_by_principal_id": {
+                "anyOf": [
+                  {
+                    "$ref": "common.schema.json#/$defs/Uuid"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "created_by_principal_id": {
+                "$ref": "common.schema.json#/$defs/Uuid"
+              },
+              "created_at": {
+                "type": "string",
+                "format": "date-time"
+              }
+            }
+          }
+        },
+        "audit_trail": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 500,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "event_id",
+              "actor_principal_id",
+              "event_type",
+              "revision",
+              "details",
+              "created_at"
+            ],
+            "properties": {
+              "event_id": {
+                "$ref": "common.schema.json#/$defs/Uuid"
+              },
+              "actor_principal_id": {
+                "$ref": "common.schema.json#/$defs/Uuid"
+              },
+              "event_type": {
+                "type": "string",
+                "pattern": "^procedure_case\\.[a-z][a-z0-9_]{0,63}$"
+              },
+              "revision": {
+                "type": "integer",
+                "minimum": 1
+              },
+              "details": {
+                "type": "object",
+                "maxProperties": 20
+              },
+              "created_at": {
+                "type": "string",
+                "format": "date-time"
+              }
+            }
+          }
+        }
+      }
+    },
+    "limitations": {
+      "type": "array",
+      "minItems": 2,
+      "maxItems": 20,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 1000
+      }
+    },
+    "provenance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "credential_id",
+        "audit_id",
+        "created_at"
+      ],
+      "properties": {
+        "credential_id": {
+          "$ref": "common.schema.json#/$defs/Uuid"
+        },
+        "audit_id": {
+          "$ref": "common.schema.json#/$defs/Uuid"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "records": [
+    {
+      "documentKey": "antigua-pdm-ot",
+      "documentTitle": "Plan de Desarrollo Municipal y Ordenamiento Territorial de Antigua Guatemala - Modulo 1",
+      "sourcePath": ".rag/library/antigua-pdm-ot/antigua-pdm-ot--official-municipal-pdf.pdf",
+      "sourceFormat": "pdf",
+      "documentVersion": "official-municipal-pdf-2026-06-22",
+      "contentSha256": "824f0ee47106f062269a7c65cb3433435470bbe609054972eb29c360f368cd0b",
+      "chunkCount": 444,
+      "embeddingProvider": "local-eval-hashing",
+      "embeddingModel": "token-bigram-hash-1536-v1",
+      "embeddingDimension": 1536,
+      "status": "indexed",
+      "indexedAt": "2026-07-29T17:06:42.623Z",
+      "failureCount": 0,
+      "failureCodes": []
+    }
+  ]
+}

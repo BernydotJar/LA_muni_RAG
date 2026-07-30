@@ -1,0 +1,137 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://la-muni-rag.invalid/contracts/decision-packets/v1/human-decision-receipt.schema.json",
+  "title": "LA Muni RAG human decision receipt",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "packet_id",
+    "decision_id",
+    "decision_status",
+    "decided_at",
+    "decision_authority_roles",
+    "decision_record_ref",
+    "approved_actions",
+    "scope",
+    "constraints",
+    "evidence_refs"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "1.0.0"
+    },
+    "packet_id": {
+      "enum": [
+        "HDP-IDP-001",
+        "HDP-CORPUS-001",
+        "HDP-CLOUDSQL-001",
+        "HDP-PRODUCTION-001"
+      ]
+    },
+    "decision_id": {
+      "type": "string",
+      "pattern": "^[A-Z0-9][A-Z0-9._-]{7,127}$"
+    },
+    "decision_status": {
+      "enum": [
+        "approved",
+        "rejected",
+        "deferred"
+      ]
+    },
+    "decided_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "expires_at": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    },
+    "decision_authority_roles": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 12,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "pattern": "^[a-z][a-z0-9_]{2,63}$"
+      }
+    },
+    "decision_record_ref": {
+      "type": "string",
+      "minLength": 8,
+      "maxLength": 512
+    },
+    "approved_actions": {
+      "type": "array",
+      "maxItems": 32,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "pattern": "^[a-z][a-z0-9_]{2,95}$"
+      }
+    },
+    "scope": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "environment",
+        "bounded_description"
+      ],
+      "properties": {
+        "environment": {
+          "enum": [
+            "local",
+            "ephemeral_staging",
+            "managed_staging",
+            "production",
+            "none"
+          ]
+        },
+        "bounded_description": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2000
+        }
+      }
+    },
+    "constraints": {
+      "type": "array",
+      "maxItems": 64,
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 1000
+      }
+    },
+    "evidence_refs": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 64,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 512
+      }
+    },
+    "rollback_or_reversal": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "maxLength": 2000
+    },
+    "notes": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "maxLength": 4000
+    }
+  }
+}

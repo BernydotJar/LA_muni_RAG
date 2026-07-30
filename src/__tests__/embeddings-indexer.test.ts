@@ -26,6 +26,27 @@ const documentFixture = (): NormalizedDocument => ({
   metadata: { sourcePath: "pdm_ot.pdf" },
 });
 
+const multiSectionDocument = (count: number): NormalizedDocument => {
+  const sections = Array.from({ length: count }, (_, index) => ({
+    heading: `Pagina ${index + 1}`,
+    sectionType: "page" as const,
+    sectionPath: [`Pagina ${index + 1}`],
+    text: `Contenido municipal independiente ${index + 1}.`,
+    pageStart: index + 1,
+    pageEnd: index + 1,
+    articleNumber: null,
+    citationLabel: `Manual, pagina ${index + 1}`,
+    metadata: { ordinal: index + 1 },
+  }));
+  return {
+    title: "Manual",
+    sourceFormat: "pdf",
+    text: sections.map((section) => section.text).join("\n\n"),
+    sections,
+    metadata: { sourcePath: "manual.pdf" },
+  };
+};
+
 class FailingProvider implements EmbeddingProvider {
   readonly providerName = "failing-provider";
   readonly model = "failing-model";
@@ -165,6 +186,62 @@ describe("embedding indexer", () => {
     assert.equal(result.failedCount, 1);
     assert.equal(result.failures[0]?.code, "embedding_vector_count_mismatch");
     assert.equal(result.failures[0]?.retryable, false);
+    assert.equal((await repository.list()).length, 0);
+  });
+
+  it("embeds bounded batches sequentially", async () => {
+    const repository = new InMemoryEmbeddingRepository();
+    const batchSizes: number[] = [];
+    const provider: EmbeddingProvider = {
+      providerName: "batch-provider",
+      model: "batch-model",
+      dimensions: 3,
+      embed: async (texts) => {
+        batchSizes.push(texts.length);
+        return texts.map(() => [0.1, 0.2, 0.3]);
+      },
+    };
+
+    const result = await indexDocument(
+      multiSectionDocument(5),
+      { documentKey: "manual", documentVersion: "v1" },
+      provider,
+      repository,
+      { embeddingBatchSize: 2, maxChunksPerDocument: 10 }
+    );
+
+    assert.deepEqual(batchSizes, [2, 2, 1]);
+    assert.equal(result.plannedCount, 5);
+    assert.equal(result.embeddedCount, 5);
+    assert.equal((await repository.list()).length, 5);
+  });
+
+  it("fails before provider calls when planned chunks exceed the document cap", async () => {
+    const repository = new InMemoryEmbeddingRepository();
+    let providerCalls = 0;
+    const provider: EmbeddingProvider = {
+      providerName: "bounded-provider",
+      model: "bounded-model",
+      dimensions: 3,
+      embed: async (texts) => {
+        providerCalls += 1;
+        return texts.map(() => [0.1, 0.2, 0.3]);
+      },
+    };
+
+    const result = await indexDocument(
+      multiSectionDocument(3),
+      { documentKey: "manual", documentVersion: "v1" },
+      provider,
+      repository,
+      { maxChunksPerDocument: 2 }
+    );
+
+    assert.equal(result.plannedCount, 3);
+    assert.equal(result.failedCount, 3);
+    assert.equal(result.failures[0]?.code, "embedding_chunk_limit_exceeded");
+    assert.equal(result.failures[0]?.retryable, false);
+    assert.equal(providerCalls, 0);
     assert.equal((await repository.list()).length, 0);
   });
 });

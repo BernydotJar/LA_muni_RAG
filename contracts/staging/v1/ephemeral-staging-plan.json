@@ -1,0 +1,1199 @@
+{
+  "schema_version": "v1",
+  "plan_version": "1.0.0",
+  "environment": {
+    "kind": "ephemeral_staging",
+    "isolation": "per_run",
+    "ttl_minutes": 120,
+    "destroy_after_run": true,
+    "production_credentials_allowed": false,
+    "production_data_allowed": false,
+    "network_mode": "loopback_only",
+    "database_strategy": "fresh_database_per_run",
+    "browser_e2e_enabled": false
+  },
+  "identity": {
+    "strategy": "service_credentials_only_until_human_idp_approved",
+    "browser_session_status": "blocked_pending_human_idp_bff",
+    "credential_material_source": "runtime_injected_ephemeral",
+    "raw_secrets_in_manifest": false,
+    "secret_persistence": "forbidden",
+    "browser_blocker_ids": [
+      "BLK-HUMAN-IDP-BFF-001",
+      "BLK-AUTHENTICATED-UI-001"
+    ]
+  },
+  "tenants": [
+    {
+      "id": "11111111-1111-4111-8111-111111111111",
+      "slug": "tenant-a-synthetic",
+      "classification": "synthetic_test",
+      "authoritative": false
+    },
+    {
+      "id": "22222222-2222-4222-8222-222222222222",
+      "slug": "tenant-b-synthetic",
+      "classification": "synthetic_test",
+      "authoritative": false
+    }
+  ],
+  "principals": [
+    {
+      "id": "a0000000-0000-4000-8000-000000000001",
+      "key": "tenant-a-platform-admin",
+      "tenant_id": "11111111-1111-4111-8111-111111111111",
+      "roles": [
+        "platform_admin"
+      ],
+      "credential_ref": "ephemeral-credential-tenant-a-platform-admin",
+      "credential_kind": "ephemeral_bearer_digest_reference",
+      "surface": "api_and_planned_browser"
+    },
+    {
+      "id": "a0000000-0000-4000-8000-000000000002",
+      "key": "tenant-a-tenant-admin",
+      "tenant_id": "11111111-1111-4111-8111-111111111111",
+      "roles": [
+        "tenant_admin"
+      ],
+      "credential_ref": "ephemeral-credential-tenant-a-tenant-admin",
+      "credential_kind": "ephemeral_bearer_digest_reference",
+      "surface": "api_and_planned_browser"
+    },
+    {
+      "id": "a0000000-0000-4000-8000-000000000003",
+      "key": "tenant-a-document-manager",
+      "tenant_id": "11111111-1111-4111-8111-111111111111",
+      "roles": [
+        "document_manager"
+      ],
+      "credential_ref": "ephemeral-credential-tenant-a-document-manager",
+      "credential_kind": "ephemeral_bearer_digest_reference",
+      "surface": "api_and_planned_browser"
+    },
+    {
+      "id": "a0000000-0000-4000-8000-000000000004",
+      "key": "tenant-a-researcher",
+      "tenant_id": "11111111-1111-4111-8111-111111111111",
+      "roles": [
+        "researcher"
+      ],
+      "credential_ref": "ephemeral-credential-tenant-a-researcher",
+      "credential_kind": "ephemeral_bearer_digest_reference",
+      "surface": "api_and_planned_browser"
+    },
+    {
+      "id": "a0000000-0000-4000-8000-000000000005",
+      "key": "tenant-a-procedure-author",
+      "tenant_id": "11111111-1111-4111-8111-111111111111",
+      "roles": [
+        "procedure_author"
+      ],
+      "credential_ref": "ephemeral-credential-tenant-a-procedure-author",
+      "credential_kind": "ephemeral_bearer_digest_reference",
+      "surface": "api_and_planned_browser"
+    },
+    {
+      "id": "a0000000-0000-4000-8000-000000000006",
+      "key": "tenant-a-procedure-reviewer",
+      "tenant_id": "11111111-1111-4111-8111-111111111111",
+      "roles": [
+        "procedure_reviewer"
+      ],
+      "credential_ref": "ephemeral-credential-tenant-a-procedure-reviewer",
+      "credential_kind": "ephemeral_bearer_digest_reference",
+      "surface": "api_and_planned_browser"
+    },
+    {
+      "id": "a0000000-0000-4000-8000-000000000007",
+      "key": "tenant-a-procedure-approver",
+      "tenant_id": "11111111-1111-4111-8111-111111111111",
+      "roles": [
+        "procedure_approver"
+      ],
+      "credential_ref": "ephemeral-credential-tenant-a-procedure-approver",
+      "credential_kind": "ephemeral_bearer_digest_reference",
+      "surface": "api_and_planned_browser"
+    },
+    {
+      "id": "a0000000-0000-4000-8000-000000000008",
+      "key": "tenant-a-case-operator",
+      "tenant_id": "11111111-1111-4111-8111-111111111111",
+      "roles": [
+        "case_operator"
+      ],
+      "credential_ref": "ephemeral-credential-tenant-a-case-operator",
+      "credential_kind": "ephemeral_bearer_digest_reference",
+      "surface": "api_and_planned_browser"
+    },
+    {
+      "id": "a0000000-0000-4000-8000-000000000009",
+      "key": "tenant-a-viewer",
+      "tenant_id": "11111111-1111-4111-8111-111111111111",
+      "roles": [
+        "viewer"
+      ],
+      "credential_ref": "ephemeral-credential-tenant-a-viewer",
+      "credential_kind": "ephemeral_bearer_digest_reference",
+      "surface": "api_and_planned_browser"
+    },
+    {
+      "id": "a0000000-0000-4000-8000-000000000010",
+      "key": "tenant-a-integration-client",
+      "tenant_id": "11111111-1111-4111-8111-111111111111",
+      "roles": [
+        "integration_client"
+      ],
+      "credential_ref": "ephemeral-credential-tenant-a-integration-client",
+      "credential_kind": "ephemeral_bearer_digest_reference",
+      "surface": "api"
+    },
+    {
+      "id": "b0000000-0000-4000-8000-000000000001",
+      "key": "tenant-b-viewer",
+      "tenant_id": "22222222-2222-4222-8222-222222222222",
+      "roles": [
+        "viewer"
+      ],
+      "credential_ref": "ephemeral-credential-tenant-b-viewer",
+      "credential_kind": "ephemeral_bearer_digest_reference",
+      "surface": "api_and_planned_browser"
+    }
+  ],
+  "role_matrix": [
+    {
+      "role": "platform_admin",
+      "permissions": [
+        "platform:admin",
+        "tenant:manage",
+        "identity:manage",
+        "source:read",
+        "source:write",
+        "document:read",
+        "document:write",
+        "document:ingest",
+        "evidence:query",
+        "procedure:read",
+        "procedure:draft",
+        "procedure:review",
+        "procedure:approve",
+        "case:read",
+        "case:write",
+        "audit:read",
+        "integration:query"
+      ],
+      "api_required": true,
+      "browser_required": true
+    },
+    {
+      "role": "tenant_admin",
+      "permissions": [
+        "tenant:manage",
+        "identity:manage",
+        "source:read",
+        "source:write",
+        "document:read",
+        "document:write",
+        "document:ingest",
+        "evidence:query",
+        "procedure:read",
+        "procedure:draft",
+        "procedure:review",
+        "case:read",
+        "case:write",
+        "audit:read"
+      ],
+      "api_required": true,
+      "browser_required": true
+    },
+    {
+      "role": "document_manager",
+      "permissions": [
+        "source:read",
+        "source:write",
+        "document:read",
+        "document:write",
+        "document:ingest",
+        "evidence:query",
+        "procedure:read"
+      ],
+      "api_required": true,
+      "browser_required": true
+    },
+    {
+      "role": "researcher",
+      "permissions": [
+        "source:read",
+        "document:read",
+        "evidence:query",
+        "procedure:read",
+        "case:read"
+      ],
+      "api_required": true,
+      "browser_required": true
+    },
+    {
+      "role": "procedure_author",
+      "permissions": [
+        "source:read",
+        "document:read",
+        "evidence:query",
+        "procedure:read",
+        "procedure:draft"
+      ],
+      "api_required": true,
+      "browser_required": true
+    },
+    {
+      "role": "procedure_reviewer",
+      "permissions": [
+        "source:read",
+        "document:read",
+        "evidence:query",
+        "procedure:read",
+        "procedure:review"
+      ],
+      "api_required": true,
+      "browser_required": true
+    },
+    {
+      "role": "procedure_approver",
+      "permissions": [
+        "source:read",
+        "document:read",
+        "evidence:query",
+        "procedure:read",
+        "procedure:approve"
+      ],
+      "api_required": true,
+      "browser_required": true
+    },
+    {
+      "role": "case_operator",
+      "permissions": [
+        "document:read",
+        "evidence:query",
+        "procedure:read",
+        "case:read",
+        "case:write"
+      ],
+      "api_required": true,
+      "browser_required": true
+    },
+    {
+      "role": "viewer",
+      "permissions": [
+        "source:read",
+        "document:read",
+        "evidence:query",
+        "procedure:read",
+        "case:read"
+      ],
+      "api_required": true,
+      "browser_required": true
+    },
+    {
+      "role": "integration_client",
+      "permissions": [
+        "source:read",
+        "document:read",
+        "evidence:query",
+        "procedure:read",
+        "integration:query"
+      ],
+      "api_required": true,
+      "browser_required": false
+    }
+  ],
+  "fixtures": [
+    {
+      "id": "f0000000-0000-4000-8000-000000000001",
+      "key": "tenant-a-source",
+      "tenant_id": "11111111-1111-4111-8111-111111111111",
+      "resource_type": "source",
+      "mutability": "mutable",
+      "synthetic": true,
+      "authoritative": false
+    },
+    {
+      "id": "f0000000-0000-4000-8000-000000000002",
+      "key": "tenant-a-document",
+      "tenant_id": "11111111-1111-4111-8111-111111111111",
+      "resource_type": "document",
+      "mutability": "mutable",
+      "synthetic": true,
+      "authoritative": false
+    },
+    {
+      "id": "f0000000-0000-4000-8000-000000000003",
+      "key": "tenant-a-ingestion-job",
+      "tenant_id": "11111111-1111-4111-8111-111111111111",
+      "resource_type": "ingestion_job",
+      "mutability": "mutable",
+      "synthetic": true,
+      "authoritative": false
+    },
+    {
+      "id": "f0000000-0000-4000-8000-000000000004",
+      "key": "tenant-a-evidence-bundle",
+      "tenant_id": "11111111-1111-4111-8111-111111111111",
+      "resource_type": "evidence_bundle",
+      "mutability": "immutable_snapshot",
+      "synthetic": true,
+      "authoritative": false
+    },
+    {
+      "id": "f0000000-0000-4000-8000-000000000005",
+      "key": "tenant-a-workflow-version",
+      "tenant_id": "11111111-1111-4111-8111-111111111111",
+      "resource_type": "workflow_version",
+      "mutability": "immutable_snapshot",
+      "synthetic": true,
+      "authoritative": false
+    },
+    {
+      "id": "f0000000-0000-4000-8000-000000000006",
+      "key": "tenant-a-procedure-case",
+      "tenant_id": "11111111-1111-4111-8111-111111111111",
+      "resource_type": "procedure_case",
+      "mutability": "mutable",
+      "synthetic": true,
+      "authoritative": false
+    },
+    {
+      "id": "f0000000-0000-4000-8000-000000000007",
+      "key": "tenant-a-evidence-gap",
+      "tenant_id": "11111111-1111-4111-8111-111111111111",
+      "resource_type": "evidence_gap",
+      "mutability": "immutable_snapshot",
+      "synthetic": true,
+      "authoritative": false
+    },
+    {
+      "id": "f0000000-0000-4000-8000-000000000008",
+      "key": "tenant-a-claim-pack",
+      "tenant_id": "11111111-1111-4111-8111-111111111111",
+      "resource_type": "claim_pack",
+      "mutability": "immutable_snapshot",
+      "synthetic": true,
+      "authoritative": false
+    },
+    {
+      "id": "f0000000-0000-4000-8000-000000000009",
+      "key": "tenant-b-source",
+      "tenant_id": "22222222-2222-4222-8222-222222222222",
+      "resource_type": "source",
+      "mutability": "mutable",
+      "synthetic": true,
+      "authoritative": false
+    },
+    {
+      "id": "f0000000-0000-4000-8000-000000000010",
+      "key": "tenant-b-document",
+      "tenant_id": "22222222-2222-4222-8222-222222222222",
+      "resource_type": "document",
+      "mutability": "mutable",
+      "synthetic": true,
+      "authoritative": false
+    },
+    {
+      "id": "f0000000-0000-4000-8000-000000000011",
+      "key": "tenant-b-workflow-version",
+      "tenant_id": "22222222-2222-4222-8222-222222222222",
+      "resource_type": "workflow_version",
+      "mutability": "immutable_snapshot",
+      "synthetic": true,
+      "authoritative": false
+    },
+    {
+      "id": "f0000000-0000-4000-8000-000000000012",
+      "key": "tenant-b-procedure-case",
+      "tenant_id": "22222222-2222-4222-8222-222222222222",
+      "resource_type": "procedure_case",
+      "mutability": "mutable",
+      "synthetic": true,
+      "authoritative": false
+    },
+    {
+      "id": "f0000000-0000-4000-8000-000000000013",
+      "key": "tenant-b-evidence-bundle",
+      "tenant_id": "22222222-2222-4222-8222-222222222222",
+      "resource_type": "evidence_bundle",
+      "mutability": "immutable_snapshot",
+      "synthetic": true,
+      "authoritative": false
+    }
+  ],
+  "reset": {
+    "mode": "recreate_and_verify_empty",
+    "steps": [
+      "preflight_no_production_inputs",
+      "create_isolated_database",
+      "apply_migrations",
+      "seed_identity",
+      "seed_domain_fixtures",
+      "verify_tenant_isolation",
+      "run_api_system_journeys",
+      "assert_browser_blockers",
+      "collect_sanitized_artifacts",
+      "destroy_environment"
+    ],
+    "mutable_resource_types": [
+      "source",
+      "document",
+      "ingestion_job",
+      "procedure_case"
+    ],
+    "postconditions": [
+      "no_cross_tenant_rows",
+      "no_raw_credentials",
+      "no_orphan_artifacts",
+      "database_destroyed",
+      "sanitized_artifacts_only"
+    ]
+  },
+  "journeys": [
+    {
+      "id": "api-unauthenticated-search-denied",
+      "layer": "api",
+      "status": "runnable",
+      "actor_principal_id": "a0000000-0000-4000-8000-000000000010",
+      "method": "POST",
+      "route": "/api/v1/search",
+      "concerns": [
+        "authentication_header"
+      ],
+      "expected_statuses": [
+        401
+      ],
+      "blocker_ids": [],
+      "auth_mode": "credential_omitted",
+      "required_permission": "evidence:query",
+      "permission_expectation": "not_applicable"
+    },
+    {
+      "id": "api-viewer-search-success",
+      "layer": "api",
+      "status": "runnable",
+      "actor_principal_id": "a0000000-0000-4000-8000-000000000009",
+      "method": "POST",
+      "route": "/api/v1/search",
+      "concerns": [
+        "authorization",
+        "persistence"
+      ],
+      "expected_statuses": [
+        200
+      ],
+      "blocker_ids": [],
+      "auth_mode": "authenticated",
+      "required_permission": "evidence:query",
+      "permission_expectation": "allow"
+    },
+    {
+      "id": "api-cross-tenant-search-denied",
+      "layer": "api",
+      "status": "runnable",
+      "actor_principal_id": "a0000000-0000-4000-8000-000000000009",
+      "method": "POST",
+      "route": "/api/v1/search",
+      "concerns": [
+        "tenant_isolation",
+        "rls"
+      ],
+      "expected_statuses": [
+        403
+      ],
+      "blocker_ids": [],
+      "target_tenant_id": "22222222-2222-4222-8222-222222222222",
+      "auth_mode": "authenticated",
+      "required_permission": "evidence:query",
+      "permission_expectation": "allow"
+    },
+    {
+      "id": "api-viewer-ingestion-denied",
+      "layer": "api",
+      "status": "runnable",
+      "actor_principal_id": "a0000000-0000-4000-8000-000000000009",
+      "method": "POST",
+      "route": "/api/v1/ingestion-jobs",
+      "concerns": [
+        "authorization"
+      ],
+      "expected_statuses": [
+        403
+      ],
+      "blocker_ids": [],
+      "auth_mode": "authenticated",
+      "required_permission": "document:ingest",
+      "permission_expectation": "deny"
+    },
+    {
+      "id": "api-document-manager-source-create",
+      "layer": "api",
+      "status": "runnable",
+      "actor_principal_id": "a0000000-0000-4000-8000-000000000003",
+      "method": "POST",
+      "route": "/api/v1/sources",
+      "concerns": [
+        "schema_validation",
+        "authorization",
+        "persistence"
+      ],
+      "expected_statuses": [
+        201
+      ],
+      "blocker_ids": [],
+      "auth_mode": "authenticated",
+      "required_permission": "source:write",
+      "permission_expectation": "allow"
+    },
+    {
+      "id": "api-document-manager-document-create",
+      "layer": "api",
+      "status": "runnable",
+      "actor_principal_id": "a0000000-0000-4000-8000-000000000003",
+      "method": "POST",
+      "route": "/api/v1/documents",
+      "concerns": [
+        "schema_validation",
+        "authorization",
+        "persistence"
+      ],
+      "expected_statuses": [
+        201
+      ],
+      "blocker_ids": [],
+      "auth_mode": "authenticated",
+      "required_permission": "document:write",
+      "permission_expectation": "allow"
+    },
+    {
+      "id": "api-document-manager-ingestion-enqueue",
+      "layer": "api",
+      "status": "runnable",
+      "actor_principal_id": "a0000000-0000-4000-8000-000000000003",
+      "method": "POST",
+      "route": "/api/v1/ingestion-jobs",
+      "concerns": [
+        "authorization",
+        "persistence"
+      ],
+      "expected_statuses": [
+        202
+      ],
+      "blocker_ids": [],
+      "auth_mode": "authenticated",
+      "required_permission": "document:ingest",
+      "permission_expectation": "allow"
+    },
+    {
+      "id": "api-semantic-provider-failure",
+      "layer": "api",
+      "status": "runnable",
+      "actor_principal_id": "a0000000-0000-4000-8000-000000000004",
+      "method": "POST",
+      "route": "/api/v1/search",
+      "concerns": [
+        "provider_failure"
+      ],
+      "expected_statuses": [
+        503
+      ],
+      "blocker_ids": [],
+      "auth_mode": "authenticated",
+      "required_permission": "evidence:query",
+      "permission_expectation": "allow"
+    },
+    {
+      "id": "api-integration-procedure-query-success",
+      "layer": "api",
+      "status": "runnable",
+      "actor_principal_id": "a0000000-0000-4000-8000-000000000010",
+      "method": "POST",
+      "route": "/api/v1/procedure-queries",
+      "concerns": [
+        "contract_boundary",
+        "persistence"
+      ],
+      "expected_statuses": [
+        200
+      ],
+      "blocker_ids": [],
+      "auth_mode": "authenticated",
+      "required_permission": "integration:query",
+      "permission_expectation": "allow"
+    },
+    {
+      "id": "api-idempotency-exact-replay",
+      "layer": "api",
+      "status": "runnable",
+      "actor_principal_id": "a0000000-0000-4000-8000-000000000010",
+      "method": "POST",
+      "route": "/api/v1/procedure-queries",
+      "concerns": [
+        "idempotency",
+        "persistence"
+      ],
+      "expected_statuses": [
+        200
+      ],
+      "blocker_ids": [],
+      "auth_mode": "authenticated",
+      "required_permission": "integration:query",
+      "permission_expectation": "allow"
+    },
+    {
+      "id": "api-idempotency-conflict",
+      "layer": "api",
+      "status": "runnable",
+      "actor_principal_id": "a0000000-0000-4000-8000-000000000010",
+      "method": "POST",
+      "route": "/api/v1/procedure-queries",
+      "concerns": [
+        "replay_conflict"
+      ],
+      "expected_statuses": [
+        409
+      ],
+      "blocker_ids": [],
+      "auth_mode": "authenticated",
+      "required_permission": "integration:query",
+      "permission_expectation": "allow"
+    },
+    {
+      "id": "api-integration-claim-pack-success",
+      "layer": "api",
+      "status": "runnable",
+      "actor_principal_id": "a0000000-0000-4000-8000-000000000010",
+      "method": "POST",
+      "route": "/api/v1/claim-packs",
+      "concerns": [
+        "contract_boundary",
+        "persistence"
+      ],
+      "expected_statuses": [
+        200
+      ],
+      "blocker_ids": [],
+      "auth_mode": "authenticated",
+      "required_permission": "integration:query",
+      "permission_expectation": "allow"
+    },
+    {
+      "id": "api-content-boundary-denied",
+      "layer": "api",
+      "status": "runnable",
+      "actor_principal_id": "a0000000-0000-4000-8000-000000000010",
+      "method": "POST",
+      "route": "/api/v1/claim-packs",
+      "concerns": [
+        "contract_boundary"
+      ],
+      "expected_statuses": [
+        403
+      ],
+      "blocker_ids": [],
+      "auth_mode": "authenticated",
+      "required_permission": "integration:query",
+      "permission_expectation": "allow"
+    },
+    {
+      "id": "api-procedure-author-draft",
+      "layer": "api",
+      "status": "runnable",
+      "actor_principal_id": "a0000000-0000-4000-8000-000000000005",
+      "method": "POST",
+      "route": "/api/v1/workflow-drafts",
+      "concerns": [
+        "separation_of_duties",
+        "persistence"
+      ],
+      "expected_statuses": [
+        201
+      ],
+      "blocker_ids": [],
+      "auth_mode": "authenticated",
+      "required_permission": "procedure:draft",
+      "permission_expectation": "allow"
+    },
+    {
+      "id": "api-procedure-reviewer-review",
+      "layer": "api",
+      "status": "runnable",
+      "actor_principal_id": "a0000000-0000-4000-8000-000000000006",
+      "method": "POST",
+      "route": "/api/v1/workflow-reviews",
+      "concerns": [
+        "separation_of_duties",
+        "persistence"
+      ],
+      "expected_statuses": [
+        200
+      ],
+      "blocker_ids": [],
+      "auth_mode": "authenticated",
+      "required_permission": "procedure:review",
+      "permission_expectation": "allow"
+    },
+    {
+      "id": "api-procedure-approver-approve",
+      "layer": "api",
+      "status": "runnable",
+      "actor_principal_id": "a0000000-0000-4000-8000-000000000007",
+      "method": "POST",
+      "route": "/api/v1/workflow-approvals",
+      "concerns": [
+        "separation_of_duties",
+        "persistence"
+      ],
+      "expected_statuses": [
+        200
+      ],
+      "blocker_ids": [],
+      "auth_mode": "authenticated",
+      "required_permission": "procedure:approve",
+      "permission_expectation": "allow"
+    },
+    {
+      "id": "api-case-operator-create",
+      "layer": "api",
+      "status": "runnable",
+      "actor_principal_id": "a0000000-0000-4000-8000-000000000008",
+      "method": "POST",
+      "route": "/api/v1/procedure-cases",
+      "concerns": [
+        "authorization",
+        "persistence"
+      ],
+      "expected_statuses": [
+        201
+      ],
+      "blocker_ids": [],
+      "auth_mode": "authenticated",
+      "required_permission": "case:write",
+      "permission_expectation": "allow"
+    },
+    {
+      "id": "api-reset-verify-empty",
+      "layer": "api",
+      "status": "runnable",
+      "actor_principal_id": "a0000000-0000-4000-8000-000000000003",
+      "method": "GET",
+      "route": "/api/v1/sources",
+      "concerns": [
+        "reset_integrity",
+        "tenant_isolation"
+      ],
+      "expected_statuses": [
+        200
+      ],
+      "blocker_ids": [],
+      "auth_mode": "authenticated",
+      "required_permission": "source:read",
+      "permission_expectation": "allow"
+    },
+    {
+      "id": "browser-login-session",
+      "layer": "browser",
+      "status": "blocked",
+      "actor_principal_id": "a0000000-0000-4000-8000-000000000009",
+      "method": "GET",
+      "route": "/app/login",
+      "concerns": [
+        "session_cookie",
+        "csrf",
+        "critical_journey"
+      ],
+      "expected_statuses": [
+        200
+      ],
+      "blocker_ids": [
+        "BLK-HUMAN-IDP-BFF-001",
+        "BLK-AUTHENTICATED-UI-001"
+      ],
+      "auth_mode": "authenticated",
+      "required_permission": null,
+      "permission_expectation": "not_applicable"
+    },
+    {
+      "id": "browser-viewer-search-evidence",
+      "layer": "browser",
+      "status": "blocked",
+      "actor_principal_id": "a0000000-0000-4000-8000-000000000009",
+      "method": "GET",
+      "route": "/app/search",
+      "concerns": [
+        "role_navigation",
+        "user_feedback",
+        "critical_journey"
+      ],
+      "expected_statuses": [
+        200
+      ],
+      "blocker_ids": [
+        "BLK-HUMAN-IDP-BFF-001",
+        "BLK-AUTHENTICATED-UI-001"
+      ],
+      "auth_mode": "authenticated",
+      "required_permission": null,
+      "permission_expectation": "not_applicable"
+    },
+    {
+      "id": "browser-document-manager-ingestion",
+      "layer": "browser",
+      "status": "blocked",
+      "actor_principal_id": "a0000000-0000-4000-8000-000000000003",
+      "method": "GET",
+      "route": "/app/documents",
+      "concerns": [
+        "role_navigation",
+        "user_feedback",
+        "critical_journey"
+      ],
+      "expected_statuses": [
+        200
+      ],
+      "blocker_ids": [
+        "BLK-HUMAN-IDP-BFF-001",
+        "BLK-AUTHENTICATED-UI-001"
+      ],
+      "auth_mode": "authenticated",
+      "required_permission": null,
+      "permission_expectation": "not_applicable"
+    },
+    {
+      "id": "browser-workflow-separation",
+      "layer": "browser",
+      "status": "blocked",
+      "actor_principal_id": "a0000000-0000-4000-8000-000000000005",
+      "method": "GET",
+      "route": "/app/workflows",
+      "concerns": [
+        "role_navigation",
+        "user_feedback",
+        "critical_journey"
+      ],
+      "expected_statuses": [
+        200
+      ],
+      "blocker_ids": [
+        "BLK-HUMAN-IDP-BFF-001",
+        "BLK-AUTHENTICATED-UI-001"
+      ],
+      "auth_mode": "authenticated",
+      "required_permission": null,
+      "permission_expectation": "not_applicable"
+    },
+    {
+      "id": "browser-case-operator-lifecycle",
+      "layer": "browser",
+      "status": "blocked",
+      "actor_principal_id": "a0000000-0000-4000-8000-000000000008",
+      "method": "GET",
+      "route": "/app/cases",
+      "concerns": [
+        "role_navigation",
+        "user_feedback",
+        "critical_journey"
+      ],
+      "expected_statuses": [
+        200
+      ],
+      "blocker_ids": [
+        "BLK-HUMAN-IDP-BFF-001",
+        "BLK-AUTHENTICATED-UI-001"
+      ],
+      "auth_mode": "authenticated",
+      "required_permission": null,
+      "permission_expectation": "not_applicable"
+    },
+    {
+      "id": "browser-tenant-admin-identity",
+      "layer": "browser",
+      "status": "blocked",
+      "actor_principal_id": "a0000000-0000-4000-8000-000000000002",
+      "method": "GET",
+      "route": "/app/admin/identity",
+      "concerns": [
+        "role_navigation",
+        "user_feedback"
+      ],
+      "expected_statuses": [
+        200
+      ],
+      "blocker_ids": [
+        "BLK-HUMAN-IDP-BFF-001",
+        "BLK-AUTHENTICATED-UI-001"
+      ],
+      "auth_mode": "authenticated",
+      "required_permission": null,
+      "permission_expectation": "not_applicable"
+    },
+    {
+      "id": "browser-cross-tenant-deep-link",
+      "layer": "browser",
+      "status": "blocked",
+      "actor_principal_id": "a0000000-0000-4000-8000-000000000009",
+      "method": "GET",
+      "route": "/app/tenant-boundary",
+      "concerns": [
+        "role_navigation",
+        "user_feedback"
+      ],
+      "expected_statuses": [
+        200
+      ],
+      "blocker_ids": [
+        "BLK-HUMAN-IDP-BFF-001",
+        "BLK-AUTHENTICATED-UI-001"
+      ],
+      "auth_mode": "authenticated",
+      "required_permission": null,
+      "permission_expectation": "not_applicable"
+    },
+    {
+      "id": "browser-accessibility",
+      "layer": "browser",
+      "status": "blocked",
+      "actor_principal_id": "a0000000-0000-4000-8000-000000000009",
+      "method": "GET",
+      "route": "/app/accessibility",
+      "concerns": [
+        "accessibility",
+        "critical_journey"
+      ],
+      "expected_statuses": [
+        200
+      ],
+      "blocker_ids": [
+        "BLK-HUMAN-IDP-BFF-001",
+        "BLK-AUTHENTICATED-UI-001"
+      ],
+      "auth_mode": "authenticated",
+      "required_permission": null,
+      "permission_expectation": "not_applicable"
+    },
+    {
+      "id": "api-platform-admin-source-list",
+      "layer": "api",
+      "status": "runnable",
+      "actor_principal_id": "a0000000-0000-4000-8000-000000000001",
+      "method": "GET",
+      "route": "/api/v1/sources",
+      "concerns": [
+        "authorization",
+        "persistence"
+      ],
+      "expected_statuses": [
+        200
+      ],
+      "blocker_ids": [],
+      "auth_mode": "authenticated",
+      "required_permission": "source:read",
+      "permission_expectation": "allow"
+    },
+    {
+      "id": "api-tenant-admin-source-list",
+      "layer": "api",
+      "status": "runnable",
+      "actor_principal_id": "a0000000-0000-4000-8000-000000000002",
+      "method": "GET",
+      "route": "/api/v1/sources",
+      "concerns": [
+        "authorization",
+        "persistence"
+      ],
+      "expected_statuses": [
+        200
+      ],
+      "blocker_ids": [],
+      "auth_mode": "authenticated",
+      "required_permission": "source:read",
+      "permission_expectation": "allow"
+    },
+    {
+      "id": "browser-platform-admin",
+      "layer": "browser",
+      "status": "blocked",
+      "actor_principal_id": "a0000000-0000-4000-8000-000000000001",
+      "method": "GET",
+      "route": "/app/platform",
+      "concerns": [
+        "role_navigation",
+        "user_feedback"
+      ],
+      "expected_statuses": [
+        200
+      ],
+      "blocker_ids": [
+        "BLK-HUMAN-IDP-BFF-001",
+        "BLK-AUTHENTICATED-UI-001"
+      ],
+      "auth_mode": "authenticated",
+      "required_permission": null,
+      "permission_expectation": "not_applicable"
+    },
+    {
+      "id": "browser-researcher-evidence-review",
+      "layer": "browser",
+      "status": "blocked",
+      "actor_principal_id": "a0000000-0000-4000-8000-000000000004",
+      "method": "GET",
+      "route": "/app/research",
+      "concerns": [
+        "role_navigation",
+        "user_feedback",
+        "critical_journey"
+      ],
+      "expected_statuses": [
+        200
+      ],
+      "blocker_ids": [
+        "BLK-HUMAN-IDP-BFF-001",
+        "BLK-AUTHENTICATED-UI-001"
+      ],
+      "auth_mode": "authenticated",
+      "required_permission": null,
+      "permission_expectation": "not_applicable"
+    },
+    {
+      "id": "browser-procedure-reviewer",
+      "layer": "browser",
+      "status": "blocked",
+      "actor_principal_id": "a0000000-0000-4000-8000-000000000006",
+      "method": "GET",
+      "route": "/app/workflows/review",
+      "concerns": [
+        "role_navigation",
+        "user_feedback",
+        "critical_journey"
+      ],
+      "expected_statuses": [
+        200
+      ],
+      "blocker_ids": [
+        "BLK-HUMAN-IDP-BFF-001",
+        "BLK-AUTHENTICATED-UI-001"
+      ],
+      "auth_mode": "authenticated",
+      "required_permission": null,
+      "permission_expectation": "not_applicable"
+    },
+    {
+      "id": "browser-procedure-approver",
+      "layer": "browser",
+      "status": "blocked",
+      "actor_principal_id": "a0000000-0000-4000-8000-000000000007",
+      "method": "GET",
+      "route": "/app/workflows/approve",
+      "concerns": [
+        "role_navigation",
+        "user_feedback",
+        "critical_journey"
+      ],
+      "expected_statuses": [
+        200
+      ],
+      "blocker_ids": [
+        "BLK-HUMAN-IDP-BFF-001",
+        "BLK-AUTHENTICATED-UI-001"
+      ],
+      "auth_mode": "authenticated",
+      "required_permission": null,
+      "permission_expectation": "not_applicable"
+    }
+  ],
+  "mocks": [
+    {
+      "target": "query_embedding_provider",
+      "mode": "deterministic_local_stub",
+      "endpoint": "http://127.0.0.1:18081/embeddings",
+      "verification_status": "local_stub",
+      "external_verification_claimed": false,
+      "production_equivalent": false
+    },
+    {
+      "target": "object_storage",
+      "mode": "boundary_stub_only",
+      "endpoint": "http://127.0.0.1:18082/objects",
+      "verification_status": "local_stub",
+      "external_verification_claimed": false,
+      "production_equivalent": false
+    },
+    {
+      "target": "malware_scanner",
+      "mode": "boundary_stub_only",
+      "endpoint": "http://127.0.0.1:18083/scan",
+      "verification_status": "local_stub",
+      "external_verification_claimed": false,
+      "production_equivalent": false
+    },
+    {
+      "target": "os_electoral",
+      "mode": "contract_stub_only",
+      "endpoint": "http://127.0.0.1:18084/contracts",
+      "verification_status": "provider_contract_only",
+      "external_verification_claimed": false,
+      "production_equivalent": false
+    },
+    {
+      "target": "content_agency",
+      "mode": "contract_stub_only",
+      "endpoint": "http://127.0.0.1:18085/contracts",
+      "verification_status": "provider_contract_only",
+      "external_verification_claimed": false,
+      "production_equivalent": false
+    },
+    {
+      "target": "human_idp",
+      "mode": "not_implemented_blocker",
+      "endpoint": null,
+      "verification_status": "not_implemented",
+      "external_verification_claimed": false,
+      "production_equivalent": false
+    }
+  ],
+  "layer_policy": {
+    "api_owned_concerns": [
+      "schema_validation",
+      "authentication_header",
+      "authorization",
+      "tenant_isolation",
+      "rls",
+      "idempotency",
+      "replay_conflict",
+      "persistence",
+      "provider_failure",
+      "contract_boundary",
+      "reset_integrity",
+      "separation_of_duties"
+    ],
+    "browser_owned_concerns": [
+      "session_cookie",
+      "csrf",
+      "role_navigation",
+      "user_feedback",
+      "accessibility",
+      "critical_journey"
+    ],
+    "browser_prerequisites": [
+      "human_idp_decision",
+      "bff_session_implementation",
+      "deterministic_fixtures",
+      "ephemeral_services_deployed",
+      "role_aware_ui",
+      "csrf_and_logout"
+    ],
+    "browser_suite_budget": 12
+  },
+  "limitations": [
+    "No human IdP, browser session, BFF, secure cookie, CSRF, logout, revocation, recovery, or provisioning is implemented by this plan.",
+    "No cloud staging environment or paid infrastructure is provisioned by this repository slice.",
+    "All tenants, principals, fixtures, documents, workflows, cases, and evidence are synthetic and non-authoritative.",
+    "OS Electoral and Content Agency are represented only by provider-side contract stubs; their repositories have not executed these tests.",
+    "Object storage and malware scanning are boundary stubs and are not production-equivalent services.",
+    "Browser E2E remains blocked until identity, deterministic fixtures, deployed ephemeral services, role-aware UI, and CSRF/logout are implemented.",
+    "Passing this plan proves architecture conformance only, not production readiness, legal correctness, real-corpus quality, load, HA, recovery, or deployment."
+  ]
+}
