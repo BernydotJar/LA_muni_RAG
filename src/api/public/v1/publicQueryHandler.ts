@@ -1,7 +1,11 @@
 import { createHash, createHmac } from "node:crypto";
 import type { IncomingMessage, ServerResponse } from "node:http";
 import { readJsonBody } from "../../../http.js";
-import { isCanonicalUuid, withTenantTransaction } from "../../../security/index.js";
+import {
+  isCanonicalUuid,
+  withTenantTransaction,
+  type TenantTransactionClient,
+} from "../../../security/index.js";
 import {
   executeSearch,
   type SearchExecutionResult,
@@ -28,6 +32,15 @@ const MAX_BODY_BYTES = 8 * 1024;
 const CONTROL_CHARACTER = /[\u0000-\u001f\u007f]/;
 const PUBLIC_LIMITATION = "La recuperación pública no sustituye revisión jurídica, técnica o municipal.";
 const DATE_LIMITATION = "La vigencia y aplicabilidad requieren revisión de las fuentes citadas.";
+const LEXICAL_EXPANSION_LIMITATION =
+  "La consulta se amplió con equivalencias léxicas controladas: priorización, problemáticas y problemas; no se ejecutó búsqueda semántica.";
+
+const PUBLIC_QUERY_EXPANSION_RULES = [
+  {
+    pattern: /\b(necesidad(?:es)?|urgente(?:s)?|prioridad(?:es)?|problematicas?)\b/u,
+    queries: ["priorización", "problemáticas", "problemas"],
+  },
+] as const;
 
 type PublicErrorStatus = 400 | 403 | 405 | 429 | 500 | 503;
 
@@ -277,6 +290,79 @@ const safePublicUrl = (value: string): boolean => {
   }
 };
 
+const normalizedIntentText = (value: string): string =>
+  value
+    .normalize("NFD")
+    .replace(/\p{M}+/gu, "")
+    .toLocaleLowerCase("es-GT")
+    .replace(/[^\p{L}\p{N}\s-]+/gu, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+
+const expandedQueriesFor = (request: PublicQueryRequestV1): string[] => {
+  if (request.mode !== "keyword") return [];
+  const normalized = normalizedIntentText(request.message);
+  const queries = PUBLIC_QUERY_EXPANSION_RULES
+    .filter((rule) => rule.pattern.test(normalized))
+    .flatMap((rule) => [...rule.queries]);
+  return [...new Set(queries)]
+    .filter((query) => normalizedIntentText(query) !== normalized)
+    .slice(0, 3);
+};
+
+const candidateKey = (candidate: ClassifiedSearchCandidate): string =>
+  `${candidate.tenantId}:${candidate.documentVersionId}:${candidate.sectionId}:${candidate.chunkId ?? "section"}`;
+
+const mergeExpandedExecutions = (
+  executions: SearchExecutionResult[],
+  limit: number
+): SearchExecutionResult => {
+  const candidates: ClassifiedSearchCandidate[] = [];
+  const seen = new Set<string>();
+  const maximumDepth = Math.max(0, ...executions.map((execution) => execution.candidates.length));
+  for (let depth = 0; depth < maximumDepth && candidates.length < limit; depth += 1) {
+    for (const execution of executions) {
+      const candidate = execution.candidates[depth];
+      if (!candidate) continue;
+      const key = candidateKey(candidate);
+      if (seen.has(key)) continue;
+      seen.add(key);
+      candidates.push(candidate);
+      if (candidates.length >= limit) break;
+    }
+  }
+  return {
+    candidates,
+    executedModes: [...new Set(executions.flatMap((execution) => execution.executedModes))],
+  };
+};
+
+const executePublicSearch = async (
+  dependencies: PublicQueryApiDependencies,
+  client: TenantTransactionClient,
+  requestId: string,
+  request: PublicQueryRequestV1
+): Promise<{ execution: SearchExecutionResult; expandedQueries: string[] }> => {
+  const primaryRequest = internalSearchRequest(dependencies, requestId, request);
+  const primary = await executeSearch(dependencies.searchRepository, client, primaryRequest, null);
+  if (primary.candidates.length > 0) return { execution: primary, expandedQueries: [] };
+  const expandedQueries = expandedQueriesFor(request);
+  if (expandedQueries.length === 0) return { execution: primary, expandedQueries: [] };
+  const executions = [primary];
+  for (const query of expandedQueries) {
+    executions.push(await executeSearch(
+      dependencies.searchRepository,
+      client,
+      { ...primaryRequest, query },
+      null
+    ));
+  }
+  return {
+    execution: mergeExpandedExecutions(executions, Math.min(request.limit, dependencies.maxLimit)),
+    expandedQueries,
+  };
+};
+
 const citationFrom = (candidate: ClassifiedSearchCandidate): PublicQueryCitationV1 | null => {
   const citationLabel = safeText(candidate.citationLabel, 300);
   const sourceType = safeText(candidate.documentType, 64);
@@ -357,7 +443,8 @@ const buildResponse = (
   dependencies: PublicQueryApiDependencies,
   requestId: string,
   request: PublicQueryRequestV1,
-  execution: SearchExecutionResult
+  execution: SearchExecutionResult,
+  expandedQueries: readonly string[] = []
 ): PublicQueryResponseV1 => {
   const citations = execution.candidates
     .map(citationFrom)
@@ -367,6 +454,7 @@ const buildResponse = (
   const limitations = [
     PUBLIC_LIMITATION,
     DATE_LIMITATION,
+    ...(expandedQueries.length > 0 ? [LEXICAL_EXPANSION_LIMITATION] : []),
     ...execution.candidates.flatMap((candidate) => candidate.limitations),
   ].map((value) => safeText(value, 500)).filter((value): value is string => Boolean(value));
   return {
@@ -460,18 +548,23 @@ export const handlePublicQueryV1 = async (
       throw new PublicQueryHttpError(400, "invalid_request", "Invalid message");
     }
 
-    const internalRequest = internalSearchRequest(dependencies, requestIdentity.requestId, request);
     const body = await withTenantTransaction(
       dependencies.transactionPool,
       dependencies.tenantId,
       async (client) => {
-        const execution = await executeSearch(
-          dependencies.searchRepository,
+        const { execution, expandedQueries } = await executePublicSearch(
+          dependencies,
           client,
-          internalRequest,
-          null
+          requestIdentity.requestId,
+          request
         );
-        const response = buildResponse(dependencies, requestIdentity.requestId, request, execution);
+        const response = buildResponse(
+          dependencies,
+          requestIdentity.requestId,
+          request,
+          execution,
+          expandedQueries
+        );
         if (!validators.response(response)) {
           throw new Error("Generated public query response failed its contract");
         }
