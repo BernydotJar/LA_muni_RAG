@@ -39,13 +39,17 @@ describe("Pages production API configuration", () => {
   it("injects and verifies the production bridge in the Pages artifact", async () => {
     const buildScript = await readSource("scripts/build-pages.mjs");
     const verifyScript = await readSource("scripts/verify-pages-artifact.mjs");
+    const glassWall = await readSource("public/glass-wall.html");
     assert.match(buildScript, /PAGES_API_URL/);
     assert.match(buildScript, /sanitizePagesApiUrl/);
     assert.match(buildScript, /pages-api-bridge\.js/);
     assert.match(buildScript, /PAGES_API_BRIDGE/);
     assert.match(buildScript, /configuredEmbedApiAttribute/);
     assert.match(buildScript, /api\.tu-dominio\.gt/);
+    assert.match(glassWall, /<!-- PAGES_API_BRIDGE -->[\s\S]*const approvedEndpointPaths/);
     assert.match(verifyScript, /pages-api-bridge\.js/);
+    assert.match(verifyScript, /glassWallBridgeIndex/);
+    assert.match(verifyScript, /glassWallRuntimeIndex/);
     assert.match(verifyScript, /fail-closed API bridge/);
     assert.match(verifyScript, /still contains demo responses/);
   });
