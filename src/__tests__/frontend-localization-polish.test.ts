@@ -73,7 +73,10 @@ describe("frontend localization and graph polish", () => {
     assert.match(homepage, /<script src="\.\/widget\.js"><\/script>/);
     assert.match(homepage, /<script src="\.\/product\.js"><\/script>/);
     assert.match(homepage, /href="\.\/glass-wall\.html"/);
-    assert.match(glassWall, /approvedEndpointPaths = \["\/health", "\/api\/evidence", "\/api\/answer"\]/);
+    assert.match(glassWall, /approvedEndpointPaths = \["\/api\/public\/v1\/query"\]/);
+    assert.match(glassWall, /state\.mode === "hybrid" \? \["keyword", "phrase"\]/);
+    assert.doesNotMatch(glassWall, /\/api\/evidence/);
+    assert.doesNotMatch(glassWall, /\/api\/answer/);
     assert.match(glassWall, /Contrato de seguridad/);
     const productCss = await readFile("public/product.css", "utf-8");
     assert.match(productCss, /prefers-reduced-motion/);

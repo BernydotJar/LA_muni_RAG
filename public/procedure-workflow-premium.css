@@ -350,3 +350,6 @@ body.procedure-product a.citation-chip:hover { border-color: var(--procedure-lin
   .procedure-runtime-status[data-state="loading"] .runtime-indicator,
   .loading-card { animation: none !important; }
 }
+
+.legal-framework { display:grid; grid-template-columns:minmax(0,1fr) auto; gap:20px; align-items:center; margin:18px 0 54px; padding:22px 24px; border:1px solid rgba(252,211,77,.28); border-radius:var(--procedure-radius-lg); background:linear-gradient(135deg,rgba(252,211,77,.08),rgba(103,232,249,.04)); }
+.legal-framework h2{margin:4px 0 8px;font-size:clamp(24px,3vw,36px)} .legal-framework p{margin:0;color:var(--procedure-muted);line-height:1.6}.legal-framework-actions{display:grid;justify-items:end;gap:10px}.legal-framework-actions a{color:var(--procedure-action);font-weight:850;text-underline-offset:4px}.legal-framework-badge{padding:8px 12px;border:1px solid rgba(252,211,77,.34);border-radius:999px;color:#fde68a;background:rgba(252,211,77,.08);font-size:11px;font-weight:900;letter-spacing:.06em;text-transform:uppercase}.legal-framework-warning{grid-column:1/-1;padding-top:14px;border-top:1px solid rgba(255,255,255,.08);font-size:12px}@media(max-width:760px){.legal-framework{grid-template-columns:1fr;margin-bottom:48px}.legal-framework-actions{justify-items:start}}

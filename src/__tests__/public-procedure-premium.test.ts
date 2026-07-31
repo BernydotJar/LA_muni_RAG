@@ -47,4 +47,14 @@ describe("public procedure premium design system", () => {
     assert.match(css, /input:focus/);
     assert.match(css, /procedure-skip-link:focus/);
   });
+  it("makes the public procurement legal boundary visible without claiming corpus coverage", async () => {
+    const html = await read("public/procedure-workflow.html");
+    assert.match(html, /id="legal-framework-title"/);
+    assert.match(html, /Ley de Contrataciones del Estado/);
+    assert.match(html, /Decreto 57-92/);
+    assert.match(html, /congreso\.gob\.gt\/buscador_decretos\/ley_de_contrataciones_del_estado/);
+    assert.match(html, /todavía debe incorporarse al corpus gobernado/);
+    assert.match(html, /no presume vigencia, modalidad, monto ni plazo/i);
+  });
+
 });
