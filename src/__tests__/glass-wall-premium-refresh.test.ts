@@ -30,10 +30,12 @@ describe("glass wall premium refresh", () => {
     const html = await readGlassWall();
 
     assert.match(html, /approvedEndpointPaths/);
-    assert.match(html, /\/health/);
-    assert.match(html, /\/api\/evidence/);
-    assert.match(html, /\/api\/answer/);
-    assert.match(html, /Endpoint no aprobado para (renderizado )?Glass Wall/);
+    assert.match(html, /\/api\/public\/v1\/query/);
+    assert.match(html, /method: "POST"/);
+    assert.match(html, /JSON\.stringify\(\{ message, mode, limit: 5 \}\)/);
+    assert.match(html, /state\.mode === "hybrid" \? \["keyword", "phrase"\]/);
+    assert.doesNotMatch(html, /\/api\/evidence/);
+    assert.doesNotMatch(html, /\/api\/answer/);
   });
 
   it("preserves graph and safety contract elements", async () => {

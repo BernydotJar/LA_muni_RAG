@@ -24,10 +24,12 @@ describe("premium glass wall technical room", () => {
     assert.match(html, /salida segura observable/);
   });
 
-  it("keeps the approved inspection endpoints unchanged", async () => {
+  it("uses the deployed public inspection contract", async () => {
     const html = await readGlassWall();
 
-    assert.match(html, /const approvedEndpointPaths = \["\/health", "\/api\/evidence", "\/api\/answer"\]/);
+    assert.match(html, /const approvedEndpointPaths = \["\/api\/public\/v1\/query"\]/);
+    assert.doesNotMatch(html, /\/api\/evidence/);
+    assert.doesNotMatch(html, /\/api\/answer/);
   });
 
   it("preserves the Spanish safety contract language", async () => {
@@ -60,10 +62,12 @@ describe("premium glass wall technical room", () => {
     assert.match(html, /query → vector/);
     assert.match(html, /almacén vectorial/);
     assert.match(html, /observación segura/);
-    assert.match(html, /semántica activa/);
-    assert.match(html, /semántica degradada/);
-    assert.match(html, /store consultable/);
-    assert.match(html, /store no reportado/);
+    assert.match(html, /no expuesto por gateway público/);
+    assert.match(html, /híbrido público = léxica \+ frase exacta/);
+    assert.match(html, /embedding interno no expuesto/);
+    assert.match(html, /almacén interno no expuesto/);
+    assert.doesNotMatch(html, /semántica activa/);
+    assert.doesNotMatch(html, /store consultable/);
   });
 
   it("adds CSS-only graph scan, vector pulse, and edge flow animation", async () => {

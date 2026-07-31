@@ -84,9 +84,11 @@ describe("RAG glass wall static page", () => {
 
     assert.ok(uniqueEndpoints.length > 0);
     assert.deepEqual(
-      uniqueEndpoints.filter((endpoint) => !endpoint.startsWith("/health") && !endpoint.startsWith("/api/evidence") && !endpoint.startsWith("/api/answer")),
-      []
+      uniqueEndpoints,
+      ["/api/public/v1/query"]
     );
+    assert.doesNotMatch(html, /\/api\/evidence/);
+    assert.doesNotMatch(html, /\/api\/answer/);
   });
 
   it("does not include obvious secret or hidden-reasoning markers", async () => {
