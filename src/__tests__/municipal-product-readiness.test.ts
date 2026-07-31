@@ -20,10 +20,12 @@ describe("municipal product readiness and evidence copy", () => {
   it("uses conservative evidence copy without claiming an official loaded corpus", async () => {
     const widget = await readWidget();
     assert.match(widget, /Respuesta breve/);
-    assert.match(widget, /Hallazgos principales/);
+    assert.match(widget, /Hallazgos documentales/);
     assert.match(widget, /Evidencia disponible/);
     assert.match(widget, /Consulta trazable/);
     assert.match(widget, /Revisa las citas, la vigencia y la aplicabilidad/);
+    assert.match(widget, /Sin evidencia suficiente/);
+    assert.match(widget, /No se recuperaron citas para esta formulación/);
     assert.doesNotMatch(widget, /documentos municipales oficiales cargados en el corpus/);
     assert.doesNotMatch(widget, /Documentos municipales verificados/);
   });
@@ -43,6 +45,7 @@ describe("municipal product readiness and evidence copy", () => {
     assert.match(widget, /Evidencia sólida/);
     assert.match(widget, /Evidencia suficiente/);
     assert.match(widget, /Evidencia limitada/);
+    assert.match(widget, /Sin evidencia recuperada/);
     assert.doesNotMatch(widget, /Confianza Baja|Confianza baja/);
   });
 

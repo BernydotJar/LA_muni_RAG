@@ -348,6 +348,59 @@ describe("public query gateway v1", () => {
     } finally { await stopHarness(harness); }
   });
 
+  it("expands broad municipal-needs keyword queries only after the literal query returns no candidates", async () => {
+    const harness = await startHarness({ candidates: [candidate({
+      citationLabel: "PDM-OT, página 95",
+      excerpt: "Priorización de problemáticas municipales para evaluar y seleccionar los asuntos de mayor relevancia.",
+      keywordScore: 0.91,
+    })] });
+    try {
+      const literalQuery = "Cuáles son las necesidades más urgentes";
+      const searchKeyword = harness.searchRepository.searchKeyword.bind(harness.searchRepository);
+      harness.searchRepository.searchKeyword = async (client, input) => {
+        const rows = await searchKeyword(client, input);
+        return input.query === literalQuery ? [] : rows;
+      };
+      const response = await postQuery(harness, {
+        message: literalQuery,
+        mode: "keyword",
+        limit: 5,
+      });
+      assert.equal(response.status, 200);
+      const body = await response.json() as PublicQueryResponseV1;
+      assert.equal(body.citations.length, 1);
+      assert.equal(body.meta.requestedMode, "keyword");
+      assert.deepEqual(body.meta.executedModes, ["keyword"]);
+      assert.ok(body.meta.limitations.some((item) => /equivalencias léxicas controladas/i.test(item)));
+      assert.ok(body.meta.limitations.some((item) => /no se ejecutó búsqueda semántica/i.test(item)));
+      assert.deepEqual(
+        harness.searchRepository.searchCalls.map((call) => call.input.query),
+        ["Cuáles son las necesidades más urgentes", "priorización", "problemáticas", "problemas"]
+      );
+    } finally { await stopHarness(harness); }
+  });
+
+  it("keeps phrase mode literal and does not apply municipal lexical expansions", async () => {
+    const harness = await startHarness({ candidates: [candidate({
+      excerpt: "Priorización de problemáticas municipales.",
+      phraseMatched: false,
+    })] });
+    try {
+      const response = await postQuery(harness, {
+        message: "Cuáles son las necesidades más urgentes",
+        mode: "phrase",
+        limit: 5,
+      });
+      assert.equal(response.status, 200);
+      const body = await response.json() as PublicQueryResponseV1;
+      assert.equal(body.meta.responseLabel, "not_found");
+      assert.equal(body.citations.length, 0);
+      assert.equal(harness.searchRepository.searchCalls.length, 1);
+      assert.equal(harness.searchRepository.searchCalls[0]?.input.query, "Cuáles son las necesidades más urgentes");
+      assert.ok(body.meta.limitations.every((item) => !/equivalencias léxicas/i.test(item)));
+    } finally { await stopHarness(harness); }
+  });
+
   it("excludes cross-tenant and unsafe signed source URLs", async () => {
     const harness = await startHarness({ candidates: [
       candidate({ sourceUrl: "https://storage.example/object.pdf?X-Goog-Signature=secret" }),

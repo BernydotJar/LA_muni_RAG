@@ -21,10 +21,13 @@ describe("chat answer quality and evidence composition", () => {
 
     assert.match(widget, /muni-answer-summary/);
     assert.match(widget, /Respuesta breve/);
-    assert.match(widget, /Hallazgos principales/);
+    assert.match(widget, /Hallazgos documentales/);
     assert.match(widget, /muni-key-findings/);
     assert.match(widget, /No la presentaría como una respuesta única cerrada/);
-    assert.match(widget, /Te dejo una síntesis primero y las fuentes verificadas aparte/);
+    assert.match(widget, /Presento primero los hallazgos documentales y después las fuentes verificables/);
+    assert.match(widget, /function responsePresentation/);
+    assert.match(widget, /Sin evidencia suficiente/);
+    assert.match(widget, /Sin evidencia recuperada/);
   });
 
   it("shows available evidence by default while still allowing users to hide it", async () => {
