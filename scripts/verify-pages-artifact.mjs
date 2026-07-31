@@ -89,6 +89,9 @@ for (const pattern of forbiddenRootRelativePatterns) {
 }
 
 if (!indexHtml.includes('src="./pages-api-bridge.js"')) throw new Error("GitHub Pages artifact is missing the fail-closed API bridge before the widget.");
+const glassWallBridgeIndex = glassWallHtml.indexOf('src="./pages-api-bridge.js"');
+const glassWallRuntimeIndex = glassWallHtml.indexOf("const approvedEndpointPaths");
+if (glassWallBridgeIndex < 0 || glassWallRuntimeIndex < 0 || glassWallBridgeIndex > glassWallRuntimeIndex) throw new Error("Glass Wall is missing the configured Pages API bridge before its query runtime.");
 if (!indexHtml.includes('href="./favicon.svg"') || !indexHtml.includes('main id="contenido" tabindex="-1"')) throw new Error("Homepage is missing its icon or focusable skip-link target.");
 if (!procedureTrainingHtml.includes('src="./pages-api-bridge.js"')) throw new Error("Procedure training page is missing the Pages fail-closed API bridge.");
 if (!indexHtml.includes('src="./pages-security-guard.js"')) throw new Error("GitHub Pages artifact is missing the source-link security guard.");
