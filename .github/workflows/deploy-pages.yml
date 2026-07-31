@@ -32,14 +32,14 @@ jobs:
         env:
           PAGES_API_URL: ${{ vars.PAGES_API_URL }}
           PAGES_API_URL_DEFAULT: https://la-muni-rag-public-gateway-ccaqcuwgyq-uc.a.run.app
-          PAGES_BUILD_SHA: ${{ github.event.before || github.sha }}
+          PAGES_BUILD_SHA: ${{ github.sha }}
         run: |
           export PAGES_API_URL="${PAGES_API_URL:-$PAGES_API_URL_DEFAULT}"
           node scripts/build-pages.mjs
 
       - name: Verify GitHub Pages artifact
         env:
-          PAGES_BUILD_SHA: ${{ github.event.before || github.sha }}
+          PAGES_BUILD_SHA: ${{ github.sha }}
         run: node scripts/verify-pages-artifact.mjs
 
       - name: Configure Pages
@@ -90,6 +90,6 @@ jobs:
       - name: Verify exact online artifact
         env:
           PAGES_ONLINE_URL: ${{ needs.deploy.outputs.page_url }}
-          EXPECTED_BUILD_SHA: ${{ github.event.before || github.sha }}
+          EXPECTED_BUILD_SHA: ${{ github.sha }}
           PAGES_ONLINE_WAIT_SECONDS: 180
         run: npm run verify:pages:online
