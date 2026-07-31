@@ -44,10 +44,12 @@ describe("EVAL-ONLINE-PAGES-RELEASE-001", () => {
 
   it("runs exact-SHA verification after GitHub Pages deployment", async () => {
     const workflow = await read(".github/workflows/deploy-pages.yml");
-    assert.match(workflow, /PAGES_BUILD_SHA: \$\{\{ github\.event\.before \|\| github\.sha \}\}/);
+    assert.match(workflow, /PAGES_BUILD_SHA: \$\{\{ github\.sha \}\}/);
+    assert.doesNotMatch(workflow, /PAGES_BUILD_SHA: \$\{\{ github\.event\.before/);
     assert.match(workflow, /verify-online:/);
     assert.match(workflow, /PAGES_ONLINE_URL: \$\{\{ needs\.deploy\.outputs\.page_url \}\}/);
-    assert.match(workflow, /EXPECTED_BUILD_SHA: \$\{\{ github\.event\.before \|\| github\.sha \}\}/);
+    assert.match(workflow, /EXPECTED_BUILD_SHA: \$\{\{ github\.sha \}\}/);
+    assert.doesNotMatch(workflow, /EXPECTED_BUILD_SHA: \$\{\{ github\.event\.before/);
     assert.match(workflow, /PAGES_ONLINE_WAIT_SECONDS: 180/);
     assert.match(workflow, /npm run verify:pages:online/);
     const legacyRoot = await read("index.html");
