@@ -23,17 +23,16 @@ Backend CI installs the framework package directly from the immutable Git commit
 
 ## Current terminal checkpoint
 
-Functional retrieval commit `70ec287f1a8705637e04374ca2562fafa175e0da` has green exact-SHA Backend CI `30477447935`, Public Browser Gate `30477448607` and Terraform validation `30477447915`.
+Feature 089 functional commit `987ff78d1f7ae2ab59ce6d2658726b1bc14c5601` has green exact-SHA Backend CI runs `30683375100` and `30683368396` plus Public Browser Gate runs `30683375102` and `30683368414`.
 
 The replay contains:
 
-- 82 append-only events;
-- two localized repair plans;
-- seven required gates with `PASS` results;
-- eight nodes in `done` state;
-- two checkpoints;
+- 115 append-only events;
+- ten nodes in `done` state;
+- eight required gates with `PASS` results;
+- four checkpoints;
 - zero ready nodes.
 
-Feature 085 credits one exact clean PDM-OT document as ingested with 224 sections and 444 chunks. Feature 086 executes a frozen 12-case retrieval benchmark against that real corpus. Safety passes with zero unsupported answers and zero cross-document leakage, while phrase, keyword and hybrid ranking/top-1 citation quality gaps remain explicit.
+Feature 089 adds nine official national discovery records, exact source-pack/inventory binding validation, category-neutral MARN routing and concrete evidence requirements for all 47 water-project categories. The new records remain verified only: zero new artifacts are represented as acquired, scanned, extracted, indexed or projected.
 
-The graph terminal state is `PARTIAL_WITH_DOCUMENTED_BLOCKERS`, not `COMPLETED`: no public HTTPS backend is deployed or connected to Pages, productive authenticated journeys remain `0/12`, DMP OCR and held-out corpus review remain open, and managed identity, infrastructure, protected merge and release require external human authorization.
+The graph checkpoint remains `PARTIAL_WITH_DOCUMENTED_BLOCKERS`, not `COMPLETED`: PR #33 and stacked draft PR #34 are unmerged; managed-corpus mutation and deployment require human authorization; the nine national sources require governed acquisition and applicability review; seven scanned municipal PDFs require approved OCR and human review; productive identity and broader operational controls remain outside this node.

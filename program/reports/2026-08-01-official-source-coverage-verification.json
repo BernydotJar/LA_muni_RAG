@@ -1,0 +1,99 @@
+{
+  "schemaVersion": 1,
+  "verifiedAt": "2026-08-01T03:57:45Z",
+  "nodeId": "WS02-OFFICIAL-SOURCE-COVERAGE-002",
+  "scope": "official-discovery-only",
+  "summary": {
+    "newVerifiedRecords": 9,
+    "directHttp200": 7,
+    "officialPagesBlockedToAutomatedClient": 2,
+    "acquired": 0,
+    "ingested": 0,
+    "rawBytesCommitted": 0
+  },
+  "sources": [
+    {
+      "sourceId": "guatemala-mafim-second-edition",
+      "authority": "MINFIN",
+      "url": "https://www.minfin.gob.gt/7701-558-aprobar-el-manual-de-administracion-financiera-integrada-municipal-mafim-en-su-segunda-edicion-el-cual-actualiza-y-regula-el-marco-de-las-actividades-a-ejecutar-en-la-gestion-financiera-munic/",
+      "observedHttpStatus": 403,
+      "verification": "Official MINFIN search index and page identity corroborated; automated direct retrieval blocked.",
+      "state": "verified"
+    },
+    {
+      "sourceId": "marn-environmental-taxonomy",
+      "authority": "MARN",
+      "url": "https://www.marn.gob.gt/listados-taxativos/",
+      "observedHttpStatus": 200,
+      "verification": "Official page returned HTML and published sector taxative-list downloads.",
+      "state": "verified"
+    },
+    {
+      "sourceId": "marn-environmental-category-a",
+      "authority": "MARN",
+      "url": "https://www.marn.gob.gt/estudio-de-evaluacion-de-impacto-ambiental-categoria-a/",
+      "observedHttpStatus": 200,
+      "verification": "Official Category A EIA page returned HTML.",
+      "state": "verified"
+    },
+    {
+      "sourceId": "marn-environmental-category-b1",
+      "authority": "MARN",
+      "url": "https://www.marn.gob.gt/12-estudio-de-evaluacion-de-impacto-ambiental-categoria-b1/",
+      "observedHttpStatus": 200,
+      "verification": "Official Category B1 EIA page returned HTML.",
+      "state": "verified"
+    },
+    {
+      "sourceId": "marn-environmental-category-b2",
+      "authority": "MARN",
+      "url": "https://www.marn.gob.gt/17-evaluacion-ambiental-inicial-categoria-b2/",
+      "observedHttpStatus": 200,
+      "verification": "Official Category B2 initial-evaluation page returned HTML.",
+      "state": "verified"
+    },
+    {
+      "sourceId": "segeplan-snip-standards-2027",
+      "authority": "SEGEPLAN/SNIP",
+      "url": "https://snip.segeplan.gob.gt/guest/SNPPKG%24PL_DOCUMENTOS.DOC_NORMAS_SNIP",
+      "observedHttpStatus": 200,
+      "verification": "Official SNIP catalog returned HTML listing Normas SNIP 2027 and prior years.",
+      "state": "verified"
+    },
+    {
+      "sourceId": "mspas-water-health-authority",
+      "authority": "MSPAS",
+      "url": "https://www.mspas.gob.gt/servicios/salud-y-ambiente",
+      "observedHttpStatus": 403,
+      "verification": "Official MSPAS search index corroborated the department and water/sanitation authority; automated direct retrieval blocked.",
+      "state": "verified"
+    },
+    {
+      "sourceId": "mspas-water-project-quality-certification",
+      "authority": "MSPAS through Catálogo Nacional de Trámites",
+      "url": "https://www.tramites.gob.gt/servicio/1758/",
+      "observedHttpStatus": 200,
+      "verification": "Official government catalog returned the water-quality certification purpose, requirements and procedure.",
+      "state": "verified"
+    },
+    {
+      "sourceId": "guatecompras-use-rules-2022",
+      "authority": "MINFIN/DIFODA",
+      "url": "https://formacion.minfin.gob.gt/difoteca/normas-para-el-uso-del-sistema-de-informacion-de-contrataciones-y-adquisiciones-del-estado-guatecompras/",
+      "observedHttpStatus": 200,
+      "verification": "Official DIFODA resource returned Resolution 001-2022 identity and purpose.",
+      "state": "verified"
+    }
+  ],
+  "boundary": {
+    "verifiedMeans": "Official discovery endpoint and provenance identified.",
+    "verifiedDoesNotMean": [
+      "immutable bytes acquired",
+      "malware scan passed",
+      "text extracted",
+      "content indexed",
+      "current applicability established",
+      "municipal event or decision proved"
+    ]
+  }
+}

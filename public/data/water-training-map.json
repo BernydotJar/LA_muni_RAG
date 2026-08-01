@@ -156,330 +156,518 @@
       "sequence": 1,
       "label": "Necesidad comunitaria",
       "group_id": "community-intake",
-      "evidence_prompt": "Localizar una fuente verificable que pruebe la regla, actor, documento o estado aplicable a «Necesidad comunitaria».",
-      "missing_evidence_text": "Cobertura documental pendiente para este tenant."
+      "evidence_prompt": "Localizar y validar: Diagnóstico comunitario con población afectada, cobertura actual y problema de abastecimiento; Acta, solicitud o registro municipal que identifique la necesidad.",
+      "missing_evidence_text": "Cobertura documental pendiente para este tenant.",
+      "required_evidence": [
+        "Diagnóstico comunitario con población afectada, cobertura actual y problema de abastecimiento",
+        "Acta, solicitud o registro municipal que identifique la necesidad"
+      ]
     },
     {
       "sequence": 2,
       "label": "Solicitud",
       "group_id": "community-intake",
-      "evidence_prompt": "Localizar una fuente verificable que pruebe la regla, actor, documento o estado aplicable a «Solicitud».",
-      "missing_evidence_text": "Cobertura documental pendiente para este tenant."
+      "evidence_prompt": "Localizar y validar: Solicitud firmada con objeto, comunidad, fecha y persona u órgano solicitante; Constancia municipal de recepción, número de ingreso o incorporación al expediente.",
+      "missing_evidence_text": "Cobertura documental pendiente para este tenant.",
+      "required_evidence": [
+        "Solicitud firmada con objeto, comunidad, fecha y persona u órgano solicitante",
+        "Constancia municipal de recepción, número de ingreso o incorporación al expediente"
+      ]
     },
     {
       "sequence": 3,
       "label": "COCODE",
       "group_id": "community-intake",
-      "evidence_prompt": "Localizar una fuente verificable que pruebe la regla, actor, documento o estado aplicable a «COCODE».",
-      "missing_evidence_text": "Cobertura documental pendiente para este tenant."
+      "evidence_prompt": "Localizar y validar: Acta o certificación del COCODE que documente representación, solicitud o priorización; Constancia de integración y competencia del COCODE aplicable al caso.",
+      "missing_evidence_text": "Cobertura documental pendiente para este tenant.",
+      "required_evidence": [
+        "Acta o certificación del COCODE que documente representación, solicitud o priorización",
+        "Constancia de integración y competencia del COCODE aplicable al caso"
+      ]
     },
     {
       "sequence": 4,
       "label": "COMUDE",
       "group_id": "community-intake",
-      "evidence_prompt": "Localizar una fuente verificable que pruebe la regla, actor, documento o estado aplicable a «COMUDE».",
-      "missing_evidence_text": "Cobertura documental pendiente para este tenant."
+      "evidence_prompt": "Localizar y validar: Acta o certificación del COMUDE que documente conocimiento o priorización; Registro del punto de agenda, decisión y participantes aplicable al proyecto.",
+      "missing_evidence_text": "Cobertura documental pendiente para este tenant.",
+      "required_evidence": [
+        "Acta o certificación del COMUDE que documente conocimiento o priorización",
+        "Registro del punto de agenda, decisión y participantes aplicable al proyecto"
+      ]
     },
     {
       "sequence": 5,
       "label": "Planificación municipal",
       "group_id": "community-intake",
-      "evidence_prompt": "Localizar una fuente verificable que pruebe la regla, actor, documento o estado aplicable a «Planificación municipal».",
-      "missing_evidence_text": "Cobertura documental pendiente para este tenant."
+      "evidence_prompt": "Localizar y validar: Manual o procedimiento vigente de la Dirección Municipal de Planificación; Registro municipal que muestre recepción, evaluación o programación de la iniciativa.",
+      "missing_evidence_text": "Cobertura documental pendiente para este tenant.",
+      "required_evidence": [
+        "Manual o procedimiento vigente de la Dirección Municipal de Planificación",
+        "Registro municipal que muestre recepción, evaluación o programación de la iniciativa"
+      ]
     },
     {
       "sequence": 6,
       "label": "Perfil",
       "group_id": "community-intake",
-      "evidence_prompt": "Localizar una fuente verificable que pruebe la regla, actor, documento o estado aplicable a «Perfil».",
-      "missing_evidence_text": "Cobertura documental pendiente para este tenant."
+      "evidence_prompt": "Localizar y validar: Norma SNIP vigente que determine perfil, prefactibilidad o factibilidad según complejidad; Perfil o estudio de preinversión firmado y versionado para el proyecto.",
+      "missing_evidence_text": "Cobertura documental pendiente para este tenant.",
+      "required_evidence": [
+        "Norma SNIP vigente que determine perfil, prefactibilidad o factibilidad según complejidad",
+        "Perfil o estudio de preinversión firmado y versionado para el proyecto"
+      ]
     },
     {
       "sequence": 7,
       "label": "Diagnóstico",
       "group_id": "technical-diagnosis",
-      "evidence_prompt": "Localizar una fuente verificable que pruebe la regla, actor, documento o estado aplicable a «Diagnóstico».",
-      "missing_evidence_text": "Cobertura documental pendiente para este tenant."
+      "evidence_prompt": "Localizar y validar: Diagnóstico técnico, social y territorial firmado, con línea base y alternativas; Datos de campo y fuentes que permitan reproducir el diagnóstico.",
+      "missing_evidence_text": "Cobertura documental pendiente para este tenant.",
+      "required_evidence": [
+        "Diagnóstico técnico, social y territorial firmado, con línea base y alternativas",
+        "Datos de campo y fuentes que permitan reproducir el diagnóstico"
+      ]
     },
     {
       "sequence": 8,
       "label": "Fuente de agua",
       "group_id": "technical-diagnosis",
-      "evidence_prompt": "Localizar una fuente verificable que pruebe la regla, actor, documento o estado aplicable a «Fuente de agua».",
-      "missing_evidence_text": "Cobertura documental pendiente para este tenant."
+      "evidence_prompt": "Localizar y validar: Ficha de identificación de la fuente con ubicación, tipo, titularidad y condiciones de aprovechamiento; Inspección o estudio técnico que vincule la fuente con el proyecto.",
+      "missing_evidence_text": "Cobertura documental pendiente para este tenant.",
+      "required_evidence": [
+        "Ficha de identificación de la fuente con ubicación, tipo, titularidad y condiciones de aprovechamiento",
+        "Inspección o estudio técnico que vincule la fuente con el proyecto"
+      ]
     },
     {
       "sequence": 9,
       "label": "Disponibilidad",
       "group_id": "technical-diagnosis",
-      "evidence_prompt": "Localizar una fuente verificable que pruebe la regla, actor, documento o estado aplicable a «Disponibilidad».",
-      "missing_evidence_text": "Cobertura documental pendiente para este tenant."
+      "evidence_prompt": "Localizar y validar: Aforos o estudio hidrológico con fechas, método y condiciones estacionales; Cálculo firmado de caudal disponible frente a demanda y restricciones.",
+      "missing_evidence_text": "Cobertura documental pendiente para este tenant.",
+      "required_evidence": [
+        "Aforos o estudio hidrológico con fechas, método y condiciones estacionales",
+        "Cálculo firmado de caudal disponible frente a demanda y restricciones"
+      ]
     },
     {
       "sequence": 10,
       "label": "Calidad",
       "group_id": "technical-diagnosis",
-      "evidence_prompt": "Localizar una fuente verificable que pruebe la regla, actor, documento o estado aplicable a «Calidad».",
-      "missing_evidence_text": "Cobertura documental pendiente para este tenant."
+      "evidence_prompt": "Localizar y validar: Certificado o dictamen sanitario aplicable emitido por la autoridad de salud competente; Resultados de laboratorio físicos, químicos y microbiológicos trazables a la fuente.",
+      "missing_evidence_text": "Cobertura documental pendiente para este tenant.",
+      "required_evidence": [
+        "Certificado o dictamen sanitario aplicable emitido por la autoridad de salud competente",
+        "Resultados de laboratorio físicos, químicos y microbiológicos trazables a la fuente"
+      ]
     },
     {
       "sequence": 11,
       "label": "Terreno",
       "group_id": "technical-diagnosis",
-      "evidence_prompt": "Localizar una fuente verificable que pruebe la regla, actor, documento o estado aplicable a «Terreno».",
-      "missing_evidence_text": "Cobertura documental pendiente para este tenant."
+      "evidence_prompt": "Localizar y validar: Planos y levantamiento que identifiquen los predios requeridos por cada componente; Inspección o informe técnico que confirme aptitud y disponibilidad física del sitio.",
+      "missing_evidence_text": "Cobertura documental pendiente para este tenant.",
+      "required_evidence": [
+        "Planos y levantamiento que identifiquen los predios requeridos por cada componente",
+        "Inspección o informe técnico que confirme aptitud y disponibilidad física del sitio"
+      ]
     },
     {
       "sequence": 12,
       "label": "Propiedad",
       "group_id": "technical-diagnosis",
-      "evidence_prompt": "Localizar una fuente verificable que pruebe la regla, actor, documento o estado aplicable a «Propiedad».",
-      "missing_evidence_text": "Cobertura documental pendiente para este tenant."
+      "evidence_prompt": "Localizar y validar: Certificación registral, escritura o título habilitante vigente de cada inmueble; Dictamen jurídico sobre titularidad, gravámenes y facultad de uso para el proyecto.",
+      "missing_evidence_text": "Cobertura documental pendiente para este tenant.",
+      "required_evidence": [
+        "Certificación registral, escritura o título habilitante vigente de cada inmueble",
+        "Dictamen jurídico sobre titularidad, gravámenes y facultad de uso para el proyecto"
+      ]
     },
     {
       "sequence": 13,
       "label": "Servidumbres",
       "group_id": "technical-diagnosis",
-      "evidence_prompt": "Localizar una fuente verificable que pruebe la regla, actor, documento o estado aplicable a «Servidumbres».",
-      "missing_evidence_text": "Cobertura documental pendiente para este tenant."
+      "evidence_prompt": "Localizar y validar: Escritura, convenio o resolución que constituya cada servidumbre necesaria; Plano y certificación registral que definan trazado, alcance, titulares y gravámenes.",
+      "missing_evidence_text": "Cobertura documental pendiente para este tenant.",
+      "required_evidence": [
+        "Escritura, convenio o resolución que constituya cada servidumbre necesaria",
+        "Plano y certificación registral que definan trazado, alcance, titulares y gravámenes"
+      ]
     },
     {
       "sequence": 14,
       "label": "Derechos de paso",
       "group_id": "technical-diagnosis",
-      "evidence_prompt": "Localizar una fuente verificable que pruebe la regla, actor, documento o estado aplicable a «Derechos de paso».",
-      "missing_evidence_text": "Cobertura documental pendiente para este tenant."
+      "evidence_prompt": "Localizar y validar: Permisos o convenios firmados para tuberías, accesos, inspección y mantenimiento; Plano de trazado y registro de propietarios afectados.",
+      "missing_evidence_text": "Cobertura documental pendiente para este tenant.",
+      "required_evidence": [
+        "Permisos o convenios firmados para tuberías, accesos, inspección y mantenimiento",
+        "Plano de trazado y registro de propietarios afectados"
+      ]
     },
     {
       "sequence": 15,
       "label": "Topografía",
       "group_id": "technical-diagnosis",
-      "evidence_prompt": "Localizar una fuente verificable que pruebe la regla, actor, documento o estado aplicable a «Topografía».",
-      "missing_evidence_text": "Cobertura documental pendiente para este tenant."
+      "evidence_prompt": "Localizar y validar: Levantamiento topográfico firmado con coordenadas, datum, perfiles y curvas de nivel; Archivos y memoria técnica que permitan verificar el levantamiento.",
+      "missing_evidence_text": "Cobertura documental pendiente para este tenant.",
+      "required_evidence": [
+        "Levantamiento topográfico firmado con coordenadas, datum, perfiles y curvas de nivel",
+        "Archivos y memoria técnica que permitan verificar el levantamiento"
+      ]
     },
     {
       "sequence": 16,
       "label": "Estudio hidráulico",
       "group_id": "technical-diagnosis",
-      "evidence_prompt": "Localizar una fuente verificable que pruebe la regla, actor, documento o estado aplicable a «Estudio hidráulico».",
-      "missing_evidence_text": "Cobertura documental pendiente para este tenant."
+      "evidence_prompt": "Localizar y validar: Memoria de cálculo hidráulico firmada con caudales, presiones, diámetros y escenarios; Planos de diseño y criterios técnicos versionados.",
+      "missing_evidence_text": "Cobertura documental pendiente para este tenant.",
+      "required_evidence": [
+        "Memoria de cálculo hidráulico firmada con caudales, presiones, diámetros y escenarios",
+        "Planos de diseño y criterios técnicos versionados"
+      ]
     },
     {
       "sequence": 17,
       "label": "Demanda",
       "group_id": "technical-diagnosis",
-      "evidence_prompt": "Localizar una fuente verificable que pruebe la regla, actor, documento o estado aplicable a «Demanda».",
-      "missing_evidence_text": "Cobertura documental pendiente para este tenant."
+      "evidence_prompt": "Localizar y validar: Proyección de población y demanda con horizonte, dotación, pérdidas y supuestos; Fuente oficial de población y memoria de cálculo firmada.",
+      "missing_evidence_text": "Cobertura documental pendiente para este tenant.",
+      "required_evidence": [
+        "Proyección de población y demanda con horizonte, dotación, pérdidas y supuestos",
+        "Fuente oficial de población y memoria de cálculo firmada"
+      ]
     },
     {
       "sequence": 18,
       "label": "PDM-OT",
       "group_id": "planning-finance",
-      "evidence_prompt": "Localizar una fuente verificable que pruebe la regla, actor, documento o estado aplicable a «PDM-OT».",
-      "missing_evidence_text": "Cobertura documental pendiente para este tenant."
+      "evidence_prompt": "Localizar y validar: PDM-OT vigente y sección citable relacionada con el territorio o servicio; Matriz o dictamen municipal de alineación del proyecto con el PDM-OT.",
+      "missing_evidence_text": "Cobertura documental pendiente para este tenant.",
+      "required_evidence": [
+        "PDM-OT vigente y sección citable relacionada con el territorio o servicio",
+        "Matriz o dictamen municipal de alineación del proyecto con el PDM-OT"
+      ]
     },
     {
       "sequence": 19,
       "label": "POM",
       "group_id": "planning-finance",
-      "evidence_prompt": "Localizar una fuente verificable que pruebe la regla, actor, documento o estado aplicable a «POM».",
-      "missing_evidence_text": "Cobertura documental pendiente para este tenant."
+      "evidence_prompt": "Localizar y validar: Plan Operativo Multianual vigente o certificación de la programación aplicable; Registro que vincule el proyecto, producto, meta, período y financiamiento.",
+      "missing_evidence_text": "Cobertura documental pendiente para este tenant.",
+      "required_evidence": [
+        "Plan Operativo Multianual vigente o certificación de la programación aplicable",
+        "Registro que vincule el proyecto, producto, meta, período y financiamiento"
+      ]
     },
     {
       "sequence": 20,
       "label": "POA",
       "group_id": "planning-finance",
-      "evidence_prompt": "Localizar una fuente verificable que pruebe la regla, actor, documento o estado aplicable a «POA».",
-      "missing_evidence_text": "Cobertura documental pendiente para este tenant."
+      "evidence_prompt": "Localizar y validar: Plan Operativo Anual vigente o certificación de incorporación aplicable; Registro que vincule el proyecto con actividad, meta, presupuesto y ejercicio fiscal.",
+      "missing_evidence_text": "Cobertura documental pendiente para este tenant.",
+      "required_evidence": [
+        "Plan Operativo Anual vigente o certificación de incorporación aplicable",
+        "Registro que vincule el proyecto con actividad, meta, presupuesto y ejercicio fiscal"
+      ]
     },
     {
       "sequence": 21,
       "label": "Costo",
       "group_id": "planning-finance",
-      "evidence_prompt": "Localizar una fuente verificable que pruebe la regla, actor, documento o estado aplicable a «Costo».",
-      "missing_evidence_text": "Cobertura documental pendiente para este tenant."
+      "evidence_prompt": "Localizar y validar: Presupuesto firmado con cantidades, precios unitarios, componentes y fecha base; Memoria de costos, cotizaciones o referencia oficial que sustente los valores.",
+      "missing_evidence_text": "Cobertura documental pendiente para este tenant.",
+      "required_evidence": [
+        "Presupuesto firmado con cantidades, precios unitarios, componentes y fecha base",
+        "Memoria de costos, cotizaciones o referencia oficial que sustente los valores"
+      ]
     },
     {
       "sequence": 22,
       "label": "Financiamiento",
       "group_id": "planning-finance",
-      "evidence_prompt": "Localizar una fuente verificable que pruebe la regla, actor, documento o estado aplicable a «Financiamiento».",
-      "missing_evidence_text": "Cobertura documental pendiente para este tenant."
+      "evidence_prompt": "Localizar y validar: Certificación presupuestaria, convenio o resolución que identifique fuente y monto; Condiciones documentadas de cofinanciamiento, desembolso y contrapartidas.",
+      "missing_evidence_text": "Cobertura documental pendiente para este tenant.",
+      "required_evidence": [
+        "Certificación presupuestaria, convenio o resolución que identifique fuente y monto",
+        "Condiciones documentadas de cofinanciamiento, desembolso y contrapartidas"
+      ]
     },
     {
       "sequence": 23,
       "label": "Inversión pública",
       "group_id": "planning-finance",
-      "evidence_prompt": "Localizar una fuente verificable que pruebe la regla, actor, documento o estado aplicable a «Inversión pública».",
-      "missing_evidence_text": "Cobertura documental pendiente para este tenant."
+      "evidence_prompt": "Localizar y validar: Normas SNIP vigentes y anexos aplicables al tipo y fase del proyecto; Constancia de registro, evaluación o dictamen del proyecto en el sistema aplicable.",
+      "missing_evidence_text": "Cobertura documental pendiente para este tenant.",
+      "required_evidence": [
+        "Normas SNIP vigentes y anexos aplicables al tipo y fase del proyecto",
+        "Constancia de registro, evaluación o dictamen del proyecto en el sistema aplicable"
+      ]
     },
     {
       "sequence": 24,
       "label": "Sistema nacional aplicable",
       "group_id": "planning-finance",
-      "evidence_prompt": "Localizar una fuente verificable que pruebe la regla, actor, documento o estado aplicable a «Sistema nacional aplicable».",
-      "missing_evidence_text": "Cobertura documental pendiente para este tenant."
+      "evidence_prompt": "Localizar y validar: Catálogo oficial vigente que identifique el sistema, normas y ejercicio fiscal; Código o constancia del proyecto que permita verificar su estado en ese sistema.",
+      "missing_evidence_text": "Cobertura documental pendiente para este tenant.",
+      "required_evidence": [
+        "Catálogo oficial vigente que identifique el sistema, normas y ejercicio fiscal",
+        "Código o constancia del proyecto que permita verificar su estado en ese sistema"
+      ]
     },
     {
       "sequence": 25,
       "label": "Ambiente",
       "group_id": "reviews-approvals",
-      "evidence_prompt": "Localizar una fuente verificable que pruebe la regla, actor, documento o estado aplicable a «Ambiente».",
-      "missing_evidence_text": "Cobertura documental pendiente para este tenant."
+      "evidence_prompt": "Localizar y validar: Clasificación documentada con el Listado Taxativo vigente y características del proyecto; Instrumento, resolución o licencia correspondiente a la categoría efectivamente determinada.",
+      "missing_evidence_text": "Cobertura documental pendiente para este tenant.",
+      "required_evidence": [
+        "Clasificación documentada con el Listado Taxativo vigente y características del proyecto",
+        "Instrumento, resolución o licencia correspondiente a la categoría efectivamente determinada"
+      ]
     },
     {
       "sequence": 26,
       "label": "Salud",
       "group_id": "reviews-approvals",
-      "evidence_prompt": "Localizar una fuente verificable que pruebe la regla, actor, documento o estado aplicable a «Salud».",
-      "missing_evidence_text": "Cobertura documental pendiente para este tenant."
+      "evidence_prompt": "Localizar y validar: Norma o trámite sanitario vigente aplicable al proyecto de abastecimiento; Certificado, dictamen, inspección o autorización emitida para el proyecto y fuente concretos.",
+      "missing_evidence_text": "Cobertura documental pendiente para este tenant.",
+      "required_evidence": [
+        "Norma o trámite sanitario vigente aplicable al proyecto de abastecimiento",
+        "Certificado, dictamen, inspección o autorización emitida para el proyecto y fuente concretos"
+      ]
     },
     {
       "sequence": 27,
       "label": "Dictámenes",
       "group_id": "reviews-approvals",
-      "evidence_prompt": "Localizar una fuente verificable que pruebe la regla, actor, documento o estado aplicable a «Dictámenes».",
-      "missing_evidence_text": "Cobertura documental pendiente para este tenant."
+      "evidence_prompt": "Localizar y validar: Relación de dictámenes exigidos por norma o procedimiento aplicable; Dictámenes técnicos, jurídicos, financieros, ambientales o sanitarios firmados para el expediente.",
+      "missing_evidence_text": "Cobertura documental pendiente para este tenant.",
+      "required_evidence": [
+        "Relación de dictámenes exigidos por norma o procedimiento aplicable",
+        "Dictámenes técnicos, jurídicos, financieros, ambientales o sanitarios firmados para el expediente"
+      ]
     },
     {
       "sequence": 28,
       "label": "Concejo",
       "group_id": "reviews-approvals",
-      "evidence_prompt": "Localizar una fuente verificable que pruebe la regla, actor, documento o estado aplicable a «Concejo».",
-      "missing_evidence_text": "Cobertura documental pendiente para este tenant."
+      "evidence_prompt": "Localizar y validar: Certificación del punto de acta del Concejo Municipal aplicable; Expediente que muestre propuesta, decisión, condiciones y autoridad competente.",
+      "missing_evidence_text": "Cobertura documental pendiente para este tenant.",
+      "required_evidence": [
+        "Certificación del punto de acta del Concejo Municipal aplicable",
+        "Expediente que muestre propuesta, decisión, condiciones y autoridad competente"
+      ]
     },
     {
       "sequence": 29,
       "label": "Expediente",
       "group_id": "reviews-approvals",
-      "evidence_prompt": "Localizar una fuente verificable que pruebe la regla, actor, documento o estado aplicable a «Expediente».",
-      "missing_evidence_text": "Cobertura documental pendiente para este tenant."
+      "evidence_prompt": "Localizar y validar: Índice, foliado y control de versiones del expediente administrativo; Constancia de custodia y lista de documentos completos, pendientes o reservados.",
+      "missing_evidence_text": "Cobertura documental pendiente para este tenant.",
+      "required_evidence": [
+        "Índice, foliado y control de versiones del expediente administrativo",
+        "Constancia de custodia y lista de documentos completos, pendientes o reservados"
+      ]
     },
     {
       "sequence": 30,
       "label": "Contratación",
       "group_id": "procurement",
-      "evidence_prompt": "Localizar una fuente verificable que pruebe la regla, actor, documento o estado aplicable a «Contratación».",
-      "missing_evidence_text": "Cobertura documental pendiente para este tenant."
+      "evidence_prompt": "Localizar y validar: Ley, reglamento y normas GUATECOMPRAS vigentes aplicables al objeto y monto; Justificación firmada de modalidad, unidad compradora, disponibilidad y expediente.",
+      "missing_evidence_text": "Cobertura documental pendiente para este tenant.",
+      "required_evidence": [
+        "Ley, reglamento y normas GUATECOMPRAS vigentes aplicables al objeto y monto",
+        "Justificación firmada de modalidad, unidad compradora, disponibilidad y expediente"
+      ]
     },
     {
       "sequence": 31,
       "label": "Ofertas",
       "group_id": "procurement",
-      "evidence_prompt": "Localizar una fuente verificable que pruebe la regla, actor, documento o estado aplicable a «Ofertas».",
-      "missing_evidence_text": "Cobertura documental pendiente para este tenant."
+      "evidence_prompt": "Localizar y validar: Evento y publicaciones verificables en GUATECOMPRAS cuando corresponda; Acta de recepción, ofertas íntegras y evaluación firmada con criterios aplicados.",
+      "missing_evidence_text": "Cobertura documental pendiente para este tenant.",
+      "required_evidence": [
+        "Evento y publicaciones verificables en GUATECOMPRAS cuando corresponda",
+        "Acta de recepción, ofertas íntegras y evaluación firmada con criterios aplicados"
+      ]
     },
     {
       "sequence": 32,
       "label": "Adjudicación",
       "group_id": "procurement",
-      "evidence_prompt": "Localizar una fuente verificable que pruebe la regla, actor, documento o estado aplicable a «Adjudicación».",
-      "missing_evidence_text": "Cobertura documental pendiente para este tenant."
+      "evidence_prompt": "Localizar y validar: Acta o resolución de adjudicación con fundamentos y autoridad competente; Notificaciones, publicaciones y constancias de firmeza o recursos.",
+      "missing_evidence_text": "Cobertura documental pendiente para este tenant.",
+      "required_evidence": [
+        "Acta o resolución de adjudicación con fundamentos y autoridad competente",
+        "Notificaciones, publicaciones y constancias de firmeza o recursos"
+      ]
     },
     {
       "sequence": 33,
       "label": "Contrato",
       "group_id": "procurement",
-      "evidence_prompt": "Localizar una fuente verificable que pruebe la regla, actor, documento o estado aplicable a «Contrato».",
-      "missing_evidence_text": "Cobertura documental pendiente para este tenant."
+      "evidence_prompt": "Localizar y validar: Contrato firmado, aprobación cuando aplique y alcance, precio y plazo versionados; Garantías, publicaciones y documentos de formalización exigidos.",
+      "missing_evidence_text": "Cobertura documental pendiente para este tenant.",
+      "required_evidence": [
+        "Contrato firmado, aprobación cuando aplique y alcance, precio y plazo versionados",
+        "Garantías, publicaciones y documentos de formalización exigidos"
+      ]
     },
     {
       "sequence": 34,
       "label": "Inicio",
       "group_id": "delivery-control",
-      "evidence_prompt": "Localizar una fuente verificable que pruebe la regla, actor, documento o estado aplicable a «Inicio».",
-      "missing_evidence_text": "Cobertura documental pendiente para este tenant."
+      "evidence_prompt": "Localizar y validar: Orden o acta de inicio firmada y fecha efectiva; Entrega de sitio y constancias de garantías, permisos y demás condiciones previas.",
+      "missing_evidence_text": "Cobertura documental pendiente para este tenant.",
+      "required_evidence": [
+        "Orden o acta de inicio firmada y fecha efectiva",
+        "Entrega de sitio y constancias de garantías, permisos y demás condiciones previas"
+      ]
     },
     {
       "sequence": 35,
       "label": "Ejecución",
       "group_id": "delivery-control",
-      "evidence_prompt": "Localizar una fuente verificable que pruebe la regla, actor, documento o estado aplicable a «Ejecución».",
-      "missing_evidence_text": "Cobertura documental pendiente para este tenant."
+      "evidence_prompt": "Localizar y validar: Programa de trabajo aprobado y reportes de avance físico-financiero; Evidencia de campo y entregables vinculados al alcance contractual.",
+      "missing_evidence_text": "Cobertura documental pendiente para este tenant.",
+      "required_evidence": [
+        "Programa de trabajo aprobado y reportes de avance físico-financiero",
+        "Evidencia de campo y entregables vinculados al alcance contractual"
+      ]
     },
     {
       "sequence": 36,
       "label": "Supervisión",
       "group_id": "delivery-control",
-      "evidence_prompt": "Localizar una fuente verificable que pruebe la regla, actor, documento o estado aplicable a «Supervisión».",
-      "missing_evidence_text": "Cobertura documental pendiente para este tenant."
+      "evidence_prompt": "Localizar y validar: Nombramiento o contrato del responsable de supervisión; Informes firmados de control técnico, administrativo, financiero y de calidad.",
+      "missing_evidence_text": "Cobertura documental pendiente para este tenant.",
+      "required_evidence": [
+        "Nombramiento o contrato del responsable de supervisión",
+        "Informes firmados de control técnico, administrativo, financiero y de calidad"
+      ]
     },
     {
       "sequence": 37,
       "label": "Bitácora",
       "group_id": "delivery-control",
-      "evidence_prompt": "Localizar una fuente verificable que pruebe la regla, actor, documento o estado aplicable a «Bitácora».",
-      "missing_evidence_text": "Cobertura documental pendiente para este tenant."
+      "evidence_prompt": "Localizar y validar: Bitácora autorizada y trazable al contrato u obra; Asientos firmados sobre instrucciones, eventos, avances, incidencias y respuestas.",
+      "missing_evidence_text": "Cobertura documental pendiente para este tenant.",
+      "required_evidence": [
+        "Bitácora autorizada y trazable al contrato u obra",
+        "Asientos firmados sobre instrucciones, eventos, avances, incidencias y respuestas"
+      ]
     },
     {
       "sequence": 38,
       "label": "Estimaciones",
       "group_id": "delivery-control",
-      "evidence_prompt": "Localizar una fuente verificable que pruebe la regla, actor, documento o estado aplicable a «Estimaciones».",
-      "missing_evidence_text": "Cobertura documental pendiente para este tenant."
+      "evidence_prompt": "Localizar y validar: Estimaciones y mediciones firmadas con períodos, cantidades y precios; Revisión, aprobación, soportes de campo y vínculo con pagos.",
+      "missing_evidence_text": "Cobertura documental pendiente para este tenant.",
+      "required_evidence": [
+        "Estimaciones y mediciones firmadas con períodos, cantidades y precios",
+        "Revisión, aprobación, soportes de campo y vínculo con pagos"
+      ]
     },
     {
       "sequence": 39,
       "label": "Cambios",
       "group_id": "delivery-control",
-      "evidence_prompt": "Localizar una fuente verificable que pruebe la regla, actor, documento o estado aplicable a «Cambios».",
-      "missing_evidence_text": "Cobertura documental pendiente para este tenant."
+      "evidence_prompt": "Localizar y validar: Orden de cambio o expediente técnico que justifique alcance, cantidades, costo o plazo; Aprobaciones jurídica, técnica, presupuestaria y contractual exigidas.",
+      "missing_evidence_text": "Cobertura documental pendiente para este tenant.",
+      "required_evidence": [
+        "Orden de cambio o expediente técnico que justifique alcance, cantidades, costo o plazo",
+        "Aprobaciones jurídica, técnica, presupuestaria y contractual exigidas"
+      ]
     },
     {
       "sequence": 40,
       "label": "Recepción",
       "group_id": "acceptance-closeout",
-      "evidence_prompt": "Localizar una fuente verificable que pruebe la regla, actor, documento o estado aplicable a «Recepción».",
-      "missing_evidence_text": "Cobertura documental pendiente para este tenant."
+      "evidence_prompt": "Localizar y validar: Acta de recepción provisional o definitiva firmada por la comisión competente; Inspección, lista de pendientes, correcciones y constancia de aceptación.",
+      "missing_evidence_text": "Cobertura documental pendiente para este tenant.",
+      "required_evidence": [
+        "Acta de recepción provisional o definitiva firmada por la comisión competente",
+        "Inspección, lista de pendientes, correcciones y constancia de aceptación"
+      ]
     },
     {
       "sequence": 41,
       "label": "Liquidación",
       "group_id": "acceptance-closeout",
-      "evidence_prompt": "Localizar una fuente verificable que pruebe la regla, actor, documento o estado aplicable a «Liquidación».",
-      "missing_evidence_text": "Cobertura documental pendiente para este tenant."
+      "evidence_prompt": "Localizar y validar: Informe y acta de liquidación técnica, administrativa y contractual; Finiquito, saldos, garantías y aprobación de la autoridad competente.",
+      "missing_evidence_text": "Cobertura documental pendiente para este tenant.",
+      "required_evidence": [
+        "Informe y acta de liquidación técnica, administrativa y contractual",
+        "Finiquito, saldos, garantías y aprobación de la autoridad competente"
+      ]
     },
     {
       "sequence": 42,
       "label": "Pagos",
       "group_id": "acceptance-closeout",
-      "evidence_prompt": "Localizar una fuente verificable que pruebe la regla, actor, documento o estado aplicable a «Pagos».",
-      "missing_evidence_text": "Cobertura documental pendiente para este tenant."
+      "evidence_prompt": "Localizar y validar: Solicitud y autorización de pago con factura, estimación o entregable respaldante; Registros presupuestarios, contables y de tesorería, incluidas retenciones y saldos.",
+      "missing_evidence_text": "Cobertura documental pendiente para este tenant.",
+      "required_evidence": [
+        "Solicitud y autorización de pago con factura, estimación o entregable respaldante",
+        "Registros presupuestarios, contables y de tesorería, incluidas retenciones y saldos"
+      ]
     },
     {
       "sequence": 43,
       "label": "Operación",
       "group_id": "operations-service",
-      "evidence_prompt": "Localizar una fuente verificable que pruebe la regla, actor, documento o estado aplicable a «Operación».",
-      "missing_evidence_text": "Cobertura documental pendiente para este tenant."
+      "evidence_prompt": "Localizar y validar: Acta de entrega o puesta en operación y designación de responsables; Manual operativo, recursos, turnos, controles y protocolos aplicables.",
+      "missing_evidence_text": "Cobertura documental pendiente para este tenant.",
+      "required_evidence": [
+        "Acta de entrega o puesta en operación y designación de responsables",
+        "Manual operativo, recursos, turnos, controles y protocolos aplicables"
+      ]
     },
     {
       "sequence": 44,
       "label": "Mantenimiento",
       "group_id": "operations-service",
-      "evidence_prompt": "Localizar una fuente verificable que pruebe la regla, actor, documento o estado aplicable a «Mantenimiento».",
-      "missing_evidence_text": "Cobertura documental pendiente para este tenant."
+      "evidence_prompt": "Localizar y validar: Manual y plan de mantenimiento preventivo y correctivo; Presupuesto, responsables, inventario de repuestos y registros de intervenciones.",
+      "missing_evidence_text": "Cobertura documental pendiente para este tenant.",
+      "required_evidence": [
+        "Manual y plan de mantenimiento preventivo y correctivo",
+        "Presupuesto, responsables, inventario de repuestos y registros de intervenciones"
+      ]
     },
     {
       "sequence": 45,
       "label": "Cierre",
       "group_id": "operations-service",
-      "evidence_prompt": "Localizar una fuente verificable que pruebe la regla, actor, documento o estado aplicable a «Cierre».",
-      "missing_evidence_text": "Cobertura documental pendiente para este tenant."
+      "evidence_prompt": "Localizar y validar: Informe de cierre técnico, administrativo, financiero y documental; Aprobación final, archivo, garantías vigentes y asuntos pendientes.",
+      "missing_evidence_text": "Cobertura documental pendiente para este tenant.",
+      "required_evidence": [
+        "Informe de cierre técnico, administrativo, financiero y documental",
+        "Aprobación final, archivo, garantías vigentes y asuntos pendientes"
+      ]
     },
     {
       "sequence": 46,
       "label": "Continuidad",
       "group_id": "operations-service",
-      "evidence_prompt": "Localizar una fuente verificable que pruebe la regla, actor, documento o estado aplicable a «Continuidad».",
-      "missing_evidence_text": "Cobertura documental pendiente para este tenant."
+      "evidence_prompt": "Localizar y validar: Plan de continuidad, contingencia y respuesta a fallas o sequía; Modelo de sostenibilidad con responsables, financiamiento, repuestos y capacidad operativa.",
+      "missing_evidence_text": "Cobertura documental pendiente para este tenant.",
+      "required_evidence": [
+        "Plan de continuidad, contingencia y respuesta a fallas o sequía",
+        "Modelo de sostenibilidad con responsables, financiamiento, repuestos y capacidad operativa"
+      ]
     },
     {
       "sequence": 47,
       "label": "Calidad del servicio",
       "group_id": "operations-service",
-      "evidence_prompt": "Localizar una fuente verificable que pruebe la regla, actor, documento o estado aplicable a «Calidad del servicio».",
-      "missing_evidence_text": "Cobertura documental pendiente para este tenant."
+      "evidence_prompt": "Localizar y validar: Plan de monitoreo con indicadores de calidad, presión, continuidad y cobertura; Registros periódicos de servicio y resultados de control sanitario trazables.",
+      "missing_evidence_text": "Cobertura documental pendiente para este tenant.",
+      "required_evidence": [
+        "Plan de monitoreo con indicadores de calidad, presión, continuidad y cobertura",
+        "Registros periódicos de servicio y resultados de control sanitario trazables"
+      ]
     }
   ]
 }

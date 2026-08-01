@@ -87,6 +87,17 @@
         "remote_ci"
       ],
       "blocking": true
+    },
+    {
+      "id": "GATE-OFFICIAL-SOURCE-COVERAGE-002",
+      "required_evidence_kinds": [
+        "official_source_verification",
+        "configuration_validation",
+        "adversarial_review",
+        "independent_regression",
+        "remote_ci"
+      ],
+      "blocking": true
     }
   ],
   "nodes": [
@@ -355,6 +366,46 @@
         "mfa_deferred": true,
         "dmp_ocr_in_scope": false,
         "productive_authenticated_journeys": "0/12"
+      }
+    },
+    {
+      "id": "WS02-OFFICIAL-SOURCE-COVERAGE-002",
+      "kind": "feature",
+      "title": "Expand official national coverage and concrete evidence requirements",
+      "status": "spec_ready",
+      "depends_on": [
+        "REL-PUBLIC-CORPUS-PILOT-STAGING-001"
+      ],
+      "capability": "tenant_reusable_official_source_coverage",
+      "gates": {
+        "done": [
+          "GATE-OFFICIAL-SOURCE-COVERAGE-002"
+        ]
+      },
+      "allowed_paths": [
+        ".rag/source-inventory.json",
+        "config/source-packs/**",
+        "docs/architecture/**",
+        "docs/reviews/**",
+        "docs/traceability/**",
+        "package.json",
+        "program/**",
+        "public/data/water-training-map.json",
+        "public/procedure-training.js",
+        "specs/089-official-source-coverage-pack-v1/**",
+        "src/__tests__/**",
+        "src/domain/**",
+        "src/sources/**",
+        "src/cli/validateSourcePacks.ts"
+      ],
+      "metadata": {
+        "predecessor_pull_request": 33,
+        "new_verified_sources": 9,
+        "raw_bytes_in_git": false,
+        "managed_corpus_mutation_authorized": false,
+        "merge_authorized": false,
+        "deployment_authorized": false,
+        "legal_correctness_claim": false
       }
     }
   ]

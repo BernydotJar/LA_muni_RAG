@@ -1,5 +1,5 @@
 schema_version: 1
-generated_at: '2026-07-29T17:34:00Z'
+generated_at: '2026-08-01T04:20:16Z'
 program:
   id: LA-MUNI-RAG-PROD
   objective: Make LA Muni RAG production-ready within its evidence, procedure, workflow, case-tracking, and integration domain.
@@ -1948,6 +1948,34 @@ tasks:
   branch: feature/gcp-cloudsql-staging-v1
   pr: 24
   ci: backend_30224836298_30224834914_success_public_browser_30224836291_30224834919_success_terraform_30224836307_success
+- id: WS02-OFFICIAL-SOURCE-COVERAGE-002
+  workstream: WS-02
+  title: Expand official national coverage and concrete evidence requirements
+  status: completed_with_limitations
+  owner: /root
+  depends_on:
+  - REL-PUBLIC-CORPUS-PILOT-STAGING-001
+  result:
+    functional_commit: 987ff78d1f7ae2ab59ce6d2658726b1bc14c5601
+    branch: feature/official-source-coverage-pack-v1
+    pull_request: 34
+    graph_gate: GATE-OFFICIAL-SOURCE-COVERAGE-002 PASS
+    graph_checkpoint_sequence: 115
+    source_inventory: 38 records; 9 new official_national records remain verified only
+    source_packs: 3 packs; 25 governed inventory bindings
+    concrete_evidence_categories: 47/47
+    focused_tests: 14/14
+    detached_tests: 1063/1065; zero failures; two explicit environment skips
+    public_browser: 10/10 desktop and mobile
+    remote_ci:
+      backend_pull_request: 30683375100 success
+      browser_pull_request: 30683375102 success
+      backend_push: 30683368396 success
+      browser_push: 30683368414 success
+  limitations:
+  - The nine national sources are verified discovery records, not acquired, malware-scanned, extracted, indexed or projected into retrieval.
+  - National authority does not prove that a municipal act, inspection, award, contract event or payment occurred; the case expediente remains required.
+  - PR #33 and stacked draft PR #34 remain unmerged; managed-corpus mutation and deployment are human-gated.
 blockers:
 - id: BLK-PRODUCTIVE-HUMAN-IDP-077
   affects:
