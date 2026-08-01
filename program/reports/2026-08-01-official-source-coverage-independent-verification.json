@@ -1,0 +1,95 @@
+{
+  "schemaVersion": 1,
+  "verifiedAt": "2026-08-01T04:08:30Z",
+  "nodeId": "WS02-OFFICIAL-SOURCE-COVERAGE-002",
+  "verifier": "independent-verifier",
+  "commit": "987ff78d1f7ae2ab59ce6d2658726b1bc14c5601",
+  "worktree": {
+    "mode": "detached-clean-worktree",
+    "path": "/tmp/la-muni-rag-verify-089-987ff78d1f7ae2ab59ce6d2658726b1bc14c5601",
+    "headMatched": true,
+    "cleanBefore": true,
+    "cleanAfter": true
+  },
+  "result": "pass",
+  "checks": {
+    "dependencyInstall": "pass",
+    "focusedTests": {
+      "total": 14,
+      "passed": 14,
+      "failed": 0,
+      "sha256": "7f8fa6f3431f899b30fc917f99e117c774f25da57c18df7d774a23aa2faa4836"
+    },
+    "fullTests": {
+      "total": 1065,
+      "passed": 1063,
+      "failed": 0,
+      "skipped": 2,
+      "skipClass": "environment-only",
+      "sha256": "16012b888e28577ec443fca364560b48d74fed493c190fbb9c3f0d7c3505be15"
+    },
+    "typecheck": {
+      "result": "pass",
+      "sha256": "100a391018504efeb710a578180761064a4d2c36411634f06a9ff1cab50e4249"
+    },
+    "build": {
+      "result": "pass",
+      "sha256": "380b6f74dd61df38db446e9792f4191ba1d827f7e8d751b9dd1cea73fb7b86ee"
+    },
+    "sourceInventory": {
+      "result": "pass",
+      "totalRecords": 38,
+      "verifiedRecords": 20,
+      "ingestedRecords": 3,
+      "missingRecords": 0,
+      "sha256": "26cbc2c00797d11e71a7245973e543526bf33ee450a74ebe6f68200ed13b138c"
+    },
+    "sourcePacks": {
+      "result": "pass",
+      "packCount": 3,
+      "boundSourceCount": 25,
+      "sha256": "db374359cc9db9a8486ac8f9762683cb088ba6c8ddde885a7d974af35e8db86a"
+    },
+    "tenantProfiles": {
+      "result": "pass",
+      "profileCount": 2,
+      "sha256": "86ebf632778eff94b586387f77a2039b4a09bdc1dd658f128481c61bbf80b1ef"
+    },
+    "graphHarness": {
+      "result": "pass",
+      "eventCount": 106,
+      "nodeCount": 10,
+      "frameworkCommit": "1bebce3db35303072049233786464bb01163c98b",
+      "runtimeCommit": "fef364bc66849b98c08d3c1dcb91caf9701027cd",
+      "sha256": "19704165ef1fa1d19ba39ba7385b9e951acdb6720cecac228b604b78625c68a6"
+    },
+    "pagesBuild": {
+      "result": "pass",
+      "sourceCommit": "987ff78d1f7ae2ab59ce6d2658726b1bc14c5601",
+      "buildSha256": "7eb018036b6d091d192cb1f32250941992bdb3ace121ea78d35405395742ee2d",
+      "verificationSha256": "8242349b0ee4f356521be86fb71bc6e75b75e6f033864b6e0853ff6c8fcc441d"
+    },
+    "publicBrowser": {
+      "result": "pass",
+      "desktop": 5,
+      "mobile": 5,
+      "total": 10,
+      "sha256": "95991e9121efc6439b36c5e82dd8abe36889e8650c0ecf72f0cfc65034980547"
+    },
+    "dependencyAudit": {
+      "result": "pass",
+      "vulnerabilities": 0,
+      "sha256": "f57c4df863982ee48ca55f268b065fd28c49a951632548ceab433a6509236609"
+    },
+    "diffCheck": "pass"
+  },
+  "environmentalIncident": {
+    "observed": "The first browser invocation could not start because the clean verifier environment lacked Playwright's declared FFmpeg runtime.",
+    "resolution": "Installed the pinned Playwright FFmpeg component and reran only the browser gate.",
+    "productFailureObserved": false,
+    "rerunResult": "10 passed"
+  },
+  "authorityBoundaryVerified": true,
+  "newSourcesPromotedBeyondVerified": false,
+  "verdict": "The exact functional commit is independently reproducible and satisfies the local release criteria. Remote CI remains a separate release-gate input."
+}

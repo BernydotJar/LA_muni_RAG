@@ -33,15 +33,15 @@
 
 ## Independent verifier
 
-- [ ] Commit the functional implementation.
-- [ ] Verify the functional commit from a clean detached worktree.
-- [ ] Run full test, typecheck, build, audit, inventory, source-pack, tenant-profile, Graph Harness and diff gates.
+- [x] Commit the functional implementation.
+- [x] Verify the functional commit from a clean detached worktree.
+- [x] Run full test, typecheck, build, audit, inventory, source-pack, tenant-profile, Graph Harness and diff gates.
 
 ## Publication and release gate
 
-- [ ] Push the branch and create a stacked draft PR.
-- [ ] Confirm exact-head remote CI.
-- [ ] Record persistent evidence.
-- [ ] Evaluate the release gate.
-- [ ] Transition the node through review to done or document blockers.
-- [ ] Record the next checkpoint and terminal state.
+- [x] Push the branch and create a stacked draft PR.
+- [x] Confirm exact-head remote CI.
+- [x] Record persistent evidence.
+- [x] Evaluate the release gate.
+- [x] Transition the node through review to done or document blockers.
+- [x] Record the next checkpoint and terminal state.

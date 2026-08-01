@@ -128,3 +128,17 @@ The exact authorized instance exists in `STOPPED` state with activation policy `
 deletion protection enabled. The second temporary restart exception expired at 17:25 America/Guatemala without a
 successful managed-run receipt. Restart and destructive teardown are unauthorized.
 Storage, backup and related charges may continue while the instance remains.
+
+## Feature 089 residual blockers
+
+### BLK-OFFICIAL-SOURCE-ACQUISITION-089 — open
+
+Nine national official sources are verified and source-pack-bound, but none has immutable acquisition, clean artifact-safety evidence, bounded extraction, indexing or managed projection. Seven endpoints were directly reachable during verification; MINFIN MAFIM and MSPAS authority pages returned HTTP 403 to the automated verifier.
+
+Next safe action: execute a separate, bounded local acquisition node for directly reachable official pages with exact-host redirect policy, byte limits, SHA-256, malware scan, HTML extraction and no database mutation. Keep blocked endpoints at `verified`.
+
+### BLK-OFFICIAL-SOURCE-RELEASE-089 — open
+
+PR #33 and stacked draft PR #34 are open and mergeable with green exact-head checks. Merge, production corpus mutation, Cloud Run revision deployment and Pages publication remain human-gated under `AGENTS.md`.
+
+Next safe action: obtain explicit human merge/deployment authorization after review. Do not infer authorization from green CI.

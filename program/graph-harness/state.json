@@ -1,7 +1,7 @@
 {
-  "checkpoint_count": 3,
-  "event_count": 102,
-  "last_event_id": "395bb19c-f398-4473-86b6-be5298aff5fb",
+  "checkpoint_count": 4,
+  "event_count": 115,
+  "last_event_id": "acf03937-c391-439a-a6fb-edb3cfff05d4",
   "mode": "SHIP",
   "nodes": [
     {
@@ -91,6 +91,28 @@
       "revision": 0,
       "status": "done",
       "title": "Acquire and ingest authorized Antigua-first corpus"
+    },
+    {
+      "active_evidence_ids": [
+        "15f1b171-34e9-44e2-8a9a-d4a5cecc79bb",
+        "4805d6c0-8312-4448-8aed-c9ec465bb612",
+        "4b2f8bce-2de9-4834-82a8-0a648fb3d647",
+        "93eb2f49-2aac-484e-8c35-a709ff3b118e",
+        "dc3b6d60-96ae-48ff-866b-0e82254f8a67"
+      ],
+      "active_gates": {
+        "GATE-OFFICIAL-SOURCE-COVERAGE-002": "PASS"
+      },
+      "approval_count": 1,
+      "capability": "tenant_reusable_official_source_coverage",
+      "depends_on": [
+        "REL-PUBLIC-CORPUS-PILOT-STAGING-001"
+      ],
+      "id": "WS02-OFFICIAL-SOURCE-COVERAGE-002",
+      "kind": "feature",
+      "revision": 0,
+      "status": "done",
+      "title": "Expand official national coverage and concrete evidence requirements"
     },
     {
       "active_evidence_ids": [

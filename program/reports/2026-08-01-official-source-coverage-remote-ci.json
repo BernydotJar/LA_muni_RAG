@@ -1,0 +1,62 @@
+{
+  "schemaVersion": 1,
+  "verifiedAt": "2026-08-01T04:20:16.362Z",
+  "nodeId": "WS02-OFFICIAL-SOURCE-COVERAGE-002",
+  "pullRequest": 34,
+  "branch": "feature/official-source-coverage-pack-v1",
+  "baseBranch": "fix/procedure-evidence-coverage-saas",
+  "headSha": "987ff78d1f7ae2ab59ce6d2658726b1bc14c5601",
+  "result": "pass",
+  "runs": [
+    {
+      "conclusion": "success",
+      "createdAt": "2026-08-01T04:08:53Z",
+      "databaseId": 30683368396,
+      "event": "push",
+      "headSha": "987ff78d1f7ae2ab59ce6d2658726b1bc14c5601",
+      "name": "Backend CI",
+      "status": "completed",
+      "updatedAt": "2026-08-01T04:19:49Z",
+      "url": "https://github.com/BernydotJar/LA_muni_RAG/actions/runs/30683368396"
+    },
+    {
+      "conclusion": "success",
+      "createdAt": "2026-08-01T04:08:53Z",
+      "databaseId": 30683368414,
+      "event": "push",
+      "headSha": "987ff78d1f7ae2ab59ce6d2658726b1bc14c5601",
+      "name": "Public Browser Gate",
+      "status": "completed",
+      "updatedAt": "2026-08-01T04:11:34Z",
+      "url": "https://github.com/BernydotJar/LA_muni_RAG/actions/runs/30683368414"
+    },
+    {
+      "conclusion": "success",
+      "createdAt": "2026-08-01T04:09:04Z",
+      "databaseId": 30683375100,
+      "event": "pull_request",
+      "headSha": "987ff78d1f7ae2ab59ce6d2658726b1bc14c5601",
+      "name": "Backend CI",
+      "status": "completed",
+      "updatedAt": "2026-08-01T04:19:32Z",
+      "url": "https://github.com/BernydotJar/LA_muni_RAG/actions/runs/30683375100"
+    },
+    {
+      "conclusion": "success",
+      "createdAt": "2026-08-01T04:09:04Z",
+      "databaseId": 30683375102,
+      "event": "pull_request",
+      "headSha": "987ff78d1f7ae2ab59ce6d2658726b1bc14c5601",
+      "name": "Public Browser Gate",
+      "status": "completed",
+      "updatedAt": "2026-08-01T04:11:36Z",
+      "url": "https://github.com/BernydotJar/LA_muni_RAG/actions/runs/30683375102"
+    }
+  ],
+  "requiredChecks": {
+    "backendCi": "success",
+    "publicBrowserGate": "success"
+  },
+  "mergeAuthorized": false,
+  "deploymentAuthorized": false
+}

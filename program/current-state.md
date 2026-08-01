@@ -1,34 +1,32 @@
 # LA Muni RAG — Current Program State
 
-Updated: 2026-08-01T03:00:00Z
+Updated: 2026-08-01T04:20:16Z
 
-Program status: **PUBLIC PILOT OPERATIONAL — the anonymous PDM-OT assistant and premium procedure workflow are deployed on GitHub Pages, backed by an immutable Cloud Run revision and protected Cloud SQL database; Graph Harness revision 1 is done with all 8 release evidence kinds and the blocking gate PASS. Productive identity/MFA, DMP OCR, complete municipal coverage and legal-correctness claims remain explicitly deferred.**
+Program status: **PUBLIC PILOT OPERATIONAL WITH UNMERGED COVERAGE EXPANSION COMPLETE — the deployed PDM-OT assistant remains operational. Feature 089 passed its blocking gate on an exact green SHA and adds concrete evidence requirements plus nine official discovery records, while PR #33/#34 merge, governed acquisition, managed-corpus mutation and deployment remain human-gated.**
 
 ## Authoritative checkout
 
 ```text
-workspace_id: b909e055-62ae-4625-ac13-10947906a08f
+workspace_id: 601929eb-4bf6-4900-8170-c15bf3a11ea0
 root: /workspace
-functional_feature_commit: a571645ac4249578e79b119479f7f5a7a4cacc08
-functional_merge_commit: bfdf3a67665294c605b21b50cd6ec990fb3ad6d9
-evidence_checkpoint_branch: docs/public-procedure-release-evidence-v1
+current_branch: feature/official-source-coverage-pack-v1
+coverage_functional_commit: 987ff78d1f7ae2ab59ce6d2658726b1bc14c5601
+predecessor_pull_request: 33 open
+stacked_pull_request: 34 draft_open
 graph_harness_framework_merge_pin: 1bebce3db35303072049233786464bb01163c98b
 graph_harness_executable_runtime: fef364bc66849b98c08d3c1dcb91caf9701027cd
-graph_harness_events: 102
-graph_harness_release_node: REL-PUBLIC-CORPUS-PILOT-STAGING-001 revision 1 done
-graph_harness_release_gate: GATE-PUBLIC-CORPUS-PILOT-STAGING-001 PASS
-graph_harness_checkpoints: 3
-pull_request: 27 merged
+graph_harness_events: 115
+graph_harness_nodes_done: 10/10
+graph_harness_ready_nodes: 0
+graph_harness_feature_node: WS02-OFFICIAL-SOURCE-COVERAGE-002 done
+graph_harness_feature_gate: GATE-OFFICIAL-SOURCE-COVERAGE-002 PASS
+graph_harness_checkpoints: 4
 public_pages: https://bernydotjar.github.io/LA_muni_RAG/
 public_procedure: https://bernydotjar.github.io/LA_muni_RAG/procedure-workflow.html
 public_gateway: https://la-muni-rag-public-gateway-ccaqcuwgyq-uc.a.run.app
-cloud_run_revision: la-muni-rag-public-gateway-proc-a571b
-immutable_image_digest: sha256:e15a1108ebb4b67242b1fdf5e9f708aa30b502831acb4a05aa10bc488dd38aad
-cloud_sql_instance_state: RUNNABLE
-activation_policy: ALWAYS
-managed_public_pilot_execution: true
-public_pilot_deployed: true
-productive_authenticated_product_deployed: false
+managed_corpus_mutation_authorized: false
+merge_authorized: false
+deployment_authorized: false
 ```
 
 `AGENTS.md` and `RTK.md` remain authoritative. Merge, production deployment, Cloud SQL
@@ -406,3 +404,23 @@ The exact PDM-OT corpus is present as 444 accepted chunks and 444 reproducibly p
 GitHub Pages serves the premium responsive procedure workflow. Exact-origin domain-pack and procedure calls return 200. The approved water query returns 47 steps, 5 explicit gaps and 8 official HTTPS citations; the stadium query returns 6 steps, 4 explicit gaps and 8 citations. Desktop and mobile Chromium have no failed requests, console errors or horizontal overflow. Unsupported steps remain insufficient rather than being promoted by general PDM-OT evidence.
 
 Graph Harness release revision 1 is `done` at event 102. `GATE-PUBLIC-CORPUS-PILOT-STAGING-001` is `PASS` with fresh evidence for local regression, managed database, corpus projection, public gateway smoke, immutable image, online Pages, observability and remote CI. The release receipt is `program/reports/2026-07-30-public-procedure-premium-release.json` with SHA-256 `adf9905b71a48a50798e4e4c51444f0d6b409b6b9f921177552f6720b505cfa2`.
+
+## Feature 089 — official national source coverage pack v1
+
+Feature 089 completed the full Graph Harness lifecycle at functional commit `987ff78d1f7ae2ab59ce6d2658726b1bc14c5601`. Gate `GATE-OFFICIAL-SOURCE-COVERAGE-002` passed at event 112; the node entered `done` at event 114 and checkpoint 115 recorded the exact commit.
+
+Delivered:
+
+- 47/47 water-project categories now request concrete evidence classes; the generic document placeholder is no longer emitted by the domain pack or academy fallback.
+- the MARN connector starts from the official taxative lists and treats A, B1, B2 and C as candidate routes only after project classification;
+- nine national source identities for MAFIM, SNIP 2027, MARN, MSPAS and GUATECOMPRAS were added as `verified` discovery records;
+- non-template source packs are cross-validated against the governed inventory, required coverage tags and exact host allowlists;
+- independent verification passed 14/14 focused tests, 1,063/1,065 regression tests with zero failures, 10/10 browser cases and zero audit vulnerabilities;
+- exact-head Backend CI and Public Browser Gate passed for both pull-request and push events;
+- draft PR #34 is stacked on still-open PR #33.
+
+The nine records are not represented as acquired or ingested. They do not alter the managed corpus or public retrieval counts. National sources can establish national requirements, but the actual municipal act or expediente is still required to prove a case-specific occurrence.
+
+### Next executable work
+
+A safe successor may acquire immutable local snapshots for the directly accessible official pages, scan them, extract bounded HTML sections and produce ingestion-ready manifests without mutating Cloud SQL. Sources blocked by anti-bot controls, category/vigencia ambiguity, OCR or production authorization must remain explicit blockers.

@@ -1,5 +1,5 @@
 schema_version: 1
-updated_at: '2026-07-29T17:34:00Z'
+updated_at: '2026-08-01T04:20:16Z'
 runtime:
   type: graph_harness_sdlc_projection
   framework_repository: BernydotJar/Graph-harness-sdlc
@@ -2194,6 +2194,45 @@ tasks:
   branch: feature/gcp-cloudsql-staging-v1
   pr: 24
   ci: backend_30224836298_30224834914_success_public_browser_30224836291_30224834919_success_terraform_30224836307_success
+- id: WS02-OFFICIAL-SOURCE-COVERAGE-002
+  workstream: WS-02
+  title: Expand official national coverage and concrete evidence requirements
+  status: completed_with_limitations
+  owner: /root
+  files:
+  - .rag/source-inventory.json
+  - config/source-packs/guatemala-municipal-core.json
+  - src/sources/sourcePack.ts
+  - src/cli/validateSourcePacks.ts
+  - src/domain/packs/municipal-antigua-water.ts
+  - public/data/water-training-map.json
+  - public/procedure-training.js
+  - src/__tests__/official-source-coverage-pack-v1.test.ts
+  - docs/reviews/089-official-source-coverage-pack-red-team.md
+  - docs/traceability/089-official-source-coverage-pack-v1.md
+  - program/reports/2026-08-01-official-source-coverage-verification.json
+  - program/reports/2026-08-01-official-source-coverage-independent-verification.json
+  - program/reports/2026-08-01-official-source-coverage-remote-ci.json
+  depends_on:
+  - REL-PUBLIC-CORPUS-PILOT-STAGING-001
+  blockers: []
+  acceptance:
+  - All 47 water-project categories request concrete evidence instead of a generic document placeholder.
+  - The public academy fallback carries the same required evidence and renders Fuente requerida.
+  - MARN classification starts from the taxative list; A, B1, B2 and C remain candidate routes until project classification.
+  - Nine official national discovery records are bound to exact-host source-pack connectors without false acquisition or ingestion claims.
+  - Non-template source packs fail closed on unknown IDs, duplicate bindings, uncovered required tags and host mismatch.
+  evidence:
+  - Functional commit 987ff78d1f7ae2ab59ce6d2658726b1bc14c5601 and draft PR #34 stacked on PR #33.
+  - Independent clean-worktree regression: focused 14/14; full 1063/1065 with zero failures and two environment skips; browser 10/10; audit zero.
+  - Exact-head Backend CI runs 30683375100 and 30683368396 plus Public Browser Gate runs 30683375102 and 30683368414 succeeded.
+  - Graph Harness gate GATE-OFFICIAL-SOURCE-COVERAGE-002 passed and checkpoint sequence 115 was recorded.
+  limitations:
+  - New sources remain verified only; immutable acquisition, scan, extraction, indexing, applicability review and managed projection are separate work.
+  - Merge, production corpus mutation and deployment are not authorized.
+  branch: feature/official-source-coverage-pack-v1
+  pr: 34
+  ci: exact_functional_head_passed
 blockers:
 - id: BLK-HUMAN-WORKFLOWS-082
   affects:
