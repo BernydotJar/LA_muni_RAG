@@ -1,16 +1,16 @@
 schema_version: 1
-updated_at: '2026-08-01T04:20:16Z'
+updated_at: '2026-08-01T05:24:07Z'
 runtime:
   type: graph_harness_sdlc_projection
   framework_repository: BernydotJar/Graph-harness-sdlc
-  framework_observed_commit: 0eb0d5fe09e3b1ecaf561b4a1cc9b32510480a26
-  immutable_framework_pin: false
+  framework_observed_commit: 1bebce3db35303072049233786464bb01163c98b
+  immutable_framework_pin: true
   canonical_graph: program/task-graph.yaml
   executable_projection: program/graph-harness/project.json
   event_store: program/graph-harness/events.jsonl
   typed_state: program/graph-harness/state.json
-  event_count: 43
-  required_gates: 4/4 passed
+  event_count: 131
+  required_gates: 10/10 passed
 status_vocabulary:
 - pending
 - ready
@@ -2233,7 +2233,60 @@ tasks:
   branch: feature/official-source-coverage-pack-v1
   pr: 34
   ci: exact_functional_head_passed
+- id: WS02-OFFICIAL-SOURCE-ACQUISITION-003
+  workstream: WS-02
+  title: Acquire and scan governed official HTML snapshots
+  status: completed_with_limitations
+  owner: /root
+  depends_on:
+  - WS02-OFFICIAL-SOURCE-COVERAGE-002
+  result:
+    functional_commit: 79407c48361827afb94d9fa48adb8dd758c258e5
+    branch: feature/official-source-acquisition-v1
+    pull_request: 35
+    graph_gate: GATE-OFFICIAL-SOURCE-ACQUISITION-003 PASS
+    graph_checkpoint_sequence: 130
+    terminal_checkpoint_sequence: 131
+    attempted_sources: 16
+    successful_sources: 11
+    blocked_sources: 5
+    verified_source_bytes: 1833794
+    indexed_sources: 0
+    managed_projection: 0
+    focused_tests: 24/24
+    detached_tests: 1071/1073; zero failures; two explicit environment skips
+    public_browser: 10/10 desktop and mobile
+    remote_ci:
+      backend_pull_request: 30684910546 success
+      browser_pull_request: 30684910562 success
+      backend_push: 30684905382 success
+      browser_push: 30684905372 success
+  acceptance:
+  - Acquisition is derived from exact source-pack and inventory bindings with HTTPS and exact-host enforcement.
+  - Private, loopback, link-local, multicast and documentation addresses are rejected before fetch; validated public IPs are pinned for TLS connection.
+  - Redirects, bodies, media types, charsets, malware, extraction sufficiency, lifecycle state and symlink/race boundaries fail closed.
+  - Exact source bytes and citable extraction are content-addressed outside Git and never overwritten.
+  - A successful acquisition advances only to ingestion_pending; blocked records preserve their prior state.
+  evidence:
+  - Frozen receipt and byte verification cover 16 attempts, 11 successes, 5 blockers and 1,833,794 verified bytes.
+  - Red-team review closed ten findings including DNS rebinding, symlink escape and unauthorized lifecycle promotion.
+  - Independent clean-worktree regression and all exact-head remote checks passed.
+  - Graph Harness gate and terminal checkpoints are append-only and validate with zero READY nodes.
+  limitations:
+  - No new source is indexed, projected into managed Cloud SQL, exposed through public retrieval or treated as proof of a municipal event.
+  - Five official sources remain blocked by 403/challenge responses, an unavailable linked PDF or non-substantive controlled content.
+  - PRs #33, #34 and #35 remain unmerged; merge, indexing, managed-corpus mutation and deployment are not authorized.
+  branch: feature/official-source-acquisition-v1
+  pr: 35
+  ci: exact_functional_head_passed
+
 blockers:
+- id: BLK-OFFICIAL-SOURCE-PROJECTION-090
+  affects:
+  - WS02-OFFICIAL-SOURCE-ACQUISITION-003
+  state: open
+  condition: Eleven official snapshots are acquired, clean and extracted locally, but applicability and vigencia review, managed indexing and public projection are not authorized; five official endpoints still do not yield safe substantive controlled bytes.
+  next_safe_action: A human source owner supplies approved immutable artifacts or authorizes a controlled browser-assisted acquisition, then separately approves applicability review and managed indexing. Do not use search-engine cache, challenge HTML or index pages as source evidence.
 - id: BLK-HUMAN-WORKFLOWS-082
   affects:
   - WS09-HUMAN-WORKSPACE-001
@@ -2371,20 +2424,22 @@ blockers:
   next_safe_action: Require a new exact-SHA, bounded human authorization for any future Pages replacement.
 farmtable_equivalent_queries:
   GetReadyTasks:
-    result:
-    - WS07-ID-001
-    - WS09-UX-001
-    - WS11-QA-001
-    caveat: Only provider-neutral and local/synthetic slices are ready. Production IdP, real corpus, cloud lifecycle, merge and deployment remain human-gated.
+    result: []
+    caveat: Graph Harness reports zero READY nodes. Remaining work is human-gated, externally blocked or requires managed mutation authority.
   GetDependencyTree:
     root: REL-VERIFY-001
     source: program/task-graph.yaml
   GetCriticalPath:
     source: program/task-graph.yaml
-    current_bottlenecks: []
+    current_bottlenecks:
+    - BLK-OFFICIAL-SOURCE-PROJECTION-090
+    - BLK-CORPUS-OPS-001
+    - BLK-PRODUCTIVE-HUMAN-IDP-077
   GetBottlenecks:
     open:
+    - BLK-OFFICIAL-SOURCE-PROJECTION-090
     - BLK-CORPUS-OPS-001
+    - BLK-PRODUCTIVE-HUMAN-IDP-077
     mitigated:
     - BLK-AUTO-001
     - BLK-FARM-001

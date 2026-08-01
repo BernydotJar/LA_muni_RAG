@@ -57,6 +57,16 @@ const decodeEntities = (value: string): string =>
 const stripTags = (value: string): string =>
   decodeEntities(value.replace(/<[^>]*>/g, " ")).replace(/\s+/g, " ").trim();
 
+const htmlContentToText = (input: ExtractorInput): string => {
+  if (typeof input.content === "string") return input.content;
+  const rawCharset = typeof input.metadata?.charset === "string" ? input.metadata.charset : "utf-8";
+  const normalized = rawCharset.trim().toLowerCase().replace(/[_\s]+/g, "-");
+  if (["iso-8859-1", "iso8859-1", "latin1", "latin-1", "windows-1252", "cp1252"].includes(normalized)) {
+    return new TextDecoder("windows-1252").decode(input.content);
+  }
+  return contentToText(input.content);
+};
+
 const htmlToMarkedText = (html: string): string => {
   let value = html
     .replace(/<!--[\s\S]*?-->/g, " ")
@@ -105,7 +115,7 @@ export const htmlExtractor: DocumentExtractor = {
   sourceFormat: "html",
 
   extract(input: ExtractorInput): NormalizedDocument {
-    const markedText = htmlToMarkedText(contentToText(input.content));
+    const markedText = htmlToMarkedText(htmlContentToText(input));
     const lines = markedText.split("\n");
     const headingStack: HeadingState[] = [];
     const sections: NormalizedSection[] = [];

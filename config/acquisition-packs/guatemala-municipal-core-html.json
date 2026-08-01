@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "acquisitionId": "guatemala-municipal-core-html-2026-08-01",
+  "sourcePackId": "guatemala-municipal-core",
+  "snapshotDate": "2026-08-01",
+  "maxArtifactBytes": 5242880,
+  "requestTimeoutMs": 45000,
+  "maxRedirects": 1,
+  "minimumExtractedCharacters": 200,
+  "minimumSectionCount": 1,
+  "minimumSuccessfulSources": 10,
+  "sourceIds": [
+    "segeplan-snip-system",
+    "segeplan-snip-standards-2027",
+    "marn-environmental-taxonomy",
+    "marn-environmental-category-a",
+    "marn-environmental-category-b1",
+    "marn-environmental-category-b2",
+    "marn-environmental-category-c",
+    "infom-water-sanitation-services",
+    "guatemala-procurement-law",
+    "guatemala-procurement-regulation",
+    "guatecompras-use-rules-2022",
+    "gt-codigo-municipal-index",
+    "guatemala-development-councils-law",
+    "guatemala-mafim-second-edition",
+    "mspas-water-health-authority",
+    "mspas-water-project-quality-certification"
+  ]
+}

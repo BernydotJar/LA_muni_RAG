@@ -134,3 +134,11 @@ The pack adds verified discovery entries for MAFIM second edition, current SNIP 
 Environmental classification is deliberately neutral. The connector begins with the taxative lists. Category-specific pages are candidate routes only after a reviewer determines the applicable category from the project activity, scale, location, components and current rule set.
 
 The municipal water domain pack also supplies concrete evidence classes for all 47 research categories. National authority can support a national requirement, but the product requests the actual municipal act, expediente, inspection, contract event or financial record before claiming that a case-specific event occurred.
+
+## Governed HTML acquisition
+
+A non-template source pack can now be paired with a bounded acquisition plan under `config/acquisition-packs/`. The plan names exact governed inventory IDs and sets byte, timeout, redirect, extraction and minimum-success limits. The runtime intersects connector and pack host allowlists, resolves only public addresses and pins the HTTPS connection to those validated addresses to prevent DNS rebinding.
+
+Successful HTML snapshots are stored outside Git under `.rag/library/official/<pack>/<date>/<source>/<sha256>.html`. Raw bytes are scanned before publication, directories are mode 0700, files are mode 0600, internal symlinks are rejected and no-overwrite hard-link publication protects existing content-addressed artifacts. Extraction output is stored beside the raw snapshot and remains outside Git.
+
+Acquisition does not imply ingestion. A complete clean scan and bounded extraction move a record only to `ingestion_pending`; blocked attempts leave the prior lifecycle state unchanged and carry stable failure codes in the receipt. Indexing, tenant projection and managed corpus mutation require a later gate.

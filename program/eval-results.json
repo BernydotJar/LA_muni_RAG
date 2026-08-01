@@ -1,9 +1,9 @@
 {
   "schema_version": "1.26.0",
-  "generated_at": "2026-07-29T20:16:31Z",
-  "branch": "feature/gcp-cloudsql-staging-v1",
-  "functional_head": "70ec287f1a8705637e04374ca2562fafa175e0da",
-  "status": "partial_with_documented_blockers_feature086_completed_public_backend_identity_managed_staging_merge_and_release_blocked",
+  "generated_at": "2026-08-01T05:24:07Z",
+  "branch": "feature/official-source-acquisition-v1",
+  "functional_head": "79407c48361827afb94d9fa48adb8dd758c258e5",
+  "status": "partial_with_documented_blockers",
   "deterministic": {
     "tests": 1050,
     "pass": 1049,
@@ -753,22 +753,71 @@
   },
   "graph_harness_terminal": {
     "terminal_state": "PARTIAL_WITH_DOCUMENTED_BLOCKERS",
-    "event_count": 82,
-    "checkpoint_count": 2,
-    "repair_plan_count": 2,
-    "nodes_done": 8,
-    "required_gates_passed": 7,
+    "event_count": 131,
+    "checkpoint_count": 6,
+    "repair_plan_count": 3,
+    "nodes_done": 11,
+    "required_gates_passed": 10,
     "ready_nodes": 0,
-    "public_backend_deployed": false,
+    "public_pilot_operational": true,
+    "new_coverage_deployed": false,
+    "new_acquisition_indexed": false,
     "productive_authenticated_journeys": "0/12",
     "production_ready": false,
     "final_program_revalidation": {
-      "tests_total": 1050,
-      "tests_passed": 1049,
+      "tests_total": 1073,
+      "tests_passed": 1071,
       "tests_failed": 0,
-      "tests_skipped_environment": 1,
+      "tests_skipped_environment": 2,
+      "focused_tests": "24/24",
+      "public_browser": "10/10",
       "typecheck": "pass",
-      "build": "pass"
+      "build": "pass",
+      "dependency_audit": "0 vulnerabilities"
     }
+  },
+  "official_source_coverage": {
+    "status": "complete_with_non_ingestion_boundary",
+    "functional_sha": "987ff78d1f7ae2ab59ce6d2658726b1bc14c5601",
+    "gate": "GATE-OFFICIAL-SOURCE-COVERAGE-002 PASS",
+    "inventory_records": 38,
+    "new_official_national_records": 9,
+    "concrete_evidence_categories": "47/47",
+    "remote_ci": "success",
+    "indexed_new_sources": 0
+  },
+  "official_source_acquisition": {
+    "status": "complete_with_blocked_sources_and_no_indexing",
+    "functional_sha": "79407c48361827afb94d9fa48adb8dd758c258e5",
+    "gate": "GATE-OFFICIAL-SOURCE-ACQUISITION-003 PASS",
+    "attempted_sources": 16,
+    "successful_sources": 11,
+    "blocked_sources": 5,
+    "verified_source_bytes": 1833794,
+    "focused_tests": "24/24",
+    "tests_total": 1073,
+    "tests_passed": 1071,
+    "tests_failed": 0,
+    "tests_skipped_environment": 2,
+    "public_browser": "10/10",
+    "remote_ci": {
+      "backend_pull_request": 30684910546,
+      "public_browser_pull_request": 30684910562,
+      "backend_push": 30684905382,
+      "public_browser_push": 30684905372,
+      "conclusion": "success"
+    },
+    "indexed_sources": 0,
+    "managed_projection": 0,
+    "production_claim": false
+  },
+  "blocked_official_source_recovery": {
+    "status": "no_additional_safe_substantive_route",
+    "review": "program/reports/2026-08-01-blocked-official-source-recovery-review.json",
+    "review_sha256": "181cdab79ca6abf71df9702ad63c216229f4ce72fc38a76109dc699c425e7cfc",
+    "blocked_sources": 5,
+    "search_engine_cache_accepted": false,
+    "challenge_html_accepted": false,
+    "index_page_promoted": false
   }
 }

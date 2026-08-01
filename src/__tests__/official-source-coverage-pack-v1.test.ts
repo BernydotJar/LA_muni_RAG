@@ -38,22 +38,28 @@ describe("official national source coverage pack v1", () => {
     for (const sourceId of NEW_SOURCE_IDS) assert.ok(boundIds.includes(sourceId), `missing source-pack binding for ${sourceId}`);
   });
 
-  it("registers nine official discovery sources without promoting them to acquired or ingested", async () => {
+  it("keeps nine official sources within governed discovery or acquisition states without indexing", async () => {
     const manifest = await inventory();
     const records = new Map(manifest.records.map((record) => [record.sourceId, record]));
     for (const sourceId of NEW_SOURCE_IDS) {
       const record = records.get(sourceId);
       assert.ok(record, `missing inventory record ${sourceId}`);
-      assert.equal(record.status, "verified");
+      assert.ok(["verified", "ingestion_pending"].includes(record.status), `${sourceId} has invalid status ${record.status}`);
       assert.equal(record.authorityClass, "official_national");
       assert.equal(record.authorityLevel, "national");
       assert.equal(record.officialSource, true);
       assert.equal(record.officialForTargetJurisdiction, true);
-      assert.equal(record.acquisition, undefined);
-      assert.equal(record.artifactSafety, undefined);
-      assert.equal(record.extraction, undefined);
       assert.equal(record.indexing, undefined);
-      assert.ok(record.limitations.some((item) => /no (?:prueba|acredita)|no contiene todavía|no constituye/i.test(item)));
+      if (record.status === "verified") {
+        assert.equal(record.acquisition, undefined);
+        assert.equal(record.artifactSafety, undefined);
+        assert.equal(record.extraction, undefined);
+      } else {
+        assert.ok(record.acquisition?.contentSha256);
+        assert.equal(record.artifactSafety?.verdict, "clean");
+        assert.ok((record.extraction?.sectionCount ?? 0) > 0);
+      }
+      assert.ok(record.limitations.some((item) => /no (?:prueba|acredita)|no contiene todavía|no constituye|no establece por sí sola/i.test(item)));
     }
   });
 

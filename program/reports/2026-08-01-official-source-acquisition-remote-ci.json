@@ -1,0 +1,64 @@
+{
+  "schemaVersion": 1,
+  "verifiedAt": "2026-08-01T05:07:42.587Z",
+  "nodeId": "WS02-OFFICIAL-SOURCE-ACQUISITION-003",
+  "pullRequest": 35,
+  "branch": "feature/official-source-acquisition-v1",
+  "baseBranch": "feature/official-source-coverage-pack-v1",
+  "headSha": "79407c48361827afb94d9fa48adb8dd758c258e5",
+  "result": "pass",
+  "runs": [
+    {
+      "conclusion": "success",
+      "createdAt": "2026-08-01T04:57:11Z",
+      "databaseId": 30684905372,
+      "event": "push",
+      "headSha": "79407c48361827afb94d9fa48adb8dd758c258e5",
+      "name": "Public Browser Gate",
+      "status": "completed",
+      "updatedAt": "2026-08-01T04:59:20Z",
+      "url": "https://github.com/BernydotJar/LA_muni_RAG/actions/runs/30684905372"
+    },
+    {
+      "conclusion": "success",
+      "createdAt": "2026-08-01T04:57:11Z",
+      "databaseId": 30684905382,
+      "event": "push",
+      "headSha": "79407c48361827afb94d9fa48adb8dd758c258e5",
+      "name": "Backend CI",
+      "status": "completed",
+      "updatedAt": "2026-08-01T05:07:19Z",
+      "url": "https://github.com/BernydotJar/LA_muni_RAG/actions/runs/30684905382"
+    },
+    {
+      "conclusion": "success",
+      "createdAt": "2026-08-01T04:57:22Z",
+      "databaseId": 30684910546,
+      "event": "pull_request",
+      "headSha": "79407c48361827afb94d9fa48adb8dd758c258e5",
+      "name": "Backend CI",
+      "status": "completed",
+      "updatedAt": "2026-08-01T05:05:31Z",
+      "url": "https://github.com/BernydotJar/LA_muni_RAG/actions/runs/30684910546"
+    },
+    {
+      "conclusion": "success",
+      "createdAt": "2026-08-01T04:57:22Z",
+      "databaseId": 30684910562,
+      "event": "pull_request",
+      "headSha": "79407c48361827afb94d9fa48adb8dd758c258e5",
+      "name": "Public Browser Gate",
+      "status": "completed",
+      "updatedAt": "2026-08-01T04:59:47Z",
+      "url": "https://github.com/BernydotJar/LA_muni_RAG/actions/runs/30684910562"
+    }
+  ],
+  "requiredChecks": {
+    "backendCi": "success",
+    "publicBrowserGate": "success"
+  },
+  "mergeAuthorized": false,
+  "indexingAuthorized": false,
+  "managedCorpusMutationAuthorized": false,
+  "deploymentAuthorized": false
+}

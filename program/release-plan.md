@@ -1,38 +1,41 @@
 # LA Muni RAG — Release Plan
 
-Updated: 2026-07-29T06:42:07Z
+Updated: 2026-08-01T05:24:07Z
 
 ## Current release state
 
 ```text
-functional_branch: feature/gcp-cloudsql-staging-v1
-functional_candidate_sha: 82d75711f28a03de4e7df35d5ec6435cc7610319
-remote_parent_sha: ba6acf3cc654e798f46b104d4eaac6d5c78712ab
-working_tree_at_handoff: clean
-push_status: audited_non_forced_fast_forward_published_exact_sha_ci_passed
-pull_request: 24 draft, open, mergeable, CLEAN
+terminal_state: PARTIAL_WITH_DOCUMENTED_BLOCKERS
+functional_branch: feature/official-source-acquisition-v1
+coverage_candidate_sha: 987ff78d1f7ae2ab59ce6d2658726b1bc14c5601
+acquisition_candidate_sha: 79407c48361827afb94d9fa48adb8dd758c258e5
+pull_request_stack: 33 open -> 34 draft -> 35 draft
 merged_to_main: false
-cloud_sql_instance_created: true
+public_pilot_operational: true
+new_coverage_deployed: false
+new_acquisition_indexed: false
 cloud_sql_instance_state: STOPPED
-cloud_sql_activation_policy: NEVER
-terraform_apply_executed: true
-managed_cloud_staging_executed: false
-cloud_sql_teardown_executed: false
-public_browser_gate: 10/10 Chromium desktop/mobile; exact-SHA run 30428162850 success
-online_pages_exact_sha_pilot: completed_and_verified
-online_pages_rollback: completed_to_4950ba3c24dbe7d9891d5cec8d7ba5f57db3ef9c
-pages_api_bound: false
-human_session_bff: provider_neutral_foundation_and_generic_oidc_adapter_published_verified_disabled_by_default
+managed_corpus_mutation_authorized: false
+indexing_authorized: false
+merge_authorized: false
+deployment_authorized: false
 graph_harness_project: la-muni-rag-pr24-repair-20260729
-graph_harness_state: 43 events; 2 repair plans; 4/4 required gates PASS; 1 checkpoint
-graph_harness_framework_pin: pending_immutable_framework_commit
-exact_sha_backend_ci: 30428162887 success
-exact_sha_terraform_validation: 30428162725 success
-authenticated_browser_journeys: 0/12 blocked
-real_documents_ingested: 0
-production_deployed: false
-observation_window: none
+graph_harness_state: 131 events; 3 repair plans; 10/10 required gates PASS; 6 checkpoints; 11/11 nodes done; 0 ready
+exact_sha_backend_ci: 30684910546 and 30684905382 success
+exact_sha_public_browser: 30684910562 and 30684905372 success
+official_html_acquisition: 11/16; 1833794 bytes; 5 blocked; 0 indexed
+authenticated_browser_journeys: 0/12 productive
+production_ready: false
 ```
+
+## Feature 090 release boundary
+
+- Functional commit `79407c48361827afb94d9fa48adb8dd758c258e5` and draft PR #35 are published on top of PR #34.
+- Independent detached-worktree verification passed 24/24 focused tests, 1,071/1,073 integrated tests with zero failures and two environment skips, typecheck, build, configuration checks, 10/10 public browser tests, exact-byte reconciliation and zero-vulnerability audit.
+- Exact-head Backend CI and Public Browser Gate passed for both push and pull-request events.
+- Graph Harness gate `GATE-OFFICIAL-SOURCE-ACQUISITION-003` passed; node `WS02-OFFICIAL-SOURCE-ACQUISITION-003` is `done`; checkpoints `official-source-acquisition-v1-complete` and `program-partial-with-documented-blockers-2026-08-01` are recorded.
+- Eleven official snapshots are locally acquired/scanned/extracted and remain `ingestion_pending`; five sources remain `verified`; none is indexed or projected.
+- The next actions—source-owner artifact supply, applicability/vigencia review, managed indexing, merge and deployment—require human authorization or external source cooperation.
 
 ## Feature 074 plan gates satisfied
 

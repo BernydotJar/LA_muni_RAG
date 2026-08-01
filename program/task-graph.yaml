@@ -1,29 +1,29 @@
 schema_version: 1
-generated_at: '2026-08-01T04:20:16Z'
+generated_at: '2026-08-01T05:24:07Z'
 program:
   id: LA-MUNI-RAG-PROD
   objective: Make LA Muni RAG production-ready within its evidence, procedure, workflow, case-tracking, and integration domain.
   source_goal: attached goal_la_muni_rag_procedural_intelligence_prod_ready.md conversation artifact
-  status: active
-  completion_claim: unproven
+  status: partial_with_documented_blockers
+  completion_claim: partial_with_documented_blockers
   allowed_terminal_states:
   - COMPLETED
   - PARTIAL_WITH_DOCUMENTED_BLOCKERS
   - SAFETY_STOP
 baseline:
   origin_main_commit: 4950ba3c24dbe7d9891d5cec8d7ba5f57db3ef9c
-  observed_branch: feature/gcp-cloudsql-staging-v1
-  observed_commit: 82d75711f28a03de4e7df35d5ec6435cc7610319
-  feature_implementation_commit: 82d75711f28a03de4e7df35d5ec6435cc7610319
-  local_program_branch_commit: 82d75711f28a03de4e7df35d5ec6435cc7610319
-  upstream: origin/feature/gcp-cloudsql-staging-v1
-  upstream_commit: 82d75711f28a03de4e7df35d5ec6435cc7610319
-  upstream_state: features077_through083_and_graph_harness_repair_published_exact_sha_ci_passed
+  observed_branch: feature/official-source-acquisition-v1
+  observed_commit: 79407c48361827afb94d9fa48adb8dd758c258e5
+  feature_implementation_commit: 79407c48361827afb94d9fa48adb8dd758c258e5
+  local_program_branch_commit: 79407c48361827afb94d9fa48adb8dd758c258e5
+  upstream: origin/feature/official-source-acquisition-v1
+  upstream_commit: 79407c48361827afb94d9fa48adb8dd758c258e5
+  upstream_state: feature090_functional_head_published_exact_sha_ci_passed
   divergence:
     ahead: 0
     behind: 0
   divergence_from_origin_main:
-    ahead: 120
+    ahead: 9
     behind: 0
   worktree: clean
   repository_instructions:
@@ -31,21 +31,24 @@ baseline:
   - RTK.md
   - README.md
   canonical_gate:
-    status: passed_exact_sha_graph_harness_repair_checkpoint
+    status: passed_exact_sha_official_source_acquisition_checkpoint
     tests:
-      passed: 995
-      total: 997
+      passed: 1071
+      total: 1073
       skipped: 2
       failed: 0
     typecheck: passed
     build: passed
     source_inventory:
       validation: passed
-      total_documents: 17
-      verified_documents: 4
-      missing_source_documents: 4
-      acquired_documents: 1
-      ingested_documents: 0
+      total_documents: 38
+      verified_documents: 9
+      acquisition_pending_documents: 8
+      ingestion_pending_documents: 11
+      ingested_documents: 3
+      failed_documents: 7
+      verified_source_bytes: 1833794
+      new_sources_indexed: 0
       production_ingestion_gate: not_passed
     domain_evaluation:
       passed: 8
@@ -72,36 +75,30 @@ baseline:
       EVAL-HUMAN-PRODUCT-SHELL-ACCESSIBILITY-001: passed_for_cross_browser_automated_complement_without_conformance_claim
       EVAL-HUMAN-WORKSPACE-001: passed_for_task_first_local_workspace_with_productive_workflow_limitations
       EVAL-HUMAN-OIDC-PROVIDER-001: passed_for_generic_oidc_adapter_with_productive_provider_limitations
-    missing_dedicated_evals:
-    - EVAL-SOURCE-001
-    - EVAL-MISSING-001
-    - EVAL-RBAC-001
-    - EVAL-INGEST-001
-    - EVAL-CASE-001
-    - EVAL-ACCESSIBILITY-001
-    - EVAL-RESTORE-001
+    missing_dedicated_evals: []
     pages_verification: passed
     dependency_audit: 0 vulnerabilities
     remote_ci:
       run_ids:
-      - 30428162887
-      - 30428162850
-      - 30428162725
+      - 30684910546
+      - 30684910562
+      - 30684905382
+      - 30684905372
       status: completed
       conclusion: success
-      head_sha: 82d75711f28a03de4e7df35d5ec6435cc7610319
+      head_sha: 79407c48361827afb94d9fa48adb8dd758c258e5
 runtime:
   selected: graph_harness_sdlc_projection
   framework_repository: BernydotJar/Graph-harness-sdlc
-  framework_observed_commit: 0eb0d5fe09e3b1ecaf561b4a1cc9b32510480a26
-  immutable_framework_pin: false
+  framework_observed_commit: 1bebce3db35303072049233786464bb01163c98b
+  immutable_framework_pin: true
   executable_projection: program/graph-harness/project.json
   event_store: program/graph-harness/events.jsonl
   typed_state: program/graph-harness/state.json
-  event_count: 43
-  repair_plans: 2
-  required_gates: 4/4 passed
-  checkpoint_commit: 82d75711f28a03de4e7df35d5ec6435cc7610319
+  event_count: 131
+  repair_plans: 3
+  required_gates: 10/10 passed
+  checkpoint_commit: 79407c48361827afb94d9fa48adb8dd758c258e5
   canonical_record_files:
   - program/task-graph.yaml
   - program/task-ledger.yaml
@@ -1976,7 +1973,60 @@ tasks:
   - The nine national sources are verified discovery records, not acquired, malware-scanned, extracted, indexed or projected into retrieval.
   - National authority does not prove that a municipal act, inspection, award, contract event or payment occurred; the case expediente remains required.
   - PR #33 and stacked draft PR #34 remain unmerged; managed-corpus mutation and deployment are human-gated.
+- id: WS02-OFFICIAL-SOURCE-ACQUISITION-003
+  workstream: WS-02
+  title: Acquire and scan governed official HTML snapshots
+  status: completed_with_limitations
+  owner: /root
+  depends_on:
+  - WS02-OFFICIAL-SOURCE-COVERAGE-002
+  result:
+    functional_commit: 79407c48361827afb94d9fa48adb8dd758c258e5
+    branch: feature/official-source-acquisition-v1
+    pull_request: 35
+    graph_gate: GATE-OFFICIAL-SOURCE-ACQUISITION-003 PASS
+    graph_checkpoint_sequence: 130
+    terminal_checkpoint_sequence: 131
+    attempted_sources: 16
+    successful_sources: 11
+    blocked_sources: 5
+    verified_source_bytes: 1833794
+    indexed_sources: 0
+    managed_projection: 0
+    focused_tests: 24/24
+    detached_tests: 1071/1073; zero failures; two explicit environment skips
+    public_browser: 10/10 desktop and mobile
+    remote_ci:
+      backend_pull_request: 30684910546 success
+      browser_pull_request: 30684910562 success
+      backend_push: 30684905382 success
+      browser_push: 30684905372 success
+  acceptance:
+  - Acquisition is derived from exact source-pack and inventory bindings with HTTPS and exact-host enforcement.
+  - Private, loopback, link-local, multicast and documentation addresses are rejected before fetch; validated public IPs are pinned for TLS connection.
+  - Redirects, bodies, media types, charsets, malware, extraction sufficiency, lifecycle state and symlink/race boundaries fail closed.
+  - Exact source bytes and citable extraction are content-addressed outside Git and never overwritten.
+  - A successful acquisition advances only to ingestion_pending; blocked records preserve their prior state.
+  evidence:
+  - Frozen receipt and byte verification cover 16 attempts, 11 successes, 5 blockers and 1,833,794 verified bytes.
+  - Red-team review closed ten findings including DNS rebinding, symlink escape and unauthorized lifecycle promotion.
+  - Independent clean-worktree regression and all exact-head remote checks passed.
+  - Graph Harness gate and terminal checkpoints are append-only and validate with zero READY nodes.
+  limitations:
+  - No new source is indexed, projected into managed Cloud SQL, exposed through public retrieval or treated as proof of a municipal event.
+  - Five official sources remain blocked by 403/challenge responses, an unavailable linked PDF or non-substantive controlled content.
+  - PRs #33, #34 and #35 remain unmerged; merge, indexing, managed-corpus mutation and deployment are not authorized.
+  branch: feature/official-source-acquisition-v1
+  pr: 35
+  ci: exact_functional_head_passed
+
 blockers:
+- id: BLK-OFFICIAL-SOURCE-PROJECTION-090
+  affects:
+  - WS02-OFFICIAL-SOURCE-ACQUISITION-003
+  state: open
+  condition: Eleven official snapshots are acquired, clean and extracted locally, but applicability and vigencia review, managed indexing and public projection are not authorized; five official endpoints still do not yield safe substantive controlled bytes.
+  next_safe_action: A human source owner supplies approved immutable artifacts or authorizes a controlled browser-assisted acquisition, then separately approves applicability review and managed indexing. Do not use search-engine cache, challenge HTML or index pages as source evidence.
 - id: BLK-PRODUCTIVE-HUMAN-IDP-077
   affects:
   - WS07-HUMAN-SESSION-BFF-001

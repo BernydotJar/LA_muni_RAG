@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "targetJurisdiction": "Municipio de La Antigua Guatemala, Sacatepéquez, Guatemala",
-  "generatedAt": "2026-08-01T03:57:45Z",
+  "generatedAt": "2026-08-01T04:42:04.608Z",
   "records": [
     {
       "sourceId": "antigua-manuales-procedimientos",
@@ -848,10 +848,10 @@
     {
       "sourceId": "guatemala-procurement-law",
       "documentKey": "guatemala-procurement-law",
-      "documentVersion": "decree-57-92-portal-verified-2026-07-31",
+      "documentVersion": "snapshot-2026-08-01-sha256-b90434adf98933a9",
       "title": "Ley de Contrataciones del Estado, Decreto 57-92",
       "category": "national_law",
-      "status": "verified",
+      "status": "ingestion_pending",
       "targetJurisdiction": "Municipio de La Antigua Guatemala, Sacatepéquez, Guatemala",
       "sourceJurisdiction": "República de Guatemala",
       "authorityClass": "official_national",
@@ -862,18 +862,57 @@
       "verifiedAt": "2026-07-31T19:27:00-06:00",
       "limitations": [
         "Debe adquirirse una versión oficial aplicable y verificarse reformas vigentes antes de citar artículos.",
-        "La ley no demuestra que una modalidad o acto haya ocurrido en un expediente concreto."
+        "La ley no demuestra que una modalidad o acto haya ocurrido en un expediente concreto.",
+        "El snapshot HTML oficial fue adquirido y extraído localmente, pero permanece fuera del índice y de la proyección pública.",
+        "La adquisición técnica no establece por sí sola vigencia, aplicabilidad jurídica ni que un acto municipal concreto haya ocurrido.",
+        "Los documentos enlazados deben adquirirse como artefactos separados antes de citarlos."
       ],
       "provenanceNotes": [
-        "Biblioteca legal oficial del Ministerio de Finanzas Públicas."
+        "Biblioteca legal oficial del Ministerio de Finanzas Públicas.",
+        "Feature 090 adquirió https://formacion.minfin.gob.gt/difoteca/documentos-legales/ el 2026-08-01T04:33:10.173Z, SHA-256 db9fa0950c0ef99be7425fe00c9ac5926dbc11925e4e45f45b56a68b155cd5db, sin mutar el corpus administrado.",
+        "Feature 090 adquirió https://formacion.minfin.gob.gt/difoteca/documentos-legales/ el 2026-08-01T04:37:49.913Z, SHA-256 4b3c81a0feb931f205525abfff234e3c353b6f9943533fb749ebb430b03623c0, sin mutar el corpus administrado.",
+        "Feature 090 adquirió https://formacion.minfin.gob.gt/difoteca/documentos-legales/ el 2026-08-01T04:42:04.608Z, SHA-256 b90434adf98933a9a24d36dcffdd74655eadc34f5c7128acc15270f984d11760, sin mutar el corpus administrado."
       ],
       "tags": [
         "guatemala",
         "procurement",
         "decree-57-92",
         "national-law",
-        "verified"
-      ]
+        "verified",
+        "acquired",
+        "clean-scan",
+        "html-extracted",
+        "ingestion-pending"
+      ],
+      "acquisition": {
+        "acquiredAt": "2026-08-01T04:42:04.608Z",
+        "artifactPath": ".rag/library/official/guatemala-municipal-core/2026-08-01/guatemala-procurement-law/b90434adf98933a9a24d36dcffdd74655eadc34f5c7128acc15270f984d11760.html",
+        "contentSha256": "b90434adf98933a9a24d36dcffdd74655eadc34f5c7128acc15270f984d11760",
+        "mediaType": "text/html",
+        "byteLength": 138559
+      },
+      "artifactSafety": {
+        "inspectedAt": "2026-08-01T04:42:04.608Z",
+        "artifactPath": ".rag/library/official/guatemala-municipal-core/2026-08-01/guatemala-procurement-law/b90434adf98933a9a24d36dcffdd74655eadc34f5c7128acc15270f984d11760.html",
+        "contentSha256": "b90434adf98933a9a24d36dcffdd74655eadc34f5c7128acc15270f984d11760",
+        "byteLength": 138559,
+        "observedContentSha256": "b90434adf98933a9a24d36dcffdd74655eadc34f5c7128acc15270f984d11760",
+        "observedByteLength": 138559,
+        "declaredMediaType": "text/html",
+        "detectedMediaType": "text/html",
+        "signature": "utf8-text-v1",
+        "scannerEngine": "clamav",
+        "scannerVersion": "1.4.3",
+        "scannerDefinitionsVersion": "28078/Fri-Jul-31-06:24:10-2026",
+        "verdict": "clean",
+        "failureCodes": []
+      },
+      "extraction": {
+        "extractedAt": "2026-08-01T04:42:04.608Z",
+        "extractor": "html_heading_v1",
+        "sectionCount": 18,
+        "outputPath": ".rag/library/official/guatemala-municipal-core/2026-08-01/guatemala-procurement-law/b90434adf98933a9a24d36dcffdd74655eadc34f5c7128acc15270f984d11760.sections.json"
+      }
     },
     {
       "sourceId": "guatemala-procurement-regulation",
@@ -908,10 +947,10 @@
     {
       "sourceId": "infom-water-sanitation-services",
       "documentKey": "infom-water-sanitation-services",
-      "documentVersion": "portal-verified-2026-07-31",
+      "documentVersion": "snapshot-2026-08-01-sha256-cd671c29c9682193",
       "title": "INFOM: servicios de agua, saneamiento y fortalecimiento municipal",
       "category": "public_portal",
-      "status": "verified",
+      "status": "ingestion_pending",
       "targetJurisdiction": "Municipio de La Antigua Guatemala, Sacatepéquez, Guatemala",
       "sourceJurisdiction": "República de Guatemala",
       "authorityClass": "official_national",
@@ -922,10 +961,16 @@
       "verifiedAt": "2026-07-31T19:27:00-06:00",
       "limitations": [
         "El catálogo describe servicios y asistencia técnica; no crea por sí solo un requisito obligatorio para cada municipio.",
-        "Manuales, términos y entregables deben adquirirse como documentos separados."
+        "Manuales, términos y entregables deben adquirirse como documentos separados.",
+        "El snapshot HTML oficial fue adquirido y extraído localmente, pero permanece fuera del índice y de la proyección pública.",
+        "La adquisición técnica no establece por sí sola vigencia, aplicabilidad jurídica ni que un acto municipal concreto haya ocurrido.",
+        "Los documentos enlazados deben adquirirse como artefactos separados antes de citarlos."
       ],
       "provenanceNotes": [
-        "Portal oficial del Instituto de Fomento Municipal."
+        "Portal oficial del Instituto de Fomento Municipal.",
+        "Feature 090 adquirió https://infom.gob.gt/ el 2026-08-01T04:33:10.173Z, SHA-256 4c290311cc23e1a31254a1ce75230e712900e9edc3ef8f1cef110a76b1dca78f, sin mutar el corpus administrado.",
+        "Feature 090 adquirió https://infom.gob.gt/ el 2026-08-01T04:37:49.913Z, SHA-256 3b35bfa3c06d7f0c86333ba83917e81508a15c54e9b686d6b2be138c2f91049e, sin mutar el corpus administrado.",
+        "Feature 090 adquirió https://infom.gob.gt/ el 2026-08-01T04:42:04.608Z, SHA-256 cd671c29c96821933cfdc4695a131f27ef7f3a9b0b497ad8caca766ce0d63378, sin mutar el corpus administrado."
       ],
       "tags": [
         "guatemala",
@@ -934,16 +979,49 @@
         "water-sanitation",
         "preinvestment",
         "maintenance",
-        "verified"
-      ]
+        "verified",
+        "acquired",
+        "clean-scan",
+        "html-extracted",
+        "ingestion-pending"
+      ],
+      "acquisition": {
+        "acquiredAt": "2026-08-01T04:42:04.608Z",
+        "artifactPath": ".rag/library/official/guatemala-municipal-core/2026-08-01/infom-water-sanitation-services/cd671c29c96821933cfdc4695a131f27ef7f3a9b0b497ad8caca766ce0d63378.html",
+        "contentSha256": "cd671c29c96821933cfdc4695a131f27ef7f3a9b0b497ad8caca766ce0d63378",
+        "mediaType": "text/html",
+        "byteLength": 224495
+      },
+      "artifactSafety": {
+        "inspectedAt": "2026-08-01T04:42:04.608Z",
+        "artifactPath": ".rag/library/official/guatemala-municipal-core/2026-08-01/infom-water-sanitation-services/cd671c29c96821933cfdc4695a131f27ef7f3a9b0b497ad8caca766ce0d63378.html",
+        "contentSha256": "cd671c29c96821933cfdc4695a131f27ef7f3a9b0b497ad8caca766ce0d63378",
+        "byteLength": 224495,
+        "observedContentSha256": "cd671c29c96821933cfdc4695a131f27ef7f3a9b0b497ad8caca766ce0d63378",
+        "observedByteLength": 224495,
+        "declaredMediaType": "text/html",
+        "detectedMediaType": "text/html",
+        "signature": "utf8-text-v1",
+        "scannerEngine": "clamav",
+        "scannerVersion": "1.4.3",
+        "scannerDefinitionsVersion": "28078/Fri-Jul-31-06:24:10-2026",
+        "verdict": "clean",
+        "failureCodes": []
+      },
+      "extraction": {
+        "extractedAt": "2026-08-01T04:42:04.608Z",
+        "extractor": "html_heading_v1",
+        "sectionCount": 39,
+        "outputPath": ".rag/library/official/guatemala-municipal-core/2026-08-01/infom-water-sanitation-services/cd671c29c96821933cfdc4695a131f27ef7f3a9b0b497ad8caca766ce0d63378.sections.json"
+      }
     },
     {
       "sourceId": "marn-environmental-category-c",
       "documentKey": "marn-environmental-category-c",
-      "documentVersion": "web-2024-08-16-verified-2026-07-31",
+      "documentVersion": "snapshot-2026-08-01-sha256-c53660270b5a18f4",
       "title": "Evaluación Ambiental Inicial Categoría C",
       "category": "national_regulation",
-      "status": "verified",
+      "status": "ingestion_pending",
       "targetJurisdiction": "Municipio de La Antigua Guatemala, Sacatepéquez, Guatemala",
       "sourceJurisdiction": "República de Guatemala",
       "authorityClass": "official_national",
@@ -955,18 +1033,57 @@
       "publicationDate": "2024-08-16",
       "limitations": [
         "La categoría ambiental aplicable depende del listado taxativo y características concretas del proyecto.",
-        "Los requisitos web deben revisarse por cambios, reformas y formularios vigentes antes de ejecución."
+        "Los requisitos web deben revisarse por cambios, reformas y formularios vigentes antes de ejecución.",
+        "El snapshot HTML oficial fue adquirido y extraído localmente, pero permanece fuera del índice y de la proyección pública.",
+        "La adquisición técnica no establece por sí sola vigencia, aplicabilidad jurídica ni que un acto municipal concreto haya ocurrido.",
+        "Los documentos enlazados deben adquirirse como artefactos separados antes de citarlos."
       ],
       "provenanceNotes": [
-        "Página oficial del Ministerio de Ambiente y Recursos Naturales."
+        "Página oficial del Ministerio de Ambiente y Recursos Naturales.",
+        "Feature 090 adquirió https://www.marn.gob.gt/28-evaluacion-ambiental-inicial-categoria-c/ el 2026-08-01T04:33:10.173Z, SHA-256 e43417ca6be568dd930def5b3487bc96fd7c60ccbcd7d924555499521be4dfc3, sin mutar el corpus administrado.",
+        "Feature 090 adquirió https://www.marn.gob.gt/28-evaluacion-ambiental-inicial-categoria-c/ el 2026-08-01T04:37:49.913Z, SHA-256 1ecbb9ad06d74975d729395cd624b16851d3eb09ef9ae8c7fc8c53e22fd1eb99, sin mutar el corpus administrado.",
+        "Feature 090 adquirió https://www.marn.gob.gt/28-evaluacion-ambiental-inicial-categoria-c/ el 2026-08-01T04:42:04.608Z, SHA-256 c53660270b5a18f45e640fb2a28a0d849757678f9673488708dd7797e589cd71, sin mutar el corpus administrado."
       ],
       "tags": [
         "guatemala",
         "marn",
         "environment",
         "category-c",
-        "verified"
-      ]
+        "verified",
+        "acquired",
+        "clean-scan",
+        "html-extracted",
+        "ingestion-pending"
+      ],
+      "acquisition": {
+        "acquiredAt": "2026-08-01T04:42:04.608Z",
+        "artifactPath": ".rag/library/official/guatemala-municipal-core/2026-08-01/marn-environmental-category-c/c53660270b5a18f45e640fb2a28a0d849757678f9673488708dd7797e589cd71.html",
+        "contentSha256": "c53660270b5a18f45e640fb2a28a0d849757678f9673488708dd7797e589cd71",
+        "mediaType": "text/html",
+        "byteLength": 223521
+      },
+      "artifactSafety": {
+        "inspectedAt": "2026-08-01T04:42:04.608Z",
+        "artifactPath": ".rag/library/official/guatemala-municipal-core/2026-08-01/marn-environmental-category-c/c53660270b5a18f45e640fb2a28a0d849757678f9673488708dd7797e589cd71.html",
+        "contentSha256": "c53660270b5a18f45e640fb2a28a0d849757678f9673488708dd7797e589cd71",
+        "byteLength": 223521,
+        "observedContentSha256": "c53660270b5a18f45e640fb2a28a0d849757678f9673488708dd7797e589cd71",
+        "observedByteLength": 223521,
+        "declaredMediaType": "text/html",
+        "detectedMediaType": "text/html",
+        "signature": "utf8-text-v1",
+        "scannerEngine": "clamav",
+        "scannerVersion": "1.4.3",
+        "scannerDefinitionsVersion": "28078/Fri-Jul-31-06:24:10-2026",
+        "verdict": "clean",
+        "failureCodes": []
+      },
+      "extraction": {
+        "extractedAt": "2026-08-01T04:42:04.608Z",
+        "extractor": "html_heading_v1",
+        "sectionCount": 4,
+        "outputPath": ".rag/library/official/guatemala-municipal-core/2026-08-01/marn-environmental-category-c/c53660270b5a18f45e640fb2a28a0d849757678f9673488708dd7797e589cd71.sections.json"
+      }
     },
     {
       "sourceId": "mixco-manuales-biblioteca",
@@ -1229,10 +1346,10 @@
     {
       "sourceId": "segeplan-snip-system",
       "documentKey": "segeplan-snip-system",
-      "documentVersion": "portal-verified-2026-07-31",
+      "documentVersion": "snapshot-2026-08-01-sha256-ccb8917f466fece0",
       "title": "Sistema Nacional de Inversión Pública - conceptos, normas e instrumentos",
       "category": "planning",
-      "status": "verified",
+      "status": "ingestion_pending",
       "targetJurisdiction": "Municipio de La Antigua Guatemala, Sacatepéquez, Guatemala",
       "sourceJurisdiction": "República de Guatemala",
       "authorityClass": "official_national",
@@ -1243,18 +1360,57 @@
       "verifiedAt": "2026-07-31T19:27:00-06:00",
       "limitations": [
         "La página describe el sistema y ciclo de inversión; cada norma, guía o formulario debe conservar su propia versión.",
-        "La aplicación a un proyecto requiere verificar ejercicio fiscal, tipo de inversión y lineamientos vigentes."
+        "La aplicación a un proyecto requiere verificar ejercicio fiscal, tipo de inversión y lineamientos vigentes.",
+        "El snapshot HTML oficial fue adquirido y extraído localmente, pero permanece fuera del índice y de la proyección pública.",
+        "La adquisición técnica no establece por sí sola vigencia, aplicabilidad jurídica ni que un acto municipal concreto haya ocurrido.",
+        "Los documentos enlazados deben adquirirse como artefactos separados antes de citarlos."
       ],
       "provenanceNotes": [
-        "Fuente primaria oficial de SEGEPLAN/SNIP."
+        "Fuente primaria oficial de SEGEPLAN/SNIP.",
+        "Feature 090 adquirió https://snip.segeplan.gob.gt/sinip/html/portal/temp/mrc_sistema.htm el 2026-08-01T04:33:10.173Z, SHA-256 ccb8917f466fece02130d440403f9d46cb80b80889926bc3ee3b9a3993c24e83, sin mutar el corpus administrado.",
+        "Feature 090 adquirió https://snip.segeplan.gob.gt/sinip/html/portal/temp/mrc_sistema.htm el 2026-08-01T04:37:49.913Z, SHA-256 ccb8917f466fece02130d440403f9d46cb80b80889926bc3ee3b9a3993c24e83, sin mutar el corpus administrado.",
+        "Feature 090 adquirió https://snip.segeplan.gob.gt/sinip/html/portal/temp/mrc_sistema.htm el 2026-08-01T04:42:04.608Z, SHA-256 ccb8917f466fece02130d440403f9d46cb80b80889926bc3ee3b9a3993c24e83, sin mutar el corpus administrado."
       ],
       "tags": [
         "guatemala",
         "snip",
         "public-investment",
         "project-lifecycle",
-        "verified"
-      ]
+        "verified",
+        "acquired",
+        "clean-scan",
+        "html-extracted",
+        "ingestion-pending"
+      ],
+      "acquisition": {
+        "acquiredAt": "2026-08-01T04:42:04.608Z",
+        "artifactPath": ".rag/library/official/guatemala-municipal-core/2026-08-01/segeplan-snip-system/ccb8917f466fece02130d440403f9d46cb80b80889926bc3ee3b9a3993c24e83.html",
+        "contentSha256": "ccb8917f466fece02130d440403f9d46cb80b80889926bc3ee3b9a3993c24e83",
+        "mediaType": "text/html",
+        "byteLength": 126372
+      },
+      "artifactSafety": {
+        "inspectedAt": "2026-08-01T04:42:04.608Z",
+        "artifactPath": ".rag/library/official/guatemala-municipal-core/2026-08-01/segeplan-snip-system/ccb8917f466fece02130d440403f9d46cb80b80889926bc3ee3b9a3993c24e83.html",
+        "contentSha256": "ccb8917f466fece02130d440403f9d46cb80b80889926bc3ee3b9a3993c24e83",
+        "byteLength": 126372,
+        "observedContentSha256": "ccb8917f466fece02130d440403f9d46cb80b80889926bc3ee3b9a3993c24e83",
+        "observedByteLength": 126372,
+        "declaredMediaType": "text/html",
+        "detectedMediaType": "text/html",
+        "signature": "html-windows-1252-v1",
+        "scannerEngine": "clamav",
+        "scannerVersion": "1.4.3",
+        "scannerDefinitionsVersion": "28078/Fri-Jul-31-06:24:10-2026",
+        "verdict": "clean",
+        "failureCodes": []
+      },
+      "extraction": {
+        "extractedAt": "2026-08-01T04:42:04.608Z",
+        "extractor": "html_heading_v1",
+        "sectionCount": 1,
+        "outputPath": ".rag/library/official/guatemala-municipal-core/2026-08-01/segeplan-snip-system/ccb8917f466fece02130d440403f9d46cb80b80889926bc3ee3b9a3993c24e83.sections.json"
+      }
     },
     {
       "sourceId": "guatemala-mafim-second-edition",
@@ -1295,10 +1451,10 @@
     {
       "sourceId": "marn-environmental-taxonomy",
       "documentKey": "marn-environmental-taxonomy",
-      "documentVersion": "taxative-lists-verified-2026-08-01",
+      "documentVersion": "snapshot-2026-08-01-sha256-9b59d0489b19ef20",
       "title": "MARN Listados Taxativos de proyectos, obras, industrias o actividades",
       "category": "national_regulation",
-      "status": "verified",
+      "status": "ingestion_pending",
       "targetJurisdiction": "Municipio de La Antigua Guatemala, Sacatepéquez, Guatemala",
       "sourceJurisdiction": "República de Guatemala",
       "authorityClass": "official_national",
@@ -1310,10 +1466,16 @@
       "limitations": [
         "El listado taxativo es la entrada para clasificar el proyecto; no predetermina la categoría sin revisar actividad, escala, ubicación, componentes y versión vigente.",
         "Las tablas y acuerdos descargables deben adquirirse y versionarse por separado antes de citar una categoría o requisito como aplicable.",
-        "La clasificación ambiental no prueba que el proyecto cuente con instrumento, resolución o licencia."
+        "La clasificación ambiental no prueba que el proyecto cuente con instrumento, resolución o licencia.",
+        "El snapshot HTML oficial fue adquirido y extraído localmente, pero permanece fuera del índice y de la proyección pública.",
+        "La adquisición técnica no establece por sí sola vigencia, aplicabilidad jurídica ni que un acto municipal concreto haya ocurrido.",
+        "Los documentos enlazados deben adquirirse como artefactos separados antes de citarlos."
       ],
       "provenanceNotes": [
-        "Página oficial del MARN que publica tablas sectoriales del Listado Taxativo y remite a la normativa ambiental aplicable."
+        "Página oficial del MARN que publica tablas sectoriales del Listado Taxativo y remite a la normativa ambiental aplicable.",
+        "Feature 090 adquirió https://www.marn.gob.gt/listados-taxativos/ el 2026-08-01T04:33:10.173Z, SHA-256 e6cf807561bc226dcf136efb25716bd72c502f7d21162d1659f713e6028db508, sin mutar el corpus administrado.",
+        "Feature 090 adquirió https://www.marn.gob.gt/listados-taxativos/ el 2026-08-01T04:37:49.913Z, SHA-256 ab2a44100384832ae471a1b053d78d1439b9e83e9119eb0757e6b8f349c8e033, sin mutar el corpus administrado.",
+        "Feature 090 adquirió https://www.marn.gob.gt/listados-taxativos/ el 2026-08-01T04:42:04.608Z, SHA-256 9b59d0489b19ef20be580778532c434a6d7d2136206b5d0c07fe7190fc01bbe9, sin mutar el corpus administrado."
       ],
       "tags": [
         "guatemala",
@@ -1322,16 +1484,48 @@
         "environmental-classification",
         "taxative-list",
         "verified",
-        "acquisition-pending"
-      ]
+        "acquired",
+        "clean-scan",
+        "html-extracted",
+        "ingestion-pending"
+      ],
+      "acquisition": {
+        "acquiredAt": "2026-08-01T04:42:04.608Z",
+        "artifactPath": ".rag/library/official/guatemala-municipal-core/2026-08-01/marn-environmental-taxonomy/9b59d0489b19ef20be580778532c434a6d7d2136206b5d0c07fe7190fc01bbe9.html",
+        "contentSha256": "9b59d0489b19ef20be580778532c434a6d7d2136206b5d0c07fe7190fc01bbe9",
+        "mediaType": "text/html",
+        "byteLength": 214990
+      },
+      "artifactSafety": {
+        "inspectedAt": "2026-08-01T04:42:04.608Z",
+        "artifactPath": ".rag/library/official/guatemala-municipal-core/2026-08-01/marn-environmental-taxonomy/9b59d0489b19ef20be580778532c434a6d7d2136206b5d0c07fe7190fc01bbe9.html",
+        "contentSha256": "9b59d0489b19ef20be580778532c434a6d7d2136206b5d0c07fe7190fc01bbe9",
+        "byteLength": 214990,
+        "observedContentSha256": "9b59d0489b19ef20be580778532c434a6d7d2136206b5d0c07fe7190fc01bbe9",
+        "observedByteLength": 214990,
+        "declaredMediaType": "text/html",
+        "detectedMediaType": "text/html",
+        "signature": "utf8-text-v1",
+        "scannerEngine": "clamav",
+        "scannerVersion": "1.4.3",
+        "scannerDefinitionsVersion": "28078/Fri-Jul-31-06:24:10-2026",
+        "verdict": "clean",
+        "failureCodes": []
+      },
+      "extraction": {
+        "extractedAt": "2026-08-01T04:42:04.608Z",
+        "extractor": "html_heading_v1",
+        "sectionCount": 1,
+        "outputPath": ".rag/library/official/guatemala-municipal-core/2026-08-01/marn-environmental-taxonomy/9b59d0489b19ef20be580778532c434a6d7d2136206b5d0c07fe7190fc01bbe9.sections.json"
+      }
     },
     {
       "sourceId": "marn-environmental-category-a",
       "documentKey": "marn-environmental-category-a",
-      "documentVersion": "category-a-page-verified-2026-08-01",
+      "documentVersion": "snapshot-2026-08-01-sha256-c884b3b7b2f5a106",
       "title": "MARN Estudio de Evaluación de Impacto Ambiental, ruta candidata para Categoría A",
       "category": "national_regulation",
-      "status": "verified",
+      "status": "ingestion_pending",
       "targetJurisdiction": "Municipio de La Antigua Guatemala, Sacatepéquez, Guatemala",
       "sourceJurisdiction": "República de Guatemala",
       "authorityClass": "official_national",
@@ -1343,10 +1537,16 @@
       "limitations": [
         "Es una ruta candidata únicamente después de clasificar el proyecto con el Listado Taxativo vigente; no implica que un proyecto de agua sea Categoría A.",
         "Requisitos, costos y tiempos web deben verificarse contra normativa, formularios y versión vigente antes de ejecución.",
-        "La página no acredita presentación, aprobación o licencia para un proyecto concreto."
+        "La página no acredita presentación, aprobación o licencia para un proyecto concreto.",
+        "El snapshot HTML oficial fue adquirido y extraído localmente, pero permanece fuera del índice y de la proyección pública.",
+        "La adquisición técnica no establece por sí sola vigencia, aplicabilidad jurídica ni que un acto municipal concreto haya ocurrido.",
+        "Los documentos enlazados deben adquirirse como artefactos separados antes de citarlos."
       ],
       "provenanceNotes": [
-        "Página oficial del MARN para el Estudio de Evaluación de Impacto Ambiental y requisitos asociados a Categoría A."
+        "Página oficial del MARN para el Estudio de Evaluación de Impacto Ambiental y requisitos asociados a Categoría A.",
+        "Feature 090 adquirió https://www.marn.gob.gt/estudio-de-evaluacion-de-impacto-ambiental-categoria-a/ el 2026-08-01T04:33:10.173Z, SHA-256 769a21f73e9ceca334142072cdef374a1701ebfdb2dd147c6b77d19dcda79d2a, sin mutar el corpus administrado.",
+        "Feature 090 adquirió https://www.marn.gob.gt/estudio-de-evaluacion-de-impacto-ambiental-categoria-a/ el 2026-08-01T04:37:49.913Z, SHA-256 e498cc4cc9103a4c00e2ee5e2c37ce0debd398fe1b5151dffde36ae0c81c2305, sin mutar el corpus administrado.",
+        "Feature 090 adquirió https://www.marn.gob.gt/estudio-de-evaluacion-de-impacto-ambiental-categoria-a/ el 2026-08-01T04:42:04.608Z, SHA-256 c884b3b7b2f5a106153ecdf7ce6e53adbd1cec2ed29a7e844d13d68677aa8879, sin mutar el corpus administrado."
       ],
       "tags": [
         "guatemala",
@@ -1355,16 +1555,48 @@
         "category-a",
         "candidate-route",
         "verified",
-        "acquisition-pending"
-      ]
+        "acquired",
+        "clean-scan",
+        "html-extracted",
+        "ingestion-pending"
+      ],
+      "acquisition": {
+        "acquiredAt": "2026-08-01T04:42:04.608Z",
+        "artifactPath": ".rag/library/official/guatemala-municipal-core/2026-08-01/marn-environmental-category-a/c884b3b7b2f5a106153ecdf7ce6e53adbd1cec2ed29a7e844d13d68677aa8879.html",
+        "contentSha256": "c884b3b7b2f5a106153ecdf7ce6e53adbd1cec2ed29a7e844d13d68677aa8879",
+        "mediaType": "text/html",
+        "byteLength": 224711
+      },
+      "artifactSafety": {
+        "inspectedAt": "2026-08-01T04:42:04.608Z",
+        "artifactPath": ".rag/library/official/guatemala-municipal-core/2026-08-01/marn-environmental-category-a/c884b3b7b2f5a106153ecdf7ce6e53adbd1cec2ed29a7e844d13d68677aa8879.html",
+        "contentSha256": "c884b3b7b2f5a106153ecdf7ce6e53adbd1cec2ed29a7e844d13d68677aa8879",
+        "byteLength": 224711,
+        "observedContentSha256": "c884b3b7b2f5a106153ecdf7ce6e53adbd1cec2ed29a7e844d13d68677aa8879",
+        "observedByteLength": 224711,
+        "declaredMediaType": "text/html",
+        "detectedMediaType": "text/html",
+        "signature": "utf8-text-v1",
+        "scannerEngine": "clamav",
+        "scannerVersion": "1.4.3",
+        "scannerDefinitionsVersion": "28078/Fri-Jul-31-06:24:10-2026",
+        "verdict": "clean",
+        "failureCodes": []
+      },
+      "extraction": {
+        "extractedAt": "2026-08-01T04:42:04.608Z",
+        "extractor": "html_heading_v1",
+        "sectionCount": 4,
+        "outputPath": ".rag/library/official/guatemala-municipal-core/2026-08-01/marn-environmental-category-a/c884b3b7b2f5a106153ecdf7ce6e53adbd1cec2ed29a7e844d13d68677aa8879.sections.json"
+      }
     },
     {
       "sourceId": "marn-environmental-category-b1",
       "documentKey": "marn-environmental-category-b1",
-      "documentVersion": "category-b1-page-verified-2026-08-01",
+      "documentVersion": "snapshot-2026-08-01-sha256-3ec93c54cf7740d4",
       "title": "MARN instrumento ambiental candidato para Categoría B1",
       "category": "national_regulation",
-      "status": "verified",
+      "status": "ingestion_pending",
       "targetJurisdiction": "Municipio de La Antigua Guatemala, Sacatepéquez, Guatemala",
       "sourceJurisdiction": "República de Guatemala",
       "authorityClass": "official_national",
@@ -1376,10 +1608,16 @@
       "limitations": [
         "Es una ruta candidata únicamente después de clasificar el proyecto con el Listado Taxativo vigente; no implica que un proyecto de agua sea Categoría B1.",
         "Requisitos, costos y tiempos web deben verificarse contra normativa, formularios y versión vigente antes de ejecución.",
-        "La página no acredita presentación, aprobación o licencia para un proyecto concreto."
+        "La página no acredita presentación, aprobación o licencia para un proyecto concreto.",
+        "El snapshot HTML oficial fue adquirido y extraído localmente, pero permanece fuera del índice y de la proyección pública.",
+        "La adquisición técnica no establece por sí sola vigencia, aplicabilidad jurídica ni que un acto municipal concreto haya ocurrido.",
+        "Los documentos enlazados deben adquirirse como artefactos separados antes de citarlos."
       ],
       "provenanceNotes": [
-        "Página oficial del MARN para instrumentos y requisitos asociados a Categoría B1."
+        "Página oficial del MARN para instrumentos y requisitos asociados a Categoría B1.",
+        "Feature 090 adquirió https://www.marn.gob.gt/12-estudio-de-evaluacion-de-impacto-ambiental-categoria-b1/ el 2026-08-01T04:33:10.173Z, SHA-256 60a0f42a753386e2fbc206445bc5b0ac6254ffebc33079d0c40c2328e150c394, sin mutar el corpus administrado.",
+        "Feature 090 adquirió https://www.marn.gob.gt/12-estudio-de-evaluacion-de-impacto-ambiental-categoria-b1/ el 2026-08-01T04:37:49.913Z, SHA-256 43270f8a7f740ababc44c3cfa3900633c36d05503dcedf318cb7d7b8a93fc9bd, sin mutar el corpus administrado.",
+        "Feature 090 adquirió https://www.marn.gob.gt/12-estudio-de-evaluacion-de-impacto-ambiental-categoria-b1/ el 2026-08-01T04:42:04.608Z, SHA-256 3ec93c54cf7740d4568f7bf0ddcaf8489c713e2e9609b5e75549442dc9d99f6d, sin mutar el corpus administrado."
       ],
       "tags": [
         "guatemala",
@@ -1388,16 +1626,48 @@
         "category-b1",
         "candidate-route",
         "verified",
-        "acquisition-pending"
-      ]
+        "acquired",
+        "clean-scan",
+        "html-extracted",
+        "ingestion-pending"
+      ],
+      "acquisition": {
+        "acquiredAt": "2026-08-01T04:42:04.608Z",
+        "artifactPath": ".rag/library/official/guatemala-municipal-core/2026-08-01/marn-environmental-category-b1/3ec93c54cf7740d4568f7bf0ddcaf8489c713e2e9609b5e75549442dc9d99f6d.html",
+        "contentSha256": "3ec93c54cf7740d4568f7bf0ddcaf8489c713e2e9609b5e75549442dc9d99f6d",
+        "mediaType": "text/html",
+        "byteLength": 227770
+      },
+      "artifactSafety": {
+        "inspectedAt": "2026-08-01T04:42:04.608Z",
+        "artifactPath": ".rag/library/official/guatemala-municipal-core/2026-08-01/marn-environmental-category-b1/3ec93c54cf7740d4568f7bf0ddcaf8489c713e2e9609b5e75549442dc9d99f6d.html",
+        "contentSha256": "3ec93c54cf7740d4568f7bf0ddcaf8489c713e2e9609b5e75549442dc9d99f6d",
+        "byteLength": 227770,
+        "observedContentSha256": "3ec93c54cf7740d4568f7bf0ddcaf8489c713e2e9609b5e75549442dc9d99f6d",
+        "observedByteLength": 227770,
+        "declaredMediaType": "text/html",
+        "detectedMediaType": "text/html",
+        "signature": "utf8-text-v1",
+        "scannerEngine": "clamav",
+        "scannerVersion": "1.4.3",
+        "scannerDefinitionsVersion": "28078/Fri-Jul-31-06:24:10-2026",
+        "verdict": "clean",
+        "failureCodes": []
+      },
+      "extraction": {
+        "extractedAt": "2026-08-01T04:42:04.608Z",
+        "extractor": "html_heading_v1",
+        "sectionCount": 4,
+        "outputPath": ".rag/library/official/guatemala-municipal-core/2026-08-01/marn-environmental-category-b1/3ec93c54cf7740d4568f7bf0ddcaf8489c713e2e9609b5e75549442dc9d99f6d.sections.json"
+      }
     },
     {
       "sourceId": "marn-environmental-category-b2",
       "documentKey": "marn-environmental-category-b2",
-      "documentVersion": "category-b2-page-verified-2026-08-01",
+      "documentVersion": "snapshot-2026-08-01-sha256-872138d37044fda8",
       "title": "MARN instrumento ambiental candidato para Categoría B2",
       "category": "national_regulation",
-      "status": "verified",
+      "status": "ingestion_pending",
       "targetJurisdiction": "Municipio de La Antigua Guatemala, Sacatepéquez, Guatemala",
       "sourceJurisdiction": "República de Guatemala",
       "authorityClass": "official_national",
@@ -1409,10 +1679,16 @@
       "limitations": [
         "Es una ruta candidata únicamente después de clasificar el proyecto con el Listado Taxativo vigente; no implica que un proyecto de agua sea Categoría B2.",
         "Requisitos, costos y tiempos web deben verificarse contra normativa, formularios y versión vigente antes de ejecución.",
-        "La página no acredita presentación, aprobación o licencia para un proyecto concreto."
+        "La página no acredita presentación, aprobación o licencia para un proyecto concreto.",
+        "El snapshot HTML oficial fue adquirido y extraído localmente, pero permanece fuera del índice y de la proyección pública.",
+        "La adquisición técnica no establece por sí sola vigencia, aplicabilidad jurídica ni que un acto municipal concreto haya ocurrido.",
+        "Los documentos enlazados deben adquirirse como artefactos separados antes de citarlos."
       ],
       "provenanceNotes": [
-        "Página oficial del MARN para instrumentos y requisitos asociados a Categoría B2."
+        "Página oficial del MARN para instrumentos y requisitos asociados a Categoría B2.",
+        "Feature 090 adquirió https://www.marn.gob.gt/17-evaluacion-ambiental-inicial-categoria-b2/ el 2026-08-01T04:33:10.173Z, SHA-256 44301ea28fb8e64537278df99558598d2e930132da40f5badee8e6ab2c4fa305, sin mutar el corpus administrado.",
+        "Feature 090 adquirió https://www.marn.gob.gt/17-evaluacion-ambiental-inicial-categoria-b2/ el 2026-08-01T04:37:49.913Z, SHA-256 808c2ea72d214b0f97747c170cbc54a21e3337cb9a174e2bcce031ce58920945, sin mutar el corpus administrado.",
+        "Feature 090 adquirió https://www.marn.gob.gt/17-evaluacion-ambiental-inicial-categoria-b2/ el 2026-08-01T04:42:04.608Z, SHA-256 872138d37044fda8ed2abc58f1b9109443c3b2e6c0bff4756ff6d9ff3ef8542a, sin mutar el corpus administrado."
       ],
       "tags": [
         "guatemala",
@@ -1421,16 +1697,48 @@
         "category-b2",
         "candidate-route",
         "verified",
-        "acquisition-pending"
-      ]
+        "acquired",
+        "clean-scan",
+        "html-extracted",
+        "ingestion-pending"
+      ],
+      "acquisition": {
+        "acquiredAt": "2026-08-01T04:42:04.608Z",
+        "artifactPath": ".rag/library/official/guatemala-municipal-core/2026-08-01/marn-environmental-category-b2/872138d37044fda8ed2abc58f1b9109443c3b2e6c0bff4756ff6d9ff3ef8542a.html",
+        "contentSha256": "872138d37044fda8ed2abc58f1b9109443c3b2e6c0bff4756ff6d9ff3ef8542a",
+        "mediaType": "text/html",
+        "byteLength": 224614
+      },
+      "artifactSafety": {
+        "inspectedAt": "2026-08-01T04:42:04.608Z",
+        "artifactPath": ".rag/library/official/guatemala-municipal-core/2026-08-01/marn-environmental-category-b2/872138d37044fda8ed2abc58f1b9109443c3b2e6c0bff4756ff6d9ff3ef8542a.html",
+        "contentSha256": "872138d37044fda8ed2abc58f1b9109443c3b2e6c0bff4756ff6d9ff3ef8542a",
+        "byteLength": 224614,
+        "observedContentSha256": "872138d37044fda8ed2abc58f1b9109443c3b2e6c0bff4756ff6d9ff3ef8542a",
+        "observedByteLength": 224614,
+        "declaredMediaType": "text/html",
+        "detectedMediaType": "text/html",
+        "signature": "utf8-text-v1",
+        "scannerEngine": "clamav",
+        "scannerVersion": "1.4.3",
+        "scannerDefinitionsVersion": "28078/Fri-Jul-31-06:24:10-2026",
+        "verdict": "clean",
+        "failureCodes": []
+      },
+      "extraction": {
+        "extractedAt": "2026-08-01T04:42:04.608Z",
+        "extractor": "html_heading_v1",
+        "sectionCount": 4,
+        "outputPath": ".rag/library/official/guatemala-municipal-core/2026-08-01/marn-environmental-category-b2/872138d37044fda8ed2abc58f1b9109443c3b2e6c0bff4756ff6d9ff3ef8542a.sections.json"
+      }
     },
     {
       "sourceId": "segeplan-snip-standards-2027",
       "documentKey": "segeplan-snip-standards-2027",
-      "documentVersion": "snip-standards-catalog-2027-verified-2026-08-01",
+      "documentVersion": "snapshot-2026-08-01-sha256-cfb8c9fd07e01a2a",
       "title": "Catálogo oficial de Normas SNIP 2027",
       "category": "planning",
-      "status": "verified",
+      "status": "ingestion_pending",
       "targetJurisdiction": "Municipio de La Antigua Guatemala, Sacatepéquez, Guatemala",
       "sourceJurisdiction": "República de Guatemala",
       "authorityClass": "official_national",
@@ -1442,10 +1750,16 @@
       "limitations": [
         "El catálogo identifica Normas SNIP 2027 y años anteriores; el documento exacto y sus anexos deben adquirirse y versionarse antes de citar requisitos.",
         "La aplicación depende del ejercicio fiscal, tipo, fase, escala y complejidad de la inversión pública.",
-        "La norma no acredita que un proyecto haya sido registrado, evaluado, aprobado o financiado."
+        "La norma no acredita que un proyecto haya sido registrado, evaluado, aprobado o financiado.",
+        "El snapshot HTML oficial fue adquirido y extraído localmente, pero permanece fuera del índice y de la proyección pública.",
+        "La adquisición técnica no establece por sí sola vigencia, aplicabilidad jurídica ni que un acto municipal concreto haya ocurrido.",
+        "Los documentos enlazados deben adquirirse como artefactos separados antes de citarlos."
       ],
       "provenanceNotes": [
-        "Catálogo oficial del SNIP de SEGEPLAN con enlaces a Normas SNIP 2027, 2025 y 2024."
+        "Catálogo oficial del SNIP de SEGEPLAN con enlaces a Normas SNIP 2027, 2025 y 2024.",
+        "Feature 090 adquirió https://snip.segeplan.gob.gt/guest/SNPPKG%24PL_DOCUMENTOS.DOC_NORMAS_SNIP el 2026-08-01T04:33:10.173Z, SHA-256 6061c4f0f5fff5a173fd24951517e7e80f916730d190a3d942a65dc9de0740c2, sin mutar el corpus administrado.",
+        "Feature 090 adquirió https://snip.segeplan.gob.gt/guest/SNPPKG%24PL_DOCUMENTOS.DOC_NORMAS_SNIP el 2026-08-01T04:37:49.913Z, SHA-256 7b83bee3195aa00ba02bcea7bf3570502e0f041d24ed9022fb687bad18fb0de7, sin mutar el corpus administrado.",
+        "Feature 090 adquirió https://snip.segeplan.gob.gt/guest/SNPPKG%24PL_DOCUMENTOS.DOC_NORMAS_SNIP el 2026-08-01T04:42:04.608Z, SHA-256 cfb8c9fd07e01a2aa6373f02b874ac839e6ca6135cab36d2987279e2058e4b42, sin mutar el corpus administrado."
       ],
       "tags": [
         "guatemala",
@@ -1455,8 +1769,40 @@
         "project-formulation",
         "2027",
         "verified",
-        "acquisition-pending"
-      ]
+        "acquired",
+        "clean-scan",
+        "html-extracted",
+        "ingestion-pending"
+      ],
+      "acquisition": {
+        "acquiredAt": "2026-08-01T04:42:04.608Z",
+        "artifactPath": ".rag/library/official/guatemala-municipal-core/2026-08-01/segeplan-snip-standards-2027/cfb8c9fd07e01a2aa6373f02b874ac839e6ca6135cab36d2987279e2058e4b42.html",
+        "contentSha256": "cfb8c9fd07e01a2aa6373f02b874ac839e6ca6135cab36d2987279e2058e4b42",
+        "mediaType": "text/html",
+        "byteLength": 52598
+      },
+      "artifactSafety": {
+        "inspectedAt": "2026-08-01T04:42:04.608Z",
+        "artifactPath": ".rag/library/official/guatemala-municipal-core/2026-08-01/segeplan-snip-standards-2027/cfb8c9fd07e01a2aa6373f02b874ac839e6ca6135cab36d2987279e2058e4b42.html",
+        "contentSha256": "cfb8c9fd07e01a2aa6373f02b874ac839e6ca6135cab36d2987279e2058e4b42",
+        "byteLength": 52598,
+        "observedContentSha256": "cfb8c9fd07e01a2aa6373f02b874ac839e6ca6135cab36d2987279e2058e4b42",
+        "observedByteLength": 52598,
+        "declaredMediaType": "text/html",
+        "detectedMediaType": "text/html",
+        "signature": "html-windows-1252-v1",
+        "scannerEngine": "clamav",
+        "scannerVersion": "1.4.3",
+        "scannerDefinitionsVersion": "28078/Fri-Jul-31-06:24:10-2026",
+        "verdict": "clean",
+        "failureCodes": []
+      },
+      "extraction": {
+        "extractedAt": "2026-08-01T04:42:04.608Z",
+        "extractor": "html_heading_v1",
+        "sectionCount": 17,
+        "outputPath": ".rag/library/official/guatemala-municipal-core/2026-08-01/segeplan-snip-standards-2027/cfb8c9fd07e01a2aa6373f02b874ac839e6ca6135cab36d2987279e2058e4b42.sections.json"
+      }
     },
     {
       "sourceId": "mspas-water-health-authority",
@@ -1496,10 +1842,10 @@
     {
       "sourceId": "mspas-water-project-quality-certification",
       "documentKey": "mspas-water-project-quality-certification",
-      "documentVersion": "ag-178-2009-procedure-verified-2026-08-01",
+      "documentVersion": "snapshot-2026-08-01-sha256-964394387576ee4d",
       "title": "Certificación de calidad del agua para consumo humano en proyectos de abastecimiento",
       "category": "form",
-      "status": "verified",
+      "status": "ingestion_pending",
       "targetJurisdiction": "Municipio de La Antigua Guatemala, Sacatepéquez, Guatemala",
       "sourceJurisdiction": "República de Guatemala",
       "authorityClass": "official_national",
@@ -1511,10 +1857,16 @@
       "limitations": [
         "El catálogo gubernamental describe el trámite y remite al Acuerdo Gubernativo 178-2009; la norma y formularios vigentes deben adquirirse por separado.",
         "Debe verificarse si el proyecto concreto encaja en el supuesto, qué Dirección de Área de Salud es competente y si existen reformas o requisitos adicionales.",
-        "La ficha no acredita que una fuente haya sido inspeccionada o certificada."
+        "La ficha no acredita que una fuente haya sido inspeccionada o certificada.",
+        "El snapshot HTML oficial fue adquirido y extraído localmente, pero permanece fuera del índice y de la proyección pública.",
+        "La adquisición técnica no establece por sí sola vigencia, aplicabilidad jurídica ni que un acto municipal concreto haya ocurrido.",
+        "Los documentos enlazados deben adquirirse como artefactos separados antes de citarlos."
       ],
       "provenanceNotes": [
-        "Ficha oficial del Catálogo Nacional de Trámites con información proporcionada por el MSPAS."
+        "Ficha oficial del Catálogo Nacional de Trámites con información proporcionada por el MSPAS.",
+        "Feature 090 adquirió https://www.tramites.gob.gt/servicio/1758/ el 2026-08-01T04:33:10.173Z, SHA-256 cf7e1f860bb5ed9a5f097e32b82e265a689cfaa6b2f86a02a4287072086f1a66, sin mutar el corpus administrado.",
+        "Feature 090 adquirió https://www.tramites.gob.gt/servicio/1758/ el 2026-08-01T04:37:49.913Z, SHA-256 fba8ad36e21b531c252521ca8d8e9624f5784e88fdb289aa40a58c0d36554f5e, sin mutar el corpus administrado.",
+        "Feature 090 adquirió https://www.tramites.gob.gt/servicio/1758/ el 2026-08-01T04:42:04.608Z, SHA-256 964394387576ee4d25099e3da545880301b060276a17eba238e163a421690534, sin mutar el corpus administrado."
       ],
       "tags": [
         "guatemala",
@@ -1524,16 +1876,48 @@
         "source-assessment",
         "ag-178-2009",
         "verified",
-        "acquisition-pending"
-      ]
+        "acquired",
+        "clean-scan",
+        "html-extracted",
+        "ingestion-pending"
+      ],
+      "acquisition": {
+        "acquiredAt": "2026-08-01T04:42:04.608Z",
+        "artifactPath": ".rag/library/official/guatemala-municipal-core/2026-08-01/mspas-water-project-quality-certification/964394387576ee4d25099e3da545880301b060276a17eba238e163a421690534.html",
+        "contentSha256": "964394387576ee4d25099e3da545880301b060276a17eba238e163a421690534",
+        "mediaType": "text/html",
+        "byteLength": 67012
+      },
+      "artifactSafety": {
+        "inspectedAt": "2026-08-01T04:42:04.608Z",
+        "artifactPath": ".rag/library/official/guatemala-municipal-core/2026-08-01/mspas-water-project-quality-certification/964394387576ee4d25099e3da545880301b060276a17eba238e163a421690534.html",
+        "contentSha256": "964394387576ee4d25099e3da545880301b060276a17eba238e163a421690534",
+        "byteLength": 67012,
+        "observedContentSha256": "964394387576ee4d25099e3da545880301b060276a17eba238e163a421690534",
+        "observedByteLength": 67012,
+        "declaredMediaType": "text/html",
+        "detectedMediaType": "text/html",
+        "signature": "utf8-text-v1",
+        "scannerEngine": "clamav",
+        "scannerVersion": "1.4.3",
+        "scannerDefinitionsVersion": "28078/Fri-Jul-31-06:24:10-2026",
+        "verdict": "clean",
+        "failureCodes": []
+      },
+      "extraction": {
+        "extractedAt": "2026-08-01T04:42:04.608Z",
+        "extractor": "html_heading_v1",
+        "sectionCount": 12,
+        "outputPath": ".rag/library/official/guatemala-municipal-core/2026-08-01/mspas-water-project-quality-certification/964394387576ee4d25099e3da545880301b060276a17eba238e163a421690534.sections.json"
+      }
     },
     {
       "sourceId": "guatecompras-use-rules-2022",
       "documentKey": "guatecompras-use-rules-2022",
-      "documentVersion": "resolution-001-2022-verified-2026-08-01",
+      "documentVersion": "snapshot-2026-08-01-sha256-29a2756a57809e75",
       "title": "Resolución 001-2022: normas para el uso del Sistema GUATECOMPRAS",
       "category": "national_regulation",
-      "status": "verified",
+      "status": "ingestion_pending",
       "targetJurisdiction": "Municipio de La Antigua Guatemala, Sacatepéquez, Guatemala",
       "sourceJurisdiction": "República de Guatemala",
       "authorityClass": "official_national",
@@ -1545,10 +1929,16 @@
       "limitations": [
         "Debe verificarse vigencia, reformas y texto oficial completo antes de citar una operación, perfil, publicación o plazo.",
         "La norma de uso del sistema no acredita que un evento, oferta, adjudicación, contrato o publicación exista en un expediente concreto.",
-        "La ficha educativa oficial todavía no constituye adquisición e ingestión gobernada del texto normativo."
+        "La ficha educativa oficial todavía no constituye adquisición e ingestión gobernada del texto normativo.",
+        "El snapshot HTML oficial fue adquirido y extraído localmente, pero permanece fuera del índice y de la proyección pública.",
+        "La adquisición técnica no establece por sí sola vigencia, aplicabilidad jurídica ni que un acto municipal concreto haya ocurrido.",
+        "Los documentos enlazados deben adquirirse como artefactos separados antes de citarlos."
       ],
       "provenanceNotes": [
-        "Recurso oficial de DIFODA/MINFIN que identifica la Resolución 001-2022 y su objeto."
+        "Recurso oficial de DIFODA/MINFIN que identifica la Resolución 001-2022 y su objeto.",
+        "Feature 090 adquirió https://formacion.minfin.gob.gt/difoteca/normas-para-el-uso-del-sistema-de-informacion-de-contrataciones-y-adquisiciones-del-estado-guatecompras/ el 2026-08-01T04:33:10.173Z, SHA-256 afe2cbbac5a856f885c80cab68ff0064a0817c5194c65cff71f91a0622ba982a, sin mutar el corpus administrado.",
+        "Feature 090 adquirió https://formacion.minfin.gob.gt/difoteca/normas-para-el-uso-del-sistema-de-informacion-de-contrataciones-y-adquisiciones-del-estado-guatecompras/ el 2026-08-01T04:37:49.913Z, SHA-256 5cdaba8eef32d03a6ee78f689e553ecf5fe7248b698c91177d4cda7071cd2bcc, sin mutar el corpus administrado.",
+        "Feature 090 adquirió https://formacion.minfin.gob.gt/difoteca/normas-para-el-uso-del-sistema-de-informacion-de-contrataciones-y-adquisiciones-del-estado-guatecompras/ el 2026-08-01T04:42:04.608Z, SHA-256 29a2756a57809e7596e7a3fc65b30b01594a35ad58dc04c5edf3daadbb9baced, sin mutar el corpus administrado."
       ],
       "tags": [
         "guatemala",
@@ -1557,8 +1947,40 @@
         "resolution-001-2022",
         "national-regulation",
         "verified",
-        "acquisition-pending"
-      ]
+        "acquired",
+        "clean-scan",
+        "html-extracted",
+        "ingestion-pending"
+      ],
+      "acquisition": {
+        "acquiredAt": "2026-08-01T04:42:04.608Z",
+        "artifactPath": ".rag/library/official/guatemala-municipal-core/2026-08-01/guatecompras-use-rules-2022/29a2756a57809e7596e7a3fc65b30b01594a35ad58dc04c5edf3daadbb9baced.html",
+        "contentSha256": "29a2756a57809e7596e7a3fc65b30b01594a35ad58dc04c5edf3daadbb9baced",
+        "mediaType": "text/html",
+        "byteLength": 109152
+      },
+      "artifactSafety": {
+        "inspectedAt": "2026-08-01T04:42:04.608Z",
+        "artifactPath": ".rag/library/official/guatemala-municipal-core/2026-08-01/guatecompras-use-rules-2022/29a2756a57809e7596e7a3fc65b30b01594a35ad58dc04c5edf3daadbb9baced.html",
+        "contentSha256": "29a2756a57809e7596e7a3fc65b30b01594a35ad58dc04c5edf3daadbb9baced",
+        "byteLength": 109152,
+        "observedContentSha256": "29a2756a57809e7596e7a3fc65b30b01594a35ad58dc04c5edf3daadbb9baced",
+        "observedByteLength": 109152,
+        "declaredMediaType": "text/html",
+        "detectedMediaType": "text/html",
+        "signature": "utf8-text-v1",
+        "scannerEngine": "clamav",
+        "scannerVersion": "1.4.3",
+        "scannerDefinitionsVersion": "28078/Fri-Jul-31-06:24:10-2026",
+        "verdict": "clean",
+        "failureCodes": []
+      },
+      "extraction": {
+        "extractedAt": "2026-08-01T04:42:04.608Z",
+        "extractor": "html_heading_v1",
+        "sectionCount": 7,
+        "outputPath": ".rag/library/official/guatemala-municipal-core/2026-08-01/guatecompras-use-rules-2022/29a2756a57809e7596e7a3fc65b30b01594a35ad58dc04c5edf3daadbb9baced.sections.json"
+      }
     }
   ]
 }

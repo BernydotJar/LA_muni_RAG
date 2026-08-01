@@ -1,0 +1,281 @@
+{
+  "schemaVersion": 1,
+  "verifiedAt": "2026-08-01T04:44:58.814Z",
+  "nodeId": "WS02-OFFICIAL-SOURCE-ACQUISITION-003",
+  "acquisitionId": "guatemala-municipal-core-html-2026-08-01",
+  "receiptSha256": "a403b955994a24ac8bd9da38ba72f19a48913fc71a7f1908ff456166145c0726",
+  "inventorySha256": "44966064dde19107c8a3f99bf1d460265f839bac6d2b8393c03058bd3d5547d0",
+  "result": "pass",
+  "attempted": 16,
+  "successful": 11,
+  "blocked": [
+    {
+      "sourceId": "guatemala-procurement-regulation",
+      "failureCode": "source_http_status",
+      "failureMessage": "Official endpoint returned HTTP 403.",
+      "inventoryStatusBefore": "verified",
+      "inventoryStatusAfter": "verified"
+    },
+    {
+      "sourceId": "gt-codigo-municipal-index",
+      "failureCode": "source_extraction_insufficient",
+      "failureMessage": "Extraction produced 0 sections and 0 characters.",
+      "inventoryStatusBefore": "verified",
+      "inventoryStatusAfter": "verified"
+    },
+    {
+      "sourceId": "guatemala-development-councils-law",
+      "failureCode": "source_extraction_insufficient",
+      "failureMessage": "Extraction produced 0 sections and 0 characters.",
+      "inventoryStatusBefore": "verified",
+      "inventoryStatusAfter": "verified"
+    },
+    {
+      "sourceId": "guatemala-mafim-second-edition",
+      "failureCode": "source_http_status",
+      "failureMessage": "Official endpoint returned HTTP 403.",
+      "inventoryStatusBefore": "verified",
+      "inventoryStatusAfter": "verified"
+    },
+    {
+      "sourceId": "mspas-water-health-authority",
+      "failureCode": "source_http_status",
+      "failureMessage": "Official endpoint returned HTTP 403.",
+      "inventoryStatusBefore": "verified",
+      "inventoryStatusAfter": "verified"
+    }
+  ],
+  "totalVerifiedSourceBytes": 1833794,
+  "clamAv": {
+    "engine": "clamav",
+    "version": "1.4.3",
+    "definitionsVersion": [
+      "28078/Fri-Jul-31-06:24:10-2026"
+    ]
+  },
+  "acquired": [
+    {
+      "sourceId": "segeplan-snip-system",
+      "contentSha256": "ccb8917f466fece02130d440403f9d46cb80b80889926bc3ee3b9a3993c24e83",
+      "byteLength": 126372,
+      "artifactMode": "600",
+      "extractionSha256": "cfbf1ed1c043907f44a0e214482313a4b63eb144b4812948e497de5f82160f8e",
+      "extractionByteLength": 151816,
+      "extractionMode": "600",
+      "charset": "windows-1252",
+      "structuralSignature": "html-windows-1252-v1",
+      "scanner": {
+        "engine": "clamav",
+        "version": "1.4.3",
+        "definitionsVersion": "28078/Fri-Jul-31-06:24:10-2026"
+      },
+      "sectionCount": 1,
+      "extractedCharacters": 71752,
+      "inventoryStatusBefore": "ingestion_pending",
+      "inventoryStatusAfter": "ingestion_pending"
+    },
+    {
+      "sourceId": "segeplan-snip-standards-2027",
+      "contentSha256": "cfb8c9fd07e01a2aa6373f02b874ac839e6ca6135cab36d2987279e2058e4b42",
+      "byteLength": 52598,
+      "artifactMode": "600",
+      "extractionSha256": "227430343f0f9ec3bb296ccf4d61e64c77ca2470d4a8af1e5043318d4bf5b673",
+      "extractionByteLength": 17990,
+      "extractionMode": "600",
+      "charset": "windows-1252",
+      "structuralSignature": "html-windows-1252-v1",
+      "scanner": {
+        "engine": "clamav",
+        "version": "1.4.3",
+        "definitionsVersion": "28078/Fri-Jul-31-06:24:10-2026"
+      },
+      "sectionCount": 17,
+      "extractedCharacters": 4510,
+      "inventoryStatusBefore": "ingestion_pending",
+      "inventoryStatusAfter": "ingestion_pending"
+    },
+    {
+      "sourceId": "marn-environmental-taxonomy",
+      "contentSha256": "9b59d0489b19ef20be580778532c434a6d7d2136206b5d0c07fe7190fc01bbe9",
+      "byteLength": 214990,
+      "artifactMode": "600",
+      "extractionSha256": "94380721860a7b0addbf17055dd4c58ee58b52c53970b21d92b5bc961014ce75",
+      "extractionByteLength": 21235,
+      "extractionMode": "600",
+      "charset": "utf-8",
+      "structuralSignature": "utf8-text-v1",
+      "scanner": {
+        "engine": "clamav",
+        "version": "1.4.3",
+        "definitionsVersion": "28078/Fri-Jul-31-06:24:10-2026"
+      },
+      "sectionCount": 1,
+      "extractedCharacters": 9122,
+      "inventoryStatusBefore": "ingestion_pending",
+      "inventoryStatusAfter": "ingestion_pending"
+    },
+    {
+      "sourceId": "marn-environmental-category-a",
+      "contentSha256": "c884b3b7b2f5a106153ecdf7ce6e53adbd1cec2ed29a7e844d13d68677aa8879",
+      "byteLength": 224711,
+      "artifactMode": "600",
+      "extractionSha256": "fe19b9629016dec647f917cdc3e157022194ebc94941be9d6c10adea48218060",
+      "extractionByteLength": 44725,
+      "extractionMode": "600",
+      "charset": "utf-8",
+      "structuralSignature": "utf8-text-v1",
+      "scanner": {
+        "engine": "clamav",
+        "version": "1.4.3",
+        "definitionsVersion": "28078/Fri-Jul-31-06:24:10-2026"
+      },
+      "sectionCount": 4,
+      "extractedCharacters": 19421,
+      "inventoryStatusBefore": "ingestion_pending",
+      "inventoryStatusAfter": "ingestion_pending"
+    },
+    {
+      "sourceId": "marn-environmental-category-b1",
+      "contentSha256": "3ec93c54cf7740d4568f7bf0ddcaf8489c713e2e9609b5e75549442dc9d99f6d",
+      "byteLength": 227770,
+      "artifactMode": "600",
+      "extractionSha256": "443a0db1592b4c54569c63b56fbb0f0ae81887304c9dca68cd18fd77e092e23f",
+      "extractionByteLength": 47801,
+      "extractionMode": "600",
+      "charset": "utf-8",
+      "structuralSignature": "utf8-text-v1",
+      "scanner": {
+        "engine": "clamav",
+        "version": "1.4.3",
+        "definitionsVersion": "28078/Fri-Jul-31-06:24:10-2026"
+      },
+      "sectionCount": 4,
+      "extractedCharacters": 20841,
+      "inventoryStatusBefore": "ingestion_pending",
+      "inventoryStatusAfter": "ingestion_pending"
+    },
+    {
+      "sourceId": "marn-environmental-category-b2",
+      "contentSha256": "872138d37044fda8ed2abc58f1b9109443c3b2e6c0bff4756ff6d9ff3ef8542a",
+      "byteLength": 224614,
+      "artifactMode": "600",
+      "extractionSha256": "4322d8283f76610f810a2ec514771e8e865c57770ceefc6164611c8f61198070",
+      "extractionByteLength": 42461,
+      "extractionMode": "600",
+      "charset": "utf-8",
+      "structuralSignature": "utf8-text-v1",
+      "scanner": {
+        "engine": "clamav",
+        "version": "1.4.3",
+        "definitionsVersion": "28078/Fri-Jul-31-06:24:10-2026"
+      },
+      "sectionCount": 4,
+      "extractedCharacters": 18382,
+      "inventoryStatusBefore": "ingestion_pending",
+      "inventoryStatusAfter": "ingestion_pending"
+    },
+    {
+      "sourceId": "marn-environmental-category-c",
+      "contentSha256": "c53660270b5a18f45e640fb2a28a0d849757678f9673488708dd7797e589cd71",
+      "byteLength": 223521,
+      "artifactMode": "600",
+      "extractionSha256": "164b7a1c1151b65c68cae1fbcde2da9c12c6b425129403065a772a663f77a4ea",
+      "extractionByteLength": 40641,
+      "extractionMode": "600",
+      "charset": "utf-8",
+      "structuralSignature": "utf8-text-v1",
+      "scanner": {
+        "engine": "clamav",
+        "version": "1.4.3",
+        "definitionsVersion": "28078/Fri-Jul-31-06:24:10-2026"
+      },
+      "sectionCount": 4,
+      "extractedCharacters": 17565,
+      "inventoryStatusBefore": "ingestion_pending",
+      "inventoryStatusAfter": "ingestion_pending"
+    },
+    {
+      "sourceId": "infom-water-sanitation-services",
+      "contentSha256": "cd671c29c96821933cfdc4695a131f27ef7f3a9b0b497ad8caca766ce0d63378",
+      "byteLength": 224495,
+      "artifactMode": "600",
+      "extractionSha256": "3cce0ec6897f93cd1e4ab36d63ead3b9ba76eeffd306850acc5944d159ad6d99",
+      "extractionByteLength": 41239,
+      "extractionMode": "600",
+      "charset": "utf-8",
+      "structuralSignature": "utf8-text-v1",
+      "scanner": {
+        "engine": "clamav",
+        "version": "1.4.3",
+        "definitionsVersion": "28078/Fri-Jul-31-06:24:10-2026"
+      },
+      "sectionCount": 39,
+      "extractedCharacters": 7342,
+      "inventoryStatusBefore": "ingestion_pending",
+      "inventoryStatusAfter": "ingestion_pending"
+    },
+    {
+      "sourceId": "guatemala-procurement-law",
+      "contentSha256": "b90434adf98933a9a24d36dcffdd74655eadc34f5c7128acc15270f984d11760",
+      "byteLength": 138559,
+      "artifactMode": "600",
+      "extractionSha256": "db5f27031de396413e93b42c1bd7c6c143cb59f43f9383e11786cb5c3242e23e",
+      "extractionByteLength": 16565,
+      "extractionMode": "600",
+      "charset": "utf-8",
+      "structuralSignature": "utf8-text-v1",
+      "scanner": {
+        "engine": "clamav",
+        "version": "1.4.3",
+        "definitionsVersion": "28078/Fri-Jul-31-06:24:10-2026"
+      },
+      "sectionCount": 18,
+      "extractedCharacters": 2808,
+      "inventoryStatusBefore": "ingestion_pending",
+      "inventoryStatusAfter": "ingestion_pending"
+    },
+    {
+      "sourceId": "guatecompras-use-rules-2022",
+      "contentSha256": "29a2756a57809e7596e7a3fc65b30b01594a35ad58dc04c5edf3daadbb9baced",
+      "byteLength": 109152,
+      "artifactMode": "600",
+      "extractionSha256": "445fa75c9a08851909a28dcf1c8ea4745d905363dac85d9e1c022c843c7adffa",
+      "extractionByteLength": 7115,
+      "extractionMode": "600",
+      "charset": "utf-8",
+      "structuralSignature": "utf8-text-v1",
+      "scanner": {
+        "engine": "clamav",
+        "version": "1.4.3",
+        "definitionsVersion": "28078/Fri-Jul-31-06:24:10-2026"
+      },
+      "sectionCount": 7,
+      "extractedCharacters": 1111,
+      "inventoryStatusBefore": "ingestion_pending",
+      "inventoryStatusAfter": "ingestion_pending"
+    },
+    {
+      "sourceId": "mspas-water-project-quality-certification",
+      "contentSha256": "964394387576ee4d25099e3da545880301b060276a17eba238e163a421690534",
+      "byteLength": 67012,
+      "artifactMode": "600",
+      "extractionSha256": "73a20f8ef543ffa084888a7a615a000deac25e1319abaaaf5275ebbc0a02c19d",
+      "extractionByteLength": 19908,
+      "extractionMode": "600",
+      "charset": "utf-8",
+      "structuralSignature": "utf8-text-v1",
+      "scanner": {
+        "engine": "clamav",
+        "version": "1.4.3",
+        "definitionsVersion": "28078/Fri-Jul-31-06:24:10-2026"
+      },
+      "sectionCount": 12,
+      "extractedCharacters": 5561,
+      "inventoryStatusBefore": "ingestion_pending",
+      "inventoryStatusAfter": "ingestion_pending"
+    }
+  ],
+  "rawArtifactsTrackedByGit": false,
+  "managedCorpusMutation": false,
+  "indexingPerformed": false
+}
