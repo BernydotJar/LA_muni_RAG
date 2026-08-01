@@ -2,7 +2,7 @@
   "use strict";
 
   const PROGRESS_KEY = "la-muni-rag:training-progress:v1";
-  const MISSING_EVIDENCE = "Documento o regla pendiente de localizar y validar.";
+  const MISSING_EVIDENCE = "Cobertura documental pendiente para este tenant.";
   const REQUEST_ASSERTION_STATUS = "requester_supplied_unverified";
   const KEYBOARD_KEYS = ["ArrowDown", "ArrowUp", "Home", "End"];
   const EVIDENCE_STATUSES = new Set([

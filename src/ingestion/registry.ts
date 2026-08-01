@@ -1,5 +1,6 @@
 import { detectFormat } from "./detectFormat.js";
 import { docxExtractor } from "./extractors/docxExtractor.js";
+import { htmlExtractor } from "./extractors/htmlExtractor.js";
 import { markdownExtractor } from "./extractors/markdownExtractor.js";
 import { rawPdfExtractor } from "./extractors/rawPdfExtractor.js";
 import { txtExtractor } from "./extractors/txtExtractor.js";
@@ -9,6 +10,7 @@ import { UnsupportedFormatError } from "./types.js";
 const extractors: Partial<Record<SourceFormat, DocumentExtractor>> = {
   markdown: markdownExtractor,
   txt: txtExtractor,
+  html: htmlExtractor,
   docx: docxExtractor,
   pdf: rawPdfExtractor,
 };

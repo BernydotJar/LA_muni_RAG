@@ -304,7 +304,7 @@ describe("operations readiness foundation", () => {
     assert.match(packageJson, /"eval:water": "node --import tsx --test src\/__tests__\/eval-water-001\.test\.ts"/);
     assert.match(evaluation, /## EVAL-WATER-001/);
     assert.match(evaluation, /exactly 47 ordered research categories/);
-    assert.match(evaluation, /Documento o regla pendiente de localizar y validar\./);
+    assert.match(evaluation, /Cobertura documental pendiente para este tenant\./);
     assert.match(evaluation, /passed_with_corpus_and_runtime_limitations/);
     assert.match(evaluation, /does not prove that all Antigua Guatemala sources have been located/);
     assert.match(evaluation, /No evaluation result authorizes deployment/);

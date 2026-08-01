@@ -272,7 +272,7 @@ body.procedure-product .workflow-shell { margin-top: 18px; border-radius: 32px; 
 body.procedure-product .workflow-header { padding: clamp(22px, 4vw, 38px); }
 .workflow-overview {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) repeat(3, minmax(120px, 0.24fr));
+  grid-template-columns: minmax(0, 1fr) repeat(4, minmax(112px, 0.24fr));
   gap: 12px;
   margin-top: 20px;
 }

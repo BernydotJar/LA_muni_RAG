@@ -1,0 +1,88 @@
+{
+  "schemaVersion": 1,
+  "packId": "antigua-guatemala-2026",
+  "displayName": "Municipalidad de La Antigua Guatemala 2026",
+  "organizationType": "municipality",
+  "isTemplate": false,
+  "jurisdiction": "La Antigua Guatemala, Sacatepéquez, Guatemala",
+  "domainPackId": "municipal-antigua",
+  "allowedHosts": [
+    "muniantigua.gob.gt"
+  ],
+  "requiredCoverageTags": [
+    "planning",
+    "organization",
+    "procedure-manual",
+    "budget",
+    "procurement",
+    "public-works",
+    "water-sanitation"
+  ],
+  "connectors": [
+    {
+      "connectorId": "antigua-pdmot",
+      "type": "static_document",
+      "title": "PDM-OT módulos 1, 3 y 4",
+      "discoveryUrl": "https://muniantigua.gob.gt/pdmot/",
+      "allowedHosts": [
+        "muniantigua.gob.gt"
+      ],
+      "sourceInventoryIds": [
+        "antigua-pdm-ot",
+        "antigua-pdmot-module-3",
+        "antigua-pdmot-module-4"
+      ],
+      "coverageTags": [
+        "planning",
+        "water-sanitation",
+        "monitoring",
+        "pei",
+        "pom",
+        "poa"
+      ],
+      "acceptedMediaTypes": [
+        "text/html",
+        "application/pdf"
+      ],
+      "refresh": {
+        "cadence": "quarterly",
+        "maximumAgeDays": 120
+      },
+      "enabled": true
+    },
+    {
+      "connectorId": "antigua-public-information-catalog",
+      "type": "json_catalog",
+      "title": "Portal de información pública municipal",
+      "discoveryUrl": "https://muniantigua.gob.gt/api/public/consultas/articulos",
+      "allowedHosts": [
+        "muniantigua.gob.gt"
+      ],
+      "sourceInventoryIds": [
+        "antigua-poa",
+        "antigua-presupuesto",
+        "antigua-organigrama",
+        "antigua-mof",
+        "antigua-manuales-procedimientos",
+        "antigua-public-works-2026"
+      ],
+      "coverageTags": [
+        "organization",
+        "procedure-manual",
+        "budget",
+        "procurement",
+        "public-works",
+        "poa"
+      ],
+      "acceptedMediaTypes": [
+        "application/json",
+        "application/pdf"
+      ],
+      "refresh": {
+        "cadence": "weekly",
+        "maximumAgeDays": 14
+      },
+      "enabled": true
+    }
+  ]
+}

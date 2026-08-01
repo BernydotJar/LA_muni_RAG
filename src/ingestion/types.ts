@@ -1,4 +1,4 @@
-export type SourceFormat = "markdown" | "txt" | "docx" | "pdf";
+export type SourceFormat = "markdown" | "txt" | "html" | "docx" | "pdf";
 
 export type NormalizedSectionType =
   | "title"

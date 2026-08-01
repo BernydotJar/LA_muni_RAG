@@ -1,6 +1,6 @@
 # LA Muni RAG — Current Program State
 
-Updated: 2026-07-30T18:49:39Z
+Updated: 2026-08-01T03:00:00Z
 
 Program status: **PUBLIC PILOT OPERATIONAL — the anonymous PDM-OT assistant and premium procedure workflow are deployed on GitHub Pages, backed by an immutable Cloud Run revision and protected Cloud SQL database; Graph Harness revision 1 is done with all 8 release evidence kinds and the blocking gate PASS. Productive identity/MFA, DMP OCR, complete municipal coverage and legal-correctness claims remain explicitly deferred.**
 
@@ -33,6 +33,22 @@ productive_authenticated_product_deployed: false
 
 `AGENTS.md` and `RTK.md` remain authoritative. Merge, production deployment, Cloud SQL
 apply, protected-branch mutation and destructive operations remain human-gated.
+
+## Managed corpus expansion — 2026-08-01
+
+Three real municipal documents are credited as ingested for the Antigua public tenant: PDM-OT
+modules 1, 3 and 4. Their immutable manifests reconcile exact versions, SHA-256 values, clean
+accepted artifact generations, processed ingestion jobs and 578 projected public sections
+(444 + 90 + 44). Modules 3 and 4 were ingested through the non-owner tenant runtime role in
+managed Cloud SQL with FORCE RLS. Their deterministic `local-eval-hashing/token-bigram-hash-1536-v1`
+vectors remain lexical evaluation infrastructure, not a production semantic model.
+
+Seven official municipal PDFs have exact acquired bytes and clean ClamAV scans but no
+extractable text. They remain `failed` with `pdf_no_extractable_text` and are excluded from
+retrieval until a separate Spanish OCR accuracy, page-traceability and human-review gate is
+approved. The public object-store boundary remains unchanged; no production object store is
+claimed. The source inventory now contains 29 governed records and zero records classified as
+`missing_source`; verified or acquired status does not imply ingestion, vigencia or applicability.
 
 ## Feature 074 — guarded Cloud SQL staging v1
 
@@ -277,7 +293,7 @@ Two previously identified official municipal PDFs were reacquired from their reg
 
 The real run exposed and repaired a canonical identity defect: the worker lease did not carry server-owned document key, title and version, so completion rejected real vectors with `vector_record_scope_mismatch`. The lease now carries those values and completion still independently rechecks them. The disposable evidence runtime used a loopback-only PostgreSQL cluster, a non-owner `NOBYPASSRLS` role and five `FORCE RLS` tables. Raw PDFs remain outside Git.
 
-One real municipal document is credited as ingested. The vector representation is explicitly `local-eval-hashing/token-bigram-hash-1536-v1`; it is deterministic lexical evaluation infrastructure, not a semantic model or productive embedding provider. Feature 086 now supplies bounded retrieval measurements. Exact-SHA Backend `30474973082`, Public Browser `30474974657` and Terraform `30474973360` passed for functional commit `4aa7dc72679a029348650b9207f3866709f9d7df`.
+At the Feature 085 checkpoint, one real municipal document was credited as ingested. The vector representation is explicitly `local-eval-hashing/token-bigram-hash-1536-v1`; it is deterministic lexical evaluation infrastructure, not a semantic model or productive embedding provider. Feature 086 now supplies bounded retrieval measurements. Exact-SHA Backend `30474973082`, Public Browser `30474974657` and Terraform `30474973360` passed for functional commit `4aa7dc72679a029348650b9207f3866709f9d7df`.
 
 ## Feature 086 — real-corpus retrieval evaluation v1
 

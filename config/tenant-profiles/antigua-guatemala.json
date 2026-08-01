@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "profileId": "antigua-guatemala",
+  "displayName": "Municipalidad de La Antigua Guatemala",
+  "organizationType": "municipality",
+  "isTemplate": false,
+  "jurisdiction": "La Antigua Guatemala, Sacatepéquez, Guatemala",
+  "language": "es-GT",
+  "domainPackId": "municipal-antigua",
+  "sourcePackIds": [
+    "antigua-guatemala-2026",
+    "guatemala-municipal-core"
+  ],
+  "publicAccess": true,
+  "branding": {
+    "productName": "LA Muni RAG",
+    "assistantName": "Asistente Municipal",
+    "organizationName": "Municipalidad de La Antigua Guatemala",
+    "primaryLabel": "Antigua-first"
+  }
+}

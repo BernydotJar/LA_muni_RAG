@@ -72,7 +72,7 @@ describe("EVAL-INGEST-001 — durable tenant ingestion pipeline", () => {
     assert.match(tenantSmoke, /concurrent|Promise\.all|50/);
   });
 
-  it("credits only the controlled local ingestion without production infrastructure claims", async () => {
+  it("credits the controlled and managed corpus generations without unsupported infrastructure claims", async () => {
     const [state, inventory] = await Promise.all([
       readFile("program/current-state.md", "utf8"),
       readFile(".rag/source-inventory.json", "utf8"),
@@ -80,10 +80,17 @@ describe("EVAL-INGEST-001 — durable tenant ingestion pipeline", () => {
     assert.match(state, /no production object store/i);
     assert.match(state, /scanner\/definitions monitor/i);
     assert.match(state, /dispatcher/i);
-    assert.match(state, /one real municipal document is credited as ingested/i);
+    assert.match(state, /three real municipal documents are credited as ingested/i);
     assert.match(state, /local-eval-hashing/i);
-    const parsed = JSON.parse(inventory) as { records: Array<{ status: string; failureCodes?: string[] }> };
-    assert.equal(parsed.records.filter((record) => record.status === "ingested").length, 1);
-    assert.equal(parsed.records.filter((record) => record.failureCodes?.includes("pdf_no_extractable_text")).length, 1);
+    const parsed = JSON.parse(inventory) as { records: Array<{ sourceId?: string; status: string; failureCodes?: string[] }> };
+    const ingested = parsed.records.filter((record) => record.status === "ingested");
+    assert.deepEqual(
+      ingested.map((record: { sourceId?: string }) => record.sourceId).sort(),
+      ["antigua-pdm-ot", "antigua-pdmot-module-3", "antigua-pdmot-module-4"]
+    );
+    assert.equal(
+      parsed.records.filter((record) => record.failureCodes?.includes("pdf_no_extractable_text")).length,
+      7
+    );
   });
 });

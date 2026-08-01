@@ -494,7 +494,7 @@ describe("public procedure gateway v1", () => {
     const classification = classifyProcedureQuery(query, pack);
     const plan = planPublicProcedureQueries(query, classification, pack);
     assert.equal(classification.procedureType, "public_works");
-    assert.ok(plan.precise.length >= 1 && plan.precise.length <= 4);
+    assert.ok(plan.precise.length >= 1 && plan.precise.length <= 5);
     assert.ok(plan.fallback.length >= 1 && plan.fallback.length <= 10);
     assert.ok(plan.fallback.some((item) => item.toLowerCase() === "obra"));
     assert.ok(plan.fallback.some((item) => item.toLowerCase() === "presupuesto"));
@@ -547,6 +547,73 @@ describe("public procedure gateway v1", () => {
       assert.ok(harness.searchRepository.searchCalls.every((call) => call.input.tenantId === TENANT_A));
       assert.equal(harness.publicRepository.audits.at(-1)?.operation, "public_procedure_v1");
       assert.equal(harness.publicRepository.audits.at(-1)?.eventType, "public.procedure.succeeded");
+    } finally { await stopHarness(harness); }
+  });
+
+  it("round-robins public procedure evidence across configured retrieval families", async () => {
+    const harness = await startHarness({ candidates: [], allowedOrigins: [PAGES_ORIGIN] });
+    try {
+      const pack = loadDomainPack("municipal-antigua");
+      const query = "Cómo se planifica ejecuta y da seguimiento a un proyecto de agua potable";
+      const classification = classifyProcedureQuery(query, pack);
+      const plan = planPublicProcedureQueries(query, classification, pack);
+      assert.equal(plan.precise.length, 5);
+
+      const candidatesByQuery = new Map<string, StoredSearchCandidate[]>([
+        [plan.precise[0]!, [candidate({
+          sectionId: "10000000-0000-4000-8000-000000000001",
+          chunkId: "water-community",
+          citationLabel: "PDM-OT, página 10",
+          excerpt: "La necesidad comunitaria de agua potable se documenta con diagnóstico y cobertura actual.",
+        })]],
+        [plan.precise[1]!, [candidate({
+          sectionId: "10000000-0000-4000-8000-000000000002",
+          chunkId: "water-technical",
+          citationLabel: "PDM-OT, página 20",
+          excerpt: "El diagnóstico incluye fuente de agua, caudal, calidad, topografía y diseño hidráulico.",
+        })]],
+        [plan.precise[2]!, [candidate({
+          sectionId: "10000000-0000-4000-8000-000000000003",
+          chunkId: "water-planning",
+          citationLabel: "PDM-OT Módulo 4, página 12",
+          excerpt: "La planificación articula PDM-OT, POM, POA, costo, financiamiento y presupuesto.",
+        })]],
+        [plan.precise[3]!, [candidate({
+          sectionId: "10000000-0000-4000-8000-000000000004",
+          chunkId: "water-contracting",
+          citationLabel: "Manual de contratación, página 8",
+          excerpt: "La contratación comprende ofertas, adjudicación, contrato, inicio, ejecución y supervisión.",
+        })]],
+        [plan.precise[4]!, [candidate({
+          sectionId: "10000000-0000-4000-8000-000000000005",
+          chunkId: "water-operation",
+          citationLabel: "Manual de operación, página 4",
+          excerpt: "La operación requiere mantenimiento, continuidad y controles de calidad del servicio.",
+        })]],
+      ]);
+      harness.searchRepository.searchKeyword = async (_client, input) => {
+        harness.searchRepository.searchCalls.push({ mode: "keyword", input: structuredClone(input) });
+        return structuredClone(candidatesByQuery.get(input.query) ?? []);
+      };
+
+      const params = new URLSearchParams({ query, q: query, mode: "keyword", limit: "5", depth: "deep_dive" });
+      params.delete("query");
+      const response = await getPublic(harness, `/api/public/v1/procedure?${params}`);
+      assert.equal(response.status, 200);
+      const body = await response.json() as {
+        citations: Array<{ citationLabel: string }>;
+        steps: Array<{ evidenceStatus: string }>;
+        metadata: { retrievalQueryCount?: number; retrievedEvidenceCount?: number; evidenceCount: number };
+      };
+      assert.equal(body.metadata.retrievalQueryCount, 5);
+      assert.equal(body.metadata.retrievedEvidenceCount, 5);
+      assert.equal(body.metadata.evidenceCount, 5);
+      assert.equal(body.citations.length, 5);
+      assert.ok(body.steps.filter((step) => step.evidenceStatus === "supported").length >= 5);
+      assert.deepEqual(
+        harness.searchRepository.searchCalls.map((call) => call.input.query),
+        plan.precise
+      );
     } finally { await stopHarness(harness); }
   });
 

@@ -91,7 +91,7 @@ Esas son categorías de investigación, no hechos ni pasos predeterminados. Por 
 - citar evidencia aplicable a Antigua o normativa nacional pertinente;
 - marcar referencias externas como comparativas;
 - evitar inventar formulario, sistema, actor, aprobación o plazo;
-- registrar “Documento o regla pendiente de localizar y validar” cuando corresponda;
+- registrar “Cobertura documental pendiente para este tenant” y la fuente requerida cuando corresponda;
 - producir un workflow estructurado, no sólo una respuesta narrativa.
 
 El corpus y eval end-to-end requeridos para demostrar este caso todavía no están completos según la [auditoría de baseline](../../program/baseline-audit.md).

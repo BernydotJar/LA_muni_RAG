@@ -157,329 +157,329 @@
       "label": "Necesidad comunitaria",
       "group_id": "community-intake",
       "evidence_prompt": "Localizar una fuente verificable que pruebe la regla, actor, documento o estado aplicable a «Necesidad comunitaria».",
-      "missing_evidence_text": "Documento o regla pendiente de localizar y validar."
+      "missing_evidence_text": "Cobertura documental pendiente para este tenant."
     },
     {
       "sequence": 2,
       "label": "Solicitud",
       "group_id": "community-intake",
       "evidence_prompt": "Localizar una fuente verificable que pruebe la regla, actor, documento o estado aplicable a «Solicitud».",
-      "missing_evidence_text": "Documento o regla pendiente de localizar y validar."
+      "missing_evidence_text": "Cobertura documental pendiente para este tenant."
     },
     {
       "sequence": 3,
       "label": "COCODE",
       "group_id": "community-intake",
       "evidence_prompt": "Localizar una fuente verificable que pruebe la regla, actor, documento o estado aplicable a «COCODE».",
-      "missing_evidence_text": "Documento o regla pendiente de localizar y validar."
+      "missing_evidence_text": "Cobertura documental pendiente para este tenant."
     },
     {
       "sequence": 4,
       "label": "COMUDE",
       "group_id": "community-intake",
       "evidence_prompt": "Localizar una fuente verificable que pruebe la regla, actor, documento o estado aplicable a «COMUDE».",
-      "missing_evidence_text": "Documento o regla pendiente de localizar y validar."
+      "missing_evidence_text": "Cobertura documental pendiente para este tenant."
     },
     {
       "sequence": 5,
       "label": "Planificación municipal",
       "group_id": "community-intake",
       "evidence_prompt": "Localizar una fuente verificable que pruebe la regla, actor, documento o estado aplicable a «Planificación municipal».",
-      "missing_evidence_text": "Documento o regla pendiente de localizar y validar."
+      "missing_evidence_text": "Cobertura documental pendiente para este tenant."
     },
     {
       "sequence": 6,
       "label": "Perfil",
       "group_id": "community-intake",
       "evidence_prompt": "Localizar una fuente verificable que pruebe la regla, actor, documento o estado aplicable a «Perfil».",
-      "missing_evidence_text": "Documento o regla pendiente de localizar y validar."
+      "missing_evidence_text": "Cobertura documental pendiente para este tenant."
     },
     {
       "sequence": 7,
       "label": "Diagnóstico",
       "group_id": "technical-diagnosis",
       "evidence_prompt": "Localizar una fuente verificable que pruebe la regla, actor, documento o estado aplicable a «Diagnóstico».",
-      "missing_evidence_text": "Documento o regla pendiente de localizar y validar."
+      "missing_evidence_text": "Cobertura documental pendiente para este tenant."
     },
     {
       "sequence": 8,
       "label": "Fuente de agua",
       "group_id": "technical-diagnosis",
       "evidence_prompt": "Localizar una fuente verificable que pruebe la regla, actor, documento o estado aplicable a «Fuente de agua».",
-      "missing_evidence_text": "Documento o regla pendiente de localizar y validar."
+      "missing_evidence_text": "Cobertura documental pendiente para este tenant."
     },
     {
       "sequence": 9,
       "label": "Disponibilidad",
       "group_id": "technical-diagnosis",
       "evidence_prompt": "Localizar una fuente verificable que pruebe la regla, actor, documento o estado aplicable a «Disponibilidad».",
-      "missing_evidence_text": "Documento o regla pendiente de localizar y validar."
+      "missing_evidence_text": "Cobertura documental pendiente para este tenant."
     },
     {
       "sequence": 10,
       "label": "Calidad",
       "group_id": "technical-diagnosis",
       "evidence_prompt": "Localizar una fuente verificable que pruebe la regla, actor, documento o estado aplicable a «Calidad».",
-      "missing_evidence_text": "Documento o regla pendiente de localizar y validar."
+      "missing_evidence_text": "Cobertura documental pendiente para este tenant."
     },
     {
       "sequence": 11,
       "label": "Terreno",
       "group_id": "technical-diagnosis",
       "evidence_prompt": "Localizar una fuente verificable que pruebe la regla, actor, documento o estado aplicable a «Terreno».",
-      "missing_evidence_text": "Documento o regla pendiente de localizar y validar."
+      "missing_evidence_text": "Cobertura documental pendiente para este tenant."
     },
     {
       "sequence": 12,
       "label": "Propiedad",
       "group_id": "technical-diagnosis",
       "evidence_prompt": "Localizar una fuente verificable que pruebe la regla, actor, documento o estado aplicable a «Propiedad».",
-      "missing_evidence_text": "Documento o regla pendiente de localizar y validar."
+      "missing_evidence_text": "Cobertura documental pendiente para este tenant."
     },
     {
       "sequence": 13,
       "label": "Servidumbres",
       "group_id": "technical-diagnosis",
       "evidence_prompt": "Localizar una fuente verificable que pruebe la regla, actor, documento o estado aplicable a «Servidumbres».",
-      "missing_evidence_text": "Documento o regla pendiente de localizar y validar."
+      "missing_evidence_text": "Cobertura documental pendiente para este tenant."
     },
     {
       "sequence": 14,
       "label": "Derechos de paso",
       "group_id": "technical-diagnosis",
       "evidence_prompt": "Localizar una fuente verificable que pruebe la regla, actor, documento o estado aplicable a «Derechos de paso».",
-      "missing_evidence_text": "Documento o regla pendiente de localizar y validar."
+      "missing_evidence_text": "Cobertura documental pendiente para este tenant."
     },
     {
       "sequence": 15,
       "label": "Topografía",
       "group_id": "technical-diagnosis",
       "evidence_prompt": "Localizar una fuente verificable que pruebe la regla, actor, documento o estado aplicable a «Topografía».",
-      "missing_evidence_text": "Documento o regla pendiente de localizar y validar."
+      "missing_evidence_text": "Cobertura documental pendiente para este tenant."
     },
     {
       "sequence": 16,
       "label": "Estudio hidráulico",
       "group_id": "technical-diagnosis",
       "evidence_prompt": "Localizar una fuente verificable que pruebe la regla, actor, documento o estado aplicable a «Estudio hidráulico».",
-      "missing_evidence_text": "Documento o regla pendiente de localizar y validar."
+      "missing_evidence_text": "Cobertura documental pendiente para este tenant."
     },
     {
       "sequence": 17,
       "label": "Demanda",
       "group_id": "technical-diagnosis",
       "evidence_prompt": "Localizar una fuente verificable que pruebe la regla, actor, documento o estado aplicable a «Demanda».",
-      "missing_evidence_text": "Documento o regla pendiente de localizar y validar."
+      "missing_evidence_text": "Cobertura documental pendiente para este tenant."
     },
     {
       "sequence": 18,
       "label": "PDM-OT",
       "group_id": "planning-finance",
       "evidence_prompt": "Localizar una fuente verificable que pruebe la regla, actor, documento o estado aplicable a «PDM-OT».",
-      "missing_evidence_text": "Documento o regla pendiente de localizar y validar."
+      "missing_evidence_text": "Cobertura documental pendiente para este tenant."
     },
     {
       "sequence": 19,
       "label": "POM",
       "group_id": "planning-finance",
       "evidence_prompt": "Localizar una fuente verificable que pruebe la regla, actor, documento o estado aplicable a «POM».",
-      "missing_evidence_text": "Documento o regla pendiente de localizar y validar."
+      "missing_evidence_text": "Cobertura documental pendiente para este tenant."
     },
     {
       "sequence": 20,
       "label": "POA",
       "group_id": "planning-finance",
       "evidence_prompt": "Localizar una fuente verificable que pruebe la regla, actor, documento o estado aplicable a «POA».",
-      "missing_evidence_text": "Documento o regla pendiente de localizar y validar."
+      "missing_evidence_text": "Cobertura documental pendiente para este tenant."
     },
     {
       "sequence": 21,
       "label": "Costo",
       "group_id": "planning-finance",
       "evidence_prompt": "Localizar una fuente verificable que pruebe la regla, actor, documento o estado aplicable a «Costo».",
-      "missing_evidence_text": "Documento o regla pendiente de localizar y validar."
+      "missing_evidence_text": "Cobertura documental pendiente para este tenant."
     },
     {
       "sequence": 22,
       "label": "Financiamiento",
       "group_id": "planning-finance",
       "evidence_prompt": "Localizar una fuente verificable que pruebe la regla, actor, documento o estado aplicable a «Financiamiento».",
-      "missing_evidence_text": "Documento o regla pendiente de localizar y validar."
+      "missing_evidence_text": "Cobertura documental pendiente para este tenant."
     },
     {
       "sequence": 23,
       "label": "Inversión pública",
       "group_id": "planning-finance",
       "evidence_prompt": "Localizar una fuente verificable que pruebe la regla, actor, documento o estado aplicable a «Inversión pública».",
-      "missing_evidence_text": "Documento o regla pendiente de localizar y validar."
+      "missing_evidence_text": "Cobertura documental pendiente para este tenant."
     },
     {
       "sequence": 24,
       "label": "Sistema nacional aplicable",
       "group_id": "planning-finance",
       "evidence_prompt": "Localizar una fuente verificable que pruebe la regla, actor, documento o estado aplicable a «Sistema nacional aplicable».",
-      "missing_evidence_text": "Documento o regla pendiente de localizar y validar."
+      "missing_evidence_text": "Cobertura documental pendiente para este tenant."
     },
     {
       "sequence": 25,
       "label": "Ambiente",
       "group_id": "reviews-approvals",
       "evidence_prompt": "Localizar una fuente verificable que pruebe la regla, actor, documento o estado aplicable a «Ambiente».",
-      "missing_evidence_text": "Documento o regla pendiente de localizar y validar."
+      "missing_evidence_text": "Cobertura documental pendiente para este tenant."
     },
     {
       "sequence": 26,
       "label": "Salud",
       "group_id": "reviews-approvals",
       "evidence_prompt": "Localizar una fuente verificable que pruebe la regla, actor, documento o estado aplicable a «Salud».",
-      "missing_evidence_text": "Documento o regla pendiente de localizar y validar."
+      "missing_evidence_text": "Cobertura documental pendiente para este tenant."
     },
     {
       "sequence": 27,
       "label": "Dictámenes",
       "group_id": "reviews-approvals",
       "evidence_prompt": "Localizar una fuente verificable que pruebe la regla, actor, documento o estado aplicable a «Dictámenes».",
-      "missing_evidence_text": "Documento o regla pendiente de localizar y validar."
+      "missing_evidence_text": "Cobertura documental pendiente para este tenant."
     },
     {
       "sequence": 28,
       "label": "Concejo",
       "group_id": "reviews-approvals",
       "evidence_prompt": "Localizar una fuente verificable que pruebe la regla, actor, documento o estado aplicable a «Concejo».",
-      "missing_evidence_text": "Documento o regla pendiente de localizar y validar."
+      "missing_evidence_text": "Cobertura documental pendiente para este tenant."
     },
     {
       "sequence": 29,
       "label": "Expediente",
       "group_id": "reviews-approvals",
       "evidence_prompt": "Localizar una fuente verificable que pruebe la regla, actor, documento o estado aplicable a «Expediente».",
-      "missing_evidence_text": "Documento o regla pendiente de localizar y validar."
+      "missing_evidence_text": "Cobertura documental pendiente para este tenant."
     },
     {
       "sequence": 30,
       "label": "Contratación",
       "group_id": "procurement",
       "evidence_prompt": "Localizar una fuente verificable que pruebe la regla, actor, documento o estado aplicable a «Contratación».",
-      "missing_evidence_text": "Documento o regla pendiente de localizar y validar."
+      "missing_evidence_text": "Cobertura documental pendiente para este tenant."
     },
     {
       "sequence": 31,
       "label": "Ofertas",
       "group_id": "procurement",
       "evidence_prompt": "Localizar una fuente verificable que pruebe la regla, actor, documento o estado aplicable a «Ofertas».",
-      "missing_evidence_text": "Documento o regla pendiente de localizar y validar."
+      "missing_evidence_text": "Cobertura documental pendiente para este tenant."
     },
     {
       "sequence": 32,
       "label": "Adjudicación",
       "group_id": "procurement",
       "evidence_prompt": "Localizar una fuente verificable que pruebe la regla, actor, documento o estado aplicable a «Adjudicación».",
-      "missing_evidence_text": "Documento o regla pendiente de localizar y validar."
+      "missing_evidence_text": "Cobertura documental pendiente para este tenant."
     },
     {
       "sequence": 33,
       "label": "Contrato",
       "group_id": "procurement",
       "evidence_prompt": "Localizar una fuente verificable que pruebe la regla, actor, documento o estado aplicable a «Contrato».",
-      "missing_evidence_text": "Documento o regla pendiente de localizar y validar."
+      "missing_evidence_text": "Cobertura documental pendiente para este tenant."
     },
     {
       "sequence": 34,
       "label": "Inicio",
       "group_id": "delivery-control",
       "evidence_prompt": "Localizar una fuente verificable que pruebe la regla, actor, documento o estado aplicable a «Inicio».",
-      "missing_evidence_text": "Documento o regla pendiente de localizar y validar."
+      "missing_evidence_text": "Cobertura documental pendiente para este tenant."
     },
     {
       "sequence": 35,
       "label": "Ejecución",
       "group_id": "delivery-control",
       "evidence_prompt": "Localizar una fuente verificable que pruebe la regla, actor, documento o estado aplicable a «Ejecución».",
-      "missing_evidence_text": "Documento o regla pendiente de localizar y validar."
+      "missing_evidence_text": "Cobertura documental pendiente para este tenant."
     },
     {
       "sequence": 36,
       "label": "Supervisión",
       "group_id": "delivery-control",
       "evidence_prompt": "Localizar una fuente verificable que pruebe la regla, actor, documento o estado aplicable a «Supervisión».",
-      "missing_evidence_text": "Documento o regla pendiente de localizar y validar."
+      "missing_evidence_text": "Cobertura documental pendiente para este tenant."
     },
     {
       "sequence": 37,
       "label": "Bitácora",
       "group_id": "delivery-control",
       "evidence_prompt": "Localizar una fuente verificable que pruebe la regla, actor, documento o estado aplicable a «Bitácora».",
-      "missing_evidence_text": "Documento o regla pendiente de localizar y validar."
+      "missing_evidence_text": "Cobertura documental pendiente para este tenant."
     },
     {
       "sequence": 38,
       "label": "Estimaciones",
       "group_id": "delivery-control",
       "evidence_prompt": "Localizar una fuente verificable que pruebe la regla, actor, documento o estado aplicable a «Estimaciones».",
-      "missing_evidence_text": "Documento o regla pendiente de localizar y validar."
+      "missing_evidence_text": "Cobertura documental pendiente para este tenant."
     },
     {
       "sequence": 39,
       "label": "Cambios",
       "group_id": "delivery-control",
       "evidence_prompt": "Localizar una fuente verificable que pruebe la regla, actor, documento o estado aplicable a «Cambios».",
-      "missing_evidence_text": "Documento o regla pendiente de localizar y validar."
+      "missing_evidence_text": "Cobertura documental pendiente para este tenant."
     },
     {
       "sequence": 40,
       "label": "Recepción",
       "group_id": "acceptance-closeout",
       "evidence_prompt": "Localizar una fuente verificable que pruebe la regla, actor, documento o estado aplicable a «Recepción».",
-      "missing_evidence_text": "Documento o regla pendiente de localizar y validar."
+      "missing_evidence_text": "Cobertura documental pendiente para este tenant."
     },
     {
       "sequence": 41,
       "label": "Liquidación",
       "group_id": "acceptance-closeout",
       "evidence_prompt": "Localizar una fuente verificable que pruebe la regla, actor, documento o estado aplicable a «Liquidación».",
-      "missing_evidence_text": "Documento o regla pendiente de localizar y validar."
+      "missing_evidence_text": "Cobertura documental pendiente para este tenant."
     },
     {
       "sequence": 42,
       "label": "Pagos",
       "group_id": "acceptance-closeout",
       "evidence_prompt": "Localizar una fuente verificable que pruebe la regla, actor, documento o estado aplicable a «Pagos».",
-      "missing_evidence_text": "Documento o regla pendiente de localizar y validar."
+      "missing_evidence_text": "Cobertura documental pendiente para este tenant."
     },
     {
       "sequence": 43,
       "label": "Operación",
       "group_id": "operations-service",
       "evidence_prompt": "Localizar una fuente verificable que pruebe la regla, actor, documento o estado aplicable a «Operación».",
-      "missing_evidence_text": "Documento o regla pendiente de localizar y validar."
+      "missing_evidence_text": "Cobertura documental pendiente para este tenant."
     },
     {
       "sequence": 44,
       "label": "Mantenimiento",
       "group_id": "operations-service",
       "evidence_prompt": "Localizar una fuente verificable que pruebe la regla, actor, documento o estado aplicable a «Mantenimiento».",
-      "missing_evidence_text": "Documento o regla pendiente de localizar y validar."
+      "missing_evidence_text": "Cobertura documental pendiente para este tenant."
     },
     {
       "sequence": 45,
       "label": "Cierre",
       "group_id": "operations-service",
       "evidence_prompt": "Localizar una fuente verificable que pruebe la regla, actor, documento o estado aplicable a «Cierre».",
-      "missing_evidence_text": "Documento o regla pendiente de localizar y validar."
+      "missing_evidence_text": "Cobertura documental pendiente para este tenant."
     },
     {
       "sequence": 46,
       "label": "Continuidad",
       "group_id": "operations-service",
       "evidence_prompt": "Localizar una fuente verificable que pruebe la regla, actor, documento o estado aplicable a «Continuidad».",
-      "missing_evidence_text": "Documento o regla pendiente de localizar y validar."
+      "missing_evidence_text": "Cobertura documental pendiente para este tenant."
     },
     {
       "sequence": 47,
       "label": "Calidad del servicio",
       "group_id": "operations-service",
       "evidence_prompt": "Localizar una fuente verificable que pruebe la regla, actor, documento o estado aplicable a «Calidad del servicio».",
-      "missing_evidence_text": "Documento o regla pendiente de localizar y validar."
+      "missing_evidence_text": "Cobertura documental pendiente para este tenant."
     }
   ]
 }

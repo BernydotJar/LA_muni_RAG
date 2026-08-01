@@ -76,15 +76,19 @@ const acquiredRecord = (): SourceInventoryRecord => baseRecord({
 });
 
 describe("municipal source inventory", () => {
-  it("validates one controlled ingestion and one clean no-text extraction failure", async () => {
+  it("validates governed ingestions and clean no-text extraction failures", async () => {
     const manifest = parseSourceInventoryManifest(await readFile(".rag/source-inventory.json", "utf-8"));
     const validation = validateSourceInventory(manifest.records);
     const summary = summarizeSourceInventory(manifest.records);
 
     assert.equal(validation.valid, true, JSON.stringify(validation.failures));
-    assert.equal(summary.acquired, 2);
-    assert.equal(summary.ingested, 1);
-    assert.equal(summary.byStatus.failed, 1);
+    assert.equal(summary.acquired, manifest.records.filter((record) => record.acquisition).length);
+    assert.equal(summary.ingested, 3);
+    assert.equal(summary.byStatus.failed, 7);
+    assert.deepEqual(
+      manifest.records.filter((record) => record.status === "ingested").map((record) => record.sourceId).sort(),
+      ["antigua-pdm-ot", "antigua-pdmot-module-3", "antigua-pdmot-module-4"]
+    );
     assert.ok(summary.comparative >= 8);
   });
 

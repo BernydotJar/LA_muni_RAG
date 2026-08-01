@@ -48,7 +48,7 @@ Used only when no matched authoritative citation is available or when the source
 The fallback remains:
 
 ```text
-No encontré base documental suficiente para afirmar este paso.
+El corpus activo aún no contiene una cita aplicable para este paso. No se presenta como requisito confirmado.
 ```
 
 ## Contract additions

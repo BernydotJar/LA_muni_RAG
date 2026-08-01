@@ -65,6 +65,8 @@ const MEDIA_TYPE_BY_EXTENSION: Record<string, string> = {
   ".pdf": "application/pdf",
   ".docx": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
   ".txt": "text/plain",
+  ".html": "text/html",
+  ".htm": "text/html",
   ".md": "text/markdown",
   ".markdown": "text/markdown",
 };
@@ -209,7 +211,11 @@ export const inspectArtifactContent = (input: {
     detectedMediaType = "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
     signature = "docx-opc-markers-v1";
   } else if (isUtf8Text(input.content)) {
-    detectedMediaType = extension === ".md" || extension === ".markdown" ? "text/markdown" : "text/plain";
+    detectedMediaType = extension === ".md" || extension === ".markdown"
+      ? "text/markdown"
+      : extension === ".html" || extension === ".htm"
+        ? "text/html"
+        : "text/plain";
     signature = "utf8-text-v1";
   } else {
     throw new ArtifactSafetyError(

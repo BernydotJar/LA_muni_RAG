@@ -20,9 +20,13 @@ export const buildProcedureWorkflowWithDependencies = async (
     query,
     mode,
     classification,
-    evidenceBundle.evidence.slice(0, limit),
+    evidenceBundle.evidence,
     domainPack,
-    depth
+    depth,
+    {
+      retrievalQueryCount: evidenceBundle.queryCount ?? 1,
+      retrievedEvidenceCount: evidenceBundle.retrievedEvidenceCount ?? evidenceBundle.evidence.length,
+    }
   );
 };
 

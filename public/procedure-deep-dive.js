@@ -72,7 +72,7 @@
         evidenceStatus: citations.length ? "supported" : "insufficient",
         evidenceStatement: citations.length
           ? "Paso respaldado por evidencia demostrativa visible; requiere validación contra documentos oficiales antes de ejecutar."
-          : "No encontré base documental suficiente para afirmar este paso.",
+          : "El corpus activo aún no contiene una cita aplicable para este paso. No se presenta como requisito confirmado.",
         dependsOn: index === 0 ? [] : [index],
       };
     });
@@ -118,10 +118,10 @@
     }
   };
 
-  const evidenceLabel = (status) => status === "supported" ? "Respaldado" : status === "inferred" ? "Inferido" : "Sin evidencia suficiente";
+  const evidenceLabel = (status) => status === "supported" ? "Respaldado" : status === "inferred" ? "Inferido" : "Cobertura pendiente";
   const renderCitationDossiers = (citations) => {
     const values = asArray(citations);
-    if (!values.length) return '<p class="step-evidence-statement">No encontré base documental suficiente para afirmar este paso.</p>';
+    if (!values.length) return '<p class="step-evidence-statement">El corpus activo aún no contiene una cita aplicable para este paso. No se presenta como requisito confirmado.</p>';
     return values.map((citation) => `
       <details class="citation-dossier">
         <summary>${esc(citation.citationLabel || citation.sourceType || "Fuente")}</summary>
@@ -146,7 +146,7 @@
       ? "Este paso es inferido por relación entre documentos y requiere validación humana."
       : status === "supported"
         ? "Paso respaldado por evidencia coincidente."
-        : "No encontré base documental suficiente para afirmar este paso.");
+        : "El corpus activo aún no contiene una cita aplicable para este paso. No se presenta como requisito confirmado.");
     card.insertAdjacentHTML("beforeend", `<p class="step-evidence-statement">${esc(statement)}</p>`);
     card.insertAdjacentHTML("beforeend", `<div class="citation-dossiers">${renderCitationDossiers(step.sourceEvidence || step.legalBasis)}</div>`);
   };
@@ -164,7 +164,12 @@
     const body = shell?.querySelector(".workflow-body");
     const header = shell?.querySelector(".workflow-header");
     if (!shell || !body || !header) return;
-    header.insertAdjacentHTML("beforeend", '<div class="deep-dive-banner"><strong>Deep dive activo.</strong> Cada paso distingue evidencia directa, inferencia y ausencia de soporte documental.</div>');
+    const metadata = workflow.metadata || {};
+    const coveragePercent = Number.isFinite(Number(metadata.coveragePercent)) ? Number(metadata.coveragePercent) : 0;
+    const supportedStepCount = Number(metadata.supportedStepCount || 0);
+    const inferredStepCount = Number(metadata.inferredStepCount || 0);
+    const pendingStepCount = Number(metadata.pendingStepCount || 0);
+    header.insertAdjacentHTML("beforeend", `<div class="deep-dive-banner"><strong>Cobertura documental: ${esc(coveragePercent)}%.</strong> ${esc(supportedStepCount)} pasos respaldados, ${esc(inferredStepCount)} inferidos y ${esc(pendingStepCount)} pendientes. Cada paso pendiente muestra la fuente requerida para confirmarlo.</div>`);
     asArray(workflow.steps).forEach((step, index) => {
       const card = shell.querySelectorAll(".procedure-step-card")[index];
       if (card) enhanceStep(card, step);

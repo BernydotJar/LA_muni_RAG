@@ -325,15 +325,19 @@
             <p class="lead">${esc(workflow.summary || "Flujo generado desde evidencia disponible.")}</p>
             <div class="workflow-overview" aria-label="Resumen del flujo">
               <div class="workflow-metric"><span>Resultado</span><b>${esc(steps.length ? `${steps.length} pasos` : "Sin pasos")}</b></div>
+              <div class="workflow-metric"><span>Cobertura</span><b>${esc(metadata.coveragePercent ?? 0)}%</b></div>
+              <div class="workflow-metric"><span>Respaldados</span><b>${esc(metadata.supportedStepCount ?? 0)}</b></div>
+              <div class="workflow-metric"><span>Pendientes</span><b>${esc(metadata.pendingStepCount ?? gaps.length)}</b></div>
               <div class="workflow-metric"><span>Fuentes</span><b>${esc(metadata.evidenceCount ?? workflow.citations?.length ?? 0)}</b></div>
-              <div class="workflow-metric"><span>Brechas</span><b>${esc(gaps.length)}</b></div>
-              <div class="workflow-metric"><span>Confianza</span><b>${esc(labelForConfidence(workflow.confidence))}</b></div>
             </div>
             <div class="workflow-meta">
               <span class="chip">jurisdicción: ${esc(workflow.jurisdiction || "Antigua Guatemala")}</span>
               <span class="chip">dominio: ${esc(metadata.domainPackName || metadata.domainPackId || "municipal-antigua")}</span>
               <span class="chip ${esc(workflow.confidence || "low")}">confianza ${esc(labelForConfidence(workflow.confidence))}</span>
               <span class="chip">evidencia: ${esc(metadata.evidenceCount ?? workflow.citations?.length ?? 0)}</span>
+              <span class="chip">consultas documentales: ${esc(metadata.retrievalQueryCount ?? 1)}</span>
+              <span class="chip">pasos respaldados: ${esc(metadata.supportedStepCount ?? 0)}</span>
+              <span class="chip">cobertura pendiente: ${esc(metadata.pendingStepCount ?? gaps.length)}</span>
               <button class="secondary" id="copy-procedure-checklist" type="button">Copiar checklist</button>
             </div>
             ${metadata.hasExternalReference ? `<div class="external-warning">${esc(externalWarningText(metadata))}</div>` : ""}

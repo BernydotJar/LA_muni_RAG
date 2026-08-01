@@ -52,6 +52,7 @@ interface EvidenceManifest { schemaVersion: number; records: CorpusManifestRecor
 const CONFIG_PATH = "evals/real-corpus/controlled-ingestion-config.json";
 const RECEIPT_PATH = "evals/real-corpus/results/controlled-ingestion-receipt.json";
 const MANIFEST_PATH = "evals/real-corpus/controlled-corpus-manifest.json";
+const DEFAULT_ADDITIONAL_MANIFEST_PATHS = ["evals/real-corpus/official-expansion-manifest.json"];
 const INVENTORY_PATH = ".rag/source-inventory.json";
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/;
 
@@ -59,17 +60,30 @@ const load = async <T>(path: string): Promise<T> => JSON.parse(await readFile(pa
 const fail = (message: string): never => { throw new Error(message); };
 
 const main = async (): Promise<void> => {
-  const [config, receipt, manifest, inventory] = await Promise.all([
+  const additionalManifestPaths = (process.env.CONTROLLED_CORPUS_ADDITIONAL_MANIFEST_PATHS
+    ?.split(",")
+    .map((value) => value.trim())
+    .filter(Boolean) ?? DEFAULT_ADDITIONAL_MANIFEST_PATHS);
+  const [config, receipt, manifest, inventory, additionalManifests] = await Promise.all([
     load<ControlledConfig>(CONFIG_PATH),
     load<ControlledReceipt>(RECEIPT_PATH),
     load<EvidenceManifest>(MANIFEST_PATH),
     load<SourceInventoryManifestFile>(INVENTORY_PATH),
+    Promise.all(additionalManifestPaths.map((path) => load<EvidenceManifest>(path))),
   ]);
   if (config.schemaVersion !== 1 || config.sources.length !== 2) fail("Controlled config identity is invalid.");
   if (receipt.schemaVersion !== 1 || receipt.corpusKind !== "controlled_real_public_municipal_v1" || receipt.sources.length !== 2) {
     fail("Controlled ingestion receipt is invalid.");
   }
   if (manifest.schemaVersion !== 1 || manifest.records.length !== 1) fail("Controlled corpus evidence manifest is invalid.");
+  if (additionalManifests.some((additional) => additional.schemaVersion !== 1)) {
+    fail("An additional operational corpus manifest is invalid.");
+  }
+  const operationalRecords = [manifest, ...additionalManifests].flatMap((item) => item.records);
+  const operationalKeys = operationalRecords.map((record) => record.documentKey);
+  if (new Set(operationalKeys).size !== operationalKeys.length) {
+    fail("Operational corpus manifests contain duplicate document keys.");
+  }
 
   const configured = new Map(config.sources.map((source) => [source.sourceId, source]));
   const manifested = new Map(manifest.records.map((record) => [record.documentKey, record]));
@@ -100,7 +114,7 @@ const main = async (): Promise<void> => {
   }
 
   const validation = validateSourceInventory(inventory.records);
-  const reconciliation = reconcileSourceInventoryWithCorpusManifest(inventory.records, manifest.records);
+  const reconciliation = reconcileSourceInventoryWithCorpusManifest(inventory.records, operationalRecords);
   if (!validation.valid || !reconciliation.valid) {
     fail(`Inventory evidence is invalid: ${JSON.stringify([...validation.failures, ...reconciliation.failures])}`);
   }
@@ -134,6 +148,8 @@ const main = async (): Promise<void> => {
     postgresVersion: receipt.database.postgresVersion,
     pgvectorVersion: receipt.database.pgvectorVersion,
     embeddingProvider: receipt.embedding.provider,
+    operationalManifests: 1 + additionalManifests.length,
+    operationalRecords: operationalRecords.length,
     semanticClaim: false,
   }, null, 2)}\n`);
 };
