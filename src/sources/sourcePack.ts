@@ -1,3 +1,5 @@
+import type { SourceInventoryRecord } from "./sourceInventory.js";
+
 export type SourcePackOrganizationType = "municipality" | "government_agency" | "enterprise" | "nonprofit";
 export type SourcePackConnectorType = "static_document" | "html_page" | "json_catalog";
 export type SourcePackRefreshCadence = "static" | "daily" | "weekly" | "monthly" | "quarterly" | "annual" | "on_demand";
@@ -41,6 +43,16 @@ export interface SourcePackValidationFailure {
 export interface SourcePackValidationResult {
   valid: boolean;
   failures: SourcePackValidationFailure[];
+}
+
+export interface SourcePackInventoryBindingFailure {
+  path: string;
+  message: string;
+}
+
+export interface SourcePackInventoryBindingResult {
+  valid: boolean;
+  failures: SourcePackInventoryBindingFailure[];
 }
 
 const SLUG = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
@@ -130,6 +142,7 @@ export const validateSourcePack = (value: unknown): SourcePackValidationResult =
         if (url && !raw.allowedHosts.includes(url.hostname)) fail(`${path}.discoveryUrl`, "URL host is not allowed by the connector.");
       }
       if (!nonEmptyStrings(raw.sourceInventoryIds, 128)) fail(`${path}.sourceInventoryIds`, "sourceInventoryIds must be a bounded string array.");
+      else if (hasDuplicates(raw.sourceInventoryIds)) fail(`${path}.sourceInventoryIds`, "sourceInventoryIds must be unique within a connector.");
       if (!nonEmptyStrings(raw.coverageTags)) fail(`${path}.coverageTags`, "coverageTags must be non-empty.");
       else raw.coverageTags.forEach((tag, tagIndex) => {
         if (!SLUG.test(tag)) fail(`${path}.coverageTags[${tagIndex}]`, "Coverage tag must be a lowercase slug.");
@@ -165,4 +178,67 @@ export const parseSourcePack = (content: string): SourcePackManifest => {
     throw new Error(validation.failures.map((failure) => `${failure.path}: ${failure.message}`).join("\n"));
   }
   return parsed as SourcePackManifest;
+};
+
+export const validateSourcePackInventoryBindings = (
+  pack: SourcePackManifest,
+  inventory: SourceInventoryRecord[]
+): SourcePackInventoryBindingResult => {
+  if (pack.isTemplate) return { valid: true, failures: [] };
+
+  const failures: SourcePackInventoryBindingFailure[] = [];
+  const fail = (path: string, message: string): void => {
+    failures.push({ path, message });
+  };
+  const inventoryById = new Map(inventory.map((record) => [record.sourceId, record]));
+  const boundByConnector = new Map<string, string>();
+  const enabledCoverageTags = new Set(
+    pack.connectors
+      .filter((connector) => connector.enabled)
+      .flatMap((connector) => connector.coverageTags)
+  );
+
+  for (const requiredTag of pack.requiredCoverageTags) {
+    if (!enabledCoverageTags.has(requiredTag)) {
+      fail(
+        "requiredCoverageTags",
+        `Required coverage tag ${requiredTag} is not supplied by an enabled connector.`
+      );
+    }
+  }
+
+  pack.connectors.forEach((connector, connectorIndex) => {
+    connector.sourceInventoryIds.forEach((sourceId, sourceIndex) => {
+      const path = `connectors[${connectorIndex}].sourceInventoryIds[${sourceIndex}]`;
+      const previousConnector = boundByConnector.get(sourceId);
+      if (previousConnector) {
+        fail(path, `Source inventory ID ${sourceId} is already bound to connector ${previousConnector}.`);
+      } else {
+        boundByConnector.set(sourceId, connector.connectorId);
+      }
+
+      const record = inventoryById.get(sourceId);
+      if (!record) {
+        fail(path, `Source inventory ID ${sourceId} does not exist in the governed inventory.`);
+        return;
+      }
+      if (!record.publicUrl) return;
+
+      let hostname: string;
+      try {
+        hostname = new URL(record.publicUrl).hostname;
+      } catch {
+        fail(path, `Source inventory ID ${sourceId} has an invalid public URL.`);
+        return;
+      }
+      if (!connector.allowedHosts.includes(hostname)) {
+        fail(
+          path,
+          `Source inventory ID ${sourceId} uses host ${hostname}, which is not allowed by connector ${connector.connectorId}.`
+        );
+      }
+    });
+  });
+
+  return { valid: failures.length === 0, failures };
 };

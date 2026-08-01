@@ -11,15 +11,22 @@
     "infom.gob.gt",
     "formacion.minfin.gob.gt",
     "www.minfin.gob.gt",
-    "www.congreso.gob.gt"
+    "www.congreso.gob.gt",
+    "www.mspas.gob.gt",
+    "tramites.gob.gt",
+    "www.tramites.gob.gt"
   ],
   "requiredCoverageTags": [
     "municipal-authority",
     "community-participation",
     "public-investment",
+    "project-formulation",
     "environment",
+    "environmental-classification",
     "procurement",
-    "water-sanitation"
+    "financial-management",
+    "water-sanitation",
+    "water-quality"
   ],
   "connectors": [
     {
@@ -31,12 +38,14 @@
         "snip.segeplan.gob.gt"
       ],
       "sourceInventoryIds": [
-        "segeplan-snip-system"
+        "segeplan-snip-system",
+        "segeplan-snip-standards-2027"
       ],
       "coverageTags": [
         "public-investment",
         "project-profile",
-        "project-lifecycle"
+        "project-lifecycle",
+        "project-formulation"
       ],
       "acceptedMediaTypes": [
         "text/html",
@@ -49,18 +58,23 @@
       "enabled": true
     },
     {
-      "connectorId": "marn-environmental-category-c",
+      "connectorId": "marn-environmental-classification",
       "type": "html_page",
-      "title": "MARN evaluación ambiental inicial categoría C",
-      "discoveryUrl": "https://www.marn.gob.gt/28-evaluacion-ambiental-inicial-categoria-c/",
+      "title": "MARN clasificación ambiental y rutas candidatas por categoría",
+      "discoveryUrl": "https://www.marn.gob.gt/listados-taxativos/",
       "allowedHosts": [
         "www.marn.gob.gt"
       ],
       "sourceInventoryIds": [
+        "marn-environmental-taxonomy",
+        "marn-environmental-category-a",
+        "marn-environmental-category-b1",
+        "marn-environmental-category-b2",
         "marn-environmental-category-c"
       ],
       "coverageTags": [
         "environment",
+        "environmental-classification",
         "property",
         "permits",
         "public-investment"
@@ -113,7 +127,8 @@
       ],
       "sourceInventoryIds": [
         "guatemala-procurement-law",
-        "guatemala-procurement-regulation"
+        "guatemala-procurement-regulation",
+        "guatecompras-use-rules-2022"
       ],
       "coverageTags": [
         "procurement",
@@ -148,6 +163,65 @@
         "community-participation",
         "cocode",
         "comude"
+      ],
+      "acceptedMediaTypes": [
+        "text/html",
+        "application/pdf"
+      ],
+      "refresh": {
+        "cadence": "monthly",
+        "maximumAgeDays": 45
+      },
+      "enabled": true
+    },
+    {
+      "connectorId": "minfin-municipal-financial-administration",
+      "type": "html_page",
+      "title": "MINFIN MAFIM segunda edición",
+      "discoveryUrl": "https://www.minfin.gob.gt/7701-558-aprobar-el-manual-de-administracion-financiera-integrada-municipal-mafim-en-su-segunda-edicion-el-cual-actualiza-y-regula-el-marco-de-las-actividades-a-ejecutar-en-la-gestion-financiera-munic/",
+      "allowedHosts": [
+        "www.minfin.gob.gt"
+      ],
+      "sourceInventoryIds": [
+        "guatemala-mafim-second-edition"
+      ],
+      "coverageTags": [
+        "financial-management",
+        "budget",
+        "treasury",
+        "accounting",
+        "payments"
+      ],
+      "acceptedMediaTypes": [
+        "text/html",
+        "application/pdf"
+      ],
+      "refresh": {
+        "cadence": "annual",
+        "maximumAgeDays": 400
+      },
+      "enabled": true
+    },
+    {
+      "connectorId": "mspas-drinking-water",
+      "type": "html_page",
+      "title": "MSPAS salud ambiental y certificación de calidad del agua",
+      "discoveryUrl": "https://www.tramites.gob.gt/servicio/1758/",
+      "allowedHosts": [
+        "www.mspas.gob.gt",
+        "tramites.gob.gt",
+        "www.tramites.gob.gt"
+      ],
+      "sourceInventoryIds": [
+        "mspas-water-health-authority",
+        "mspas-water-project-quality-certification"
+      ],
+      "coverageTags": [
+        "water-sanitation",
+        "water-quality",
+        "health",
+        "certification",
+        "source-assessment"
       ],
       "acceptedMediaTypes": [
         "text/html",

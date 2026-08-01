@@ -110,7 +110,12 @@
     const expected = Array.from({ length: 47 }, (_, index) => index + 1);
     const categorySequences = module.research_categories.map((item) => Number(item?.sequence));
     const groupSequences = module.groups.flatMap((group) => safeArray(group?.category_sequences).map(Number));
+    const concreteRequirements = module.research_categories.every((item) => {
+      const required = uniqueText(item?.required_evidence, 6);
+      return required.length > 0 && required.every((value) => !/^documento o evidencia verificable sobre/i.test(value));
+    });
     return (
+      concreteRequirements &&
       new Set(module.research_categories.map((item) => boundedText(item?.label, "", 300))).size === 47 &&
       JSON.stringify(categorySequences) === JSON.stringify(expected) &&
       JSON.stringify(groupSequences) === JSON.stringify(expected)
@@ -484,6 +489,12 @@
       card.appendChild(createNode("strong", "", category.label));
       card.appendChild(createNode("p", "category-evidence", `${evidence.status} · ${evidence.citationCount} cita${evidence.citationCount === 1 ? "" : "s"}`));
       card.appendChild(createNode("p", "", category.evidence_prompt));
+      const requiredEvidence = uniqueText(category.required_evidence, 3);
+      card.appendChild(createNode(
+        "p",
+        "category-required-source",
+        `Fuente requerida: ${requiredEvidence.join(" · ") || MISSING_EVIDENCE}`
+      ));
       elements.categoryGrid.appendChild(card);
     }
   };

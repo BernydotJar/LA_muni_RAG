@@ -124,3 +124,13 @@ A low coverage percentage is an operational signal to acquire or review sources.
 ## Current Antigua coverage boundary
 
 The public Antigua tenant currently contains three ingested PDM-OT modules. Other official municipal sources such as the POA, organigram and selected procedure manuals have been located and acquired, but some are scanned PDFs without text. They remain outside retrieval until OCR accuracy and human review are approved. National source packs identify additional primary sources from SEGEPLAN, MARN, INFOM, MINFIN and the Congress, but an identified or verified source is not represented as ingested until the complete gate succeeds.
+
+## National coverage pack v1.1
+
+The Guatemala municipal core pack now binds every non-template connector to the governed source inventory. Validation fails when an inventory ID is unknown, bound twice, hosted outside the connector allowlist or when a required coverage tag is not supplied by an enabled connector. Template-only enterprise packs may keep placeholder IDs, but production tenant profiles still cannot attach them.
+
+The pack adds verified discovery entries for MAFIM second edition, current SNIP standards, the MARN taxative lists and candidate A/B1/B2/C routes, MSPAS drinking-water authority and project certification, and Resolution 001-2022 for GUATECOMPRAS. These records remain `verified`; none is represented as acquired, malware-scanned, extracted or indexed.
+
+Environmental classification is deliberately neutral. The connector begins with the taxative lists. Category-specific pages are candidate routes only after a reviewer determines the applicable category from the project activity, scale, location, components and current rule set.
+
+The municipal water domain pack also supplies concrete evidence classes for all 47 research categories. National authority can support a national requirement, but the product requests the actual municipal act, expediente, inspection, contract event or financial record before claiming that a case-specific event occurred.
