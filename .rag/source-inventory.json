@@ -425,7 +425,6 @@
       "verifiedAt": "2026-07-31T19:27:00-06:00",
       "publicationDate": "2025-01-01",
       "limitations": [
-        "Documento identificado y con texto extraíble, pero aún no adquirido ni ingerido en el corpus operativo.",
         "Los indicadores y unidades responsables requieren corroboración de vigencia y aplicación al caso concreto.",
         "Ingestión acreditada en PostgreSQL/pgvector administrado con FORCE RLS; no acredita por sí sola completitud del corpus ni aprobación institucional.",
         "Los embeddings local-eval-hashing son una representación léxica determinista de evaluación, no un modelo semántico productivo.",
@@ -499,7 +498,6 @@
       "verifiedAt": "2026-07-31T19:27:00-06:00",
       "publicationDate": "2025-01-01",
       "limitations": [
-        "Documento identificado y con texto extraíble, pero aún no adquirido ni ingerido en el corpus operativo.",
         "La articulación PEI/POM/POA/presupuesto no demuestra aprobación o disponibilidad para un expediente específico.",
         "Ingestión acreditada en PostgreSQL/pgvector administrado con FORCE RLS; no acredita por sí sola completitud del corpus ni aprobación institucional.",
         "Los embeddings local-eval-hashing son una representación léxica determinista de evaluación, no un modelo semántico productivo.",
