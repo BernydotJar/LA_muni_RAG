@@ -24,6 +24,7 @@ export interface ArtifactStructuralInspection {
   declaredMediaType: string;
   detectedMediaType: string;
   signature: string;
+  textEncoding?: string;
 }
 
 export interface MalwareScanResult {
@@ -170,10 +171,33 @@ const isUtf8Text = (content: Buffer): boolean => {
   return controlCharacters / decoded.length <= 0.01;
 };
 
+const normalizeDeclaredCharset = (value: string | undefined): string | undefined => {
+  if (!value) return undefined;
+  const normalized = value.trim().toLowerCase().replace(/[_\s]+/g, "-");
+  if (normalized === "utf8" || normalized === "utf-8") return "utf-8";
+  if (["iso-8859-1", "iso8859-1", "latin1", "latin-1", "windows-1252", "cp1252"].includes(normalized)) {
+    return "windows-1252";
+  }
+  return normalized;
+};
+
+const isDeclaredLegacyHtml = (content: Buffer, declaredCharset: string | undefined): boolean => {
+  if (normalizeDeclaredCharset(declaredCharset) !== "windows-1252" || content.includes(0)) return false;
+  const decoded = new TextDecoder("windows-1252").decode(content);
+  if (decoded.trim().length < 32) return false;
+  const controlCharacters = [...decoded].filter((character) => {
+    const code = character.charCodeAt(0);
+    return code < 0x20 && character !== "\n" && character !== "\r" && character !== "\t";
+  }).length;
+  if (controlCharacters / decoded.length > 0.01) return false;
+  return /<(?:!doctype|html|head|body|title|h[1-6]|p|div|table|a)\b/i.test(decoded);
+};
+
 export const inspectArtifactContent = (input: {
   content: Buffer;
   sourcePath: string;
   declaredMediaType: string;
+  declaredCharset?: string;
   maxArtifactBytes?: number;
 }): ArtifactStructuralInspection => {
   const maxArtifactBytes = input.maxArtifactBytes ?? DEFAULT_MAX_ARTIFACT_BYTES;
@@ -204,6 +228,7 @@ export const inspectArtifactContent = (input: {
 
   let detectedMediaType: string;
   let signature: string;
+  let textEncoding: string | undefined;
   if (hasPdfSignature(input.content)) {
     detectedMediaType = "application/pdf";
     signature = "pdf-header-eof-v1";
@@ -217,6 +242,11 @@ export const inspectArtifactContent = (input: {
         ? "text/html"
         : "text/plain";
     signature = "utf8-text-v1";
+    textEncoding = "utf-8";
+  } else if ((extension === ".html" || extension === ".htm") && isDeclaredLegacyHtml(input.content, input.declaredCharset)) {
+    detectedMediaType = "text/html";
+    signature = "html-windows-1252-v1";
+    textEncoding = "windows-1252";
   } else {
     throw new ArtifactSafetyError(
       "artifact_signature_unrecognized",
@@ -236,6 +266,7 @@ export const inspectArtifactContent = (input: {
     declaredMediaType,
     detectedMediaType,
     signature,
+    ...(textEncoding ? { textEncoding } : {}),
   };
 };
 

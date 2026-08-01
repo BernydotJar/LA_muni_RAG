@@ -109,7 +109,9 @@
     "corpus:project:public-sections": "npm run build && node dist/cli/projectPublicCorpusSections.js",
     "eval:public-corpus-pilot": "node --import tsx --test --test-concurrency=1 src/__tests__/public-section-projection.test.ts src/__tests__/public-query-gateway-v1.test.ts",
     "source-packs:validate": "node --import tsx src/cli/validateSourcePacks.ts",
-    "tenant-profiles:validate": "node --import tsx src/cli/validateTenantKnowledgeProfiles.ts"
+    "tenant-profiles:validate": "node --import tsx src/cli/validateTenantKnowledgeProfiles.ts",
+    "source-pack:acquire-html": "node --import tsx src/cli/acquireSourcePackHtml.ts",
+    "source-pack:verify-html-acquisition": "node --import tsx src/cli/verifyOfficialHtmlAcquisition.ts"
   },
   "keywords": [],
   "author": "",
@@ -123,7 +125,8 @@
     "jose": "6.2.4",
     "mammoth": "^1.12.0",
     "pdfjs-dist": "6.1.200",
-    "pg": "^8.22.0"
+    "pg": "^8.22.0",
+    "undici": "8.9.0"
   },
   "devDependencies": {
     "@playwright/test": "1.62.0",

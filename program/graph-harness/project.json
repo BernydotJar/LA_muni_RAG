@@ -98,6 +98,18 @@
         "remote_ci"
       ],
       "blocking": true
+    },
+    {
+      "id": "GATE-OFFICIAL-SOURCE-ACQUISITION-003",
+      "required_evidence_kinds": [
+        "acquisition_policy",
+        "artifact_safety",
+        "extraction_validation",
+        "adversarial_review",
+        "independent_regression",
+        "remote_ci"
+      ],
+      "blocking": true
     }
   ],
   "nodes": [
@@ -406,6 +418,44 @@
         "merge_authorized": false,
         "deployment_authorized": false,
         "legal_correctness_claim": false
+      }
+    },
+    {
+      "id": "WS02-OFFICIAL-SOURCE-ACQUISITION-003",
+      "kind": "feature",
+      "title": "Acquire and scan governed official HTML snapshots",
+      "status": "spec_ready",
+      "depends_on": [
+        "WS02-OFFICIAL-SOURCE-COVERAGE-002"
+      ],
+      "capability": "tenant_reusable_governed_html_acquisition",
+      "gates": {
+        "done": [
+          "GATE-OFFICIAL-SOURCE-ACQUISITION-003"
+        ]
+      },
+      "allowed_paths": [
+        ".rag/source-inventory.json",
+        "config/acquisition-packs/**",
+        "docs/reviews/**",
+        "docs/traceability/**",
+        "package.json",
+        "package-lock.json",
+        "program/**",
+        "specs/090-official-source-acquisition-v1/**",
+        "src/__tests__/**",
+        "src/cli/**",
+        "src/ingestion/**",
+        "src/sources/**"
+      ],
+      "metadata": {
+        "candidate_sources": 16,
+        "minimum_successful_sources": 10,
+        "raw_artifacts_in_git": false,
+        "managed_corpus_mutation_authorized": false,
+        "indexing_authorized": false,
+        "merge_authorized": false,
+        "deployment_authorized": false
       }
     }
   ]
