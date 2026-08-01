@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 1,
+  "records": [
+    {
+      "documentKey": "antigua-pdmot-module-3",
+      "documentTitle": "PDM-OT Modulo 3: indicadores de evaluacion y seguimiento",
+      "sourcePath": ".rag/library/antigua-pdmot-module-3/antigua-pdmot-module-3--official.pdf",
+      "sourceFormat": "pdf",
+      "documentVersion": "official-municipal-pdf-2025",
+      "contentSha256": "dc67c503155c8fe85a6d4ac28b54c715e6293ab8261484d2531750a9ab17a3f0",
+      "chunkCount": 90,
+      "embeddingProvider": "local-eval-hashing",
+      "embeddingModel": "token-bigram-hash-1536-v1",
+      "embeddingDimension": 1536,
+      "status": "indexed",
+      "indexedAt": "2026-08-01T02:12:33.458Z",
+      "failureCount": 0,
+      "failureCodes": []
+    },
+    {
+      "documentKey": "antigua-pdmot-module-4",
+      "documentTitle": "PDM-OT Modulo 4: implementacion, seguimiento y gestion",
+      "sourcePath": ".rag/library/antigua-pdmot-module-4/antigua-pdmot-module-4--official.pdf",
+      "sourceFormat": "pdf",
+      "documentVersion": "official-municipal-pdf-2025",
+      "contentSha256": "73186847344904a6c4ee64668dad0ec43628b3ca65ed8f12a192a05705a26fa9",
+      "chunkCount": 44,
+      "embeddingProvider": "local-eval-hashing",
+      "embeddingModel": "token-bigram-hash-1536-v1",
+      "embeddingDimension": 1536,
+      "status": "indexed",
+      "indexedAt": "2026-08-01T02:12:47.771Z",
+      "failureCount": 0,
+      "failureCodes": []
+    }
+  ]
+}

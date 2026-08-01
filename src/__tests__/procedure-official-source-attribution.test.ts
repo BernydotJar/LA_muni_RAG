@@ -112,7 +112,7 @@ describe("procedure official source attribution", () => {
 
     assert.ok(workflow.steps.every((step) => step.sourceAttribution?.status === "insufficient"));
     assert.ok(workflow.steps.every((step) => step.sourceAttribution?.citations.length === 0));
-    assert.ok(workflow.steps.every((step) => step.evidenceStatement === "No encontré base documental suficiente para afirmar este paso."));
+    assert.ok(workflow.steps.every((step) => step.evidenceStatement === "El corpus activo aún no contiene una fuente aplicable a este paso. No se presenta como requisito confirmado."));
   });
 
   it("loads a progressive source attribution renderer with safe links", async () => {

@@ -112,8 +112,9 @@ describe("EVAL-WATER-001", () => {
     assert.equal(result.isProcedural, true);
     assert.equal(result.procedureType, "potable_water_project");
     assert.equal(result.mentionsExternalMunicipality, false);
-    assert.ok(result.retrievalQueries.some((item) => /COCODE.*COMUDE/i.test(item)));
-    assert.ok(result.retrievalQueries.some((item) => /operación.*mantenimiento.*continuidad/i.test(item)));
+    assert.ok(result.retrievalQueries.some((item) => /PDM-OT OR POM OR POA OR presupuesto/i.test(item)));
+    assert.ok(result.retrievalQueries.some((item) => /operación OR mantenimiento OR continuidad/i.test(item)));
+    assert.ok(result.retrievalQueries.some((item) => /contratación OR ofertas OR adjudicación OR contrato/i.test(item)));
   });
 
   it("compiles exactly the 47 ordered research categories without treating them as facts", () => {
@@ -135,7 +136,7 @@ describe("EVAL-WATER-001", () => {
     assert.ok(workflow.steps.every((step) => !step.deadline));
     assert.ok(workflow.steps.every((step) => !step.decisionGate));
     assert.ok(workflow.steps.every((step) => step.notes?.includes(WATER_PENDING_SOURCE)));
-    assert.match(workflow.summary, /47 categorías de investigación/);
+    assert.match(workflow.summary, /47 categorías configurables/);
     assert.match(workflow.validationWarning, /Borrador de investigación Antigua-first/);
   });
 

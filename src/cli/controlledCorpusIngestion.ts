@@ -76,6 +76,13 @@ const requiredEnv = (name: string): string => {
 };
 const sha256 = (content: Buffer): string => createHash("sha256").update(content).digest("hex");
 const isoNow = (): string => new Date().toISOString();
+const databaseClass = (): "disposable" | "managed" => {
+  const value = process.env.CONTROLLED_CORPUS_DATABASE_CLASS?.trim() || "disposable";
+  if (value !== "disposable" && value !== "managed") {
+    throw new Error("CONTROLLED_CORPUS_DATABASE_CLASS must be disposable or managed.");
+  }
+  return value;
+};
 const atomicJson = async (path: string, value: unknown): Promise<void> => {
   await mkdir(dirname(path), { recursive: true });
   const temporary = `${path}.tmp`;
@@ -443,7 +450,9 @@ const main = async (): Promise<void> => {
         },
         limitations: [
           ...record.limitations.filter((item) => !/pending|no se trasladó|deben importarse|inspección segura/i.test(item)),
-          "Ingestión acreditada en un PostgreSQL/pgvector local desechable con FORCE RLS; no acredita almacenamiento de objetos, retención ni operación productiva.",
+          databaseClass() === "managed"
+            ? "Ingestión acreditada en PostgreSQL/pgvector administrado con FORCE RLS; no acredita por sí sola completitud del corpus ni aprobación institucional."
+            : "Ingestión acreditada en un PostgreSQL/pgvector local desechable con FORCE RLS; no acredita almacenamiento de objetos, retención ni operación productiva.",
           "Los embeddings local-eval-hashing son una representación léxica determinista de evaluación, no un modelo semántico productivo.",
           "La ingestión no demuestra vigencia, aplicabilidad jurídica, completitud del corpus ni aprobación institucional.",
         ],
@@ -478,7 +487,8 @@ const main = async (): Promise<void> => {
         runtimeRoleNonOwner: true,
         runtimeRoleNoBypassRls: true,
         forcedRlsTables: 5,
-        disposable: true,
+        deploymentClass: databaseClass(),
+        disposable: databaseClass() === "disposable",
       },
       embedding: { provider: provider.providerName, model: provider.model, dimension: provider.dimensions, semanticClaim: false },
       rawBytesCommittedToGit: false,

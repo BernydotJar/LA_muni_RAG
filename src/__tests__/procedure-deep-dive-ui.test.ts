@@ -31,11 +31,14 @@ describe("procedure deep-dive UI", () => {
     assert.match(source, /evidenceStatus/);
     assert.match(source, /Respaldado/);
     assert.match(source, /Inferido/);
-    assert.match(source, /Sin evidencia suficiente/);
+    assert.match(source, /Cobertura pendiente/);
     assert.match(source, /responsibleRole/);
     assert.match(source, /responsibleUnit/);
     assert.match(source, /step\.deadline/);
-    assert.match(source, /No encontré base documental suficiente para afirmar este paso/);
+    assert.match(source, /El corpus activo aún no contiene una cita aplicable para este paso/);
+    assert.match(source, /coveragePercent/);
+    assert.match(source, /pasos respaldados/);
+    assert.match(source, /fuente requerida/);
   });
 
   it("renders dependencies and expandable escaped citations", async () => {

@@ -5,6 +5,8 @@ const EXTENSION_TO_FORMAT: Record<string, SourceFormat> = {
   ".md": "markdown",
   ".markdown": "markdown",
   ".txt": "txt",
+  ".html": "html",
+  ".htm": "html",
   ".docx": "docx",
   ".pdf": "pdf",
 };

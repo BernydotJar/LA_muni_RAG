@@ -1,0 +1,163 @@
+{
+  "schemaVersion": 1,
+  "packId": "guatemala-municipal-core",
+  "displayName": "Guatemala Municipal Core",
+  "organizationType": "government_agency",
+  "isTemplate": false,
+  "jurisdiction": "Guatemala",
+  "allowedHosts": [
+    "snip.segeplan.gob.gt",
+    "www.marn.gob.gt",
+    "infom.gob.gt",
+    "formacion.minfin.gob.gt",
+    "www.minfin.gob.gt",
+    "www.congreso.gob.gt"
+  ],
+  "requiredCoverageTags": [
+    "municipal-authority",
+    "community-participation",
+    "public-investment",
+    "environment",
+    "procurement",
+    "water-sanitation"
+  ],
+  "connectors": [
+    {
+      "connectorId": "snip-public-investment",
+      "type": "html_page",
+      "title": "Sistema Nacional de Inversión Pública",
+      "discoveryUrl": "https://snip.segeplan.gob.gt/sinip/html/portal/temp/mrc_sistema.htm",
+      "allowedHosts": [
+        "snip.segeplan.gob.gt"
+      ],
+      "sourceInventoryIds": [
+        "segeplan-snip-system"
+      ],
+      "coverageTags": [
+        "public-investment",
+        "project-profile",
+        "project-lifecycle"
+      ],
+      "acceptedMediaTypes": [
+        "text/html",
+        "application/pdf"
+      ],
+      "refresh": {
+        "cadence": "monthly",
+        "maximumAgeDays": 45
+      },
+      "enabled": true
+    },
+    {
+      "connectorId": "marn-environmental-category-c",
+      "type": "html_page",
+      "title": "MARN evaluación ambiental inicial categoría C",
+      "discoveryUrl": "https://www.marn.gob.gt/28-evaluacion-ambiental-inicial-categoria-c/",
+      "allowedHosts": [
+        "www.marn.gob.gt"
+      ],
+      "sourceInventoryIds": [
+        "marn-environmental-category-c"
+      ],
+      "coverageTags": [
+        "environment",
+        "property",
+        "permits",
+        "public-investment"
+      ],
+      "acceptedMediaTypes": [
+        "text/html",
+        "application/pdf"
+      ],
+      "refresh": {
+        "cadence": "monthly",
+        "maximumAgeDays": 45
+      },
+      "enabled": true
+    },
+    {
+      "connectorId": "infom-water-services",
+      "type": "html_page",
+      "title": "INFOM servicios de agua, saneamiento y fortalecimiento municipal",
+      "discoveryUrl": "https://infom.gob.gt/index.php",
+      "allowedHosts": [
+        "infom.gob.gt"
+      ],
+      "sourceInventoryIds": [
+        "infom-water-sanitation-services"
+      ],
+      "coverageTags": [
+        "water-sanitation",
+        "preinvestment",
+        "operation",
+        "maintenance"
+      ],
+      "acceptedMediaTypes": [
+        "text/html",
+        "application/pdf"
+      ],
+      "refresh": {
+        "cadence": "quarterly",
+        "maximumAgeDays": 120
+      },
+      "enabled": true
+    },
+    {
+      "connectorId": "minfin-procurement-law",
+      "type": "html_page",
+      "title": "MINFIN documentos legales de contratación pública",
+      "discoveryUrl": "https://formacion.minfin.gob.gt/difoteca/documentos-legales/",
+      "allowedHosts": [
+        "formacion.minfin.gob.gt",
+        "www.minfin.gob.gt"
+      ],
+      "sourceInventoryIds": [
+        "guatemala-procurement-law",
+        "guatemala-procurement-regulation"
+      ],
+      "coverageTags": [
+        "procurement",
+        "contract",
+        "award",
+        "guatecompras"
+      ],
+      "acceptedMediaTypes": [
+        "text/html",
+        "application/pdf"
+      ],
+      "refresh": {
+        "cadence": "monthly",
+        "maximumAgeDays": 45
+      },
+      "enabled": true
+    },
+    {
+      "connectorId": "congress-municipal-law",
+      "type": "html_page",
+      "title": "Congreso de Guatemala: Código Municipal y Consejos de Desarrollo",
+      "discoveryUrl": "https://www.congreso.gob.gt/buscador_decretos/12-2002",
+      "allowedHosts": [
+        "www.congreso.gob.gt"
+      ],
+      "sourceInventoryIds": [
+        "gt-codigo-municipal-index",
+        "guatemala-development-councils-law"
+      ],
+      "coverageTags": [
+        "municipal-authority",
+        "community-participation",
+        "cocode",
+        "comude"
+      ],
+      "acceptedMediaTypes": [
+        "text/html",
+        "application/pdf"
+      ],
+      "refresh": {
+        "cadence": "monthly",
+        "maximumAgeDays": 45
+      },
+      "enabled": true
+    }
+  ]
+}

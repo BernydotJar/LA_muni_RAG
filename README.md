@@ -7,6 +7,11 @@ and governed workflow lifecycle API foundations implemented
 
 LA Muni RAG is an evidence-first RAG and procedural workflow system configured by default for the Municipality of La Antigua Guatemala, Sacatepéquez. Its core supports validated domain packs so the same architecture can be reused for HR, finance, sales SOPs, and custom procedural assistants.
 
+
+## Tenant knowledge configuration
+
+Tenant onboarding, source packs, evidence lifecycle and coverage semantics are documented in [`docs/architecture/source-packs-and-tenant-onboarding.md`](docs/architecture/source-packs-and-tenant-onboarding.md). Validate configuration with `npm run source-packs:validate`, `npm run tenant-profiles:validate` and `npm run source-inventory:validate`.
+
 ## Product Surfaces
 
 - `/` — public product shell with direct Assistant and Glass Wall navigation. The assistant fails closed until a reviewed public gateway is configured.

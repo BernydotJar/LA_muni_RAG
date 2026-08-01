@@ -1,292 +1,336 @@
 {
   "schemaVersion": 1,
   "targetJurisdiction": "Municipio de La Antigua Guatemala, Sacatepéquez, Guatemala",
-  "generatedAt": "2026-07-29T17:07:35.453Z",
+  "generatedAt": "2026-08-01T02:28:37.357Z",
   "records": [
     {
-      "sourceId": "gt-codigo-municipal-index",
-      "documentKey": "gt-codigo-municipal-index",
+      "sourceId": "antigua-manuales-procedimientos",
+      "documentKey": "antigua-manuales-procedimientos",
       "documentVersion": "portal-2026-07-18",
-      "title": "Índice oficial del Código Municipal y sus reformas",
+      "title": "Biblioteca oficial de Manuales de Procedimientos de La Antigua Guatemala",
       "category": "public_portal",
       "status": "verified",
       "targetJurisdiction": "Municipio de La Antigua Guatemala, Sacatepéquez, Guatemala",
-      "sourceJurisdiction": "República de Guatemala",
-      "authorityClass": "official_national",
-      "authorityLevel": "national",
+      "sourceJurisdiction": "Municipio de La Antigua Guatemala, Sacatepéquez, Guatemala",
+      "municipality": "antigua guatemala",
+      "authorityClass": "official_municipal",
+      "authorityLevel": "primary",
       "officialSource": true,
       "officialForTargetJurisdiction": true,
-      "publicUrl": "https://www.congreso.gob.gt/buscador_decretos/12-2002",
-      "verifiedAt": "2026-07-18T00:00:00.000Z",
+      "publicUrl": "https://muniantigua.gob.gt/informacionDetalle/?idinfo=6",
+      "verifiedAt": "2026-07-19T03:53:06.000Z",
       "limitations": [
-        "El portal permite rastrear el Decreto 12-2002 y reformas, pero no acredita que exista una versión consolidada adquirida o ingerida.",
-        "La ley nacional no demuestra por sí sola la práctica interna de la Municipalidad de La Antigua Guatemala."
+        "El catálogo municipal está verificado, pero sus archivos individuales no se consideran adquiridos ni ingeridos.",
+        "El año y la fecha de publicación del portal no prueban aprobación interna, vigencia ni inmutabilidad de cada manual."
       ],
       "provenanceNotes": [
-        "Fuente primaria: Congreso de la República de Guatemala."
+        "El portal y su API oficial de acceso a información pública enumeraban 89 registros de manuales entre 2022 y 2026 al momento de la verificación.",
+        "Cada PDF requiere adquisición controlada, hash SHA-256 sobre bytes originales y revisión de versión antes de promoción."
       ],
       "tags": [
-        "codigo-municipal",
-        "nacional",
+        "antigua",
+        "procedimientos",
+        "verified",
         "acquisition-pending"
       ]
     },
     {
-      "sourceId": "mixco-manuales-biblioteca",
-      "documentKey": "mixco-manuales-biblioteca",
-      "documentVersion": "portal-2026-07-18",
-      "title": "Biblioteca de Manuales de Normas, Procesos y Procedimientos de Mixco",
-      "category": "public_portal",
+      "sourceId": "antigua-mnp-asesoria-juridica-2026",
+      "documentKey": "antigua-mnp-asesoria-juridica-2026",
+      "documentVersion": "mnp-asesoria-juridica-2026-02-17",
+      "title": "Manual de Normas y Procedimientos - Unidad de Asesoría Jurídica",
+      "category": "procedure_manual",
+      "status": "failed",
+      "targetJurisdiction": "Municipio de La Antigua Guatemala, Sacatepéquez, Guatemala",
+      "sourceJurisdiction": "Municipio de La Antigua Guatemala, Sacatepéquez, Guatemala",
+      "municipality": "antigua guatemala",
+      "authorityClass": "official_municipal",
+      "authorityLevel": "primary",
+      "officialSource": true,
+      "officialForTargetJurisdiction": true,
+      "publicUrl": "https://muniantigua.gob.gt/assets/backend/info/6_2026_OyTA6.pdf",
+      "verifiedAt": "2026-07-31T19:27:00-06:00",
+      "publicationDate": "2026-02-17",
+      "limitations": [
+        "Debe verificarse extracción de texto, vigencia y alcance antes de ingerir.",
+        "No convierte opiniones o revisiones internas en reglas generales fuera de su ámbito.",
+        "El PDF oficial fue adquirido y pasó un escaneo antimalware limpio, pero no contiene una capa de texto extraíble.",
+        "No se ejecutó OCR jurídico en español sin un gate separado de exactitud, revisión humana y trazabilidad por página.",
+        "La adquisición y el scan limpio no equivalen a ingestión, vigencia, aplicabilidad ni aprobación institucional."
+      ],
+      "provenanceNotes": [
+        "Documento N06 oficial, idinformacion 2166, localizado en la API municipal.",
+        "Bytes oficiales adquiridos con SHA-256 f5c12f9329e56e4905615dd58ca54c04553f87f3241a2d0fd52739c52ce97de2 y 30170518 bytes.",
+        "ClamAV 1.4.3 con definiciones 28076 reportó el artefacto limpio; la extracción falló cerrada con pdf_no_extractable_text."
+      ],
+      "tags": [
+        "antigua",
+        "procedure-manual",
+        "legal-review",
+        "2026",
+        "verified",
+        "clean-scan",
+        "extraction-blocked-no-text",
+        "ocr-review-required"
+      ],
+      "acquisition": {
+        "acquiredAt": "2026-08-01T01:53:32.678Z",
+        "artifactPath": ".rag/library/antigua-mnp-asesoria-juridica-2026/antigua-mnp-asesoria-juridica-2026--official.pdf",
+        "contentSha256": "f5c12f9329e56e4905615dd58ca54c04553f87f3241a2d0fd52739c52ce97de2",
+        "mediaType": "application/pdf",
+        "byteLength": 30170518
+      },
+      "artifactSafety": {
+        "inspectedAt": "2026-08-01T02:28:37.357Z",
+        "artifactPath": ".rag/library/antigua-mnp-asesoria-juridica-2026/antigua-mnp-asesoria-juridica-2026--official.pdf",
+        "contentSha256": "f5c12f9329e56e4905615dd58ca54c04553f87f3241a2d0fd52739c52ce97de2",
+        "byteLength": 30170518,
+        "observedContentSha256": "f5c12f9329e56e4905615dd58ca54c04553f87f3241a2d0fd52739c52ce97de2",
+        "observedByteLength": 30170518,
+        "declaredMediaType": "application/pdf",
+        "detectedMediaType": "application/pdf",
+        "signature": "pdf-header-eof-v1",
+        "scannerEngine": "clamav",
+        "scannerVersion": "1.4.3",
+        "scannerDefinitionsVersion": "28076/Wed-Jul-29-06:25:25-2026",
+        "verdict": "clean",
+        "failureCodes": []
+      },
+      "failureCodes": [
+        "pdf_no_extractable_text"
+      ]
+    },
+    {
+      "sourceId": "antigua-mnp-dmp-v3-2026",
+      "documentKey": "antigua-mnp-dmp-v3-2026",
+      "documentVersion": "official-municipal-pdf-2026-02-17-v3",
+      "title": "Manual de Normas y Procedimientos - Dirección Municipal de Planificación (versión 3)",
+      "category": "procedure_manual",
+      "status": "failed",
+      "targetJurisdiction": "Municipio de La Antigua Guatemala, Sacatepéquez, Guatemala",
+      "sourceJurisdiction": "Municipio de La Antigua Guatemala, Sacatepéquez, Guatemala",
+      "municipality": "antigua guatemala",
+      "authorityClass": "official_municipal",
+      "authorityLevel": "primary",
+      "officialSource": true,
+      "officialForTargetJurisdiction": true,
+      "publicUrl": "https://muniantigua.gob.gt/assets/backend/info/6_2026_eu9Z7.pdf",
+      "verifiedAt": "2026-07-19T03:53:06.000Z",
+      "limitations": [
+        "El servidor no publica checksum criptográfico y la fecha Last-Modified posterior a la publicación indica que la URL puede ser mutable.",
+        "No se encontró licencia expresa de redistribución; conservar atribución y exigir revisión jurídica antes de republicar.",
+        "El PDF oficial es un escaneo de 170 páginas sin capa de texto extraíble; el extractor acotado falló cerrado con pdf_no_extractable_text.",
+        "No se ejecutó OCR jurídico en español sin un gate separado de exactitud y revisión humana.",
+        "La adquisición y el scan limpio no equivalen a ingestión, vigencia, aplicabilidad jurídica ni aprobación institucional.",
+        "El PDF oficial es un escaneo de 170 páginas sin capa de texto extraíble; el extractor acotado falló cerrado con pdf_no_extractable_text.",
+        "No se ejecutó OCR jurídico en español sin un gate separado de exactitud y revisión humana.",
+        "La adquisición y el scan limpio no equivalen a ingestión, vigencia, aplicabilidad jurídica ni aprobación institucional."
+      ],
+      "provenanceNotes": [
+        "La API municipal oficial lo registró para 2026 con publicación 2026-02-17 17:59:00 sin zona horaria declarada.",
+        "HEAD devolvió HTTP 200, application/pdf y Content-Length 49052885; esos metadatos no sustituyen el hash de los bytes adquiridos.",
+        "Feature 054 copió los bytes originales a la biblioteca local acotada y verificó SHA-256 después de la copia; no ejecutó extracción ni indexación.",
+        "Feature 085 verificó bytes exactos y ClamAV, pero conservó el documento fuera del índice por ausencia de texto extraíble.",
+        "Feature 085 verificó bytes exactos y ClamAV, pero conservó el documento fuera del índice por ausencia de texto extraíble."
+      ],
+      "tags": [
+        "antigua",
+        "procedimientos",
+        "planificacion",
+        "dmp",
+        "clean-scan",
+        "extraction-blocked-no-text"
+      ],
+      "acquisition": {
+        "acquiredAt": "2026-07-29T17:07:34.903Z",
+        "artifactPath": ".rag/library/antigua-mnp-dmp-v3-2026/antigua-mnp-dmp-v3-2026--official-municipal-pdf-2026-02-17-v3.pdf",
+        "contentSha256": "4cbd35993b345c1f2bdb308825f1d3a6cac24ad239bdc9b087e2d99f2297e8f9",
+        "mediaType": "application/pdf",
+        "byteLength": 49052885
+      },
+      "artifactSafety": {
+        "inspectedAt": "2026-07-29T17:07:34.903Z",
+        "artifactPath": ".rag/library/antigua-mnp-dmp-v3-2026/antigua-mnp-dmp-v3-2026--official-municipal-pdf-2026-02-17-v3.pdf",
+        "contentSha256": "4cbd35993b345c1f2bdb308825f1d3a6cac24ad239bdc9b087e2d99f2297e8f9",
+        "byteLength": 49052885,
+        "observedContentSha256": "4cbd35993b345c1f2bdb308825f1d3a6cac24ad239bdc9b087e2d99f2297e8f9",
+        "observedByteLength": 49052885,
+        "declaredMediaType": "application/pdf",
+        "detectedMediaType": "application/pdf",
+        "signature": "pdf-header-eof-v1",
+        "scannerEngine": "clamav",
+        "scannerVersion": "1.4.3",
+        "scannerDefinitionsVersion": "28076/Wed-Jul-29-06:25:25-2026",
+        "verdict": "clean",
+        "failureCodes": []
+      },
+      "failureCodes": [
+        "pdf_no_extractable_text"
+      ]
+    },
+    {
+      "sourceId": "antigua-mnp-obras-publicas-2026",
+      "documentKey": "antigua-mnp-obras-publicas-2026",
+      "documentVersion": "mnp-obras-publicas-2026-02-17",
+      "title": "Manual de Normas y Procedimientos - Dirección de Obras Públicas",
+      "category": "procedure_manual",
+      "status": "failed",
+      "targetJurisdiction": "Municipio de La Antigua Guatemala, Sacatepéquez, Guatemala",
+      "sourceJurisdiction": "Municipio de La Antigua Guatemala, Sacatepéquez, Guatemala",
+      "municipality": "antigua guatemala",
+      "authorityClass": "official_municipal",
+      "authorityLevel": "primary",
+      "officialSource": true,
+      "officialForTargetJurisdiction": true,
+      "publicUrl": "https://muniantigua.gob.gt/assets/backend/info/6_2026_DNu1B.pdf",
+      "verifiedAt": "2026-07-31T19:27:00-06:00",
+      "publicationDate": "2026-02-17",
+      "limitations": [
+        "Debe verificarse extracción de texto, vigencia y relación con versiones anteriores antes de ingerir.",
+        "No demuestra el estado de obras o expedientes concretos.",
+        "El PDF oficial fue adquirido y pasó un escaneo antimalware limpio, pero no contiene una capa de texto extraíble.",
+        "No se ejecutó OCR jurídico en español sin un gate separado de exactitud, revisión humana y trazabilidad por página.",
+        "La adquisición y el scan limpio no equivalen a ingestión, vigencia, aplicabilidad ni aprobación institucional."
+      ],
+      "provenanceNotes": [
+        "Documento N06 oficial, idinformacion 2165, localizado en la API municipal.",
+        "Bytes oficiales adquiridos con SHA-256 af53d3e086913b9058b45616b0235fbd5c4f5758e4a6d8abebc3445cb3dc2602 y 15023318 bytes.",
+        "ClamAV 1.4.3 con definiciones 28076 reportó el artefacto limpio; la extracción falló cerrada con pdf_no_extractable_text."
+      ],
+      "tags": [
+        "antigua",
+        "procedure-manual",
+        "public-works",
+        "2026",
+        "verified",
+        "clean-scan",
+        "extraction-blocked-no-text",
+        "ocr-review-required"
+      ],
+      "acquisition": {
+        "acquiredAt": "2026-08-01T01:53:32.678Z",
+        "artifactPath": ".rag/library/antigua-mnp-obras-publicas-2026/antigua-mnp-obras-publicas-2026--official.pdf",
+        "contentSha256": "af53d3e086913b9058b45616b0235fbd5c4f5758e4a6d8abebc3445cb3dc2602",
+        "mediaType": "application/pdf",
+        "byteLength": 15023318
+      },
+      "artifactSafety": {
+        "inspectedAt": "2026-08-01T02:28:37.357Z",
+        "artifactPath": ".rag/library/antigua-mnp-obras-publicas-2026/antigua-mnp-obras-publicas-2026--official.pdf",
+        "contentSha256": "af53d3e086913b9058b45616b0235fbd5c4f5758e4a6d8abebc3445cb3dc2602",
+        "byteLength": 15023318,
+        "observedContentSha256": "af53d3e086913b9058b45616b0235fbd5c4f5758e4a6d8abebc3445cb3dc2602",
+        "observedByteLength": 15023318,
+        "declaredMediaType": "application/pdf",
+        "detectedMediaType": "application/pdf",
+        "signature": "pdf-header-eof-v1",
+        "scannerEngine": "clamav",
+        "scannerVersion": "1.4.3",
+        "scannerDefinitionsVersion": "28076/Wed-Jul-29-06:25:25-2026",
+        "verdict": "clean",
+        "failureCodes": []
+      },
+      "failureCodes": [
+        "pdf_no_extractable_text"
+      ]
+    },
+    {
+      "sourceId": "antigua-mof",
+      "documentKey": "antigua-mof",
+      "documentVersion": "mof-catalog-2026-07-31",
+      "title": "Manual de Organización y Funciones de La Antigua Guatemala",
+      "category": "function_manual",
       "status": "verified",
       "targetJurisdiction": "Municipio de La Antigua Guatemala, Sacatepéquez, Guatemala",
-      "sourceJurisdiction": "Municipio de Mixco, Guatemala",
-      "municipality": "mixco",
-      "authorityClass": "external_reference",
-      "authorityLevel": "comparative",
+      "sourceJurisdiction": "Municipio de La Antigua Guatemala, Sacatepéquez, Guatemala",
+      "municipality": "antigua guatemala",
+      "authorityClass": "official_municipal",
+      "authorityLevel": "primary",
       "officialSource": true,
-      "officialForTargetJurisdiction": false,
-      "publicUrl": "https://munimixco.gob.gt/?page_id=2063",
-      "verifiedAt": "2026-07-18T00:00:00.000Z",
+      "officialForTargetJurisdiction": true,
       "limitations": [
-        "Referencia comparativa de la Municipalidad de Mixco; no define por sí sola el procedimiento oficial de Antigua Guatemala."
+        "El catálogo contiene múltiples manuales por unidad y versión; cada documento debe conservar identidad y vigencia propias.",
+        "Un MOF no sustituye un manual de normas y procedimientos ni prueba el estado de un expediente."
       ],
       "provenanceNotes": [
-        "La biblioteca oficial enumera tomos administrativos de Mixco; los archivos individuales aún no están adquiridos ni ingeridos."
+        "La categoría 1 de la API oficial municipal expone MOF 2026 de Planificación, Obras Públicas, Servicios Públicos, Adquisiciones y otras unidades."
       ],
       "tags": [
-        "mixco",
-        "comparative",
-        "manuales"
-      ]
+        "antigua",
+        "mof",
+        "organizacion",
+        "funciones",
+        "2026",
+        "verified"
+      ],
+      "verifiedAt": "2026-07-31T19:27:00-06:00",
+      "publicUrl": "https://muniantigua.gob.gt/api/public/consultas/documentos/1",
+      "publicationDate": "2026-07-16"
     },
     {
-      "sourceId": "mixco-mnpp-concejo-secretaria",
-      "documentKey": "mixco-mnpp-concejo-secretaria",
-      "documentVersion": "unacquired-2026-07-18",
-      "title": "MNPP Concejo Municipal y Secretaría Municipal de Mixco",
-      "category": "procedure_manual",
-      "status": "acquisition_pending",
+      "sourceId": "antigua-organigrama",
+      "documentKey": "antigua-organigrama",
+      "documentVersion": "organigrama-marzo-2026",
+      "title": "Organigrama municipal de La Antigua Guatemala",
+      "category": "organization",
+      "status": "failed",
       "targetJurisdiction": "Municipio de La Antigua Guatemala, Sacatepéquez, Guatemala",
-      "sourceJurisdiction": "Municipio de Mixco, Guatemala",
-      "municipality": "mixco",
-      "authorityClass": "external_reference",
-      "authorityLevel": "comparative",
+      "sourceJurisdiction": "Municipio de La Antigua Guatemala, Sacatepéquez, Guatemala",
+      "municipality": "antigua guatemala",
+      "authorityClass": "official_municipal",
+      "authorityLevel": "primary",
       "officialSource": true,
-      "officialForTargetJurisdiction": false,
-      "publicUrl": "https://munimixco.gob.gt/?page_id=2063",
-      "verifiedAt": "2026-07-18T00:00:00.000Z",
+      "officialForTargetJurisdiction": true,
       "limitations": [
-        "Referencia comparativa de la Municipalidad de Mixco; no define por sí sola el procedimiento oficial de Antigua Guatemala.",
-        "Archivo individual pendiente de adquisición y hash."
+        "El organigrama describe estructura publicada, pero no demuestra por sí solo competencias, delegaciones o vigencia posterior a marzo de 2026.",
+        "Debe adquirirse, escanearse e ingerirse antes de producir citas.",
+        "El PDF oficial fue adquirido y pasó un escaneo antimalware limpio, pero no contiene una capa de texto extraíble.",
+        "No se ejecutó OCR jurídico en español sin un gate separado de exactitud, revisión humana y trazabilidad por página.",
+        "La adquisición y el scan limpio no equivalen a ingestión, vigencia, aplicabilidad ni aprobación institucional."
       ],
       "provenanceNotes": [
-        "Registro derivado de la biblioteca oficial de manuales de Mixco."
+        "Documento N01 - Organigrama (Marzo 2026), idinformacion 2228, localizado en la API oficial municipal.",
+        "Bytes oficiales adquiridos con SHA-256 c2e3a2a62478677f7661cb081a4d1ffecc6d4429f5b32f5bc24094fc9f2ca0cc y 1124044 bytes.",
+        "ClamAV 1.4.3 con definiciones 28076 reportó el artefacto limpio; la extracción falló cerrada con pdf_no_extractable_text."
       ],
       "tags": [
-        "mixco",
-        "concejo",
-        "secretaria"
-      ]
-    },
-    {
-      "sourceId": "mixco-mnpp-dmp-ddut",
-      "documentKey": "mixco-mnpp-dmp-ddut",
-      "documentVersion": "unacquired-2026-07-18",
-      "title": "MNPP Dirección Municipal de Planificación y DDUT de Mixco",
-      "category": "procedure_manual",
-      "status": "acquisition_pending",
-      "targetJurisdiction": "Municipio de La Antigua Guatemala, Sacatepéquez, Guatemala",
-      "sourceJurisdiction": "Municipio de Mixco, Guatemala",
-      "municipality": "mixco",
-      "authorityClass": "external_reference",
-      "authorityLevel": "comparative",
-      "officialSource": true,
-      "officialForTargetJurisdiction": false,
-      "publicUrl": "https://munimixco.gob.gt/?page_id=2063",
-      "verifiedAt": "2026-07-18T00:00:00.000Z",
-      "limitations": [
-        "Referencia comparativa de la Municipalidad de Mixco; no define por sí sola el procedimiento oficial de Antigua Guatemala.",
-        "Archivo individual pendiente de adquisición y hash."
+        "antigua",
+        "organigrama",
+        "2026",
+        "verified",
+        "acquisition-pending",
+        "clean-scan",
+        "extraction-blocked-no-text",
+        "ocr-review-required"
       ],
-      "provenanceNotes": [
-        "Registro derivado de la biblioteca oficial de manuales de Mixco."
-      ],
-      "tags": [
-        "mixco",
-        "planificacion",
-        "territorio"
-      ]
-    },
-    {
-      "sourceId": "mixco-mnpp-compras",
-      "documentKey": "mixco-mnpp-compras",
-      "documentVersion": "unacquired-2026-07-18",
-      "title": "MNPP Dirección de Compras y Contrataciones de Mixco",
-      "category": "procedure_manual",
-      "status": "acquisition_pending",
-      "targetJurisdiction": "Municipio de La Antigua Guatemala, Sacatepéquez, Guatemala",
-      "sourceJurisdiction": "Municipio de Mixco, Guatemala",
-      "municipality": "mixco",
-      "authorityClass": "external_reference",
-      "authorityLevel": "comparative",
-      "officialSource": true,
-      "officialForTargetJurisdiction": false,
-      "publicUrl": "https://munimixco.gob.gt/?page_id=2063",
-      "verifiedAt": "2026-07-18T00:00:00.000Z",
-      "limitations": [
-        "Referencia comparativa de la Municipalidad de Mixco; no define por sí sola el procedimiento oficial de Antigua Guatemala.",
-        "Archivo individual pendiente de adquisición y hash."
-      ],
-      "provenanceNotes": [
-        "Registro derivado de la biblioteca oficial de manuales de Mixco."
-      ],
-      "tags": [
-        "mixco",
-        "compras",
-        "contrataciones"
-      ]
-    },
-    {
-      "sourceId": "mixco-mnpp-dafim",
-      "documentKey": "mixco-mnpp-dafim",
-      "documentVersion": "unacquired-2026-07-18",
-      "title": "MNPP DAFIM de Mixco",
-      "category": "procedure_manual",
-      "status": "acquisition_pending",
-      "targetJurisdiction": "Municipio de La Antigua Guatemala, Sacatepéquez, Guatemala",
-      "sourceJurisdiction": "Municipio de Mixco, Guatemala",
-      "municipality": "mixco",
-      "authorityClass": "external_reference",
-      "authorityLevel": "comparative",
-      "officialSource": true,
-      "officialForTargetJurisdiction": false,
-      "publicUrl": "https://munimixco.gob.gt/?page_id=2063",
-      "verifiedAt": "2026-07-18T00:00:00.000Z",
-      "limitations": [
-        "Referencia comparativa de la Municipalidad de Mixco; no define por sí sola el procedimiento oficial de Antigua Guatemala.",
-        "Archivo individual pendiente de adquisición y hash."
-      ],
-      "provenanceNotes": [
-        "Registro derivado de la biblioteca oficial de manuales de Mixco."
-      ],
-      "tags": [
-        "mixco",
-        "dafim",
-        "finanzas"
-      ]
-    },
-    {
-      "sourceId": "mixco-mnpp-infraestructura",
-      "documentKey": "mixco-mnpp-infraestructura",
-      "documentVersion": "unacquired-2026-07-18",
-      "title": "MNPP Dirección de Infraestructura de Mixco",
-      "category": "procedure_manual",
-      "status": "acquisition_pending",
-      "targetJurisdiction": "Municipio de La Antigua Guatemala, Sacatepéquez, Guatemala",
-      "sourceJurisdiction": "Municipio de Mixco, Guatemala",
-      "municipality": "mixco",
-      "authorityClass": "external_reference",
-      "authorityLevel": "comparative",
-      "officialSource": true,
-      "officialForTargetJurisdiction": false,
-      "publicUrl": "https://munimixco.gob.gt/?page_id=2063",
-      "verifiedAt": "2026-07-18T00:00:00.000Z",
-      "limitations": [
-        "Referencia comparativa de la Municipalidad de Mixco; no define por sí sola el procedimiento oficial de Antigua Guatemala.",
-        "Archivo individual pendiente de adquisición y hash."
-      ],
-      "provenanceNotes": [
-        "Registro derivado de la biblioteca oficial de manuales de Mixco."
-      ],
-      "tags": [
-        "mixco",
-        "infraestructura"
-      ]
-    },
-    {
-      "sourceId": "mixco-mnpp-aguas-drenajes",
-      "documentKey": "mixco-mnpp-aguas-drenajes",
-      "documentVersion": "unacquired-2026-07-18",
-      "title": "MNPP Dirección de Aguas y Drenajes de Mixco",
-      "category": "procedure_manual",
-      "status": "acquisition_pending",
-      "targetJurisdiction": "Municipio de La Antigua Guatemala, Sacatepéquez, Guatemala",
-      "sourceJurisdiction": "Municipio de Mixco, Guatemala",
-      "municipality": "mixco",
-      "authorityClass": "external_reference",
-      "authorityLevel": "comparative",
-      "officialSource": true,
-      "officialForTargetJurisdiction": false,
-      "publicUrl": "https://munimixco.gob.gt/?page_id=2063",
-      "verifiedAt": "2026-07-18T00:00:00.000Z",
-      "limitations": [
-        "Referencia comparativa de la Municipalidad de Mixco; no define por sí sola el procedimiento oficial de Antigua Guatemala.",
-        "Archivo individual pendiente de adquisición y hash."
-      ],
-      "provenanceNotes": [
-        "Registro derivado de la biblioteca oficial de manuales de Mixco."
-      ],
-      "tags": [
-        "mixco",
-        "agua",
-        "drenajes"
-      ]
-    },
-    {
-      "sourceId": "mixco-mnpp-gerencia",
-      "documentKey": "mixco-mnpp-gerencia",
-      "documentVersion": "unacquired-2026-07-18",
-      "title": "MNPP Gerencia Municipal de Mixco",
-      "category": "procedure_manual",
-      "status": "acquisition_pending",
-      "targetJurisdiction": "Municipio de La Antigua Guatemala, Sacatepéquez, Guatemala",
-      "sourceJurisdiction": "Municipio de Mixco, Guatemala",
-      "municipality": "mixco",
-      "authorityClass": "external_reference",
-      "authorityLevel": "comparative",
-      "officialSource": true,
-      "officialForTargetJurisdiction": false,
-      "publicUrl": "https://munimixco.gob.gt/?page_id=2063",
-      "verifiedAt": "2026-07-18T00:00:00.000Z",
-      "limitations": [
-        "Referencia comparativa de la Municipalidad de Mixco; no define por sí sola el procedimiento oficial de Antigua Guatemala.",
-        "Archivo individual pendiente de adquisición y hash."
-      ],
-      "provenanceNotes": [
-        "Registro derivado de la biblioteca oficial de manuales de Mixco."
-      ],
-      "tags": [
-        "mixco",
-        "gerencia"
-      ]
-    },
-    {
-      "sourceId": "mixco-mnpp-desarrollo-social",
-      "documentKey": "mixco-mnpp-desarrollo-social",
-      "documentVersion": "unacquired-2026-07-18",
-      "title": "MNPP Dirección de Desarrollo Social y Económico de Mixco",
-      "category": "procedure_manual",
-      "status": "acquisition_pending",
-      "targetJurisdiction": "Municipio de La Antigua Guatemala, Sacatepéquez, Guatemala",
-      "sourceJurisdiction": "Municipio de Mixco, Guatemala",
-      "municipality": "mixco",
-      "authorityClass": "external_reference",
-      "authorityLevel": "comparative",
-      "officialSource": true,
-      "officialForTargetJurisdiction": false,
-      "publicUrl": "https://munimixco.gob.gt/?page_id=2063",
-      "verifiedAt": "2026-07-18T00:00:00.000Z",
-      "limitations": [
-        "Referencia comparativa de la Municipalidad de Mixco; no define por sí sola el procedimiento oficial de Antigua Guatemala.",
-        "Archivo individual pendiente de adquisición y hash."
-      ],
-      "provenanceNotes": [
-        "Registro derivado de la biblioteca oficial de manuales de Mixco."
-      ],
-      "tags": [
-        "mixco",
-        "desarrollo-social",
-        "desarrollo-economico"
+      "verifiedAt": "2026-07-31T19:27:00-06:00",
+      "publicUrl": "https://muniantigua.gob.gt/assets/backend/info/1_2026_IUYGB.pdf",
+      "publicationDate": "2026-04-13",
+      "acquisition": {
+        "acquiredAt": "2026-08-01T01:53:32.678Z",
+        "artifactPath": ".rag/library/antigua-organigrama/antigua-organigrama--official.pdf",
+        "contentSha256": "c2e3a2a62478677f7661cb081a4d1ffecc6d4429f5b32f5bc24094fc9f2ca0cc",
+        "mediaType": "application/pdf",
+        "byteLength": 1124044
+      },
+      "artifactSafety": {
+        "inspectedAt": "2026-08-01T02:28:37.357Z",
+        "artifactPath": ".rag/library/antigua-organigrama/antigua-organigrama--official.pdf",
+        "contentSha256": "c2e3a2a62478677f7661cb081a4d1ffecc6d4429f5b32f5bc24094fc9f2ca0cc",
+        "byteLength": 1124044,
+        "observedContentSha256": "c2e3a2a62478677f7661cb081a4d1ffecc6d4429f5b32f5bc24094fc9f2ca0cc",
+        "observedByteLength": 1124044,
+        "declaredMediaType": "application/pdf",
+        "detectedMediaType": "application/pdf",
+        "signature": "pdf-header-eof-v1",
+        "scannerEngine": "clamav",
+        "scannerVersion": "1.4.3",
+        "scannerDefinitionsVersion": "28076/Wed-Jul-29-06:25:25-2026",
+        "verdict": "clean",
+        "failureCodes": []
+      },
+      "failureCodes": [
+        "pdf_no_extractable_text"
       ]
     },
     {
@@ -364,146 +408,161 @@
       }
     },
     {
+      "sourceId": "antigua-pdmot-module-3",
+      "documentKey": "antigua-pdmot-module-3",
+      "documentVersion": "official-municipal-pdf-2025",
+      "title": "PDM-OT Módulo 3: indicadores de evaluación y seguimiento",
+      "category": "planning",
+      "status": "ingested",
+      "targetJurisdiction": "Municipio de La Antigua Guatemala, Sacatepéquez, Guatemala",
+      "sourceJurisdiction": "Municipio de La Antigua Guatemala, Sacatepéquez, Guatemala",
+      "municipality": "antigua guatemala",
+      "authorityClass": "official_municipal",
+      "authorityLevel": "primary",
+      "officialSource": true,
+      "officialForTargetJurisdiction": true,
+      "publicUrl": "https://muniantigua.gob.gt/assets/backend/info/MODULO_3_PDMOT.pdf",
+      "verifiedAt": "2026-07-31T19:27:00-06:00",
+      "publicationDate": "2025-01-01",
+      "limitations": [
+        "Documento identificado y con texto extraíble, pero aún no adquirido ni ingerido en el corpus operativo.",
+        "Los indicadores y unidades responsables requieren corroboración de vigencia y aplicación al caso concreto.",
+        "Ingestión acreditada en PostgreSQL/pgvector administrado con FORCE RLS; no acredita por sí sola completitud del corpus ni aprobación institucional.",
+        "Los embeddings local-eval-hashing son una representación léxica determinista de evaluación, no un modelo semántico productivo.",
+        "La ingestión no demuestra vigencia, aplicabilidad jurídica, completitud del corpus ni aprobación institucional."
+      ],
+      "provenanceNotes": [
+        "Publicado desde la página oficial PDM-OT de la Municipalidad de La Antigua Guatemala.",
+        "El documento autoriza reproducción total o parcial sin alterar contenido ni créditos.",
+        "Feature 085 verificó bytes exactos, ClamAV, extracción acotada y 90 chunks tenant-scoped."
+      ],
+      "tags": [
+        "antigua",
+        "pdm-ot",
+        "module-3",
+        "monitoring",
+        "water-sanitation",
+        "verified",
+        "ingested",
+        "controlled-real-corpus-v1"
+      ],
+      "acquisition": {
+        "acquiredAt": "2026-08-01T02:12:25.168Z",
+        "artifactPath": ".rag/library/antigua-pdmot-module-3/antigua-pdmot-module-3--official.pdf",
+        "contentSha256": "dc67c503155c8fe85a6d4ac28b54c715e6293ab8261484d2531750a9ab17a3f0",
+        "mediaType": "application/pdf",
+        "byteLength": 3191899
+      },
+      "artifactSafety": {
+        "inspectedAt": "2026-08-01T02:12:25.168Z",
+        "artifactPath": ".rag/library/antigua-pdmot-module-3/antigua-pdmot-module-3--official.pdf",
+        "contentSha256": "dc67c503155c8fe85a6d4ac28b54c715e6293ab8261484d2531750a9ab17a3f0",
+        "byteLength": 3191899,
+        "observedContentSha256": "dc67c503155c8fe85a6d4ac28b54c715e6293ab8261484d2531750a9ab17a3f0",
+        "observedByteLength": 3191899,
+        "declaredMediaType": "application/pdf",
+        "detectedMediaType": "application/pdf",
+        "signature": "pdf-header-eof-v1",
+        "scannerEngine": "clamav",
+        "scannerVersion": "1.4.3",
+        "scannerDefinitionsVersion": "28076/Wed-Jul-29-06:25:25-2026",
+        "verdict": "clean",
+        "failureCodes": []
+      },
+      "extraction": {
+        "extractedAt": "2026-08-01T02:12:33.458Z",
+        "extractor": "pdfjs_isolated_process_v1",
+        "sectionCount": 46
+      },
+      "indexing": {
+        "indexedAt": "2026-08-01T02:12:33.458Z",
+        "indexer": "local-eval-hashing/token-bigram-hash-1536-v1",
+        "chunkCount": 90,
+        "manifestDocumentKey": "antigua-pdmot-module-3"
+      }
+    },
+    {
+      "sourceId": "antigua-pdmot-module-4",
+      "documentKey": "antigua-pdmot-module-4",
+      "documentVersion": "official-municipal-pdf-2025",
+      "title": "PDM-OT Módulo 4: implementación, seguimiento y gestión",
+      "category": "planning",
+      "status": "ingested",
+      "targetJurisdiction": "Municipio de La Antigua Guatemala, Sacatepéquez, Guatemala",
+      "sourceJurisdiction": "Municipio de La Antigua Guatemala, Sacatepéquez, Guatemala",
+      "municipality": "antigua guatemala",
+      "authorityClass": "official_municipal",
+      "authorityLevel": "primary",
+      "officialSource": true,
+      "officialForTargetJurisdiction": true,
+      "publicUrl": "https://muniantigua.gob.gt/assets/backend/info/MODULO_4_PDMOT.pdf",
+      "verifiedAt": "2026-07-31T19:27:00-06:00",
+      "publicationDate": "2025-01-01",
+      "limitations": [
+        "Documento identificado y con texto extraíble, pero aún no adquirido ni ingerido en el corpus operativo.",
+        "La articulación PEI/POM/POA/presupuesto no demuestra aprobación o disponibilidad para un expediente específico.",
+        "Ingestión acreditada en PostgreSQL/pgvector administrado con FORCE RLS; no acredita por sí sola completitud del corpus ni aprobación institucional.",
+        "Los embeddings local-eval-hashing son una representación léxica determinista de evaluación, no un modelo semántico productivo.",
+        "La ingestión no demuestra vigencia, aplicabilidad jurídica, completitud del corpus ni aprobación institucional."
+      ],
+      "provenanceNotes": [
+        "Publicado desde la página oficial PDM-OT de la Municipalidad de La Antigua Guatemala.",
+        "El documento autoriza reproducción total o parcial sin alterar contenido ni créditos.",
+        "Feature 085 verificó bytes exactos, ClamAV, extracción acotada y 44 chunks tenant-scoped."
+      ],
+      "tags": [
+        "antigua",
+        "pdm-ot",
+        "module-4",
+        "pei",
+        "pom",
+        "poa",
+        "budget",
+        "verified",
+        "ingested",
+        "controlled-real-corpus-v1"
+      ],
+      "acquisition": {
+        "acquiredAt": "2026-08-01T02:12:40.581Z",
+        "artifactPath": ".rag/library/antigua-pdmot-module-4/antigua-pdmot-module-4--official.pdf",
+        "contentSha256": "73186847344904a6c4ee64668dad0ec43628b3ca65ed8f12a192a05705a26fa9",
+        "mediaType": "application/pdf",
+        "byteLength": 1627111
+      },
+      "artifactSafety": {
+        "inspectedAt": "2026-08-01T02:12:40.581Z",
+        "artifactPath": ".rag/library/antigua-pdmot-module-4/antigua-pdmot-module-4--official.pdf",
+        "contentSha256": "73186847344904a6c4ee64668dad0ec43628b3ca65ed8f12a192a05705a26fa9",
+        "byteLength": 1627111,
+        "observedContentSha256": "73186847344904a6c4ee64668dad0ec43628b3ca65ed8f12a192a05705a26fa9",
+        "observedByteLength": 1627111,
+        "declaredMediaType": "application/pdf",
+        "detectedMediaType": "application/pdf",
+        "signature": "pdf-header-eof-v1",
+        "scannerEngine": "clamav",
+        "scannerVersion": "1.4.3",
+        "scannerDefinitionsVersion": "28076/Wed-Jul-29-06:25:25-2026",
+        "verdict": "clean",
+        "failureCodes": []
+      },
+      "extraction": {
+        "extractedAt": "2026-08-01T02:12:47.771Z",
+        "extractor": "pdfjs_isolated_process_v1",
+        "sectionCount": 22
+      },
+      "indexing": {
+        "indexedAt": "2026-08-01T02:12:47.771Z",
+        "indexer": "local-eval-hashing/token-bigram-hash-1536-v1",
+        "chunkCount": 44,
+        "manifestDocumentKey": "antigua-pdmot-module-4"
+      }
+    },
+    {
       "sourceId": "antigua-poa",
       "documentKey": "antigua-poa",
-      "documentVersion": "unknown",
+      "documentVersion": "poa-2026-catalog-2026-07-31",
       "title": "Plan Operativo Anual de La Antigua Guatemala",
       "category": "planning",
-      "status": "missing_source",
-      "targetJurisdiction": "Municipio de La Antigua Guatemala, Sacatepéquez, Guatemala",
-      "sourceJurisdiction": "Municipio de La Antigua Guatemala, Sacatepéquez, Guatemala",
-      "municipality": "antigua guatemala",
-      "authorityClass": "official_municipal",
-      "authorityLevel": "primary",
-      "officialSource": true,
-      "officialForTargetJurisdiction": true,
-      "limitations": [
-        "Documento o regla pendiente de localizar y validar."
-      ],
-      "provenanceNotes": [
-        "Versión vigente no localizada."
-      ],
-      "tags": [
-        "antigua",
-        "poa",
-        "missing"
-      ]
-    },
-    {
-      "sourceId": "antigua-presupuesto",
-      "documentKey": "antigua-presupuesto",
-      "documentVersion": "unknown",
-      "title": "Presupuesto y ejecución presupuestaria de La Antigua Guatemala",
-      "category": "budget",
-      "status": "missing_source",
-      "targetJurisdiction": "Municipio de La Antigua Guatemala, Sacatepéquez, Guatemala",
-      "sourceJurisdiction": "Municipio de La Antigua Guatemala, Sacatepéquez, Guatemala",
-      "municipality": "antigua guatemala",
-      "authorityClass": "official_municipal",
-      "authorityLevel": "primary",
-      "officialSource": true,
-      "officialForTargetJurisdiction": true,
-      "limitations": [
-        "Documento o regla pendiente de localizar y validar."
-      ],
-      "provenanceNotes": [
-        "Periodo y versión vigentes no localizados."
-      ],
-      "tags": [
-        "antigua",
-        "presupuesto",
-        "missing"
-      ]
-    },
-    {
-      "sourceId": "antigua-organigrama",
-      "documentKey": "antigua-organigrama",
-      "documentVersion": "unknown",
-      "title": "Organigrama municipal de La Antigua Guatemala",
-      "category": "organization",
-      "status": "missing_source",
-      "targetJurisdiction": "Municipio de La Antigua Guatemala, Sacatepéquez, Guatemala",
-      "sourceJurisdiction": "Municipio de La Antigua Guatemala, Sacatepéquez, Guatemala",
-      "municipality": "antigua guatemala",
-      "authorityClass": "official_municipal",
-      "authorityLevel": "primary",
-      "officialSource": true,
-      "officialForTargetJurisdiction": true,
-      "limitations": [
-        "Documento o regla pendiente de localizar y validar."
-      ],
-      "provenanceNotes": [
-        "Versión vigente no localizada."
-      ],
-      "tags": [
-        "antigua",
-        "organigrama",
-        "missing"
-      ]
-    },
-    {
-      "sourceId": "antigua-mof",
-      "documentKey": "antigua-mof",
-      "documentVersion": "unknown",
-      "title": "Manual de Organización y Funciones de La Antigua Guatemala",
-      "category": "function_manual",
-      "status": "missing_source",
-      "targetJurisdiction": "Municipio de La Antigua Guatemala, Sacatepéquez, Guatemala",
-      "sourceJurisdiction": "Municipio de La Antigua Guatemala, Sacatepéquez, Guatemala",
-      "municipality": "antigua guatemala",
-      "authorityClass": "official_municipal",
-      "authorityLevel": "primary",
-      "officialSource": true,
-      "officialForTargetJurisdiction": true,
-      "limitations": [
-        "Documento o regla pendiente de localizar y validar."
-      ],
-      "provenanceNotes": [
-        "Documento vigente no localizado."
-      ],
-      "tags": [
-        "antigua",
-        "mof",
-        "missing"
-      ]
-    },
-    {
-      "sourceId": "antigua-manuales-procedimientos",
-      "documentKey": "antigua-manuales-procedimientos",
-      "documentVersion": "portal-2026-07-18",
-      "title": "Biblioteca oficial de Manuales de Procedimientos de La Antigua Guatemala",
-      "category": "public_portal",
-      "status": "verified",
-      "targetJurisdiction": "Municipio de La Antigua Guatemala, Sacatepéquez, Guatemala",
-      "sourceJurisdiction": "Municipio de La Antigua Guatemala, Sacatepéquez, Guatemala",
-      "municipality": "antigua guatemala",
-      "authorityClass": "official_municipal",
-      "authorityLevel": "primary",
-      "officialSource": true,
-      "officialForTargetJurisdiction": true,
-      "publicUrl": "https://muniantigua.gob.gt/informacionDetalle/?idinfo=6",
-      "verifiedAt": "2026-07-19T03:53:06.000Z",
-      "limitations": [
-        "El catálogo municipal está verificado, pero sus archivos individuales no se consideran adquiridos ni ingeridos.",
-        "El año y la fecha de publicación del portal no prueban aprobación interna, vigencia ni inmutabilidad de cada manual."
-      ],
-      "provenanceNotes": [
-        "El portal y su API oficial de acceso a información pública enumeraban 89 registros de manuales entre 2022 y 2026 al momento de la verificación.",
-        "Cada PDF requiere adquisición controlada, hash SHA-256 sobre bytes originales y revisión de versión antes de promoción."
-      ],
-      "tags": [
-        "antigua",
-        "procedimientos",
-        "verified",
-        "acquisition-pending"
-      ]
-    },
-    {
-      "sourceId": "antigua-mnp-dmp-v3-2026",
-      "documentKey": "antigua-mnp-dmp-v3-2026",
-      "documentVersion": "official-municipal-pdf-2026-02-17-v3",
-      "title": "Manual de Normas y Procedimientos - Dirección Municipal de Planificación (versión 3)",
-      "category": "procedure_manual",
       "status": "failed",
       "targetJurisdiction": "Municipio de La Antigua Guatemala, Sacatepéquez, Guatemala",
       "sourceJurisdiction": "Municipio de La Antigua Guatemala, Sacatepéquez, Guatemala",
@@ -512,47 +571,45 @@
       "authorityLevel": "primary",
       "officialSource": true,
       "officialForTargetJurisdiction": true,
-      "publicUrl": "https://muniantigua.gob.gt/assets/backend/info/6_2026_eu9Z7.pdf",
-      "verifiedAt": "2026-07-19T03:53:06.000Z",
       "limitations": [
-        "El servidor no publica checksum criptográfico y la fecha Last-Modified posterior a la publicación indica que la URL puede ser mutable.",
-        "No se encontró licencia expresa de redistribución; conservar atribución y exigir revisión jurídica antes de republicar.",
-        "El PDF oficial es un escaneo de 170 páginas sin capa de texto extraíble; el extractor acotado falló cerrado con pdf_no_extractable_text.",
-        "No se ejecutó OCR jurídico en español sin un gate separado de exactitud y revisión humana.",
-        "La adquisición y el scan limpio no equivalen a ingestión, vigencia, aplicabilidad jurídica ni aprobación institucional.",
-        "El PDF oficial es un escaneo de 170 páginas sin capa de texto extraíble; el extractor acotado falló cerrado con pdf_no_extractable_text.",
-        "No se ejecutó OCR jurídico en español sin un gate separado de exactitud y revisión humana.",
-        "La adquisición y el scan limpio no equivalen a ingestión, vigencia, aplicabilidad jurídica ni aprobación institucional."
+        "La URL oficial identifica el POA 2026; sus bytes aún deben adquirirse, escanearse, extraerse e ingerirse antes de usarlo como evidencia recuperable.",
+        "Las modificaciones mensuales del POA deben tratarse como versiones o documentos relacionados, no como sustituciones silenciosas.",
+        "El PDF oficial fue adquirido y pasó un escaneo antimalware limpio, pero no contiene una capa de texto extraíble.",
+        "No se ejecutó OCR jurídico en español sin un gate separado de exactitud, revisión humana y trazabilidad por página.",
+        "La adquisición y el scan limpio no equivalen a ingestión, vigencia, aplicabilidad ni aprobación institucional."
       ],
       "provenanceNotes": [
-        "La API municipal oficial lo registró para 2026 con publicación 2026-02-17 17:59:00 sin zona horaria declarada.",
-        "HEAD devolvió HTTP 200, application/pdf y Content-Length 49052885; esos metadatos no sustituyen el hash de los bytes adquiridos.",
-        "Feature 054 copió los bytes originales a la biblioteca local acotada y verificó SHA-256 después de la copia; no ejecutó extracción ni indexación.",
-        "Feature 085 verificó bytes exactos y ClamAV, pero conservó el documento fuera del índice por ausencia de texto extraíble.",
-        "Feature 085 verificó bytes exactos y ClamAV, pero conservó el documento fuera del índice por ausencia de texto extraíble."
+        "Documento N05 - POA 2026 localizado en la API oficial de información pública municipal, idinformacion 2005.",
+        "Bytes oficiales adquiridos con SHA-256 3f45829533f0aed1b2174fbf5c071ddad7d1414f628bc0ff8768f08e58aa9487 y 10908269 bytes.",
+        "ClamAV 1.4.3 con definiciones 28076 reportó el artefacto limpio; la extracción falló cerrada con pdf_no_extractable_text."
       ],
       "tags": [
         "antigua",
-        "procedimientos",
-        "planificacion",
-        "dmp",
+        "poa",
+        "2026",
+        "verified",
+        "acquisition-pending",
         "clean-scan",
-        "extraction-blocked-no-text"
+        "extraction-blocked-no-text",
+        "ocr-review-required"
       ],
+      "verifiedAt": "2026-07-31T19:27:00-06:00",
+      "publicUrl": "https://muniantigua.gob.gt/assets/backend/info/5_2026_R46NF.pdf",
+      "publicationDate": "2026-02-16",
       "acquisition": {
-        "acquiredAt": "2026-07-29T17:07:34.903Z",
-        "artifactPath": ".rag/library/antigua-mnp-dmp-v3-2026/antigua-mnp-dmp-v3-2026--official-municipal-pdf-2026-02-17-v3.pdf",
-        "contentSha256": "4cbd35993b345c1f2bdb308825f1d3a6cac24ad239bdc9b087e2d99f2297e8f9",
+        "acquiredAt": "2026-08-01T01:53:32.678Z",
+        "artifactPath": ".rag/library/antigua-poa/antigua-poa--official.pdf",
+        "contentSha256": "3f45829533f0aed1b2174fbf5c071ddad7d1414f628bc0ff8768f08e58aa9487",
         "mediaType": "application/pdf",
-        "byteLength": 49052885
+        "byteLength": 10908269
       },
       "artifactSafety": {
-        "inspectedAt": "2026-07-29T17:07:34.903Z",
-        "artifactPath": ".rag/library/antigua-mnp-dmp-v3-2026/antigua-mnp-dmp-v3-2026--official-municipal-pdf-2026-02-17-v3.pdf",
-        "contentSha256": "4cbd35993b345c1f2bdb308825f1d3a6cac24ad239bdc9b087e2d99f2297e8f9",
-        "byteLength": 49052885,
-        "observedContentSha256": "4cbd35993b345c1f2bdb308825f1d3a6cac24ad239bdc9b087e2d99f2297e8f9",
-        "observedByteLength": 49052885,
+        "inspectedAt": "2026-08-01T02:28:37.357Z",
+        "artifactPath": ".rag/library/antigua-poa/antigua-poa--official.pdf",
+        "contentSha256": "3f45829533f0aed1b2174fbf5c071ddad7d1414f628bc0ff8768f08e58aa9487",
+        "byteLength": 10908269,
+        "observedContentSha256": "3f45829533f0aed1b2174fbf5c071ddad7d1414f628bc0ff8768f08e58aa9487",
+        "observedByteLength": 10908269,
         "declaredMediaType": "application/pdf",
         "detectedMediaType": "application/pdf",
         "signature": "pdf-header-eof-v1",
@@ -564,6 +621,641 @@
       },
       "failureCodes": [
         "pdf_no_extractable_text"
+      ]
+    },
+    {
+      "sourceId": "antigua-presupuesto",
+      "documentKey": "antigua-presupuesto",
+      "documentVersion": "budget-catalog-2026-07-31",
+      "title": "Presupuesto y ejecución presupuestaria de La Antigua Guatemala",
+      "category": "budget",
+      "status": "verified",
+      "targetJurisdiction": "Municipio de La Antigua Guatemala, Sacatepéquez, Guatemala",
+      "sourceJurisdiction": "Municipio de La Antigua Guatemala, Sacatepéquez, Guatemala",
+      "municipality": "antigua guatemala",
+      "authorityClass": "official_municipal",
+      "authorityLevel": "primary",
+      "officialSource": true,
+      "officialForTargetJurisdiction": true,
+      "limitations": [
+        "El catálogo oficial contiene presupuesto, modificaciones y transferencias; cada PDF debe adquirirse e ingerirse como versión o documento independiente.",
+        "La existencia del catálogo no acredita disponibilidad presupuestaria para un expediente concreto."
+      ],
+      "provenanceNotes": [
+        "Categorías 7 y 8 de la API oficial municipal verificadas el 2026-07-31; incluyen presupuesto anual de ingresos y ejecución presupuestaria 2026."
+      ],
+      "tags": [
+        "antigua",
+        "presupuesto",
+        "ejecucion-presupuestaria",
+        "2026",
+        "verified"
+      ],
+      "verifiedAt": "2026-07-31T19:27:00-06:00",
+      "publicUrl": "https://muniantigua.gob.gt/api/public/consultas/documentos/7",
+      "publicationDate": "2026-07-15"
+    },
+    {
+      "sourceId": "antigua-procurement-june-2026",
+      "documentKey": "antigua-procurement-june-2026",
+      "documentVersion": "procurement-june-2026",
+      "title": "Contrataciones por cotización y licitación - junio 2026",
+      "category": "public_portal",
+      "status": "failed",
+      "targetJurisdiction": "Municipio de La Antigua Guatemala, Sacatepéquez, Guatemala",
+      "sourceJurisdiction": "Municipio de La Antigua Guatemala, Sacatepéquez, Guatemala",
+      "municipality": "antigua guatemala",
+      "authorityClass": "official_municipal",
+      "authorityLevel": "primary",
+      "officialSource": true,
+      "officialForTargetJurisdiction": true,
+      "publicUrl": "https://muniantigua.gob.gt/assets/backend/info/20_2026_2WpLq.pdf",
+      "verifiedAt": "2026-07-31T19:27:00-06:00",
+      "publicationDate": "2026-07-15",
+      "limitations": [
+        "Es un corte mensual y no sustituye expedientes, bases, actas o contratos completos.",
+        "Debe adquirirse e ingerirse antes de producir citas.",
+        "El PDF oficial fue adquirido y pasó un escaneo antimalware limpio, pero no contiene una capa de texto extraíble.",
+        "No se ejecutó OCR jurídico en español sin un gate separado de exactitud, revisión humana y trazabilidad por página.",
+        "La adquisición y el scan limpio no equivalen a ingestión, vigencia, aplicabilidad ni aprobación institucional."
+      ],
+      "provenanceNotes": [
+        "Documento N20 oficial, idinformacion 2365, localizado en la API municipal.",
+        "Bytes oficiales adquiridos con SHA-256 0281cbf98e1f88f81471393328a8d59b7e2814eb447190f0afe840775ae8708a y 364482 bytes.",
+        "ClamAV 1.4.3 con definiciones 28076 reportó el artefacto limpio; la extracción falló cerrada con pdf_no_extractable_text."
+      ],
+      "tags": [
+        "antigua",
+        "procurement",
+        "quotation",
+        "tender",
+        "june-2026",
+        "verified",
+        "clean-scan",
+        "extraction-blocked-no-text",
+        "ocr-review-required"
+      ],
+      "acquisition": {
+        "acquiredAt": "2026-08-01T01:53:32.678Z",
+        "artifactPath": ".rag/library/antigua-procurement-june-2026/antigua-procurement-june-2026--official.pdf",
+        "contentSha256": "0281cbf98e1f88f81471393328a8d59b7e2814eb447190f0afe840775ae8708a",
+        "mediaType": "application/pdf",
+        "byteLength": 364482
+      },
+      "artifactSafety": {
+        "inspectedAt": "2026-08-01T02:28:37.357Z",
+        "artifactPath": ".rag/library/antigua-procurement-june-2026/antigua-procurement-june-2026--official.pdf",
+        "contentSha256": "0281cbf98e1f88f81471393328a8d59b7e2814eb447190f0afe840775ae8708a",
+        "byteLength": 364482,
+        "observedContentSha256": "0281cbf98e1f88f81471393328a8d59b7e2814eb447190f0afe840775ae8708a",
+        "observedByteLength": 364482,
+        "declaredMediaType": "application/pdf",
+        "detectedMediaType": "application/pdf",
+        "signature": "pdf-header-eof-v1",
+        "scannerEngine": "clamav",
+        "scannerVersion": "1.4.3",
+        "scannerDefinitionsVersion": "28076/Wed-Jul-29-06:25:25-2026",
+        "verdict": "clean",
+        "failureCodes": []
+      },
+      "failureCodes": [
+        "pdf_no_extractable_text"
+      ]
+    },
+    {
+      "sourceId": "antigua-public-works-2026",
+      "documentKey": "antigua-public-works-2026",
+      "documentVersion": "works-catalog-june-2026",
+      "title": "Listado de obras ejecutadas o en ejecución con fondos públicos - junio 2026",
+      "category": "public_portal",
+      "status": "failed",
+      "targetJurisdiction": "Municipio de La Antigua Guatemala, Sacatepéquez, Guatemala",
+      "sourceJurisdiction": "Municipio de La Antigua Guatemala, Sacatepéquez, Guatemala",
+      "municipality": "antigua guatemala",
+      "authorityClass": "official_municipal",
+      "authorityLevel": "primary",
+      "officialSource": true,
+      "officialForTargetJurisdiction": true,
+      "publicUrl": "https://muniantigua.gob.gt/assets/backend/info/18_2026_ct4hT.pdf",
+      "verifiedAt": "2026-07-31T19:27:00-06:00",
+      "publicationDate": "2026-07-15",
+      "limitations": [
+        "Es un corte mensual y no demuestra el estado actual posterior a junio de 2026.",
+        "Debe adquirirse e ingerirse antes de usarse como evidencia recuperable.",
+        "El PDF oficial fue adquirido y pasó un escaneo antimalware limpio, pero no contiene una capa de texto extraíble.",
+        "No se ejecutó OCR jurídico en español sin un gate separado de exactitud, revisión humana y trazabilidad por página.",
+        "La adquisición y el scan limpio no equivalen a ingestión, vigencia, aplicabilidad ni aprobación institucional."
+      ],
+      "provenanceNotes": [
+        "Documento N18 oficial, idinformacion 2363, localizado en la API municipal.",
+        "Bytes oficiales adquiridos con SHA-256 b84f1177b902bd6d723b62ae4041f1d61cb79d049070a2d0de4d14bdaa19b791 y 1197639 bytes.",
+        "ClamAV 1.4.3 con definiciones 28076 reportó el artefacto limpio; la extracción falló cerrada con pdf_no_extractable_text."
+      ],
+      "tags": [
+        "antigua",
+        "public-works",
+        "execution",
+        "june-2026",
+        "verified",
+        "clean-scan",
+        "extraction-blocked-no-text",
+        "ocr-review-required"
+      ],
+      "acquisition": {
+        "acquiredAt": "2026-08-01T01:53:32.678Z",
+        "artifactPath": ".rag/library/antigua-public-works-2026/antigua-public-works-2026--official.pdf",
+        "contentSha256": "b84f1177b902bd6d723b62ae4041f1d61cb79d049070a2d0de4d14bdaa19b791",
+        "mediaType": "application/pdf",
+        "byteLength": 1197639
+      },
+      "artifactSafety": {
+        "inspectedAt": "2026-08-01T02:28:37.357Z",
+        "artifactPath": ".rag/library/antigua-public-works-2026/antigua-public-works-2026--official.pdf",
+        "contentSha256": "b84f1177b902bd6d723b62ae4041f1d61cb79d049070a2d0de4d14bdaa19b791",
+        "byteLength": 1197639,
+        "observedContentSha256": "b84f1177b902bd6d723b62ae4041f1d61cb79d049070a2d0de4d14bdaa19b791",
+        "observedByteLength": 1197639,
+        "declaredMediaType": "application/pdf",
+        "detectedMediaType": "application/pdf",
+        "signature": "pdf-header-eof-v1",
+        "scannerEngine": "clamav",
+        "scannerVersion": "1.4.3",
+        "scannerDefinitionsVersion": "28076/Wed-Jul-29-06:25:25-2026",
+        "verdict": "clean",
+        "failureCodes": []
+      },
+      "failureCodes": [
+        "pdf_no_extractable_text"
+      ]
+    },
+    {
+      "sourceId": "gt-codigo-municipal-index",
+      "documentKey": "gt-codigo-municipal-index",
+      "documentVersion": "portal-2026-07-18",
+      "title": "Índice oficial del Código Municipal y sus reformas",
+      "category": "public_portal",
+      "status": "verified",
+      "targetJurisdiction": "Municipio de La Antigua Guatemala, Sacatepéquez, Guatemala",
+      "sourceJurisdiction": "República de Guatemala",
+      "authorityClass": "official_national",
+      "authorityLevel": "national",
+      "officialSource": true,
+      "officialForTargetJurisdiction": true,
+      "publicUrl": "https://www.congreso.gob.gt/buscador_decretos/12-2002",
+      "verifiedAt": "2026-07-18T00:00:00.000Z",
+      "limitations": [
+        "El portal permite rastrear el Decreto 12-2002 y reformas, pero no acredita que exista una versión consolidada adquirida o ingerida.",
+        "La ley nacional no demuestra por sí sola la práctica interna de la Municipalidad de La Antigua Guatemala."
+      ],
+      "provenanceNotes": [
+        "Fuente primaria: Congreso de la República de Guatemala."
+      ],
+      "tags": [
+        "codigo-municipal",
+        "nacional",
+        "acquisition-pending"
+      ]
+    },
+    {
+      "sourceId": "guatemala-development-councils-law",
+      "documentKey": "guatemala-development-councils-law",
+      "documentVersion": "decree-11-2002-portal-verified-2026-07-31",
+      "title": "Ley de los Consejos de Desarrollo Urbano y Rural, Decreto 11-2002",
+      "category": "national_law",
+      "status": "verified",
+      "targetJurisdiction": "Municipio de La Antigua Guatemala, Sacatepéquez, Guatemala",
+      "sourceJurisdiction": "República de Guatemala",
+      "authorityClass": "official_national",
+      "authorityLevel": "national",
+      "officialSource": true,
+      "officialForTargetJurisdiction": true,
+      "publicUrl": "https://www.congreso.gob.gt/detalle_pdf/decretos/231",
+      "verifiedAt": "2026-07-31T19:27:00-06:00",
+      "limitations": [
+        "Debe verificarse la reforma aprobada en 2026 y el texto consolidado antes de afirmar integración o funciones actuales.",
+        "La ley no demuestra la existencia de un acta, priorización o decisión específica de COCODE/COMUDE."
+      ],
+      "provenanceNotes": [
+        "Ficha oficial del Congreso de la República de Guatemala."
+      ],
+      "tags": [
+        "guatemala",
+        "cocode",
+        "comude",
+        "development-councils",
+        "national-law",
+        "verified"
+      ]
+    },
+    {
+      "sourceId": "guatemala-procurement-law",
+      "documentKey": "guatemala-procurement-law",
+      "documentVersion": "decree-57-92-portal-verified-2026-07-31",
+      "title": "Ley de Contrataciones del Estado, Decreto 57-92",
+      "category": "national_law",
+      "status": "verified",
+      "targetJurisdiction": "Municipio de La Antigua Guatemala, Sacatepéquez, Guatemala",
+      "sourceJurisdiction": "República de Guatemala",
+      "authorityClass": "official_national",
+      "authorityLevel": "national",
+      "officialSource": true,
+      "officialForTargetJurisdiction": true,
+      "publicUrl": "https://formacion.minfin.gob.gt/difoteca/documentos-legales/",
+      "verifiedAt": "2026-07-31T19:27:00-06:00",
+      "limitations": [
+        "Debe adquirirse una versión oficial aplicable y verificarse reformas vigentes antes de citar artículos.",
+        "La ley no demuestra que una modalidad o acto haya ocurrido en un expediente concreto."
+      ],
+      "provenanceNotes": [
+        "Biblioteca legal oficial del Ministerio de Finanzas Públicas."
+      ],
+      "tags": [
+        "guatemala",
+        "procurement",
+        "decree-57-92",
+        "national-law",
+        "verified"
+      ]
+    },
+    {
+      "sourceId": "guatemala-procurement-regulation",
+      "documentKey": "guatemala-procurement-regulation",
+      "documentVersion": "agreement-122-2016-portal-verified-2026-07-31",
+      "title": "Reglamento de la Ley de Contrataciones del Estado, Acuerdo Gubernativo 122-2016",
+      "category": "national_regulation",
+      "status": "verified",
+      "targetJurisdiction": "Municipio de La Antigua Guatemala, Sacatepéquez, Guatemala",
+      "sourceJurisdiction": "República de Guatemala",
+      "authorityClass": "official_national",
+      "authorityLevel": "national",
+      "officialSource": true,
+      "officialForTargetJurisdiction": true,
+      "publicUrl": "https://www.minfin.gob.gt/index.php/legislacion-y-normas/acuerdos-gubernativos/acuerdos-gubernativos-2016/3036-no-122-2016-acuerdo-gubernativo-mfp-reglamento-de-la-ley-de-contrataciones-del-estado",
+      "verifiedAt": "2026-07-31T19:27:00-06:00",
+      "limitations": [
+        "Debe verificarse texto consolidado y reformas vigentes antes de citar requisitos o plazos.",
+        "El reglamento no sustituye bases, resoluciones o expediente municipal."
+      ],
+      "provenanceNotes": [
+        "Página oficial de MINFIN, actualizada en enero de 2026."
+      ],
+      "tags": [
+        "guatemala",
+        "procurement",
+        "regulation",
+        "agreement-122-2016",
+        "verified"
+      ]
+    },
+    {
+      "sourceId": "infom-water-sanitation-services",
+      "documentKey": "infom-water-sanitation-services",
+      "documentVersion": "portal-verified-2026-07-31",
+      "title": "INFOM: servicios de agua, saneamiento y fortalecimiento municipal",
+      "category": "public_portal",
+      "status": "verified",
+      "targetJurisdiction": "Municipio de La Antigua Guatemala, Sacatepéquez, Guatemala",
+      "sourceJurisdiction": "República de Guatemala",
+      "authorityClass": "official_national",
+      "authorityLevel": "national",
+      "officialSource": true,
+      "officialForTargetJurisdiction": true,
+      "publicUrl": "https://infom.gob.gt/index.php",
+      "verifiedAt": "2026-07-31T19:27:00-06:00",
+      "limitations": [
+        "El catálogo describe servicios y asistencia técnica; no crea por sí solo un requisito obligatorio para cada municipio.",
+        "Manuales, términos y entregables deben adquirirse como documentos separados."
+      ],
+      "provenanceNotes": [
+        "Portal oficial del Instituto de Fomento Municipal."
+      ],
+      "tags": [
+        "guatemala",
+        "infom",
+        "unepar",
+        "water-sanitation",
+        "preinvestment",
+        "maintenance",
+        "verified"
+      ]
+    },
+    {
+      "sourceId": "marn-environmental-category-c",
+      "documentKey": "marn-environmental-category-c",
+      "documentVersion": "web-2024-08-16-verified-2026-07-31",
+      "title": "Evaluación Ambiental Inicial Categoría C",
+      "category": "national_regulation",
+      "status": "verified",
+      "targetJurisdiction": "Municipio de La Antigua Guatemala, Sacatepéquez, Guatemala",
+      "sourceJurisdiction": "República de Guatemala",
+      "authorityClass": "official_national",
+      "authorityLevel": "national",
+      "officialSource": true,
+      "officialForTargetJurisdiction": true,
+      "publicUrl": "https://www.marn.gob.gt/28-evaluacion-ambiental-inicial-categoria-c/",
+      "verifiedAt": "2026-07-31T19:27:00-06:00",
+      "publicationDate": "2024-08-16",
+      "limitations": [
+        "La categoría ambiental aplicable depende del listado taxativo y características concretas del proyecto.",
+        "Los requisitos web deben revisarse por cambios, reformas y formularios vigentes antes de ejecución."
+      ],
+      "provenanceNotes": [
+        "Página oficial del Ministerio de Ambiente y Recursos Naturales."
+      ],
+      "tags": [
+        "guatemala",
+        "marn",
+        "environment",
+        "category-c",
+        "verified"
+      ]
+    },
+    {
+      "sourceId": "mixco-manuales-biblioteca",
+      "documentKey": "mixco-manuales-biblioteca",
+      "documentVersion": "portal-2026-07-18",
+      "title": "Biblioteca de Manuales de Normas, Procesos y Procedimientos de Mixco",
+      "category": "public_portal",
+      "status": "verified",
+      "targetJurisdiction": "Municipio de La Antigua Guatemala, Sacatepéquez, Guatemala",
+      "sourceJurisdiction": "Municipio de Mixco, Guatemala",
+      "municipality": "mixco",
+      "authorityClass": "external_reference",
+      "authorityLevel": "comparative",
+      "officialSource": true,
+      "officialForTargetJurisdiction": false,
+      "publicUrl": "https://munimixco.gob.gt/?page_id=2063",
+      "verifiedAt": "2026-07-18T00:00:00.000Z",
+      "limitations": [
+        "Referencia comparativa de la Municipalidad de Mixco; no define por sí sola el procedimiento oficial de Antigua Guatemala."
+      ],
+      "provenanceNotes": [
+        "La biblioteca oficial enumera tomos administrativos de Mixco; los archivos individuales aún no están adquiridos ni ingeridos."
+      ],
+      "tags": [
+        "mixco",
+        "comparative",
+        "manuales"
+      ]
+    },
+    {
+      "sourceId": "mixco-mnpp-aguas-drenajes",
+      "documentKey": "mixco-mnpp-aguas-drenajes",
+      "documentVersion": "unacquired-2026-07-18",
+      "title": "MNPP Dirección de Aguas y Drenajes de Mixco",
+      "category": "procedure_manual",
+      "status": "acquisition_pending",
+      "targetJurisdiction": "Municipio de La Antigua Guatemala, Sacatepéquez, Guatemala",
+      "sourceJurisdiction": "Municipio de Mixco, Guatemala",
+      "municipality": "mixco",
+      "authorityClass": "external_reference",
+      "authorityLevel": "comparative",
+      "officialSource": true,
+      "officialForTargetJurisdiction": false,
+      "publicUrl": "https://munimixco.gob.gt/?page_id=2063",
+      "verifiedAt": "2026-07-18T00:00:00.000Z",
+      "limitations": [
+        "Referencia comparativa de la Municipalidad de Mixco; no define por sí sola el procedimiento oficial de Antigua Guatemala.",
+        "Archivo individual pendiente de adquisición y hash."
+      ],
+      "provenanceNotes": [
+        "Registro derivado de la biblioteca oficial de manuales de Mixco."
+      ],
+      "tags": [
+        "mixco",
+        "agua",
+        "drenajes"
+      ]
+    },
+    {
+      "sourceId": "mixco-mnpp-compras",
+      "documentKey": "mixco-mnpp-compras",
+      "documentVersion": "unacquired-2026-07-18",
+      "title": "MNPP Dirección de Compras y Contrataciones de Mixco",
+      "category": "procedure_manual",
+      "status": "acquisition_pending",
+      "targetJurisdiction": "Municipio de La Antigua Guatemala, Sacatepéquez, Guatemala",
+      "sourceJurisdiction": "Municipio de Mixco, Guatemala",
+      "municipality": "mixco",
+      "authorityClass": "external_reference",
+      "authorityLevel": "comparative",
+      "officialSource": true,
+      "officialForTargetJurisdiction": false,
+      "publicUrl": "https://munimixco.gob.gt/?page_id=2063",
+      "verifiedAt": "2026-07-18T00:00:00.000Z",
+      "limitations": [
+        "Referencia comparativa de la Municipalidad de Mixco; no define por sí sola el procedimiento oficial de Antigua Guatemala.",
+        "Archivo individual pendiente de adquisición y hash."
+      ],
+      "provenanceNotes": [
+        "Registro derivado de la biblioteca oficial de manuales de Mixco."
+      ],
+      "tags": [
+        "mixco",
+        "compras",
+        "contrataciones"
+      ]
+    },
+    {
+      "sourceId": "mixco-mnpp-concejo-secretaria",
+      "documentKey": "mixco-mnpp-concejo-secretaria",
+      "documentVersion": "unacquired-2026-07-18",
+      "title": "MNPP Concejo Municipal y Secretaría Municipal de Mixco",
+      "category": "procedure_manual",
+      "status": "acquisition_pending",
+      "targetJurisdiction": "Municipio de La Antigua Guatemala, Sacatepéquez, Guatemala",
+      "sourceJurisdiction": "Municipio de Mixco, Guatemala",
+      "municipality": "mixco",
+      "authorityClass": "external_reference",
+      "authorityLevel": "comparative",
+      "officialSource": true,
+      "officialForTargetJurisdiction": false,
+      "publicUrl": "https://munimixco.gob.gt/?page_id=2063",
+      "verifiedAt": "2026-07-18T00:00:00.000Z",
+      "limitations": [
+        "Referencia comparativa de la Municipalidad de Mixco; no define por sí sola el procedimiento oficial de Antigua Guatemala.",
+        "Archivo individual pendiente de adquisición y hash."
+      ],
+      "provenanceNotes": [
+        "Registro derivado de la biblioteca oficial de manuales de Mixco."
+      ],
+      "tags": [
+        "mixco",
+        "concejo",
+        "secretaria"
+      ]
+    },
+    {
+      "sourceId": "mixco-mnpp-dafim",
+      "documentKey": "mixco-mnpp-dafim",
+      "documentVersion": "unacquired-2026-07-18",
+      "title": "MNPP DAFIM de Mixco",
+      "category": "procedure_manual",
+      "status": "acquisition_pending",
+      "targetJurisdiction": "Municipio de La Antigua Guatemala, Sacatepéquez, Guatemala",
+      "sourceJurisdiction": "Municipio de Mixco, Guatemala",
+      "municipality": "mixco",
+      "authorityClass": "external_reference",
+      "authorityLevel": "comparative",
+      "officialSource": true,
+      "officialForTargetJurisdiction": false,
+      "publicUrl": "https://munimixco.gob.gt/?page_id=2063",
+      "verifiedAt": "2026-07-18T00:00:00.000Z",
+      "limitations": [
+        "Referencia comparativa de la Municipalidad de Mixco; no define por sí sola el procedimiento oficial de Antigua Guatemala.",
+        "Archivo individual pendiente de adquisición y hash."
+      ],
+      "provenanceNotes": [
+        "Registro derivado de la biblioteca oficial de manuales de Mixco."
+      ],
+      "tags": [
+        "mixco",
+        "dafim",
+        "finanzas"
+      ]
+    },
+    {
+      "sourceId": "mixco-mnpp-desarrollo-social",
+      "documentKey": "mixco-mnpp-desarrollo-social",
+      "documentVersion": "unacquired-2026-07-18",
+      "title": "MNPP Dirección de Desarrollo Social y Económico de Mixco",
+      "category": "procedure_manual",
+      "status": "acquisition_pending",
+      "targetJurisdiction": "Municipio de La Antigua Guatemala, Sacatepéquez, Guatemala",
+      "sourceJurisdiction": "Municipio de Mixco, Guatemala",
+      "municipality": "mixco",
+      "authorityClass": "external_reference",
+      "authorityLevel": "comparative",
+      "officialSource": true,
+      "officialForTargetJurisdiction": false,
+      "publicUrl": "https://munimixco.gob.gt/?page_id=2063",
+      "verifiedAt": "2026-07-18T00:00:00.000Z",
+      "limitations": [
+        "Referencia comparativa de la Municipalidad de Mixco; no define por sí sola el procedimiento oficial de Antigua Guatemala.",
+        "Archivo individual pendiente de adquisición y hash."
+      ],
+      "provenanceNotes": [
+        "Registro derivado de la biblioteca oficial de manuales de Mixco."
+      ],
+      "tags": [
+        "mixco",
+        "desarrollo-social",
+        "desarrollo-economico"
+      ]
+    },
+    {
+      "sourceId": "mixco-mnpp-dmp-ddut",
+      "documentKey": "mixco-mnpp-dmp-ddut",
+      "documentVersion": "unacquired-2026-07-18",
+      "title": "MNPP Dirección Municipal de Planificación y DDUT de Mixco",
+      "category": "procedure_manual",
+      "status": "acquisition_pending",
+      "targetJurisdiction": "Municipio de La Antigua Guatemala, Sacatepéquez, Guatemala",
+      "sourceJurisdiction": "Municipio de Mixco, Guatemala",
+      "municipality": "mixco",
+      "authorityClass": "external_reference",
+      "authorityLevel": "comparative",
+      "officialSource": true,
+      "officialForTargetJurisdiction": false,
+      "publicUrl": "https://munimixco.gob.gt/?page_id=2063",
+      "verifiedAt": "2026-07-18T00:00:00.000Z",
+      "limitations": [
+        "Referencia comparativa de la Municipalidad de Mixco; no define por sí sola el procedimiento oficial de Antigua Guatemala.",
+        "Archivo individual pendiente de adquisición y hash."
+      ],
+      "provenanceNotes": [
+        "Registro derivado de la biblioteca oficial de manuales de Mixco."
+      ],
+      "tags": [
+        "mixco",
+        "planificacion",
+        "territorio"
+      ]
+    },
+    {
+      "sourceId": "mixco-mnpp-gerencia",
+      "documentKey": "mixco-mnpp-gerencia",
+      "documentVersion": "unacquired-2026-07-18",
+      "title": "MNPP Gerencia Municipal de Mixco",
+      "category": "procedure_manual",
+      "status": "acquisition_pending",
+      "targetJurisdiction": "Municipio de La Antigua Guatemala, Sacatepéquez, Guatemala",
+      "sourceJurisdiction": "Municipio de Mixco, Guatemala",
+      "municipality": "mixco",
+      "authorityClass": "external_reference",
+      "authorityLevel": "comparative",
+      "officialSource": true,
+      "officialForTargetJurisdiction": false,
+      "publicUrl": "https://munimixco.gob.gt/?page_id=2063",
+      "verifiedAt": "2026-07-18T00:00:00.000Z",
+      "limitations": [
+        "Referencia comparativa de la Municipalidad de Mixco; no define por sí sola el procedimiento oficial de Antigua Guatemala.",
+        "Archivo individual pendiente de adquisición y hash."
+      ],
+      "provenanceNotes": [
+        "Registro derivado de la biblioteca oficial de manuales de Mixco."
+      ],
+      "tags": [
+        "mixco",
+        "gerencia"
+      ]
+    },
+    {
+      "sourceId": "mixco-mnpp-infraestructura",
+      "documentKey": "mixco-mnpp-infraestructura",
+      "documentVersion": "unacquired-2026-07-18",
+      "title": "MNPP Dirección de Infraestructura de Mixco",
+      "category": "procedure_manual",
+      "status": "acquisition_pending",
+      "targetJurisdiction": "Municipio de La Antigua Guatemala, Sacatepéquez, Guatemala",
+      "sourceJurisdiction": "Municipio de Mixco, Guatemala",
+      "municipality": "mixco",
+      "authorityClass": "external_reference",
+      "authorityLevel": "comparative",
+      "officialSource": true,
+      "officialForTargetJurisdiction": false,
+      "publicUrl": "https://munimixco.gob.gt/?page_id=2063",
+      "verifiedAt": "2026-07-18T00:00:00.000Z",
+      "limitations": [
+        "Referencia comparativa de la Municipalidad de Mixco; no define por sí sola el procedimiento oficial de Antigua Guatemala.",
+        "Archivo individual pendiente de adquisición y hash."
+      ],
+      "provenanceNotes": [
+        "Registro derivado de la biblioteca oficial de manuales de Mixco."
+      ],
+      "tags": [
+        "mixco",
+        "infraestructura"
+      ]
+    },
+    {
+      "sourceId": "segeplan-snip-system",
+      "documentKey": "segeplan-snip-system",
+      "documentVersion": "portal-verified-2026-07-31",
+      "title": "Sistema Nacional de Inversión Pública - conceptos, normas e instrumentos",
+      "category": "planning",
+      "status": "verified",
+      "targetJurisdiction": "Municipio de La Antigua Guatemala, Sacatepéquez, Guatemala",
+      "sourceJurisdiction": "República de Guatemala",
+      "authorityClass": "official_national",
+      "authorityLevel": "national",
+      "officialSource": true,
+      "officialForTargetJurisdiction": true,
+      "publicUrl": "https://snip.segeplan.gob.gt/sinip/html/portal/temp/mrc_sistema.htm",
+      "verifiedAt": "2026-07-31T19:27:00-06:00",
+      "limitations": [
+        "La página describe el sistema y ciclo de inversión; cada norma, guía o formulario debe conservar su propia versión.",
+        "La aplicación a un proyecto requiere verificar ejercicio fiscal, tipo de inversión y lineamientos vigentes."
+      ],
+      "provenanceNotes": [
+        "Fuente primaria oficial de SEGEPLAN/SNIP."
+      ],
+      "tags": [
+        "guatemala",
+        "snip",
+        "public-investment",
+        "project-lifecycle",
+        "verified"
       ]
     }
   ]

@@ -426,7 +426,7 @@ export const planPublicProcedureQueries = (
     }
     return result;
   };
-  const precise = unique([query, ...classification.retrievalQueries], 4);
+  const precise = unique([query, ...classification.retrievalQueries], 5);
   const fallback = unique(fallbackCandidates, 10);
   return { precise, fallback };
 };
@@ -465,29 +465,27 @@ const retrieveEvidence = async (
   query: string,
   mode: PublicProcedureMode,
   limit: number
-): Promise<EvidenceItem[]> => {
+): Promise<{ evidence: EvidenceItem[]; queryCount: number; retrievedEvidenceCount: number }> => {
   const classification = classifyProcedureQuery(query, dependencies.domainPack);
   const queryPlan = planPublicProcedureQueries(query, classification, dependencies.domainPack);
   return withTenantTransaction(
     dependencies.gateway.transactionPool,
     dependencies.gateway.tenantId!,
     async (client) => {
-      const merged = new Map<string, { candidate: ClassifiedSearchCandidate; rank: number }>();
-      let rank = 0;
-      const add = (candidate: ClassifiedSearchCandidate): void => {
-        const identity = candidateIdentity(candidate);
-        const current = merged.get(identity);
-        if (!current || candidate.score > current.candidate.score) {
-          merged.set(identity, { candidate, rank: current?.rank ?? rank });
-        }
-        rank += 1;
-      };
-
       const modes: Array<"keyword" | "phrase"> = mode === "hybrid"
         ? ["keyword", "phrase"]
         : [mode];
-      const runQueries = async (queries: readonly string[]): Promise<void> => {
+      const preciseBatches: ClassifiedSearchCandidate[][] = [];
+      const fallbackBatches: ClassifiedSearchCandidate[][] = [];
+      const executedQueries = new Set<string>();
+      let retrievedEvidenceCount = 0;
+
+      const runQueries = async (
+        queries: readonly string[],
+        target: ClassifiedSearchCandidate[][]
+      ): Promise<void> => {
         for (const retrievalQuery of queries) {
+          executedQueries.add(normalizeRetrievalQuery(retrievalQuery));
           for (const executionMode of modes) {
             const execution = await executeSearch(
               dependencies.gateway.searchRepository,
@@ -495,20 +493,44 @@ const retrieveEvidence = async (
               searchRequest(dependencies, requestId, retrievalQuery, executionMode, limit),
               null
             );
-            execution.candidates.forEach(add);
-            if (merged.size >= limit) return;
+            retrievedEvidenceCount += execution.candidates.length;
+            target.push(execution.candidates);
           }
         }
       };
 
-      await runQueries(queryPlan.precise);
-      if (merged.size < limit) await runQueries(queryPlan.fallback);
+      await runQueries(queryPlan.precise, preciseBatches);
+      const preciseUniqueCount = new Set(
+        preciseBatches.flatMap((batch) => batch.map(candidateIdentity))
+      ).size;
+      if (preciseUniqueCount < limit) await runQueries(queryPlan.fallback, fallbackBatches);
 
-      return [...merged.values()]
-        .sort((left, right) => left.rank - right.rank || right.candidate.score - left.candidate.score)
-        .map(({ candidate }) => evidenceFrom(candidate, mode))
-        .filter((item): item is EvidenceItem => item !== null)
-        .slice(0, limit);
+      const selected: ClassifiedSearchCandidate[] = [];
+      const seen = new Set<string>();
+      const appendRoundRobin = (batches: ClassifiedSearchCandidate[][]): void => {
+        const maximumDepth = Math.max(0, ...batches.map((batch) => batch.length));
+        for (let depth = 0; depth < maximumDepth && selected.length < limit; depth += 1) {
+          for (const batch of batches) {
+            const candidate = batch[depth];
+            if (!candidate) continue;
+            const identity = candidateIdentity(candidate);
+            if (seen.has(identity)) continue;
+            seen.add(identity);
+            selected.push(candidate);
+            if (selected.length >= limit) break;
+          }
+        }
+      };
+      appendRoundRobin(preciseBatches);
+      appendRoundRobin(fallbackBatches);
+
+      return {
+        evidence: selected
+          .map((candidate) => evidenceFrom(candidate, mode))
+          .filter((item): item is EvidenceItem => item !== null),
+        queryCount: executedQueries.size,
+        retrievedEvidenceCount,
+      };
     }
   );
 };
@@ -596,7 +618,7 @@ export const handlePublicProcedureV1 = async (
     await runRateGate(req, dependencies, requestIdentity.requestId);
 
     const classification = classifyProcedureQuery(query, dependencies.domainPack);
-    const evidence = await retrieveEvidence(
+    const retrieval = await retrieveEvidence(
       dependencies,
       requestIdentity.requestId,
       query,
@@ -607,9 +629,13 @@ export const handlePublicProcedureV1 = async (
       query,
       mode,
       classification,
-      evidence,
+      retrieval.evidence,
       dependencies.domainPack,
-      depth
+      depth,
+      {
+        retrievalQueryCount: retrieval.queryCount,
+        retrievedEvidenceCount: retrieval.retrievedEvidenceCount,
+      }
     );
 
     await recordAuditSafely(dependencies, audit(

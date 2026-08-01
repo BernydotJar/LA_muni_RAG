@@ -33,7 +33,7 @@ Every step is classified as:
 
 The composer does not attach unrelated fallback citations to a step. An unsupported step returns:
 
-> No encontré base documental suficiente para afirmar este paso.
+> El corpus activo aún no contiene una cita aplicable para este paso. No se presenta como requisito confirmado.
 
 An inferred step returns:
 

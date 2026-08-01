@@ -7,6 +7,7 @@ export type ProcedureConfidence = "high" | "medium" | "low";
 export type ProcedureWorkflowDepth = "overview" | "deep_dive";
 export type ProcedureStepEvidenceStatus = "supported" | "inferred" | "insufficient";
 export type ProcedureSourceAttributionStatus = "official_municipal" | "official_national" | "comparative" | "contextual" | "insufficient";
+export type ProcedureCoverageReason = "source_not_loaded" | "no_matching_passage" | "authority_not_sufficient";
 export type ProcedureGapSeverity = "blocking" | "important" | "nice_to_have";
 export type EvidenceUse = "cited_text" | "inference" | "validation_required";
 
@@ -26,6 +27,8 @@ export interface ProcedureSourceAttribution {
   status: ProcedureSourceAttributionStatus;
   heading: string;
   statement: string;
+  coverageReason?: ProcedureCoverageReason;
+  requiredEvidence?: string[];
   primaryCitation?: ProcedureCitation;
   citations: ProcedureCitation[];
 }
@@ -99,6 +102,12 @@ export interface ProcedureWorkflow {
     retrievalMode: EvidenceMode;
     depth: ProcedureWorkflowDepth;
     evidenceCount: number;
+    retrievalQueryCount?: number;
+    retrievedEvidenceCount?: number;
+    supportedStepCount?: number;
+    inferredStepCount?: number;
+    pendingStepCount?: number;
+    coveragePercent?: number;
     hasLocalEvidence: boolean;
     hasExternalReference: boolean;
     hasAntiguaEvidence: boolean;
@@ -110,4 +119,6 @@ export interface ProcedureEvidenceBundle {
   query: string;
   mode: EvidenceMode;
   evidence: EvidenceItem[];
+  queryCount?: number;
+  retrievedEvidenceCount?: number;
 }

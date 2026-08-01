@@ -25,11 +25,11 @@ describe("EVAL-SOURCE-001 — governed municipal source inventory", () => {
     assert.equal(validation.valid, true, JSON.stringify(validation.failures));
     assert.equal(manifest.schemaVersion, 1);
     assert.match(manifest.targetJurisdiction, /Antigua Guatemala/i);
-    assert.equal(summary.total, 17);
-    assert.equal(summary.acquired, 2);
-    assert.equal(summary.ingested, 1);
-    assert.equal(summary.byStatus.ingested, 1);
-    assert.equal(summary.byStatus.failed, 1);
+    assert.equal(summary.total, manifest.records.length);
+    assert.equal(summary.acquired, manifest.records.filter((record) => record.acquisition).length);
+    assert.equal(summary.ingested, manifest.records.filter((record) => record.status === "ingested").length);
+    assert.equal(summary.byStatus.ingested, 3);
+    assert.equal(summary.byStatus.failed, 7);
     assert.ok(summary.byStatus.verified >= 3);
     assert.ok(summary.comparative >= 8);
 
@@ -80,13 +80,24 @@ describe("EVAL-SOURCE-001 — governed municipal source inventory", () => {
     assert.equal(acquired.extraction, undefined);
     assert.equal(acquired.indexing, undefined);
 
-    const evidenceManifest = JSON.parse(
-      await readFile("evals/real-corpus/controlled-corpus-manifest.json", "utf8")
-    ) as { records: Parameters<typeof reconcileSourceInventoryWithCorpusManifest>[1] };
+    const [controlledManifest, expansionManifest] = await Promise.all([
+      readFile("evals/real-corpus/controlled-corpus-manifest.json", "utf8"),
+      readFile("evals/real-corpus/official-expansion-manifest.json", "utf8"),
+    ]);
+    const controlled = JSON.parse(controlledManifest) as {
+      records: Parameters<typeof reconcileSourceInventoryWithCorpusManifest>[1];
+    };
+    const expansion = JSON.parse(expansionManifest) as {
+      records: Parameters<typeof reconcileSourceInventoryWithCorpusManifest>[1];
+    };
+    const reconciliation = reconcileSourceInventoryWithCorpusManifest(
+      manifest.records,
+      [...controlled.records, ...expansion.records]
+    );
     assert.equal(
-      reconcileSourceInventoryWithCorpusManifest(manifest.records, evidenceManifest.records).valid,
+      reconciliation.valid,
       true,
-      "the one ingested source must reconcile while the no-text source remains outside the index"
+      JSON.stringify(reconciliation.failures)
     );
   });
 

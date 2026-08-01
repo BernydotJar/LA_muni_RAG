@@ -82,7 +82,7 @@ describe("procedure workflow deep dive", () => {
     assert.ok(unsupported.every((step) => step.sourceEvidence.length === 0));
     assert.ok(
       unsupported.every(
-        (step) => step.evidenceStatement === "No encontré base documental suficiente para afirmar este paso."
+        (step) => step.evidenceStatement === "El corpus activo contiene fuentes relacionadas, pero ninguna cita aplicable a este paso. No se presenta como requisito confirmado."
       )
     );
   });

@@ -21,7 +21,7 @@ Feature 050 adds a progressive visual layer over the verified `depth=deep_dive` 
 
 - The UI does not synthesize legal authority.
 - Missing responsibility or deadline fields remain absent.
-- Unsupported steps display: `No encontré base documental suficiente para afirmar este paso.`
+- Unsupported steps display: `El corpus activo aún no contiene una cita aplicable para este paso. No se presenta como requisito confirmado.`
 - Inferred steps display that human validation is required.
 - Dynamic workflow and citation content is escaped before HTML insertion.
 - Comparative evidence is displayed using the backend evidence status and authority metadata.

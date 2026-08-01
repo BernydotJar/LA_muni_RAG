@@ -44,11 +44,34 @@ const titleForType = (type: ProcedureType, query: string, domainPack: DomainPack
   return template.title;
 };
 
+const MATCH_STOPWORDS = new Set([
+  "de", "del", "la", "las", "el", "los", "un", "una", "y", "o", "para", "por", "con",
+  "en", "al", "que", "se", "su", "sus", "a", "e", "u", "cuando", "aplique",
+]);
+
+const significantTokens = (value: string): string[] =>
+  normalize(value)
+    .replace(/[^a-z0-9\s-]+/g, " ")
+    .split(/\s+/)
+    .filter((token) => token.length > 1 && !MATCH_STOPWORDS.has(token));
+
+const patternMatches = (haystack: string, haystackTokens: Set<string>, pattern: string): boolean => {
+  const normalizedPattern = normalize(pattern);
+  if (!normalizedPattern) return false;
+  if (haystack.includes(normalizedPattern)) return true;
+  const tokens = significantTokens(normalizedPattern);
+  if (tokens.length === 0) return false;
+  const matched = tokens.filter((token) => haystackTokens.has(token)).length;
+  if (tokens.length === 1) return matched === 1;
+  return matched >= Math.max(2, Math.ceil(tokens.length * 0.6));
+};
+
 const matchingCitationsForStep = (citations: ProcedureCitation[], patterns: string[]): ProcedureCitation[] =>
   citations
     .filter((citation) => {
       const haystack = normalize(`${citation.citationLabel} ${citation.excerpt} ${citation.sourceType}`);
-      return patterns.some((pattern) => haystack.includes(normalize(pattern)));
+      const tokens = new Set(significantTokens(haystack));
+      return patterns.some((pattern) => patternMatches(haystack, tokens, pattern));
     })
     .slice(0, 4);
 
@@ -73,14 +96,21 @@ const evidenceStatusFor = (evidence: ProcedureCitation[]): ProcedureStepEvidence
 
 const sourceAttributionFor = (
   evidence: ProcedureCitation[],
-  domainPack: DomainPack
+  domainPack: DomainPack,
+  requiredEvidence: string[],
+  hasAvailableEvidence: boolean
 ): ProcedureSourceAttribution => {
   const primary = primaryCitationFor(evidence);
   if (!primary) {
+    const coverageReason = hasAvailableEvidence ? "no_matching_passage" : "source_not_loaded";
     return {
       status: "insufficient",
-      heading: "Sin fuente suficiente para este paso",
-      statement: "No encontré base documental suficiente para afirmar este paso.",
+      heading: "Cobertura documental pendiente",
+      statement: hasAvailableEvidence
+        ? "El corpus activo contiene fuentes relacionadas, pero ninguna cita aplicable a este paso. No se presenta como requisito confirmado."
+        : "El corpus activo aún no contiene una fuente aplicable a este paso. No se presenta como requisito confirmado.",
+      coverageReason,
+      requiredEvidence,
       citations: [],
     };
   }
@@ -152,7 +182,12 @@ const stepFromTemplate = (
       : templateStep.action;
   const matched = matchingCitationsForStep(citations, templateStep.evidencePatterns);
   const evidenceStatus = evidenceStatusFor(matched);
-  const sourceAttribution = sourceAttributionFor(matched, domainPack);
+  const sourceAttribution = sourceAttributionFor(
+    matched,
+    domainPack,
+    templateStep.requiredDocuments,
+    citations.length > 0
+  );
   const dependsOn = depth === "deep_dive" && index > 0 ? [index] : undefined;
 
   return {
@@ -240,7 +275,7 @@ const summaryFor = (
   const template = templateForType(domainPack, classification.procedureType);
   if (evidenceCount === 0) {
     if (isMunicipalAntigua(domainPack) && classification.procedureType === "potable_water_project") {
-      return `${template.defaultSummary} No encontré evidencia suficiente para confirmar ninguno de los 47 pasos; todos se devuelven como categorías de investigación con brechas documentales explícitas.`;
+      return `${template.defaultSummary} No se recuperaron citas aplicables para esta consulta; el flujo conserva cada categoría como cobertura documental pendiente y muestra la fuente requerida.`;
     }
     return isMunicipalAntigua(domainPack)
       ? `No encontré evidencia suficiente para afirmar un procedimiento específico para “${query}”. Devuelvo un checklist de investigación y documentos faltantes.`
@@ -287,7 +322,8 @@ export const composeProcedureWorkflow = (
   classification: ProcedureQueryClassification,
   evidence: EvidenceItem[],
   domainPack: DomainPack = loadDomainPack(undefined),
-  depth: ProcedureWorkflowDepth = "overview"
+  depth: ProcedureWorkflowDepth = "overview",
+  retrievalStats: { retrievalQueryCount?: number; retrievedEvidenceCount?: number } = {}
 ): ProcedureWorkflow => {
   const citations = evidence.map((item) => toProcedureCitation(item, "cited_text", domainPack));
   const hasExternalReference = hasExternalReferenceCitation(citations, domainPack);
@@ -299,6 +335,10 @@ export const composeProcedureWorkflow = (
     ...partialEvidenceGaps(steps, evidence.length),
   ];
   const template = templateForType(domainPack, classification.procedureType);
+  const supportedStepCount = steps.filter((step) => step.evidenceStatus === "supported").length;
+  const inferredStepCount = steps.filter((step) => step.evidenceStatus === "inferred").length;
+  const pendingStepCount = steps.filter((step) => step.evidenceStatus === "insufficient").length;
+  const coveragePercent = steps.length > 0 ? Math.round((supportedStepCount / steps.length) * 100) : 0;
 
   return {
     id: `procedure:${Buffer.from(query).toString("base64url").slice(0, 18)}`,
@@ -320,6 +360,12 @@ export const composeProcedureWorkflow = (
       retrievalMode: mode,
       depth,
       evidenceCount: evidence.length,
+      retrievalQueryCount: retrievalStats.retrievalQueryCount ?? 1,
+      retrievedEvidenceCount: retrievalStats.retrievedEvidenceCount ?? evidence.length,
+      supportedStepCount,
+      inferredStepCount,
+      pendingStepCount,
+      coveragePercent,
       hasLocalEvidence,
       hasExternalReference,
       hasAntiguaEvidence,

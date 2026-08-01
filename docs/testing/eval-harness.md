@@ -42,7 +42,7 @@ Implemented acceptance criteria:
 1. The literal placeholder query is recognized as procedural but remains `unknown`; the compiler does not invent what `X` means.
 2. Retrieval queries are normalized and deduplicated while retaining the original question and a generic municipal-procedure research query.
 3. Without evidence, the compiler emits a three-step research workflow with two dependencies, required and output documents, `insufficient` evidence states, empty citations, and explicit blocking gaps.
-4. The no-evidence v1 artifact validates against `ProcedureWorkflow`, remains an AI `draft`, and marks each step `missing_evidence` with `Documento o regla pendiente de localizar y validar.`
+4. The no-evidence v1 artifact validates against `ProcedureWorkflow`, remains an AI `draft`, and marks each step `missing_evidence` with `Cobertura documental pendiente para este tenant.`
 5. With controlled, identity-bound municipal evidence, three distinct sources support exactly one matching step each; citations are not promoted across steps.
 6. The evidence-backed v1 artifact contains three official-target sources, three section-level citations, three supported steps, two dependencies, and no unresolved synthetic gaps.
 7. Actor, unit, system, deadline, approval, and other operational assignments remain null or empty unless the evidence explicitly supplies them.
@@ -439,7 +439,7 @@ Implemented acceptance criteria:
 2. The compiler emits exactly 47 ordered research categories from community need through service quality.
 3. Categories are not treated as facts. With no evidence, every internal step is `insufficient` and every v1 step is `missing_evidence`.
 4. Every v1 step satisfies the canonical `ProcedureStep` contract, including explicit null or empty values for unsupported actors, units, systems, approvals, deadlines, citations, and legal bases.
-5. Every missing step contains the canonical unknown: `Documento o regla pendiente de localizar y validar.`
+5. Every missing step contains the canonical unknown: `Cobertura documental pendiente para este tenant.`
 6. The generated workflow is an AI `draft`, remains Antigua-first, and contains no campaign strategy or content-production fields.
 7. A narrowly matched PDM-OT citation supports only the PDM-OT category; it does not silently promote the other 46 steps.
 8. Deep-dive output contains 46 explicit sequential research dependencies so the checklist is exportable as a graph without claiming legal ordering.

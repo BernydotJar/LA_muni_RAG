@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "profileId": "enterprise-governance-template",
+  "displayName": "Enterprise Governance Template",
+  "organizationType": "enterprise",
+  "isTemplate": true,
+  "jurisdiction": "Configure per tenant",
+  "language": "es",
+  "domainPackId": "custom",
+  "sourcePackIds": [
+    "enterprise-governance-template"
+  ],
+  "publicAccess": false,
+  "branding": {
+    "productName": "Knowledge Operations",
+    "assistantName": "Policy Assistant",
+    "organizationName": "Configure per tenant",
+    "primaryLabel": "Evidence-first"
+  }
+}

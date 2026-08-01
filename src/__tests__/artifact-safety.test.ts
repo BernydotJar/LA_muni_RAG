@@ -72,8 +72,16 @@ describe("artifact structural safety inspection", () => {
       declaredMediaType: "text/markdown",
     });
 
+    const htmlResult = inspectArtifactContent({
+      content: Buffer.from("<!doctype html><html><body><h1>Requisitos</h1></body></html>", "utf8"),
+      sourcePath: "requisitos.html",
+      declaredMediaType: "text/html; charset=utf-8",
+    });
+
     assert.equal(docxResult.signature, "docx-opc-markers-v1");
     assert.equal(textResult.signature, "utf8-text-v1");
+    assert.equal(htmlResult.detectedMediaType, "text/html");
+    assert.equal(htmlResult.signature, "utf8-text-v1");
   });
 });
 
