@@ -1,9 +1,10 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" data-theme="heritage-burgundy">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="Consulta documentos municipales de La Antigua Guatemala con evidencia, citas y trazabilidad.">
+  <meta name="theme-color" content="#731729">
   <title>LA Muni RAG — Consulta documental municipal</title>
   <link rel="icon" href="./favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="./product.css">
@@ -19,14 +20,17 @@
         <span class="nav-logo" aria-hidden="true">
           <svg viewBox="0 0 36 36"><path d="M5 29h26M7 29V17h22v12M10 17c0-5 4-9 8-9s8 4 8 9M13 29v-7M18 29v-8M23 29v-7M8 17h20M18 8V5M18 5h4"/></svg>
         </span>
-        <span class="nav-title">LA Muni <strong>RAG</strong></span>
+        <span class="nav-brand-copy">
+          <span class="nav-title">LA Muni <strong>RAG</strong></span>
+          <small>Evidencia municipal trazable</small>
+        </span>
       </a>
       <div class="nav-links">
-        <button class="nav-action" type="button" data-open-assistant>Asistente</button>
         <a href="./glass-wall.html">Glass Wall</a>
         <a href="./procedure-training.html">Academia</a>
         <a href="#instalar">Instalar</a>
-        <span class="nav-tag">Vista pública</span>
+        <span class="nav-tag">Piloto público</span>
+        <button class="nav-action" type="button" data-open-assistant>Asistente</button>
       </div>
     </nav>
 
@@ -34,7 +38,7 @@
       <section class="hero" id="asistente" aria-labelledby="hero-title">
         <div class="hero-grid">
           <div class="hero-copy-stack">
-            <p class="eyebrow"><span class="status-dot" aria-hidden="true"></span>Consulta documental municipal</p>
+            <p class="eyebrow"><span aria-hidden="true">La Antigua Guatemala</span> Consulta documental municipal</p>
             <h1 id="hero-title">Consulta pública. <span>Sin caja negra.</span></h1>
             <p class="hero-copy">Haz preguntas sobre documentos municipales y revisa las citas que sustentan cada respuesta. Cuando no exista evidencia suficiente, el sistema debe decirlo con claridad.</p>
             <div class="hero-actions">
@@ -44,28 +48,74 @@
               </button>
               <a class="button button-secondary" href="./glass-wall.html">Abrir Glass Wall</a>
             </div>
-            <p class="service-note">La publicación estática no fabrica respuestas. El asistente sólo se habilita cuando existe un backend real configurado.</p>
+            <div class="hero-standards" aria-label="Principios de la consulta">
+              <span>Citas visibles</span>
+              <span>Límites explícitos</span>
+              <span>Sin respuestas fabricadas</span>
+            </div>
+            <p class="service-note"><strong>Publicación segura.</strong> La publicación estática no fabrica respuestas. El asistente sólo se habilita cuando existe un backend real configurado.</p>
           </div>
 
           <div class="hero-observation-card" aria-label="Representación visual de una consulta municipal con recuperación, evidencia y salida segura">
-            <img class="civic-palace-visual" src="./assets/civic-institutional-hero.svg" alt="Palacio municipal futurista con arcos coloniales, campanario, cúpula, columnas y plaza digital">
-            <div class="panel-node node-a"><strong>Consulta</strong><span>Pregunta ciudadana en lenguaje natural.</span></div>
-            <div class="panel-node node-b"><strong>Recuperación</strong><span>Búsqueda por texto, frase y señal semántica.</span></div>
-            <div class="panel-node node-c"><strong>Evidencia</strong><span>Fragmentos citables antes de responder.</span></div>
-            <div class="panel-node node-d"><strong>Salida segura</strong><span>Respuesta fundada o aviso de evidencia insuficiente.</span></div>
+            <div class="observation-topbar">
+              <div>
+                <span class="observation-kicker">Expediente de evidencia</span>
+                <strong>Ruta documental</strong>
+              </div>
+              <span class="observation-state">Interfaz explicativa</span>
+            </div>
+            <div class="observation-visual">
+              <img class="civic-palace-visual" src="./assets/civic-institutional-hero.svg" alt="Ilustración lineal del palacio municipal con arcos coloniales, cúpula, campanario y plaza documental">
+            </div>
+            <div class="evidence-dossier">
+              <div class="query-card">
+                <span>Consulta ciudadana</span>
+                <p>¿Qué prioridades municipales aparecen en los documentos disponibles?</p>
+              </div>
+              <ol class="route-list" aria-label="Etapas de la consulta documental">
+                <li class="panel-node node-a"><span class="route-index">01</span><div><strong>Consulta</strong><span>Pregunta en lenguaje natural.</span></div></li>
+                <li class="panel-node node-b"><span class="route-index">02</span><div><strong>Recuperación</strong><span>Búsqueda sobre el corpus configurado.</span></div></li>
+                <li class="panel-node node-c"><span class="route-index">03</span><div><strong>Evidencia</strong><span>Fragmentos y metadatos antes de responder.</span></div></li>
+              </ol>
+              <div class="safe-output">
+                <span>Salida segura</span>
+                <strong>Respuesta citada o insuficiencia explícita.</strong>
+              </div>
+            </div>
           </div>
+        </div>
+      </section>
+
+      <section class="assurance-section" aria-label="Compromisos de la interfaz pública">
+        <div class="assurance-grid">
+          <article class="assurance-item">
+            <span class="assurance-number">01</span>
+            <div><h2>Citas antes que conclusiones</h2><p>La interfaz presenta fragmentos y metadatos cuando el backend los devuelve.</p></div>
+          </article>
+          <article class="assurance-item">
+            <span class="assurance-number">02</span>
+            <div><h2>Incertidumbre visible</h2><p>Sin evidencia suficiente, la experiencia no sostiene una conclusión documental.</p></div>
+          </article>
+          <article class="assurance-item">
+            <span class="assurance-number">03</span>
+            <div><h2>Integración gobernada</h2><p>El widget permanece deshabilitado hasta configurar explícitamente un endpoint HTTPS.</p></div>
+          </article>
         </div>
       </section>
 
       <section class="integration-section" id="instalar" aria-labelledby="install-title">
         <div class="section-inner">
-          <p class="section-kicker">Integración</p>
-          <h2 id="install-title">Instala el asistente con un backend real.</h2>
-          <p class="section-lead">El widget puede integrarse en un sitio institucional. Configura explícitamente el endpoint HTTPS de la API; sin ese endpoint, la consulta queda deshabilitada.</p>
+          <div class="integration-copy">
+            <p class="section-kicker">Integración institucional</p>
+            <h2 id="install-title">Conecta el asistente a un backend real.</h2>
+            <p class="section-lead">Integra la consulta en un sitio institucional sin exponer credenciales en el navegador. La URL pública de la API debe declararse de forma explícita.</p>
+            <p class="integration-guardrail"><strong>Comportamiento por defecto:</strong> sin endpoint configurado, la consulta queda deshabilitada y no se muestran respuestas de ejemplo.</p>
+          </div>
           <div class="embed-card">
             <div class="embed-copy">
+              <span>Instalación</span>
               <strong>Widget institucional</strong>
-              <span>Incluye el script y declara la URL pública del backend.</span>
+              <p>Incluye el script y declara la URL pública del backend.</p>
             </div>
             <div class="code-block" id="embed-code" role="region" aria-label="Código de instalación del widget" tabindex="0">
               <button class="copy-btn" id="copy-btn" type="button">Copiar</button>

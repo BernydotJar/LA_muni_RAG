@@ -19,29 +19,29 @@ const contrastRatio = (foreground: string, background: string): number => {
 };
 
 describe("public surface contrast tokens", () => {
-  it("keeps normal text and muted text above WCAG AA contrast", async () => {
+  it("keeps normal, muted, and quiet text above WCAG AA contrast", async () => {
     const css = await readFile("public/product.css", "utf8");
-    assert.match(css, /--bg:#070812/);
-    assert.match(css, /--surface:#0d1224/);
-    assert.match(css, /--text:#f8fafc/);
-    assert.match(css, /--muted:#cbd5e1/);
-    assert.match(css, /--quiet:#94a3b8/);
+    assert.match(css, /--bg:#f7f3ee/);
+    assert.match(css, /--surface:#fffdf9/);
+    assert.match(css, /--text:#282222/);
+    assert.match(css, /--muted:#625b56/);
+    assert.match(css, /--quiet:#786f69/);
 
-    assert.ok(contrastRatio("f8fafc", "070812") >= 4.5);
-    assert.ok(contrastRatio("cbd5e1", "0d1224") >= 4.5);
-    assert.ok(contrastRatio("94a3b8", "0d1224") >= 4.5);
+    assert.ok(contrastRatio("282222", "f7f3ee") >= 4.5);
+    assert.ok(contrastRatio("625b56", "fffdf9") >= 4.5);
+    assert.ok(contrastRatio("786f69", "fffdf9") >= 4.5);
   });
 
-  it("keeps the reserved CTA color readable with dark action text", async () => {
+  it("keeps the burgundy CTA readable with light action text", async () => {
     const css = await readFile("public/product.css", "utf8");
-    assert.match(css, /--action:#67e8f9/);
-    assert.match(css, /--action-text:#06202a/);
-    assert.ok(contrastRatio("67e8f9", "06202a") >= 4.5);
+    assert.match(css, /--action:#731729/);
+    assert.match(css, /--action-text:#fffdf9/);
+    assert.ok(contrastRatio("fffdf9", "731729") >= 4.5);
   });
 
-  it("keeps panel text on a predictable opaque background", async () => {
+  it("keeps the explanatory panel on a predictable opaque paper background", async () => {
     const css = await readFile("public/product.css", "utf8");
-    assert.match(css, /background:rgba\(6,9,22,\.94\)/);
-    assert.ok(contrastRatio("cbd5e1", "060916") >= 4.5);
+    assert.match(css, /\.evidence-dossier\{[^}]*background:var\(--surface\)/);
+    assert.ok(contrastRatio("625b56", "fffdf9") >= 4.5);
   });
 });

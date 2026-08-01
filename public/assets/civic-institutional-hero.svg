@@ -1,108 +1,66 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 900" role="img" aria-labelledby="title desc">
-  <title id="title">Palacio municipal futurista con cúpula y arcos de luz</title>
-  <desc id="desc">Escena hero institucional inspirada en una municipalidad o congreso latinoamericano con fachada, columnas, arcos coloniales, campanario, cúpula, plaza digital, anillos orbitales y luz cian-violeta.</desc>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 560" role="img" aria-labelledby="title desc">
+  <title id="title">Palacio municipal con arcos coloniales y campanario</title>
+  <desc id="desc">Ilustración editorial monocromática de una institución municipal inspirada en la arquitectura de Antigua Guatemala, con fachada, arcos coloniales, cúpula, campanario y plaza documental.</desc>
   <defs>
-    <radialGradient id="sky" cx="50%" cy="18%" r="72%">
-      <stop offset="0" stop-color="#243274"/>
-      <stop offset=".42" stop-color="#111633"/>
-      <stop offset="1" stop-color="#050711"/>
-    </radialGradient>
-    <radialGradient id="orbGlow" cx="50%" cy="48%" r="58%">
-      <stop offset="0" stop-color="#9adfff" stop-opacity=".50"/>
-      <stop offset=".36" stop-color="#6d5df6" stop-opacity=".25"/>
-      <stop offset=".70" stop-color="#1b1d39" stop-opacity=".28"/>
-      <stop offset="1" stop-color="#050711" stop-opacity="0"/>
-    </radialGradient>
-    <linearGradient id="stone" x1="0" x2="1" y1="0" y2="1">
-      <stop offset="0" stop-color="#fff3df"/>
-      <stop offset=".42" stop-color="#b8c4f6"/>
-      <stop offset="1" stop-color="#624fb5"/>
+    <linearGradient id="paper" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#f7f1eb"/>
+      <stop offset="1" stop-color="#eaded5"/>
     </linearGradient>
-    <linearGradient id="glass" x1="0" x2="1">
-      <stop offset="0" stop-color="#19d3ff"/>
-      <stop offset="1" stop-color="#ff3aa7"/>
+    <linearGradient id="burgundy" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#8e2a43"/>
+      <stop offset="1" stop-color="#5b1020"/>
     </linearGradient>
-    <linearGradient id="floor" x1="0" x2="1">
-      <stop offset="0" stop-color="#0ad7ff" stop-opacity=".10"/>
-      <stop offset=".5" stop-color="#8b5cf6" stop-opacity=".18"/>
-      <stop offset="1" stop-color="#ff3aa7" stop-opacity=".10"/>
-    </linearGradient>
-    <filter id="softGlow" x="-40%" y="-40%" width="180%" height="180%">
-      <feGaussianBlur stdDeviation="8" result="blur"/>
-      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    <filter id="softShadow" x="-20%" y="-20%" width="140%" height="150%">
+      <feDropShadow dx="0" dy="18" stdDeviation="18" flood-color="#5b1020" flood-opacity=".12"/>
     </filter>
-    <filter id="deepShadow" x="-20%" y="-20%" width="140%" height="150%">
-      <feDropShadow dx="0" dy="28" stdDeviation="24" flood-color="#000" flood-opacity=".42"/>
-    </filter>
+    <pattern id="fineGrid" width="34" height="34" patternUnits="userSpaceOnUse">
+      <path d="M34 0H0V34" fill="none" stroke="#731729" stroke-opacity=".055" stroke-width="1"/>
+    </pattern>
     <style>
-      .ring{fill:none;stroke-linecap:round;filter:url(#softGlow)}
-      .ring.a{stroke:#22d3ee;stroke-width:5;stroke-opacity:.72;stroke-dasharray:760 180;animation:spinA 16s ease-in-out infinite alternate;transform-origin:720px 430px}
-      .ring.b{stroke:#a855f7;stroke-width:3;stroke-opacity:.72;stroke-dasharray:480 260;animation:spinB 20s ease-in-out infinite alternate;transform-origin:720px 430px}
-      .ring.c{stroke:#38bdf8;stroke-width:1.5;stroke-opacity:.28;stroke-dasharray:8 18;animation:spinA 24s linear infinite;transform-origin:720px 430px}
-      .beam{stroke:url(#glass);stroke-linecap:round;filter:url(#softGlow);animation:pulse 6s ease-in-out infinite alternate}
-      .palace{filter:url(#deepShadow)}
-      .stone{fill:url(#stone);stroke:#f8fafc;stroke-opacity:.36;stroke-width:1.2}
-      .window{fill:#0b1228;stroke:#7dd3fc;stroke-opacity:.55;stroke-width:1.2;filter:url(#softGlow)}
-      .cyan{stroke:#22d3ee}.magenta{stroke:#e879f9}.amber{stroke:#f59e0b}
-      .node{fill:#7dd3fc;opacity:.75;filter:url(#softGlow);animation:pulse 4s ease-in-out infinite alternate}
-      @keyframes spinA{from{transform:rotate(-3deg) scale(.985)}to{transform:rotate(4deg) scale(1.02)}}
-      @keyframes spinB{from{transform:rotate(5deg) scale(1.01)}to{transform:rotate(-5deg) scale(1.04)}}
-      @keyframes pulse{from{opacity:.38}to{opacity:.94}}
-      @media (prefers-reduced-motion: reduce){*{animation:none!important}}
+      .outline{fill:none;stroke:#731729;stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
+      .detail{fill:none;stroke:#731729;stroke-opacity:.48;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
+      .stone{fill:#fffaf6;stroke:#731729;stroke-width:2.2;stroke-linejoin:round}
+      .shade{fill:#f2e5e2;stroke:#731729;stroke-width:2.2;stroke-linejoin:round}
+      .window{fill:#731729;fill-opacity:.08;stroke:#731729;stroke-width:1.8}
     </style>
   </defs>
 
-  <rect width="1440" height="900" fill="url(#sky)"/>
-  <circle cx="720" cy="430" r="440" fill="url(#orbGlow)" opacity=".95"/>
-  <path class="ring a" d="M230 418 C370 110 1070 104 1220 420"/>
-  <path class="ring b" d="M212 454 C390 208 1030 190 1240 466"/>
-  <ellipse class="ring c" cx="720" cy="430" rx="470" ry="246"/>
-  <path class="beam" d="M140 762 H1300" stroke-width="1.2" opacity=".4"/>
-  <path class="beam" d="M210 820 C500 760 935 760 1240 820" stroke-width="1" opacity=".35"/>
+  <rect width="1200" height="560" fill="url(#paper)"/>
+  <rect width="1200" height="560" fill="url(#fineGrid)"/>
+  <circle cx="930" cy="120" r="170" fill="#731729" opacity=".035"/>
+  <circle cx="250" cy="430" r="220" fill="#731729" opacity=".028"/>
 
-  <g opacity=".28">
-    <path d="M180 760h1080" stroke="#22d3ee" stroke-width="1"/>
-    <path d="M250 800h940" stroke="#a855f7" stroke-width="1"/>
-    <path d="M330 840h780" stroke="#22d3ee" stroke-width="1"/>
-    <path d="M390 730v140M510 720v150M630 710v160M750 710v160M870 720v150M990 730v140" stroke="#38bdf8" stroke-width="1" opacity=".45"/>
-  </g>
+  <path class="detail" d="M94 448H1106M155 486H1045M230 520H970"/>
+  <path class="detail" d="M160 448 104 486M272 448 228 520M384 448 350 520M496 448 475 520M608 448 600 520M720 448 725 520M832 448 850 520M944 448 972 520M1056 448 1046 486"/>
 
-  <g class="palace">
-    <path class="stone" d="M216 690V488h1008v202z" opacity=".92"/>
-    <path class="stone" d="M302 488h836l-58-86H360z"/>
-    <path class="stone" d="M388 400h664v88H388z"/>
-    <path class="stone" d="M464 400 720 278 976 400z"/>
-    <path class="stone" d="M566 278h308v122H566z" opacity=".95"/>
-    <path class="stone" d="M604 278 C620 178 820 178 836 278z"/>
-    <path class="stone" d="M660 178 C680 108 760 108 780 178z"/>
-    <path class="stone" d="M686 108h68v70h-68z"/>
-    <path class="stone" d="M710 72h20v36h-20z"/>
-    <path class="stone" d="M704 72 720 44 736 72z"/>
+  <g filter="url(#softShadow)">
+    <path class="stone" d="M188 438V260h824v178z"/>
+    <path class="shade" d="M248 260h704l-48-72H296z"/>
+    <path class="stone" d="M356 188h488v72H356z"/>
+    <path class="shade" d="M412 188 600 96 788 188z"/>
+    <path class="stone" d="M505 96h190v92H505z"/>
+    <path class="shade" d="M532 96c14-74 122-74 136 0z"/>
+    <path class="stone" d="M565 42h70v54h-70z"/>
+    <path class="shade" d="M578 42 600 14 622 42z"/>
 
-    <path class="window" d="M692 150h56v80h-56z" rx="24"/>
-    <path class="window" d="M690 312h60v74h-60z" rx="28"/>
-    <path class="window" d="M588 316h54v72h-54z" rx="25"/>
-    <path class="window" d="M798 316h54v72h-54z" rx="25"/>
+    <path class="window" d="M579 58h42v28h-42z"/>
+    <circle class="window" cx="600" cy="133" r="24"/>
+    <path class="window" d="M461 207h58v53h-58zM571 207h58v53h-58zM681 207h58v53h-58z"/>
 
-    <g class="columns">
-      <path class="stone" d="M500 488h42v202h-42z"/><path class="stone" d="M588 488h42v202h-42z"/><path class="stone" d="M676 488h42v202h-42z"/><path class="stone" d="M764 488h42v202h-42z"/><path class="stone" d="M852 488h42v202h-42z"/><path class="stone" d="M940 488h42v202h-42z"/>
+    <g>
+      <path class="stone" d="M310 260h38v178h-38zM402 260h38v178h-38zM494 260h38v178h-38zM586 260h38v178h-38zM678 260h38v178h-38zM770 260h38v178h-38zM862 260h38v178h-38z"/>
+      <path class="detail" d="M302 278h54M394 278h54M486 278h54M578 278h54M670 278h54M762 278h54M854 278h54"/>
     </g>
-    <path class="window" d="M650 565 C650 514 790 514 790 565 V690 H650z"/>
-    <path class="window" d="M350 560 C350 520 450 520 450 560 V690 H350z" opacity=".85"/>
-    <path class="window" d="M990 560 C990 520 1090 520 1090 560 V690 H990z" opacity=".85"/>
-    <path class="stone" d="M304 690h832l70 56H234z"/>
-    <path class="stone" d="M250 746h940l62 48H188z" opacity=".88"/>
 
-    <path class="beam cyan" d="M254 488h932" stroke-width="2" opacity=".9"/>
-    <path class="beam amber" d="M320 690h800" stroke-width="2" opacity=".75"/>
-    <path class="beam magenta" d="M468 400h504" stroke-width="2" opacity=".7"/>
+    <path class="window" d="M518 338c0-44 164-44 164 0v100H518z"/>
+    <path class="window" d="M214 334c0-36 82-36 82 0v104h-82zM904 334c0-36 82-36 82 0v104h-82z"/>
+    <path class="shade" d="M244 438h712l52 42H192z"/>
   </g>
 
-  <g opacity=".85">
-    <circle class="node" cx="286" cy="790" r="4"/>
-    <circle class="node" cx="448" cy="780" r="3"/>
-    <circle class="node" cx="720" cy="806" r="4"/>
-    <circle class="node" cx="1010" cy="780" r="3"/>
-    <circle class="node" cx="1160" cy="790" r="4"/>
-  </g>
+  <path class="outline" d="M166 448h868" opacity=".72"/>
+  <path class="detail" d="M124 132c96 28 169 12 236-50M1076 146c-104 18-174 0-242-58"/>
+  <circle cx="122" cy="132" r="5" fill="#731729" opacity=".55"/>
+  <circle cx="1078" cy="146" r="5" fill="#731729" opacity=".55"/>
+  <path d="M82 112h162" stroke="url(#burgundy)" stroke-width="6" stroke-linecap="round" opacity=".42"/>
+  <path d="M956 126h162" stroke="url(#burgundy)" stroke-width="6" stroke-linecap="round" opacity=".42"/>
 </svg>
