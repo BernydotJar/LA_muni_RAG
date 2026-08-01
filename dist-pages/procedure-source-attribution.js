@@ -21,7 +21,7 @@
     official_national: "Base nacional aplicable",
     comparative: "Referencia comparativa",
     contextual: "Fuente contextual",
-    insufficient: "Sin fuente suficiente",
+    insufficient: "Cobertura pendiente",
   }[status] || "Fuente del paso");
   const sourceLinkLabel = (status) => {
     if (status === "comparative") return "Abrir referencia comparativa";
@@ -53,8 +53,10 @@
     if (!citations.length) {
       return {
         status: "insufficient",
-        heading: "Sin fuente suficiente para este paso",
-        statement: "No encontré base documental suficiente para afirmar este paso.",
+        heading: "Cobertura documental pendiente",
+        statement: "El corpus activo aún no contiene una cita aplicable para este paso. No se presenta como requisito confirmado.",
+        coverageReason: "source_not_loaded",
+        requiredEvidence: asArray(step.requiredDocuments),
         citations: [],
       };
     }
@@ -81,6 +83,7 @@
     const status = attribution.status || "insufficient";
     const citation = attribution.primaryCitation || asArray(attribution.citations)[0];
     const link = safeUrl(citation?.sourceUrl);
+    const requiredEvidence = asArray(attribution.requiredEvidence || step.requiredDocuments);
     const meta = [
       citation?.authorityLabel ? `<span>${esc(citation.authorityLabel)}</span>` : "",
       citation?.authorityLevel ? `<span>Nivel: ${esc(citation.authorityLevel)}</span>` : "",
@@ -88,12 +91,13 @@
       link
         ? `<a href="${esc(link)}" target="_blank" rel="noopener noreferrer">${esc(sourceLinkLabel(status))}</a>`
         : "",
+      ...requiredEvidence.slice(0, 3).map((item) => `<span>Fuente requerida: ${esc(item)}</span>`),
     ].filter(Boolean).join("");
     return `
       <section class="source-attribution ${esc(status)}" data-source-attribution="true">
         <span class="source-attribution-category">${esc(categoryLabel(status))}</span>
         <h4>${esc(attribution.heading || "Fuente del paso")}</h4>
-        <p>${esc(attribution.statement || "No encontré base documental suficiente para afirmar este paso.")}</p>
+        <p>${esc(attribution.statement || "El corpus activo aún no contiene una cita aplicable para este paso. No se presenta como requisito confirmado.")}</p>
         ${meta ? `<div class="source-attribution-meta">${meta}</div>` : ""}
         ${citation?.excerpt ? `<p class="source-attribution-excerpt">${esc(citation.excerpt)}</p>` : ""}
       </section>`;
