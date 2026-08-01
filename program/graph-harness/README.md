@@ -23,16 +23,17 @@ Backend CI installs the framework package directly from the immutable Git commit
 
 ## Current terminal checkpoint
 
-Feature 089 functional commit `987ff78d1f7ae2ab59ce6d2658726b1bc14c5601` has green exact-SHA Backend CI runs `30683375100` and `30683368396` plus Public Browser Gate runs `30683375102` and `30683368414`.
+Feature 090 functional commit `79407c48361827afb94d9fa48adb8dd758c258e5` has green Backend CI runs `30684910546` and `30684905382` plus Public Browser Gate runs `30684910562` and `30684905372` on the exact SHA. Draft PR #35 is stacked on draft PR #34 and open PR #33.
 
 The replay contains:
 
-- 115 append-only events;
-- ten nodes in `done` state;
-- eight required gates with `PASS` results;
-- four checkpoints;
+- 131 append-only events;
+- eleven nodes in `done` state;
+- ten required gates with `PASS` results;
+- six checkpoints;
+- three historical localized repair plans;
 - zero ready nodes.
 
-Feature 089 adds nine official national discovery records, exact source-pack/inventory binding validation, category-neutral MARN routing and concrete evidence requirements for all 47 water-project categories. The new records remain verified only: zero new artifacts are represented as acquired, scanned, extracted, indexed or projected.
+Feature 090 attempted 16 official HTML sources, accepted 11 exact clean snapshots totaling 1,833,794 bytes, and left five explicit blockers. Accepted records stop at `ingestion_pending`; zero new sources are indexed or projected. Raw artifacts remain outside Git.
 
-The graph checkpoint remains `PARTIAL_WITH_DOCUMENTED_BLOCKERS`, not `COMPLETED`: PR #33 and stacked draft PR #34 are unmerged; managed-corpus mutation and deployment require human authorization; the nine national sources require governed acquisition and applicability review; seven scanned municipal PDFs require approved OCR and human review; productive identity and broader operational controls remain outside this node.
+The graph terminal state is `PARTIAL_WITH_DOCUMENTED_BLOCKERS`, not `COMPLETED`: PRs #33–#35 remain unmerged; indexing and managed-corpus mutation require human authorization and applicability review; five official endpoints do not currently provide safe substantive controlled bytes; seven scanned municipal PDFs require approved OCR and human review; productive identity, complete browser workflows and broader operational controls remain open. Merge and deployment are not authorized.

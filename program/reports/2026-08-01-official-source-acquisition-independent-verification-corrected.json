@@ -1,0 +1,120 @@
+{
+  "schemaVersion": 1,
+  "verifiedAt": "2026-08-01T04:56:04Z",
+  "nodeId": "WS02-OFFICIAL-SOURCE-ACQUISITION-003",
+  "verifier": "independent-verifier",
+  "commit": "79407c48361827afb94d9fa48adb8dd758c258e5",
+  "worktree": {
+    "mode": "detached-clean-worktree",
+    "path": "/tmp/la-muni-rag-verify-090-79407c48361827afb94d9fa48adb8dd758c258e5",
+    "headMatched": true,
+    "cleanBefore": true,
+    "cleanAfter": true,
+    "acquisitionExecuted": false,
+    "externalLibraryMode": "verification-only"
+  },
+  "result": "pass",
+  "checks": {
+    "dependencyInstall": {
+      "result": "pass",
+      "sha256": "ec69f7dfcdcee60d55bb72a0ddc669fd555f9cd5028e3aca02ed71cd996d0353"
+    },
+    "focusedTests": {
+      "total": 24,
+      "passed": 24,
+      "failed": 0,
+      "sha256": "a60e27d8ab18d62bc7df6c1081980429765952601054afb1a903617bdb92e2ac"
+    },
+    "fullTests": {
+      "total": 1073,
+      "passed": 1071,
+      "failed": 0,
+      "skipped": 2,
+      "skipClass": "environment-only",
+      "sha256": "b23d980b9069108ebd839d5840a536f33651d463fe3ad9c292a53d10167032d3"
+    },
+    "typecheck": {
+      "result": "pass",
+      "sha256": "100a391018504efeb710a578180761064a4d2c36411634f06a9ff1cab50e4249"
+    },
+    "build": {
+      "result": "pass",
+      "sha256": "380b6f74dd61df38db446e9792f4191ba1d827f7e8d751b9dd1cea73fb7b86ee"
+    },
+    "sourceInventory": {
+      "result": "pass",
+      "totalRecords": 38,
+      "verifiedRecords": 9,
+      "ingestionPendingRecords": 11,
+      "ingestedRecords": 3,
+      "missingRecords": 0,
+      "sha256": "2457eec1c2bf9d1f92b1980a3ba0b1ad057a3f5b8c14b791faa8d8dee0e84252"
+    },
+    "sourcePacks": {
+      "result": "pass",
+      "packCount": 3,
+      "boundSourceCount": 25,
+      "sha256": "db374359cc9db9a8486ac8f9762683cb088ba6c8ddde885a7d974af35e8db86a"
+    },
+    "tenantProfiles": {
+      "result": "pass",
+      "profileCount": 2,
+      "sha256": "86ebf632778eff94b586387f77a2039b4a09bdc1dd658f128481c61bbf80b1ef"
+    },
+    "acquisitionByteReconciliation": {
+      "result": "pass",
+      "attempted": 16,
+      "successful": 11,
+      "blocked": 5,
+      "verifiedSourceBytes": 1833794,
+      "libraryVerified": true,
+      "sha256": "86f4d63c1aa40ac3ed86162bf221f547aa5d00d7b2ca8e6b0be2478bd7555777"
+    },
+    "graphHarness": {
+      "result": "pass",
+      "eventCount": 119,
+      "nodeCount": 11,
+      "frameworkCommit": "1bebce3db35303072049233786464bb01163c98b",
+      "runtimeCommit": "fef364bc66849b98c08d3c1dcb91caf9701027cd",
+      "sha256": "d6507dfbe3a226ff21de8b082f13a9a539624963a6f99feda7f10efac4c0e3a8"
+    },
+    "pagesBuild": {
+      "result": "pass",
+      "sourceCommit": "79407c48361827afb94d9fa48adb8dd758c258e5",
+      "buildSha256": "0a8aba6a0420e12bbf31bd4f64992433036659cb50e05ce52015906c8a973527",
+      "verificationSha256": "8242349b0ee4f356521be86fb71bc6e75b75e6f033864b6e0853ff6c8fcc441d"
+    },
+    "publicBrowser": {
+      "result": "pass",
+      "desktop": 5,
+      "mobile": 5,
+      "total": 10,
+      "firstAttemptPassed": true,
+      "sha256": "7eb2f5dcb4a7b2e31e220b702ab8217fb15864e2cf66f5435deec6739a432f82"
+    },
+    "dependencyAudit": {
+      "result": "pass",
+      "vulnerabilities": 0,
+      "sha256": "ebb8c6b5d691b90cdccd6997cbd2960fd66bb6180bcde3a9c126acc30734f4a0"
+    },
+    "diffCheck": "pass"
+  },
+  "securityAssertions": {
+    "dnsRebindingMitigationPresent": true,
+    "privateNetworkAccessBlocked": true,
+    "crossHostRedirectsBlocked": true,
+    "scannerIdentityRequired": true,
+    "symlinkComponentsBlocked": true,
+    "noOverwritePublication": true,
+    "rawArtifactsTrackedByGit": false,
+    "managedCorpusMutation": false,
+    "indexingPerformed": false
+  },
+  "verdict": "The exact functional commit is independently reproducible. All 11 acquired sources reconcile byte-for-byte with the committed receipt and inventory, while all five blocked sources retain their prior lifecycle state. Remote CI remains a separate release-gate input.",
+  "correction": {
+    "reason": "The original report assembly timestamp was entered as 05:30Z, later than its 04:57Z evidence event. File mtimes show the independent run completed at 04:56:04Z.",
+    "supersedesArtifact": "program/reports/2026-08-01-official-source-acquisition-independent-verification.json",
+    "supersedesSha256": "988a57047701e9a859bd88031b67edebe98a1f870949c527b16fada210449b6a",
+    "functionalResultsChanged": false
+  }
+}

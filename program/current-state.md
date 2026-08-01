@@ -1,36 +1,49 @@
 # LA Muni RAG — Current Program State
 
-Updated: 2026-08-01T04:20:16Z
+Updated: 2026-08-01T05:24:07Z
 
-Program status: **PUBLIC PILOT OPERATIONAL WITH UNMERGED COVERAGE EXPANSION COMPLETE — the deployed PDM-OT assistant remains operational. Feature 089 passed its blocking gate on an exact green SHA and adds concrete evidence requirements plus nine official discovery records, while PR #33/#34 merge, governed acquisition, managed-corpus mutation and deployment remain human-gated.**
+Program status: **PARTIAL_WITH_DOCUMENTED_BLOCKERS — the public pilot remains operational, Features 089 and 090 are complete on exact green SHAs, and the Graph Harness has no READY nodes. Eleven official HTML sources were acquired, malware-scanned and extracted locally, but none was indexed or projected. Merge, managed-corpus mutation, productive identity and deployment remain human-gated.**
 
 ## Authoritative checkout
 
 ```text
 workspace_id: 601929eb-4bf6-4900-8170-c15bf3a11ea0
 root: /workspace
-current_branch: feature/official-source-coverage-pack-v1
+current_branch: feature/official-source-acquisition-v1
 coverage_functional_commit: 987ff78d1f7ae2ab59ce6d2658726b1bc14c5601
+acquisition_functional_commit: 79407c48361827afb94d9fa48adb8dd758c258e5
 predecessor_pull_request: 33 open
-stacked_pull_request: 34 draft_open
+coverage_pull_request: 34 draft_open
+acquisition_pull_request: 35 draft_open
 graph_harness_framework_merge_pin: 1bebce3db35303072049233786464bb01163c98b
 graph_harness_executable_runtime: fef364bc66849b98c08d3c1dcb91caf9701027cd
-graph_harness_events: 115
-graph_harness_nodes_done: 10/10
+graph_harness_events: 131
+graph_harness_nodes_done: 11/11
+graph_harness_required_gates: 10/10 PASS
 graph_harness_ready_nodes: 0
-graph_harness_feature_node: WS02-OFFICIAL-SOURCE-COVERAGE-002 done
-graph_harness_feature_gate: GATE-OFFICIAL-SOURCE-COVERAGE-002 PASS
-graph_harness_checkpoints: 4
+graph_harness_feature_node: WS02-OFFICIAL-SOURCE-ACQUISITION-003 done
+graph_harness_feature_gate: GATE-OFFICIAL-SOURCE-ACQUISITION-003 PASS
+graph_harness_checkpoints: 6
+graph_harness_terminal_state: PARTIAL_WITH_DOCUMENTED_BLOCKERS
+official_html_acquisition: 11/16 successful; 5 blocked; 1833794 bytes; 0 indexed
 public_pages: https://bernydotjar.github.io/LA_muni_RAG/
 public_procedure: https://bernydotjar.github.io/LA_muni_RAG/procedure-workflow.html
 public_gateway: https://la-muni-rag-public-gateway-ccaqcuwgyq-uc.a.run.app
 managed_corpus_mutation_authorized: false
+indexing_authorized: false
 merge_authorized: false
 deployment_authorized: false
 ```
 
-`AGENTS.md` and `RTK.md` remain authoritative. Merge, production deployment, Cloud SQL
-apply, protected-branch mutation and destructive operations remain human-gated.
+`AGENTS.md` and `RTK.md` remain authoritative. The functional commits and all four push/pull-request Backend CI and Public Browser Gate runs are green. No result in this checkpoint authorizes merge, Cloud SQL mutation, indexing, deployment or destructive operations.
+
+## Features 089–090 — official source coverage and governed acquisition
+
+Feature 089 replaced generic insufficiency copy with concrete required-evidence categories, added nine official national discovery records, and preserved national/local authority boundaries. Feature 090 added a tenant-reusable bounded HTML acquisition engine with exact host allowlists, public-address validation, pinned-IP TLS connections, redirect/body/media/charset limits, ClamAV, content-addressed storage, no-overwrite publication and script-free citable extraction.
+
+The final frozen run attempted 16 official sources. Eleven completed the exact-byte, clean-scan and extraction chain and moved only to `ingestion_pending`; five retained `verified` with explicit blockers. The acquired bytes total 1,833,794. No new source was indexed, projected into Cloud SQL, exposed through public retrieval or treated as proof that a municipal act occurred.
+
+The post-gate recovery review found no additional safe substantive route for the five blocked sources. A DIFODA page was reachable but only indexed a PDF that returned 404; MINFIN and MSPAS returned challenge/403 content; Congreso returned Incapsula shells instead of decree bytes. Search-engine renderings were not accepted as source artifacts. See `program/reports/2026-08-01-blocked-official-source-recovery-review.json` (SHA-256 `181cdab79ca6abf71df9702ad63c216229f4ce72fc38a76109dc699c425e7cfc`).
 
 ## Managed corpus expansion — 2026-08-01
 
@@ -45,8 +58,10 @@ Seven official municipal PDFs have exact acquired bytes and clean ClamAV scans b
 extractable text. They remain `failed` with `pdf_no_extractable_text` and are excluded from
 retrieval until a separate Spanish OCR accuracy, page-traceability and human-review gate is
 approved. The public object-store boundary remains unchanged; no production object store is
-claimed. The source inventory now contains 29 governed records and zero records classified as
-`missing_source`; verified or acquired status does not imply ingestion, vigencia or applicability.
+claimed. The source inventory now contains 38 governed records: 3 `ingested`, 11
+`ingestion_pending`, 9 `verified`, 8 `acquisition_pending` and 7 `failed`, with zero records
+classified as `missing_source`. Verified, acquired or extracted status does not imply indexing,
+vigencia, project applicability or proof that a municipal event occurred.
 
 ## Feature 074 — guarded Cloud SQL staging v1
 

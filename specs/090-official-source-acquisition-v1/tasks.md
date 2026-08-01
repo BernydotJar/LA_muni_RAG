@@ -25,10 +25,10 @@
 
 ## Independent verifier
 
-- [ ] Commit the functional implementation and live receipt.
-- [ ] Verify exact functional commit from a clean detached worktree.
-- [ ] Reconcile every acquired byte against inventory and receipt.
-- [ ] Run full tests, typecheck, build, audit and configuration gates.
+- [x] Commit the functional implementation and live receipt.
+- [x] Verify exact functional commit from a clean detached worktree.
+- [x] Reconcile every acquired byte against inventory and receipt.
+- [x] Run full tests, typecheck, build, audit and configuration gates.
 
 ## Publication and release gate
 

@@ -1,0 +1,80 @@
+{
+  "schemaVersion": 1,
+  "reviewedAt": "2026-08-01T05:22:00Z",
+  "purpose": "Determine whether the five blocked official sources have a safe substantive direct alternative suitable for governed acquisition.",
+  "result": "no_additional_safe_substantive_acquisition_route",
+  "terminalEffect": "PARTIAL_WITH_DOCUMENTED_BLOCKERS",
+  "sources": [
+    {
+      "sourceId": "guatemala-procurement-regulation",
+      "officialAlternative": "https://formacion.minfin.gob.gt/difoteca/acuerdo-gubernativo-numero-122-2016-reglamento-de-la-ley-de-contrataciones-del-estado/",
+      "directObservation": {
+        "httpStatus": 200,
+        "mediaType": "text/html; charset=UTF-8",
+        "bytes": 110872,
+        "extractedCharacters": 831
+      },
+      "linkedArtifact": "https://formacion.minfin.gob.gt/wp-content/uploads/2021/12/Acuerdo-Gubernativo-122-2016-Reglamento-de-la-Ley-de-Contrataciones-del-Estado.pdf",
+      "linkedArtifactObservation": {
+        "httpStatus": 404
+      },
+      "decision": "keep_verified",
+      "reason": "The accessible page is an index card, not the normative text; its official PDF link is unavailable."
+    },
+    {
+      "sourceId": "gt-codigo-municipal-index",
+      "officialAlternative": "https://www.congreso.gob.gt/detalle_pdf/decretos/252",
+      "directObservation": {
+        "httpStatus": 200,
+        "mediaType": "text/html",
+        "bytes": 950,
+        "contentClass": "incapsula_challenge_shell"
+      },
+      "decision": "keep_verified",
+      "reason": "The controlled fetch did not return the decree or stable citable metadata."
+    },
+    {
+      "sourceId": "guatemala-development-councils-law",
+      "officialAlternative": "https://www.congreso.gob.gt/detalle_pdf/decretos/231",
+      "directObservation": {
+        "httpStatus": 200,
+        "mediaType": "text/html",
+        "bytes": 955,
+        "contentClass": "incapsula_challenge_shell"
+      },
+      "decision": "keep_verified",
+      "reason": "The controlled fetch did not return the decree or stable citable metadata."
+    },
+    {
+      "sourceId": "guatemala-mafim-second-edition",
+      "officialAlternative": "https://www.minfin.gob.gt/images/downloads/leyes_manuales/manuales_presupuesto/MAFIM%20SEGUNDA%20EDICION.pdf",
+      "directObservation": {
+        "httpStatus": 403,
+        "mediaType": "text/html; charset=UTF-8",
+        "bytes": 102928
+      },
+      "decision": "keep_verified",
+      "reason": "The controlled fetch did not return PDF bytes; challenge HTML cannot be accepted as the manual."
+    },
+    {
+      "sourceId": "mspas-water-health-authority",
+      "officialAlternative": "https://www.mspas.gob.gt/servicios/salud-y-ambiente",
+      "directObservation": {
+        "httpStatus": 403,
+        "mediaType": "text/html; charset=UTF-8",
+        "bytes": 5455
+      },
+      "decision": "keep_verified",
+      "reason": "The controlled fetch remains blocked and no equivalent stable official artifact was located."
+    }
+  ],
+  "prohibitedSubstitutions": [
+    "search_engine_cache_as_source_bytes",
+    "challenge_html_as_official_document",
+    "index_page_as_normative_text",
+    "manual_status_promotion",
+    "indexing",
+    "managed_projection"
+  ],
+  "nextSafeAction": "A human source owner may supply approved immutable artifacts or authorize a documented browser-assisted acquisition process; applicability and vigencia still require review."
+}
