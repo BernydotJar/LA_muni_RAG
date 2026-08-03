@@ -33,6 +33,8 @@ describe("premium chat widget evidence panel", () => {
     assert.match(widget, /muni-answer-kicker/);
     assert.match(widget, /muni-citation-index/);
     assert.match(widget, /Consultando evidencia/);
+    assert.match(widget, /muni-bubble:focus-visible/);
+    assert.match(widget, /--muni-focus/);
   });
 
   it("renders citations as premium expandable evidence dossiers", async () => {
@@ -62,6 +64,7 @@ describe("premium chat widget evidence panel", () => {
     assert.match(widget, /prefers-reduced-motion/);
     assert.match(widget, /animation: none !important/);
     assert.match(widget, /transition-duration: 0\.01ms !important/);
+    assert.match(widget, /min-height:44px/);
   });
 
   it("keeps Spanish municipal copy and honest service positioning", async () => {
@@ -73,6 +76,11 @@ describe("premium chat widget evidence panel", () => {
     assert.match(widget, /Consulta documental con trazabilidad/);
     assert.match(widget, /Consulta deshabilitada hasta configurar la API/);
     assert.match(widget, /Escribe tu consulta municipal/);
+    assert.match(widget, /role="dialog"/);
+    assert.match(widget, /role="log" aria-live="polite"/);
+    assert.match(widget, /aria-expanded="false" aria-controls="muni-window"/);
+    assert.match(widget, /aria-pressed="true"/);
+    assert.match(widget, /e.key==="Escape"/);
     assert.doesNotMatch(widget, /Modo demo municipal|Documentos municipales verificados/);
   });
 });

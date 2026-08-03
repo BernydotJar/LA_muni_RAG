@@ -57,13 +57,47 @@ test("homepage is responsive, keyboard reachable, and assistant fails closed", a
 
   await page.getByRole("button", { name: "Asistente" }).first().click();
   const widget = page.locator("#muni-rag-widget");
-  await expect(widget.locator(".muni-window")).toHaveClass(/visible/);
+  const widgetWindow = widget.locator(".muni-window");
+  const widgetBubble = widget.locator("#muni-bubble");
+  await expect(widgetWindow).toHaveClass(/visible/);
+  await expect(widgetWindow).toHaveAttribute("role", "dialog");
+  await expect(widgetWindow).toBeFocused();
+  await expect(widgetBubble).toHaveAttribute("aria-expanded", "true");
   await expect(widget.locator(".muni-header-status")).toHaveText("Servicio no configurado");
   await expect(widget.locator("#muni-input")).toBeDisabled();
   await expect(widget.locator("#muni-send")).toBeDisabled();
   expect(await widget.getAttribute("data-api-configured")).toBe("false");
   expect(requests).toEqual([]);
+
+  await page.keyboard.press("Escape");
+  await expect(widgetWindow).not.toHaveClass(/visible/);
+  await expect(widgetBubble).toHaveAttribute("aria-expanded", "false");
+  await expect(widgetBubble).toBeFocused();
 });
+
+test("homepage reflows at 320 CSS pixels with usable primary targets", async ({ page }) => {
+  await page.setViewportSize({ width: 320, height: 800 });
+  await page.goto("/index.html");
+
+  const layout = await page.evaluate(() => {
+    const card = document.querySelector(".hero-observation-card");
+    const controls = [...document.querySelectorAll(".app-nav a, .app-nav button, .hero-actions .button")];
+    if (!(card instanceof HTMLElement)) throw new Error("hero evidence card missing");
+    return {
+      viewport: window.innerWidth,
+      scrollWidth: document.documentElement.scrollWidth,
+      cardRight: card.getBoundingClientRect().right,
+      cardLeft: card.getBoundingClientRect().left,
+      targetHeights: controls.map((control) => control.getBoundingClientRect().height),
+    };
+  });
+
+  expect(layout.scrollWidth).toBeLessThanOrEqual(layout.viewport + 1);
+  expect(layout.cardLeft).toBeGreaterThanOrEqual(-1);
+  expect(layout.cardRight).toBeLessThanOrEqual(layout.viewport + 1);
+  expect(Math.min(...layout.targetHeights)).toBeGreaterThanOrEqual(44);
+});
+
 
 test("reduced-motion mode removes public and widget animation", async ({ page }) => {
   await page.emulateMedia({ reducedMotion: "reduce" });
