@@ -4,6 +4,7 @@ import { readFile } from "node:fs/promises";
 
 const readHomepage = async (): Promise<string> => readFile("public/index.html", "utf-8");
 const readProductCss = async (): Promise<string> => readFile("public/product.css", "utf-8");
+const readLiquidGlassCss = async (): Promise<string> => readFile("public/liquid-glass.css", "utf-8");
 const readCivicHero = async (): Promise<string> => readFile("public/assets/civic-institutional-hero.svg", "utf-8");
 
 describe("frontend responsive product layout", () => {
@@ -54,21 +55,31 @@ describe("frontend responsive product layout", () => {
 
   it("stacks the product and preserves readable evidence rows on mobile", async () => {
     const css = await readProductCss();
+    const glass = await readLiquidGlassCss();
     assert.match(css, /@media\(max-width:1040px\)/);
     assert.match(css, /\.hero-grid\{grid-template-columns:1fr\}/);
     assert.match(css, /@media\(max-width:760px\)/);
     assert.match(css, /\.panel-node\{position:relative;inset:auto;width:100%;max-width:none\}/);
     assert.match(css, /\.assurance-grid\{grid-template-columns:1fr\}/);
     assert.match(css, /#muni-rag-widget\{right:18px!important;bottom:18px!important\}/);
+    assert.match(glass, /html\{min-width:280px\}/);
+    assert.match(glass, /@media\(max-width:360px\)/);
+    assert.match(glass, /grid-template-columns:34px minmax\(0,1fr\)/);
+    assert.match(glass, /@media\(pointer:coarse\)/);
+    assert.match(glass, /min-height:48px/);
   });
 
   it("preserves focus, reduced motion, and readable secondary text", async () => {
     const html = await readHomepage();
     const css = await readProductCss();
+    const glass = await readLiquidGlassCss();
     assert.match(html, /class="skip-link"/);
     assert.match(css, /--muted:#625b56/);
     assert.match(css, /--quiet:#786f69/);
     assert.match(css, /:focus-visible/);
     assert.match(css, /prefers-reduced-motion:reduce/);
+    assert.match(glass, /prefers-reduced-transparency:reduce/);
+    assert.match(glass, /prefers-contrast:more/);
+    assert.match(glass, /forced-colors:active/);
   });
 });

@@ -30,6 +30,7 @@ const requiredFiles = [
   "procedure-case-open.js",
   "pages-api-bridge.js",
   "product.css",
+  "liquid-glass.css",
   "product.js",
   "pages-security-guard.js",
   "build-metadata.json",
@@ -60,6 +61,7 @@ const buildMetadata = JSON.parse(await readFile(join(outputDir, "build-metadata.
 
 const pagesApiBridge = await readFile(join(outputDir, "pages-api-bridge.js"), "utf-8");
 const productCss = await readFile(join(outputDir, "product.css"), "utf-8");
+const liquidGlassCss = await readFile(join(outputDir, "liquid-glass.css"), "utf-8");
 const productJs = await readFile(join(outputDir, "product.js"), "utf-8");
 
 const expectedBuildSha = normalizeBuildSha(
@@ -79,7 +81,7 @@ const forbiddenRootRelativePatterns = [
   'src="/procedure-deep-dive.js"', 'src="/procedure-source-attribution.js"',
   'src="/procedure-case-workspace.js"', 'src="/procedure-case-open.js"',
   'src="/procedure-case-portfolio-data.js"', 'src="/procedure-case-portfolio.js"',
-  'href="/procedure-case-portfolio.css"', 'src="/assets/', 'href="/assets/',
+  'href="/procedure-case-portfolio.css"', 'href="/liquid-glass.css"', 'src="/assets/', 'href="/assets/',
 ];
 
 for (const pattern of forbiddenRootRelativePatterns) {
@@ -96,10 +98,12 @@ if (!indexHtml.includes('href="./favicon.svg"') || !indexHtml.includes('main id=
 if (!procedureTrainingHtml.includes('src="./pages-api-bridge.js"')) throw new Error("Procedure training page is missing the Pages fail-closed API bridge.");
 if (!indexHtml.includes('src="./pages-security-guard.js"')) throw new Error("GitHub Pages artifact is missing the source-link security guard.");
 if (!indexHtml.includes('src="./procedure-widget-entrypoint.js"')) throw new Error("GitHub Pages artifact is missing the procedure workflow widget entrypoint.");
-if (!indexHtml.includes('href="./product.css"') || !indexHtml.includes('src="./product.js"')) throw new Error("GitHub Pages artifact is missing the modular product assets.");
+if (!indexHtml.includes('href="./product.css"') || !indexHtml.includes('href="./liquid-glass.css"') || !indexHtml.includes('src="./product.js"')) throw new Error("GitHub Pages artifact is missing the modular product assets.");
 if (!indexHtml.includes('data-open-assistant') || !indexHtml.includes('href="./glass-wall.html"')) throw new Error("GitHub Pages artifact is missing direct Assistant or Glass Wall navigation.");
 if (!pagesApiBridge.includes('service_unavailable') || !pagesApiBridge.includes('x-la-muni-rag-api-configured') || pagesApiBridge.includes('demoResponse') || pagesApiBridge.includes('demoProcedureResponse')) throw new Error("Pages API bridge is not fail-closed or still contains demo responses.");
 if (!productCss.includes('--action:#731729') || !productCss.includes('--bg:#f7f3ee') || !productCss.includes(':focus-visible')) throw new Error("Product styles are missing the heritage-burgundy theme or focus treatment.");
+if (!liquidGlassCss.includes('--glass-paper:#fffdf9') || !liquidGlassCss.includes('@supports((-webkit-backdrop-filter:blur(1px)) or (backdrop-filter:blur(1px)))') || !liquidGlassCss.includes('prefers-reduced-transparency:reduce') || !liquidGlassCss.includes('prefers-contrast:more') || !liquidGlassCss.includes('forced-colors:active') || !liquidGlassCss.includes('@media(max-width:360px)')) throw new Error("Product styles are missing progressive liquid-glass, narrow reflow, or accessibility fallbacks.");
+if (/#22d3ee|#8b5cf6|#ec4899|#67e8f9/i.test(liquidGlassCss)) throw new Error("Liquid-glass enhancement reintroduced the retired neon palette.");
 if (!productJs.includes('[data-open-assistant]') || !productJs.includes('navigator.clipboard.writeText')) throw new Error("Product runtime is missing assistant navigation or install-copy behavior.");
 if (!indexHtml.includes('href="./procedure-training.html"')) throw new Error("GitHub Pages artifact is missing the Academy entrypoint.");
 if (!procedureTrainingHtml.includes('href="./index.html"') || !procedureTrainingHtml.includes('src="./procedure-training.js"') || !procedureTrainingHtml.includes('href="./procedure-training.css"')) throw new Error("Procedure training page has invalid Pages-relative assets.");

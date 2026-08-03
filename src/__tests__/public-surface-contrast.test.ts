@@ -41,7 +41,11 @@ describe("public surface contrast tokens", () => {
 
   it("keeps the explanatory panel on a predictable opaque paper background", async () => {
     const css = await readFile("public/product.css", "utf8");
+    const glass = await readFile("public/liquid-glass.css", "utf8");
     assert.match(css, /\.evidence-dossier\{[^}]*background:var\(--surface\)/);
+    assert.match(glass, /--glass-paper:#fffdf9/);
+    assert.match(glass, /\.evidence-dossier\{background:var\(--glass-paper\)/);
+    assert.match(glass, /prefers-reduced-transparency:reduce/);
     assert.ok(contrastRatio("625b56", "fffdf9") >= 4.5);
   });
 });

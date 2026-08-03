@@ -68,6 +68,7 @@ const patchHtmlForProjectPages = async (dir) => {
         .replaceAll('src="/widget.js"', 'src="./widget.js"')
         .replaceAll('src="/product.js"', 'src="./product.js"')
         .replaceAll('href="/product.css"', 'href="./product.css"')
+        .replaceAll('href="/liquid-glass.css"', 'href="./liquid-glass.css"')
         .replaceAll('src="/procedure-widget-entrypoint.js"', 'src="./procedure-widget-entrypoint.js"')
         .replaceAll('src="/procedure-feedback.js"', 'src="./procedure-feedback.js"')
         .replaceAll('src="/assets/', 'src="./assets/')

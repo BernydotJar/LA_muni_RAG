@@ -33,6 +33,21 @@ editorial and restrained rather than neon or dashboard-like.
   gradients are not part of the public frontpage palette.
 - Success, warning and error colors communicate actual state only.
 
+### Glass and depth
+
+The public shell may use restrained liquid-glass effects to clarify elevation,
+but glass is progressive enhancement rather than a content surface dependency.
+
+- Every translucent surface must declare an opaque paper fallback first.
+- Blur, glow and specular highlights stay subtle and must not sit behind body
+  copy at a strength that reduces legibility.
+- Burgundy glow supports focus and hierarchy; it does not animate continuously
+  or replace semantic status.
+- Respect `prefers-reduced-transparency`, `prefers-contrast`, forced colors and
+  reduced motion. These modes remove decorative layers before removing content.
+- Avoid stacked floating cards, excessive pills and decorative gradients that
+  make the product resemble generated concept art instead of an operating tool.
+
 Technical rooms may retain a dark background when it improves dense telemetry,
 but they must still use one dominant accent and avoid decorative rainbow color.
 
@@ -71,9 +86,13 @@ answers on a production-facing surface.
 
 ## Accessibility
 
-- WCAG 2.1 AA contrast is the minimum automated target.
+- WCAG 2.2 AA is the minimum automated target.
 - All controls require a visible `:focus-visible` treatment.
+- Reflow must preserve content and functionality at 320 CSS pixels.
+- Primary controls target at least 44 by 44 CSS pixels; compact controls must
+  still satisfy the WCAG 2.2 target-size minimum or spacing exception.
 - Respect reduced motion.
+- Respect reduced transparency, increased contrast and forced-color modes.
 - Do not encode status by color alone.
 - Modal/widget focus management and screen-reader behavior require browser and
   human verification before production.

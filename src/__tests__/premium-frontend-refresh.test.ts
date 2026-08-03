@@ -4,6 +4,7 @@ import { readFile } from "node:fs/promises";
 
 const readHomepage = async (): Promise<string> => readFile("public/index.html", "utf-8");
 const readProductCss = async (): Promise<string> => readFile("public/product.css", "utf-8");
+const readLiquidGlassCss = async (): Promise<string> => readFile("public/liquid-glass.css", "utf-8");
 const readProductJs = async (): Promise<string> => readFile("public/product.js", "utf-8");
 const readGlassWall = async (): Promise<string> => readFile("public/glass-wall.html", "utf-8");
 
@@ -47,9 +48,11 @@ describe("production-facing public product surface", () => {
   it("uses the restrained heritage-burgundy theme and accessible interaction tokens", async () => {
     const html = await readHomepage();
     const css = await readProductCss();
+    const glass = await readLiquidGlassCss();
     assert.match(html, /data-theme="heritage-burgundy"/);
     assert.match(html, /name="theme-color" content="#731729"/);
     assert.match(html, /href="\.\/product\.css"/);
+    assert.match(html, /href="\.\/liquid-glass\.css"/);
     assert.match(html, /src="\.\/product\.js"/);
     assert.match(html, /class="skip-link"/);
     assert.match(css, /--bg:#f7f3ee/);
@@ -59,6 +62,12 @@ describe("production-facing public product surface", () => {
     assert.match(css, /:focus-visible/);
     assert.match(css, /prefers-reduced-motion/);
     assert.doesNotMatch(css, /#22d3ee|#8b5cf6|#ec4899|#67e8f9/i);
+    assert.match(glass, /--glass-paper:#fffdf9/);
+    assert.match(glass, /backdrop-filter:blur/);
+    assert.match(glass, /prefers-reduced-transparency:reduce/);
+    assert.match(glass, /prefers-contrast:more/);
+    assert.match(glass, /forced-colors:active/);
+    assert.doesNotMatch(glass, /#22d3ee|#8b5cf6|#ec4899|#67e8f9/i);
   });
 
   it("keeps the Glass Wall technical room safe and available", async () => {
