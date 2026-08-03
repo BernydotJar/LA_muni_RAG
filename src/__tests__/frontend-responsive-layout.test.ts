@@ -10,14 +10,14 @@ describe("frontend responsive product layout", () => {
   it("uses a sticky product navigation rail with direct primary destinations", async () => {
     const html = await readHomepage();
     const css = await readProductCss();
-    assert.match(css, /--nav-height:78px/);
+    assert.match(css, /--nav-height:76px/);
     assert.match(css, /\.app-nav\{position:sticky;top:18px/);
     assert.match(css, /width:min\(1180px,calc\(100% - 40px\)\)/);
     assert.match(html, /data-open-assistant>Asistente/);
     assert.match(html, /href="\.\/glass-wall\.html">Glass Wall/);
   });
 
-  it("keeps restrained ambient motion and the civic palace hero", async () => {
+  it("keeps restrained ambient motion and a monochromatic civic palace hero", async () => {
     const html = await readHomepage();
     const css = await readProductCss();
     const asset = await readCivicHero();
@@ -25,38 +25,40 @@ describe("frontend responsive product layout", () => {
     assert.match(css, /orb-drift/);
     assert.match(html, /\.\/assets\/civic-institutional-hero\.svg/);
     assert.match(html, /civic-palace-visual/);
-    assert.match(asset, /Palacio municipal futurista/);
+    assert.match(asset, /Ilustración editorial monocromática/);
     assert.match(asset, /arcos coloniales/);
     assert.match(asset, /campanario/);
     assert.match(asset, /cúpula/);
+    assert.doesNotMatch(asset, /#22d3ee|#a855f7|#e879f9|#f59e0b/i);
   });
 
   it("keeps the public hero side-by-side on laptop viewports", async () => {
     const html = await readHomepage();
     const css = await readProductCss();
-    assert.match(css, /grid-template-columns:minmax\(340px,\.82fr\) minmax\(460px,1\.18fr\)/);
+    assert.match(css, /grid-template-columns:minmax\(360px,\.88fr\) minmax\(500px,1\.12fr\)/);
     assert.match(html, /hero-copy-stack/);
     assert.match(css, /min-height:calc\(100svh - var\(--nav-height\) - 18px\)/);
   });
 
-  it("contains the observation card and panel nodes within predictable opaque surfaces", async () => {
+  it("contains the evidence dossier in predictable opaque paper surfaces", async () => {
     const html = await readHomepage();
     const css = await readProductCss();
     assert.match(html, /hero-observation-card/);
-    assert.match(css, /min-height:clamp\(460px,48vw,620px\)/);
-    assert.match(css, /max-height:650px/);
-    assert.match(css, /width:clamp\(180px,19vw,224px\)/);
-    assert.match(css, /max-width:calc\(50% - 24px\)/);
-    assert.match(css, /background:rgba\(6,9,22,\.94\)/);
+    assert.match(html, /evidence-dossier/);
+    assert.match(html, /route-list/);
+    assert.match(css, /min-height:clamp\(520px,49vw,640px\)/);
+    assert.match(css, /max-height:660px/);
+    assert.match(css, /background:var\(--surface\)/);
+    assert.match(css, /grid-template-columns:38px 1fr/);
   });
 
-  it("stacks the product and removes absolute panel positioning on mobile", async () => {
+  it("stacks the product and preserves readable evidence rows on mobile", async () => {
     const css = await readProductCss();
-    assert.match(css, /@media\(max-width:960px\)/);
+    assert.match(css, /@media\(max-width:1040px\)/);
     assert.match(css, /\.hero-grid\{grid-template-columns:1fr\}/);
     assert.match(css, /@media\(max-width:760px\)/);
-    assert.match(css, /\.hero-observation-card\{min-height:auto;padding:22px;display:grid;gap:12px\}/);
     assert.match(css, /\.panel-node\{position:relative;inset:auto;width:100%;max-width:none\}/);
+    assert.match(css, /\.assurance-grid\{grid-template-columns:1fr\}/);
     assert.match(css, /#muni-rag-widget\{right:18px!important;bottom:18px!important\}/);
   });
 
@@ -64,7 +66,8 @@ describe("frontend responsive product layout", () => {
     const html = await readHomepage();
     const css = await readProductCss();
     assert.match(html, /class="skip-link"/);
-    assert.match(css, /--muted:#cbd5e1/);
+    assert.match(css, /--muted:#625b56/);
+    assert.match(css, /--quiet:#786f69/);
     assert.match(css, /:focus-visible/);
     assert.match(css, /prefers-reduced-motion:reduce/);
   });

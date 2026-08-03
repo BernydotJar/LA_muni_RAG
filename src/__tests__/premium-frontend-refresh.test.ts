@@ -44,16 +44,21 @@ describe("production-facing public product surface", () => {
     assert.match(js, /navigator\.clipboard\.writeText/);
   });
 
-  it("uses modular assets and accessibility-focused interaction tokens", async () => {
+  it("uses the restrained heritage-burgundy theme and accessible interaction tokens", async () => {
     const html = await readHomepage();
     const css = await readProductCss();
+    assert.match(html, /data-theme="heritage-burgundy"/);
+    assert.match(html, /name="theme-color" content="#731729"/);
     assert.match(html, /href="\.\/product\.css"/);
     assert.match(html, /src="\.\/product\.js"/);
     assert.match(html, /class="skip-link"/);
-    assert.match(css, /--action:#67e8f9/);
+    assert.match(css, /--bg:#f7f3ee/);
+    assert.match(css, /--surface:#fffdf9/);
+    assert.match(css, /--action:#731729/);
+    assert.match(css, /--action-soft:#f4e8ea/);
     assert.match(css, /:focus-visible/);
-    assert.match(css, /background:rgba\(6,9,22,\.94\)/);
     assert.match(css, /prefers-reduced-motion/);
+    assert.doesNotMatch(css, /#22d3ee|#8b5cf6|#ec4899|#67e8f9/i);
   });
 
   it("keeps the Glass Wall technical room safe and available", async () => {

@@ -25,8 +25,8 @@ describe("frontend localization and graph polish", () => {
     const homepage = await readHomepage();
     const glassWall = await readGlassWall();
 
-    assert.match(homepage, /<html lang="es">/);
-    assert.match(glassWall, /<html lang="es">/);
+    assert.match(homepage, /<html lang="es"(?:\s[^>]*)?>/);
+    assert.match(glassWall, /<html lang="es"(?:\s[^>]*)?>/);
     assert.match(homepage, /Consulta documental municipal/);
     assert.match(homepage, /Consulta pública/);
     assert.match(glassWall, /Sala de observación para/);

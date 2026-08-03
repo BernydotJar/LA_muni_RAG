@@ -99,7 +99,7 @@ if (!indexHtml.includes('src="./procedure-widget-entrypoint.js"')) throw new Err
 if (!indexHtml.includes('href="./product.css"') || !indexHtml.includes('src="./product.js"')) throw new Error("GitHub Pages artifact is missing the modular product assets.");
 if (!indexHtml.includes('data-open-assistant') || !indexHtml.includes('href="./glass-wall.html"')) throw new Error("GitHub Pages artifact is missing direct Assistant or Glass Wall navigation.");
 if (!pagesApiBridge.includes('service_unavailable') || !pagesApiBridge.includes('x-la-muni-rag-api-configured') || pagesApiBridge.includes('demoResponse') || pagesApiBridge.includes('demoProcedureResponse')) throw new Error("Pages API bridge is not fail-closed or still contains demo responses.");
-if (!productCss.includes('--action:#67e8f9') || !productCss.includes(':focus-visible')) throw new Error("Product styles are missing the reserved action color or focus treatment.");
+if (!productCss.includes('--action:#731729') || !productCss.includes('--bg:#f7f3ee') || !productCss.includes(':focus-visible')) throw new Error("Product styles are missing the heritage-burgundy theme or focus treatment.");
 if (!productJs.includes('[data-open-assistant]') || !productJs.includes('navigator.clipboard.writeText')) throw new Error("Product runtime is missing assistant navigation or install-copy behavior.");
 if (!indexHtml.includes('href="./procedure-training.html"')) throw new Error("GitHub Pages artifact is missing the Academy entrypoint.");
 if (!procedureTrainingHtml.includes('href="./index.html"') || !procedureTrainingHtml.includes('src="./procedure-training.js"') || !procedureTrainingHtml.includes('href="./procedure-training.css"')) throw new Error("Procedure training page has invalid Pages-relative assets.");

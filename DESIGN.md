@@ -17,15 +17,24 @@ container; modular assets keep those boundaries portable and auditable.
 
 ## Visual tokens
 
-- Background: near-black navy, not pure black.
-- Surface: opaque navy sufficient to preserve text contrast over ambient art.
-- Primary text: `#f8fafc`.
-- Secondary text: `#cbd5e1` or a darker-background equivalent meeting 4.5:1.
-- Interaction color: cyan `#67e8f9`, reserved for buttons, links, focus and
-  active controls.
-- Purple/pink: ambient decoration and data accents only; never compete with the
-  primary action.
+The public frontpage uses the `heritage-burgundy` theme. It is intentionally
+editorial and restrained rather than neon or dashboard-like.
+
+- Background: warm ivory `#f7f3ee`.
+- Surface: opaque paper `#fffdf9` or white.
+- Primary text: warm charcoal `#282222`.
+- Secondary text: `#625b56`; quiet text: `#786f69`. Both meet 4.5:1 on the
+  declared paper surfaces.
+- Interaction and brand color: burgundy `#731729`, reserved for primary
+  buttons, links, focus and active controls.
+- Soft burgundy `#f4e8ea` supports hover and explanatory surfaces without
+  becoming a competing call to action.
+- Warm neutrals may support architectural illustration. Cyan, violet and pink
+  gradients are not part of the public frontpage palette.
 - Success, warning and error colors communicate actual state only.
+
+Technical rooms may retain a dark background when it improves dense telemetry,
+but they must still use one dominant accent and avoid decorative rainbow color.
 
 ## Typography and hierarchy
 
@@ -45,8 +54,8 @@ Audit and Administration according to role.
 
 ### Primary action
 
-Use the reserved cyan fill with dark text. Secondary actions use a solid opaque
-surface. Minimum touch target is 44 by 44 CSS pixels.
+Use the reserved burgundy fill with light text. Secondary actions use a solid
+opaque paper surface. Minimum touch target is 44 by 44 CSS pixels.
 
 ### Evidence
 

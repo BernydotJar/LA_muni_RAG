@@ -20,10 +20,13 @@ describe("EVAL-PRODUCTION-PUBLIC-SURFACE-001", () => {
     const js = await read("public/product.js");
     assert.match(html, /href="\.\/product\.css"/);
     assert.match(html, /src="\.\/product\.js"/);
-    assert.match(css, /--action:#67e8f9/);
+    assert.match(html, /data-theme="heritage-burgundy"/);
+    assert.match(css, /--action:#731729/);
+    assert.match(css, /--bg:#f7f3ee/);
     assert.match(css, /:focus-visible/);
-    assert.match(css, /background:rgba\(6,9,22,\.94\)/);
+    assert.match(css, /background:var\(--surface\)/);
     assert.match(css, /prefers-reduced-motion/);
+    assert.doesNotMatch(css, /#22d3ee|#8b5cf6|#ec4899|#67e8f9/i);
     assert.match(js, /\[data-open-assistant\]/);
   });
 

@@ -21,10 +21,13 @@ describe("premium chat widget evidence panel", () => {
 
   it("uses a premium civic evidence-panel visual system", async () => {
     const widget = await readWidget();
-    assert.match(widget, /premium civic evidence panel|muni-answer-kicker|Respuesta con evidencia/);
-    assert.match(widget, /--muni-cyan/);
-    assert.match(widget, /--muni-magenta/);
+    assert.match(widget, /heritage burgundy civic evidence panel|muni-answer-kicker|Respuesta con evidencia/);
+    assert.match(widget, /--muni-primary: #731729/);
+    assert.match(widget, /--muni-accent: #a33b54/);
+    assert.match(widget, /--muni-warm: #b58b6b/);
     assert.match(widget, /--muni-surface-strong/);
+    assert.match(widget, /heritage-burgundy/);
+    assert.doesNotMatch(widget, /#22d3ee|#8b5cf6|#7c5cff|#6d5df6/i);
     assert.match(widget, /muni-header-rail/);
     assert.match(widget, /muni-rail-pill/);
     assert.match(widget, /muni-answer-kicker/);
