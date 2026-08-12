@@ -21,7 +21,8 @@ const pagesApiUrl = sanitizePagesApiUrl(process.env.PAGES_API_URL || "");
 const configuredEmbedApiAttribute = pagesApiUrl
   ? `data-api-url="${escapeHtmlAttribute(pagesApiUrl)}"`
   : 'data-api-url="https://api.tu-dominio.gt"';
-const bridgeTag = `<script src="./pages-api-bridge.js"${pagesApiUrl ? ` data-api-url="${escapeHtmlAttribute(pagesApiUrl)}"` : ""}></script>`;
+const fallbackTag = '<script src="./public-corpus-fallback.js"></script>';
+const bridgeTag = `${fallbackTag}<script src="./pages-api-bridge.js" data-static-fallback="static-first"${pagesApiUrl ? ` data-api-url="${escapeHtmlAttribute(pagesApiUrl)}"` : ""}></script>`;
 const guardTag = '<script src="./pages-security-guard.js"></script>';
 const procedureEntrypointTag = '<script src="./procedure-widget-entrypoint.js"></script>';
 

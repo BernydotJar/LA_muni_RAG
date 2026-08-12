@@ -1,0 +1,64 @@
+{
+  "schemaVersion": "1.0.0",
+  "feature": "091-public-query-resilience-v1",
+  "observedAt": "2026-08-12T15:41:14.613Z",
+  "functionalCommit": "b7dcd778c0afdc0daf603fba061914dba79d6ed4",
+  "status": "PASS",
+  "checks": [
+    {
+      "id": "invalid-query-body",
+      "result": "PASS",
+      "expected": "400 invalid_request from static layer"
+    },
+    {
+      "id": "unsupported-method",
+      "result": "PASS",
+      "expected": "not intercepted as an approved static operation"
+    },
+    {
+      "id": "remote-429-preserved",
+      "result": "PASS",
+      "expected": "429 remains visible; no static substitution"
+    },
+    {
+      "id": "remote-500-preserved",
+      "result": "PASS",
+      "expected": "500 remains visible; no static substitution"
+    },
+    {
+      "id": "remote-502-503-504-only",
+      "result": "PASS",
+      "expected": "only infrastructure availability failures are fallback-eligible in remote-first mode"
+    },
+    {
+      "id": "browser-credential-stripping",
+      "result": "PASS",
+      "expected": "authorization, cookies and non-allowlisted headers do not reach configured backend"
+    },
+    {
+      "id": "official-source-host",
+      "result": "PASS",
+      "expected": "snapshot source links are exact HTTPS target-municipality host",
+      "actual": "https://muniantigua.gob.gt/"
+    },
+    {
+      "id": "no-unconfigured-opt-in",
+      "result": "PASS",
+      "expected": "without PAGES_API_URL the widget remains disabled even when snapshot assets exist"
+    },
+    {
+      "id": "static-procedure-authority",
+      "result": "PASS",
+      "expected": "steps are inferred_for_review or missing_evidence only"
+    },
+    {
+      "id": "raw-pdf-exclusion",
+      "result": "PASS",
+      "expected": "zero raw PDFs tracked or published by the static projection verifier"
+    }
+  ],
+  "limitations": [
+    "This review is bounded automated adversarial coverage, not a penetration test.",
+    "Static retrieval is lexical and does not establish vigencia or legal applicability."
+  ]
+}

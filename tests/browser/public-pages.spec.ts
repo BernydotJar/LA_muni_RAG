@@ -172,6 +172,101 @@ test("procedure workflow remains usable and explicit when Pages has no backend",
   expect(requests).toEqual([]);
 });
 
+test("configured Pages bridge falls back to the frozen public corpus when upstream is unavailable", async ({ page }) => {
+  await page.goto("/__playwright__/fallback-harness.html");
+  expect(await page.evaluate(() => Boolean(window.__LA_MUNI_PUBLIC_FALLBACK__?.available))).toBe(true);
+
+  const query = await page.evaluate(async () => {
+    const response = await fetch("/api/public/v1/query?upstream=unavailable", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ message: "agua potable", mode: "keyword", limit: 3 }),
+    });
+    return {
+      status: response.status,
+      fallback: response.headers.get("x-la-muni-rag-static-fallback"),
+      body: await response.json(),
+    };
+  });
+  expect(query.status).toBe(200);
+  expect(query.fallback).toBe("true");
+  expect(query.body.response_type).toBe("public_query");
+  expect(query.body.meta).toMatchObject({
+    responseLabel: "evidence_found",
+    jurisdiction: "Municipio de La Antigua Guatemala, Sacatepéquez, Guatemala",
+  });
+  expect(query.body.meta.limitations.join(" ")).toMatch(/proyección pública.*léxica|léxica.*proyección pública/i);
+  expect(query.body.citations.length).toBeGreaterThan(0);
+  expect(query.body.citations.every((citation: { sourceUrl?: string; pageStart?: number }) =>
+    citation.sourceUrl?.startsWith("https://muniantigua.gob.gt/") && Number.isInteger(citation.pageStart)
+  )).toBe(true);
+
+  const domain = await page.evaluate(async () => {
+    const response = await fetch("/api/domain-pack?upstream=unavailable", { headers: { accept: "application/json" } });
+    return { status: response.status, fallback: response.headers.get("x-la-muni-rag-static-fallback"), body: await response.json() };
+  });
+  expect(domain.status).toBe(200);
+  expect(domain.fallback).toBe("true");
+  expect(domain.body).toMatchObject({ id: "municipal-antigua", branding: { productName: "LA Muni RAG" } });
+
+  const procedure = await page.evaluate(async () => {
+    const params = new URLSearchParams({
+      q: "Qué se necesita para llevar agua potable a una comunidad de Antigua Guatemala",
+      mode: "keyword",
+      limit: "8",
+      depth: "overview",
+      upstream: "unavailable",
+    });
+    const response = await fetch(`/api/procedure?${params}`, { headers: { accept: "application/json" } });
+    return { status: response.status, fallback: response.headers.get("x-la-muni-rag-static-fallback"), body: await response.json() };
+  });
+  expect(procedure.status).toBe(200);
+  expect(procedure.fallback).toBe("true");
+  expect(procedure.body.steps.length).toBeGreaterThan(0);
+  expect(procedure.body.citations.length).toBeGreaterThan(0);
+  expect(procedure.body.metadata).toMatchObject({ staticFallback: true, semanticSearch: false, serverAudit: false });
+  expect(procedure.body.steps.every((step: { evidenceStatus?: string }) =>
+    step.evidenceStatus === "inferred_for_review" || step.evidenceStatus === "missing_evidence"
+  )).toBe(true);
+
+  const invalid = await page.evaluate(async () => {
+    const response = await fetch("/api/public/v1/query", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ message: "agua", mode: "keyword", limit: 3, unexpected: true }),
+    });
+    return { status: response.status, fallback: response.headers.get("x-la-muni-rag-static-fallback"), body: await response.json() };
+  });
+  expect(invalid.status).toBe(400);
+  expect(invalid.fallback).toBe("true");
+  expect(invalid.body).toMatchObject({ response_type: "public_error", error: { code: "invalid_request", retryable: false } });
+});
+
+test("remote-first Pages bridge preserves meaningful 429 and 500 upstream failures", async ({ page }) => {
+  await page.goto("/__playwright__/bridge-harness.html");
+  for (const [upstream, expectedStatus, expectedCode] of [
+    ["rate-limited", 429, "rate_limited"],
+    ["server-error", 500, "upstream_internal_error"],
+  ] as const) {
+    const result = await page.evaluate(async ({ upstream }) => {
+      const response = await fetch(`/api/public/v1/query?upstream=${upstream}`, {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ message: "agua potable", mode: "keyword", limit: 3 }),
+      });
+      return { status: response.status, fallback: response.headers.get("x-la-muni-rag-static-fallback"), body: await response.json() };
+    }, { upstream });
+    expect(result.status).toBe(expectedStatus);
+    expect(result.fallback).toBeNull();
+    expect(result.body).toMatchObject({ error: { code: expectedCode } });
+  }
+  expect(runtimeErrors.get(page) ?? []).toEqual([
+    "console: Failed to load resource: the server responded with a status of 429 (Too Many Requests)",
+    "console: Failed to load resource: the server responded with a status of 500 (Internal Server Error)",
+  ]);
+  runtimeErrors.set(page, []);
+});
+
 test("configured Pages bridge strips browser credentials and proxies only approved methods", async ({ page, context }) => {
   await context.addCookies([{ name: "session", value: "must-not-leave-browser", url: "http://127.0.0.1:4173" }]);
   await page.goto("/__playwright__/bridge-harness.html");

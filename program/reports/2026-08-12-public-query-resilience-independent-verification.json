@@ -1,0 +1,120 @@
+{
+  "schemaVersion": "1.0.0",
+  "feature": "091-public-query-resilience-v1",
+  "observedAt": "2026-08-12T15:41:14.613Z",
+  "functionalCommit": "b7dcd778c0afdc0daf603fba061914dba79d6ed4",
+  "verifierWorktree": "/tmp/la-muni-rag-feature091-verify",
+  "cleanDetachedWorktree": true,
+  "sourceProjection": {
+    "snapshotBytes": 808883,
+    "snapshotSha256": "5cc1194d567dd75ff5e732ca4f0030f90dfd324d57c907bc5cea1d59209b6a4b",
+    "domainSnapshotSha256": "88385c1f739e7cd3f27eff07bafe787a44e54895ff83465aaa40b9357c901093",
+    "rawPdfTrackedInGit": false
+  },
+  "dependencySecurity": {
+    "pdfjsDist": "6.2.108",
+    "fastUri": "3.1.5",
+    "npmAudit": {
+      "info": 0,
+      "low": 0,
+      "moderate": 0,
+      "high": 0,
+      "critical": 0,
+      "total": 0
+    },
+    "extractionParity": [
+      {
+        "sourceId": "antigua-pdm-ot",
+        "officialPdfByteLength": 34822596,
+        "officialPdfSha256": "824f0ee47106f062269a7c65cb3433435470bbe609054972eb29c360f368cd0b",
+        "governedPdfSha256": "824f0ee47106f062269a7c65cb3433435470bbe609054972eb29c360f368cd0b",
+        "extractedPageCount": 224,
+        "parserVersionBefore": "6.1.200",
+        "parserVersionAfter": "6.2.108",
+        "fullWorkerResultBeforeSha256": "482709fb76d61a6a59a6f6c4fd00b92ba7dfe6aaa77a85cca7fa8ab8b3d21470",
+        "fullWorkerResultAfterSha256": "2743984753c9e9d78dc9831721d7eff5b74d2d2ae5f78990e99cbbe076b25679",
+        "fullWorkerResultChanged": true,
+        "workerResultIdenticalExceptParserVersion": true,
+        "canonicalPageTextBeforeSha256": "c9d972882b63ca478fbcfb54c74b06074b0f7f269c5893939fa67a38f8dc63b7",
+        "canonicalPageTextAfterSha256": "c9d972882b63ca478fbcfb54c74b06074b0f7f269c5893939fa67a38f8dc63b7",
+        "canonicalPageTextIdentical": true
+      },
+      {
+        "sourceId": "antigua-pdmot-module-3",
+        "officialPdfByteLength": 3191899,
+        "officialPdfSha256": "dc67c503155c8fe85a6d4ac28b54c715e6293ab8261484d2531750a9ab17a3f0",
+        "governedPdfSha256": "dc67c503155c8fe85a6d4ac28b54c715e6293ab8261484d2531750a9ab17a3f0",
+        "extractedPageCount": 46,
+        "parserVersionBefore": "6.1.200",
+        "parserVersionAfter": "6.2.108",
+        "fullWorkerResultBeforeSha256": "d23078f19db43302ddcb24dfdf9ca02526ce9b4048c96e4e9d673f30dbf06e40",
+        "fullWorkerResultAfterSha256": "252849e3072f6ffb3718e42608b1b6bdd1a2446538f4aaace5531c2adb10852e",
+        "fullWorkerResultChanged": true,
+        "workerResultIdenticalExceptParserVersion": true,
+        "canonicalPageTextBeforeSha256": "e80a5384c0abd889114926fc81fe37a6194c33c20197a58ccf408835a9d7f071",
+        "canonicalPageTextAfterSha256": "e80a5384c0abd889114926fc81fe37a6194c33c20197a58ccf408835a9d7f071",
+        "canonicalPageTextIdentical": true
+      },
+      {
+        "sourceId": "antigua-pdmot-module-4",
+        "officialPdfByteLength": 1627111,
+        "officialPdfSha256": "73186847344904a6c4ee64668dad0ec43628b3ca65ed8f12a192a05705a26fa9",
+        "governedPdfSha256": "73186847344904a6c4ee64668dad0ec43628b3ca65ed8f12a192a05705a26fa9",
+        "extractedPageCount": 22,
+        "parserVersionBefore": "6.1.200",
+        "parserVersionAfter": "6.2.108",
+        "fullWorkerResultBeforeSha256": "882a00680a130ac6445a2d2940c85f9318893dbffd4c2f670b1c75bfb8a8ea36",
+        "fullWorkerResultAfterSha256": "5a9d3b33054b90d7f454108d585f0ee9d02e48c87873f3e3b25e549d7670eeda",
+        "fullWorkerResultChanged": true,
+        "workerResultIdenticalExceptParserVersion": true,
+        "canonicalPageTextBeforeSha256": "c82b3b65f923522de6886a2229d3c65052cd286985be93d05509830efee39281",
+        "canonicalPageTextAfterSha256": "c82b3b65f923522de6886a2229d3c65052cd286985be93d05509830efee39281",
+        "canonicalPageTextIdentical": true
+      }
+    ],
+    "extractionParityConclusion": "Full worker JSON changes only because parserVersion moved from 6.1.200 to 6.2.108; page numbers and extracted page text are identical for all three governed PDFs."
+  },
+  "regression": {
+    "tests": 1078,
+    "passed": 1076,
+    "failed": 0,
+    "skipped": 2,
+    "suites": 178,
+    "typecheck": "PASS",
+    "build": "PASS",
+    "graphHarness": "PASS",
+    "diffCheck": "PASS",
+    "cleanAfterGeneratedArtifactRestore": true
+  },
+  "browser": {
+    "tests": 16,
+    "passed": 16,
+    "failed": 0,
+    "projects": [
+      "chromium-desktop",
+      "chromium-mobile"
+    ],
+    "staticFirstUpstreamUnavailable": "PASS",
+    "remoteFirst429And500Preserved": "PASS",
+    "credentialStripping": "PASS"
+  },
+  "configuredPagesLocal": {
+    "desktop": {
+      "staticQueryVerified": true,
+      "citationCount": 5
+    },
+    "mobile": {
+      "staticQueryVerified": true,
+      "citationCount": 5
+    },
+    "remoteApiRequestsForStaticQuery": 0
+  },
+  "boundaries": {
+    "semanticSearchClaim": false,
+    "serverAuditClaimForStatic": false,
+    "legalConclusionClaim": false,
+    "managedCloudMutation": false,
+    "rawSourceBytesCommitted": false
+  },
+  "status": "PASS"
+}

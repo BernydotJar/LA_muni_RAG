@@ -110,6 +110,19 @@
         "remote_ci"
       ],
       "blocking": true
+    },
+    {
+      "id": "GATE-PUBLIC-QUERY-RESILIENCE-004",
+      "required_evidence_kinds": [
+        "source_reacquisition",
+        "static_projection",
+        "browser_smoke",
+        "adversarial_review",
+        "independent_regression",
+        "remote_ci",
+        "online_pages"
+      ],
+      "blocking": true
     }
   ],
   "nodes": [
@@ -456,6 +469,47 @@
         "indexing_authorized": false,
         "merge_authorized": false,
         "deployment_authorized": false
+      }
+    },
+    {
+      "id": "REL-PUBLIC-QUERY-RESILIENCE-004",
+      "kind": "release_checkpoint",
+      "title": "Make the public query experience resilient without always-on managed infrastructure",
+      "status": "spec_ready",
+      "depends_on": [
+        "REL-PUBLIC-CORPUS-PILOT-STAGING-001",
+        "WS02-OFFICIAL-SOURCE-ACQUISITION-003"
+      ],
+      "capability": "public_query_static_resilience",
+      "gates": {
+        "done": [
+          "GATE-PUBLIC-QUERY-RESILIENCE-004"
+        ]
+      },
+      "allowed_paths": [
+        ".github/workflows/**",
+        "docs/**",
+        "package.json",
+        "package-lock.json",
+        "program/**",
+        "public/**",
+        "scripts/**",
+        "specs/091-public-query-resilience-v1/**",
+        "src/__tests__/**",
+        "tests/browser/**"
+      ],
+      "metadata": {
+        "approved_static_source_ids": [
+          "antigua-pdm-ot",
+          "antigua-pdmot-module-3",
+          "antigua-pdmot-module-4"
+        ],
+        "static_projection_expected_pages": 292,
+        "raw_source_bytes_in_git": false,
+        "semantic_model_claim": false,
+        "server_audit_claim_for_static_fallback": false,
+        "managed_cloud_dependency_required_for_public_read_only": false,
+        "deployment_authorized_by_user": true
       }
     }
   ]

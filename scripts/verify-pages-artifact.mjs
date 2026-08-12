@@ -29,6 +29,9 @@ const requiredFiles = [
   "procedure-case-workspace.js",
   "procedure-case-open.js",
   "pages-api-bridge.js",
+  "public-corpus-fallback.js",
+  "public-corpus-snapshot.json",
+  "public-domain-pack-snapshot.json",
   "product.css",
   "liquid-glass.css",
   "product.js",
@@ -60,6 +63,9 @@ const procedureCaseOpenJs = await readFile(join(outputDir, "procedure-case-open.
 const buildMetadata = JSON.parse(await readFile(join(outputDir, "build-metadata.json"), "utf-8"));
 
 const pagesApiBridge = await readFile(join(outputDir, "pages-api-bridge.js"), "utf-8");
+const publicCorpusFallback = await readFile(join(outputDir, "public-corpus-fallback.js"), "utf-8");
+const publicCorpusSnapshot = JSON.parse(await readFile(join(outputDir, "public-corpus-snapshot.json"), "utf-8"));
+const publicDomainSnapshot = JSON.parse(await readFile(join(outputDir, "public-domain-pack-snapshot.json"), "utf-8"));
 const productCss = await readFile(join(outputDir, "product.css"), "utf-8");
 const liquidGlassCss = await readFile(join(outputDir, "liquid-glass.css"), "utf-8");
 const productJs = await readFile(join(outputDir, "product.js"), "utf-8");
@@ -90,7 +96,9 @@ for (const pattern of forbiddenRootRelativePatterns) {
   }
 }
 
-if (!indexHtml.includes('src="./pages-api-bridge.js"')) throw new Error("GitHub Pages artifact is missing the fail-closed API bridge before the widget.");
+const indexFallbackIndex = indexHtml.indexOf('src="./public-corpus-fallback.js"');
+const indexBridgeIndex = indexHtml.indexOf('src="./pages-api-bridge.js"');
+if (indexFallbackIndex < 0 || indexBridgeIndex < 0 || indexFallbackIndex > indexBridgeIndex) throw new Error("GitHub Pages artifact must load the governed public corpus fallback before the API bridge.");
 const glassWallBridgeIndex = glassWallHtml.indexOf('src="./pages-api-bridge.js"');
 const glassWallRuntimeIndex = glassWallHtml.indexOf("const approvedEndpointPaths");
 if (glassWallBridgeIndex < 0 || glassWallRuntimeIndex < 0 || glassWallBridgeIndex > glassWallRuntimeIndex) throw new Error("Glass Wall is missing the configured Pages API bridge before its query runtime.");
@@ -100,7 +108,13 @@ if (!indexHtml.includes('src="./pages-security-guard.js"')) throw new Error("Git
 if (!indexHtml.includes('src="./procedure-widget-entrypoint.js"')) throw new Error("GitHub Pages artifact is missing the procedure workflow widget entrypoint.");
 if (!indexHtml.includes('href="./product.css"') || !indexHtml.includes('href="./liquid-glass.css"') || !indexHtml.includes('src="./product.js"')) throw new Error("GitHub Pages artifact is missing the modular product assets.");
 if (!indexHtml.includes('data-open-assistant') || !indexHtml.includes('href="./glass-wall.html"')) throw new Error("GitHub Pages artifact is missing direct Assistant or Glass Wall navigation.");
-if (!pagesApiBridge.includes('service_unavailable') || !pagesApiBridge.includes('x-la-muni-rag-api-configured') || pagesApiBridge.includes('demoResponse') || pagesApiBridge.includes('demoProcedureResponse')) throw new Error("Pages API bridge is not fail-closed or still contains demo responses.");
+if (!pagesApiBridge.includes('service_unavailable') || !pagesApiBridge.includes('x-la-muni-rag-api-configured') || !pagesApiBridge.includes('shouldUseStaticFallback') || pagesApiBridge.includes('demoResponse') || pagesApiBridge.includes('demoProcedureResponse')) throw new Error("Pages API bridge is not fail-closed/resilient or still contains demo responses.");
+if (!publicCorpusFallback.includes('__LA_MUNI_PUBLIC_FALLBACK__') || !publicCorpusFallback.includes('staticFallback: true') || !publicCorpusFallback.includes('semanticSearch: false') || !publicCorpusFallback.includes('serverAudit: false')) throw new Error("Public corpus fallback is missing its bounded resilience or limitation markers.");
+if (publicCorpusSnapshot?.schemaVersion !== 1 || publicCorpusSnapshot?.corpusKind !== 'public_official_municipal_static_projection_v1') throw new Error("Public corpus snapshot schema is invalid.");
+if (!Array.isArray(publicCorpusSnapshot.sources) || publicCorpusSnapshot.sources.length !== 3 || !Array.isArray(publicCorpusSnapshot.sections) || publicCorpusSnapshot.sections.length !== 292) throw new Error("Public corpus snapshot does not contain the frozen three-source / 292-page projection.");
+if (!publicCorpusSnapshot.sources.every((source) => source.sourceUrl?.startsWith('https://muniantigua.gob.gt/') && /^[0-9a-f]{64}$/.test(source.contentSha256 ?? ''))) throw new Error("Public corpus snapshot contains an unbound source URL or content hash.");
+if (!publicCorpusSnapshot.sections.every((section) => Number.isInteger(section.pageStart) && section.pageStart > 0 && section.pageEnd === section.pageStart && typeof section.text === 'string' && section.text.length > 0)) throw new Error("Public corpus snapshot contains invalid page-level evidence.");
+if (publicDomainSnapshot?.schemaVersion !== 1 || publicDomainSnapshot?.ui?.id !== 'municipal-antigua' || !Array.isArray(publicDomainSnapshot.workflowTemplates) || publicDomainSnapshot.workflowTemplates.length < 5) throw new Error("Public domain-pack snapshot is invalid or incomplete.");
 if (!productCss.includes('--action:#731729') || !productCss.includes('--bg:#f7f3ee') || !productCss.includes(':focus-visible')) throw new Error("Product styles are missing the heritage-burgundy theme or focus treatment.");
 if (!liquidGlassCss.includes('--glass-paper:#fffdf9') || !liquidGlassCss.includes('@supports((-webkit-backdrop-filter:blur(1px)) or (backdrop-filter:blur(1px)))') || !liquidGlassCss.includes('prefers-reduced-transparency:reduce') || !liquidGlassCss.includes('prefers-contrast:more') || !liquidGlassCss.includes('forced-colors:active') || !liquidGlassCss.includes('@media(max-width:360px)')) throw new Error("Product styles are missing progressive liquid-glass, narrow reflow, or accessibility fallbacks.");
 if (/#22d3ee|#8b5cf6|#ec4899|#67e8f9/i.test(liquidGlassCss)) throw new Error("Liquid-glass enhancement reintroduced the retired neon palette.");
