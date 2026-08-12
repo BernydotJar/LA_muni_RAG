@@ -1,41 +1,64 @@
 # LA Muni RAG — Current Program State
 
-Updated: 2026-08-01T05:24:07Z
+Updated: 2026-08-12T16:08:11Z
 
-Program status: **PARTIAL_WITH_DOCUMENTED_BLOCKERS — the public pilot remains operational, Features 089 and 090 are complete on exact green SHAs, and the Graph Harness has no READY nodes. Eleven official HTML sources were acquired, malware-scanned and extracted locally, but none was indexed or projected. Merge, managed-corpus mutation, productive identity and deployment remain human-gated.**
+Program status: **PUBLIC_READ_ONLY_COMPLETE_WITH_ENTERPRISE_BLOCKERS — the public LA Muni RAG pilot is deployed and operational on GitHub Pages at the exact Feature 091 merge SHA. Public query, domain-pack metadata and procedure guidance have a governed static-first resilience path over three official Antigua PDM-OT sources, so the public read-only experience no longer requires an always-on Cloud Run/Cloud SQL backend. The broader authenticated enterprise rollout, corpus expansion and legal/applicability review remain explicitly human-gated.**
 
-## Authoritative checkout
+## Authoritative release state
 
 ```text
-workspace_id: 601929eb-4bf6-4900-8170-c15bf3a11ea0
+repository: https://github.com/BernydotJar/LA_muni_RAG.git
 root: /workspace
-current_branch: feature/official-source-acquisition-v1
-coverage_functional_commit: 987ff78d1f7ae2ab59ce6d2658726b1bc14c5601
-acquisition_functional_commit: 79407c48361827afb94d9fa48adb8dd758c258e5
-predecessor_pull_request: 33 open
-coverage_pull_request: 34 draft_open
-acquisition_pull_request: 35 draft_open
+public_query_feature: REL-PUBLIC-QUERY-RESILIENCE-004 done
+public_query_gate: GATE-PUBLIC-QUERY-RESILIENCE-004 PASS
+functional_commit: b7dcd778c0afdc0daf603fba061914dba79d6ed4
+feature_evidence_commit: 36a9475453bcb9ec33a95930ca68d28ea8cd6257
+feature_pull_request: 38 MERGED
+feature_merge_commit: 0bed0ddadedd830432d2fba550e5241fee4bd984
+public_url: https://bernydotjar.github.io/LA_muni_RAG/
+public_build_sha: 0bed0ddadedd830432d2fba550e5241fee4bd984
+public_api_configured: true
+public_query_mode: governed static-first lexical resilience
+public_static_sources: 3 official target-jurisdiction PDM-OT PDFs
+public_static_sections: 292 page-level sections
+public_query_online_citations: 5 desktop / 5 mobile for `agua potable`
+public_query_remote_api_requests: 0 during static-first verification
+raw_pdfs_committed: 0
+npm_audit_vulnerabilities: 0
 graph_harness_framework_merge_pin: 1bebce3db35303072049233786464bb01163c98b
 graph_harness_executable_runtime: fef364bc66849b98c08d3c1dcb91caf9701027cd
-graph_harness_events: 131
-graph_harness_nodes_done: 11/11
-graph_harness_required_gates: 10/10 PASS
+graph_harness_events: 146
+graph_harness_nodes_done: 12/12
+graph_harness_required_gates: 11/11 PASS
 graph_harness_ready_nodes: 0
-graph_harness_feature_node: WS02-OFFICIAL-SOURCE-ACQUISITION-003 done
-graph_harness_feature_gate: GATE-OFFICIAL-SOURCE-ACQUISITION-003 PASS
-graph_harness_checkpoints: 6
-graph_harness_terminal_state: PARTIAL_WITH_DOCUMENTED_BLOCKERS
-official_html_acquisition: 11/16 successful; 5 blocked; 1833794 bytes; 0 indexed
-public_pages: https://bernydotjar.github.io/LA_muni_RAG/
-public_procedure: https://bernydotjar.github.io/LA_muni_RAG/procedure-workflow.html
-public_gateway: https://la-muni-rag-public-gateway-ccaqcuwgyq-uc.a.run.app
-managed_corpus_mutation_authorized: false
-indexing_authorized: false
-merge_authorized: false
-deployment_authorized: false
+graph_harness_checkpoint: public-query-resilience-v1-complete-2026-08-12
+managed_cloud_mutation_for_feature091: false
+new_billable_infrastructure_for_feature091: false
 ```
 
-`AGENTS.md` and `RTK.md` remain authoritative. The functional commits and all four push/pull-request Backend CI and Public Browser Gate runs are green. No result in this checkpoint authorizes merge, Cloud SQL mutation, indexing, deployment or destructive operations.
+PRs #33, #34, #35, #37 and #38 are merged. Feature 091 was merged only after exact-head Backend CI and Public Browser Gate succeeded. The exact `main` merge SHA then passed Backend CI run `31614967630`, Public Browser Gate run `31614967626` and Deploy GitHub Pages run `31614967625`; the Pages workflow's exact-online-artifact job also passed. Independent Chromium verification of the public URL returned HTTP 200, exact build SHA `0bed0ddadedd830432d2fba550e5241fee4bd984`, `apiConfigured=true`, five official `muniantigua.gob.gt` citations on desktop and mobile, and no remote API request for the static-first query.
+
+`AGENTS.md` and `RTK.md` remain authoritative. Dated implementation sections below are retained as historical evidence; where an older section says a PR was open, deployment was rolled back, or merge/deployment was unauthorized, that statement describes its historical checkpoint and is superseded by this 2026-08-12 release state.
+
+## Feature 091 — governed public-query resilience v1
+
+Feature 091 removes the always-on managed-infrastructure dependency from the approved public read-only pilot without pretending that a browser snapshot is a full production RAG backend. GitHub Pages carries a frozen, content-addressed projection of exactly three previously governed official Antigua PDM-OT documents. The projection contains 292 page-level sections and preserves source IDs, official URLs, page numbers and source hashes; the raw PDFs remain outside Git.
+
+For Pages, the API bridge is `static-first` for public query, active domain-pack metadata and procedure guidance. Query retrieval is deterministic lexical matching only. Public responses expose official citations and explicit limitations; procedure steps are marked only as `inferred_for_review` or `missing_evidence`. The static path does not claim embeddings, semantic search, current legal vigencia, server-side audit, identity, institutional approval or legal correctness. Remote-first integrations retain the managed gateway behavior and only use the static fallback for transport failures or HTTP 502/503/504; meaningful 4xx, 429 and 500 responses are preserved.
+
+The security gate also upgraded `pdfjs-dist` from 6.1.200 to 6.2.108 and resolved `fast-uri` 3.1.5. `npm audit` reports zero vulnerabilities. Exact governed PDF bytes were reacquired outside Git. The full extraction-worker JSON differs only in `parserVersion`; after removing that metadata field, worker output is identical and page numbers/text are unchanged for all three PDFs. Clean detached verification of functional commit `b7dcd778c0afdc0daf603fba061914dba79d6ed4` passed 1,078 tests with 1,076 pass, zero failures and two environment skips, plus typecheck, build, static projection verification, Pages artifact verification, 16/16 public browser tests, Graph Harness validation and zero dependency vulnerabilities.
+
+The final Graph Harness gate `GATE-PUBLIC-QUERY-RESILIENCE-004` contains all seven required evidence kinds: source reacquisition, static projection, browser smoke, adversarial review, independent regression, remote CI and online Pages verification. It passed before the node transitioned `running -> review -> done`, and checkpoint `public-query-resilience-v1-complete-2026-08-12` records the exact deployed SHA and workflow IDs.
+
+## Remaining enterprise / broader-go-live blockers
+
+These items do **not** block the completed public read-only Feature 091 surface, but they still block any claim that the entire enterprise/authenticated platform is production-ready:
+
+- Productive identity-provider selection, registration, MFA/recovery/access-review operations and the twelve productive authenticated journeys remain incomplete; the productive matrix remains `0/12`.
+- Five official portals still block controlled acquisition of substantive bytes through challenge/403/shell behavior; no search-engine cache or challenge page is accepted as authoritative source content.
+- Seven acquired municipal scanned PDFs remain excluded from retrieval pending an approved Spanish OCR accuracy, page-traceability and human-review gate.
+- Broader managed-corpus indexing, legal vigencia/applicability review, Cloud SQL lifecycle changes and enterprise go-live remain separate human-gated decisions.
+- The managed public gateway may be stopped or unavailable. Feature 091 deliberately does not require it for the public static-first read-only query path.
 
 ## Features 089–090 — official source coverage and governed acquisition
 

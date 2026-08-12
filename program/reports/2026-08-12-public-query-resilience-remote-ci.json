@@ -1,0 +1,78 @@
+{
+  "schemaVersion": "1.0.0",
+  "feature": "091-public-query-resilience-v1",
+  "observedAt": "2026-08-12T16:07:31.007Z",
+  "pullRequest": {
+    "number": 38,
+    "state": "MERGED",
+    "headSha": "36a9475453bcb9ec33a95930ca68d28ea8cd6257",
+    "mergeSha": "0bed0ddadedd830432d2fba550e5241fee4bd984"
+  },
+  "exactHeadChecks": [
+    {
+      "conclusion": "success",
+      "createdAt": "2026-08-12T15:44:10Z",
+      "databaseId": 31613918016,
+      "event": "pull_request",
+      "headSha": "36a9475453bcb9ec33a95930ca68d28ea8cd6257",
+      "name": "Backend CI",
+      "status": "completed",
+      "updatedAt": "2026-08-12T15:54:31Z",
+      "url": "https://github.com/BernydotJar/LA_muni_RAG/actions/runs/31613918016"
+    },
+    {
+      "conclusion": "success",
+      "createdAt": "2026-08-12T15:44:10Z",
+      "databaseId": 31613917961,
+      "event": "pull_request",
+      "headSha": "36a9475453bcb9ec33a95930ca68d28ea8cd6257",
+      "name": "Public Browser Gate",
+      "status": "completed",
+      "updatedAt": "2026-08-12T15:45:55Z",
+      "url": "https://github.com/BernydotJar/LA_muni_RAG/actions/runs/31613917961"
+    }
+  ],
+  "exactMainChecks": [
+    {
+      "conclusion": "success",
+      "createdAt": "2026-08-12T15:55:54Z",
+      "databaseId": 31614967630,
+      "event": "push",
+      "headSha": "0bed0ddadedd830432d2fba550e5241fee4bd984",
+      "name": "Backend CI",
+      "status": "completed",
+      "updatedAt": "2026-08-12T16:05:50Z",
+      "url": "https://github.com/BernydotJar/LA_muni_RAG/actions/runs/31614967630"
+    },
+    {
+      "conclusion": "success",
+      "createdAt": "2026-08-12T15:55:54Z",
+      "databaseId": 31614967626,
+      "event": "push",
+      "headSha": "0bed0ddadedd830432d2fba550e5241fee4bd984",
+      "name": "Public Browser Gate",
+      "status": "completed",
+      "updatedAt": "2026-08-12T15:58:18Z",
+      "url": "https://github.com/BernydotJar/LA_muni_RAG/actions/runs/31614967626"
+    },
+    {
+      "conclusion": "success",
+      "createdAt": "2026-08-12T15:55:54Z",
+      "databaseId": 31614967625,
+      "event": "push",
+      "headSha": "0bed0ddadedd830432d2fba550e5241fee4bd984",
+      "name": "Deploy GitHub Pages",
+      "status": "completed",
+      "updatedAt": "2026-08-12T15:58:16Z",
+      "url": "https://github.com/BernydotJar/LA_muni_RAG/actions/runs/31614967625"
+    }
+  ],
+  "assertions": {
+    "prHeadBackendCiSuccess": true,
+    "prHeadPublicBrowserGateSuccess": true,
+    "mainBackendCiSuccess": true,
+    "mainPublicBrowserGateSuccess": true,
+    "mainPagesDeployAndOnlineVerificationSuccess": true
+  },
+  "status": "PASS"
+}

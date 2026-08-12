@@ -1,0 +1,63 @@
+{
+  "schemaVersion": "1.0.0",
+  "feature": "091-public-query-resilience-v1",
+  "observedAt": "2026-08-12T16:07:31.007Z",
+  "deployedCommit": "0bed0ddadedd830432d2fba550e5241fee4bd984",
+  "publicUrl": "https://bernydotjar.github.io/LA_muni_RAG/",
+  "httpStatus": 200,
+  "buildMetadata": {
+    "schemaVersion": "1.0.0",
+    "buildSha": "0bed0ddadedd830432d2fba550e5241fee4bd984",
+    "apiConfigured": true
+  },
+  "githubPagesRun": {
+    "databaseId": 31614967625,
+    "status": "completed",
+    "conclusion": "success",
+    "verifyExactOnlineArtifact": "success"
+  },
+  "independentVerifier": {
+    "status": "pass",
+    "baseUrl": "https://bernydotjar.github.io/LA_muni_RAG/",
+    "expectedBuildSha": "0bed0ddadedd830432d2fba550e5241fee4bd984",
+    "waitSeconds": 60,
+    "scenarios": [
+      {
+        "name": "desktop",
+        "status": "pass",
+        "buildSha": "0bed0ddadedd830432d2fba550e5241fee4bd984",
+        "apiConfigured": true,
+        "staticQueryVerified": true,
+        "citationCount": 5,
+        "finalUrl": "https://bernydotjar.github.io/LA_muni_RAG/index.html?verify=0bed0ddadedd830432d2fba550e5241fee4bd984"
+      },
+      {
+        "name": "mobile",
+        "status": "pass",
+        "buildSha": "0bed0ddadedd830432d2fba550e5241fee4bd984",
+        "apiConfigured": true,
+        "staticQueryVerified": true,
+        "citationCount": 5,
+        "finalUrl": "https://bernydotjar.github.io/LA_muni_RAG/index.html?verify=0bed0ddadedd830432d2fba550e5241fee4bd984"
+      }
+    ]
+  },
+  "assertions": {
+    "exactBuildSha": true,
+    "apiConfigured": true,
+    "desktopStaticQueryVerified": true,
+    "mobileStaticQueryVerified": true,
+    "desktopCitationCount": 5,
+    "mobileCitationCount": 5,
+    "staticQueryRemoteApiRequests": 0,
+    "officialCitationHost": "muniantigua.gob.gt"
+  },
+  "boundaries": {
+    "cloudRunAvailabilityRequired": false,
+    "semanticSearchClaim": false,
+    "serverAuditClaimForStatic": false,
+    "legalCorrectnessClaim": false,
+    "newBillableInfrastructure": false
+  },
+  "status": "PASS"
+}
