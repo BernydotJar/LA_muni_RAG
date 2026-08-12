@@ -31,7 +31,9 @@
 
   const configuredApiUrl = sanitizeApiBaseUrl(rawConfiguredApiUrl);
   const configured = Boolean(configuredApiUrl);
+  const fallbackMode = scriptTag?.getAttribute("data-static-fallback") === "static-first" ? "static-first" : "remote-first";
   window.__LA_MUNI_API_CONFIG__ = Object.freeze({ configured, baseUrl: configuredApiUrl || null });
+  const staticFallback = window.__LA_MUNI_PUBLIC_FALLBACK__;
 
   const nativeFetch = window.fetch.bind(window);
   const requestUrl = (input) => {
@@ -76,6 +78,17 @@
     };
   };
 
+  const fallbackRequest = (route, url, method, init) => staticFallback?.available === true
+    ? staticFallback.handle({
+        targetPath: route.targetPath,
+        requestUrl: url,
+        method,
+        body: method === "POST" && typeof init?.body === "string" ? init.body : "",
+      })
+    : null;
+
+  const shouldUseStaticFallback = (response) => [502, 503, 504].includes(response.status);
+
   window.fetch = async (input, init) => {
     const url = requestUrl(input);
     if (!url) return nativeFetch(input, init);
@@ -85,7 +98,20 @@
     if (!route?.methods.includes(method)) return nativeFetch(input, init);
     if (!configured) return unavailableResponse();
 
+    if (fallbackMode === "static-first") {
+      const fallback = await fallbackRequest(route, url, method, init);
+      if (fallback && fallback.status !== 503) return fallback;
+    }
+
     const targetUrl = new URL(route.targetPath + url.search, configuredApiUrl).href;
-    return nativeFetch(targetUrl, safeProxyInit(method, init));
+    try {
+      const response = await nativeFetch(targetUrl, safeProxyInit(method, init));
+      if (!shouldUseStaticFallback(response)) return response;
+      return await fallbackRequest(route, url, method, init) ?? response;
+    } catch (error) {
+      const fallback = await fallbackRequest(route, url, method, init);
+      if (fallback) return fallback;
+      throw error;
+    }
   };
 })();

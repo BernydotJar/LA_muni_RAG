@@ -54,7 +54,7 @@ describe("isolated raw PDF extraction", () => {
     assert.equal(document.sections[0]?.pageStart, 1);
     assert.equal(document.metadata.extractor, "pdfjs_isolated_process_v1");
     assert.equal(document.metadata.parser, "pdfjs-dist");
-    assert.match(String(document.metadata.parserVersion), /^6\.1\.200$/);
+    assert.match(String(document.metadata.parserVersion), /^6\.2\.108$/);
   });
 
   it("maps malformed and text-free PDFs to stable non-retryable failures", async () => {

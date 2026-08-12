@@ -48,7 +48,18 @@ const bridgeHarness = `<!doctype html>
 <head><meta charset="utf-8"><title>Pages bridge browser harness</title><link rel="icon" href="/favicon.svg" type="image/svg+xml"></head>
 <body>
   <main><h1>Pages bridge browser harness</h1></main>
+  <script src="/public-corpus-fallback.js"></script>
   <script src="/pages-api-bridge.js" data-api-url="http://127.0.0.1:${port}/mock-base/"></script>
+</body>
+</html>`;
+
+const fallbackHarness = `<!doctype html>
+<html lang="es">
+<head><meta charset="utf-8"><title>Pages static-first fallback harness</title><link rel="icon" href="/favicon.svg" type="image/svg+xml"></head>
+<body>
+  <main><h1>Pages static-first fallback harness</h1></main>
+  <script src="/public-corpus-fallback.js"></script>
+  <script src="/pages-api-bridge.js" data-static-fallback="static-first" data-api-url="http://127.0.0.1:${port}/mock-base/"></script>
 </body>
 </html>`;
 
@@ -71,7 +82,29 @@ const server = createServer(async (request, response) => {
       return;
     }
 
+    if (request.method === "GET" && url.pathname === "/__playwright__/fallback-harness.html") {
+      response.writeHead(200, {
+        "content-type": "text/html; charset=utf-8",
+        "content-length": Buffer.byteLength(fallbackHarness),
+        "cache-control": "no-store",
+      });
+      response.end(fallbackHarness);
+      return;
+    }
+
     if (url.pathname === "/api/public/v1/query") {
+      if (url.searchParams.get("upstream") === "unavailable") {
+        sendJson(response, 503, { error: { code: "service_unavailable" } });
+        return;
+      }
+      if (url.searchParams.get("upstream") === "rate-limited") {
+        sendJson(response, 429, { error: { code: "rate_limited" } });
+        return;
+      }
+      if (url.searchParams.get("upstream") === "server-error") {
+        sendJson(response, 500, { error: { code: "upstream_internal_error" } });
+        return;
+      }
       if (request.method === "GET") {
         sendJson(response, 200, {
           native: true,
@@ -107,6 +140,10 @@ const server = createServer(async (request, response) => {
     }
 
     if (url.pathname === "/api/public/v1/procedure" || url.pathname === "/api/public/v1/domain-pack") {
+      if (url.searchParams.get("upstream") === "unavailable") {
+        sendJson(response, 503, { error: { code: "service_unavailable" } });
+        return;
+      }
       if (request.method !== "GET") {
         sendJson(response, 405, { error: { code: "method_not_allowed" } });
         return;

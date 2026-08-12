@@ -115,6 +115,29 @@ for (const [name, contextOptions] of scenarios) {
       assert.equal(await widget.locator("#muni-send").isDisabled(), true, `${name}: fail-closed send control is enabled`);
       assert.deepEqual(apiRequests, [], `${name}: unconfigured public page emitted an API request`);
     }
+    let staticQueryVerified = false;
+    let citationCount = 0;
+    if (metadata.apiConfigured) {
+      const fallbackAvailable = await page.evaluate(() => window.__LA_MUNI_PUBLIC_FALLBACK__?.available === true);
+      assert.equal(fallbackAvailable, true, `${name}: configured Pages release is missing the governed static fallback`);
+      const input = widget.locator("#muni-input");
+      const send = widget.locator("#muni-send");
+      assert.equal(await input.isDisabled(), false, `${name}: configured public query input is disabled`);
+      assert.equal(await send.isDisabled(), false, `${name}: configured public query send control is disabled`);
+      await input.fill("agua potable");
+      await send.click();
+      const citations = widget.locator(".muni-citation");
+      await citations.first().waitFor({ state: "visible", timeout: 15_000 });
+      citationCount = await citations.count();
+      assert.ok(citationCount > 0, `${name}: static-first public query returned no visible citations`);
+      const sourceHref = await citations.first().locator('[data-source-action="open-source"]').getAttribute("href");
+      assert.ok(sourceHref, `${name}: first public citation has no official source link`);
+      const sourceUrl = new URL(sourceHref);
+      assert.equal(sourceUrl.protocol, "https:", `${name}: first public citation is not HTTPS`);
+      assert.equal(sourceUrl.hostname, "muniantigua.gob.gt", `${name}: first public citation is not from the target municipality`);
+      assert.deepEqual(apiRequests, [], `${name}: static-first public query unexpectedly reached a remote API`);
+      staticQueryVerified = true;
+    }
 
     assert.deepEqual(runtimeErrors, [], `${name}: browser runtime errors detected`);
     assert.deepEqual(failedRequests, [], `${name}: failed network requests detected`);
@@ -123,6 +146,8 @@ for (const [name, contextOptions] of scenarios) {
       status: "pass",
       buildSha: state.buildSha,
       apiConfigured: metadata.apiConfigured,
+      staticQueryVerified,
+      citationCount,
       finalUrl: page.url(),
     });
     await context.close();
