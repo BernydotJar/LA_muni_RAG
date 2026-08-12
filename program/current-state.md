@@ -1,8 +1,8 @@
 # LA Muni RAG — Current Program State
 
-Updated: 2026-08-12T16:08:11Z
+Updated: 2026-08-12T16:22:57Z
 
-Program status: **PUBLIC_READ_ONLY_COMPLETE_WITH_ENTERPRISE_BLOCKERS — the public LA Muni RAG pilot is deployed and operational on GitHub Pages at the exact Feature 091 merge SHA. Public query, domain-pack metadata and procedure guidance have a governed static-first resilience path over three official Antigua PDM-OT sources, so the public read-only experience no longer requires an always-on Cloud Run/Cloud SQL backend. The broader authenticated enterprise rollout, corpus expansion and legal/applicability review remain explicitly human-gated.**
+Program status: **PUBLIC_READ_ONLY_COMPLETE_WITH_ENTERPRISE_BLOCKERS — the public LA Muni RAG pilot is deployed and operational on GitHub Pages; the Feature 091 runtime was independently verified at its exact merge SHA. Public query, domain-pack metadata and procedure guidance have a governed static-first resilience path over three official Antigua PDM-OT sources, so the public read-only experience no longer requires an always-on Cloud Run/Cloud SQL backend. The broader authenticated enterprise rollout, corpus expansion and legal/applicability review remain explicitly human-gated.**
 
 ## Authoritative release state
 
@@ -16,7 +16,8 @@ feature_evidence_commit: 36a9475453bcb9ec33a95930ca68d28ea8cd6257
 feature_pull_request: 38 MERGED
 feature_merge_commit: 0bed0ddadedd830432d2fba550e5241fee4bd984
 public_url: https://bernydotjar.github.io/LA_muni_RAG/
-public_build_sha: 0bed0ddadedd830432d2fba550e5241fee4bd984
+feature_runtime_verified_sha: 0bed0ddadedd830432d2fba550e5241fee4bd984
+latest_public_build_sha: generated from current `main`; verify `build-metadata.json`
 public_api_configured: true
 public_query_mode: governed static-first lexical resilience
 public_static_sources: 3 official target-jurisdiction PDM-OT PDFs
@@ -36,7 +37,7 @@ managed_cloud_mutation_for_feature091: false
 new_billable_infrastructure_for_feature091: false
 ```
 
-PRs #33, #34, #35, #37 and #38 are merged. Feature 091 was merged only after exact-head Backend CI and Public Browser Gate succeeded. The exact `main` merge SHA then passed Backend CI run `31614967630`, Public Browser Gate run `31614967626` and Deploy GitHub Pages run `31614967625`; the Pages workflow's exact-online-artifact job also passed. Independent Chromium verification of the public URL returned HTTP 200, exact build SHA `0bed0ddadedd830432d2fba550e5241fee4bd984`, `apiConfigured=true`, five official `muniantigua.gob.gt` citations on desktop and mobile, and no remote API request for the static-first query.
+Feature 091 PR #38 and release-evidence PR #39 are merged; earlier program PRs #33, #34, #35 and #37 are also merged. Feature 091 was merged only after exact-head Backend CI and Public Browser Gate succeeded. The Feature 091 code merge SHA then passed Backend CI run `31614967630`, Public Browser Gate run `31614967626` and Deploy GitHub Pages run `31614967625`; the Pages workflow's exact-online-artifact job also passed. Independent Chromium verification of that runtime release returned HTTP 200, exact build SHA `0bed0ddadedd830432d2fba550e5241fee4bd984`, `apiConfigured=true`, five official `muniantigua.gob.gt` citations on desktop and mobile, and no remote API request for the static-first query. Later documentation/evidence merges may produce a different Pages build SHA without changing the verified Feature 091 runtime; the current deployed build SHA is authoritative in `build-metadata.json`.
 
 `AGENTS.md` and `RTK.md` remain authoritative. Dated implementation sections below are retained as historical evidence; where an older section says a PR was open, deployment was rolled back, or merge/deployment was unauthorized, that statement describes its historical checkpoint and is superseded by this 2026-08-12 release state.
 
