@@ -33,17 +33,17 @@ describe("procedure case workspace", () => {
     assert.match(source, /blocked/);
     assert.match(source, /ready_for_review/);
     assert.match(source, /completed/);
-    assert.match(source, /Completado operativo/);
-    assert.match(source, /no evidencia legal/i);
-    assert.match(source, /no equivale a aprobación/i);
-    assert.match(source, /recepción, liquidación, pago o cierre institucional/i);
+    assert.match(source, /Marcado como completado/);
+    assert.match(source, /no sustituye una revisión legal o institucional/i);
+    assert.match(source, /no confirma aprobación/i);
+    assert.match(source, /recepción, liquidación, pago o cierre/i);
   });
 
   it("tracks documents, user-entered assignees, notes, and append-only audit events", async () => {
     const source = await readSource("public/procedure-case-workspace.js");
 
     assert.match(source, /operationalAssignee/);
-    assert.match(source, /Ingresado por el usuario; no es autoridad extraída/);
+    assert.match(source, /Dato ingresado por el usuario; no proviene de una fuente/);
     assert.match(source, /DOCUMENT_STATES/);
     assert.match(source, /missing/);
     assert.match(source, /requested/);
@@ -73,7 +73,7 @@ describe("procedure case workspace", () => {
     assert.match(source, /div\.textContent = String\(value \?\? ""\)/);
     assert.match(source, /esc\(currentWorkspace\.workflowSnapshot\.title\)/);
     assert.match(source, /esc\(step\.title\)/);
-    assert.match(source, /No ingreses datos sensibles/);
-    assert.match(source, /personales, confidenciales, reservados, credenciales o secretos/);
+    assert.match(source, /No ingreses datos sensibles|No ingreses datos personales/);
+    assert.match(source, /datos personales, credenciales, secretos ni información reservada/);
   });
 });

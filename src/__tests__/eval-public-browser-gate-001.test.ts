@@ -37,7 +37,7 @@ describe("EVAL-PUBLIC-BROWSER-GATE-001", () => {
     const test = await read("tests/browser/public-pages.spec.ts");
     assert.match(test, /scrollWidth > window\.innerWidth/);
     assert.match(test, /Saltar al contenido/);
-    assert.match(test, /Servicio no configurado/);
+    assert.match(test, /Consulta no disponible/);
     assert.match(test, /reducedMotion: "reduce"/);
     assert.match(test, /la-muni-rag:training-progress:v1/);
     assert.match(test, /HTTP 503/);

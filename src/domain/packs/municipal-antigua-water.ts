@@ -1,6 +1,6 @@
 import type { DomainWorkflowTemplate, DomainWorkflowTemplateStep } from "../types.js";
 
-export const WATER_PENDING_SOURCE = "Cobertura documental pendiente para este tenant.";
+export const WATER_PENDING_SOURCE = "Todavía falta una fuente que confirme este punto.";
 
 type WaterCategoryTuple = readonly [title: string, focus: string, patterns: string];
 
@@ -263,8 +263,8 @@ const researchStep = (category: (typeof WATER_RESEARCH_CATEGORIES)[number]): Dom
 
 export const potableWaterWorkflowTemplate: DomainWorkflowTemplate = {
   workflowType: "potable_water_project",
-  title: "Flujo de investigación para llevar agua potable a una comunidad",
+  title: "Guía de investigación para llevar agua potable a una comunidad",
   defaultSummary: "Organicé 47 categorías configurables para investigar un proyecto de agua potable. El flujo distingue pasos respaldados, inferencias para revisión y cobertura documental pendiente; la plantilla no confirma por sí sola requisitos, responsables, sistemas ni plazos.",
-  validationWarning: "Borrador de investigación Antigua-first. No ejecutar ni aprobar el proyecto con base exclusiva en esta plantilla; cada paso requiere evidencia citable, vigencia, jurisdicción y revisión humana.",
+  validationWarning: "Borrador de investigación para Antigua Guatemala. No ejecutes ni apruebes el proyecto usando sólo esta plantilla; cada paso necesita una fuente citable, revisión de vigencia y jurisdicción, y validación humana.",
   steps: WATER_RESEARCH_CATEGORIES.map(researchStep),
 };

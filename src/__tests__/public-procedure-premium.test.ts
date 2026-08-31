@@ -15,8 +15,8 @@ describe("public procedure premium design system", () => {
     assert.match(html, /procedure-command-title/);
     assert.match(html, /class="procedure-field"/);
     assert.match(html, /procedure-runtime-status/);
-    assert.match(css, /--procedure-action: #67e8f9/);
-    assert.match(css, /--procedure-radius-lg: 28px/);
+    assert.match(css, /--procedure-action: #e2aab7/);
+    assert.match(css, /--procedure-radius-lg: 22px/);
     assert.match(css, /procedure-surface-raised/);
   });
 
@@ -53,8 +53,8 @@ describe("public procedure premium design system", () => {
     assert.match(html, /Ley de Contrataciones del Estado/);
     assert.match(html, /Decreto 57-92/);
     assert.match(html, /congreso\.gob\.gt\/buscador_decretos\/ley_de_contrataciones_del_estado/);
-    assert.match(html, /todavía debe incorporarse al corpus gobernado/);
-    assert.match(html, /no presume vigencia, modalidad, monto ni plazo/i);
+    assert.match(html, /todavía no forma parte de los documentos que este buscador puede citar/);
+    assert.match(html, /no da por hecho su vigencia, modalidad, monto o plazo/i);
   });
 
 });

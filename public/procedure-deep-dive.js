@@ -30,8 +30,8 @@
       .depth-control{display:flex;gap:6px;padding:5px;border:1px solid var(--line);border-radius:16px;background:rgba(255,255,255,.035)}
       .depth-control label{display:flex;align-items:center;gap:8px;padding:0 11px;border-radius:12px;color:var(--muted);font-size:12px;font-weight:850;cursor:pointer}
       .depth-control input{min-height:auto;accent-color:var(--cyan)}
-      .deep-dive-banner,.dependency-map{padding:14px;border:1px solid rgba(34,211,238,.2);border-radius:18px;background:rgba(34,211,238,.045)}
-      .deep-dive-banner{margin-top:14px;color:#bae6fd;font-size:13px;line-height:1.5}
+      .deep-dive-banner,.dependency-map{padding:14px;border:1px solid rgba(226,170,183,.20);border-radius:18px;background:rgba(115,23,41,.045)}
+      .deep-dive-banner{margin-top:14px;color:#ead5da;font-size:13px;line-height:1.5}
       .dependency-map{display:grid;gap:8px}
       .dependency-item{padding:10px 12px;border:1px solid rgba(255,255,255,.08);border-radius:14px;background:rgba(255,255,255,.03);color:var(--muted);font-size:12px;line-height:1.45}
       .evidence-badge{display:inline-flex;align-items:center;min-height:28px;padding:0 10px;border-radius:999px;border:1px solid var(--line);font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:.04em}
@@ -42,8 +42,8 @@
       .step-supported-fields{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:12px}
       .supported-field{padding:10px;border:1px solid rgba(255,255,255,.08);border-radius:14px;background:rgba(255,255,255,.03)}
       .supported-field b{display:block;margin-bottom:5px;font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:var(--cyan)}
-      details.citation-dossier{margin-top:8px;border:1px solid rgba(34,211,238,.15);border-radius:14px;background:rgba(34,211,238,.035)}
-      details.citation-dossier summary{cursor:pointer;padding:10px 12px;color:#bae6fd;font-size:12px;font-weight:800}
+      details.citation-dossier{margin-top:8px;border:1px solid rgba(226,170,183,.15);border-radius:14px;background:rgba(115,23,41,.035)}
+      details.citation-dossier summary{cursor:pointer;padding:10px 12px;color:#ead5da;font-size:12px;font-weight:800}
       .citation-dossier-body{padding:0 12px 12px;color:var(--muted);font-size:12px;line-height:1.5}
       @media(max-width:820px){.step-supported-fields{grid-template-columns:1fr}.depth-control{grid-column:1/-1}}
     `;
@@ -56,10 +56,10 @@
     const wrapper = document.createElement("div");
     wrapper.className = "depth-control";
     wrapper.setAttribute("role", "group");
-    wrapper.setAttribute("aria-label", "Profundidad del flujo");
+    wrapper.setAttribute("aria-label", "Nivel de detalle");
     wrapper.innerHTML = `
       <label><input name="procedure-depth" type="radio" value="overview" checked>Resumen</label>
-      <label><input name="procedure-depth" type="radio" value="deep_dive">Ver flujo completo</label>
+      <label><input name="procedure-depth" type="radio" value="deep_dive">Ver más detalle</label>
     `;
     grid.insertBefore(wrapper, grid.lastElementChild);
   };
@@ -71,8 +71,8 @@
         ...step,
         evidenceStatus: citations.length ? "supported" : "insufficient",
         evidenceStatement: citations.length
-          ? "Paso respaldado por evidencia demostrativa visible; requiere validación contra documentos oficiales antes de ejecutar."
-          : "El corpus activo aún no contiene una cita aplicable para este paso. No se presenta como requisito confirmado.",
+          ? "Este paso tiene una fuente visible, pero debes validarla contra los documentos oficiales aplicables antes de actuar."
+          : "Los documentos disponibles todavía no contienen una cita que confirme este paso. Por eso no se presenta como un requisito confirmado.",
         dependsOn: index === 0 ? [] : [index],
       };
     });
@@ -121,13 +121,13 @@
   const evidenceLabel = (status) => status === "supported" ? "Respaldado" : status === "inferred" ? "Inferido" : "Cobertura pendiente";
   const renderCitationDossiers = (citations) => {
     const values = asArray(citations);
-    if (!values.length) return '<p class="step-evidence-statement">El corpus activo aún no contiene una cita aplicable para este paso. No se presenta como requisito confirmado.</p>';
+    if (!values.length) return '<p class="step-evidence-statement">Los documentos disponibles todavía no contienen una cita que confirme este paso. Por eso no se presenta como un requisito confirmado.</p>';
     return values.map((citation) => `
       <details class="citation-dossier">
         <summary>${esc(citation.citationLabel || citation.sourceType || "Fuente")}</summary>
         <div class="citation-dossier-body">
           <p>${esc(citation.excerpt || "Extracto no disponible")}</p>
-          <p><strong>Autoridad:</strong> ${esc(citation.authorityClass || "no clasificada")} · <strong>Uso:</strong> ${esc(citation.evidenceUse || "cited_text")}</p>
+          <p><strong>Tipo de fuente:</strong> ${esc(citation.authorityClass || "no clasificada")} · <strong>Uso en esta vista:</strong> ${esc(citation.evidenceUse || "texto citado")}</p>
         </div>
       </details>`).join("");
   };
@@ -143,10 +143,10 @@
     ].filter(([, value]) => Boolean(value));
     if (fields.length) card.insertAdjacentHTML("beforeend", `<div class="step-supported-fields">${fields.map(([label, value]) => `<div class="supported-field"><b>${esc(label)}</b>${esc(value)}</div>`).join("")}</div>`);
     const statement = step.evidenceStatement || (status === "inferred"
-      ? "Este paso es inferido por relación entre documentos y requiere validación humana."
+      ? "Este paso se deduce de la relación entre documentos y todavía requiere revisión humana."
       : status === "supported"
-        ? "Paso respaldado por evidencia coincidente."
-        : "El corpus activo aún no contiene una cita aplicable para este paso. No se presenta como requisito confirmado.");
+        ? "Este paso tiene una fuente que coincide con la información mostrada."
+        : "Los documentos disponibles todavía no contienen una cita que confirme este paso. Por eso no se presenta como un requisito confirmado.");
     card.insertAdjacentHTML("beforeend", `<p class="step-evidence-statement">${esc(statement)}</p>`);
     card.insertAdjacentHTML("beforeend", `<div class="citation-dossiers">${renderCitationDossiers(step.sourceEvidence || step.legalBasis)}</div>`);
   };
@@ -154,7 +154,7 @@
   const renderDependencies = (workflow) => {
     const dependencies = asArray(workflow.dependencies);
     if (!dependencies.length) return "";
-    return `<section><h2 class="section-title">Dependencias y decisiones</h2><div class="dependency-map">${dependencies.map((dependency) => `<div class="dependency-item"><strong>Paso ${esc(dependency.fromStep)} → ${esc(dependency.toStep)}</strong> · ${esc(dependency.statement || dependency.type || "Dependencia")}</div>`).join("")}</div></section>`;
+    return `<section><h2 class="section-title">Qué pasos dependen de otros</h2><div class="dependency-map">${dependencies.map((dependency) => `<div class="dependency-item"><strong>Paso ${esc(dependency.fromStep)} → ${esc(dependency.toStep)}</strong> · ${esc(dependency.statement || dependency.type || "Dependencia")}</div>`).join("")}</div></section>`;
   };
 
   window.addEventListener(EVENT_NAME, (event) => {
@@ -169,7 +169,7 @@
     const supportedStepCount = Number(metadata.supportedStepCount || 0);
     const inferredStepCount = Number(metadata.inferredStepCount || 0);
     const pendingStepCount = Number(metadata.pendingStepCount || 0);
-    header.insertAdjacentHTML("beforeend", `<div class="deep-dive-banner"><strong>Cobertura documental: ${esc(coveragePercent)}%.</strong> ${esc(supportedStepCount)} pasos respaldados, ${esc(inferredStepCount)} inferidos y ${esc(pendingStepCount)} pendientes. Cada paso pendiente muestra la fuente requerida para confirmarlo.</div>`);
+    header.insertAdjacentHTML("beforeend", `<div class="deep-dive-banner"><strong>Respaldo documental: ${esc(coveragePercent)}%.</strong> ${esc(supportedStepCount)} pasos tienen fuente, ${esc(inferredStepCount)} requieren revisión y ${esc(pendingStepCount)} siguen pendientes. Cada paso pendiente indica qué fuente hace falta para confirmarlo.</div>`);
     asArray(workflow.steps).forEach((step, index) => {
       const card = shell.querySelectorAll(".procedure-step-card")[index];
       if (card) enhanceStep(card, step);

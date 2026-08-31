@@ -31,7 +31,7 @@ test("homepage is responsive, keyboard reachable, and assistant fails closed", a
   await expect(page).toHaveTitle(/LA Muni RAG/);
   await expect(page.locator("main#contenido")).toBeVisible();
   await expect(page.getByRole("navigation", { name: "Navegación principal" })).toBeVisible();
-  await expect(page.getByRole("heading", { level: 1 })).toContainText("Consulta pública. Sin caja negra.");
+  await expect(page.getByRole("heading", { level: 1 })).toContainText("Pregunta sobre documentos municipales. Revisa las fuentes.");
 
   const hasHorizontalOverflow = await page.evaluate(
     () => document.documentElement.scrollWidth > window.innerWidth + 1
@@ -63,7 +63,7 @@ test("homepage is responsive, keyboard reachable, and assistant fails closed", a
   await expect(widgetWindow).toHaveAttribute("role", "dialog");
   await expect(widgetWindow).toBeFocused();
   await expect(widgetBubble).toHaveAttribute("aria-expanded", "true");
-  await expect(widget.locator(".muni-header-status")).toHaveText("Servicio no configurado");
+  await expect(widget.locator(".muni-header-status")).toHaveText("Consulta no disponible");
   await expect(widget.locator("#muni-input")).toBeDisabled();
   await expect(widget.locator("#muni-send")).toBeDisabled();
   expect(await widget.getAttribute("data-api-configured")).toBe("false");
@@ -99,6 +99,78 @@ test("homepage reflows at 320 CSS pixels with usable primary targets", async ({ 
 });
 
 
+test("assistant fits 320 CSS pixels and reveals sources only on request", async ({ page }) => {
+  const requests = apiRequests(page);
+  await page.setViewportSize({ width: 320, height: 800 });
+  await page.goto("/__playwright__/configured-product.html");
+
+  await page.getByRole("button", { name: "Asistente" }).first().click();
+  const widget = page.locator("#muni-rag-widget");
+  const widgetWindow = widget.locator(".muni-window");
+  await expect(widgetWindow).toHaveClass(/visible/);
+  await expect(widget.locator(".muni-header-status")).toHaveText("Listo para buscar en documentos");
+
+  const initialLayout = await widget.evaluate((host) => {
+    const shadow = host.shadowRoot;
+    const windowEl = shadow?.querySelector(".muni-window");
+    const inputArea = shadow?.querySelector(".muni-input-area");
+    const input = shadow?.querySelector(".muni-input");
+    if (!(windowEl instanceof HTMLElement) || !(inputArea instanceof HTMLElement) || !(input instanceof HTMLElement)) {
+      throw new Error("widget layout targets missing");
+    }
+    const windowBox = windowEl.getBoundingClientRect();
+    const inputBox = input.getBoundingClientRect();
+    return {
+      windowScrollWidth: windowEl.scrollWidth,
+      windowClientWidth: windowEl.clientWidth,
+      inputAreaScrollWidth: inputArea.scrollWidth,
+      inputAreaClientWidth: inputArea.clientWidth,
+      windowLeft: windowBox.left,
+      windowRight: windowBox.right,
+      inputLeft: inputBox.left,
+      inputRight: inputBox.right,
+      viewport: window.innerWidth,
+    };
+  });
+  expect(initialLayout.windowScrollWidth).toBeLessThanOrEqual(initialLayout.windowClientWidth + 1);
+  expect(initialLayout.inputAreaScrollWidth).toBeLessThanOrEqual(initialLayout.inputAreaClientWidth + 1);
+  expect(initialLayout.windowLeft).toBeGreaterThanOrEqual(-1);
+  expect(initialLayout.windowRight).toBeLessThanOrEqual(initialLayout.viewport + 1);
+  expect(initialLayout.inputLeft).toBeGreaterThanOrEqual(initialLayout.windowLeft - 1);
+  expect(initialLayout.inputRight).toBeLessThanOrEqual(initialLayout.windowRight + 1);
+
+  await widget.locator("#muni-input").fill("agua potable");
+  await widget.locator("#muni-send").click();
+  await expect(widget.locator(".muni-answer-title").last()).toContainText(/Respuesta basada en documentos|información relacionada/i);
+  const sourceToggle = widget.locator(".muni-evidence-toggle").last();
+  const citations = widget.locator(".muni-citations").last();
+  await expect(sourceToggle).toHaveText("Ver fuentes");
+  await expect(sourceToggle).toHaveAttribute("aria-expanded", "false");
+  await expect(citations).toHaveClass(/collapsed/);
+
+  await sourceToggle.click();
+  await expect(sourceToggle).toHaveText("Ocultar fuentes");
+  await expect(sourceToggle).toHaveAttribute("aria-expanded", "true");
+  await expect(citations).not.toHaveClass(/collapsed/);
+  expect(await citations.locator(".muni-citation").count()).toBeGreaterThan(0);
+
+  const expandedOverflow = await widget.evaluate((host) => {
+    const shadow = host.shadowRoot;
+    const windowEl = shadow?.querySelector(".muni-window");
+    const messages = shadow?.querySelector(".muni-messages");
+    if (!(windowEl instanceof HTMLElement) || !(messages instanceof HTMLElement)) throw new Error("widget overflow targets missing");
+    return {
+      windowScrollWidth: windowEl.scrollWidth,
+      windowClientWidth: windowEl.clientWidth,
+      messagesScrollWidth: messages.scrollWidth,
+      messagesClientWidth: messages.clientWidth,
+    };
+  });
+  expect(expandedOverflow.windowScrollWidth).toBeLessThanOrEqual(expandedOverflow.windowClientWidth + 1);
+  expect(expandedOverflow.messagesScrollWidth).toBeLessThanOrEqual(expandedOverflow.messagesClientWidth + 1);
+  expect(requests).toEqual([]);
+});
+
 test("reduced-motion mode removes public and widget animation", async ({ page }) => {
   await page.emulateMedia({ reducedMotion: "reduce" });
   await page.goto("/index.html");
@@ -132,7 +204,7 @@ test("Academia degrades safely and stores only bounded learning progress", async
   await expect(page.locator("#training-status")).toHaveAttribute("data-state", "dependency_failure");
   await expect(page.locator("#lesson-list [role=tab]")).toHaveCount(8);
   await expect(page.locator("#lesson-content")).toBeVisible();
-  await expect(page.getByText("La API no está disponible", { exact: false })).toBeVisible();
+  await expect(page.getByText("El servicio de consulta no está disponible", { exact: false })).toBeVisible();
 
   await page.locator('input[name="knowledge"][value="citation"]').check();
   await page.getByRole("button", { name: "Revisar respuesta" }).click();
@@ -160,14 +232,14 @@ test("procedure workflow remains usable and explicit when Pages has no backend",
   const requests = apiRequests(page);
   await page.goto("/procedure-workflow.html");
 
-  await expect(page).toHaveTitle(/Flujo procedimental/);
+  await expect(page).toHaveTitle(/Guía de procedimientos/);
   await expect(page.locator("#procedure-empty")).toBeVisible();
-  await page.getByRole("button", { name: "Generar flujo" }).click();
+  await page.getByRole("button", { name: "Revisar procedimiento" }).click();
   await expect(page.locator("#procedure-error")).toHaveClass(/visible/);
   await expect(page.locator("#procedure-error")).toContainText("El servicio procedimental no está disponible temporalmente.");
   await expect(page.locator("#procedure-error")).not.toContainText("HTTP 503");
   await expect(page.locator("#procedure-runtime-status")).toHaveAttribute("data-state", "error");
-  await expect(page.getByRole("button", { name: "Generar flujo" })).toBeEnabled();
+  await expect(page.getByRole("button", { name: "Revisar procedimiento" })).toBeEnabled();
   await expect(page.locator("#procedure-workflow")).not.toHaveClass(/visible/);
   expect(requests).toEqual([]);
 });
@@ -195,7 +267,7 @@ test("configured Pages bridge falls back to the frozen public corpus when upstre
     responseLabel: "evidence_found",
     jurisdiction: "Municipio de La Antigua Guatemala, Sacatepéquez, Guatemala",
   });
-  expect(query.body.meta.limitations.join(" ")).toMatch(/proyección pública.*léxica|léxica.*proyección pública/i);
+  expect(query.body.meta.limitations.join(" ")).toMatch(/proyección pública.*compara palabras y frases|compara palabras y frases.*proyección pública/i);
   expect(query.body.citations.length).toBeGreaterThan(0);
   expect(query.body.citations.every((citation: { sourceUrl?: string; pageStart?: number }) =>
     citation.sourceUrl?.startsWith("https://muniantigua.gob.gt/") && Number.isInteger(citation.pageStart)

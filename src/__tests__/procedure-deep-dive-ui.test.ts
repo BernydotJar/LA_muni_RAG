@@ -21,7 +21,7 @@ describe("procedure deep-dive UI", () => {
     assert.match(source, /procedure-depth/);
     assert.match(source, /value="overview" checked/);
     assert.match(source, /value="deep_dive"/);
-    assert.match(source, /Ver flujo completo/);
+    assert.match(source, /Ver más detalle/);
     assert.match(source, /searchParams\.set\("depth", depth\)/);
   });
 
@@ -35,16 +35,16 @@ describe("procedure deep-dive UI", () => {
     assert.match(source, /responsibleRole/);
     assert.match(source, /responsibleUnit/);
     assert.match(source, /step\.deadline/);
-    assert.match(source, /El corpus activo aún no contiene una cita aplicable para este paso/);
+    assert.match(source, /Los documentos disponibles todavía no contienen una cita que confirme este paso/);
     assert.match(source, /coveragePercent/);
-    assert.match(source, /pasos respaldados/);
-    assert.match(source, /fuente requerida/);
+    assert.match(source, /pasos tienen fuente/);
+    assert.match(source, /qué fuente hace falta/);
   });
 
   it("renders dependencies and expandable escaped citations", async () => {
     const source = await readSource("public/procedure-deep-dive.js");
 
-    assert.match(source, /Dependencias y decisiones/);
+    assert.match(source, /Qué pasos dependen de otros/);
     assert.match(source, /citation-dossier/);
     assert.match(source, /<details class=/);
     assert.match(source, /div\.textContent = String\(value \?\? ""\)/);
@@ -58,6 +58,6 @@ describe("procedure deep-dive UI", () => {
     assert.match(source, /promoteDemoWorkflow/);
     assert.match(source, /payload\?\.metadata\?\.depth === "deep_dive"/);
     assert.match(source, /procedure_workflow_advisor_deep_dive_v1/);
-    assert.match(source, /requires review|requiere validación|validación contra documentos oficiales/i);
+    assert.match(source, /requiere revisión humana|debes validarla contra los documentos oficiales/i);
   });
 });

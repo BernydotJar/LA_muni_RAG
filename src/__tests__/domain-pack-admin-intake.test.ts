@@ -8,7 +8,7 @@ describe("domain pack admin intake", () => {
   it("adds a local domain-aware document intake page", async () => {
     const html = await readSource("public/domain-intake.html");
 
-    assert.match(html, /Intake documental pack-aware/);
+    assert.match(html, /Preparación de documentos/);
     assert.match(html, /input-path/);
     assert.match(html, /manifest-path/);
     assert.match(html, /source-authority-class/);
@@ -50,6 +50,6 @@ describe("domain pack admin intake", () => {
     const html = await readSource("public/procedure-workflow.html");
 
     assert.match(html, /domain-intake\.html/);
-    assert.match(html, /Intake documental/);
+    assert.match(html, /Preparar documentos/);
   });
 });

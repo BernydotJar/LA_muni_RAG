@@ -6,22 +6,23 @@ const readGlassWall = async (): Promise<string> => readFile("public/glass-wall.h
 const visibleText = (html: string): string => html.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim();
 
 describe("glass wall premium refresh", () => {
-  it("keeps the Spanish Glass Wall identity", async () => {
+  it("keeps a plain-language Spanish technical-view identity", async () => {
     const html = await readGlassWall();
 
     assert.match(html, /<html lang="es">/);
-    assert.match(html, /RAG Glass Wall/);
+    assert.match(html, /Cómo se construye una respuesta/);
     assert.match(html, /Vista técnica/);
-    assert.match(visibleText(html), /Sala de observación para recuperación documental\.?/);
-    assert.match(visibleText(html), /recuperación documental/);
+    assert.match(visibleText(html), /Observa cómo el sistema busca y prepara una respuesta/);
+    assert.match(visibleText(html), /método de búsqueda/);
   });
 
   it("adds lightweight premium homepage alignment", async () => {
     const html = await readGlassWall();
 
     assert.match(html, /Volver al inicio/);
-    assert.match(html, /Sala técnica/);
-    assert.match(html, /Sin caja negra/);
+    assert.match(html, /Vista técnica/);
+    assert.match(html, /Qué puedes inspeccionar/);
+    assert.doesNotMatch(html, /Sin caja negra/);
     assert.match(html, /glass-orb/);
     assert.match(html, /body::after/);
   });
@@ -46,7 +47,7 @@ describe("glass wall premium refresh", () => {
     assert.match(html, /id="glass-wall-status"/);
     assert.match(html, /node-not-found/);
     assert.match(html, /node-audit/);
-    assert.match(html, /No muestra prompts, credenciales/);
-    assert.match(html, /razonamiento oculto/);
+    assert.match(html, /No muestra credenciales/);
+    assert.match(html, /razonamiento privado/);
   });
 });

@@ -5,11 +5,11 @@ import { describe, it } from "node:test";
 const read = (path: string): Promise<string> => readFile(path, "utf8");
 
 describe("EVAL-PRODUCTION-PUBLIC-SURFACE-001", () => {
-  it("publishes a concise product shell with direct Assistant and Glass Wall navigation", async () => {
+  it("publishes a concise product shell with direct Assistant and plain-language technical navigation", async () => {
     const html = await read("public/index.html");
     assert.match(html, /data-open-assistant>Asistente/);
-    assert.match(html, /href="\.\/glass-wall\.html">Glass Wall/);
-    assert.match(html, /href="#instalar">Instalar/);
+    assert.match(html, /href="\.\/glass-wall\.html">Cómo funciona/);
+    assert.match(html, /href="#instalar">Integrar/);
     assert.doesNotMatch(html, /id="scroll-story"|cinematic-strip|story-card/);
     assert.doesNotMatch(html, /Experiencia con evidencia|Flujo visual|Sistema operable/);
   });
@@ -43,8 +43,8 @@ describe("EVAL-PRODUCTION-PUBLIC-SURFACE-001", () => {
 
   it("disables the unconfigured widget and removes ungrounded corpus claims", async () => {
     const widget = await read("public/widget.js");
-    assert.match(widget, /Servicio no configurado/);
-    assert.match(widget, /Consulta deshabilitada hasta configurar la API/);
+    assert.match(widget, /Consulta no disponible/);
+    assert.match(widget, /Falta conectar el servicio de búsqueda/);
     assert.match(widget, /if\(!apiConfigured\)/);
     assert.match(widget, /explicitApiUrl\.length > 0/);
     assert.doesNotMatch(widget, /Modo demo municipal/);

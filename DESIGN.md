@@ -59,12 +59,30 @@ but they must still use one dominant accent and avoid decorative rainbow color.
 - Avoid phrases such as “premium”, “demo”, “built to operate”, or “why trust us”
   in the product UI.
 
+### Plain-language public copy
+
+Public copy follows cognitive-ergonomics and psycholinguistic principles rather
+than internal architecture vocabulary. This is a usability contract, not a
+clinical neuroscience claim.
+
+- State the user task or observable benefit before a technical abstraction.
+- Do not require users to understand metaphors such as “black box” or internal
+  terms such as retrieval, intake, backfill, workflow, tenant or RBAC to use the
+  public product. Explain retained technical terms in ordinary Spanish.
+- Prefer recognition over recall: navigation and actions say what they do.
+- Keep one primary idea per block. Put diagnostic metadata and secondary search
+  controls behind progressive disclosure when they are not required for the task.
+- Say explicitly when the available documents do not contain enough information;
+  do not substitute vague “safe output” or confidence jargon.
+- Use the same user-facing term for the same action across the homepage, widget,
+  procedures and training surfaces.
+
 ## Components
 
 ### Navigation
 
-Assistant and Glass Wall are primary destinations. Academy and installation are
-secondary. Authenticated products may add Library, Procedures, Cases, Review,
+Assistant and the plain-language “Cómo funciona” technical view are primary
+destinations. Academy and integration are secondary. Authenticated products may add Library, Procedures, Cases, Review,
 Audit and Administration according to role.
 
 ### Primary action

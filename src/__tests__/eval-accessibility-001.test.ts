@@ -28,7 +28,7 @@ describe("EVAL-ACCESSIBILITY-001 — procedure training preview", () => {
     assert.match(html, /<header[^>]*class="academy-topbar"/);
     assert.match(html, /<nav[^>]+aria-label=/);
     assert.match(html, /<main id="training-main"/);
-    assert.match(html, /<aside[^>]+aria-label="Panel de evidencia/);
+    assert.match(html, /<aside[^>]+aria-label="Fuentes de esta fase/);
     assert.match(html, /id="lesson-content"[^>]+role="tabpanel"/);
     assert.match(html, /role="status"[^>]+aria-live="polite"/);
     assert.match(html, /<label[^>]+for="training-module"/);

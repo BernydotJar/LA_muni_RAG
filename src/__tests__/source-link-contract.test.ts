@@ -29,8 +29,8 @@ describe("corpus source link contract", () => {
 
     assert.match(widget, /function safeSourceHref/);
     assert.match(widget, /citation\?\.sourceUrl/);
-    assert.match(widget, /Abrir fuente/);
-    assert.match(widget, /Fuente no enlazada/);
+    assert.match(widget, /Abrir documento/);
+    assert.match(widget, /Documento sin enlace/);
     assert.doesNotMatch(widget, /PDM-OT.*\.pdf/);
   });
 

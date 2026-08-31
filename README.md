@@ -14,7 +14,7 @@ Tenant onboarding, source packs, evidence lifecycle and coverage semantics are d
 
 ## Product Surfaces
 
-- `/` — public product shell with direct Assistant and Glass Wall navigation. The assistant fails closed until a reviewed public gateway is configured.
+- `/` — public product shell with direct Assistant and “Cómo funciona” navigation. The assistant fails closed until a reviewed public gateway is configured.
 - `/procedure-training.html` — public evidence-literacy Academy.
 - `/procedure-workflow.html` — structured Procedure Workflow Advisor; production-compatible public gateway pending.
 - `/domain-intake.html` — prepares domain-aware ingestion metadata and commands; it does not upload files.

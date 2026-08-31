@@ -137,7 +137,7 @@ describe("EVAL-WATER-001", () => {
     assert.ok(workflow.steps.every((step) => !step.decisionGate));
     assert.ok(workflow.steps.every((step) => step.notes?.includes(WATER_PENDING_SOURCE)));
     assert.match(workflow.summary, /47 categorías configurables/);
-    assert.match(workflow.validationWarning, /Borrador de investigación Antigua-first/);
+    assert.match(workflow.validationWarning, /Borrador de investigación para Antigua Guatemala/);
   });
 
   it("maps all 47 steps to the canonical v1 contract with explicit missing evidence", async () => {

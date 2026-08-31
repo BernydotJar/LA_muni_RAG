@@ -562,7 +562,7 @@ export const mapProcedureWorkflowV1 = (options: MapProcedureWorkflowOptions): Re
         "Plazo pendiente de evidencia.",
         "Sistema externo pendiente de evidencia.",
         ...(status === "missing_evidence"
-          ? ["Cobertura documental pendiente para este tenant."]
+          ? ["Todavía falta una fuente que confirme este punto."]
           : []),
         ...(hasVersionConflict
           ? [

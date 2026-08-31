@@ -5,7 +5,7 @@ import { readFile } from "node:fs/promises";
 const readWidget = async (): Promise<string> => readFile("public/widget.js", "utf-8");
 
 describe("premium chat widget evidence panel", () => {
-  it("keeps the embeddable widget configuration and chat API contract", async () => {
+  it("keeps the embeddable widget configuration and public query contract", async () => {
     const widget = await readWidget();
     assert.match(widget, /document\.currentScript/);
     assert.match(widget, /data-api-url/);
@@ -15,38 +15,33 @@ describe("premium chat widget evidence panel", () => {
     assert.match(widget, /data-theme/);
     assert.match(widget, /data-title/);
     assert.match(widget, /JSON\.stringify\(\{ message, mode: this\.searchMode, limit: 5 \}\)/);
-    assert.match(widget, /this\.searchMode\s*=\s*"keyword"/);
-    assert.match(widget, /this\.setSearchMode\("phrase"\)/);
   });
 
-  it("uses a premium civic evidence-panel visual system", async () => {
+  it("uses a restrained heritage-burgundy paper visual system", async () => {
     const widget = await readWidget();
-    assert.match(widget, /heritage burgundy civic evidence panel|muni-answer-kicker|Respuesta con evidencia/);
     assert.match(widget, /--muni-primary: #731729/);
-    assert.match(widget, /--muni-accent: #a33b54/);
-    assert.match(widget, /--muni-warm: #b58b6b/);
-    assert.match(widget, /--muni-surface-strong/);
-    assert.match(widget, /heritage-burgundy/);
+    assert.match(widget, /--muni-accent: #8b2a42/);
+    assert.match(widget, /--muni-surface: rgba\(255, 253, 249, 0\.96\)/);
+    assert.match(widget, /--muni-surface-strong: #fffdf9/);
     assert.doesNotMatch(widget, /#22d3ee|#8b5cf6|#7c5cff|#6d5df6/i);
-    assert.match(widget, /muni-header-rail/);
-    assert.match(widget, /muni-rail-pill/);
-    assert.match(widget, /muni-answer-kicker/);
+    assert.doesNotMatch(widget, /muni-header-rail|muni-rail-pill|muni-answer-kicker|muni-trace-seal/);
     assert.match(widget, /muni-citation-index/);
-    assert.match(widget, /Consultando evidencia/);
+    assert.match(widget, /Buscando en documentos/);
     assert.match(widget, /muni-bubble:focus-visible/);
     assert.match(widget, /--muni-focus/);
   });
 
-  it("renders citations as premium expandable evidence dossiers", async () => {
+  it("renders citations as expandable source cards hidden until requested", async () => {
     const widget = await readWidget();
-    assert.match(widget, /muni-citations/);
+    assert.match(widget, /muni-citations collapsed/);
     assert.match(widget, /muni-citation-header/);
     assert.match(widget, /muni-citation-badge/);
-    assert.match(widget, /Evidencia \$\{index \+ 1\}/);
+    assert.match(widget, /Fuente \$\{index\+1\}/);
     assert.match(widget, /data-excerpt-full/);
     assert.match(widget, /data-excerpt-preview/);
     assert.match(widget, /card\.classList\.toggle\("expanded"\)/);
     assert.match(widget, /card\.addEventListener\("keydown"/);
+    assert.match(widget, /Ver fuentes/);
   });
 
   it("removes external font dependency and keeps shadow-dom isolation", async () => {
@@ -57,30 +52,31 @@ describe("premium chat widget evidence panel", () => {
     assert.match(widget, /font-family:\s*var\(--muni-font\)/);
   });
 
-  it("keeps premium mobile and reduced-motion guardrails", async () => {
+  it("keeps mobile, overflow and accessibility guardrails", async () => {
     const widget = await readWidget();
-    assert.match(widget, /max-width: 480px/);
-    assert.match(widget, /100dvh - 96px/);
+    assert.match(widget, /max-width:480px/);
+    assert.match(widget, /100dvh - 86px/);
+    assert.match(widget, /box-sizing:\s*border-box;\s*min-width:\s*0/);
+    assert.match(widget, /overflow-y:auto; overflow-x:hidden/);
     assert.match(widget, /prefers-reduced-motion/);
-    assert.match(widget, /animation: none !important/);
-    assert.match(widget, /transition-duration: 0\.01ms !important/);
+    assert.match(widget, /prefers-reduced-transparency/);
+    assert.match(widget, /forced-colors/);
     assert.match(widget, /min-height:44px/);
   });
 
-  it("keeps Spanish municipal copy and honest service positioning", async () => {
+  it("uses natural Spanish copy and honest service positioning", async () => {
     const widget = await readWidget();
-    assert.match(widget, /Asistente Municipal/);
-    assert.match(widget, /Servicio de consulta conectado/);
-    assert.match(widget, /Servicio no configurado/);
-    assert.match(widget, /Consulta municipal con evidencia/);
-    assert.match(widget, /Consulta documental con trazabilidad/);
-    assert.match(widget, /Consulta deshabilitada hasta configurar la API/);
-    assert.match(widget, /Escribe tu consulta municipal/);
+    assert.match(widget, /Asistente de documentos municipales/);
+    assert.match(widget, /Listo para buscar en documentos/);
+    assert.match(widget, /Consulta no disponible/);
+    assert.match(widget, /Pregunta y revisa la fuente/);
+    assert.match(widget, /Falta conectar el servicio de búsqueda/);
+    assert.match(widget, /Pregunta sobre un tema municipal/);
     assert.match(widget, /role="dialog"/);
     assert.match(widget, /role="log" aria-live="polite"/);
     assert.match(widget, /aria-expanded="false" aria-controls="muni-window"/);
     assert.match(widget, /aria-pressed="true"/);
-    assert.match(widget, /e.key==="Escape"/);
-    assert.doesNotMatch(widget, /Modo demo municipal|Documentos municipales verificados/);
+    assert.match(widget, /e\.key==="Escape"/);
+    assert.doesNotMatch(widget, /Modo demo municipal|Documentos municipales verificados|Consulta municipal con evidencia|Consulta documental con trazabilidad/);
   });
 });

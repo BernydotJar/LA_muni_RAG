@@ -259,7 +259,7 @@ describe("EVAL-PROCEDURE-001", () => {
         (step) =>
           step.evidence_status === "missing_evidence" &&
           (step.unknowns as string[]).includes(
-            "Cobertura documental pendiente para este tenant."
+            "Todavía falta una fuente que confirme este punto."
           )
       )
     );

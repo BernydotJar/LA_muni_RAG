@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Consulta documentos municipales de La Antigua Guatemala con evidencia, citas y trazabilidad.">
+  <meta name="description" content="Consulta documentos municipales de La Antigua Guatemala y revisa las fuentes que respaldan cada respuesta.">
   <meta name="theme-color" content="#731729">
   <title>LA Muni RAG — Consulta documental municipal</title>
   <link rel="icon" href="./favicon.svg" type="image/svg+xml">
@@ -23,13 +23,13 @@
         </span>
         <span class="nav-brand-copy">
           <span class="nav-title">LA Muni <strong>RAG</strong></span>
-          <small>Evidencia municipal trazable</small>
+          <small>Respuestas con fuentes visibles</small>
         </span>
       </a>
       <div class="nav-links">
-        <a href="./glass-wall.html">Glass Wall</a>
+        <a href="./glass-wall.html">Cómo funciona</a>
         <a href="./procedure-training.html">Academia</a>
-        <a href="#instalar">Instalar</a>
+        <a href="#instalar">Integrar</a>
         <span class="nav-tag">Piloto público</span>
         <button class="nav-action" type="button" data-open-assistant>Asistente</button>
       </div>
@@ -39,48 +39,48 @@
       <section class="hero" id="asistente" aria-labelledby="hero-title">
         <div class="hero-grid">
           <div class="hero-copy-stack">
-            <p class="eyebrow"><span aria-hidden="true">La Antigua Guatemala</span> Consulta documental municipal</p>
-            <h1 id="hero-title">Consulta pública. <span>Sin caja negra.</span></h1>
-            <p class="hero-copy">Haz preguntas sobre documentos municipales y revisa las citas que sustentan cada respuesta. Cuando no exista evidencia suficiente, el sistema debe decirlo con claridad.</p>
+            <p class="eyebrow"><span aria-hidden="true">La Antigua Guatemala</span> Consulta de documentos municipales</p>
+            <h1 id="hero-title">Pregunta sobre documentos municipales. <span>Revisa las fuentes.</span></h1>
+            <p class="hero-copy">Escribe una pregunta y consulta la información disponible en documentos municipales. Cada respuesta muestra las fuentes que la respaldan. Si no hay información suficiente, el sistema te lo indica.</p>
             <div class="hero-actions">
               <button class="button button-primary" type="button" id="open-chat-btn" data-open-assistant>
                 <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H5.2L4 17.2V4h16v12z"/></svg>
                 Abrir asistente
               </button>
-              <a class="button button-secondary" href="./glass-wall.html">Abrir Glass Wall</a>
+              <a class="button button-secondary" href="./glass-wall.html">Ver cómo funciona</a>
             </div>
             <div class="hero-standards" aria-label="Principios de la consulta">
-              <span>Citas visibles</span>
-              <span>Límites explícitos</span>
-              <span>Sin respuestas fabricadas</span>
+              <span>Fuentes visibles</span>
+              <span>Te avisa si falta información</span>
+              <span>No inventa respuestas</span>
             </div>
-            <p class="service-note"><strong>Publicación segura.</strong> La publicación estática no fabrica respuestas. El asistente sólo se habilita cuando existe un backend real configurado.</p>
+            <p class="service-note"><strong>Qué consulta este sitio.</strong> La búsqueda usa una copia pública y gobernada de los documentos disponibles. Si esos documentos no respaldan una respuesta, el sistema no completa el vacío con información inventada.</p>
           </div>
 
-          <div class="hero-observation-card" aria-label="Representación visual de una consulta municipal con recuperación, evidencia y salida segura">
+          <div class="hero-observation-card" aria-label="Ejemplo de cómo una pregunta se busca en documentos y termina en una respuesta con fuentes">
             <div class="observation-topbar">
               <div>
-                <span class="observation-kicker">Expediente de evidencia</span>
-                <strong>Ruta documental</strong>
+                <span class="observation-kicker">Así responde</span>
+                <strong>De la pregunta a la fuente</strong>
               </div>
-              <span class="observation-state">Interfaz explicativa</span>
+              <span class="observation-state">Ejemplo</span>
             </div>
             <div class="observation-visual">
               <img class="civic-palace-visual" src="./assets/civic-institutional-hero.svg" alt="Ilustración lineal del palacio municipal con arcos coloniales, cúpula, campanario y plaza documental">
             </div>
             <div class="evidence-dossier">
               <div class="query-card">
-                <span>Consulta ciudadana</span>
+                <span>Pregunta</span>
                 <p>¿Qué prioridades municipales aparecen en los documentos disponibles?</p>
               </div>
               <ol class="route-list" aria-label="Etapas de la consulta documental">
-                <li class="panel-node node-a"><span class="route-index">01</span><div><strong>Consulta</strong><span>Pregunta en lenguaje natural.</span></div></li>
-                <li class="panel-node node-b"><span class="route-index">02</span><div><strong>Recuperación</strong><span>Búsqueda sobre el corpus configurado.</span></div></li>
-                <li class="panel-node node-c"><span class="route-index">03</span><div><strong>Evidencia</strong><span>Fragmentos y metadatos antes de responder.</span></div></li>
+                <li class="panel-node node-a"><span class="route-index">01</span><div><strong>Escribes una pregunta</strong><span>Describe con tus palabras lo que necesitas saber.</span></div></li>
+                <li class="panel-node node-b"><span class="route-index">02</span><div><strong>Busca en los documentos</strong><span>Localiza fragmentos relacionados en los documentos disponibles.</span></div></li>
+                <li class="panel-node node-c"><span class="route-index">03</span><div><strong>Muestra las fuentes</strong><span>Presenta el fragmento, el documento y la página para que puedas revisarlos.</span></div></li>
               </ol>
               <div class="safe-output">
-                <span>Salida segura</span>
-                <strong>Respuesta citada o insuficiencia explícita.</strong>
+                <span>Resultado</span>
+                <strong>Respuesta con fuentes o aviso claro de que falta información.</strong>
               </div>
             </div>
           </div>
@@ -91,15 +91,15 @@
         <div class="assurance-grid">
           <article class="assurance-item">
             <span class="assurance-number">01</span>
-            <div><h2>Citas antes que conclusiones</h2><p>La interfaz presenta fragmentos y metadatos cuando el backend los devuelve.</p></div>
+            <div><h2>Puedes revisar la fuente</h2><p>Cuando está disponible, cada resultado muestra el documento, la página y el fragmento utilizado.</p></div>
           </article>
           <article class="assurance-item">
             <span class="assurance-number">02</span>
-            <div><h2>Incertidumbre visible</h2><p>Sin evidencia suficiente, la experiencia no sostiene una conclusión documental.</p></div>
+            <div><h2>Te avisa cuando la información no alcanza</h2><p>Si los documentos no respaldan una conclusión, el sistema lo dice en lugar de completar la respuesta por su cuenta.</p></div>
           </article>
           <article class="assurance-item">
             <span class="assurance-number">03</span>
-            <div><h2>Integración gobernada</h2><p>El widget permanece deshabilitado hasta configurar explícitamente un endpoint HTTPS.</p></div>
+            <div><h2>La integración no debe exponer secretos</h2><p>En sitios externos, el widget se conecta a una dirección HTTPS configurada sin incluir credenciales sensibles en el navegador.</p></div>
           </article>
         </div>
       </section>
@@ -107,16 +107,16 @@
       <section class="integration-section" id="instalar" aria-labelledby="install-title">
         <div class="section-inner">
           <div class="integration-copy">
-            <p class="section-kicker">Integración institucional</p>
-            <h2 id="install-title">Conecta el asistente a un backend real.</h2>
-            <p class="section-lead">Integra la consulta en un sitio institucional sin exponer credenciales en el navegador. La URL pública de la API debe declararse de forma explícita.</p>
-            <p class="integration-guardrail"><strong>Comportamiento por defecto:</strong> sin endpoint configurado, la consulta queda deshabilitada y no se muestran respuestas de ejemplo.</p>
+            <p class="section-kicker">Para sitios institucionales</p>
+            <h2 id="install-title">Añade el asistente a tu sitio.</h2>
+            <p class="section-lead">Puedes insertar el widget y conectarlo a una API HTTPS. La configuración pública sólo debe indicar la dirección del servicio; no incluyas secretos ni credenciales en el navegador.</p>
+            <p class="integration-guardrail"><strong>Si no configuras una API:</strong> el widget externo queda deshabilitado y no muestra respuestas de ejemplo.</p>
           </div>
           <div class="embed-card">
             <div class="embed-copy">
-              <span>Instalación</span>
-              <strong>Widget institucional</strong>
-              <p>Incluye el script y declara la URL pública del backend.</p>
+              <span>Código de instalación</span>
+              <strong>Widget de consulta</strong>
+              <p>Añade el script e indica la dirección HTTPS de tu API.</p>
             </div>
             <div class="code-block" id="embed-code" role="region" aria-label="Código de instalación del widget" tabindex="0">
               <button class="copy-btn" id="copy-btn" type="button">Copiar</button>
@@ -130,7 +130,7 @@
     <footer>
       <div class="footer-inner">
         <span>LA Muni RAG · La Antigua Guatemala</span>
-        <span>Consulta documental con evidencia y trazabilidad</span>
+        <span>Consulta de documentos con fuentes visibles</span>
       </div>
     </footer>
   </div>

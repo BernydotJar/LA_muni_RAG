@@ -16,13 +16,13 @@ describe("procedure workflow widget entrypoint", () => {
     assert.match(script, /procedure-workflow-entrypoint/);
   });
 
-  it("adds both rail and welcome entrypoints without duplicating them", async () => {
+  it("adds one secondary procedure entrypoint without duplicating it", async () => {
     const script = await readSource("public/procedure-widget-entrypoint.js");
 
-    assert.match(script, /makeRailEntrypoint/);
-    assert.match(script, /makeWelcomeEntrypoint/);
-    assert.match(script, /muni-header-rail/);
-    assert.match(script, /muni-suggestions/);
+    assert.match(script, /makeOptionsEntrypoint/);
+    assert.match(script, /Ver procedimientos/);
+    assert.match(script, /muni-mode-selector/);
+    assert.doesNotMatch(script, /muni-header-rail/);
     assert.match(script, /data-procedure-workflow-entrypoint/);
     assert.match(script, /querySelector\(\`\[\$\{ENTRY_ATTR\}=\"true\"\]\`\)/);
   });

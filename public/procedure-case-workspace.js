@@ -33,14 +33,22 @@
     in_progress: "En progreso",
     blocked: "Bloqueado",
     ready_for_review: "Listo para revisión",
-    completed: "Completado operativo",
+    completed: "Marcado como completado",
   }[value] || "No iniciado");
   const documentStateLabel = (value) => ({
     missing: "Falta",
     requested: "Solicitado",
     received: "Recibido",
-    reviewed: "Revisado operativo",
+    reviewed: "Revisado",
   }[value] || "Falta");
+  const auditTypeLabel = (value) => ({
+    workspace_created: "Seguimiento creado",
+    workspace_imported: "Seguimiento importado",
+    document_state_changed: "Estado de documento actualizado",
+    step_status_changed: "Estado del paso actualizado",
+    step_operationalAssignee_changed: "Responsable actualizado",
+    step_note_changed: "Nota actualizada",
+  }[value] || "Cambio registrado");
 
   const audit = (workspace, type, detail) => {
     workspace.auditLog.push({ id: `event:${Date.now()}:${Math.random().toString(36).slice(2, 8)}`, at: now(), type, detail: safeText(detail, 500) });
@@ -57,7 +65,7 @@
       updatedAt: createdAt,
       workflowSnapshot: {
         id: safeText(workflow?.id, 200),
-        title: safeText(workflow?.title || "Flujo procedimental", 300),
+        title: safeText(workflow?.title || "Procedimiento", 300),
         procedureType: safeText(workflow?.procedureType || "unknown", 100),
         jurisdiction: safeText(workflow?.jurisdiction || "No indicada", 160),
         confidence: safeText(workflow?.confidence || "low", 30),
@@ -74,7 +82,7 @@
       })),
       auditLog: [],
     };
-    audit(workspace, "workspace_created", "Workspace operativo creado desde el flujo renderizado.");
+    audit(workspace, "workspace_created", "Seguimiento local creado a partir del procedimiento mostrado.");
     return workspace;
   };
 
@@ -133,7 +141,7 @@
     const style = document.createElement("style");
     style.id = "procedure-case-workspace-style";
     style.textContent = `
-      .case-workspace{margin:20px;padding:18px;border:1px solid rgba(139,92,246,.25);border-radius:24px;background:linear-gradient(135deg,rgba(139,92,246,.08),rgba(34,211,238,.04))}
+      .case-workspace{margin:20px;padding:18px;border:1px solid rgba(226,170,183,.20);border-radius:20px;background:rgba(115,23,41,.045)}
       .case-workspace-header{display:flex;justify-content:space-between;gap:14px;align-items:flex-start}.case-workspace-header h2{margin:0 0 6px}.case-workspace-header p{margin:0;color:var(--muted);font-size:13px;line-height:1.5}
       .case-safety{margin:14px 0;padding:12px;border:1px solid rgba(251,113,133,.28);border-radius:16px;background:rgba(251,113,133,.055);color:#fecdd3;font-size:12px;line-height:1.5}
       .case-actions{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0}.case-actions input[type=file]{display:none}
@@ -153,7 +161,7 @@
     return { completed, blocked, reviewedDocuments, totalDocuments };
   };
 
-  const renderAudit = (workspace) => asArray(workspace.auditLog).slice().reverse().map((event) => `<div class="case-audit-item"><strong>${esc(event.type)}</strong> · ${esc(event.at)}<br>${esc(event.detail)}</div>`).join("") || "<p>Sin eventos.</p>";
+  const renderAudit = (workspace) => asArray(workspace.auditLog).slice().reverse().map((event) => `<div class="case-audit-item"><strong>${esc(auditTypeLabel(event.type))}</strong> · ${esc(event.at)}<br>${esc(event.detail)}</div>`).join("") || "<p>Sin eventos.</p>";
 
   const renderWorkspace = () => {
     const shell = document.getElementById("procedure-workflow");
@@ -164,7 +172,7 @@
     panel.className = "case-workspace";
 
     if (!currentWorkspace) {
-      panel.innerHTML = `<div class="case-workspace-header"><div><h2>Workspace del caso</h2><p>Convierte este flujo en un seguimiento operativo local y auditable.</p></div><button id="create-case-workspace" type="button">Crear workspace local</button></div><div class="case-safety"><strong>No es aprobación ni cierre institucional.</strong> El progreso operativo no prueba cumplimiento legal, presupuestario, de contratación, Concejo, COCODE, recepción, liquidación, pago ni cierre de obra. No ingreses datos personales, confidenciales, reservados, credenciales o secretos.</div>`;
+      panel.innerHTML = `<div class="case-workspace-header"><div><h2>Seguimiento local del caso</h2><p>Guarda el avance de este procedimiento sólo en este navegador.</p></div><button id="create-case-workspace" type="button">Crear seguimiento local</button></div><div class="case-safety"><strong>Este seguimiento no es una aprobación institucional.</strong> Marcar avances no demuestra cumplimiento legal o presupuestario ni confirma contratación, recepción, liquidación, pago o cierre. No ingreses datos personales, credenciales, secretos ni información reservada.</div>`;
       shell.appendChild(panel);
       document.getElementById("create-case-workspace")?.addEventListener("click", () => {
         currentWorkspace = createWorkspace(currentWorkflow);
@@ -176,18 +184,18 @@
 
     const metrics = summary(currentWorkspace);
     panel.innerHTML = `
-      <div class="case-workspace-header"><div><h2>Workspace del caso</h2><p>${esc(currentWorkspace.workflowSnapshot.title)}</p></div><span class="chip">actualizado ${esc(currentWorkspace.updatedAt)}</span></div>
-      <div class="case-safety"><strong>Seguimiento operativo, no evidencia legal.</strong> “Completado operativo” no equivale a aprobación, autenticidad documental, suficiencia jurídica, recepción, liquidación, pago o cierre institucional. No ingreses datos sensibles.</div>
-      <div class="case-actions"><button type="button" id="export-case-workspace">Exportar JSON</button><label class="secondary" for="import-case-workspace">Importar JSON</label><input id="import-case-workspace" type="file" accept="application/json"><button type="button" class="secondary" id="delete-case-workspace">Eliminar local</button></div>
-      <div class="case-progress"><div class="case-metric"><b>${metrics.completed}/${currentWorkspace.steps.length}</b><span>pasos completados operativos</span></div><div class="case-metric"><b>${metrics.blocked}</b><span>pasos bloqueados</span></div><div class="case-metric"><b>${metrics.reviewedDocuments}/${metrics.totalDocuments}</b><span>documentos revisados operativos</span></div></div>
+      <div class="case-workspace-header"><div><h2>Seguimiento local del caso</h2><p>${esc(currentWorkspace.workflowSnapshot.title)}</p></div><span class="chip">actualizado ${esc(currentWorkspace.updatedAt)}</span></div>
+      <div class="case-safety"><strong>El estado del caso no sustituye una revisión legal o institucional.</strong> Marcar un paso como completado no confirma aprobación, autenticidad documental, recepción, liquidación, pago o cierre. No ingreses datos sensibles.</div>
+      <div class="case-actions"><button type="button" id="export-case-workspace">Exportar datos (JSON)</button><label class="secondary" for="import-case-workspace">Importar datos (JSON)</label><input id="import-case-workspace" type="file" accept="application/json"><button type="button" class="secondary" id="delete-case-workspace">Eliminar seguimiento local</button></div>
+      <div class="case-progress"><div class="case-metric"><b>${metrics.completed}/${currentWorkspace.steps.length}</b><span>pasos marcados como completados</span></div><div class="case-metric"><b>${metrics.blocked}</b><span>pasos bloqueados</span></div><div class="case-metric"><b>${metrics.reviewedDocuments}/${metrics.totalDocuments}</b><span>documentos revisados</span></div></div>
       <div class="case-step-list">${currentWorkspace.steps.map((step, index) => `
         <article class="case-step" data-step-index="${index}"><h3>Paso ${esc(step.stepNumber)} · ${esc(step.title)}</h3><div class="case-step-grid">
-          <label>Estado operativo<select data-field="status">${STATUSES.map((status) => `<option value="${status}" ${step.status === status ? "selected" : ""}>${esc(statusLabel(status))}</option>`).join("")}</select></label>
-          <label>Asignado operativo<input data-field="operationalAssignee" maxlength="160" value="${esc(step.operationalAssignee)}" placeholder="Ingresado por el usuario; no es autoridad extraída"></label>
-          <label>Nota operativa<textarea data-field="note" rows="2" maxlength="1200" placeholder="No incluir información sensible">${esc(step.note)}</textarea></label>
-          <div class="case-docs"><strong>Checklist documental operativo</strong>${step.documents.map((document, documentIndex) => `<div class="case-doc-row"><span>${esc(document.name)}</span><select data-document-index="${documentIndex}">${DOCUMENT_STATES.map((state) => `<option value="${state}" ${document.state === state ? "selected" : ""}>${esc(documentStateLabel(state))}</option>`).join("")}</select></div>`).join("") || "<p>Sin documentos en el flujo.</p>"}</div>
+          <label>Estado del paso<select data-field="status">${STATUSES.map((status) => `<option value="${status}" ${step.status === status ? "selected" : ""}>${esc(statusLabel(status))}</option>`).join("")}</select></label>
+          <label>Persona responsable<input data-field="operationalAssignee" maxlength="160" value="${esc(step.operationalAssignee)}" placeholder="Dato ingresado por el usuario; no proviene de una fuente"></label>
+          <label>Nota de seguimiento<textarea data-field="note" rows="2" maxlength="1200" placeholder="No incluir información sensible">${esc(step.note)}</textarea></label>
+          <div class="case-docs"><strong>Estado de los documentos</strong>${step.documents.map((document, documentIndex) => `<div class="case-doc-row"><span>${esc(document.name)}</span><select data-document-index="${documentIndex}">${DOCUMENT_STATES.map((state) => `<option value="${state}" ${document.state === state ? "selected" : ""}>${esc(documentStateLabel(state))}</option>`).join("")}</select></div>`).join("") || "<p>No hay documentos indicados para este procedimiento.</p>"}</div>
         </div></article>`).join("")}</div>
-      <h3>Audit log local</h3><div class="case-audit">${renderAudit(currentWorkspace)}</div>`;
+      <h3>Historial local de cambios</h3><div class="case-audit">${renderAudit(currentWorkspace)}</div>`;
     shell.appendChild(panel);
 
     panel.querySelectorAll(".case-step").forEach((element) => {
@@ -224,7 +232,7 @@
       if (!file || file.size > MAX_IMPORT_BYTES) return window.alert("Archivo inválido o demasiado grande.");
       try {
         const imported = validateWorkspace(JSON.parse(await file.text()));
-        audit(imported, "workspace_imported", "Workspace importado y validado localmente.");
+        audit(imported, "workspace_imported", "Seguimiento importado y validado localmente.");
         currentWorkspace = imported;
         persist();
         renderWorkspace();
@@ -233,7 +241,7 @@
       }
     });
     document.getElementById("delete-case-workspace")?.addEventListener("click", () => {
-      if (!window.confirm("¿Eliminar este workspace local? Esta acción no modifica el expediente institucional.")) return;
+      if (!window.confirm("¿Eliminar este seguimiento local? Esta acción no modifica ningún expediente institucional.")) return;
       localStorage.removeItem(workflowKey(currentWorkflow));
       currentWorkspace = null;
       renderWorkspace();

@@ -15,7 +15,7 @@ describe("frontend responsive product layout", () => {
     assert.match(css, /\.app-nav\{position:sticky;top:18px/);
     assert.match(css, /width:min\(1180px,calc\(100% - 40px\)\)/);
     assert.match(html, /data-open-assistant>Asistente/);
-    assert.match(html, /href="\.\/glass-wall\.html">Glass Wall/);
+    assert.match(html, /href="\.\/glass-wall\.html">Cómo funciona/);
   });
 
   it("keeps restrained ambient motion and a monochromatic civic palace hero", async () => {
@@ -36,9 +36,9 @@ describe("frontend responsive product layout", () => {
   it("keeps the public hero side-by-side on laptop viewports", async () => {
     const html = await readHomepage();
     const css = await readProductCss();
-    assert.match(css, /grid-template-columns:minmax\(360px,\.88fr\) minmax\(500px,1\.12fr\)/);
+    assert.match(css, /grid-template-columns:minmax\(360px,\.94fr\) minmax\(480px,1\.06fr\)/);
     assert.match(html, /hero-copy-stack/);
-    assert.match(css, /min-height:calc\(100svh - var\(--nav-height\) - 18px\)/);
+    assert.match(css, /\.hero\{min-height:auto/);
   });
 
   it("contains the evidence dossier in predictable opaque paper surfaces", async () => {
@@ -47,10 +47,10 @@ describe("frontend responsive product layout", () => {
     assert.match(html, /hero-observation-card/);
     assert.match(html, /evidence-dossier/);
     assert.match(html, /route-list/);
-    assert.match(css, /min-height:clamp\(520px,49vw,640px\)/);
-    assert.match(css, /max-height:660px/);
+    assert.match(css, /\.hero-observation-card\{[^}]*min-height:0/);
+    assert.match(css, /max-height:none/);
     assert.match(css, /background:var\(--surface\)/);
-    assert.match(css, /grid-template-columns:38px 1fr/);
+    assert.match(css, /grid-template-columns:38px minmax\(0,1fr\)/);
   });
 
   it("stacks the product and preserves readable evidence rows on mobile", async () => {

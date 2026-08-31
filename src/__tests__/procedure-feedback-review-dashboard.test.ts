@@ -8,7 +8,7 @@ describe("procedure feedback review dashboard", () => {
   it("adds a local dashboard page for reviewing procedure feedback", async () => {
     const html = await readSource("public/procedure-feedback-dashboard.html");
 
-    assert.match(html, /Dashboard de feedback procedimental/);
+    assert.match(html, /Comentarios y puntos por revisar/);
     assert.match(html, /la-muni-rag:procedure-feedback/);
     assert.match(html, /metric-total/);
     assert.match(html, /metric-workflows/);
@@ -57,7 +57,7 @@ describe("procedure feedback review dashboard", () => {
     const feedbackScript = await readSource("public/procedure-feedback.js");
 
     assert.match(feedbackScript, /procedure-feedback-dashboard\.html/);
-    assert.match(feedbackScript, /Ver dashboard de feedback/);
+    assert.match(feedbackScript, /Ver comentarios guardados/);
   });
 
   it("updates Pages build and verification for the dashboard", async () => {

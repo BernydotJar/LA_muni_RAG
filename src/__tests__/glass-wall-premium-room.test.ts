@@ -5,13 +5,13 @@ import { readFile } from "node:fs/promises";
 const readGlassWall = async (): Promise<string> => readFile("public/glass-wall.html", "utf-8");
 
 describe("premium glass wall technical room", () => {
-  it("keeps the Glass Wall technical graph entry point in Spanish", async () => {
+  it("keeps the technical graph entry point in plain Spanish", async () => {
     const html = await readGlassWall();
 
-    assert.match(html, /RAG Glass Wall/);
+    assert.match(html, /Cómo funciona · vista técnica/);
     assert.match(html, /Vista técnica/);
     assert.match(html, /glass-wall-graph/);
-    assert.match(html, /Ruta observable de consulta/);
+    assert.match(html, /Ruta de la consulta/);
     assert.match(html, /Mapa de señales/);
   });
 
@@ -20,8 +20,8 @@ describe("premium glass wall technical room", () => {
 
     assert.match(html, /class="back-link" href="\/"/);
     assert.match(html, /Volver al inicio/);
-    assert.match(html, /Sala técnica/);
-    assert.match(html, /salida segura observable/);
+    assert.match(html, /Vista técnica/);
+    assert.match(html, /cómo se construye una respuesta/);
   });
 
   it("uses the deployed public inspection contract", async () => {
@@ -36,11 +36,11 @@ describe("premium glass wall technical room", () => {
     const html = await readGlassWall();
 
     assert.match(html, /Contrato de seguridad/);
-    assert.match(html, /salida segura de la API/);
-    assert.match(html, /No muestra prompts/);
+    assert.match(html, /datos de diagnóstico autorizados/);
+    assert.match(html, /No muestra credenciales/);
     assert.match(html, /credenciales/);
-    assert.match(html, /llaves de proveedor/);
-    assert.match(html, /URLs de base de datos/);
+    assert.match(html, /llaves/);
+    assert.match(html, /direcciones privadas de bases de datos/);
   });
 
   it("uses premium panel nodes instead of the old circular node visual", async () => {
@@ -56,21 +56,21 @@ describe("premium glass wall technical room", () => {
   it("adds safe vector runtime, embedding, and vector store insight copy", async () => {
     const html = await readGlassWall();
 
-    assert.match(html, /Vector \/ Embedding/);
-    assert.match(html, /runtime vectorial/);
-    assert.match(html, /relación con modo híbrido/);
-    assert.match(html, /query → vector/);
-    assert.match(html, /almacén vectorial/);
-    assert.match(html, /observación segura/);
-    assert.match(html, /no expuesto por gateway público/);
-    assert.match(html, /híbrido público = léxica \+ frase exacta/);
-    assert.match(html, /embedding interno no expuesto/);
-    assert.match(html, /almacén interno no expuesto/);
+    assert.match(html, /Búsqueda vectorial/);
+    assert.match(html, /estado técnico/);
+    assert.match(html, /relación con búsqueda combinada/);
+    assert.match(html, /representación de la pregunta/);
+    assert.match(html, /índice vectorial/);
+    assert.match(html, /señal técnica autorizada/);
+    assert.match(html, /detalle interno no expuesto/);
+    assert.match(html, /combinado = palabras \+ frase exacta/);
+    assert.match(html, /representación interna no expuesta/);
+    assert.match(html, /índice interno no expuesto/);
     assert.doesNotMatch(html, /semántica activa/);
     assert.doesNotMatch(html, /store consultable/);
   });
 
-  it("adds CSS-only graph scan, vector pulse, and edge flow animation", async () => {
+  it("keeps graph affordances while disabling decorative continuous motion", async () => {
     const html = await readGlassWall();
 
     assert.match(html, /graph-scan/);
@@ -79,6 +79,7 @@ describe("premium glass wall technical room", () => {
     assert.match(html, /vector-ring/);
     assert.match(html, /vector-focus/);
     assert.match(html, /stroke-dasharray/);
+    assert.match(html, /animation: none/);
   });
 
   it("keeps reduced motion protection", async () => {

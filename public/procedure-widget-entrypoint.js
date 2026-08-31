@@ -19,33 +19,18 @@
     window.open(procedureUrl, "_self");
   };
 
-  const makeRailEntrypoint = (shadow) => {
-    const rail = shadow.querySelector(".muni-header-rail");
-    if (!rail || rail.querySelector(`[${ENTRY_ATTR}="true"]`)) return false;
-
-    const link = document.createElement("button");
-    link.type = "button";
-    link.className = "muni-rail-pill procedure-workflow-entrypoint";
-    link.setAttribute(ENTRY_ATTR, "true");
-    link.setAttribute("aria-label", "Abrir flujos procedimentales municipales");
-    link.textContent = "Flujos";
-    link.style.cursor = "pointer";
-    link.addEventListener("click", openProcedureWorkflow);
-    rail.appendChild(link);
-    return true;
-  };
-
-  const makeWelcomeEntrypoint = (shadow) => {
-    const suggestions = shadow.querySelector(".muni-suggestions");
-    if (!suggestions || suggestions.querySelector(`[${ENTRY_ATTR}="true"]`)) return false;
+  const makeOptionsEntrypoint = (shadow) => {
+    const options = shadow.querySelector(".muni-mode-selector");
+    if (!options || options.querySelector(`[${ENTRY_ATTR}="true"]`)) return false;
 
     const button = document.createElement("button");
     button.type = "button";
-    button.className = "muni-suggestion procedure-workflow-entrypoint";
+    button.className = "muni-mode-btn procedure-workflow-entrypoint";
     button.setAttribute(ENTRY_ATTR, "true");
-    button.textContent = "Generar flujo procedimental paso a paso";
+    button.setAttribute("aria-label", "Abrir guía de procedimientos municipales");
+    button.textContent = "Ver procedimientos";
     button.addEventListener("click", openProcedureWorkflow);
-    suggestions.appendChild(button);
+    options.appendChild(button);
     return true;
   };
 
@@ -55,9 +40,8 @@
     const shadow = host?.shadowRoot;
     if (!shadow) return false;
 
-    const installedRail = makeRailEntrypoint(shadow);
-    const installedWelcome = makeWelcomeEntrypoint(shadow);
-    return installedRail || installedWelcome || Boolean(shadow.querySelector(`[${ENTRY_ATTR}="true"]`));
+    const installedOptions = makeOptionsEntrypoint(shadow);
+    return installedOptions || Boolean(shadow.querySelector(`[${ENTRY_ATTR}="true"]`));
   };
 
   const stop = () => {
