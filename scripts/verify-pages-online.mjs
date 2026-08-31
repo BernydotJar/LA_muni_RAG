@@ -126,10 +126,16 @@ for (const [name, contextOptions] of scenarios) {
       assert.equal(await send.isDisabled(), false, `${name}: configured public query send control is disabled`);
       await input.fill("agua potable");
       await send.click();
+      const sourceToggle = widget.locator(".muni-evidence-toggle").last();
+      await sourceToggle.waitFor({ state: "visible", timeout: 15_000 });
+      assert.equal(await sourceToggle.getAttribute("aria-expanded"), "false", `${name}: sources are not collapsed by default`);
+      assert.equal(await sourceToggle.textContent(), "Ver fuentes", `${name}: source disclosure label is unexpected`);
       const citations = widget.locator(".muni-citation");
-      await citations.first().waitFor({ state: "visible", timeout: 15_000 });
       citationCount = await citations.count();
-      assert.ok(citationCount > 0, `${name}: static-first public query returned no visible citations`);
+      assert.ok(citationCount > 0, `${name}: static-first public query returned no citations`);
+      await sourceToggle.click();
+      assert.equal(await sourceToggle.getAttribute("aria-expanded"), "true", `${name}: source disclosure did not expand`);
+      await citations.first().waitFor({ state: "visible", timeout: 15_000 });
       const sourceHref = await citations.first().locator('[data-source-action="open-source"]').getAttribute("href");
       assert.ok(sourceHref, `${name}: first public citation has no official source link`);
       const sourceUrl = new URL(sourceHref);

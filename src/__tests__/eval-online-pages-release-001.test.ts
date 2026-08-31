@@ -41,7 +41,9 @@ describe("EVAL-ONLINE-PAGES-RELEASE-001", () => {
     assert.match(online, /failed network requests detected/);
     assert.match(online, /unconfigured public page emitted an API request/);
     assert.match(online, /governed static fallback/);
-    assert.match(online, /static-first public query returned no visible citations/);
+    assert.match(online, /sources are not collapsed by default/);
+    assert.match(online, /source disclosure did not expand/);
+    assert.match(online, /static-first public query returned no citations/);
     assert.match(online, /muniantigua\.gob\.gt/);
     assert.match(online, /static-first public query unexpectedly reached a remote API/);
   });
