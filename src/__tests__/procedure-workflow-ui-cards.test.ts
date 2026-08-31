@@ -8,10 +8,10 @@ describe("procedure workflow UI cards", () => {
   it("adds a dedicated Spanish procedure workflow page", async () => {
     const html = await readSource("public/procedure-workflow.html");
 
-    assert.match(html, /Flujo procedimental/);
-    assert.match(html, /Procedure Workflow Advisor/);
-    assert.match(html, /Antigua-first/);
-    assert.match(html, /Del documento al <span>paso a paso/);
+    assert.match(html, /Guía de procedimientos/);
+    assert.match(html, /Guía de procedimientos/);
+    assert.match(html, /Primero, Antigua Guatemala/);
+    assert.match(html, /De la pregunta a los <span>pasos que puedes comprobar/);
     assert.match(html, /domain-status-pill/);
     assert.match(html, /domain-eyebrow/);
     assert.match(html, /procedure-workflow-form/);
@@ -35,7 +35,7 @@ describe("procedure workflow UI cards", () => {
     assert.match(html, /fetch\("\/api\/domain-pack"/);
     assert.match(html, /applyDomainPackUi/);
     assert.match(html, /activeDomainPack/);
-    assert.match(html, /workflow assistant/);
+    assert.match(html, /guía de procedimientos/);
     assert.doesNotMatch(html, /domainPackId: new URLSearchParams|DOMAIN_PACK=/);
   });
 
@@ -46,11 +46,11 @@ describe("procedure workflow UI cards", () => {
     assert.match(html, /procedure-gap-card/);
     assert.match(html, /citation-chip/);
     assert.match(html, /Documentos requeridos/);
-    assert.match(html, /Salidas \/ entregables/);
-    assert.match(html, /Brechas y documentos faltantes/);
-    assert.match(html, /Validación humana requerida/);
+    assert.match(html, /Resultados esperados/);
+    assert.match(html, /Información y documentos que faltan/);
+    assert.match(html, /Revisión humana requerida/);
     assert.match(html, /copy-procedure-checklist/);
-    assert.match(html, /dominio:/);
+    assert.match(html, /ámbito:/);
     assert.match(html, /domainPackName/);
   });
 

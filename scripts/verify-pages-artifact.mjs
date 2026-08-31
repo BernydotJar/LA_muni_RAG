@@ -124,20 +124,20 @@ if (!procedureTrainingHtml.includes('href="./index.html"') || !procedureTraining
 if (!procedureTrainingJs.includes("requester_supplied_unverified")) throw new Error("Procedure training runtime is missing requester assertion provenance.");
 if (!waterTrainingMap.includes('"research_not_facts": true') || !waterTrainingMap.includes('"sequence": 47')) throw new Error("Procedure training curriculum is missing bounded research semantics.");
 if (!procedureWorkflowHtml.includes('src="./pages-api-bridge.js"')) throw new Error("Procedure workflow page is missing the Pages fail-closed API bridge.");
-if (!procedureWorkflowHtml.includes('href="./procedure-workflow-premium.css"') || !procedureWorkflowPremiumCss.includes('--procedure-action: #67e8f9') || !procedureWorkflowPremiumCss.includes('.procedure-loading-shell') || !procedureWorkflowPremiumCss.includes('@media (max-width: 680px)')) throw new Error("Procedure workflow page is missing the premium design system, loading states, or responsive guardrails.");
+if (!procedureWorkflowHtml.includes('href="./procedure-workflow-premium.css"') || !procedureWorkflowPremiumCss.includes('--procedure-action: #e2aab7') || !procedureWorkflowPremiumCss.includes('.procedure-loading-shell') || !procedureWorkflowPremiumCss.includes('@media (max-width: 680px)')) throw new Error("Procedure workflow page is missing the premium design system, loading states, or responsive guardrails.");
 if (!procedureWorkflowHtml.includes('src="./procedure-feedback.js"')) throw new Error("Procedure workflow page is missing the feedback loop script.");
 if (!procedureFeedbackJs.includes('./procedure-deep-dive.js')) throw new Error("Procedure workflow feedback loader is missing the deep-dive UI enhancement.");
 if (!procedureFeedbackJs.includes('./procedure-source-attribution.js')) throw new Error("Procedure workflow feedback loader is missing official source attribution.");
 if (!procedureFeedbackJs.includes('./procedure-case-workspace.js')) throw new Error("Procedure workflow feedback loader is missing the case workspace enhancement.");
 if (!procedureFeedbackJs.includes('./procedure-case-open.js') || !procedureFeedbackJs.includes('./procedure-case-portfolio.html')) throw new Error("Procedure workflow feedback loader is missing the case opener or portfolio entrypoint.");
-if (!procedureDeepDiveJs.includes('value="deep_dive"') || !procedureDeepDiveJs.includes('Dependencias y decisiones')) throw new Error("Procedure deep-dive artifact is missing its depth control or dependency rendering.");
+if (!procedureDeepDiveJs.includes('value="deep_dive"') || !procedureDeepDiveJs.includes('Qué pasos dependen de otros')) throw new Error("Procedure deep-dive artifact is missing its depth control or dependency rendering.");
 if (!procedureSourceAttributionJs.includes("Fuente oficial municipal") || !procedureSourceAttributionJs.includes("Base nacional aplicable") || !procedureSourceAttributionJs.includes("Referencia comparativa") || !procedureSourceAttributionJs.includes("noopener noreferrer")) throw new Error("Procedure source attribution artifact is missing explicit authority labels or safe source links.");
-if (!procedureCaseWorkspaceJs.includes("la-muni-rag:procedure-case:") || !procedureCaseWorkspaceJs.includes("Seguimiento operativo, no evidencia legal") || !procedureCaseWorkspaceJs.includes("auditLog.push")) throw new Error("Procedure case workspace artifact is missing storage, safety, or audit controls.");
+if (!procedureCaseWorkspaceJs.includes("la-muni-rag:procedure-case:") || !procedureCaseWorkspaceJs.includes("El estado del caso no sustituye una revisión legal o institucional") || !procedureCaseWorkspaceJs.includes("auditLog.push")) throw new Error("Procedure case workspace artifact is missing storage, safety, or audit controls.");
 if (!procedureCaseOpenJs.includes("CASE_KEY_PATTERN") || !procedureCaseOpenJs.includes("workflowSnapshot?.query") || !procedureCaseOpenJs.includes("procedure-workflow-form")) throw new Error("Procedure case opener is missing bounded key validation or workflow restoration.");
 
 if (
-  !casePortfolioHtml.includes("Portafolio local de casos") ||
-  !casePortfolioHtml.includes("Señales operativas, no dictamen institucional") ||
+  !casePortfolioHtml.includes("Casos guardados en este navegador") ||
+  !casePortfolioHtml.includes("Este resumen no es una aprobación institucional") ||
   !casePortfolioHtml.includes('href="./procedure-case-portfolio.css"') ||
   !casePortfolioHtml.includes('src="./procedure-case-portfolio-data.js"') ||
   !casePortfolioHtml.includes('src="./procedure-case-portfolio.js"') ||

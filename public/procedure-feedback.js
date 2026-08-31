@@ -60,6 +60,8 @@
     ["other", "Otro"],
   ];
 
+  const feedbackTypeLabel = (value) => feedbackTypes.find(([id]) => id === value)?.[1] || "Comentario";
+
   const escapeHtml = (value) => {
     const div = document.createElement("div");
     div.textContent = String(value ?? "");
@@ -85,7 +87,7 @@
     domainPackId: workflow?.metadata?.domainPackId || "municipal-antigua",
     domainPackName: workflow?.metadata?.domainPackName || "Municipal Antigua",
     workflowId: workflow?.id || "workflow:unknown",
-    workflowTitle: workflow?.title || "Flujo procedimental",
+    workflowTitle: workflow?.title || "Procedimiento",
     procedureType: workflow?.procedureType || "unknown",
     jurisdiction: workflow?.jurisdiction || "Antigua Guatemala",
     confidence: workflow?.confidence || "low",
@@ -93,7 +95,7 @@
   });
 
   const selectedStep = (workflow, value) => {
-    if (value === "overall") return { stepNumber: "overall", stepTitle: "Flujo completo" };
+    if (value === "overall") return { stepNumber: "overall", stepTitle: "Procedimiento completo" };
     const match = asArray(workflow?.steps).find((step) => String(step.stepNumber) === String(value));
     return {
       stepNumber: match?.stepNumber ?? value,
@@ -122,11 +124,11 @@
     count.textContent = String(items.length);
     list.innerHTML = items.slice(0, 5).map((item) => `
       <article class="procedure-feedback-item">
-        <b>${escapeHtml(item.feedbackType)} · ${escapeHtml(item.stepTitle)}</b>
+        <b>${escapeHtml(feedbackTypeLabel(item.feedbackType))} · ${escapeHtml(item.stepTitle)}</b>
         <p>${escapeHtml(item.comment || "Sin comentario")}</p>
         <span>${escapeHtml(item.createdAt)}</span>
       </article>
-    `).join("") || "<p>No hay feedback local todavía.</p>";
+    `).join("") || "<p>No hay comentarios guardados todavía.</p>";
   };
 
   const copyFeedbackJson = async () => {
@@ -135,7 +137,7 @@
     const button = document.getElementById("copy-procedure-feedback-json");
     if (button) {
       button.textContent = "JSON copiado";
-      window.setTimeout(() => { button.textContent = "Copiar feedback JSON"; }, 1400);
+      window.setTimeout(() => { button.textContent = "Copiar comentarios (JSON)"; }, 1400);
     }
   };
 
@@ -153,7 +155,7 @@
   const renderStepOptions = (workflow) => {
     const steps = asArray(workflow?.steps);
     return [
-      '<option value="overall">Flujo completo</option>',
+      '<option value="overall">Procedimiento completo</option>',
       ...steps.map((step) => `<option value="${escapeHtml(step.stepNumber)}">Paso ${escapeHtml(step.stepNumber)} · ${escapeHtml(step.title || "Sin título")}</option>`),
     ].join("");
   };
@@ -169,23 +171,23 @@
     panel.innerHTML = `
       <div class="procedure-feedback-header">
         <div>
-          <h2>Feedback del flujo</h2>
-          <p>Marca brechas, pasos confusos o evidencia faltante. Este feedback queda local en tu navegador y puedes copiarlo como JSON para revisión del equipo.</p>
+          <h2>Comentarios sobre este procedimiento</h2>
+          <p>Señala documentos faltantes, pasos confusos o puntos que necesitan una fuente. Los comentarios se guardan sólo en este navegador y puedes copiarlos para revisarlos con tu equipo.</p>
         </div>
-        <span class="chip">feedback local: <b id="procedure-feedback-count">0</b></span>
+        <span class="chip">comentarios locales: <b id="procedure-feedback-count">0</b></span>
       </div>
       <form id="procedure-feedback-form" class="procedure-feedback-form">
-        <label>Tipo de feedback<select name="feedbackType">${feedbackTypes.map(([value, label]) => `<option value="${escapeHtml(value)}">${escapeHtml(label)}</option>`).join("")}</select></label>
+        <label>Tipo de comentario<select name="feedbackType">${feedbackTypes.map(([value, label]) => `<option value="${escapeHtml(value)}">${escapeHtml(label)}</option>`).join("")}</select></label>
         <label>Paso<select name="step">${renderStepOptions(workflow)}</select></label>
         <label class="procedure-feedback-comment">Comentario<textarea name="comment" rows="3" maxlength="1200" placeholder="Ejemplo: falta acta de recepción final para confirmar cierre; no incluir información confidencial."></textarea></label>
         <div class="procedure-feedback-actions">
-          <button type="submit">Guardar feedback local</button>
-          <button type="button" class="secondary" id="copy-procedure-feedback-json">Copiar feedback JSON</button>
-          <a class="secondary" href="${DASHBOARD_URL}">Ver dashboard de feedback</a>
-          <a class="secondary" href="${PORTFOLIO_URL}">Ver portafolio de casos</a>
+          <button type="submit">Guardar comentario local</button>
+          <button type="button" class="secondary" id="copy-procedure-feedback-json">Copiar comentarios (JSON)</button>
+          <a class="secondary" href="${DASHBOARD_URL}">Ver comentarios guardados</a>
+          <a class="secondary" href="${PORTFOLIO_URL}">Ver casos guardados</a>
         </div>
       </form>
-      <div class="procedure-feedback-privacy">No se envía información al servidor en este MVP. No pegues datos personales, secretos ni información reservada.</div>
+      <div class="procedure-feedback-privacy">Estos comentarios no se envían al servidor. No pegues datos personales, credenciales, secretos ni información reservada.</div>
       <div id="procedure-feedback-list" class="procedure-feedback-list"></div>
     `;
     shell.appendChild(panel);

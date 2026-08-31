@@ -34,15 +34,15 @@
     const style = document.createElement("style");
     style.id = "procedure-source-attribution-style";
     style.textContent = `
-      .source-attribution{margin-top:12px;padding:13px;border:1px solid rgba(34,211,238,.2);border-radius:16px;background:rgba(34,211,238,.045)}
-      .source-attribution.official_national{border-color:rgba(139,92,246,.3);background:rgba(139,92,246,.055)}
+      .source-attribution{margin-top:12px;padding:13px;border:1px solid rgba(226,170,183,.20);border-radius:16px;background:rgba(115,23,41,.045)}
+      .source-attribution.official_national{border-color:rgba(184,139,115,.25);background:rgba(184,139,115,.05)}
       .source-attribution.comparative,.source-attribution.contextual{border-color:rgba(245,158,11,.28);background:rgba(245,158,11,.055)}
       .source-attribution.insufficient{border-color:rgba(251,113,133,.28);background:rgba(251,113,133,.05)}
-      .source-attribution-category{display:block;margin-bottom:5px;color:#c4b5fd;font-size:10px;font-weight:950;letter-spacing:.09em;text-transform:uppercase}
-      .source-attribution h4{margin:0 0 6px;font-size:13px;color:#bae6fd}
+      .source-attribution-category{display:block;margin-bottom:5px;color:#e2aab7;font-size:10px;font-weight:950;letter-spacing:.09em;text-transform:uppercase}
+      .source-attribution h4{margin:0 0 6px;font-size:13px;color:#ead5da}
       .source-attribution p{margin:0;color:var(--muted);font-size:12px;line-height:1.55}
       .source-attribution-meta{display:flex;flex-wrap:wrap;gap:7px;margin-top:9px}
-      .source-attribution-meta span,.source-attribution-meta a{display:inline-flex;align-items:center;min-height:27px;padding:0 9px;border:1px solid rgba(255,255,255,.1);border-radius:999px;color:#dbeafe;background:rgba(255,255,255,.035);font-size:11px;font-weight:800;text-decoration:none}
+      .source-attribution-meta span,.source-attribution-meta a{display:inline-flex;align-items:center;min-height:27px;padding:0 9px;border:1px solid rgba(255,255,255,.1);border-radius:999px;color:#efe5e1;background:rgba(255,255,255,.035);font-size:11px;font-weight:800;text-decoration:none}
       .source-attribution-excerpt{margin-top:9px!important;padding-top:9px;border-top:1px solid rgba(255,255,255,.08)}
     `;
     document.head.appendChild(style);
@@ -53,8 +53,8 @@
     if (!citations.length) {
       return {
         status: "insufficient",
-        heading: "Cobertura documental pendiente",
-        statement: "El corpus activo aún no contiene una cita aplicable para este paso. No se presenta como requisito confirmado.",
+        heading: "Falta una fuente que confirme este paso",
+        statement: "Los documentos disponibles todavía no contienen una cita que confirme este paso. Por eso no se presenta como un requisito confirmado.",
         coverageReason: "source_not_loaded",
         requiredEvidence: asArray(step.requiredDocuments),
         citations: [],
@@ -71,8 +71,8 @@
             : primary.authorityLevel === "primary"
               ? "official_municipal"
               : "insufficient",
-      heading: primary.citationLabel || "Fuente recuperada",
-      statement: step.evidenceStatement || "Fuente recuperada por el RAG para este paso.",
+      heading: primary.citationLabel || "Fuente encontrada",
+      statement: step.evidenceStatement || "Esta fuente contiene información relacionada con este paso.",
       primaryCitation: primary,
       citations,
     };
@@ -97,7 +97,7 @@
       <section class="source-attribution ${esc(status)}" data-source-attribution="true">
         <span class="source-attribution-category">${esc(categoryLabel(status))}</span>
         <h4>${esc(attribution.heading || "Fuente del paso")}</h4>
-        <p>${esc(attribution.statement || "El corpus activo aún no contiene una cita aplicable para este paso. No se presenta como requisito confirmado.")}</p>
+        <p>${esc(attribution.statement || "Los documentos disponibles todavía no contienen una cita que confirme este paso. Por eso no se presenta como un requisito confirmado.")}</p>
         ${meta ? `<div class="source-attribution-meta">${meta}</div>` : ""}
         ${citation?.excerpt ? `<p class="source-attribution-excerpt">${esc(citation.excerpt)}</p>` : ""}
       </section>`;

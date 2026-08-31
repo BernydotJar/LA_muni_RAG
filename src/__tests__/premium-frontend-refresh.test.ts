@@ -12,10 +12,11 @@ describe("production-facing public product surface", () => {
   it("keeps concise evidence-first municipal copy in Spanish", async () => {
     const html = await readHomepage();
     assert.match(html, /lang="es"/);
-    assert.match(html, /Consulta pública/);
-    assert.match(html, /Sin caja negra/);
-    assert.match(html, /Cuando no exista evidencia suficiente, el sistema debe decirlo/);
-    assert.match(html, /La publicación estática no fabrica respuestas/);
+    assert.match(html, /Pregunta sobre documentos municipales/);
+    assert.match(html, /Revisa las fuentes/);
+    assert.doesNotMatch(html, /Sin caja negra/);
+    assert.match(html, /Si no hay información suficiente, el sistema te lo indica/);
+    assert.match(html, /no completa el vacío con información inventada/);
   });
 
   it("removes demo-story and marketing-explainer sections from the product", async () => {
@@ -26,19 +27,19 @@ describe("production-facing public product surface", () => {
     assert.doesNotMatch(html, /Sistema operable|Construido para operar, no solo para verse bien/);
   });
 
-  it("exposes Assistant and Glass Wall directly in the primary menu", async () => {
+  it("exposes the assistant and a clearly named technical view in the primary menu", async () => {
     const html = await readHomepage();
     assert.match(html, /class="nav-action"[^>]*data-open-assistant>Asistente/);
-    assert.match(html, /href="\.\/glass-wall\.html">Glass Wall/);
+    assert.match(html, /href="\.\/glass-wall\.html">Cómo funciona/);
     assert.match(html, /href="\.\/procedure-training\.html">Academia/);
-    assert.match(html, /href="#instalar">Instalar/);
+    assert.match(html, /href="#instalar">Integrar/);
   });
 
   it("keeps the primary product actions and explicit backend installation", async () => {
     const html = await readHomepage();
     const js = await readProductJs();
     assert.match(html, /id="open-chat-btn"/);
-    assert.match(html, /Abrir Glass Wall/);
+    assert.match(html, /Ver cómo funciona/);
     assert.match(html, /data-api-url="https:\/\/api\.tu-dominio\.gt"/);
     assert.match(html, /id="widget-url"/);
     assert.match(js, /\[data-open-assistant\]/);
@@ -70,12 +71,13 @@ describe("production-facing public product surface", () => {
     assert.doesNotMatch(glass, /#22d3ee|#8b5cf6|#ec4899|#67e8f9/i);
   });
 
-  it("keeps the Glass Wall technical room safe and available", async () => {
+  it("keeps the plain-language technical room safe and available", async () => {
     const html = await readGlassWall();
     assert.match(html, /lang="es"/);
-    assert.match(html, /RAG Glass Wall/);
-    assert.match(html, /Sala técnica/);
-    assert.match(html, /Sin caja negra/);
+    assert.match(html, /Cómo funciona · vista técnica/);
+    assert.match(html, /Vista técnica/);
+    assert.match(html, /Qué puedes inspeccionar/);
+    assert.doesNotMatch(html, /Sin caja negra/);
     assert.match(html, /approvedEndpointPaths/);
     assert.match(html, /prefers-reduced-motion/);
   });

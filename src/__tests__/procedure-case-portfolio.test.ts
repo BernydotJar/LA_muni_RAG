@@ -8,9 +8,9 @@ describe("local procedure case portfolio", () => {
   it("adds a complete Spanish local portfolio shell", async () => {
     const html = await readSource("public/procedure-case-portfolio.html");
 
-    assert.match(html, /Portafolio local de casos/);
-    assert.match(html, /Señales operativas, no dictamen institucional/);
-    assert.match(html, /Volver a flujos/);
+    assert.match(html, /Casos guardados en este navegador/);
+    assert.match(html, /no es una aprobación institucional/);
+    assert.match(html, /Volver a procedimientos/);
     assert.match(html, /id="case-list"/);
     assert.match(html, /class="metric-grid"/);
     assert.match(html, /procedure-case-portfolio\.css/);
@@ -41,7 +41,7 @@ describe("local procedure case portfolio", () => {
     assert.match(html, /Casos activos/);
     assert.match(html, /Con bloqueos/);
     assert.match(html, /Listos para revisión/);
-    assert.match(html, /Completados operativos/);
+    assert.match(html, /Marcados como completados/);
     assert.match(html, /case-search/);
     assert.match(html, /case-status/);
     assert.match(html, /case-sort/);
@@ -57,10 +57,10 @@ describe("local procedure case portfolio", () => {
     const runtime = await readSource("public/procedure-case-portfolio.js");
 
     assert.match(html, /no prueban cumplimiento legal/i);
-    assert.match(html, /no dictaminan recepción,\s*liquidación, pago ni cierre/i);
+    assert.match(html, /ni confirman recepción, liquidación, pago o cierre/i);
     assert.match(dataRuntime, /portfolioSchemaVersion:1/);
     assert.match(runtime, /case-portfolio-export\.json/);
-    assert.match(html, /Exportar portafolio JSON/);
+    assert.match(html, /Exportar datos \(JSON\)/);
     assert.doesNotMatch(`${dataRuntime}\n${runtime}`, /import.*portfolio/i);
   });
 

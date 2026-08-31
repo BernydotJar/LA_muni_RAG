@@ -3,20 +3,20 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>LA Muni RAG — Dashboard de feedback procedimental</title>
-    <meta name="description" content="Dashboard local para revisar feedback capturado sobre flujos procedimentales municipales." />
+    <title>LA Muni RAG — Revisión local de procedimientos</title>
+    <meta name="description" content="Revisa comentarios guardados localmente sobre procedimientos municipales y los puntos que necesitan más información." />
     <style>
       :root {
-        --bg: #070712;
-        --panel: rgba(12, 16, 36, 0.84);
-        --panel-strong: rgba(17, 24, 52, 0.95);
-        --line: rgba(148, 163, 184, 0.16);
-        --text: #f8fafc;
-        --muted: #a8b3c7;
-        --quiet: #718096;
-        --cyan: #22d3ee;
-        --violet: #8b5cf6;
-        --pink: #f472b6;
+        --bg: #171114;
+        --panel: rgba(34, 24, 27, 0.94);
+        --panel-strong: rgba(41, 29, 33, 0.97);
+        --line: rgba(231, 214, 217, 0.16);
+        --text: #f8f2ef;
+        --muted: #c3b7b2;
+        --quiet: #968984;
+        --cyan: #e2aab7;
+        --violet: #b88b73;
+        --pink: #c98a9a;
         --amber: #f59e0b;
         --red: #fb7185;
         color-scheme: dark;
@@ -28,9 +28,9 @@
         font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
         color: var(--text);
         background:
-          radial-gradient(circle at 16% 4%, rgba(34, 211, 238, 0.17), transparent 30rem),
-          radial-gradient(circle at 86% 12%, rgba(244, 114, 182, 0.15), transparent 28rem),
-          linear-gradient(180deg, #070711 0%, #080817 100%);
+          radial-gradient(circle at 16% 4%, rgba(115, 23, 41, 0.15), transparent 30rem),
+          radial-gradient(circle at 86% 12%, rgba(184, 139, 115, 0.09), transparent 28rem),
+          linear-gradient(180deg, #171114 0%, #151012 100%);
       }
       main { width: min(1180px, calc(100vw - 28px)); margin: 0 auto; padding: 28px 0 54px; }
       a { color: inherit; }
@@ -50,7 +50,7 @@
       .filter-panel { padding: 14px; display: grid; grid-template-columns: 190px minmax(0, 1fr) auto auto auto; gap: 10px; align-items: center; margin-bottom: 16px; }
       select, input, button { min-height: 44px; border-radius: 15px; border: 1px solid var(--line); color: var(--text); background: rgba(255,255,255,.045); font: 750 13px/1.2 inherit; }
       select, input { padding: 0 12px; }
-      button { cursor: pointer; padding: 0 14px; border-color: rgba(34,211,238,.24); background: linear-gradient(135deg, rgba(139,92,246,.85), rgba(34,211,238,.64)); }
+      button { cursor: pointer; padding: 0 14px; border-color: rgba(226,170,183,.24); background: linear-gradient(135deg, #7f2138, #5f1121); }
       button.secondary { background: rgba(255,255,255,.05); border-color: var(--line); }
       button.danger { background: rgba(251,113,133,.11); border-color: rgba(251,113,133,.24); color: #fecdd3; }
       .feedback-list { display: grid; gap: 12px; }
@@ -60,7 +60,7 @@
       .feedback-card p { margin: 0; color: var(--muted); line-height: 1.5; }
       .chip-row { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 10px; }
       .chip { display: inline-flex; align-items: center; min-height: 27px; padding: 0 9px; border-radius: 999px; border: 1px solid var(--line); color: var(--muted); background: rgba(255,255,255,.04); font-size: 11px; font-weight: 850; text-transform: uppercase; letter-spacing: .04em; }
-      .chip.kind { color: #bae6fd; border-color: rgba(34,211,238,.22); }
+      .chip.kind { color: #ead5da; border-color: rgba(226,170,183,.22); }
       .chip.confidence { color: #fde68a; border-color: rgba(245,158,11,.22); }
       .comment-box { margin-top: 12px; padding: 12px; border: 1px solid rgba(255,255,255,.08); border-radius: 16px; background: rgba(255,255,255,.035); color: var(--muted); line-height: 1.55; }
       .external-reference-note { margin-top: 12px; padding: 11px 12px; border: 1px solid rgba(245,158,11,.25); border-radius: 16px; background: rgba(245,158,11,.06); color: #fde68a; font-size: 12px; line-height: 1.5; }
@@ -72,27 +72,27 @@
   </head>
   <body>
     <main>
-      <div class="topbar"><a href="/procedure-workflow.html">← Volver a flujos</a><span class="status-pill">Feedback local</span></div>
+      <div class="topbar"><a href="/procedure-workflow.html">← Volver a procedimientos</a><span class="status-pill">Comentarios guardados en este navegador</span></div>
       <section class="hero">
-        <div class="eyebrow">ProcedureWorkflow feedback loop</div>
-        <h1>Dashboard de feedback procedimental</h1>
-        <p class="lead">Revisa la señal capturada localmente sobre flujos: documentos faltantes, pasos confusos, fundamentos legales ausentes, plazos no citados y evidencia de caso pendiente.</p>
-        <div class="governance-note">Este dashboard lee feedback local del navegador. No envía datos al servidor. El feedback es señal de producto, no evidencia municipal oficial.</div>
+        <div class="eyebrow">Revisión local de procedimientos</div>
+        <h1>Comentarios y puntos por revisar</h1>
+        <p class="lead">Revisa los comentarios guardados sobre procedimientos: documentos faltantes, pasos confusos, fundamentos legales que deben confirmarse, plazos sin fuente e información pendiente del caso.</p>
+        <div class="governance-note">Esta página lee comentarios guardados sólo en este navegador y no los envía al servidor. Los comentarios sirven para mejorar el producto; no son una fuente municipal oficial.</div>
       </section>
 
-      <section class="metrics-grid" aria-label="Métricas de feedback">
-        <article class="metric-card"><span>Total feedback</span><b id="metric-total">0</b></article>
-        <article class="metric-card"><span>Workflows únicos</span><b id="metric-workflows">0</b></article>
+      <section class="metrics-grid" aria-label="Resumen de comentarios">
+        <article class="metric-card"><span>Total de comentarios</span><b id="metric-total">0</b></article>
+        <article class="metric-card"><span>Procedimientos distintos</span><b id="metric-workflows">0</b></article>
         <article class="metric-card"><span>Falta documento</span><b id="metric-docs">0</b></article>
         <article class="metric-card"><span>Base legal/plazo</span><b id="metric-legal-deadline">0</b></article>
       </section>
 
-      <section class="filter-panel" aria-label="Filtros de feedback">
+      <section class="filter-panel" aria-label="Filtros de comentarios">
         <select id="feedback-type-filter" aria-label="Filtrar por tipo"><option value="all">Todos los tipos</option></select>
-        <input id="feedback-search" type="search" placeholder="Buscar workflow, paso, comentario o query" />
-        <button id="copy-filtered-json" type="button">Copiar filtrado</button>
-        <button id="copy-all-json" class="secondary" type="button">Copiar todo JSON</button>
-        <button id="clear-feedback" class="danger" type="button">Limpiar local</button>
+        <input id="feedback-search" type="search" placeholder="Buscar procedimiento, paso, comentario o pregunta" />
+        <button id="copy-filtered-json" type="button">Copiar resultados</button>
+        <button id="copy-all-json" class="secondary" type="button">Copiar todos los datos (JSON)</button>
+        <button id="clear-feedback" class="danger" type="button">Borrar comentarios locales</button>
       </section>
 
       <section id="feedback-list" class="feedback-list" aria-live="polite"></section>
@@ -152,17 +152,17 @@
         <article class="feedback-card">
           <div class="feedback-head">
             <div>
-              <h2>${escapeHtml(item.workflowTitle || "Flujo procedimental")}</h2>
+              <h2>${escapeHtml(item.workflowTitle || "Procedimiento")}</h2>
               <p>${escapeHtml(item.query || "Consulta no indicada")}</p>
             </div>
             <span class="chip kind">${escapeHtml(feedbackTypeLabel(item.feedbackType))}</span>
           </div>
           <div class="chip-row">
-            <span class="chip">${escapeHtml(item.procedureType || "unknown")}</span>
+            <span class="chip">${escapeHtml(item.procedureType || "sin tipo")}</span>
             <span class="chip">${escapeHtml(item.domainPackName || item.domainPackId || "municipal-antigua")}</span>
             <span class="chip">${escapeHtml(item.jurisdiction || "Antigua Guatemala")}</span>
-            <span class="chip confidence">confianza ${escapeHtml(item.confidence || "low")}</span>
-            <span class="chip">paso ${escapeHtml(item.stepNumber || "overall")}: ${escapeHtml(item.stepTitle || "Flujo completo")}</span>
+            <span class="chip confidence">respaldo ${escapeHtml(({ high: "alto", medium: "medio", low: "limitado" }[item.confidence] || item.confidence || "limitado"))}</span>
+            <span class="chip">paso ${escapeHtml(item.stepNumber || "general")}: ${escapeHtml(item.stepTitle || "Procedimiento completo")}</span>
             <span class="chip">${escapeHtml(item.createdAt || "sin fecha")}</span>
           </div>
           <div class="comment-box">${escapeHtml(item.comment || "Sin comentario")}</div>
@@ -173,7 +173,7 @@
         updateTypeOptions(all);
         const filtered = filteredFeedback().reverse();
         updateMetrics(all);
-        $("feedback-list").innerHTML = filtered.length ? filtered.map(renderCard).join("") : '<section class="empty-card">No hay feedback que coincida con los filtros actuales.</section>';
+        $("feedback-list").innerHTML = filtered.length ? filtered.map(renderCard).join("") : '<section class="empty-card">No hay comentarios que coincidan con los filtros actuales.</section>';
       };
       const copyJson = async (items, buttonId) => {
         await navigator.clipboard?.writeText(JSON.stringify(items, null, 2));
@@ -187,7 +187,7 @@
       $("copy-filtered-json").addEventListener("click", () => copyJson(filteredFeedback(), "copy-filtered-json"));
       $("copy-all-json").addEventListener("click", () => copyJson(readFeedback(), "copy-all-json"));
       $("clear-feedback").addEventListener("click", () => {
-        const confirmed = window.confirm("Esto eliminará el feedback local de este navegador. ¿Continuar?");
+        const confirmed = window.confirm("Esto eliminará los comentarios guardados en este navegador. ¿Continuar?");
         if (!confirmed) return;
         window.localStorage.removeItem(STORAGE_KEY);
         renderDashboard();

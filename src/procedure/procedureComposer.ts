@@ -40,7 +40,7 @@ const templateForType = (domainPack: DomainPack, type: ProcedureType): DomainWor
 
 const titleForType = (type: ProcedureType, query: string, domainPack: DomainPack): string => {
   const template = templateForType(domainPack, type);
-  if (type === "unknown" && isMunicipalAntigua(domainPack)) return `Flujo procedimental preliminar para: ${query}`;
+  if (type === "unknown" && isMunicipalAntigua(domainPack)) return `Guía preliminar del procedimiento: ${query}`;
   return template.title;
 };
 
@@ -105,10 +105,10 @@ const sourceAttributionFor = (
     const coverageReason = hasAvailableEvidence ? "no_matching_passage" : "source_not_loaded";
     return {
       status: "insufficient",
-      heading: "Cobertura documental pendiente",
+      heading: "Falta una fuente que confirme este paso",
       statement: hasAvailableEvidence
-        ? "El corpus activo contiene fuentes relacionadas, pero ninguna cita aplicable a este paso. No se presenta como requisito confirmado."
-        : "El corpus activo aún no contiene una fuente aplicable a este paso. No se presenta como requisito confirmado.",
+        ? "Hay fuentes relacionadas entre los documentos disponibles, pero ninguna confirma este paso. Por eso no se presenta como un requisito confirmado."
+        : "Los documentos disponibles todavía no contienen una fuente que confirme este paso. Por eso no se presenta como un requisito confirmado.",
       coverageReason,
       requiredEvidence,
       citations: [],
@@ -119,7 +119,7 @@ const sourceAttributionFor = (
     return {
       status: "official_municipal",
       heading: `Fuente oficial municipal: ${primary.citationLabel}`,
-      statement: `Este paso está respaldado por ${primary.authorityLabel ?? "una fuente municipal oficial"} recuperada por el RAG. Revise el extracto y la vigencia del documento antes de ejecutar.`,
+      statement: `Este paso está respaldado por ${primary.authorityLabel ?? "una fuente municipal oficial"}. Revisa el fragmento y la vigencia del documento antes de actuar.`,
       primaryCitation: primary,
       citations: evidence,
     };

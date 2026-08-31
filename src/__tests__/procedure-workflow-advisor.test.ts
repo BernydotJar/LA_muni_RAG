@@ -60,7 +60,7 @@ describe("procedure workflow advisor", () => {
     assert.ok(workflow.steps.some((step) => step.title.includes("Clasificar")));
     assert.ok(workflow.steps.some((step) => step.requiredDocuments.includes("PDM-OT")));
     assert.ok(workflow.citations.length > 0);
-    assert.match(workflow.validationWarning, /validación/);
+    assert.match(workflow.validationWarning, /revisión/);
   });
 
   it("does not invent current status for San Mateo closure", async () => {

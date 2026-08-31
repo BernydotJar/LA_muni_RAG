@@ -5,13 +5,13 @@ import { potableWaterWorkflowTemplate } from "./municipal-antigua-water.js";
 export const municipalAntiguaDomainPack: DomainPack = {
   id: "municipal-antigua",
   name: "Municipal Antigua",
-  description: "Antigua Guatemala municipal procedure assistant with national-law and external-reference safeguards.",
+  description: "Asistente para revisar procedimientos municipales de Antigua Guatemala con fuentes locales, normativa nacional y referencias comparativas claramente diferenciadas.",
   language: "es",
   branding: {
     productName: "LA Muni RAG",
-    assistantName: "Asistente Municipal",
+    assistantName: "Asistente de documentos municipales",
     organizationName: "Municipalidad de La Antigua Guatemala",
-    primaryLabel: "Antigua-first",
+    primaryLabel: "Primero, Antigua Guatemala",
   },
   workflowTypes: [
     { id: "potable_water_project", label: "Agua potable comunitaria", description: "Investigación documental y seguimiento de un proyecto de agua potable para una comunidad.", retrievalHints: [
@@ -43,8 +43,8 @@ export const municipalAntiguaDomainPack: DomainPack = {
     { id: "council_minutes", label: "Actas de Concejo", description: "Actas o puntos de Concejo.", authorityLevel: "primary", titleKeywords: ["acta", "concejo"], sourceTypes: ["council_minutes"] },
     { id: "community_file", label: "Ficha comunitaria", description: "COCODE, COMUDE, comunidad o aldea.", authorityLevel: "context", titleKeywords: ["cocode", "comude", "aldea", "comunidad", "ficha comunitaria"], sourceTypes: [] },
     { id: "case_file", label: "Expediente de caso", description: "Expediente o caso específico.", authorityLevel: "primary", titleKeywords: ["san mateo", "escuela", "expediente", "contrato de obra"], sourceTypes: [] },
-    { id: "war_room", label: "War room", description: "Fuente operativa no normativa.", authorityLevel: "context", titleKeywords: ["war room", "banco de propuestas", "kpi", "costos", "metas90"], sourceTypes: [] },
-    unknownAuthority,
+    { id: "war_room", label: "Fuente operativa", description: "Información de trabajo que no tiene carácter normativo.", authorityLevel: "context", titleKeywords: ["war room", "banco de propuestas", "kpi", "costos", "metas90"], sourceTypes: [] },
+    { ...unknownAuthority, label: "Sin clasificar", description: "Metadatos insuficientes para clasificar la autoridad de la fuente." },
   ],
   classifierRules: [
     {
@@ -71,9 +71,9 @@ export const municipalAntiguaDomainPack: DomainPack = {
     potableWaterWorkflowTemplate,
     {
       workflowType: "public_works",
-      title: "Flujo procedimental para obra pública municipal",
-      defaultSummary: "Encontré evidencia relacionada y organicé un flujo municipal conservador.",
-      validationWarning: "Este flujo organiza evidencia documental y no sustituye validación de Gerencia Municipal, DAFIM, Asesoría Jurídica, unidad técnica, Concejo Municipal o COCODE cuando corresponda.",
+      title: "Guía para revisar una obra pública municipal",
+      defaultSummary: "Organicé los pasos que aparecen relacionados en los documentos y separé lo que todavía requiere confirmación.",
+      validationWarning: "Esta guía organiza información documental y no sustituye la revisión de Gerencia Municipal, DAFIM, Asesoría Jurídica, la unidad técnica, el Concejo Municipal o el COCODE cuando corresponda.",
       steps: [
         { title: "Clasificar el proyecto", action: "Determinar si la iniciativa es obra pública municipal, inversión nueva, ampliación, remodelación, mantenimiento o proyecto sujeto a SNIP u otra planificación aplicable.", requiredDocuments: ["Perfil del proyecto", "Justificación técnica", "Ubicación o terreno", "Necesidad comunitaria o institucional"], outputDocuments: ["Clasificación preliminar del proyecto"], evidencePatterns: ["obra", "proyecto", "snip", "constru"] },
         { title: "Validar planificación y presupuesto", action: "Cruzar la iniciativa con PDM-OT, POM/POA, presupuesto y disponibilidad financiera antes de iniciar contratación.", requiredDocuments: ["PDM-OT", "POM/POA", "Presupuesto", "Disponibilidad presupuestaria"], outputDocuments: ["Validación de alineación y financiamiento"], evidencePatterns: ["pdm", "poa", "pom", "presupuesto", "plan"] },
@@ -85,8 +85,8 @@ export const municipalAntiguaDomainPack: DomainPack = {
     },
     {
       workflowType: "procurement",
-      title: "Flujo procedimental para contratación o adquisición municipal",
-      defaultSummary: "Organicé un flujo conservador de contratación con evidencia y validación requerida.",
+      title: "Guía para revisar una contratación o adquisición municipal",
+      defaultSummary: "Organicé los pasos de contratación respaldados por los documentos y marqué lo que todavía requiere revisión.",
       validationWarning: "Debe validarse contra normativa vigente, expediente y autoridades municipales competentes.",
       steps: [
         { title: "Preparar requerimiento", action: "Definir necesidad, objeto, especificaciones y respaldo presupuestario.", requiredDocuments: ["Solicitud", "Especificaciones técnicas", "Disponibilidad presupuestaria"], outputDocuments: ["Requerimiento completo"], evidencePatterns: ["solicitud", "requerimiento", "presupuesto"] },
@@ -97,11 +97,11 @@ export const municipalAntiguaDomainPack: DomainPack = {
     },
     {
       workflowType: "project_closure",
-      title: "Flujo procedimental para cierre y liquidación de obra municipal",
-      defaultSummary: "El flujo lista documentos mínimos para validar cierre sin inventar estado actual.",
+      title: "Guía para revisar el cierre y la liquidación de una obra municipal",
+      defaultSummary: "La guía enumera los documentos necesarios para revisar el cierre sin afirmar un estado que no esté respaldado.",
       validationWarning: "No afirma cierre, recepción ni liquidación sin expediente específico y validación municipal.",
       steps: [
-        { title: "Verificar expediente del caso", action: "Localizar el expediente específico antes de afirmar estado actual, recepción o cierre.", requiredDocuments: ["Contrato", "Expediente técnico", "Actas", "Informes de supervisión", "Estimaciones"], outputDocuments: ["Inventario documental del expediente"], evidencePatterns: ["expediente", "contrato", "obra", "escuela", "san mateo"], notes: "Si el expediente específico no está en corpus, el sistema solo puede listar faltantes." },
+        { title: "Verificar expediente del caso", action: "Localizar el expediente específico antes de afirmar estado actual, recepción o cierre.", requiredDocuments: ["Contrato", "Expediente técnico", "Actas", "Informes de supervisión", "Estimaciones"], outputDocuments: ["Inventario documental del expediente"], evidencePatterns: ["expediente", "contrato", "obra", "escuela", "san mateo"], notes: "Si el expediente específico no está entre los documentos disponibles, el sistema sólo puede indicar qué información falta." },
         { title: "Confirmar recepción física o técnica", action: "Revisar si existe acta de recepción, informe de supervisión o documento equivalente que demuestre entrega de la obra.", requiredDocuments: ["Acta de recepción", "Informe de supervisión", "Evidencia de entrega"], outputDocuments: ["Confirmación documental de recepción"], evidencePatterns: ["recepcion", "recepción", "supervision", "entrega"] },
         { title: "Validar pagos, estimaciones y liquidación", action: "Revisar estimaciones, pagos, saldos, liquidación y cierre administrativo/financiero.", requiredDocuments: ["Estimaciones", "Pagos", "Liquidación", "Presupuesto/ejecución"], outputDocuments: ["Validación financiera de cierre"], evidencePatterns: ["estimacion", "pago", "liquidacion", "presupuesto"] },
         { title: "Confirmar aprobación o conocimiento institucional", action: "Verificar si el cierre requiere punto de Concejo, certificación, intervención de gerencia, unidad técnica o comunidad/COCODE según expediente.", requiredDocuments: ["Acta o punto de Concejo si aplica", "Certificación", "Visto bueno técnico", "Documento comunitario si aplica"], outputDocuments: ["Validación institucional del cierre"], evidencePatterns: ["concejo", "acta", "cocode", "gerencia", "certificacion"] },
@@ -109,8 +109,8 @@ export const municipalAntiguaDomainPack: DomainPack = {
     },
     {
       workflowType: "unknown",
-      title: "Flujo procedimental preliminar",
-      defaultSummary: "Devuelvo un checklist preliminar porque el tipo de procedimiento no está suficientemente clasificado.",
+      title: "Guía preliminar del procedimiento",
+      defaultSummary: "Presento una lista de revisión preliminar porque todavía no hay información suficiente para clasificar el procedimiento.",
       validationWarning: "Confirmar fuente aplicable y responsable institucional antes de ejecutar.",
       steps: [
         { title: "Identificar fuente aplicable", action: "Determinar qué documento oficial regula el procedimiento.", requiredDocuments: ["Documento oficial", "Norma aplicable"], outputDocuments: ["Fuente rectora identificada"], evidencePatterns: ["procedimiento", "manual", "norma"] },
@@ -120,7 +120,7 @@ export const municipalAntiguaDomainPack: DomainPack = {
     },
   ],
   governanceRules: [
-    { id: "antigua-first", label: "Antigua-first", warning: "Priorizar documentos oficiales de Antigua Guatemala y legislación nacional aplicable." },
+    { id: "antigua-first", label: "Primero, Antigua Guatemala", warning: "Dar prioridad a documentos oficiales de Antigua Guatemala y a la legislación nacional aplicable." },
     { id: "external-reference", label: "Referencia externa", warning: "Encontré referencia procedimental de otra municipalidad; debe validarse contra documentos oficiales de Antigua Guatemala y normativa nacional aplicable.", appliesToAuthorityClasses: ["external_reference"] },
     { id: "missing-local-source", label: "Falta fuente local", warning: "Sin una fuente oficial local no se debe afirmar que el flujo es obligatorio para Antigua.", appliesWhenNoLocalEvidence: true },
   ],

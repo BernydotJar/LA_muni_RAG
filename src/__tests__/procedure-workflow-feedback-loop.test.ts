@@ -52,7 +52,7 @@ describe("procedure workflow feedback loop", () => {
   it("warns users not to paste confidential information", async () => {
     const script = await readSource("public/procedure-feedback.js");
 
-    assert.match(script, /No se envía información al servidor/);
+    assert.match(script, /no se envían al servidor/i);
     assert.match(script, /No pegues datos personales/);
     assert.match(script, /información reservada/);
   });

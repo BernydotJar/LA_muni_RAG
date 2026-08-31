@@ -3,22 +3,22 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>LA Muni RAG — Flujo procedimental</title>
-    <meta name="description" content="Vista de flujos procedimentales municipales con pasos, documentos, brechas y evidencia citada." />
+    <title>LA Muni RAG — Guía de procedimientos</title>
+    <meta name="description" content="Revisa pasos de procedimientos municipales, los documentos que los respaldan y la información que todavía falta confirmar." />
     <link rel="stylesheet" href="./procedure-workflow-premium.css" />
     <style>
       :root {
-        --bg: #070712;
-        --panel: rgba(12, 16, 36, 0.82);
-        --panel-strong: rgba(16, 24, 52, 0.94);
-        --line: rgba(148, 163, 184, 0.16);
-        --line-strong: rgba(125, 211, 252, 0.28);
-        --text: #f8fafc;
-        --muted: #a8b3c7;
-        --quiet: #718096;
-        --cyan: #22d3ee;
-        --violet: #8b5cf6;
-        --pink: #f472b6;
+        --bg: #171114;
+        --panel: rgba(34, 24, 27, 0.92);
+        --panel-strong: rgba(41, 29, 33, 0.97);
+        --line: rgba(231, 214, 217, 0.15);
+        --line-strong: rgba(226, 170, 183, 0.26);
+        --text: #f8f2ef;
+        --muted: #c3b7b2;
+        --quiet: #968984;
+        --cyan: #e2aab7;
+        --violet: #b88b73;
+        --pink: #c98a9a;
         --green: #22c55e;
         --amber: #f59e0b;
         --red: #fb7185;
@@ -33,9 +33,9 @@
         font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
         color: var(--text);
         background:
-          radial-gradient(circle at 20% 0%, rgba(34, 211, 238, 0.16), transparent 28rem),
-          radial-gradient(circle at 84% 12%, rgba(139, 92, 246, 0.20), transparent 32rem),
-          linear-gradient(180deg, #070711 0%, #090918 42%, #070712 100%);
+          radial-gradient(circle at 20% 0%, rgba(115, 23, 41, 0.16), transparent 28rem),
+          radial-gradient(circle at 84% 12%, rgba(184, 139, 115, 0.10), transparent 32rem),
+          linear-gradient(180deg, #171114 0%, #1c1417 44%, #151012 100%);
       }
 
       a { color: inherit; }
@@ -56,7 +56,7 @@
       }
       .eyebrow { color: var(--cyan); font-size: 12px; font-weight: 900; letter-spacing: .14em; text-transform: uppercase; }
       h1 { margin: 10px 0 12px; font-size: clamp(40px, 7vw, 82px); line-height: .92; letter-spacing: -.07em; }
-      h1 span { display: block; background: linear-gradient(115deg, #fff, #c4b5fd 58%, #22d3ee); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+      h1 span { display: block; color: #e7c9d0; }
       .lead { max-width: 780px; margin: 0; color: var(--muted); font-size: 16px; line-height: 1.65; }
       .hero-note { padding: 18px; border: 1px solid var(--line); border-radius: 24px; background: rgba(5, 8, 22, 0.6); color: var(--muted); font-size: 13px; line-height: 1.55; }
       .hero-note b { display: block; color: var(--cyan); margin-bottom: 8px; text-transform: uppercase; letter-spacing: .10em; font-size: 11px; }
@@ -74,13 +74,13 @@
       input { padding: 0 14px; outline: none; }
       select { padding: 0 12px; }
       textarea { width: 100%; padding: 12px 14px; resize: vertical; line-height: 1.45; outline: none; }
-      button { cursor: pointer; border-color: rgba(34,211,238,.24); background: linear-gradient(135deg, rgba(139,92,246,.92), rgba(34,211,238,.72)); font-weight: 850; padding: 0 16px; }
+      button { cursor: pointer; border-color: rgba(226,170,183,.24); background: linear-gradient(135deg, #7f2138, #5f1121); font-weight: 850; padding: 0 16px; }
       button.secondary { background: rgba(255,255,255,.05); border-color: var(--line); }
       button:disabled { opacity: .55; cursor: wait; }
 
       .workflow-shell { display: none; overflow: hidden; }
       .workflow-shell.visible { display: block; }
-      .workflow-header { padding: 22px; border-bottom: 1px solid var(--line); background: linear-gradient(135deg, rgba(34,211,238,.08), rgba(139,92,246,.08)); }
+      .workflow-header { padding: 22px; border-bottom: 1px solid var(--line); background: linear-gradient(135deg, rgba(115,23,41,.09), rgba(184,139,115,.055)); }
       .workflow-meta { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
       .chip { display: inline-flex; align-items: center; gap: 6px; min-height: 28px; padding: 0 10px; border: 1px solid var(--line); border-radius: 999px; color: var(--muted); background: rgba(255,255,255,.04); font-size: 11px; font-weight: 850; text-transform: uppercase; letter-spacing: .04em; }
       .chip.high { color: #86efac; border-color: rgba(34,197,94,.34); }
@@ -105,7 +105,7 @@
       .doc-box b { display: block; margin-bottom: 8px; color: var(--text); font-size: 12px; text-transform: uppercase; letter-spacing: .07em; }
       ul { margin: 0; padding-left: 18px; color: var(--muted); line-height: 1.55; }
       .citation-strip { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
-      .citation-chip { max-width: 100%; padding: 7px 9px; border: 1px solid rgba(34,211,238,.16); border-radius: 999px; color: #bae6fd; background: rgba(34,211,238,.055); font-size: 11px; font-weight: 760; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+      .citation-chip { max-width: 100%; padding: 7px 9px; border: 1px solid rgba(226,170,183,.16); border-radius: 10px; color: #ead5da; background: rgba(115,23,41,.055); font-size: 11px; font-weight: 760; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
       .step-note { margin: 12px 0 0; color: #fde68a; font-size: 12px; line-height: 1.5; }
 
       .gap-grid { display: grid; gap: 10px; }
@@ -115,7 +115,7 @@
       .procedure-gap-card p { margin: 0; color: var(--muted); font-size: 13px; line-height: 1.5; }
 
       .validation-warning { padding: 15px; border: 1px solid rgba(34,197,94,.22); border-radius: 20px; background: rgba(34,197,94,.055); color: #bbf7d0; font-size: 13px; line-height: 1.55; }
-      .procedure-feedback-panel { margin: 20px; padding: 18px; border: 1px solid rgba(244,114,182,.22); border-radius: 24px; background: linear-gradient(135deg, rgba(244,114,182,.07), rgba(34,211,238,.04)); }
+      .procedure-feedback-panel { margin: 20px; padding: 18px; border: 1px solid rgba(226,170,183,.18); border-radius: 20px; background: rgba(115,23,41,.045); }
       .procedure-feedback-header { display: flex; justify-content: space-between; gap: 12px; align-items: flex-start; margin-bottom: 14px; }
       .procedure-feedback-header h2 { margin: 0 0 6px; font-size: 20px; letter-spacing: -.02em; }
       .procedure-feedback-header p, .procedure-feedback-privacy { margin: 0; color: var(--muted); font-size: 13px; line-height: 1.5; }
@@ -138,43 +138,43 @@
     </style>
   </head>
   <body class="procedure-product">
-    <a class="procedure-skip-link" href="#procedure-main">Saltar al generador</a>
+    <a class="procedure-skip-link" href="#procedure-main">Saltar a la consulta</a>
     <main id="procedure-main" tabindex="-1">
-      <div class="topbar"><a class="back-link" href="/">← Volver al inicio</a><a class="back-link" href="./domain-intake.html">Intake documental</a><span class="status-pill" id="domain-status-pill">Procedure Workflow Advisor</span></div>
+      <div class="topbar"><a class="back-link" href="/">← Volver al inicio</a><a class="back-link" href="./domain-intake.html">Preparar documentos</a><span class="status-pill" id="domain-status-pill">Guía de procedimientos</span></div>
       <section class="hero">
         <div>
-          <div class="eyebrow" id="domain-eyebrow">Flujos municipales con evidencia</div>
-          <h1 id="domain-title">Del documento al <span>paso a paso.</span></h1>
-          <p class="lead" id="domain-lead">Consulta procedimientos municipales y revisa un flujo estructurado con responsables cuando estén citados, documentos requeridos, brechas, evidencia y validación humana requerida.</p>
+          <div class="eyebrow" id="domain-eyebrow">Procedimientos municipales con fuentes</div>
+          <h1 id="domain-title">De la pregunta a los <span>pasos que puedes comprobar.</span></h1>
+          <p class="lead" id="domain-lead">Describe lo que necesitas hacer. La guía organiza los pasos que aparecen respaldados en documentos, indica quién participa cuando la fuente lo señala y separa lo que todavía falta confirmar.</p>
         </div>
-        <aside class="hero-note"><b id="domain-note-title">Antigua-first</b><span id="domain-note-body">La vista prioriza documentos oficiales de Antigua Guatemala. Si usa referencias externas, las marca como comparativas y exige validación contra normativa local y nacional.</span></aside>
+        <aside class="hero-note"><b id="domain-note-title">Primero, Antigua Guatemala</b><span id="domain-note-body">La guía da prioridad a documentos oficiales de Antigua Guatemala. Si muestra una referencia externa, la identifica como comparativa para que la valides contra las normas locales y nacionales aplicables.</span></aside>
       </section>
 
       <section class="legal-framework" aria-labelledby="legal-framework-title">
-        <div><div class="eyebrow">Marco normativo de contratación</div><h2 id="legal-framework-title">Ley de Contrataciones del Estado</h2><p>Los flujos de compra, cotización y licitación municipal deben contrastarse con el Decreto 57-92, su reglamento y reformas vigentes, además de GUATECOMPRAS y las reglas presupuestarias aplicables.</p></div>
+        <div><div class="eyebrow">Marco normativo de contratación</div><h2 id="legal-framework-title">Ley de Contrataciones del Estado</h2><p>Los procedimientos de compra, cotización y licitación municipal deben revisarse junto con el Decreto 57-92, su reglamento y sus reformas vigentes, además de GUATECOMPRAS y las reglas presupuestarias aplicables.</p></div>
         <div class="legal-framework-actions"><span class="legal-framework-badge">Referencia obligatoria a verificar</span><a href="https://www.congreso.gob.gt/buscador_decretos/ley_de_contrataciones_del_estado" target="_blank" rel="noopener noreferrer">Consultar fuente oficial del Congreso</a></div>
-        <p class="legal-framework-warning">La ley todavía debe incorporarse al corpus gobernado para que sus artículos aparezcan como citas del RAG. El sistema no presume vigencia, modalidad, monto ni plazo sin evidencia documental.</p>
+        <p class="legal-framework-warning">La ley todavía no forma parte de los documentos que este buscador puede citar artículo por artículo. Por eso el sistema no da por hecho su vigencia, modalidad, monto o plazo: esos datos deben verificarse en una fuente oficial aplicable.</p>
       </section>
 
       <section class="procedure-command" aria-labelledby="procedure-command-title">
         <form class="query-card" id="procedure-workflow-form">
           <div class="command-heading">
-            <div><div class="eyebrow">Consulta guiada</div><h2 id="procedure-command-title">Construye un flujo verificable</h2></div>
-            <p id="procedure-command-help">Describe el resultado municipal que necesitas. El sistema separará pasos respaldados, inferencias y documentos faltantes.</p>
+            <div><div class="eyebrow">Consulta guiada</div><h2 id="procedure-command-title">Revisa los pasos y su respaldo</h2></div>
+            <p id="procedure-command-help">Describe el resultado municipal que necesitas. La guía separará los pasos respaldados por documentos, las inferencias que requieren revisión y la información que todavía falta.</p>
           </div>
           <div class="query-grid">
             <label class="procedure-field"><span>Pregunta o resultado</span><input id="procedure-query" name="q" autocomplete="off" aria-describedby="procedure-command-help" value="¿Qué hay que hacer para construir un estadio municipal?" /></label>
-            <label class="procedure-field"><span>Recuperación</span><select id="procedure-mode" name="mode"><option value="keyword">palabras clave</option><option value="hybrid">combinado</option><option value="phrase">frase exacta</option></select></label>
+            <label class="procedure-field"><span>Método de búsqueda</span><select id="procedure-mode" name="mode"><option value="keyword">coincidencias de palabras</option><option value="hybrid">combinado</option><option value="phrase">frase exacta</option></select></label>
             <label class="procedure-field"><span>Fuentes</span><select id="procedure-limit" name="limit"><option value="6">6 fuentes</option><option value="8" selected>8 fuentes</option><option value="12">12 fuentes</option></select></label>
-            <button id="procedure-submit" type="submit"><span class="submit-label">Generar flujo</span></button>
+            <button id="procedure-submit" type="submit"><span class="submit-label">Revisar procedimiento</span></button>
           </div>
-          <div class="procedure-runtime-status" id="procedure-runtime-status" data-state="idle" role="status" aria-live="polite"><span class="runtime-indicator" aria-hidden="true"></span><span id="procedure-runtime-message">Listo para consultar evidencia pública.</span></div>
+          <div class="procedure-runtime-status" id="procedure-runtime-status" data-state="idle" role="status" aria-live="polite"><span class="runtime-indicator" aria-hidden="true"></span><span id="procedure-runtime-message">Listo para buscar en los documentos públicos.</span></div>
         </form>
       </section>
 
       <div class="error-box" id="procedure-error" role="alert"></div>
       <section class="procedure-loading-shell" id="procedure-loading" aria-hidden="true"><div class="loading-card"></div><div class="loading-card"></div><div class="loading-card"></div></section>
-      <section class="empty-state" id="procedure-empty"><div class="empty-state-inner"><div class="empty-state-icon" aria-hidden="true">↳</div><strong>Convierte una pregunta en un expediente de trabajo</strong><span>Obtén pasos, documentos, brechas y citas. Cada afirmación mantiene visible su nivel de respaldo.</span></div></section>
+      <section class="empty-state" id="procedure-empty"><div class="empty-state-inner"><div class="empty-state-icon" aria-hidden="true">↳</div><strong>Describe lo que necesitas hacer</strong><span>La guía organizará los pasos encontrados, las fuentes que los respaldan y la información que falta confirmar.</span></div></section>
       <section class="workflow-shell" id="procedure-workflow" aria-live="polite"></section>
     </main>
 
@@ -202,7 +202,7 @@
         branding: {
           productName: "LA Muni RAG",
           assistantName: "Asistente Municipal",
-          primaryLabel: "Antigua-first",
+          primaryLabel: "Primero, Antigua Guatemala",
         },
         defaultQuery: "¿Qué hay que hacer para construir un estadio municipal?",
       };
@@ -221,18 +221,18 @@
         activeDomainPack = { ...activeDomainPack, ...(domainPack || {}) };
         const branding = activeDomainPack.branding || {};
         document.documentElement.lang = activeDomainPack.language || "es";
-        $("domain-status-pill").textContent = branding.assistantName || activeDomainPack.name || "Procedure Workflow Advisor";
+        $("domain-status-pill").textContent = branding.assistantName || activeDomainPack.name || "Guía de procedimientos";
 
         if (isMunicipalDomain()) {
-          $("domain-eyebrow").textContent = "Flujos municipales con evidencia";
+          $("domain-eyebrow").textContent = "Procedimientos municipales con fuentes";
           setHeroTitle("Del documento al ", "paso a paso.");
-          $("domain-lead").textContent = "Consulta procedimientos municipales y revisa un flujo estructurado con responsables cuando estén citados, documentos requeridos, brechas, evidencia y validación humana requerida.";
-          $("domain-note-title").textContent = branding.primaryLabel || "Antigua-first";
+          $("domain-lead").textContent = "Describe lo que necesitas hacer. La guía organiza los pasos respaldados por documentos, indica quién participa cuando la fuente lo señala y separa lo que todavía falta confirmar.";
+          $("domain-note-title").textContent = branding.primaryLabel || "Primero, Antigua Guatemala";
           $("domain-note-body").textContent = "La vista prioriza documentos oficiales de Antigua Guatemala. Si usa referencias externas, las marca como comparativas y exige validación contra normativa local y nacional.";
         } else {
-          $("domain-eyebrow").textContent = `${branding.primaryLabel || "Evidence-first"} workflow assistant`;
-          setHeroTitle(`${branding.productName || activeDomainPack.name || "Procedure"} `, "workflows.");
-          $("domain-lead").textContent = `Generate a structured ${activeDomainPack.name || "domain"} workflow with required documents, outputs, gaps, citations, and human validation.`;
+          $("domain-eyebrow").textContent = `${branding.primaryLabel || "Con fuentes visibles"} · guía de procedimientos`;
+          setHeroTitle(`${branding.productName || activeDomainPack.name || "Procedimientos"}: `, "pasos con fuentes.");
+          $("domain-lead").textContent = `Organiza un procedimiento para ${activeDomainPack.name || "el área activa"} y muestra documentos requeridos, resultados esperados, información pendiente, fuentes y revisión humana.`;
           $("domain-note-title").textContent = activeDomainPack.name || "Domain pack";
           $("domain-note-body").textContent = "This view uses the active server-side domain pack. Comparative or external references must be validated against authoritative documents for the active domain.";
         }
@@ -253,7 +253,7 @@
         }
       };
 
-      const renderList = (items, empty = "No indicado en evidencia") => {
+      const renderList = (items, empty = "No indicado en los documentos") => {
         const values = asArray(items).filter(Boolean);
         if (!values.length) return `<p>${esc(empty)}</p>`;
         return `<ul>${values.map((item) => `<li>${esc(item)}</li>`).join("")}</ul>`;
@@ -282,22 +282,22 @@
         <article class="procedure-step-card">
           <div class="step-head">
             <div class="step-number">${esc(step.stepNumber || "?")}</div>
-            <div><h3 class="step-title">${esc(step.title || "Paso sin título")}</h3><p class="step-action">${esc(step.action || "Acción pendiente de evidencia.")}</p></div>
-            <span class="chip ${esc(step.confidence || "low")}">confianza ${esc(labelForConfidence(step.confidence))}</span>
+            <div><h3 class="step-title">${esc(step.title || "Paso sin título")}</h3><p class="step-action">${esc(step.action || "Acción pendiente de confirmar en los documentos.")}</p></div>
+            <span class="chip ${esc(step.confidence || "low")}">respaldo documental ${esc(labelForConfidence(step.confidence))}</span>
           </div>
           <div class="doc-columns">
             <div class="doc-box"><b>Documentos requeridos</b>${renderList(step.requiredDocuments)}</div>
-            <div class="doc-box"><b>Salidas / entregables</b>${renderList(step.outputDocuments)}</div>
+            <div class="doc-box"><b>Resultados esperados</b>${renderList(step.outputDocuments)}</div>
           </div>
           <div class="citation-strip">${renderCitations(step.sourceEvidence || step.legalBasis)}</div>
           ${step.notes ? `<p class="step-note">${esc(step.notes)}</p>` : ""}
         </article>`;
 
-      const renderGap = (gap) => `<article class="procedure-gap-card ${esc(gap.severity || "important")}"><b>${esc(gap.missingItem || "Brecha documental")}</b><p>${esc(gap.whyItMatters || "Requiere validación documental.")}</p><p><strong>Para confirmar:</strong> ${esc(gap.requiredToConfirm || "Fuente oficial aplicable")}</p><span class="chip ${gap.severity === "blocking" ? "low" : "medium"}">${esc(labelForSeverity(gap.severity))}</span></article>`;
+      const renderGap = (gap) => `<article class="procedure-gap-card ${esc(gap.severity || "important")}"><b>${esc(gap.missingItem || "Información que falta")}</b><p>${esc(gap.whyItMatters || "Hace falta revisar una fuente que lo confirme.")}</p><p><strong>Para confirmar:</strong> ${esc(gap.requiredToConfirm || "Fuente oficial que permita confirmarlo")}</p><span class="chip ${gap.severity === "blocking" ? "low" : "medium"}">${esc(labelForSeverity(gap.severity))}</span></article>`;
       const externalWarningText = (metadata) =>
         metadata.domainPackId === "municipal-antigua"
-          ? "Este flujo usa referencia externa. Debe validarse contra documentos oficiales de Antigua Guatemala y normativa nacional aplicable."
-          : "Este flujo usa referencia externa o comparativa. Debe validarse contra documentos oficiales del dominio activo antes de tratarlo como procedimiento.";
+          ? "Esta guía incluye una referencia externa. Debes compararla con documentos oficiales de Antigua Guatemala y con la normativa nacional aplicable antes de usarla."
+          : "Esta guía incluye una referencia externa o comparativa. Debes validarla contra documentos oficiales del ámbito correspondiente antes de tratarla como un procedimiento aplicable.";
 
       const checklistText = (workflow) => {
         const lines = [workflow.title, workflow.summary, "", "Pasos:"];
@@ -309,7 +309,7 @@
         });
         lines.push("Brechas:");
         asArray(workflow.gaps).forEach((gap) => lines.push(`- ${gap.missingItem}: ${gap.requiredToConfirm}`));
-        lines.push("", `Validación: ${workflow.validationWarning || "Validación humana requerida."}`);
+        lines.push("", `Revisión: ${workflow.validationWarning || "Revisión humana requerida."}`);
         return lines.join("\n");
       };
 
@@ -321,9 +321,9 @@
         shell.innerHTML = `
           <header class="workflow-header">
             <div class="eyebrow">${esc(workflow.procedureType || "procedimiento")}</div>
-            <h2>${esc(workflow.title || "Flujo procedimental")}</h2>
-            <p class="lead">${esc(workflow.summary || "Flujo generado desde evidencia disponible.")}</p>
-            <div class="workflow-overview" aria-label="Resumen del flujo">
+            <h2>${esc(workflow.title || "Guía del procedimiento")}</h2>
+            <p class="lead">${esc(workflow.summary || "Resumen organizado a partir de los documentos disponibles.")}</p>
+            <div class="workflow-overview" aria-label="Resumen del procedimiento">
               <div class="workflow-metric"><span>Resultado</span><b>${esc(steps.length ? `${steps.length} pasos` : "Sin pasos")}</b></div>
               <div class="workflow-metric"><span>Cobertura</span><b>${esc(metadata.coveragePercent ?? 0)}%</b></div>
               <div class="workflow-metric"><span>Respaldados</span><b>${esc(metadata.supportedStepCount ?? 0)}</b></div>
@@ -332,27 +332,27 @@
             </div>
             <div class="workflow-meta">
               <span class="chip">jurisdicción: ${esc(workflow.jurisdiction || "Antigua Guatemala")}</span>
-              <span class="chip">dominio: ${esc(metadata.domainPackName || metadata.domainPackId || "municipal-antigua")}</span>
-              <span class="chip ${esc(workflow.confidence || "low")}">confianza ${esc(labelForConfidence(workflow.confidence))}</span>
-              <span class="chip">evidencia: ${esc(metadata.evidenceCount ?? workflow.citations?.length ?? 0)}</span>
-              <span class="chip">consultas documentales: ${esc(metadata.retrievalQueryCount ?? 1)}</span>
+              <span class="chip">ámbito: ${esc(metadata.domainPackName || metadata.domainPackId || "municipal-antigua")}</span>
+              <span class="chip ${esc(workflow.confidence || "low")}">respaldo documental ${esc(labelForConfidence(workflow.confidence))}</span>
+              <span class="chip">fuentes: ${esc(metadata.evidenceCount ?? workflow.citations?.length ?? 0)}</span>
+              <span class="chip">búsquedas realizadas: ${esc(metadata.retrievalQueryCount ?? 1)}</span>
               <span class="chip">pasos respaldados: ${esc(metadata.supportedStepCount ?? 0)}</span>
               <span class="chip">cobertura pendiente: ${esc(metadata.pendingStepCount ?? gaps.length)}</span>
-              <button class="secondary" id="copy-procedure-checklist" type="button">Copiar checklist</button>
+              <button class="secondary" id="copy-procedure-checklist" type="button">Copiar lista de revisión</button>
             </div>
             ${metadata.hasExternalReference ? `<div class="external-warning">${esc(externalWarningText(metadata))}</div>` : ""}
           </header>
           <div class="workflow-body">
             <section><h2 class="section-title">Flujo paso a paso</h2><div class="step-grid">${steps.map(renderStep).join("") || "<p>No hay pasos disponibles.</p>"}</div></section>
-            <section><h2 class="section-title">Brechas y documentos faltantes</h2><div class="gap-grid">${gaps.map(renderGap).join("") || "<p>No se reportaron brechas en la evidencia recuperada.</p>"}</div></section>
-            <section class="validation-warning"><strong>Validación humana requerida.</strong> ${esc(workflow.validationWarning || (isMunicipalDomain() ? "Este flujo debe revisarse con las unidades municipales competentes." : "This workflow must be reviewed by the accountable domain owner before execution."))}</section>
+            <section><h2 class="section-title">Información y documentos que faltan</h2><div class="gap-grid">${gaps.map(renderGap).join("") || "<p>No se identificaron faltantes en la información encontrada.</p>"}</div></section>
+            <section class="validation-warning"><strong>Revisión humana requerida.</strong> ${esc(workflow.validationWarning || (isMunicipalDomain() ? "Esta guía debe revisarse con las unidades municipales competentes antes de actuar." : "Esta guía debe revisarse con la persona responsable del área antes de ejecutarla."))}</section>
           </div>`;
         shell.classList.add("visible");
         $("procedure-empty").style.display = "none";
         $("copy-procedure-checklist")?.addEventListener("click", async () => {
           await navigator.clipboard?.writeText(checklistText(workflow));
-          $("copy-procedure-checklist").textContent = "Checklist copiado";
-          setTimeout(() => { $("copy-procedure-checklist").textContent = "Copiar checklist"; }, 1400);
+          $("copy-procedure-checklist").textContent = "Lista copiada";
+          setTimeout(() => { $("copy-procedure-checklist").textContent = "Copiar lista de revisión"; }, 1400);
         });
         window.dispatchEvent(new CustomEvent("procedure-workflow:rendered", { detail: { workflow } }));
       };
@@ -362,7 +362,7 @@
         if (status === 403) return "Este origen no está autorizado para consultar el gateway público.";
         if (status === 503) return "El servicio procedimental no está disponible temporalmente.";
         if (status === 400) return "Revisa la pregunta y los controles de consulta.";
-        return payload?.error?.message || "No se pudo generar el flujo procedimental.";
+        return payload?.error?.message || "No se pudo preparar la guía del procedimiento.";
       };
 
       const loadProcedureWorkflow = async () => {
@@ -370,7 +370,7 @@
         const mode = $("procedure-mode").value;
         const limit = $("procedure-limit").value;
         if (!query) {
-          setRuntimeState("error", "Escribe una pregunta antes de generar el flujo.");
+          setRuntimeState("error", "Escribe una pregunta antes de revisar el procedimiento.");
           $("procedure-query").focus();
           return;
         }
@@ -382,16 +382,16 @@
         $("procedure-loading").setAttribute("aria-hidden", "false");
         $("procedure-empty").style.display = "none";
         $("procedure-workflow").classList.remove("visible");
-        setRuntimeState("loading", "Buscando evidencia y construyendo el flujo…");
+        setRuntimeState("loading", "Buscando en los documentos y organizando los pasos…");
         try {
           const response = await fetch(`/api/procedure?${params.toString()}`, { headers: { accept: "application/json" } });
           const payload = await response.json().catch(() => null);
           if (!response.ok) throw Object.assign(new Error(publicErrorMessage(response.status, payload)), { status: response.status });
           renderProcedureWorkflow(payload);
-          setRuntimeState("success", `Flujo generado con ${asArray(payload?.citations).length} citas visibles.`);
+          setRuntimeState("success", `Procedimiento organizado con ${asArray(payload?.citations).length} fuentes visibles.`);
           $("procedure-workflow").scrollIntoView({ behavior: "smooth", block: "start" });
         } catch (error) {
-          const message = error instanceof Error ? error.message : "No se pudo generar el flujo procedimental.";
+          const message = error instanceof Error ? error.message : "No se pudo preparar la guía del procedimiento.";
           $("procedure-error").innerHTML = `<strong class="error-title">No pudimos completar la consulta</strong><span class="error-detail">${esc(message)}</span>`;
           $("procedure-error").classList.add("visible");
           $("procedure-empty").style.display = "grid";
@@ -400,7 +400,7 @@
           $("procedure-loading").classList.remove("visible");
           $("procedure-loading").setAttribute("aria-hidden", "true");
           $("procedure-submit").disabled = false;
-          $("procedure-submit").querySelector(".submit-label").textContent = "Generar flujo";
+          $("procedure-submit").querySelector(".submit-label").textContent = "Revisar procedimiento";
         }
       };
 

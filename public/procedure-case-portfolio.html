@@ -6,27 +6,26 @@
   <title>LA Muni RAG — Portafolio local de casos</title>
   <meta
     name="description"
-    content="Dashboard local de seguimiento operativo para Procedure Case Workspace."
+    content="Seguimiento local de casos guardados únicamente en este navegador."
   />
   <link rel="stylesheet" href="./procedure-case-portfolio.css" />
 </head>
 <body>
   <main class="shell">
     <nav class="topbar" aria-label="Navegación del portafolio">
-      <a class="back-link" href="./procedure-workflow.html">← Volver a flujos</a>
-      <button class="button" id="export-portfolio" type="button">Exportar portafolio JSON</button>
+      <a class="back-link" href="./procedure-workflow.html">← Volver a procedimientos</a>
+      <button class="button" id="export-portfolio" type="button">Exportar datos (JSON)</button>
     </nav>
 
     <section class="hero">
       <div>
-        <p class="eyebrow">Procedure Case Workspace</p>
-        <h1>Portafolio local de casos</h1>
-        <p>Visibilidad agregada de seguimiento operativo almacenado únicamente en este navegador.</p>
+        <p class="eyebrow">Seguimiento local de casos</p>
+        <h1>Casos guardados en este navegador</h1>
+        <p>Consulta el avance de los casos que se guardaron localmente. Estos datos no se envían al servidor.</p>
       </div>
       <div class="safety">
-        <strong>Señales operativas, no dictamen institucional.</strong>
-        Estas métricas no prueban cumplimiento legal ni presupuestario y no dictaminan recepción,
-        liquidación, pago ni cierre.
+        <strong>Este resumen no es una aprobación institucional.</strong>
+        Los porcentajes y estados sólo ayudan a dar seguimiento. No prueban cumplimiento legal o presupuestario ni confirman recepción, liquidación, pago o cierre.
       </div>
     </section>
 
@@ -35,7 +34,7 @@
       <article class="metric"><span>Casos activos</span><strong id="m-active">0</strong></article>
       <article class="metric"><span>Con bloqueos</span><strong id="m-blocked">0</strong></article>
       <article class="metric"><span>Listos para revisión</span><strong id="m-ready">0</strong></article>
-      <article class="metric"><span>Completados operativos</span><strong id="m-completed">0</strong></article>
+      <article class="metric"><span>Marcados como completados</span><strong id="m-completed">0</strong></article>
       <article class="metric"><span>Documentos faltantes</span><strong id="m-docs">0</strong></article>
     </section>
 
@@ -49,7 +48,7 @@
           <option value="active">Activos</option>
           <option value="blocked">Bloqueados</option>
           <option value="ready">Listos para revisión</option>
-          <option value="completed">Completados operativos</option>
+          <option value="completed">Marcados como completados</option>
         </select>
       </label>
       <label>
@@ -66,7 +65,7 @@
 
     <div class="portfolio-summary">
       <p id="result-count">0 casos</p>
-      <p>Los estados y porcentajes describen seguimiento interno; no acreditan suficiencia jurídica ni cierre institucional.</p>
+      <p>Los estados y porcentajes sirven para seguimiento local. No demuestran cumplimiento jurídico ni cierre institucional.</p>
     </div>
 
     <section class="case-grid" id="case-list" aria-live="polite"></section>

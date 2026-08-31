@@ -239,7 +239,7 @@
         asOfDate: new Date().toISOString().slice(0, 10),
         limitations: [
           "Fallback estático de una proyección pública de tres documentos oficiales PDM-OT.",
-          "La recuperación es léxica y determinista; no se ejecuta búsqueda semántica.",
+          "La búsqueda compara palabras y frases de forma determinista; esta copia pública no ejecuta búsqueda semántica.",
           "La vigencia, aplicabilidad y completitud requieren revisión de las fuentes citadas.",
         ],
       },
@@ -325,7 +325,7 @@
       });
       if (!hasEvidence) gaps.push({
         missingItem: `Evidencia para: ${step.title}`,
-        whyItMatters: "El corpus público disponible no contiene un fragmento suficiente para confirmar este paso como procedimiento aplicable.",
+        whyItMatters: "Los documentos públicos disponibles no contienen un fragmento suficiente para confirmar este paso como un procedimiento aplicable.",
         requiredToConfirm: "Fuente oficial vigente y aplicable, más validación de la unidad municipal competente.",
         severity: "important",
       });

@@ -2,7 +2,7 @@
   "use strict";
 
   const PROGRESS_KEY = "la-muni-rag:training-progress:v1";
-  const MISSING_EVIDENCE = "Cobertura documental pendiente para este tenant.";
+  const MISSING_EVIDENCE = "Todavía falta una fuente que confirme este punto.";
   const REQUEST_ASSERTION_STATUS = "requester_supplied_unverified";
   const KEYBOARD_KEYS = ["ArrowDown", "ArrowUp", "Home", "End"];
   const EVIDENCE_STATUSES = new Set([
@@ -85,6 +85,13 @@
     elements.status.dataset.state = status;
     const messageNode = elements.status.querySelector("span:last-child");
     if (messageNode) messageNode.textContent = message;
+  };
+
+  const evidenceStatusLabel = (status) => {
+    if (status === "supported") return "Respaldada por fuentes";
+    if (status === "inferred_for_review") return "Requiere revisión";
+    if (status === "comparative_reference") return "Referencia comparativa";
+    return "Falta información";
   };
 
   const safeHttpUrl = (value) => {
@@ -373,22 +380,22 @@
   };
 
   const evidenceSummary = (lesson) => {
-    if (lesson.evidenceStatus === "supported") return `La fase tiene ${lesson.citations.length} cita(s) específicas. Requiere revisión humana antes de ejecución.`;
-    if (lesson.evidenceStatus === "inferred_for_review") return `Hay ${lesson.citations.length} referencia(s), pero el respaldo permanece como inferencia para revisión.`;
-    if (lesson.evidenceStatus === "comparative_reference") return "La evidencia es comparativa. No define por sí sola el procedimiento de La Antigua Guatemala.";
-    return "No existe una cita suficiente para presentar esta fase como respaldada. Pendiente de evidencia.";
+    if (lesson.evidenceStatus === "supported") return `Esta fase tiene ${lesson.citations.length} fuente(s) específicas. Revísalas antes de actuar.`;
+    if (lesson.evidenceStatus === "inferred_for_review") return `Hay ${lesson.citations.length} referencia(s), pero todavía hace falta revisión humana antes de tratar esta fase como confirmada.`;
+    if (lesson.evidenceStatus === "comparative_reference") return "Las fuentes son comparativas. Por sí solas no definen el procedimiento aplicable en La Antigua Guatemala.";
+    return "No hay una fuente suficiente para presentar esta fase como confirmada.";
   };
 
   const renderCitations = (lesson) => {
     emptyNode(elements.citationList);
-    elements.citationCount.textContent = `${lesson.citations.length} cita${lesson.citations.length === 1 ? "" : "s"}`;
+    elements.citationCount.textContent = `${lesson.citations.length} fuente${lesson.citations.length === 1 ? "" : "s"}`;
     elements.evidenceSummary.textContent = evidenceSummary(lesson);
 
     if (!lesson.citations.length) {
       const card = createNode("section", "citation-card");
-      card.appendChild(createNode("h3", "", "Sin cita verificable en esta fase"));
+      card.appendChild(createNode("h3", "", "No hay una fuente verificable para esta fase"));
       card.appendChild(createNode("p", "", MISSING_EVIDENCE));
-      card.appendChild(createNode("p", "citation-meta", `Entrada externa: ${lesson.requestAssertionStatus}`));
+      card.appendChild(createNode("p", "citation-meta", "La solicitud inicial todavía no está verificada por una fuente."));
       elements.citationList.appendChild(card);
       return;
     }
@@ -453,7 +460,7 @@
     elements.lessonSummary.textContent = lesson.summary;
     elements.lessonObjective.textContent = lesson.objective;
     elements.lessonAction.textContent = lesson.action;
-    elements.lessonEvidenceStatus.textContent = lesson.evidenceStatus;
+    elements.lessonEvidenceStatus.textContent = evidenceStatusLabel(lesson.evidenceStatus);
     elements.lessonEvidenceStatus.dataset.evidenceStatus = lesson.evidenceStatus;
     renderList(elements.lessonParticipants, lesson.participants);
     renderList(elements.lessonDocuments, lesson.documents);
@@ -487,7 +494,7 @@
       card.dataset.evidenceStatus = evidence.status;
       card.appendChild(createNode("span", "", `Categoría ${category.sequence}`));
       card.appendChild(createNode("strong", "", category.label));
-      card.appendChild(createNode("p", "category-evidence", `${evidence.status} · ${evidence.citationCount} cita${evidence.citationCount === 1 ? "" : "s"}`));
+      card.appendChild(createNode("p", "category-evidence", `${evidenceStatusLabel(evidence.status)} · ${evidence.citationCount} fuente${evidence.citationCount === 1 ? "" : "s"}`));
       card.appendChild(createNode("p", "", category.evidence_prompt));
       const requiredEvidence = uniqueText(category.required_evidence, 3);
       card.appendChild(createNode(
@@ -508,17 +515,17 @@
   };
 
   const loadTraining = async () => {
-    setStatus("loading", "Cargando mapa de investigación y evidencia disponible…");
+    setStatus("loading", "Cargando lecciones y fuentes disponibles…");
     try {
       state.module = await fetchJson("./data/water-training-map.json");
       if (!validateCurriculum(state.module)) throw new Error("invalid curriculum");
 
       try {
         state.workflow = await fetchProcedure(state.module);
-        setStatus("success", "Mapa cargado. La evidencia disponible se presenta con sus límites y brechas.");
+        setStatus("success", "Lecciones cargadas. Las fuentes disponibles se muestran junto con lo que todavía falta confirmar.");
       } catch {
         state.workflow = null;
-        setStatus("dependency_failure", "La API no está disponible. Usando el currículo estático con evidencia pendiente explícita.");
+        setStatus("dependency_failure", "El servicio de consulta no está disponible. Puedes usar las lecciones estáticas, que indican claramente qué información todavía falta.");
       }
       renderAll();
     } catch {

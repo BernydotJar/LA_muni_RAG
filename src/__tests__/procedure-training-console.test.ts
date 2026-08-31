@@ -15,7 +15,7 @@ describe("procedure training console", () => {
     assert.match(html, /Vista pública de capacitación/);
     assert.match(html, /Entrenamiento local, no certificación institucional/);
     assert.match(html, /data-saas-only[^>]*disabled[^>]*aria-disabled="true"/);
-    assert.match(html, /Requiere sesión SaaS aprobada/);
+    assert.match(html, /Disponible sólo con una sesión autorizada/);
     assert.doesNotMatch(html, /<input[^>]+type="password"/i);
     assert.doesNotMatch(html, /onclick=|onchange=|onsubmit=/i);
   });
@@ -60,7 +60,7 @@ describe("procedure training console", () => {
     assert.match(script, /card\.dataset\.evidenceStatus = evidence\.status/);
     assert.match(script, /raw === "missing_evidence" \|\| citations\.length > 0 \? raw : "missing_evidence"/);
     assert.match(script, /participantEvidenceStatus === "supported" && stepCitations\.length > 0/);
-    assert.match(script, /Cobertura documental pendiente para este tenant\./);
+    assert.match(script, /Todavía falta una fuente que confirme este punto\./);
     assert.match(script, /textContent =/);
     assert.doesNotMatch(script, /\.innerHTML\s*=|insertAdjacentHTML|document\.write/);
   });
@@ -85,10 +85,10 @@ describe("procedure training console", () => {
     for (const label of [
       "Acción investigada",
       "Participantes",
-      "Documentos y salidas",
+      "Documentos y resultados esperados",
       "Decisiones y dependencias",
-      "Riesgos y desconocidos",
-      "Evidencia del paso",
+      "Riesgos e información desconocida",
+      "Documentos que respaldan esta fase",
       "Comprobación de aprendizaje",
     ]) assert.match(html, new RegExp(label));
 
@@ -98,7 +98,7 @@ describe("procedure training console", () => {
       "comparative_reference",
       "missing_evidence",
     ]) assert.match(script, new RegExp(status));
-    assert.match(script, /Pendiente de evidencia/);
+    assert.match(script, /Falta información/);
     assert.match(script, /Marcar como comprendido/);
     assert.doesNotMatch(script, /Marcar como completado|certificad[oa]|aprobación institucional/i);
   });

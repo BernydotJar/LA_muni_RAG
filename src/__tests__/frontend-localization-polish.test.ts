@@ -27,10 +27,10 @@ describe("frontend localization and graph polish", () => {
 
     assert.match(homepage, /<html lang="es"(?:\s[^>]*)?>/);
     assert.match(glassWall, /<html lang="es"(?:\s[^>]*)?>/);
-    assert.match(homepage, /Consulta documental municipal/);
-    assert.match(homepage, /Consulta pública/);
-    assert.match(glassWall, /Sala de observación para/);
-    assert.match(glassWall, /recuperación documental/);
+    assert.match(homepage, /Consulta de documentos municipales/);
+    assert.match(homepage, /Pregunta sobre documentos municipales/);
+    assert.match(glassWall, /Observa cómo el sistema/);
+    assert.match(glassWall, /busca y prepara una respuesta/);
   });
 
   it("removes public implementation-internal copy from static frontend files", async () => {

@@ -3,17 +3,17 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>LA Muni RAG - Intake documental</title>
-    <meta name="description" content="Preparador de metadata para backfill documental por domain pack." />
+    <title>LA Muni RAG — Preparar documentos</title>
+    <meta name="description" content="Prepara los datos técnicos necesarios antes de incorporar un documento al sistema." />
     <style>
       :root {
-        --bg: #070712;
-        --panel: rgba(12, 16, 36, 0.84);
-        --line: rgba(148, 163, 184, 0.18);
-        --text: #f8fafc;
-        --muted: #a8b3c7;
-        --cyan: #22d3ee;
-        --violet: #8b5cf6;
+        --bg: #171114;
+        --panel: rgba(34, 24, 27, 0.94);
+        --line: rgba(231, 214, 217, 0.16);
+        --text: #f8f2ef;
+        --muted: #c3b7b2;
+        --cyan: #e2aab7;
+        --violet: #b88b73;
         --green: #22c55e;
         --amber: #f59e0b;
         color-scheme: dark;
@@ -25,9 +25,9 @@
         font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
         color: var(--text);
         background:
-          radial-gradient(circle at 16% 4%, rgba(34, 211, 238, .18), transparent 28rem),
-          radial-gradient(circle at 82% 0%, rgba(139, 92, 246, .18), transparent 30rem),
-          linear-gradient(180deg, #070711 0%, #090918 52%, #070712 100%);
+          radial-gradient(circle at 16% 4%, rgba(115, 23, 41, .18), transparent 28rem),
+          radial-gradient(circle at 82% 0%, rgba(184, 139, 115, .10), transparent 30rem),
+          linear-gradient(180deg, #171114 0%, #1c1417 52%, #151012 100%);
       }
       main { width: min(1180px, calc(100vw - 28px)); margin: 0 auto; padding: 28px 0 58px; }
       .topbar { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 22px; }
@@ -44,9 +44,9 @@
       .hero { display: grid; grid-template-columns: minmax(0, 1fr) minmax(260px, .36fr); gap: 20px; padding: clamp(22px, 4vw, 38px); margin-bottom: 18px; }
       .eyebrow { color: var(--cyan); font-size: 12px; font-weight: 950; letter-spacing: .12em; text-transform: uppercase; }
       h1 { margin: 10px 0 12px; font-size: clamp(38px, 6vw, 72px); line-height: .94; letter-spacing: -.06em; }
-      h1 span { display: block; background: linear-gradient(115deg, #fff, #c4b5fd 58%, #22d3ee); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+      h1 span { display: block; color: #e7c9d0; }
       p { color: var(--muted); line-height: 1.6; }
-      .note { padding: 16px; border: 1px solid rgba(34, 211, 238, .16); border-radius: 20px; background: rgba(34, 211, 238, .055); }
+      .note { padding: 16px; border: 1px solid rgba(226, 170, 183, .16); border-radius: 20px; background: rgba(115, 23, 41, .055); }
       .layout { display: grid; grid-template-columns: minmax(0, .9fr) minmax(300px, .6fr); gap: 18px; }
       .panel { padding: 18px; }
       .form-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
@@ -56,7 +56,7 @@
         background: rgba(255,255,255,.05); padding: 0 12px; font: 750 14px/1.2 inherit;
       }
       textarea { min-height: 88px; padding: 12px; line-height: 1.45; resize: vertical; }
-      button { cursor: pointer; border-color: rgba(34,211,238,.28); background: linear-gradient(135deg, rgba(139,92,246,.9), rgba(34,211,238,.72)); }
+      button { cursor: pointer; border-color: rgba(226,170,183,.28); background: linear-gradient(135deg, #7f2138, #5f1121); }
       button.secondary { background: rgba(255,255,255,.05); }
       .wide { grid-column: 1 / -1; }
       .preview { display: grid; gap: 14px; }
@@ -73,28 +73,28 @@
     <main>
       <div class="topbar">
         <a class="pill" href="./index.html">Volver al inicio</a>
-        <span class="pill accent" id="domain-pill">Domain intake</span>
+        <span class="pill accent" id="domain-pill">Preparación documental</span>
       </div>
 
       <section class="hero">
         <div>
-          <div class="eyebrow">Intake documental pack-aware</div>
-          <h1>Preparar evidencia <span>antes de indexar.</span></h1>
-          <p>Construye la metadata y el comando de backfill para el domain pack activo. Esta vista no sube archivos ni escribe en la base de datos.</p>
+          <div class="eyebrow">Preparación de documentos</div>
+          <h1>Revisa los datos <span>antes de incorporar un documento.</span></h1>
+          <p>Completa los datos que describen el documento y genera el comando técnico de carga para el dominio activo. Esta vista sólo prepara la información: no sube archivos ni modifica la base de datos.</p>
         </div>
         <aside class="note">
           <strong id="domain-name">municipal-antigua</strong>
-          <p id="domain-description">La metadata debe reflejar autoridad, tipo documental y confidencialidad antes de promover un documento al corpus.</p>
+          <p id="domain-description">Antes de incorporar un documento, confirma quién lo emite, qué tipo de documento es y qué nivel de acceso requiere.</p>
         </aside>
       </section>
 
       <section class="layout">
         <form class="panel" id="intake-form">
-          <h2 class="section-title">Metadata de backfill</h2>
+          <h2 class="section-title">Datos del documento</h2>
           <div class="form-grid">
             <label class="wide">Ruta del archivo<input id="input-path" value="corpus/document.md" /></label>
-            <label>Manifest<input id="manifest-path" value=".rag/corpus-manifest.json" /></label>
-            <label>Document key<input id="document-key" value="document-key" /></label>
+            <label>Archivo de manifiesto<input id="manifest-path" value=".rag/corpus-manifest.json" /></label>
+            <label>Identificador del documento<input id="document-key" value="document-key" /></label>
             <label>Versión<input id="document-version" value="v1" /></label>
             <label>Título<input id="document-title" value="" placeholder="Opcional" /></label>
             <label>Formato<select id="source-format"><option value="markdown">markdown</option><option value="txt">txt</option><option value="docx">docx</option><option value="pdf">pdf</option></select></label>
@@ -102,20 +102,20 @@
             <label>Tipo documental<input id="document-type" value="manual" /></label>
             <label>Jurisdicción<input id="jurisdiction" value="" placeholder="Opcional" /></label>
             <label>Organización<input id="organization" value="" placeholder="Opcional" /></label>
-            <label>Confidencialidad<select id="confidentiality"><option value="public">public</option><option value="internal">internal</option><option value="restricted">restricted</option></select></label>
-            <label>Tags<input id="tags" value="" placeholder="contratacion,obra" /></label>
+            <label>Confidencialidad<select id="confidentiality"><option value="public">público</option><option value="internal">interno</option><option value="restricted">restringido</option></select></label>
+            <label>Etiquetas<input id="tags" value="" placeholder="contratacion,obra" /></label>
             <div class="wide"><button type="button" id="copy-command">Copiar comando</button></div>
           </div>
-          <div class="warning">Validar licencias, autoridad documental y confidencialidad antes de indexar. Feedback de usuarios no debe promoverse como evidencia sin revisión separada.</div>
+          <div class="warning">Antes de incorporar el documento, revisa licencias, autoridad y nivel de acceso. Los comentarios de usuarios no se convierten en fuente documental sin una revisión independiente.</div>
         </form>
 
         <aside class="panel preview">
           <div>
-            <h2 class="section-title">Metadata JSON</h2>
+            <h2 class="section-title">Datos en JSON</h2>
             <pre id="metadata-preview"></pre>
           </div>
           <div>
-            <h2 class="section-title">Comando</h2>
+            <h2 class="section-title">Comando de carga</h2>
             <pre id="command-preview"></pre>
           </div>
         </aside>

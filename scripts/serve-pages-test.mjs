@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-import { createReadStream, existsSync, statSync } from "node:fs";
+import { createReadStream, existsSync, readFileSync, statSync } from "node:fs";
 import { createServer } from "node:http";
 import { extname, resolve, sep } from "node:path";
 
@@ -63,6 +63,13 @@ const fallbackHarness = `<!doctype html>
 </body>
 </html>`;
 
+const configuredProductHarness = () => readFileSync(resolve(root, "index.html"), "utf8")
+  .replace("<head>", '<head><base href="/">')
+  .replace(
+    '<script src="./pages-api-bridge.js" data-static-fallback="static-first"></script>',
+    `<script src="./pages-api-bridge.js" data-static-fallback="static-first" data-api-url="http://127.0.0.1:${port}/mock-base/"></script>`
+  );
+
 const server = createServer(async (request, response) => {
   try {
     const url = new URL(request.url || "/", `http://${host}:${port}`);
@@ -89,6 +96,17 @@ const server = createServer(async (request, response) => {
         "cache-control": "no-store",
       });
       response.end(fallbackHarness);
+      return;
+    }
+
+    if (request.method === "GET" && url.pathname === "/__playwright__/configured-product.html") {
+      const body = configuredProductHarness();
+      response.writeHead(200, {
+        "content-type": "text/html; charset=utf-8",
+        "content-length": Buffer.byteLength(body),
+        "cache-control": "no-store",
+      });
+      response.end(body);
       return;
     }
 
