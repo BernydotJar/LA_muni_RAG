@@ -186,6 +186,8 @@ A green synthetic staging receipt is not a release. Production readiness require
 - No merge, backend deployment, Cloud SQL restart, Terraform action or destructive infrastructure operation occurred.
 
 
-## Feature 092 — Glass Wall directional release
+## Feature 092 - verified implementation, publication separate
 
-Implementation: `f8a400ff0af3f664340427de5fda17ea5bddad39`. Publish the feature branch without force, open a PR against main, observe exact-head Backend CI and Public Browser Gate, and attach evidence before completing the graph node. Preserve the unrelated untracked architecture audit. A public release must also verify the deployed SHA, the Glass Wall module/assets, both real static query routes, six visible arrowheads and mobile reflow. Do not change cloud, corpus, authentication or framework configuration as part of this release.
+Implementation: `f8a400ff0af3f664340427de5fda17ea5bddad39`. Required PR Backend CI `35558731938` and Public Browser Gate `35558731926` passed at head `91df71915d99f6c108686c2f175bb9341844575f`. The runtime gate is PASS and the UI node is done. PR #43 remains draft; no merge or public-site deployment occurred in this scope. Branch publication remains non-forced and audited.
+
+A later authorized public release must verify its deployed SHA, Glass Wall modules/assets, both real static query routes, six visible arrowheads and mobile reflow. Preserve the unrelated untracked architecture audit. Do not change cloud, corpus, authentication or framework configuration as part of this UI release.

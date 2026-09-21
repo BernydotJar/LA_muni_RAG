@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "recorded_at": "2026-09-21T04:02:34.534387+00:00",
+  "verified_head": "91df71915d99f6c108686c2f175bb9341844575f",
+  "run_id": 35558731926,
+  "artifact_id": 10621214526,
+  "artifact_name": "glass-wall-previews-35558731926",
+  "archive_sha256": "34209ed6473e0557f1530e412f3ca39b5f8f6e1c60e891e3ceeaa5f7a5216703",
+  "size_bytes": 2486949,
+  "expires_at": "2026-09-28T03:51:00Z",
+  "content": "Desktop and mobile screenshots from the frozen public-corpus browser test; these are not the live deployed site.",
+  "corrects": "Exact artifact name for screenshots in glass-wall-directional-flow-092-ci.json; required CI results and artifact integrity are unchanged."
+}

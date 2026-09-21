@@ -825,7 +825,7 @@
     "feature": "092-glass-wall-directional-flow-v1",
     "recorded_at": "2026-09-21T03:11:22.404334+00:00",
     "functional_commit": "f8a400ff0af3f664340427de5fda17ea5bddad39",
-    "status": "locally_verified_remote_gate_pending",
+    "status": "implementation_verified_required_remote_gate_passed",
     "scope": "Public Glass Wall UI only; no backend, corpus, identity or cloud change",
     "unit_regression": {
       "total": 1097,
@@ -887,6 +887,20 @@
     "unknown_work_preserved": {
       "path": "docs/architecture/agentic-engineering-architecture-audit.md",
       "sha256": "b58fdf5c3bd1be95cadc942babd4e5556a90b6d63bf5084ff1276486370de10f"
+    },
+    "verified_head": "91df71915d99f6c108686c2f175bb9341844575f",
+    "graph_gate": "GATE-GLASS-WALL-DIRECTIONAL-092 PASS",
+    "remote_ci": {
+      "backend": 35558731938,
+      "public_browser": 35558731926,
+      "conclusion": "success",
+      "evidence": "program/reports/glass-wall-directional-flow-092-ci.json"
+    },
+    "publication": {
+      "pull_request": 43,
+      "draft": true,
+      "merged": false,
+      "deployed": false
     }
   }
 }

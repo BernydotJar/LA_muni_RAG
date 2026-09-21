@@ -146,4 +146,4 @@ Next safe action: obtain explicit human merge/deployment authorization after rev
 
 ## Feature 092 — current bounded release tracking
 
-No unresolved critical/high issue was found in the directional-flow scope after local repairs. Remote CI is still required before closing `GATE-GLASS-WALL-DIRECTIONAL-092`; local test passes are not a public-deployment receipt. Existing corpus, governance, identity and infrastructure limits are unchanged.
+No unresolved critical/high issue was found in the directional-flow scope after local repairs. Required exact-head PR CI passed and `GATE-GLASS-WALL-DIRECTIONAL-092` is PASS. PR #43 remains draft and no public deployment is claimed. An earlier push run failed with `fetch failed` in an unchanged compiled PostgreSQL HTTP smoke; a retry was requested without weakening tests, and the full required PR verification passed at the same head. Existing corpus, governance, identity and infrastructure limits are unchanged.

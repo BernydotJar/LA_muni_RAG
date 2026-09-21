@@ -6,7 +6,7 @@ The directional Glass Wall is implemented at `f8a400ff0af3f664340427de5fda17ea5b
 
 A detached checkout passed 1,095 of 1,097 unit tests (zero failures, two explicit environment skips), all 38 browser cases, typecheck, build and the Pages artifact verifier. Named EVAL: 15/15. The two inherited transitive dependency vulnerabilities were patched within existing ranges; both npm audits report zero findings.
 
-Status: local verification complete; exact-head remote CI and release remain pending. No cloud, corpus, identity or broader production-readiness status changed. Detailed evidence: `program/reports/glass-wall-directional-flow-092-local.json`. Historical sections below remain historical receipts, not new execution claims.
+Status: scoped implementation complete; `GATE-GLASS-WALL-DIRECTIONAL-092` PASS and node `done`. Exact head `91df71915d99f6c108686c2f175bb9341844575f` passed required PR Backend CI `35558731938` and Public Browser Gate `35558731926`. PR #43 remains draft; merge and public deployment were not performed. No cloud, corpus, identity or broader production-readiness status changed. Evidence: `program/reports/glass-wall-directional-flow-092-local.json`, `program/reports/glass-wall-directional-flow-092-ci.json` and the exact screenshot manifest `program/reports/glass-wall-directional-flow-092-previews.json`. Historical sections below remain historical receipts, not new execution claims.
 
 ---
 
