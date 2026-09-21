@@ -339,13 +339,14 @@ test("remote-first Pages bridge preserves meaningful 429 and 500 upstream failur
   runtimeErrors.set(page, []);
 });
 
-test("configured Pages bridge strips browser credentials and proxies only approved methods", async ({ page, context }) => {
-  await context.addCookies([{ name: "session", value: "must-not-leave-browser", url: "http://127.0.0.1:4173" }]);
+test("configured Pages bridge strips browser credentials and proxies only approved methods", async ({ page, context, baseURL }) => {
+  expect(baseURL).toBeTruthy();
+  await context.addCookies([{ name: "session", value: "must-not-leave-browser", url: baseURL! }]);
   await page.goto("/__playwright__/bridge-harness.html");
   await expect(page).toHaveTitle("Pages bridge browser harness");
   expect(await page.evaluate(() => window.__LA_MUNI_API_CONFIG__)).toEqual({
     configured: true,
-    baseUrl: "http://127.0.0.1:4173/mock-base/",
+    baseUrl: new URL("/mock-base/", baseURL).href,
   });
 
   const query = await page.evaluate(async () => {

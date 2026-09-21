@@ -9,6 +9,9 @@ const requiredFiles = [
   "index.html",
   "favicon.svg",
   "glass-wall.html",
+  "glass-wall.css",
+  "glass-wall-view.js",
+  "glass-wall-flow.js",
   "procedure-training.html",
   "procedure-training.css",
   "procedure-training.js",
@@ -100,7 +103,7 @@ const indexFallbackIndex = indexHtml.indexOf('src="./public-corpus-fallback.js"'
 const indexBridgeIndex = indexHtml.indexOf('src="./pages-api-bridge.js"');
 if (indexFallbackIndex < 0 || indexBridgeIndex < 0 || indexFallbackIndex > indexBridgeIndex) throw new Error("GitHub Pages artifact must load the governed public corpus fallback before the API bridge.");
 const glassWallBridgeIndex = glassWallHtml.indexOf('src="./pages-api-bridge.js"');
-const glassWallRuntimeIndex = glassWallHtml.indexOf("const approvedEndpointPaths");
+const glassWallRuntimeIndex = glassWallHtml.indexOf('src="./glass-wall-view.js"');
 if (glassWallBridgeIndex < 0 || glassWallRuntimeIndex < 0 || glassWallBridgeIndex > glassWallRuntimeIndex) throw new Error("Glass Wall is missing the configured Pages API bridge before its query runtime.");
 if (!indexHtml.includes('href="./favicon.svg"') || !indexHtml.includes('main id="contenido" tabindex="-1"')) throw new Error("Homepage is missing its icon or focusable skip-link target.");
 if (!procedureTrainingHtml.includes('src="./pages-api-bridge.js"')) throw new Error("Procedure training page is missing the Pages fail-closed API bridge.");

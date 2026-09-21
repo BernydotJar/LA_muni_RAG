@@ -6,7 +6,7 @@ const readHomepage = async (): Promise<string> => readFile("public/index.html", 
 const readProductCss = async (): Promise<string> => readFile("public/product.css", "utf-8");
 const readLiquidGlassCss = async (): Promise<string> => readFile("public/liquid-glass.css", "utf-8");
 const readProductJs = async (): Promise<string> => readFile("public/product.js", "utf-8");
-const readGlassWall = async (): Promise<string> => readFile("public/glass-wall.html", "utf-8");
+const readGlassWall = async (): Promise<string> => Promise.all(["public/glass-wall.html", "public/glass-wall.css", "public/glass-wall-view.js"].map((path) => readFile(path, "utf-8"))).then((parts) => parts.join("\n"));
 
 describe("production-facing public product surface", () => {
   it("keeps concise evidence-first municipal copy in Spanish", async () => {

@@ -6,7 +6,7 @@ import { join } from "node:path";
 const glassWallPath = join(process.cwd(), "public", "glass-wall.html");
 const homePath = join(process.cwd(), "public", "index.html");
 
-const readGlassWall = async (): Promise<string> => readFile(glassWallPath, "utf-8");
+const readGlassWall = async (): Promise<string> => Promise.all([glassWallPath, "public/glass-wall.css", "public/glass-wall-view.js", "public/glass-wall-flow.js"].map((path) => readFile(path, "utf-8"))).then((parts) => parts.join("\n"));
 const readHome = async (): Promise<string> => readFile(homePath, "utf-8");
 
 describe("RAG glass wall static page", () => {
@@ -26,45 +26,21 @@ describe("RAG glass wall static page", () => {
 
   it("contains expanded graph nodes for the Spanish Glass Wall", async () => {
     const html = await readGlassWall();
-    const expectedNodes = [
-      "node-query",
-      "node-mode",
-      "node-limit",
-      "node-corpus",
-      "node-safety",
-      "node-phrase",
-      "node-keyword",
-      "node-vector",
-      "node-embedding",
-      "node-db",
-      "node-runtime",
-      "node-evidence-1",
-      "node-evidence-2",
-      "node-evidence-3",
-      "node-evidence-4",
-      "node-evidence-5",
-      "node-citation",
-      "node-score",
-      "node-answer",
-      "node-not-found",
-      "node-degraded",
-      "node-audit",
-    ];
+    const expectedNodes = ["node-query", "node-mode", "node-limit", "node-safety", "node-phrase", "node-keyword", "node-merge", "node-citation", "node-score", "node-answer", "node-not-found", "node-audit", "node-vector", "node-embedding", "node-db"];
 
     for (const nodeId of expectedNodes) {
       assert.match(html, new RegExp(`id="${nodeId}"`));
     }
   });
 
-  it("keeps graph nodes positioned and scaled instead of collapsing into the top-left corner", async () => {
+  it("keeps nodes in a responsive grid and arrows measured at real node boundaries", async () => {
     const html = await readGlassWall();
-
-    assert.match(html, /const positionNodes = \(\) =>/);
-    assert.match(html, /node\.style\.left = `\$\{node\.dataset\.x\}px`/);
-    assert.match(html, /node\.style\.top = `\$\{node\.dataset\.y\}px`/);
-    assert.match(html, /const fitGraphToViewport = \(\) =>/);
-    assert.match(html, /board\.style\.transform = `scale\(\$\{scale\}\)`/);
-    assert.match(html, /overflow: hidden;/);
+    assert.match(html, /flow-stages/);
+    assert.match(html, /grid-template-columns: repeat\(5, minmax\(0, 1fr\)\)/);
+    assert.match(html, /ResizeObserver/);
+    assert.match(html, /getBoundingClientRect/);
+    assert.match(html, /marker-end/);
+    assert.doesNotMatch(html, /board\.style\.transform|scale\(/);
   });
 
   it("is intentionally discoverable from the homepage", async () => {
@@ -115,8 +91,8 @@ describe("RAG glass wall static page", () => {
     assert.match(html, /Cómo funciona · vista técnica/);
     assert.match(html, /datos de diagnóstico autorizados/);
     assert.match(html, /salud general del servicio/);
-    assert.match(html, /ruta activa/);
-    assert.match(html, /degradado/);
-    assert.match(html, /inactivo/);
+    assert.match(html, /Completada/);
+    assert.match(html, /Con l.mites/);
+    assert.match(html, /No ejecutada/);
   });
 });

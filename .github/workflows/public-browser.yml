@@ -39,6 +39,15 @@ jobs:
       - name: Run deterministic human product shell smoke
         run: npm run smoke:human-product-shell-cross-browser
 
+      - name: Upload public directional flow previews
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: glass-wall-previews-${{ github.run_id }}
+          path: test-results/**/glass-wall-directed.png
+          if-no-files-found: ignore
+          retention-days: 7
+
       - name: Upload browser diagnostics on failure
         if: failure()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4

@@ -123,6 +123,17 @@
         "online_pages"
       ],
       "blocking": true
+    },
+    {
+      "id": "GATE-GLASS-WALL-DIRECTIONAL-092",
+      "required_evidence_kinds": [
+        "focused_eval",
+        "browser_geometry",
+        "adversarial_review",
+        "independent_regression",
+        "remote_ci"
+      ],
+      "blocking": true
     }
   ],
   "nodes": [
@@ -510,6 +521,53 @@
         "server_audit_claim_for_static_fallback": false,
         "managed_cloud_dependency_required_for_public_read_only": false,
         "deployment_authorized_by_user": true
+      }
+    },
+    {
+      "id": "UI-GLASS-WALL-DIRECTIONAL-092",
+      "kind": "feature",
+      "title": "Directional and evidence-honest public Glass Wall",
+      "status": "spec_ready",
+      "depends_on": [
+        "REL-PUBLIC-QUERY-RESILIENCE-004"
+      ],
+      "capability": "public_observable_directional_flow",
+      "gates": {
+        "done": [
+          "GATE-GLASS-WALL-DIRECTIONAL-092"
+        ]
+      },
+      "allowed_paths": [
+        "public/glass-wall*",
+        "src/__tests__/*glass*",
+        "src/__tests__/frontend-localization-polish.test.ts",
+        "tests/browser/glass-wall-flow.spec.ts",
+        "scripts/verify-pages-online.mjs",
+        "specs/092-glass-wall-directional-flow-v1/**",
+        "docs/reviews/092-*",
+        "docs/traceability/092-*",
+        "program/**",
+        "package.json",
+        "scripts/verify-pages-artifact.mjs",
+        "playwright.config.ts",
+        "src/__tests__/pages-api-production-mode.test.ts",
+        "src/__tests__/premium-frontend-refresh.test.ts",
+        "package-lock.json",
+        ".github/workflows/public-browser.yml",
+        "tests/browser/public-pages.spec.ts"
+      ],
+      "metadata": {
+        "baseline_commit": "e8c2eec5960c8033d7521952b09c9a1c2f42a8c5",
+        "scope_approval": "current user: use Cloud Sandbox and implement the agreed map adjustment",
+        "no_backend_or_corpus_mutation": true,
+        "source_document": "RAG Juridico arquitectura.md",
+        "verification_roles": "separate passes and isolated processes; no second human/agent claimed",
+        "localized_gate_repairs": [
+          "External module bridge-order assertion",
+          "Isolated browser port in shared workstation",
+          "Two security-only transitive lockfile patches",
+          "Public-only visual proof in CI"
+        ]
       }
     }
   ]

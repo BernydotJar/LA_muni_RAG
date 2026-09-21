@@ -112,7 +112,8 @@
     "source-packs:validate": "node --import tsx src/cli/validateSourcePacks.ts",
     "tenant-profiles:validate": "node --import tsx src/cli/validateTenantKnowledgeProfiles.ts",
     "source-pack:acquire-html": "node --import tsx src/cli/acquireSourcePackHtml.ts",
-    "source-pack:verify-html-acquisition": "node --import tsx src/cli/verifyOfficialHtmlAcquisition.ts"
+    "source-pack:verify-html-acquisition": "node --import tsx src/cli/verifyOfficialHtmlAcquisition.ts",
+    "eval:glass-wall-flow": "node --import tsx --test src/__tests__/eval-glass-wall-flow-001.test.ts"
   },
   "keywords": [],
   "author": "",
