@@ -819,5 +819,74 @@
     "search_engine_cache_accepted": false,
     "challenge_html_accepted": false,
     "index_page_promoted": false
+  },
+  "glass_wall_directional_092": {
+    "schema_version": 1,
+    "feature": "092-glass-wall-directional-flow-v1",
+    "recorded_at": "2026-09-21T03:11:22.404334+00:00",
+    "functional_commit": "f8a400ff0af3f664340427de5fda17ea5bddad39",
+    "status": "locally_verified_remote_gate_pending",
+    "scope": "Public Glass Wall UI only; no backend, corpus, identity or cloud change",
+    "unit_regression": {
+      "total": 1097,
+      "passed": 1095,
+      "failed": 0,
+      "skipped": 2
+    },
+    "named_eval": {
+      "id": "EVAL-GLASS-WALL-FLOW-001",
+      "passed": 15,
+      "failed": 0
+    },
+    "public_browser_regression": {
+      "passed": 38,
+      "failed": 0,
+      "projects": [
+        "chromium-desktop",
+        "chromium-mobile"
+      ],
+      "new_flow_cases": 20,
+      "geometry_widths": [
+        320,
+        390,
+        760,
+        768,
+        1024,
+        1440
+      ]
+    },
+    "independent_verification": {
+      "method": "Detached checkout and fresh dependency install; separate processes, not a second human/agent",
+      "commit": "f8a400ff0af3f664340427de5fda17ea5bddad39",
+      "typecheck": "PASS",
+      "build": "PASS",
+      "pages_artifact": "PASS",
+      "unit_tests": "PASS",
+      "browser_tests": "PASS"
+    },
+    "audit": {
+      "all_dependencies": 0,
+      "production_dependencies": 0,
+      "repaired_preexisting_transitive_packages": {
+        "@xmldom/xmldom": "0.8.15",
+        "fast-uri": "3.1.8"
+      }
+    },
+    "source_hashes": {
+      "public/glass-wall.html": "aa3ab2ff600c0fd431674f53133d1b3775c60cf5b0c53dd380c7ac668521b5a5",
+      "public/glass-wall.css": "2b87139b9de77e04d822daf4733eb5a6f513bb4af715370aca5acde7ddd33cac",
+      "public/glass-wall-flow.js": "1148edc41141c0f69cf2fe6ea48035673aa05aec9212972900cd6f96de515bee",
+      "public/glass-wall-view.js": "b5d34b9a24912f6afe0c2849a1a283b0d7cb90fd0e1d4af66fff7097688511fb"
+    },
+    "limits": [
+      "No semantic execution, server health or server audit claim",
+      "No retrieval-quality or legal-correctness claim",
+      "Human authenticated journeys remain outside this change",
+      "Publication not yet verified"
+    ],
+    "unknown_work_preserved": {
+      "path": "docs/architecture/agentic-engineering-architecture-audit.md",
+      "sha256": "b58fdf5c3bd1be95cadc942babd4e5556a90b6d63bf5084ff1276486370de10f"
+    }
   }
 }

@@ -184,3 +184,8 @@ A green synthetic staging receipt is not a release. Production readiness require
 - Candidate metadata removed: `build-metadata.json` returned 404 and `b646aa6ce5d7231587ae311f5acb59f84fc35a0e` was absent from public HTML.
 - The `github-pages` environment allowlist contains only `main`.
 - No merge, backend deployment, Cloud SQL restart, Terraform action or destructive infrastructure operation occurred.
+
+
+## Feature 092 — Glass Wall directional release
+
+Implementation: `f8a400ff0af3f664340427de5fda17ea5bddad39`. Publish the feature branch without force, open a PR against main, observe exact-head Backend CI and Public Browser Gate, and attach evidence before completing the graph node. Preserve the unrelated untracked architecture audit. A public release must also verify the deployed SHA, the Glass Wall module/assets, both real static query routes, six visible arrowheads and mobile reflow. Do not change cloud, corpus, authentication or framework configuration as part of this release.

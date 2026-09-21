@@ -1,5 +1,16 @@
 # LA Muni RAG — Current Program State
 
+## Current scoped increment: Feature 092
+
+The directional Glass Wall is implemented at `f8a400ff0af3f664340427de5fda17ea5bddad39` on `feature/glass-wall-directional-flow-v1`. Its five-stage UI has boundary arrowheads, readable mobile reflow, Spanish result labels and response-derived route states. Static-copy retrieval is explicitly distinguished from managed service health/audit.
+
+A detached checkout passed 1,095 of 1,097 unit tests (zero failures, two explicit environment skips), all 38 browser cases, typecheck, build and the Pages artifact verifier. Named EVAL: 15/15. The two inherited transitive dependency vulnerabilities were patched within existing ranges; both npm audits report zero findings.
+
+Status: local verification complete; exact-head remote CI and release remain pending. No cloud, corpus, identity or broader production-readiness status changed. Detailed evidence: `program/reports/glass-wall-directional-flow-092-local.json`. Historical sections below remain historical receipts, not new execution claims.
+
+---
+
+
 Updated: 2026-08-12T16:22:57Z
 
 Program status: **PUBLIC_READ_ONLY_COMPLETE_WITH_ENTERPRISE_BLOCKERS — the public LA Muni RAG pilot is deployed and operational on GitHub Pages; the Feature 091 runtime was independently verified at its exact merge SHA. Public query, domain-pack metadata and procedure guidance have a governed static-first resilience path over three official Antigua PDM-OT sources, so the public read-only experience no longer requires an always-on Cloud Run/Cloud SQL backend. The broader authenticated enterprise rollout, corpus expansion and legal/applicability review remain explicitly human-gated.**

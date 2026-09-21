@@ -2020,6 +2020,27 @@ tasks:
   pr: 35
   ci: exact_functional_head_passed
 
+- id: WS11-GLASS-WALL-DIRECTIONAL-092
+  workstream: WS-11
+  title: Directional evidence-honest Glass Wall UI
+  status: in_progress
+  owner: graph-engineer-executor
+  depends_on:
+  - WS11-PUBLIC-BROWSER-GATE-001
+  result:
+    functional_commit: f8a400ff0af3f664340427de5fda17ea5bddad39
+    graph_node: UI-GLASS-WALL-DIRECTIONAL-092
+    evidence: program/reports/glass-wall-directional-flow-092-local.json
+    named_eval: 15/15 PASS
+    independent_regression: 1095/1097 PASS; 0 failures; 2 environment skips
+    independent_browser: 38/38 PASS
+    remote_ci: pending
+  acceptance:
+  - Directional arrowheads at real node boundaries across desktop and mobile
+  - No selected-only, semantic, hidden audit or health execution claims
+  - Explicit idle, loading, found, empty, partial and error states with safe rendering
+  blockers: []
+
 blockers:
 - id: BLK-OFFICIAL-SOURCE-PROJECTION-090
   affects:
