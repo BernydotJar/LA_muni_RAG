@@ -92,6 +92,8 @@
   window.fetch = async (input, init) => {
     const url = requestUrl(input);
     if (!url) return nativeFetch(input, init);
+    // Do not rewrite third-party requests because a path happens to match.
+    if (url.origin !== window.location.origin) return nativeFetch(input, init);
 
     const route = approvedRoutes[url.pathname];
     const method = String(init?.method || (typeof input !== "string" ? input?.method : "GET") || "GET").toUpperCase();

@@ -406,3 +406,80 @@ test("configured Pages bridge strips browser credentials and proxies only approv
   });
   expect(unsupported.body.observedHeaders.cookie).toContain("session=must-not-leave-browser");
 });
+
+
+test("adversarial source links are rejected before the widget renders clickable citations", async ({ page }) => {
+  await page.goto("/__playwright__/configured-product.html");
+  await page.evaluate(() => {
+    const sources = [
+      "javascript:alert(1)",
+      "http://muniantigua.gob.gt/inseguro",
+      "/ruta-local-inesperada",
+      "https://user:password@muniantigua.gob.gt/documento.pdf",
+      "https://muniantigua.gob.gt/documento.pdf",
+    ];
+    let call = 0;
+    window.fetch = async () => {
+      const sourceUrl = sources[call++];
+      return new Response(JSON.stringify({
+        schema_version: "v1", response_type: "public_query", role: "assistant",
+        content: "Documento para revisión humana",
+        citations: [{ citationLabel: "Documento municipal, página 1", sourceType: "plan",
+          excerpt: "Evidencia contextual para un procedimiento.", sourceUrl }],
+        meta: { responseLabel: "evidence_found", confidence: "low", evidenceCount: 1 },
+      }), { status: 200, headers: { "content-type": "application/json" } });
+    };
+  });
+
+  await page.getByRole("button", { name: "Asistente" }).first().click();
+  const widget = page.locator("#muni-rag-widget");
+  for (let index = 0; index < 5; index++) {
+    await widget.locator("#muni-input").fill("documento municipal");
+    await widget.locator("#muni-input").press("Enter");
+    await expect(widget.locator(".muni-citation")).toHaveCount(index + 1);
+    await expect(widget.locator("#muni-send")).toBeEnabled();
+    const action = widget.locator(".muni-citation").last().locator(".muni-source-action");
+    await expect(action).toHaveCount(1);
+    const markup = await action.evaluate((element) => ({
+      tag: element.tagName,
+      href: element.getAttribute("href"),
+      rel: element.getAttribute("rel"),
+    }));
+    if (index < 4) {
+      expect(markup.tag).toBe("SPAN");
+      expect(markup.href).toBeNull();
+    } else {
+      expect(markup.tag).toBe("A");
+      expect(markup.href).toBe("https://muniantigua.gob.gt/documento.pdf");
+      expect(markup.rel).toBe("noopener noreferrer");
+    }
+  }
+});
+
+test("widget serializes public requests while the preceding query remains pending", async ({ page }) => {
+  await page.goto("/__playwright__/configured-product.html");
+  await page.evaluate(() => {
+    const testWindow = window as typeof window & { adversarialCalls?: number; resolveAdversarial?: () => void };
+    testWindow.adversarialCalls = 0;
+    window.fetch = async () => {
+      testWindow.adversarialCalls! += 1;
+      await new Promise<void>((resolve) => { testWindow.resolveAdversarial = resolve; });
+      return new Response(JSON.stringify({
+        schema_version: "v1", response_type: "public_query", role: "assistant", content: "Sin resultados",
+        citations: [], meta: { responseLabel: "not_found", confidence: "low", evidenceCount: 0 },
+      }), { status: 200, headers: { "content-type": "application/json" } });
+    };
+  });
+
+  await page.getByRole("button", { name: "Asistente" }).first().click();
+  const widget = page.locator("#muni-rag-widget");
+  await widget.locator("#muni-input").fill("consulta inicial");
+  await widget.locator("#muni-send").click();
+  await expect(widget.locator("#muni-send")).toBeDisabled();
+  await widget.locator("#muni-input").fill("intento duplicado");
+  await widget.locator("#muni-input").press("Enter");
+  expect(await page.evaluate(() => (window as typeof window & { adversarialCalls?: number }).adversarialCalls)).toBe(1);
+  await page.evaluate(() => (window as typeof window & { resolveAdversarial?: () => void }).resolveAdversarial?.());
+  await expect(widget.locator("#muni-send")).toBeEnabled();
+  await expect(widget.locator(".muni-msg-user")).toHaveCount(1);
+});

@@ -124,7 +124,7 @@ describe("procedure official source attribution", () => {
     assert.match(renderer, /official_national/);
     assert.match(renderer, /Referencia comparativa/);
     assert.match(renderer, /Abrir fuente oficial/);
-    assert.match(renderer, /url\.protocol === "http:" \|\| url\.protocol === "https:"/);
+    assert.match(renderer, /url\.protocol === "https:" && !url\.username && !url\.password/);
     assert.match(renderer, /noopener noreferrer/);
     assert.match(renderer, /textContent/);
   });

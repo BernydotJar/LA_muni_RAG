@@ -109,13 +109,17 @@
     return [...new Set([...tokens, ...extras])].slice(0, 22);
   };
 
+  const WORD_CHARACTER = /[\p{L}\p{N}]/u;
   const tokenCount = (text, token) => {
     let count = 0;
     let offset = 0;
     while (count < 8) {
       const found = text.indexOf(token, offset);
       if (found < 0) break;
-      count += 1;
+      const before = found > 0 ? text[found - 1] : "";
+      const after = text[found + token.length] || "";
+      // A search for "agua" must not match the unrelated word "aguacate".
+      if (!WORD_CHARACTER.test(before) && !WORD_CHARACTER.test(after)) count += 1;
       offset = found + token.length;
     }
     return count;
@@ -125,7 +129,10 @@
     const text = section.normalizedText;
     const normalizedQuery = normalize(query);
     if (!normalizedQuery) return 0;
-    if (mode === "phrase") return text.includes(normalizedQuery) ? 100 + Math.min(20, tokenCount(text, normalizedQuery)) : 0;
+    if (mode === "phrase") {
+      const matches = tokenCount(text, normalizedQuery);
+      return matches ? 100 + Math.min(20, matches) : 0;
+    }
     let matched = 0;
     let occurrences = 0;
     for (const token of tokens) {
@@ -134,10 +141,10 @@
       occurrences += count;
     }
     if (matched === 0) return 0;
-    const exactBoost = text.includes(normalizedQuery) ? 20 : 0;
+    const exactBoost = tokenCount(text, normalizedQuery) ? 20 : 0;
     const coverage = matched / Math.max(1, tokens.length);
     const title = normalize(section.title);
-    const titleBoost = tokens.some((token) => title.includes(token)) ? 1.5 : 0;
+    const titleBoost = tokens.some((token) => tokenCount(title, token)) ? 1.5 : 0;
     return exactBoost + coverage * 12 + Math.min(8, occurrences * 0.6) + titleBoost;
   };
 
@@ -148,7 +155,7 @@
     for (const sentence of sentences) {
       const normalizedSentence = normalize(sentence);
       let score = 0;
-      for (const token of tokens) if (normalizedSentence.includes(token)) score += 1;
+      for (const token of tokens) if (tokenCount(normalizedSentence, token)) score += 1;
       if (score > bestScore) {
         best = sentence;
         bestScore = score;
@@ -202,9 +209,10 @@
     if (!body || typeof body !== "object" || Array.isArray(body)) return null;
     const keys = Object.keys(body).sort().join(",");
     if (keys !== "limit,message,mode") return null;
+    if (typeof body.message !== "string" || body.message.trim().length > MAX_QUERY) return null;
     const message = boundedText(body.message, MAX_QUERY);
     const mode = body.mode;
-    const limit = Number(body.limit);
+    const limit = body.limit;
     if (!message || (mode !== "keyword" && mode !== "phrase") || !Number.isInteger(limit) || limit < 1 || limit > 5) return null;
     return { message, mode, limit };
   };

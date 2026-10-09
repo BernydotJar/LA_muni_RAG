@@ -1,3 +1,11 @@
+# Local advisory — public RAG adversarial hardening (2026-10-09)
+
+A new incremental security/evidence-quality change is being verified on `feature/glass-wall-directional-flow-v1`. Six localized findings were reproduced or validated through deterministic/browser tests and the high-severity `undici` direct dependency was upgraded. Local status before publication: 1,100/1,102 unit tests passed (two pre-existing environment skips), 42/42 Playwright desktop/mobile, typecheck, build, graph runtime integrity and Glass Wall EVAL PASS. The full unit suite was rerun after the `undici` update and passed; focused post-upgrade checks also passed. A recorded IBM Granite inference attempt was **blocked** twice by a killed local model process; no Granite-issued review result exists. Three `mammoth` transitive moderate npm advisories remain. See `docs/reviews/2026-10-09-rag-adversarial-hardening.md` and `program/reports/2026-10-09-public-rag-adversarial-hardening.json`.
+
+**Release boundary:** These results do not supersede the historical Feature 092 exact-head CI receipt. Remote CI, publication and productive legal/corpus/identity readiness remain separate verification and approval requirements. Existing untracked architecture work is preserved and out of scope.
+
+---
+
 # LA Muni RAG — Current Program State
 
 ## Current scoped increment: Feature 092

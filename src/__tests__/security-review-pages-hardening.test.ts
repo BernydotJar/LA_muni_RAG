@@ -41,7 +41,8 @@ describe("security review and production Pages hardening", () => {
     const guard = await readSource("public/pages-security-guard.js");
 
     assert.match(guard, /isSafeHttpHref/);
-    assert.match(guard, /parsed\.protocol === "https:" \|\| parsed\.protocol === "http:"/);
+    assert.match(guard, /new URL\(href\)/);
+    assert.match(guard, /parsed\.protocol === "https:" && !parsed\.username && !parsed\.password/);
     assert.match(guard, /removeAttribute\("href"\)/);
     assert.match(guard, /rel", "noopener noreferrer"/);
     assert.match(guard, /target", "_blank"/);
