@@ -1,0 +1,61 @@
+{
+  "schema_version": 1,
+  "feature": "092-glass-wall-directional-flow-v1",
+  "recorded_at": "2026-09-21T04:00:28.451337+00:00",
+  "functional_commit": "f8a400ff0af3f664340427de5fda17ea5bddad39",
+  "verified_head": "91df71915d99f6c108686c2f175bb9341844575f",
+  "pull_request": 43,
+  "result": "PASS",
+  "scope": "Exact-head required PR CI for directional public UI; not a deployed-site receipt",
+  "required_runs": [
+    {
+      "id": 35558731938,
+      "name": "Backend CI",
+      "event": "pull_request",
+      "head_sha": "91df71915d99f6c108686c2f175bb9341844575f",
+      "run_attempt": 1,
+      "status": "completed",
+      "conclusion": "success",
+      "html_url": "https://github.com/BernydotJar/LA_muni_RAG/actions/runs/35558731938",
+      "updated_at": "2026-09-21T03:56:15Z"
+    },
+    {
+      "id": 35558731926,
+      "name": "Public Browser Gate",
+      "event": "pull_request",
+      "head_sha": "91df71915d99f6c108686c2f175bb9341844575f",
+      "run_attempt": 1,
+      "status": "completed",
+      "conclusion": "success",
+      "html_url": "https://github.com/BernydotJar/LA_muni_RAG/actions/runs/35558731926",
+      "updated_at": "2026-09-21T03:51:05Z"
+    }
+  ],
+  "earlier_push_run": {
+    "id": 35556824182,
+    "first_attempt": "failed",
+    "failing_step": "Compiled PostgreSQL HTTP smoke",
+    "error": "fetch failed",
+    "source": "tests/api/v1/ingestion_pg_http.spec.ts",
+    "relation": "Backend was not modified in this UI increment. Later required PR verification passed at the same head. Failed push job rerun requested, without altering product code or weakening tests.",
+    "root_cause": "not established"
+  },
+  "supplemental_mobile_focus_repeat": {
+    "command": "PLAYWRIGHT_PORT=42795 npx playwright test tests/browser/glass-wall-flow.spec.ts --project=chromium-mobile --grep 'combined result' --repeat-each=10 --workers=2",
+    "passed": 10,
+    "failed": 0
+  },
+  "local_receipt": {
+    "path": "program/reports/glass-wall-directional-flow-092-local.json",
+    "sha256": "e9040bac2c753c415739c37709c49c6c6e2c201bb196eb17686ff65b24ffa8a8"
+  },
+  "screenshots": {
+    "run_id": 35558731926,
+    "artifact_name": "glass-wall-preview",
+    "classification": "Public test-fixture design previews, not deployed screenshots"
+  },
+  "merged": false,
+  "deployed": false,
+  "production_readiness_claimed": false,
+  "verification_roles": "Producer and critic are separate passes by the same assistant. Independent verification uses a detached checkout, fresh dependencies, isolated processes and remote CI; no independent human reviewer claimed."
+}

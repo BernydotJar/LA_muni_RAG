@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 
 const readHomepage = async (): Promise<string> => readFile("public/index.html", "utf-8");
-const readGlassWall = async (): Promise<string> => readFile("public/glass-wall.html", "utf-8");
+const readGlassWall = async (): Promise<string> => Promise.all(["public/glass-wall.html", "public/glass-wall.css", "public/glass-wall-view.js", "public/glass-wall-flow.js"].map((path) => readFile(path, "utf-8"))).then((parts) => parts.join("\n"));
 
 const forbiddenPublicInternals = [
   /harness/i,
@@ -73,8 +73,8 @@ describe("frontend localization and graph polish", () => {
     assert.match(homepage, /<script src="\.\/widget\.js"><\/script>/);
     assert.match(homepage, /<script src="\.\/product\.js"><\/script>/);
     assert.match(homepage, /href="\.\/glass-wall\.html"/);
-    assert.match(glassWall, /approvedEndpointPaths = \["\/api\/public\/v1\/query"\]/);
-    assert.match(glassWall, /state\.mode === "hybrid" \? \["keyword", "phrase"\]/);
+    assert.match(glassWall, /approvedEndpointPaths = \[['"]\/api\/public\/v1\/query['"]\]/);
+    assert.match(glassWall, /requestedModes\(mode\)/);
     assert.doesNotMatch(glassWall, /\/api\/evidence/);
     assert.doesNotMatch(glassWall, /\/api\/answer/);
     assert.match(glassWall, /Contrato de seguridad/);

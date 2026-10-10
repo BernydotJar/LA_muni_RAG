@@ -458,3 +458,16 @@ Decision: reuse the protected `la-muni-rag-staging` instance rather than create 
 Evidence at this checkpoint: all 17 migrations applied; exact PDM-OT bytes scanned and ingested into 444 vectors; DMP remains failed closed with `pdf_no_extractable_text`; the reproducible public-section projection produces 444 sections; keyword and phrase return five bounded HTTPS citations against managed Cloud SQL; unrelated phrase returns `not_found`; focused 15/15 and full 1052/1053 with zero failures and one environment skip; typecheck/build/audit pass.
 
 Limit: no Cloud Run or connected Pages URL is claimed at this checkpoint. PDM-OT dates remain unreviewed, so public results are correctly labeled `insufficient_evidence` / `validation_required` rather than current official conclusions.
+
+
+## 2026-09-21T03:11:22.404334+00:00: Feature 092 — directional observable flow
+
+User approval: implement the proposed Glass Wall adjustment using Cloud Sandbox and the existing Graph Harness runtime. Decision: controlled HTML grid plus measured SVG arrowheads; no graph library, backend API or framework redesign. Offline ingestion and private vector/audit internals remain explanatory, not active paths. Fragment counts and distinct-document counts are separate.
+
+Local repair evidence covers partial failures, malformed metadata, stale requests, inert markup, 64 KiB bounds, 12-second timeout, forced colors and responsive geometry. Test isolation required a configurable existing Playwright port. Only two inherited vulnerable lock entries were updated. Producer/critic were separate passes by the same executor; independent verification was a detached checkout and fresh processes, not a separate human review.
+
+## 2026-09-21T04:02:34.534387+00:00 - Close Feature 092 implementation gate, keep deployment separate
+
+Decision: accept all five required evidence kinds, including exact-head PR CI for `91df71915d99f6c108686c2f175bb9341844575f`, and mark the directional Glass Wall node done. The frozen public-corpus browser screenshots are development previews, not a claim of publication. PR #43 remains draft. No merge, cloud operation, corpus alteration, identity change or public deployment was performed.
+
+The earlier push-only PostgreSQL HTTP smoke failed with `fetch failed`; its root cause is not established. Required PR checks passed at the same head. A failed-job-only retry was requested, not a relaxation of tests or suppression of evidence.

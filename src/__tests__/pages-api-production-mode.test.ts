@@ -36,17 +36,19 @@ describe("Pages production API configuration", () => {
     assert.match(bridge, /new URL\(route\.targetPath \+ url\.search, configuredApiUrl\)/);
   });
 
-  it("injects and verifies the production bridge in the Pages artifact", async () => {
+  it("injects and verifies the production bridge before the external Glass Wall module", async () => {
     const buildScript = await readSource("scripts/build-pages.mjs");
     const verifyScript = await readSource("scripts/verify-pages-artifact.mjs");
     const glassWall = await readSource("public/glass-wall.html");
+    const view = await readSource("public/glass-wall-view.js");
     assert.match(buildScript, /PAGES_API_URL/);
     assert.match(buildScript, /sanitizePagesApiUrl/);
     assert.match(buildScript, /pages-api-bridge\.js/);
     assert.match(buildScript, /PAGES_API_BRIDGE/);
     assert.match(buildScript, /configuredEmbedApiAttribute/);
     assert.match(buildScript, /api\.tu-dominio\.gt/);
-    assert.match(glassWall, /<!-- PAGES_API_BRIDGE -->[\s\S]*const approvedEndpointPaths/);
+    assert.match(glassWall, /<!-- PAGES_API_BRIDGE -->[\s\S]*src="\.\/glass-wall-view\.js"/);
+    assert.match(view, /approvedEndpointPaths/);
     assert.match(verifyScript, /pages-api-bridge\.js/);
     assert.match(verifyScript, /glassWallBridgeIndex/);
     assert.match(verifyScript, /glassWallRuntimeIndex/);

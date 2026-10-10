@@ -1,4 +1,23 @@
+# Local advisory — public RAG adversarial hardening (2026-10-09)
+
+A new incremental security/evidence-quality change is being verified on `feature/glass-wall-directional-flow-v1`. Six localized findings were reproduced or validated through deterministic/browser tests and the high-severity `undici` direct dependency was upgraded. Local status before publication: 1,100/1,102 unit tests passed (two pre-existing environment skips), 42/42 Playwright desktop/mobile, typecheck, build, graph runtime integrity and Glass Wall EVAL PASS. The full unit suite was rerun after the `undici` update and passed; focused post-upgrade checks also passed. A recorded IBM Granite inference attempt was **blocked** twice by a killed local model process; no Granite-issued review result exists. Three `mammoth` transitive moderate npm advisories remain. See `docs/reviews/2026-10-09-rag-adversarial-hardening.md` and `program/reports/2026-10-09-public-rag-adversarial-hardening.json`.
+
+**Release boundary:** These results do not supersede the historical Feature 092 exact-head CI receipt. Remote CI, publication and productive legal/corpus/identity readiness remain separate verification and approval requirements. Existing untracked architecture work is preserved and out of scope.
+
+---
+
 # LA Muni RAG — Current Program State
+
+## Current scoped increment: Feature 092
+
+The directional Glass Wall is implemented at `f8a400ff0af3f664340427de5fda17ea5bddad39` on `feature/glass-wall-directional-flow-v1`. Its five-stage UI has boundary arrowheads, readable mobile reflow, Spanish result labels and response-derived route states. Static-copy retrieval is explicitly distinguished from managed service health/audit.
+
+A detached checkout passed 1,095 of 1,097 unit tests (zero failures, two explicit environment skips), all 38 browser cases, typecheck, build and the Pages artifact verifier. Named EVAL: 15/15. The two inherited transitive dependency vulnerabilities were patched within existing ranges; both npm audits report zero findings.
+
+Status: scoped implementation complete; `GATE-GLASS-WALL-DIRECTIONAL-092` PASS and node `done`. Exact head `91df71915d99f6c108686c2f175bb9341844575f` passed required PR Backend CI `35558731938` and Public Browser Gate `35558731926`. PR #43 remains draft; merge and public deployment were not performed. No cloud, corpus, identity or broader production-readiness status changed. Evidence: `program/reports/glass-wall-directional-flow-092-local.json`, `program/reports/glass-wall-directional-flow-092-ci.json` and the exact screenshot manifest `program/reports/glass-wall-directional-flow-092-previews.json`. Historical sections below remain historical receipts, not new execution claims.
+
+---
+
 
 Updated: 2026-08-12T16:22:57Z
 

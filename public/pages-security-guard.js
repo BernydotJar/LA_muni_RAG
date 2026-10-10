@@ -10,8 +10,9 @@
 
   const isSafeHttpHref = (href) => {
     try {
-      const parsed = new URL(href, window.location.origin);
-      return parsed.protocol === "https:" || parsed.protocol === "http:";
+      // Citation links must be absolute, encrypted, and free of embedded credentials.
+      const parsed = new URL(href);
+      return parsed.protocol === "https:" && !parsed.username && !parsed.password;
     } catch {
       return false;
     }

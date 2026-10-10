@@ -184,3 +184,10 @@ A green synthetic staging receipt is not a release. Production readiness require
 - Candidate metadata removed: `build-metadata.json` returned 404 and `b646aa6ce5d7231587ae311f5acb59f84fc35a0e` was absent from public HTML.
 - The `github-pages` environment allowlist contains only `main`.
 - No merge, backend deployment, Cloud SQL restart, Terraform action or destructive infrastructure operation occurred.
+
+
+## Feature 092 - verified implementation, publication separate
+
+Implementation: `f8a400ff0af3f664340427de5fda17ea5bddad39`. Required PR Backend CI `35558731938` and Public Browser Gate `35558731926` passed at head `91df71915d99f6c108686c2f175bb9341844575f`. The runtime gate is PASS and the UI node is done. PR #43 remains draft; no merge or public-site deployment occurred in this scope. Branch publication remains non-forced and audited.
+
+A later authorized public release must verify its deployed SHA, Glass Wall modules/assets, both real static query routes, six visible arrowheads and mobile reflow. Preserve the unrelated untracked architecture audit. Do not change cloud, corpus, authentication or framework configuration as part of this UI release.

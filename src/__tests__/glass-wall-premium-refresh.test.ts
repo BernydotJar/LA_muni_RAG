@@ -2,7 +2,7 @@ import { describe, it } from "node:test";
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 
-const readGlassWall = async (): Promise<string> => readFile("public/glass-wall.html", "utf-8");
+const readGlassWall = async (): Promise<string> => Promise.all(["public/glass-wall.html", "public/glass-wall.css", "public/glass-wall-view.js", "public/glass-wall-flow.js"].map((path) => readFile(path, "utf-8"))).then((parts) => parts.join("\n"));
 const visibleText = (html: string): string => html.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim();
 
 describe("glass wall premium refresh", () => {
@@ -13,7 +13,7 @@ describe("glass wall premium refresh", () => {
     assert.match(html, /Cómo se construye una respuesta/);
     assert.match(html, /Vista técnica/);
     assert.match(visibleText(html), /Observa cómo el sistema busca y prepara una respuesta/);
-    assert.match(visibleText(html), /método de búsqueda/);
+    assert.match(visibleText(html), /método de búsqueda/i);
   });
 
   it("adds lightweight premium homepage alignment", async () => {
@@ -23,8 +23,8 @@ describe("glass wall premium refresh", () => {
     assert.match(html, /Vista técnica/);
     assert.match(html, /Qué puedes inspeccionar/);
     assert.doesNotMatch(html, /Sin caja negra/);
-    assert.match(html, /glass-orb/);
-    assert.match(html, /body::after/);
+    assert.match(html, /heritage-mark/);
+    assert.match(html, /--hot: #e2aab7/);
   });
 
   it("preserves the safe observable endpoint allowlist", async () => {
@@ -32,9 +32,9 @@ describe("glass wall premium refresh", () => {
 
     assert.match(html, /approvedEndpointPaths/);
     assert.match(html, /\/api\/public\/v1\/query/);
-    assert.match(html, /method: "POST"/);
+    assert.match(html, /method: ['"]POST['"]/);
     assert.match(html, /JSON\.stringify\(\{ message, mode, limit: 5 \}\)/);
-    assert.match(html, /state\.mode === "hybrid" \? \["keyword", "phrase"\]/);
+    assert.match(html, /requestedModes\(mode\)/);
     assert.doesNotMatch(html, /\/api\/evidence/);
     assert.doesNotMatch(html, /\/api\/answer/);
   });

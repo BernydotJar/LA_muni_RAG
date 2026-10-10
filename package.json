@@ -112,7 +112,8 @@
     "source-packs:validate": "node --import tsx src/cli/validateSourcePacks.ts",
     "tenant-profiles:validate": "node --import tsx src/cli/validateTenantKnowledgeProfiles.ts",
     "source-pack:acquire-html": "node --import tsx src/cli/acquireSourcePackHtml.ts",
-    "source-pack:verify-html-acquisition": "node --import tsx src/cli/verifyOfficialHtmlAcquisition.ts"
+    "source-pack:verify-html-acquisition": "node --import tsx src/cli/verifyOfficialHtmlAcquisition.ts",
+    "eval:glass-wall-flow": "node --import tsx --test src/__tests__/eval-glass-wall-flow-001.test.ts"
   },
   "keywords": [],
   "author": "",
@@ -127,7 +128,7 @@
     "mammoth": "^1.12.0",
     "pdfjs-dist": "6.2.108",
     "pg": "^8.22.0",
-    "undici": "8.9.0"
+    "undici": "8.11.2"
   },
   "devDependencies": {
     "@playwright/test": "1.62.0",

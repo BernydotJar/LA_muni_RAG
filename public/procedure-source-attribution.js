@@ -10,8 +10,9 @@
   };
   const safeUrl = (value) => {
     try {
-      const url = new URL(String(value || ""), window.location.origin);
-      return url.protocol === "http:" || url.protocol === "https:" ? url.href : null;
+      if (typeof value !== "string" || !value.trim()) return null;
+      const url = new URL(value);
+      return url.protocol === "https:" && !url.username && !url.password ? url.href : null;
     } catch {
       return null;
     }

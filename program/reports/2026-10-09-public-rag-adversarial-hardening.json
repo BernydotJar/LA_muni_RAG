@@ -1,0 +1,117 @@
+{
+  "schema_version": "1.0",
+  "review_date": "2026-10-09",
+  "project": "LA_muni_RAG",
+  "branch": "feature/glass-wall-directional-flow-v1",
+  "baseline_head": "09c9244662d6ab3e4583e158fa2fc60838e3dd41",
+  "scope": "public_read_only_rag",
+  "review_type": "adversarial_deterministic_with_browser_reproduction",
+  "ibm_granite": {
+    "model": "ibm/granite3.3:2b",
+    "availability": "local_ollama_model_listed",
+    "completed_inference": false,
+    "attempt_count": 2,
+    "blocker": "llama-server process has terminated: signal: killed",
+    "model_judgment_claimed": false
+  },
+  "pre_patch_failing_tests": 3,
+  "pre_patch_total_tests": 5,
+  "post_patch_focused_adversarial_pass": 5,
+  "findings": [
+    {
+      "id": "RAG-ADV-01",
+      "severity": "high",
+      "type": "retrieval_false_positive",
+      "status": "fixed_local"
+    },
+    {
+      "id": "RAG-ADV-02",
+      "severity": "medium",
+      "type": "input_contract_coercion",
+      "status": "fixed_local"
+    },
+    {
+      "id": "RAG-ADV-03",
+      "severity": "high",
+      "type": "cross_origin_fetch_route_interception",
+      "status": "fixed_local"
+    },
+    {
+      "id": "RAG-ADV-04",
+      "severity": "high",
+      "type": "unsafe_pre_render_citation_href",
+      "status": "fixed_local"
+    },
+    {
+      "id": "RAG-ADV-05",
+      "severity": "medium",
+      "type": "duplicate_query_submission",
+      "status": "fixed_local"
+    },
+    {
+      "id": "RAG-ADV-06",
+      "severity": "high",
+      "type": "undici_dependency_advisories",
+      "status": "fixed_local"
+    }
+  ],
+  "local_verification": {
+    "unit_suite": {
+      "total": 1102,
+      "passed": 1100,
+      "failed": 0,
+      "skipped": 2,
+      "run_context": "post_undici_update"
+    },
+    "browser_suite": {
+      "total": 42,
+      "passed": 42,
+      "failed": 0,
+      "projects": [
+        "chromium-desktop",
+        "chromium-mobile"
+      ],
+      "isolated_port": 4198
+    },
+    "post_dependency_change": {
+      "typecheck": "pass",
+      "build": "pass",
+      "focused_unit_tests": {
+        "total": 15,
+        "passed": 15,
+        "failed": 0
+      }
+    },
+    "graph_harness_integrity": {
+      "status": "pass",
+      "historical_event_count": 160,
+      "node_count": 13
+    },
+    "glass_wall_eval": {
+      "total": 15,
+      "passed": 15,
+      "failed": 0
+    },
+    "pages_artifact_verification": "pass",
+    "production_dependency_audit": {
+      "high": 0,
+      "moderate": 3,
+      "audit_level_high_exit_code": 0,
+      "remaining_dependency_path": "mammoth -> argparse -> sprintf-js"
+    }
+  },
+  "residual_risks": [
+    "ibm_granite_independent_inference_blocked_by_memory",
+    "mammoth_argparse_sprintf_js_three_moderate_advisories",
+    "new_head_remote_ci_not_yet_verified",
+    "online_deployment_not_performed",
+    "productive_identity_and_legal_corpus_review_out_of_scope"
+  ],
+  "publication": {
+    "commit": "pending",
+    "remote_push": "pending",
+    "deployment": "not_performed",
+    "merge": "not_performed"
+  },
+  "evidence_document": "docs/reviews/2026-10-09-rag-adversarial-hardening.md"
+}

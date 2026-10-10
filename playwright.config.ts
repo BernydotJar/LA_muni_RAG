@@ -4,6 +4,9 @@ import { defineConfig, devices } from "@playwright/test";
 const systemChromium = process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE
   ?? (existsSync("/usr/bin/chromium") ? "/usr/bin/chromium" : undefined);
 const launchOptions = systemChromium ? { executablePath: systemChromium } : {};
+const testPort = Number(process.env.PLAYWRIGHT_PORT || 4173);
+if (!Number.isInteger(testPort) || testPort < 1024 || testPort > 65535) throw new Error("Invalid PLAYWRIGHT_PORT");
+const testOrigin = `http://127.0.0.1:${testPort}`;
 
 export default defineConfig({
   testDir: "./tests/browser",
@@ -18,7 +21,7 @@ export default defineConfig({
     ? [["line"], ["html", { outputFolder: "playwright-report", open: "never" }]]
     : [["list"], ["html", { outputFolder: "playwright-report", open: "never" }]],
   use: {
-    baseURL: "http://127.0.0.1:4173",
+    baseURL: testOrigin,
     colorScheme: "dark",
     locale: "es-GT",
     timezoneId: "America/Guatemala",
@@ -45,7 +48,7 @@ export default defineConfig({
   ],
   webServer: {
     command: "npm run browser:serve",
-    url: "http://127.0.0.1:4173/__playwright__/health",
+    url: `${testOrigin}/__playwright__/health`,
     reuseExistingServer: !process.env.CI,
     timeout: 60_000,
     stdout: "pipe",

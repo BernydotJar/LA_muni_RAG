@@ -1,0 +1,8 @@
+# Design
+Keep the existing civic burgundy/rose visual identity and public routes. Replace the tangled scaled absolute diagram with a controlled five-stage HTML grid. SVG overlay uses path + marker-end (orient=auto), clipped to measured node boundary ports. ResizeObserver recalculates connectors after resize, fonts and status changes. On narrow screens stages form a vertical flow with downward arrows; cards retain readable font sizes.
+
+The map is an explanation of the observable public contract, not a server trace. Two completed mode responses flow to a local deduplication node, then to up to five evidence cards. They flow to the response status only after completion. Failed routes are marked as failed, not empty. Partial results are explicitly partial. Per-source method information may be recorded only from the actual response containing that source; no fabricated scores or audit.
+
+Pure model module handles response validation, bounded safe citations, merge/deduplication, Spanish states and geometry. DOM module renders with textContent, listens to the form and resizes, and uses latest-request fencing. The API bridge remains authoritative for transport/static-first behavior. No new UI framework or graph dependency. New tests replace obsolete implementation-string checks with contract and browser geometry assertions, preserving endpoint/security invariants.
+
+Documentation checkpoints: MDN SVG marker-end and ResizeObserver, read 2026-09-20. User architecture distinguishes offline ingestion from online query and requires evidence before claims; ingestion/index internals are not shown as executed by this query.

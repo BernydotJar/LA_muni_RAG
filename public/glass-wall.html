@@ -4,239 +4,83 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>LA Muni RAG — Cómo se construye una respuesta</title>
-    <style>
-      :root {
-        --bg: #171114;
-        --panel: rgba(34, 24, 27, 0.92);
-        --line: rgba(231, 214, 217, 0.13);
-        --line-hot: rgba(223, 166, 180, 0.88);
-        --node: rgba(35, 24, 28, 0.96);
-        --node-border: rgba(255, 255, 255, 0.16);
-        --hot: #e2aab7;
-        --cyan: #e6c8ce;
-        --violet: #b88b73;
-        --warn: #f6c453;
-        --error: #ff6b6b;
-        --ok: #86efac;
-        --text: #f8f2ef;
-        --muted: #c3b7b2;
-        --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
-        --sans: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-        color-scheme: dark;
-      }
-
-      * { box-sizing: border-box; }
-      body {
-        margin: 0;
-        min-height: 100vh;
-        color: var(--text);
-        font-family: var(--sans);
-        background:
-          radial-gradient(circle at 52% 2%, rgba(115, 23, 41, 0.20), transparent 34rem),
-          radial-gradient(circle at 90% 18%, rgba(184, 139, 115, 0.10), transparent 26rem),
-          linear-gradient(180deg, #171114 0%, #1c1417 48%, #151012 100%);
-        overflow-x: hidden;
-      }
-      body::before {
-        content: "";
-        position: fixed;
-        inset: 0;
-        pointer-events: none;
-        opacity: 0.34;
-        background-image:
-          linear-gradient(rgba(255,255,255,0.018) 1px, transparent 1px),
-          linear-gradient(90deg, rgba(255,255,255,0.018) 1px, transparent 1px);
-        background-size: 64px 64px;
-        mask-image: linear-gradient(to bottom, black 0%, transparent 92%);
-        z-index: -3;
-      }
-      body::after {
-        content: "";
-        position: fixed;
-        width: min(58vw, 720px);
-        aspect-ratio: 1;
-        right: -14vw;
-        top: -18vw;
-        border-radius: 999px;
-        pointer-events: none;
-        z-index: -2;
-        background:
-          radial-gradient(circle at 42% 34%, rgba(255,255,255,0.34), transparent 8%),
-          radial-gradient(circle at 52% 48%, rgba(115,23,41,0.34), transparent 28%),
-          radial-gradient(circle at 46% 58%, rgba(184,139,115,0.18), transparent 40%),
-          radial-gradient(circle at 50% 50%, rgba(29,20,23,0.90), rgba(20,14,16,0.84) 64%, transparent 70%);
-        box-shadow: 0 0 110px rgba(115,23,41,0.14);
-        opacity: 0.58;
-        animation: none;
-      }
-      @keyframes glass-orb { to { transform: none; } }
-
-      main { position: relative; width: min(1400px, calc(100vw - 28px)); margin: 0 auto; padding: 28px 0 46px; }
-      .topbar { display: flex; justify-content: space-between; align-items: center; gap: 16px; margin-bottom: 22px; }
-      .back-link, .room-pill { display: inline-flex; align-items: center; gap: 8px; min-height: 38px; padding: 0 13px; border-radius: 999px; color: var(--text); text-decoration: none; border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.045); backdrop-filter: blur(14px); font: 800 11px/1 var(--mono); letter-spacing: 0.05em; text-transform: uppercase; }
-      .room-pill { color: var(--cyan); }
-      .back-link:hover { border-color: rgba(226,170,183,0.34); box-shadow: 0 0 26px rgba(115,23,41,0.12); }
-
-      .hero { display: grid; grid-template-columns: minmax(0, 1fr) minmax(280px, 0.44fr); gap: 26px; align-items: end; margin-bottom: 18px; padding: 28px; border: 1px solid rgba(255,255,255,0.08); border-radius: 32px; background: radial-gradient(circle at 78% 18%, rgba(115,23,41,0.12), transparent 28rem), linear-gradient(135deg, rgba(255,255,255,0.055), rgba(255,255,255,0.018)); box-shadow: 0 28px 90px rgba(0,0,0,0.28); backdrop-filter: blur(18px); }
-      .eyebrow { color: var(--hot); font: 800 11px/1.2 var(--mono); letter-spacing: 0.16em; text-transform: uppercase; }
-      h1 { margin: 10px 0 0; max-width: 940px; font-size: clamp(38px, 6vw, 84px); line-height: 0.9; letter-spacing: -0.075em; }
-      h1 span { display: block; color: #e7c9d0; }
-      .subtitle { max-width: 880px; margin: 16px 0 0; color: #c9bfd2; font-size: 15px; line-height: 1.65; }
-      .hero-note { padding: 18px; border: 1px solid rgba(255,255,255,0.08); border-radius: 24px; background: rgba(5,5,16,0.58); color: var(--muted); font-size: 13px; line-height: 1.55; }
-      .hero-note b { display: block; color: var(--cyan); margin-bottom: 8px; font: 900 11px/1 var(--mono); text-transform: uppercase; letter-spacing: 0.12em; }
-      .heritage-mark { display: block; width: 100%; margin-top: 12px; opacity: 0.8; filter: drop-shadow(0 0 20px rgba(184,139,115,0.14)); }
-      .heritage-mark path, .heritage-mark line { fill: none; stroke: rgba(226,232,240,0.82); stroke-linecap: round; stroke-linejoin: round; stroke-width: 1.4; }
-      .heritage-mark .accent { stroke: rgba(226,202,190,0.82); }
-      .heritage-mark .warm { stroke: rgba(245,196,83,0.68); }
-
-      .controls { display: grid; grid-template-columns: 1fr 170px 142px; gap: 10px; align-items: center; padding: 12px; margin-bottom: 16px; border: 1px solid rgba(255,255,255,0.12); border-radius: 24px; background: var(--panel); box-shadow: 0 24px 70px rgba(0,0,0,0.25); backdrop-filter: blur(18px); }
-      input, select, button { height: 46px; border: 1px solid rgba(255,255,255,0.14); border-radius: 14px; background: rgba(255,255,255,0.04); color: var(--text); font: 600 14px/1 var(--sans); }
-      input { padding: 0 14px; outline: none; }
-      select { padding: 0 12px; }
-      button { cursor: pointer; border-color: rgba(176,93,113,0.62); background: linear-gradient(135deg, #7f2138, #5f1121); font-weight: 800; }
-
-      .dashboard { display: grid; grid-template-columns: minmax(0, 1.95fr) minmax(330px, 0.8fr); gap: 16px; align-items: start; }
-      .glass-card, .side-card { border: 1px solid rgba(255,255,255,0.1); border-radius: 26px; overflow: hidden; background: rgba(10,10,24,0.78); box-shadow: 0 22px 70px rgba(0,0,0,0.24); backdrop-filter: blur(18px); }
-      .card-header { display: flex; align-items: center; justify-content: space-between; padding: 14px 16px; border-bottom: 1px solid rgba(255,255,255,0.08); color: #dfd6e8; font: 700 11px/1 var(--mono); letter-spacing: 0.12em; text-transform: uppercase; }
-      .status-pill { display: inline-flex; align-items: center; gap: 7px; padding: 7px 10px; border-radius: 999px; color: var(--muted); background: rgba(255,255,255,0.055); font: 700 11px/1 var(--mono); letter-spacing: 0; }
-      .status-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--muted); }
-      .status-pill.active .status-dot { background: var(--hot); box-shadow: 0 0 18px var(--hot); }
-      .status-pill.warn .status-dot { background: var(--warn); box-shadow: 0 0 18px var(--warn); }
-      .status-pill.error .status-dot { background: var(--error); box-shadow: 0 0 18px var(--error); }
-
-      #glass-wall-graph { position: relative; overflow: hidden; min-height: 320px; background: linear-gradient(rgba(255,255,255,0.018) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.018) 1px, transparent 1px), radial-gradient(circle at 50% 54%, rgba(115,23,41,0.09), transparent 48%); background-size: 28px 28px, 28px 28px, auto, auto; }
-      #glass-wall-graph::before { content: ""; position: absolute; inset: 0; pointer-events: none; background: radial-gradient(circle at 42% 48%, rgba(115,23,41,0.08), transparent 36%); z-index: 1; }
-      #glass-wall-graph::after { content: ""; position: absolute; left: 260px; top: 58px; width: 320px; height: 520px; border-radius: 999px; pointer-events: none; background: radial-gradient(circle, rgba(184,139,115,0.08), transparent 64%); filter: blur(8px); opacity: 0.45; z-index: 1; }
-      @keyframes graph-scan { to { transform: none; } }
-      @keyframes vector-breathe { to { transform: none; } }
-      .graph-board { position: relative; width: 1120px; height: 700px; transform-origin: 0 0; z-index: 2; }
-      svg.edges { position: absolute; inset: 0; width: 1120px; height: 700px; pointer-events: none; }
-      .edge { stroke: var(--line); stroke-width: 0.95; }
-      .edge.active { stroke: var(--line-hot); stroke-width: 1.55; stroke-dasharray: 9 9; animation: none; filter: drop-shadow(0 0 6px rgba(226,170,183,0.42)); }
-      .edge.warn { stroke: rgba(246,196,83,0.72); stroke-width: 1.35; stroke-dasharray: 8 10; animation: none; }
-      .edge.error { stroke: rgba(255,107,107,0.78); stroke-width: 1.35; }
-      @keyframes edge-flow { to { stroke-dashoffset: -36; } }
-
-      .node { position: absolute; width: 166px; min-height: 58px; transform: translate(-50%, -50%); display: grid; grid-template-columns: auto 1fr; grid-template-areas: "dot label" "dot value"; column-gap: 9px; align-items: center; padding: 10px 11px; color: #ded5e7; text-align: left; border-radius: 16px; border: 1px solid var(--node-border); background: linear-gradient(180deg, rgba(255,255,255,0.065), rgba(255,255,255,0.02)), var(--node); box-shadow: 0 16px 42px rgba(0,0,0,0.28), inset 0 1px 0 rgba(255,255,255,0.07); backdrop-filter: blur(14px); }
-      .node-core { grid-area: dot; width: 9px; height: 9px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.34); background: rgba(185,176,204,0.32); box-shadow: 0 0 10px rgba(255,255,255,0.08); }
-      .node.active { border-color: rgba(226,170,183,0.50); box-shadow: 0 16px 42px rgba(0,0,0,0.28), 0 0 20px rgba(115,23,41,0.16); }
-      .node.active .node-core { border-color: var(--hot); background: var(--hot); box-shadow: 0 0 14px rgba(226,170,183,0.52); animation: none; }
-      .node.warn { border-color: rgba(246,196,83,0.72); box-shadow: 0 16px 42px rgba(0,0,0,0.28), 0 0 18px rgba(246,196,83,0.18); }
-      .node.warn .node-core { border-color: var(--warn); background: var(--warn); box-shadow: 0 0 14px rgba(246,196,83,0.68); animation: none; }
-      .node.error { border-color: rgba(255,107,107,0.72); }
-      .node.error .node-core { border-color: var(--error); background: var(--error); }
-      .node.ok { border-color: rgba(134,239,172,0.64); }
-      .node.ok .node-core { border-color: var(--ok); background: var(--ok); box-shadow: 0 0 14px rgba(134,239,172,0.58); }
-      .node.vector-focus { box-shadow: 0 16px 42px rgba(0,0,0,0.28), 0 0 24px rgba(184,139,115,0.16), inset 0 1px 0 rgba(255,255,255,0.08); }
-      .node.vector-focus::after { content: ""; position: absolute; inset: -8px; border-radius: 22px; border: 1px solid rgba(184,139,115,0.12); opacity: 0.7; animation: none; pointer-events: none; }
-      @keyframes node-pulse { 50% { transform: scale(1.35); } }
-      @keyframes vector-ring { 50% { transform: scale(1.08); opacity: 0.2; } }
-      .node-label { grid-area: label; display: block; color: inherit; font: 900 10px/1 var(--mono); text-transform: uppercase; letter-spacing: 0.08em; text-shadow: 0 1px 8px #000; }
-      .node.active .node-label { color: var(--hot); }
-      .node.warn .node-label { color: var(--warn); }
-      .node.error .node-label { color: var(--error); }
-      .node.ok .node-label { color: var(--ok); }
-      .node-value { grid-area: value; display: block; color: rgba(201,191,210,0.74); font: 600 9px/1.25 var(--mono); overflow-wrap: anywhere; text-shadow: 0 1px 8px #000; margin-top: 4px; }
-
-      .graph-title { position: absolute; left: 26px; top: 22px; color: var(--muted); font: 800 11px/1 var(--mono); letter-spacing: 0.12em; text-transform: uppercase; }
-      .sense-level { position: absolute; left: 50%; bottom: 26px; transform: translateX(-50%); color: #fff; font: 900 18px/1 var(--sans); letter-spacing: -0.04em; }
-      .sense-level b { color: var(--hot); }
-      .axis-label { position: absolute; color: rgba(255,255,255,0.46); font: 800 10px/1 var(--mono); letter-spacing: 0.16em; text-transform: uppercase; }
-      .graph-legend { position: absolute; right: 26px; top: 24px; display: grid; grid-template-columns: repeat(2, auto); gap: 8px 14px; padding: 11px 12px; border: 1px solid rgba(255,255,255,0.09); border-radius: 16px; background: rgba(0,0,0,0.3); backdrop-filter: blur(12px); z-index: 3; }
-      .legend-item { display: inline-flex; align-items: center; gap: 7px; color: #c9bfd2; font: 800 10px/1 var(--mono); white-space: nowrap; }
-      .legend-dot { width: 9px; height: 9px; border-radius: 50%; background: var(--muted); box-shadow: 0 0 10px rgba(255,255,255,0.1); }
-      .legend-dot.hot { background: var(--hot); box-shadow: 0 0 14px var(--hot); }
-      .legend-dot.warn { background: var(--warn); box-shadow: 0 0 14px var(--warn); }
-      .legend-dot.ok { background: var(--ok); box-shadow: 0 0 14px var(--ok); }
-      .legend-dot.dim { background: rgba(185,176,204,0.35); }
-
-      .side-stack { display: grid; gap: 16px; }
-      #glass-wall-results, #glass-wall-runtime, #glass-wall-vector, #glass-wall-safety, #glass-wall-legend-panel { padding: 15px; }
-      .metric-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
-      .metric, .vector-row { padding: 12px; border: 1px solid rgba(255,255,255,0.08); border-radius: 16px; background: rgba(255,255,255,0.045); }
-      .metric strong { display: block; font-size: 24px; letter-spacing: -0.04em; }
-      .metric span, .vector-row span { display: block; margin-top: 4px; color: var(--muted); font: 700 10px/1.2 var(--mono); text-transform: uppercase; }
-      .vector-grid { display: grid; gap: 9px; }
-      .vector-row b { display: block; color: #f5eafa; font: 850 12px/1.25 var(--mono); }
-      .vector-row.warn { border-color: rgba(246,196,83,0.22); background: rgba(246,196,83,0.05); }
-      .vector-row.active { border-color: rgba(184,139,115,0.18); background: rgba(184,139,115,0.045); }
-      .evidence-list { display: grid; gap: 9px; margin-top: 12px; }
-      .evidence-item { padding: 10px; border: 1px solid rgba(255,255,255,0.09); border-radius: 14px; background: rgba(255,255,255,0.035); }
-      .evidence-item b { display: block; margin-bottom: 6px; color: #f5eafa; font: 800 11px/1.2 var(--mono); }
-      .evidence-item p, .safe-copy { margin: 0; color: #bbb0c7; font-size: 12px; line-height: 1.45; }
-      .footer-note { margin-top: 12px; color: var(--muted); font: 700 10px/1.45 var(--mono); }
-
-      @media (max-width: 920px) { main { width: min(100vw - 12px, 720px); padding-top: 18px; } .topbar, .hero { grid-template-columns: 1fr; flex-direction: column; align-items: flex-start; } .controls { grid-template-columns: 1fr; } .dashboard { grid-template-columns: 1fr; } }
-      @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition-duration: 0.01ms !important; } }
-    </style>
+    <link rel="stylesheet" href="./glass-wall.css" />
   </head>
   <body>
+    <a class="skip-link" href="#glass-wall-graph">Saltar al mapa</a>
     <main>
       <div class="topbar"><a class="back-link" href="/">← Volver al inicio</a><span class="room-pill">Vista técnica · cómo se construye una respuesta</span></div>
-      <section class="hero"><div><div class="eyebrow">Cómo funciona · vista técnica</div><h1>Observa cómo el sistema <span>busca y prepara una respuesta.</span></h1><p class="subtitle">Esta vista muestra qué método de búsqueda se ejecutó, qué fragmentos se encontraron, qué fuentes se prepararon y si el sistema pudo responder.</p></div><aside class="hero-note"><b>Qué puedes inspeccionar</b>Puedes revisar señales técnicas autorizadas sin exponer credenciales, instrucciones privadas del sistema ni razonamiento interno.<svg class="heritage-mark" viewBox="0 0 260 90" aria-label="Línea arquitectónica abstracta con arcos coloniales de Antigua Guatemala"><path class="warm" d="M18 76H242"/><path d="M28 76V38h204v38"/><path d="M40 38h180"/><path class="accent" d="M68 76V58c0-13 10-23 23-23s23 10 23 23v18"/><path d="M144 76V58c0-13 10-23 23-23s23 10 23 23v18"/><path d="M52 38l8-16h28l8 16"/><path class="accent" d="M184 31c8-20 34-22 45-6"/><line x1="214" y1="24" x2="214" y2="10"/></svg></aside></section>
-      <form class="controls" id="glass-wall-form"><input id="glass-wall-query" name="q" autocomplete="off" placeholder="Escribe una pregunta para ver cómo se busca en los documentos" value="municipalidad"/><select id="glass-wall-mode" name="mode" aria-label="Método de búsqueda"><option value="hybrid">combinado (palabras + frase)</option><option value="keyword">coincidencias de palabras</option><option value="phrase">frase exacta</option></select><button type="submit">Inspeccionar</button></form>
-      <section class="dashboard">
-        <article class="glass-card"><div class="card-header"><span>Mapa de señales</span><span class="status-pill" id="glass-wall-status"><span class="status-dot"></span><span>inactivo</span></span></div><div id="glass-wall-graph"><div class="graph-board" id="glass-wall-board"><div class="graph-title">Ruta de la consulta</div><div class="graph-legend" id="glass-wall-legend"><div class="legend-item"><span class="legend-dot hot"></span>ruta activa</div><div class="legend-item"><span class="legend-dot warn"></span>degradado</div><div class="legend-item"><span class="legend-dot ok"></span>resultado preparado</div><div class="legend-item"><span class="legend-dot dim"></span>inactivo</div></div><div class="axis-label" style="left:105px;top:635px">entrada</div><div class="axis-label" style="left:350px;top:635px">búsqueda</div><div class="axis-label" style="left:635px;top:635px">evidencia</div><div class="axis-label" style="left:910px;top:635px">salida</div><svg class="edges" id="glass-wall-edges" viewBox="0 0 1120 700" aria-hidden="true"></svg>
-          <div class="node active" id="node-query" data-node="query" data-x="105" data-y="130"><span class="node-core"></span><span class="node-label">consulta</span><span class="node-value">en espera</span></div><div class="node" id="node-mode" data-node="mode" data-x="105" data-y="240"><span class="node-core"></span><span class="node-label">método</span><span class="node-value">combinado</span></div><div class="node" id="node-limit" data-node="limit" data-x="105" data-y="350"><span class="node-core"></span><span class="node-label">límite</span><span class="node-value">5</span></div><div class="node" id="node-corpus" data-node="corpus" data-x="105" data-y="460"><span class="node-core"></span><span class="node-label">documentos</span><span class="node-value">fuentes disponibles</span></div><div class="node ok" id="node-safety" data-node="safety" data-x="105" data-y="570"><span class="node-core"></span><span class="node-label">seguridad</span><span class="node-value">sin secretos</span></div>
-          <div class="node" id="node-phrase" data-node="phrase" data-x="365" data-y="105"><span class="node-core"></span><span class="node-label">frase exacta</span><span class="node-value">exacta</span></div><div class="node" id="node-keyword" data-node="keyword" data-x="365" data-y="195"><span class="node-core"></span><span class="node-label">coincidencias</span><span class="node-value">palabras del texto</span></div><div class="node vector-focus" id="node-vector" data-node="vector" data-x="365" data-y="285"><span class="node-core"></span><span class="node-label">búsqueda vectorial</span><span class="node-value">no expuesta en esta vista</span></div><div class="node vector-focus" id="node-embedding" data-node="embedding" data-x="365" data-y="375"><span class="node-core"></span><span class="node-label">representación vectorial</span><span class="node-value">detalle interno no expuesto</span></div><div class="node vector-focus" id="node-db" data-node="db" data-x="365" data-y="465"><span class="node-core"></span><span class="node-label">índice vectorial</span><span class="node-value">detalle interno no expuesto</span></div><div class="node" id="node-runtime" data-node="runtime" data-x="365" data-y="555"><span class="node-core"></span><span class="node-label">sistema</span><span class="node-value">desconocido</span></div>
-          <div class="node" id="node-evidence-1" data-node="evidence" data-x="650" data-y="80"><span class="node-core"></span><span class="node-label">evidencia 1</span><span class="node-value">ninguna</span></div><div class="node" id="node-evidence-2" data-node="evidence" data-x="650" data-y="165"><span class="node-core"></span><span class="node-label">evidencia 2</span><span class="node-value">ninguna</span></div><div class="node" id="node-evidence-3" data-node="evidence" data-x="650" data-y="250"><span class="node-core"></span><span class="node-label">evidencia 3</span><span class="node-value">ninguna</span></div><div class="node" id="node-evidence-4" data-node="evidence" data-x="650" data-y="335"><span class="node-core"></span><span class="node-label">evidencia 4</span><span class="node-value">ninguna</span></div><div class="node" id="node-evidence-5" data-node="evidence" data-x="650" data-y="420"><span class="node-core"></span><span class="node-label">evidencia 5</span><span class="node-value">ninguna</span></div><div class="node" id="node-citation" data-node="citation" data-x="650" data-y="515"><span class="node-core"></span><span class="node-label">cita</span><span class="node-value">no lista</span></div><div class="node" id="node-score" data-node="score" data-x="650" data-y="610"><span class="node-core"></span><span class="node-label">ranking</span><span class="node-value">ordenado</span></div>
-          <div class="node" id="node-answer" data-node="answer" data-x="930" data-y="160"><span class="node-core"></span><span class="node-label">respuesta</span><span class="node-value">inactiva</span></div><div class="node" id="node-not-found" data-node="not_found" data-x="930" data-y="305"><span class="node-core"></span><span class="node-label">sin hallazgos</span><span class="node-value">inactivo</span></div><div class="node" id="node-degraded" data-node="degraded" data-x="930" data-y="450"><span class="node-core"></span><span class="node-label">degradado</span><span class="node-value">inactivo</span></div><div class="node ok" id="node-audit" data-node="audit" data-x="930" data-y="585"><span class="node-core"></span><span class="node-label">registro</span><span class="node-value">datos técnicos autorizados</span></div><div class="sense-level" id="sense-level"><b>Nivel 1</b> / 6 · sin señal</div></div></div></article>
-        <aside class="side-stack"><article class="side-card"><div class="card-header">Resultados</div><div id="glass-wall-results"><div class="metric-grid"><div class="metric"><strong id="metric-evidence-count">0</strong><span>fuentes</span></div><div class="metric"><strong id="metric-answer-status">inactivo</strong><span>estado de respuesta</span></div></div><div class="evidence-list" id="evidence-list"></div></div></article><article class="side-card"><div class="card-header">Búsqueda vectorial</div><div id="glass-wall-vector" class="vector-grid"><div class="vector-row" id="vector-runtime-row"><b id="vector-runtime-state">no reportado</b><span>estado técnico</span></div><div class="vector-row" id="vector-mode-row"><b id="vector-mode-state">combinado pendiente</b><span>relación con búsqueda combinada</span></div><div class="vector-row" id="vector-embedding-row"><b id="vector-embedding-state">detalle pendiente</b><span>representación de la pregunta</span></div><div class="vector-row" id="vector-store-row"><b id="vector-store-state">no reportado</b><span>índice vectorial</span></div><div class="vector-row" id="vector-reason-row"><b id="vector-reason-state">sin datos todavía</b><span>señal técnica autorizada</span></div></div></article><article class="side-card"><div class="card-header">Estado del sistema</div><div id="glass-wall-runtime"><p class="safe-copy" id="runtime-copy">El estado del sistema todavía no ha sido cargado.</p></div></article><article class="side-card"><div class="card-header">Leyenda</div><div id="glass-wall-legend-panel"><p class="safe-copy">Rosa claro indica una ruta que participó en el resultado. Amarillo indica un estado degradado o una configuración parcial. Verde identifica controles de seguridad. Gris indica una ruta inactiva.</p></div></article><article class="side-card"><div class="card-header">Contrato de seguridad</div><div id="glass-wall-safety"><p class="safe-copy">Esta vista sólo muestra datos de diagnóstico autorizados: estado, conteos, tipos de fuente, citas, fragmentos y salud general del servicio. No muestra credenciales, llaves, direcciones privadas de bases de datos, instrucciones internas ni razonamiento privado.</p><p class="footer-note">Ruta directa: /glass-wall.html</p></div></article></aside>
+      <section class="hero" aria-labelledby="page-title">
+        <div>
+          <div class="eyebrow">Cómo funciona · vista técnica</div>
+          <h1 id="page-title">Observa cómo el sistema <span>busca y prepara una respuesta.</span></h1>
+          <p class="subtitle">Sigue la consulta hasta sus fuentes. Las flechas muestran qué rutas se completaron y dónde faltan resultados, sin presentar procesos internos como hechos observados.</p>
+        </div>
+        <aside class="hero-note"><b>Qué puedes inspeccionar</b>Métodos confirmados, fragmentos recuperados y límites de la respuesta. Encontrar una fuente no confirma por sí solo una obligación legal.
+          <svg class="heritage-mark" viewBox="0 0 260 90" role="img" aria-label="Línea arquitectónica abstracta con arcos coloniales de Antigua Guatemala"><path d="M18 76H242 M28 76V38h204v38 M40 38h180 M68 76V58c0-13 10-23 23-23s23 10 23 23v18 M144 76V58c0-13 10-23 23-23s23 10 23 23v18 M52 38l8-16h28l8 16"/></svg>
+        </aside>
       </section>
+      <form class="controls" id="glass-wall-form">
+        <div class="field"><label for="glass-wall-query">Tu consulta</label><input id="glass-wall-query" name="q" autocomplete="off" placeholder="Por ejemplo: agua potable" value="municipalidad" maxlength="500" required aria-describedby="controls-help" /></div>
+        <div class="field"><label for="glass-wall-mode">Método de búsqueda</label><select id="glass-wall-mode" name="mode"><option value="hybrid">Combinado</option><option value="keyword">Palabras clave</option><option value="phrase">Frase exacta</option></select></div>
+        <button id="glass-wall-submit" type="submit">Inspeccionar ruta</button>
+      </form>
+      <p class="controls-help" id="controls-help">Combinado reúne coincidencias de palabras y frase exacta. No representa búsqueda semántica. Se muestran hasta cinco fragmentos, que pueden pertenecer al mismo documento.</p>
+      <section class="dashboard" aria-label="Ruta y resumen de la consulta">
+        <div>
+          <article class="glass-card">
+            <div class="card-header"><h2>Mapa de señales</h2><span class="status-pill idle" id="glass-wall-status" role="status" aria-live="polite" aria-atomic="true">Lista para consultar</span></div>
+            <div class="graph-intro"><span class="graph-title">Ruta de la consulta</span><div class="graph-legend" id="glass-wall-legend" aria-label="Leyenda de las flechas"><span class="legend-item"><i class="legend-line" aria-hidden="true"></i>Completada</span><span class="legend-item"><i class="legend-line inactive" aria-hidden="true"></i>No ejecutada</span><span class="legend-item"><i class="legend-line warning" aria-hidden="true"></i>Con límites</span></div></div>
+            <div id="glass-wall-graph" tabindex="-1" aria-describedby="flow-caption">
+              <div class="graph-board" id="glass-wall-board">
+                <svg class="edges" id="glass-wall-edges" aria-hidden="true" focusable="false"><defs id="glass-wall-markers"></defs><g id="glass-wall-paths"></g></svg>
+                <ol class="flow-stages" aria-label="Etapas de la consulta">
+                  <li><h3 class="stage-heading"><span>01</span> Entrada</h3><div class="stage-body">
+                    <div class="node" id="node-query" data-state="inactive"><span class="node-core" aria-hidden="true"></span><span class="node-label">Consulta</span><span class="node-value">En espera</span><p class="node-extra"><span id="node-mode">Combinado</span> · <span id="node-limit">hasta 5 fragmentos</span></p></div>
+                  </div></li>
+                  <li><h3 class="stage-heading"><span>02</span> Búsqueda</h3><div class="stage-body method-nodes">
+                    <div class="node" id="node-phrase" data-state="inactive"><span class="node-core" aria-hidden="true"></span><span class="node-label">Frase exacta</span><span class="node-value">No ejecutada</span></div>
+                    <div class="node" id="node-keyword" data-state="inactive"><span class="node-core" aria-hidden="true"></span><span class="node-label">Palabras clave</span><span class="node-value">No ejecutada</span></div>
+                  </div></li>
+                  <li><h3 class="stage-heading"><span>03</span> Consolidación</h3><div class="stage-body">
+                    <div class="node" id="node-merge" data-state="inactive"><span class="node-core" aria-hidden="true"></span><span class="node-label">Unir resultados</span><span class="node-value">En espera</span><p class="node-extra" id="node-score">Se intercalan los resultados recibidos y se eliminan duplicados. No se calcula una puntuación nueva.</p></div>
+                  </div></li>
+                  <li><h3 class="stage-heading"><span>04</span> Evidencia</h3><div class="stage-body">
+                    <div class="node" id="node-citation" data-state="inactive"><span class="node-core" aria-hidden="true"></span><span class="node-label">Fragmentos citables</span><span class="node-value">En espera</span><ol class="fragment-list" id="fragment-list" aria-label="Fragmentos recuperados"></ol><p class="node-extra" id="node-not-found">Todavía no hay una consulta ejecutada.</p></div>
+                  </div></li>
+                  <li><h3 class="stage-heading"><span>05</span> Respuesta</h3><div class="stage-body">
+                    <div class="node" id="node-answer" data-state="inactive"><span class="node-core" aria-hidden="true"></span><span class="node-label">Resultado</span><span class="node-value">Lista para consultar</span><p class="node-extra">Revisa la vigencia y aplicabilidad de cada fuente antes de tomar una decisión.</p></div>
+                  </div></li>
+                </ol>
+              </div>
+            </div>
+            <p class="flow-caption" id="flow-caption">Escribe una consulta y sigue las flechas. Ninguna ruta aparece completada antes de recibir su resultado.</p>
+            <p id="glass-wall-error" role="alert" hidden></p>
+          </article>
+          <details class="glass-card capabilities" id="glass-wall-vector">
+            <summary>Qué no muestra esta ruta</summary>
+            <div class="capability-grid">
+              <div class="capability-row" id="node-vector"><b>Búsqueda vectorial</b><span>detalle interno no expuesto. Esta vista pública no acredita ejecución semántica.</span></div>
+              <div class="capability-row" id="node-embedding"><b>Representación vectorial</b><span>La representación interna no expuesta no se dibuja como una ruta ejecutada.</span></div>
+              <div class="capability-row" id="node-db"><b>Índice vectorial</b><span>El índice interno no expuesto queda fuera del recorrido observable.</span></div>
+            </div>
+            <p class="footer-note">La ingestión y la indexación ocurren antes de la consulta. Este mapa no es una traza del razonamiento interno ni una certificación de salud general del servicio.</p>
+          </details>
+        </div>
+        <aside class="side-stack">
+          <article class="side-card"><div class="card-header"><h2>Resumen</h2></div><div id="glass-wall-results">
+            <div class="metric-grid"><div class="metric"><strong id="metric-evidence-count">0</strong><span>fragmentos</span></div><div class="metric"><strong id="metric-document-count">0</strong><span>documentos</span></div><div class="metric result"><strong id="metric-answer-status">Lista para consultar</strong><span>estado de la respuesta</span></div></div>
+            <ul class="execution-list" id="execution-list" aria-label="Métodos y estados confirmados"></ul>
+          </div></article>
+          <article class="side-card"><div class="card-header"><h2>Origen del resultado</h2></div><div id="glass-wall-runtime"><p class="safe-copy" id="runtime-copy">Sin ejecución confirmada.</p><p class="footer-note" id="node-audit">No se confirma un registro de auditoría del servidor desde esta vista.</p></div></article>
+          <article class="side-card"><div class="card-header"><h2>Contrato de seguridad</h2></div><div id="glass-wall-safety"><p class="safe-copy" id="node-safety">Esta vista muestra datos de diagnóstico autorizados: resultados públicos, conteos y citas. No muestra credenciales, llaves, direcciones privadas de bases de datos, instrucciones internas ni razonamiento privado.</p></div></article>
+          <article class="side-card"><div class="card-header"><h2>Cómo leer el mapa</h2></div><div id="glass-wall-legend-panel"><p class="safe-copy">Una flecha continua indica un paso completado. La línea discontinua indica una ruta pendiente o no ejecutada; su tarjeta precisa el estado. Un límite o fallo se señala con texto y un trazo diferente, no sólo con color.</p></div></article>
+        </aside>
+      </section>
+      <section class="glass-card sources-section" aria-labelledby="sources-title"><div class="source-heading"><h2 id="sources-title">Fragmentos y fuentes</h2><span id="sources-caption">Aquí podrás revisar las citas recuperadas.</span></div><div class="evidence-list" id="evidence-list"><p class="empty-copy">Ejecuta una consulta para ver sus documentos de respaldo.</p></div></section>
+      <noscript><p>Activa JavaScript para consultar los documentos y ver la ruta. No se ha ejecutado ninguna búsqueda.</p></noscript>
     </main>
     <!-- PAGES_API_BRIDGE -->
-    <script>
-      const $ = (id) => document.getElementById(id);
-      const approvedEndpointPaths = ["/api/public/v1/query"];
-      const graphSize = { width: 1120, height: 700 };
-      const graphEdges = [["node-query","node-phrase","signal"],["node-query","node-keyword","signal"],["node-query","node-vector","vector"],["node-query","node-embedding","vector"],["node-mode","node-phrase","mode"],["node-mode","node-keyword","mode"],["node-mode","node-vector","vector"],["node-limit","node-score","score"],["node-corpus","node-keyword","signal"],["node-corpus","node-db","vector"],["node-safety","node-audit","audit"],["node-embedding","node-vector","vector"],["node-db","node-vector","vector"],["node-runtime","node-vector","vector"],["node-runtime","node-degraded","degraded"],["node-phrase","node-evidence-1","evidence1"],["node-keyword","node-evidence-1","evidence1"],["node-keyword","node-evidence-2","evidence2"],["node-vector","node-evidence-2","evidence2"],["node-vector","node-evidence-3","evidence3"],["node-db","node-evidence-4","evidence4"],["node-phrase","node-evidence-5","evidence5"],["node-evidence-1","node-citation","citation"],["node-evidence-2","node-citation","citation"],["node-evidence-3","node-citation","citation"],["node-evidence-4","node-citation","citation"],["node-evidence-5","node-citation","citation"],["node-citation","node-score","score"],["node-score","node-answer","answer"],["node-citation","node-not-found","not_found"],["node-audit","node-answer","audit"]];
-      const state = { query: "municipalidad", mode: "hybrid", response: null, error: null };
-      const safeText = (value, fallback = "desconocido") => value === null || value === undefined || value === "" ? fallback : String(value).slice(0, 120);
-      const displayMode = (mode) => mode === "keyword" ? "coincidencias de palabras" : mode === "phrase" ? "frase exacta" : "combinado";
-      const displayRuntime = (value) => value === "enabled" ? "activo" : value === "degraded" ? "degradado" : value === "disabled" ? "deshabilitado" : safeText(value, "desconocido");
-      const displayAnswerStatus = (value) => value === "not_found" ? "sin hallazgos" : value === "error" ? "error" : value === "grounded" || value === "answered" || value === "draft_grounded" ? "con evidencia" : safeText(value, "inactivo");
-      const vectorDetails = () => {
-        const executedModes = Array.isArray(state.response?.meta?.executedModes) ? state.response.meta.executedModes : [];
-        const hybrid = state.mode === "hybrid";
-        return { runtimeLabel: "detalle interno no expuesto", modeLabel: hybrid ? "combinado = palabras + frase exacta" : `método: ${displayMode(state.mode)}`, embeddingLabel: "representación interna no expuesta", storeLabel: "índice interno no expuesto", reasonLabel: executedModes.length ? `rutas ejecutadas: ${executedModes.join(", ")}` : "sin búsqueda todavía", enabled: false, degraded: false, hybrid };
-      };
-      const setStatus = (label, kind = "") => { const pill = $("glass-wall-status"); pill.className = `status-pill ${kind}`.trim(); pill.querySelector("span:last-child").textContent = label; };
-      const setNode = (id, value, className = "") => { const node = $(id); const keepVector = node.classList.contains("vector-focus") ? " vector-focus" : ""; node.className = `node ${className}${keepVector}`.trim(); node.querySelector(".node-value").textContent = safeText(value); };
-      const positionNodes = () => document.querySelectorAll(".node[data-x][data-y]").forEach((node) => { node.style.left = `${node.dataset.x}px`; node.style.top = `${node.dataset.y}px`; });
-      const fitGraphToViewport = () => { const graph = $("glass-wall-graph"); const board = $("glass-wall-board"); const scale = Math.min(1, Math.max(320, graph.clientWidth) / graphSize.width); board.style.transform = `scale(${scale})`; graph.style.height = `${Math.ceil(graphSize.height * scale)}px`; };
-      const getEvidenceItems = () => Array.isArray(state.response?.citations) ? state.response.citations : [];
-      const getAnswerStatus = () => state.response?.meta?.responseLabel || "unknown";
-      const getEvidenceCount = () => Number.isInteger(state.response?.meta?.evidenceCount) ? state.response.meta.evidenceCount : getEvidenceItems().length;
-      const getCitationLabel = (item) => item.citationLabel || item.citation || item.sourceLabel || item.documentTitle || item.sourceType || "cita pendiente";
-      const getEdgeState = (kind) => { const count = getEvidenceCount(); const hasEvidence = count > 0; const vector = vectorDetails(); if (kind === "signal") return hasEvidence || state.mode === "hybrid" ? "active" : ""; if (kind === "mode") return state.mode === "hybrid" || state.mode === "keyword" || state.mode === "phrase" ? "active" : ""; if (kind === "vector") return vector.enabled && vector.hybrid ? "active" : vector.degraded ? "warn" : ""; if (kind.startsWith("evidence")) return count >= Number(kind.replace("evidence", "")) ? "active" : ""; if (kind === "citation") return hasEvidence ? "active" : ""; if (kind === "score") return hasEvidence ? "active" : ""; if (kind === "answer") return hasEvidence ? "active" : ""; if (kind === "not_found") return hasEvidence ? "" : "warn"; if (kind === "degraded") return vector.degraded ? "warn" : ""; if (kind === "audit") return "active"; return ""; };
-      const renderEdges = () => { const svg = $("glass-wall-edges"); svg.innerHTML = ""; for (const [fromId, toId, kind] of graphEdges) { const from = $(fromId); const to = $(toId); const line = document.createElementNS("http://www.w3.org/2000/svg", "line"); line.setAttribute("x1", from.dataset.x); line.setAttribute("y1", from.dataset.y); line.setAttribute("x2", to.dataset.x); line.setAttribute("y2", to.dataset.y); line.setAttribute("class", `edge ${getEdgeState(kind)}`.trim()); svg.appendChild(line); } };
-      const renderVectorPanel = () => { const vector = vectorDetails(); const rowClass = vector.enabled ? "active" : vector.degraded ? "warn" : ""; $("vector-runtime-row").className = `vector-row ${rowClass}`.trim(); $("vector-mode-row").className = `vector-row ${vector.hybrid ? "active" : ""}`.trim(); $("vector-embedding-row").className = `vector-row ${rowClass}`.trim(); $("vector-store-row").className = `vector-row ${rowClass}`.trim(); $("vector-reason-row").className = `vector-row ${vector.degraded ? "warn" : ""}`.trim(); $("vector-runtime-state").textContent = vector.runtimeLabel; $("vector-mode-state").textContent = vector.modeLabel; $("vector-embedding-state").textContent = vector.embeddingLabel; $("vector-store-state").textContent = vector.storeLabel; $("vector-reason-state").textContent = vector.reasonLabel; };
-      const render = () => { const items = getEvidenceItems(); const count = getEvidenceCount(); const status = getAnswerStatus(); const vector = vectorDetails(); const hasEvidence = count > 0; const hasCitation = items.some((item) => Boolean(getCitationLabel(item))); $("metric-evidence-count").textContent = String(count); $("metric-answer-status").textContent = displayAnswerStatus(status); $("runtime-copy").textContent = `servicio público disponible; ${vector.modeLabel}; ${vector.reasonLabel}`; $("sense-level").innerHTML = hasEvidence ? "<b>Fuentes encontradas</b> · respuesta preparada" : vector.degraded ? "<b>Servicio degradado</b> · revisa el estado" : "<b>Sin fuentes todavía</b> · escribe una pregunta"; setNode("node-query", state.query, "active"); setNode("node-mode", displayMode(state.mode), state.mode === "hybrid" ? "active" : ""); setNode("node-limit", "límite 5", ""); setNode("node-corpus", "fuentes disponibles", ""); setNode("node-safety", "datos autorizados", "ok"); setNode("node-phrase", "ruta de frase exacta", state.mode === "phrase" || state.mode === "hybrid" ? "active" : ""); setNode("node-keyword", "coincidencias de palabras", state.mode === "keyword" || state.mode === "hybrid" ? "active" : ""); setNode("node-vector", "no expuesta", ""); setNode("node-embedding", vector.embeddingLabel, vector.enabled ? "active" : vector.degraded ? "warn" : ""); setNode("node-db", vector.storeLabel, vector.enabled ? "active" : vector.degraded ? "warn" : ""); setNode("node-runtime", "servicio público disponible", "active"); [0,1,2,3,4].forEach((index) => { const item = items[index]; setNode(`node-evidence-${index + 1}`, item ? safeText(getCitationLabel(item)) : "ninguna", item ? "active" : ""); }); setNode("node-citation", hasCitation ? "cita lista" : "no lista", hasCitation ? "active" : ""); setNode("node-score", hasEvidence ? "candidatos ordenados" : "en espera", hasEvidence ? "active" : ""); setNode("node-answer", displayAnswerStatus(status), hasEvidence ? "active" : ""); setNode("node-not-found", hasEvidence ? "inactivo" : "sin fuentes suficientes", hasEvidence ? "" : "warn"); setNode("node-degraded", "sin degradación reportada", ""); setNode("node-audit", "registro autorizado", "ok"); const list = $("evidence-list"); list.innerHTML = ""; if (items.length === 0) { const empty = document.createElement("div"); empty.className = "evidence-item"; empty.innerHTML = "<b>No se encontraron fuentes</b><p>La consulta actual no devolvió fragmentos que puedan citarse.</p>"; list.appendChild(empty); } else { items.slice(0, 5).forEach((item) => { const row = document.createElement("div"); row.className = "evidence-item"; const excerpt = item.excerpt || item.preview || item.text || item.content || "fragmento no disponible"; row.innerHTML = `<b>${safeText(getCitationLabel(item))}</b><p>${safeText(excerpt, "fragmento no disponible")}</p>`; list.appendChild(row); }); } renderVectorPanel(); if (state.error) setStatus("error", "error"); else if (hasEvidence) setStatus("fuentes encontradas", "active"); else setStatus("sin resultados", "warn"); renderEdges(); };
-      const safeFetchJson = async (message, mode) => {
-        const path = "/api/public/v1/query";
-        const response = await fetch(path, { method: "POST", headers: { accept: "application/json", "content-type": "application/json" }, body: JSON.stringify({ message, mode, limit: 5 }) });
-        const payload = await response.json().catch(() => null);
-        if (!response.ok) throw new Error(payload?.error?.message || "La consulta pública no está disponible.");
-        return payload;
-      };
-      const combineResponses = (responses, requestedMode) => {
-        const citations = [], seen = new Set(), executedModes = [];
-        for (const response of responses) {
-          for (const mode of response?.meta?.executedModes || []) if (!executedModes.includes(mode)) executedModes.push(mode);
-          for (const citation of response?.citations || []) { const key = `${citation.citationLabel}|${citation.sourceUrl}|${citation.excerpt}`; if (!seen.has(key)) { seen.add(key); citations.push(citation); } }
-        }
-        const first = responses[0] || {};
-        return { ...first, citations: citations.slice(0, 5), meta: { ...(first.meta || {}), responseLabel: citations.length ? "evidence_found" : "not_found", evidenceCount: Math.min(citations.length, 5), requestedMode, executedModes } };
-      };
-      const inspect = async () => {
-        state.query = $("glass-wall-query").value.trim() || "municipalidad"; state.mode = $("glass-wall-mode").value || "hybrid"; state.error = null; setStatus("cargando", "active"); render();
-        try { const modes = state.mode === "hybrid" ? ["keyword", "phrase"] : [state.mode]; state.response = combineResponses(await Promise.all(modes.map((mode) => safeFetchJson(state.query, mode))), state.mode); }
-        catch (error) { state.error = error instanceof Error ? error.message : "error desconocido"; state.response = { citations: [], meta: { responseLabel: "error", evidenceCount: 0, executedModes: [] } }; }
-        render();
-      };
-      $("glass-wall-form").addEventListener("submit", (event) => { event.preventDefault(); void inspect(); });
-      window.addEventListener("resize", () => { fitGraphToViewport(); renderEdges(); });
-      positionNodes(); fitGraphToViewport(); render();
-    </script>
+    <script type="module" src="./glass-wall-view.js"></script>
   </body>
 </html>

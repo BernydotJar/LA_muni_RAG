@@ -2,7 +2,7 @@ import { describe, it } from "node:test";
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 
-const readGlassWall = async (): Promise<string> => readFile("public/glass-wall.html", "utf-8");
+const readGlassWall = async (): Promise<string> => Promise.all(["public/glass-wall.html", "public/glass-wall.css", "public/glass-wall-view.js", "public/glass-wall-flow.js"].map((path) => readFile(path, "utf-8"))).then((parts) => parts.join("\n"));
 
 describe("premium glass wall technical room", () => {
   it("keeps the technical graph entry point in plain Spanish", async () => {
@@ -27,7 +27,7 @@ describe("premium glass wall technical room", () => {
   it("uses the deployed public inspection contract", async () => {
     const html = await readGlassWall();
 
-    assert.match(html, /const approvedEndpointPaths = \["\/api\/public\/v1\/query"\]/);
+    assert.match(html, /const approvedEndpointPaths = \[['"]\/api\/public\/v1\/query['"]\]/);
     assert.doesNotMatch(html, /\/api\/evidence/);
     assert.doesNotMatch(html, /\/api\/answer/);
   });
@@ -47,37 +47,26 @@ describe("premium glass wall technical room", () => {
     const html = await readGlassWall();
 
     assert.match(html, /grid-template-areas: "dot label" "dot value"/);
-    assert.match(html, /border-radius: 16px/);
+    assert.match(html, /border-radius: 12px/);
     assert.match(html, /node-label/);
     assert.match(html, /node-value/);
     assert.doesNotMatch(html, /\.node-core \{ width: 20px; height: 20px; border-radius: 50%/);
   });
 
-  it("adds safe vector runtime, embedding, and vector store insight copy", async () => {
+  it("keeps vector internals explanatory and outside the executed topology", async () => {
     const html = await readGlassWall();
-
     assert.match(html, /Búsqueda vectorial/);
-    assert.match(html, /estado técnico/);
-    assert.match(html, /relación con búsqueda combinada/);
-    assert.match(html, /representación de la pregunta/);
-    assert.match(html, /índice vectorial/);
-    assert.match(html, /señal técnica autorizada/);
     assert.match(html, /detalle interno no expuesto/);
-    assert.match(html, /combinado = palabras \+ frase exacta/);
     assert.match(html, /representación interna no expuesta/);
     assert.match(html, /índice interno no expuesto/);
-    assert.doesNotMatch(html, /semántica activa/);
-    assert.doesNotMatch(html, /store consultable/);
+    assert.match(html, /no acredita una auditoría/);
+    assert.doesNotMatch(html, /semántica activa|store consultable/);
   });
 
-  it("keeps graph affordances while disabling decorative continuous motion", async () => {
+  it("uses direction and line patterns rather than decorative continuous motion", async () => {
     const html = await readGlassWall();
-
-    assert.match(html, /graph-scan/);
-    assert.match(html, /vector-breathe/);
-    assert.match(html, /edge-flow/);
-    assert.match(html, /vector-ring/);
-    assert.match(html, /vector-focus/);
+    assert.match(html, /marker-end/);
+    assert.match(html, /orient: 'auto'/);
     assert.match(html, /stroke-dasharray/);
     assert.match(html, /animation: none/);
   });
